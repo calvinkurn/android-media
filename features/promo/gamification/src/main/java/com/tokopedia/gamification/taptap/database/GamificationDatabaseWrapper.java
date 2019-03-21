@@ -88,6 +88,7 @@ public class GamificationDatabaseWrapper {
 
             @Override
             public void onError(Throwable e) {
+                gamificationDbCallback.onErrorGetFromDb();
             }
 
             @Override

@@ -16,6 +16,7 @@ import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.data.entity.ResponseCrackResultEntity;
 import com.tokopedia.gamification.data.entity.ResultStatusEntity;
+import com.tokopedia.gamification.taptap.compoundview.NetworkErrorHelper;
 import com.tokopedia.gamification.taptap.contract.TapTapTokenContract;
 import com.tokopedia.gamification.taptap.data.entiity.GamiTapEggHome;
 import com.tokopedia.gamification.taptap.data.entiity.PlayWithPointsEntity;
@@ -28,6 +29,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -91,16 +93,22 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
 
             @Override
             public void onError(Throwable e) {
-                if (!isViewAttached()) {
+                if (isViewNotAttached()) {
                     return;
                 }
-                CrackResultEntity errorCrackResult = createGeneralErrorCrackResult();
+                if (e instanceof UnknownHostException) {
+                    showErrorView(R.drawable.gf_internet_not_connected_error
+                            , getView().getResources().getString(R.string.internet_not_connected_error_occured));
+                } else {
+                    showErrorView(R.drawable.gf_ic_toped_sorry, getView().getResources().getString(R.string.error_server_full));
+                }
 
-                getView().onErrorCrackToken(errorCrackResult);
             }
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
+                if (isViewNotAttached())
+                    return;
                 ResponseCrackResultEntity responseCrackResultEntity = graphqlResponse.getData(ResponseCrackResultEntity.class);
                 if (responseCrackResultEntity != null && responseCrackResultEntity.getCrackResultEntity() != null) {
                     CrackResultEntity crackResult = responseCrackResultEntity.getCrackResultEntity();
@@ -108,15 +116,34 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
                     if (crackResult.isCrackTokenSuccess() || crackResult.isTokenHasBeenCracked()) {
                         getView().onSuccessCrackToken(crackResult);
                     } else if (crackResult.isCrackTokenExpired()) {
-                        CrackResultEntity expiredCrackResult = createExpiredCrackResult(
-                                crackResult.getResultStatus());
-                        getView().onErrorCrackToken(expiredCrackResult);
+                        showErrorView(R.drawable.image_error_crack_result_expired, getView().getResources().getString(R.string.expired_reward_title));
+
                     } else {
-                        CrackResultEntity errorCrackResult = createGeneralErrorCrackResult();
-                        getView().onErrorCrackToken(errorCrackResult);
+                        showErrorView(R.drawable.gf_ic_toped_sorry, getView().getResources().getString(R.string.server_error_occured));
                         getView().onFinishCrackToken();
                     }
+                } else {
+                    showErrorView(R.drawable.gf_ic_toped_sorry, getView().getResources().getString(R.string.server_error_occured));
+                    getView().onFinishCrackToken();
                 }
+            }
+
+            private void showErrorView(int errorImage, String string) {
+                NetworkErrorHelper.showEmptyState(getView().getContext()
+                        , getView().getRootView()
+                        , errorImage
+                        , string
+                        , new NetworkErrorHelper.ErrorButtonsListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                crackToken(tokenUserId, campaignId);
+                            }
+
+                            @Override
+                            public void onHomeClick() {
+                                getView().navigateToHomePage();
+                            }
+                        });
             }
         });
 
@@ -132,6 +159,9 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
 
     @Override
     public void getGetTokenTokopoints(boolean showLoading, boolean isRefetchEgg) {
+        if (getView() == null) {
+            return;
+        }
         if (showLoading)
             getView().showLoading();
         getTokenTokopointsUseCase.clearRequest();
@@ -146,21 +176,48 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
 
             @Override
             public void onError(Throwable e) {
-                if (!isViewAttached()) {
+                if (isViewNotAttached()) {
                     return;
                 }
-
                 getView().hideLoading();
-                CrackResultEntity crackResult = createGeneralErrorCrackResult();
-                getView().onErrorGetToken(crackResult);
+                if (e instanceof UnknownHostException) {
+                    showErrorView(R.drawable.gf_internet_not_connected_error
+                            , getView().getResources().getString(R.string.internet_not_connected_error_occured));
+                } else {
+                    showErrorView(R.drawable.gf_ic_toped_sorry
+                            , getView().getResources().getString(R.string.error_server_full));
+
+                }
+
+
             }
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
+                if(isViewNotAttached())
+                    return;
                 TapTapBaseEntity responseTokenTokopointEntity = graphqlResponse.getData(TapTapBaseEntity.class);
                 getView().hideLoading();
                 if (responseTokenTokopointEntity != null && responseTokenTokopointEntity.getGamiTapEggHome() != null)
                     getView().onSuccessGetToken(responseTokenTokopointEntity.getGamiTapEggHome(), isRefetchEgg);
+            }
+
+            private void showErrorView(int errorImage, String string) {
+                NetworkErrorHelper.showEmptyState(getView().getContext()
+                        , getView().getRootView()
+                        , errorImage
+                        , string
+                        , new NetworkErrorHelper.ErrorButtonsListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                getGetTokenTokopoints(showLoading, isRefetchEgg);
+                            }
+
+                            @Override
+                            public void onHomeClick() {
+                                getView().navigateToHomePage();
+                            }
+                        });
             }
         });
     }
@@ -236,11 +293,18 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
 
             @Override
             public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().showErrorSnackBar();
+                }
+                getView().hideLoading();
 
             }
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
+                if(isViewNotAttached())
+                    return;
+                getView().hideLoading();
                 if (graphqlResponse != null) {
                     PlayWithPointsEntity playWithPointsEntity = graphqlResponse.getData(PlayWithPointsEntity.class);
                     if (playWithPointsEntity != null && playWithPointsEntity.getGamiPlayWithPoints() != null) {
@@ -301,6 +365,6 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
     public void detachView() {
         getCrackResultEggUseCase.unsubscribe();
         getTokenTokopointsUseCase.unsubscribe();
-                super.detachView();
+        super.detachView();
     }
 }

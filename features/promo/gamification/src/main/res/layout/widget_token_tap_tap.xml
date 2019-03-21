@@ -39,7 +39,13 @@
         android:scaleType="fitCenter"
         tools:srcCompat="@drawable/ic_empty_egg" />
 
-    <ImageView
+    <com.tokopedia.gamification.taptap.compoundview.TapCounterView
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:id="@+id/widget_tap_counter"
+        />
+
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/image_semi_white_egg"
         android:layout_width="233dp"
         android:layout_height="233dp"
@@ -47,7 +53,7 @@
         android:scaleType="fitCenter" />
 
 
-    <ImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/image_full_white_egg"
         android:layout_width="233dp"
         android:layout_height="233dp"

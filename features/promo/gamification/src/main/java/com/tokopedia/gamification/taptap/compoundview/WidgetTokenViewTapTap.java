@@ -37,6 +37,7 @@ import com.tokopedia.gamification.taptap.data.entiity.TokensUser;
 import com.tokopedia.gamification.taptap.utils.TapTapConstants;
 
 import java.util.List;
+import java.util.Random;
 
 import static android.view.Gravity.CENTER_HORIZONTAL;
 
@@ -44,7 +45,7 @@ import static android.view.Gravity.CENTER_HORIZONTAL;
  * @author Rizky on 28/03/18.
  */
 
-public class WidgetTokenViewTapTap extends FrameLayout {
+public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView.OnTapClickListener {
 
     public static final float Y_PIVOT_PERCENT = 0.9f;
     public static final int CRACK_STEP1_SHAKE_DURATION = 150;
@@ -59,7 +60,7 @@ public class WidgetTokenViewTapTap extends FrameLayout {
     public static final int CRACK_STEP3_SHAKE_DURATION = 150;
     public static final int STEP2_END_MASKED_PERCENT = 30;
     public static final int STEP1_END_MASKED_PERCENT = 70;
-    public static final double RATIO_LIGHT_WIDTH = 0.8;
+    public static final double RATIO_LIGHT_WIDTH = 0.3;
     public static final int CRACK_STEP3_DEGREE = 4;
     private static final long INFINITE_BOUNCE_START_DELAY = 2000;
     private static final long INFINITE_BOUNCE_DURATION = 180;
@@ -68,6 +69,8 @@ public class WidgetTokenViewTapTap extends FrameLayout {
     private static final long GLOW_IN_OUT_DURATION = 1000;
 
     private static final float LOBBY_IMAGE_SCALE = 1.16976127321f;
+    private static final int MIN_TAP_COUNT = 1;
+    private static final int MAX_TAP_COUNT = 3;
 
     private volatile ImageView imageViewFull;
     private volatile MaskedHeightImageView imageViewCracked;
@@ -94,6 +97,13 @@ public class WidgetTokenViewTapTap extends FrameLayout {
     private CrackResultEntity crackResult;
     private AnimatorSet animatorSetRotateBackEggs;
     private ObjectAnimator fadeInEggAfterMerge;
+    private TapCounterView widgetTapCounter;
+    private int tapCount;
+
+    @Override
+    public void onTapCountEnds() {
+
+    }
 
     public interface WidgetTokenListener {
         void onClick();
@@ -130,13 +140,20 @@ public class WidgetTokenViewTapTap extends FrameLayout {
         imageViewRight = rootView.findViewById(R.id.imageright);
         imageFullWhiteEgg = rootView.findViewById(R.id.image_full_white_egg);
         imageSemiWhiteEgg = rootView.findViewById(R.id.image_semi_white_egg);
+        widgetTapCounter = rootView.findViewById(R.id.widget_tap_counter);
 
         imageViewFull.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isTokenClicked)
+                if (!isTokenClicked && tapCount == 1) {
                     clearTokenAnimationAndCrack();
-                isTokenClicked = true;
+                    widgetTapCounter.onTap();
+                    isTokenClicked = true;
+                } else if (tapCount > 1) {
+                    tapCount--;
+                    shakeEggOnTap();
+                    widgetTapCounter.onTap();
+                }
 
             }
         });
@@ -211,7 +228,22 @@ public class WidgetTokenViewTapTap extends FrameLayout {
         ivRightLp.topMargin = imageMarginTop;
         imageViewRight.requestLayout();
 
+
+        int lightImageWidth = (int) (RATIO_LIGHT_WIDTH * imageWidth);
+        int lightImageHeight = lightImageWidth;
+        int marginTopLightRight = imageMarginBottom - (int) (0.80 * imageHeight) - lightImageHeight / 2;
+        int marginLeftLightRight = (int) (0.5 * (rootWidth + (int) (0.70 * imageWidth) - lightImageWidth));
+        FrameLayout.LayoutParams ivLightRightLp = (FrameLayout.LayoutParams) widgetTapCounter.getLayoutParams();
+        ivLightRightLp.width = lightImageWidth;
+        ivLightRightLp.height = lightImageHeight;
+        ivLightRightLp.topMargin = marginTopLightRight;
+        ivLightRightLp.leftMargin = marginLeftLightRight;
+        widgetTapCounter.requestLayout();
+
+
         setVisibility(View.VISIBLE);
+
+
     }
 
     public void setToken(TokenAsset tokenAsset, TokensUser tokenUser) {
@@ -244,6 +276,17 @@ public class WidgetTokenViewTapTap extends FrameLayout {
 
         show();
         reset(tokenUser);
+    }
+
+    public void shakeEggOnTap() {
+        imageViewFull.setPivotY(Y_PIVOT_PERCENT * imageViewFull.getHeight());
+        PropertyValuesHolder pvhShake =
+                PropertyValuesHolder.ofFloat(View.ROTATION, 0, -CRACK_STEP1_DEGREE, 0, CRACK_STEP1_DEGREE, 0);
+        ObjectAnimator shakeAnimatorFull = ObjectAnimator.ofPropertyValuesHolder(imageViewFull, pvhShake);
+        shakeAnimatorFull.setRepeatMode(ValueAnimator.REVERSE);
+        shakeAnimatorFull.setDuration(350);
+        shakeAnimatorFull.start();
+
     }
 
     public void setEmptyToken(TokenAsset tokenAsset, TokensUser tokenUser) {
@@ -295,6 +338,10 @@ public class WidgetTokenViewTapTap extends FrameLayout {
             imageFullWhiteEgg.clearAnimation();
             imageSemiWhiteEgg.clearAnimation();
             imageViewFull.setEnabled(true);
+            Random rand = new Random();
+            tapCount = rand.nextInt((MAX_TAP_COUNT - MIN_TAP_COUNT) + 1) + MIN_TAP_COUNT;
+            widgetTapCounter.setVisibility(View.VISIBLE);
+            widgetTapCounter.initialize(tapCount, R.string.tap_arg_text, WidgetTokenViewTapTap.this);
         }
 
         @Override
@@ -350,11 +397,11 @@ public class WidgetTokenViewTapTap extends FrameLayout {
     }
 
     private void playCrack() {
-        playSound(R.raw.crack);
+        playSound(R.raw.crack_egg_tap_tap);
     }
 
     private void playRewardSound() {
-        playSound(R.raw.reward);
+        playSound(R.raw.reward_tap_tap);
     }
 
     public void playSound(int resId) {
@@ -569,7 +616,7 @@ public class WidgetTokenViewTapTap extends FrameLayout {
     AnimatorSet.AnimatorListener rotateEggListener = new Animator.AnimatorListener() {
         @Override
         public void onAnimationStart(Animator animation) {
-
+            playRewardSound();
         }
 
         @Override
@@ -666,11 +713,20 @@ public class WidgetTokenViewTapTap extends FrameLayout {
         imageViewFull.setVisibility(View.VISIBLE);
         imageViewCracked.reset();
 
+        widgetTapCounter.setVisibility(View.INVISIBLE);
+
         if (TapTapConstants.TokenState.STATE_LOBBY.equalsIgnoreCase(tokenUser.getState())) {
             glow();
             imageViewFull.setEnabled(false);
         } else if (TapTapConstants.TokenState.STATE_EMPTY.equalsIgnoreCase(tokenUser.getState())) {
             imageViewFull.setEnabled(false);
+        } else if (TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(tokenUser.getState())
+                || TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(tokenUser.getState())) {
+            Random rand = new Random();
+            tapCount = rand.nextInt((MAX_TAP_COUNT - MIN_TAP_COUNT) + 1) + MIN_TAP_COUNT;
+            widgetTapCounter.setVisibility(View.VISIBLE);
+            widgetTapCounter.initialize(tapCount, R.string.tap_arg_text, this);
+
         }
 
     }

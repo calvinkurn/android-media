@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/bg_countdown_timer"
+        android:background="@drawable/bg_countdown_timer_tap_tap"
         android:paddingLeft="@dimen/dp_32"
         android:paddingTop="@dimen/dp_8"
         android:paddingRight="@dimen/dp_32"
@@ -154,6 +154,7 @@
             android:paddingRight="@dimen/dp_8"
             android:textSize="@dimen/sp_16"
             tools:visibility="visible"
+            android:textColor="@color/white"
             android:visibility="gone"
             tools:text="Cek dan Gunakan Hadiah Anda" />
 

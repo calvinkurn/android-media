@@ -47,6 +47,10 @@ public interface TapTapTokenContract {
         void showErrorSnackBar(String errormessage);
 
         void showErrorSnackBar();
+
+        android.view.View getRootView();
+
+        void navigateToHomePage();
     }
 
     interface Presenter extends CustomerPresenter<View> {

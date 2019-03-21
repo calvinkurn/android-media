@@ -19,6 +19,7 @@ import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.taptap.compoundview.WidgetSummaryTapTap;
 import com.tokopedia.gamification.taptap.data.entiity.ActionButton;
 import com.tokopedia.gamification.taptap.data.entiity.BackButton;
+import com.tokopedia.gamification.taptap.data.entiity.RewardButton;
 import com.tokopedia.gamification.taptap.database.GamificationDatabaseWrapper;
 import com.tokopedia.gamification.taptap.database.GamificationDbCallback;
 
@@ -31,7 +32,7 @@ public class TapTapSummaryDialogFragment extends DialogFragment implements Gamif
 
     private static String KEY_BTN = "backbtn";
     private WidgetSummaryTapTap widgetSummaryTapTap;
-    private ArrayList<ActionButton> actionButtons;
+    private List<RewardButton> rewardButtons;
     private GamificationDatabaseWrapper gamificationDatabaseWrapper;
 
 
@@ -42,8 +43,8 @@ public class TapTapSummaryDialogFragment extends DialogFragment implements Gamif
 
     }
 
-    public void setActionButtons(ArrayList<ActionButton> actionButtons) {
-        this.actionButtons = actionButtons;
+    public void setRewardButtons(List<RewardButton> rewardButtons) {
+        this.rewardButtons= rewardButtons;
     }
 
     @Override
@@ -60,6 +61,7 @@ public class TapTapSummaryDialogFragment extends DialogFragment implements Gamif
 
         View view = inflater.inflate(R.layout.gf_popup_summary_page, container, false);
         widgetSummaryTapTap = view.findViewById(R.id.widget_summary_tap_tap);
+        widgetSummaryTapTap.setInteractionListener(this);
         gamificationDatabaseWrapper = new GamificationDatabaseWrapper(getContext().getApplicationContext());
         gamificationDatabaseWrapper.getAllEntries(this);
         widgetSummaryTapTap.setVisibility(View.GONE);
@@ -72,9 +74,7 @@ public class TapTapSummaryDialogFragment extends DialogFragment implements Gamif
         if (crackResultEntities != null && crackResultEntities.size() != 0) {
             widgetSummaryTapTap.setVisibility(View.VISIBLE);
             widgetSummaryTapTap.inflateReward(crackResultEntities);
-            if (getArguments() != null) {
-                widgetSummaryTapTap.renderButtons(actionButtons);
-            }
+            widgetSummaryTapTap.renderButtons(rewardButtons);
             gamificationDatabaseWrapper.delete();
         } else {
             dismiss();

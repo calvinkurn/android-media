@@ -15,8 +15,8 @@
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/image_reward"
-        android:layout_width="@dimen/dp_120"
-        android:layout_height="@dimen/dp_120"
+        android:layout_width="@dimen/dp_160"
+        android:layout_height="@dimen/dp_160"
         android:layout_above="@+id/view_list_reward_text"
         android:layout_centerHorizontal="true"
         tools:src="@drawable/ic_empty_egg"
@@ -34,10 +34,10 @@
         android:visibility="invisible"
         tools:visibility="visible"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/dp_32"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_32"
-        android:paddingBottom="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_12"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingRight="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_4"
         android:textColor="@android:color/white" />
 
 

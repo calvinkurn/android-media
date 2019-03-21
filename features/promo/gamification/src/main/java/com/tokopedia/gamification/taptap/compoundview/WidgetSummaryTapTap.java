@@ -1,9 +1,9 @@
 package com.tokopedia.gamification.taptap.compoundview;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -24,8 +24,7 @@ import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.taptap.activity.TapTapTokenActivity;
-import com.tokopedia.gamification.taptap.contract.TapTapTokenContract;
-import com.tokopedia.gamification.taptap.data.entiity.ActionButton;
+import com.tokopedia.gamification.taptap.data.entiity.RewardButton;
 import com.tokopedia.gamification.taptap.utils.TapTapConstants;
 
 import java.util.ArrayList;
@@ -76,7 +75,7 @@ public class WidgetSummaryTapTap extends FrameLayout {
 
     }
 
-    void setInteractionListener(SummaryPageActionListener interactionListener) {
+    public void setInteractionListener(SummaryPageActionListener interactionListener) {
         this.interactionListener = interactionListener;
     }
 
@@ -89,26 +88,26 @@ public class WidgetSummaryTapTap extends FrameLayout {
 
     }
 
-    public void renderButtons(ArrayList<ActionButton> actionButtons) {
-        if (actionButtons != null && actionButtons.size() != 0) {
-            if (actionButtons.size() == 1) {
+    public void renderButtons(List<RewardButton> rewardButtons) {
+        if (rewardButtons != null && rewardButtons.size() != 0) {
+            if (rewardButtons.size() == 1) {
                 btnTop.setVisibility(GONE);
                 btnBottomLeft.setVisibility(GONE);
                 btnBottomRight.setVisibility(VISIBLE);
-                setActionButton(actionButtons.get(0), btnTop);
-            } else if (actionButtons.size() == 2) {
+                setActionButton(rewardButtons.get(0), btnTop);
+            } else if (rewardButtons.size() == 2) {
                 btnBottomLeft.setVisibility(GONE);
                 btnTop.setVisibility(VISIBLE);
                 btnBottomRight.setVisibility(VISIBLE);
-                setActionButton(actionButtons.get(0), btnTop);
-                setActionButton(actionButtons.get(1), btnBottomRight);
+                setActionButton(rewardButtons.get(0), btnTop);
+                setActionButton(rewardButtons.get(1), btnBottomRight);
             } else {
                 btnBottomLeft.setVisibility(VISIBLE);
                 btnTop.setVisibility(VISIBLE);
                 btnBottomRight.setVisibility(VISIBLE);
-                setActionButton(actionButtons.get(0), btnTop);
-                setActionButton(actionButtons.get(1), btnBottomLeft);
-                setActionButton(actionButtons.get(2), btnBottomRight);
+                setActionButton(rewardButtons.get(0), btnTop);
+                setActionButton(rewardButtons.get(1), btnBottomLeft);
+                setActionButton(rewardButtons.get(2), btnBottomRight);
             }
         } else {
             btnTop.setVisibility(GONE);
@@ -117,16 +116,16 @@ public class WidgetSummaryTapTap extends FrameLayout {
         }
     }
 
-    private void setActionButton(ActionButton actionButton, Button btnAction) {
-        btnAction.setText(actionButton.getText());
+    private void setActionButton(RewardButton rewardButton, Button btnAction) {
+        btnAction.setText(rewardButton.getText());
         btnAction.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TapTapConstants.ButtonType.PLAY_WITH_POINTS.equalsIgnoreCase(actionButton.getType())) {
+                if (TapTapConstants.ButtonType.PLAY_WITH_POINTS.equalsIgnoreCase(rewardButton.getType())) {
                     interactionListener.playWithPoints();
                 } else {
-                    ApplinkUtil.navigateToAssociatedPage((AppCompatActivity) getContext(), actionButton.getApplink(),
-                            actionButton.getUrl(),
+                    ApplinkUtil.navigateToAssociatedPage(getContext(), rewardButton.getApplink(),
+                            rewardButton.getUrl(),
                             TapTapTokenActivity.class);
                 }
             }

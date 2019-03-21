@@ -1,5 +1,6 @@
 package com.tokopedia.gamification.taptap.fragment;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,7 +16,6 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -49,17 +49,18 @@ import com.tokopedia.gamification.data.entity.TokenDataEntity;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.di.GamificationComponentInstance;
 import com.tokopedia.gamification.taptap.activity.TapTapTokenActivity;
+import com.tokopedia.gamification.taptap.compoundview.NetworkErrorHelper;
 import com.tokopedia.gamification.taptap.compoundview.WidgetCrackResultTapTap;
 import com.tokopedia.gamification.taptap.compoundview.WidgetTokenViewTapTap;
 import com.tokopedia.gamification.taptap.contract.TapTapTokenContract;
 import com.tokopedia.gamification.taptap.data.entiity.ActionButton;
+import com.tokopedia.gamification.taptap.data.entiity.BackButton;
 import com.tokopedia.gamification.taptap.data.entiity.GamiTapEggHome;
 import com.tokopedia.gamification.taptap.data.entiity.TimeRemaining;
 import com.tokopedia.gamification.taptap.data.entiity.TokenAsset;
 import com.tokopedia.gamification.taptap.data.entiity.TokensUser;
 import com.tokopedia.gamification.taptap.database.GamificationDatabaseWrapper;
 import com.tokopedia.gamification.taptap.database.GamificationDbCallback;
-import com.tokopedia.gamification.taptap.database.GamificationRoomDb;
 import com.tokopedia.gamification.taptap.presenter.TapTapTokenPresenter;
 import com.tokopedia.gamification.taptap.utils.TapTapConstants;
 import com.tokopedia.gamification.util.HexValidator;
@@ -111,6 +112,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     @Inject
     GamificationDatabaseWrapper gamificationDatabaseWrapper;
     private TapTapSummaryDialogFragment summaryPageDialogFragment;
+    private boolean isExitButtonClickedOnDialog = false;
 
     public static Fragment newInstance() {
         return new TapTapTokenFragment();
@@ -328,7 +330,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         int resId = getButtonBackgroundId(actionButton.getBackgroundColor());
         actionBtn.setBackgroundResource(resId);
         actionBtn.setVisibility(View.VISIBLE);
-        actionBtn.setTextColor(getButtonTextColor(actionButton.getBackgroundColor()));
+        actionBtn.setTextColor(getResources().getColor(getButtonTextColor(actionButton.getBackgroundColor())));
         actionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -466,15 +468,15 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
                 @Override
                 public void onFinish() {
                     stopTimer();
-                    if (TapTapConstants.TokenState.STATE_LOBBY.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
-                        if (crackTokenPresenter != null) {
-                            crackTokenPresenter.getGetTokenTokopoints(false, true);
-                        }
-                    } else if (TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
-                        showSummaryPopup();
-                    } else if (TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
-                        showSummaryPopup();
+//                    if (TapTapConstants.TokenState.STATE_LOBBY.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
+                    if (crackTokenPresenter != null) {
+                        crackTokenPresenter.getGetTokenTokopoints(false, true);
                     }
+//                    } else if (TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
+//                        crackTokenPresenter.getGetTokenTokopoints(false, i);
+//                    } else if (TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
+//                        showSummaryPopup();
+//                    }
                 }
             }.start();
             textCountdownTimer.setVisibility(View.VISIBLE);
@@ -487,7 +489,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         gamificationDatabaseWrapper.getAllEntries(this);
     }
 
-    private void checkPendingCampaingAndShowSummary() {
+    private void checkPendingCampaignAndShowSummary() {
 
         gamificationDatabaseWrapper.getAllEntriesForCampaignId(this, tokenData.getTokensUser().getCampaignID());
 
@@ -556,15 +558,26 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     @Override
     public void showErrorSnackBar(String errormessage) {
         if (getContext() != null) {
-            showErrorSnackBar(errormessage, getContext(), rootView, true);
+            NetworkErrorHelper.showErrorSnackBar(errormessage, getContext(), rootView, true);
         }
     }
 
     @Override
     public void showErrorSnackBar() {
         if (getContext() != null) {
-            showErrorSnackBar(getContext().getResources().getString(R.string.points_not_available), getContext(), rootView, true);
+            NetworkErrorHelper.showErrorSnackBar(getContext().getResources().getString(R.string.points_not_available), getContext(), rootView, true);
         }
+    }
+
+    @Override
+    public View getRootView() {
+        return rootContainer;
+    }
+
+    @Override
+    public void navigateToHomePage() {
+        if (getContext() != null)
+            ((GamificationRouter) getContext().getApplicationContext()).goToHome(getContext());
     }
 
 
@@ -580,34 +593,38 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     @Override
     public void onSuccessGetToken(GamiTapEggHome gamiTapEggHome, boolean isRefetchEgg) {
-        if (tokenData != null)
-            checkPendingCampaingAndShowSummary();
         if (tokenData != null
                 && tokenData.getTokensUser() != null
-                && gamiTapEggHome.getTokensUser() != null) {
-            if (TapTapConstants.TokenState.STATE_LOBBY.equalsIgnoreCase(tokenData.getTokensUser().getState())
-                    && (TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(gamiTapEggHome.getTokensUser().getState())
-                    || TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(gamiTapEggHome.getTokensUser().getState()))) {
+                && gamiTapEggHome.getTokensUser() != null
+                && tokenData.getTokensUser().getCampaignID() == gamiTapEggHome.getTokensUser().getCampaignID()) {
+            boolean isPreviousStateLobby = TapTapConstants.TokenState.STATE_LOBBY.equalsIgnoreCase(tokenData.getTokensUser().getState());
+            boolean isCurrentStateLobby = TapTapConstants.TokenState.STATE_LOBBY.equalsIgnoreCase(gamiTapEggHome.getTokensUser().getState());
+            boolean isPreviousStateLimited = TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState());
+            boolean isCurrentStateLimited = TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(gamiTapEggHome.getTokensUser().getState());
+            boolean isPreviousStateUnLimited = TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState());
+            boolean isCurrentStateUnLimited = TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(gamiTapEggHome.getTokensUser().getState());
+
+
+            if (isPreviousStateLobby
+                    && (isCurrentStateLimited
+                    || isCurrentStateUnLimited)) {
                 widgetTokenView.fadeOutEggs();
-            } else if (TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())
-                    && TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(gamiTapEggHome.getTokensUser().getState())) {
+            } else if (isPreviousStateLimited && isCurrentStateLimited) {
                 this.tokenData = gamiTapEggHome;
                 widgetTokenView.startRotateBackAnimation();
                 return;
-            } else if (TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())
-                    && TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(gamiTapEggHome.getTokensUser().getState())) {
-
-            } else if (TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())
-                    && !TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(gamiTapEggHome.getTokensUser().getState())) {
+            } else if (isPreviousStateUnLimited && isCurrentStateUnLimited) {
+                this.tokenData = gamiTapEggHome;
+                gamificationDatabaseWrapper.getAllEntries(this);
+            } else if (!isCurrentStateLimited && isPreviousStateLimited) {
                 this.tokenData = gamiTapEggHome;
                 showSummaryPopup();
-            } else if (TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())
-                    && !TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(gamiTapEggHome.getTokensUser().getState())) {
+            } else if (!isCurrentStateUnLimited && isPreviousStateUnLimited) {
                 showSummaryPopup();
             }
-
         }
         this.tokenData = gamiTapEggHome;
+        checkPendingCampaignAndShowSummary();
         downloadAssets();
 
 
@@ -640,7 +657,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     @Override
     public void onSuccessCrackToken(final CrackResultEntity crackResult) {
-        if(crackResult!=null){
+        if (crackResult != null) {
             gamificationDatabaseWrapper.insert(tokenData.getTokensUser().getCampaignID(), crackResult);
         }
         if ((crackResult.getImageBitmap() == null || crackResult.getImageBitmap().isRecycled()) &&
@@ -859,6 +876,8 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     @Override
     public void onSuccessGetFromDb(List<CrackResultEntity> crackResultEntities) {
         if (crackResultEntities != null && crackResultEntities.size() != 0) {
+            if (isExitButtonClickedOnDialog)                   //turn to false if true
+                isExitButtonClickedOnDialog = false;
             showSummaryDialogOnSuccess();
         }
     }
@@ -868,7 +887,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
             summaryPageDialogFragment = TapTapSummaryDialogFragment.createDialog();
         }
         if (tokenData != null) {
-            summaryPageDialogFragment.setActionButtons(tokenData.getActionButton());
+            summaryPageDialogFragment.setRewardButtons(tokenData.getRewardButton());
         }
         if (summaryPageDialogFragment != null && summaryPageDialogFragment.getDialog() != null && summaryPageDialogFragment.getDialog().isShowing()) {
             summaryPageDialogFragment.dismiss();
@@ -881,6 +900,10 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     @Override
     public void onErrorGetFromDb() {
 
+        if (isExitButtonClickedOnDialog) {           //if no record found and exit from dialog then go to home page
+            isExitButtonClickedOnDialog = false;
+            navigateToHomePage();
+        }
     }
 
     @Override
@@ -892,6 +915,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     public void clearViewAndAnimations() {
         widgetTokenView.clearTokenAnimation();
+        widgetCrackResult.clearCrackResult();
     }
 
     public interface ActionListener {
@@ -901,74 +925,62 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     public void showBackPopup() {
         // custom dialog
 
-        if (getContext() != null && tokenData != null && tokenData.getBackButton() != null && backPopupDialogFragment == null) {
-            backPopupDialogFragment = BackPopupDialogFragment.createDialog();
-        }
-        if (getContext() != null && tokenData != null && tokenData.getBackButton() != null && backPopupDialogFragment != null) {
-            backPopupDialogFragment.setBackButton(tokenData.getBackButton());
-            backPopupDialogFragment.show(getChildFragmentManager(), "tokenDialog");
-        }
-//        if (getContext() != null && tokenData != null && tokenData.getBackButton() != null) {
-//            BackButton backButton = tokenData.getBackButton();
-//            final Dialog dialog = new Dialog(getContext());
-//            dialog.setContentView(R.layout.gf_popup_exit_game);
-//
-//            TextView textHeader = dialog.findViewById(R.id.tv_header);
-//            TextView textSubHeader = dialog.findViewById(R.id.tv_subheader);
-//            Button btnCancel = dialog.findViewById(R.id.btn_cancel);
-//            Button btnOkay = dialog.findViewById(R.id.btn_ok);
-//            ImageView imagePopupHeader = dialog.findViewById(R.id.image_popup_header);
-//            textHeader.setText(backButton.getTitle());
-//            textSubHeader.setText(backButton.getText());
-//            btnOkay.setText(backButton.getYesText());
-//            btnCancel.setText(backButton.getCancelText());
-//            ImageHandler.loadImage(getContext(), imagePopupHeader, backButton.getImageURL(), R.color.grey_1100, R.color.grey_1100);
-//            btnCancel.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    dialog.dismiss();
-//                }
-//            });
-//
-//            btnOkay.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    if (getContext() != null) {
-//                        ((GamificationRouter) getContext().getApplicationContext()).goToHome(getContext());
-//                    }
-//                }
-//            });
-//
-//            dialog.show();
-//
+//        if (getContext() != null && tokenData != null && tokenData.getBackButton() != null && backPopupDialogFragment == null) {
+//            backPopupDialogFragment = BackPopupDialogFragment.createDialog();
 //        }
-    }
+//        if (getContext() != null && tokenData != null && tokenData.getBackButton() != null && backPopupDialogFragment != null) {
+//            backPopupDialogFragment.setBackButton(tokenData.getBackButton());
+//            backPopupDialogFragment.show(getChildFragmentManager(), "tokenDialog");
+//        }
+        if (getContext() != null && tokenData != null && tokenData.getBackButton() != null) {
+            BackButton backButton = tokenData.getBackButton();
+            final Dialog dialog = new Dialog(getContext());
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.setContentView(R.layout.gf_popup_exit_game);
 
-    public void showErrorSnackBar(String text, Context context, View coordinatorLayout, boolean homeToast) {
-        final Snackbar snackbar = Snackbar.make(coordinatorLayout, text, Snackbar.LENGTH_LONG);
-        Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
+            TextView textHeader = dialog.findViewById(R.id.tv_header);
+            TextView textSubHeader = dialog.findViewById(R.id.tv_subheader);
+            Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+            Button btnOkay = dialog.findViewById(R.id.btn_ok);
+            ImageView imagePopupHeader = dialog.findViewById(R.id.image_popup_header);
+            textHeader.setText(backButton.getTitle());
+            textSubHeader.setText(backButton.getText());
+            btnOkay.setText(backButton.getYesText());
+            btnCancel.setText(backButton.getCancelText());
+            ImageHandler.loadImage(getContext(), imagePopupHeader, backButton.getImageURL(), R.color.grey_1100, R.color.grey_1100);
+            btnCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
 
-        TextView textView = layout.findViewById(android.support.design.R.id.snackbar_text);
-        textView.setVisibility(View.INVISIBLE);
+            btnOkay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    if (tokenData != null
+                            && tokenData.getTokensUser() != null) {
+                        if (TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
+                            if (crackTokenPresenter != null) {
+                                crackTokenPresenter.getGetTokenTokopoints(true, false);
+                            }
+                        } else if (TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
+                            gamificationDatabaseWrapper.getAllEntries(TapTapTokenFragment.this);
+                        } else {
+                            navigateToHomePage();
+                        }
+                    } else {
+                        navigateToHomePage();
+                    }
+                    isExitButtonClickedOnDialog = true;
+                }
+            });
 
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View snackView = inflater.inflate(R.layout.gf_tap_tap_custom_snackbar, null);
-        TextView tvmsg = snackView.findViewById(R.id.tv_msg);
-        if (homeToast) {
-            snackView.findViewById(R.id.main_content).setBackgroundColor(context.getResources().getColor(R.color.red_toast_bg_color));
+            dialog.show();
+
         }
-        tvmsg.setText(text);
-
-        TextView okbtn = snackView.findViewById(R.id.snack_ok);
-        okbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                snackbar.dismiss();
-            }
-        });
-        layout.addView(snackView, 0);
-        layout.setPadding(0, 0, 0, 0);
-        snackbar.show();
     }
+
 
 }

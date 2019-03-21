@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -56,7 +55,10 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
     private static final long COUNTER_ANIMATION_DURATION = 500;
     private static final long COUNTER_ANIMATION_START_DELAY = 200;
     private static final long SLIDE_INFO_LEFT_TO_RIGHT_ALPHA_DURATION_START_OFFSET = 500;
-    private static final long REWARDS_VIEW_TRANSLATE_START_DELAY = 400;
+    private static final long REWARDS_TEXT_TRANSLATE_START_DELAY = 200;
+    private static final long REWARDS_IMAGE_TRANSLATE_DURATION = 300;
+    private static final long REWARDS_IMAGE_STABLE_DURATION_AFTER_FIRST_TRANSLATE = 1000;
+    private static final long REWARD_TEXT_FADE_OUT_START_DELAY = 800;
 
     private ImageView imageViewCrackResult;
 
@@ -158,7 +160,7 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
                         listCrackResultText.setVisibility(View.VISIBLE);
                     }
                 }
-            }, REWARDS_VIEW_TRANSLATE_START_DELAY);
+            }, REWARDS_TEXT_TRANSLATE_START_DELAY);
 //            startImageResultAnimation(imageViewCrackResult, animationCrackResult);
         } else {
             if (!TextUtils.isEmpty(crackResult.getImageUrl())) {
@@ -189,17 +191,17 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
 
 
             PropertyValuesHolder pvhTranslateImageResult =
-                    PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0, -240);
+                    PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0, getResources().getDimension(R.dimen.translate_image_distance));
             ObjectAnimator translate1 = ObjectAnimator.ofPropertyValuesHolder(imageViewCrackResult, pvhTranslateImageResult);
 
 
             AnimatorSet animatorSetTranslate1 = new AnimatorSet();
-            animatorSetTranslate1.setDuration(1000);
+            animatorSetTranslate1.setDuration(REWARDS_IMAGE_TRANSLATE_DURATION);
             animatorSetTranslate1.playTogether(fadeInAnimator, translate1);
 
 
             PropertyValuesHolder pvhTranslate2 =
-                    PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, -240, -480);
+                    PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, getResources().getDimension(R.dimen.translate_image_distance), getResources().getDimension(R.dimen.translate_image_again_distance));
             ObjectAnimator translate2 = ObjectAnimator.ofPropertyValuesHolder(imageViewCrackResult, pvhTranslate2);
 
 
@@ -208,8 +210,8 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
 
             ObjectAnimator fadeOut = ObjectAnimator.ofPropertyValuesHolder(imageViewCrackResult, pvhAlpha2);
 
-            animatorSetTranslate2.setStartDelay(1000);
-            animatorSetTranslate2.setDuration(1000);
+            animatorSetTranslate2.setStartDelay(REWARDS_IMAGE_STABLE_DURATION_AFTER_FIRST_TRANSLATE);
+            animatorSetTranslate2.setDuration(REWARDS_IMAGE_TRANSLATE_DURATION);
             animatorSetTranslate2.playTogether(translate2, fadeOut);
 
             ObjectAnimator translateRewardsText = ObjectAnimator.ofPropertyValuesHolder(listCrackResultText, pvhTranslateImageResult);
@@ -217,15 +219,16 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
             ObjectAnimator fadeInAnimatorReward = ObjectAnimator.ofPropertyValuesHolder(listCrackResultText, pvhAlpha);
 
             ObjectAnimator fadeOutAnimatorReward = ObjectAnimator.ofPropertyValuesHolder(listCrackResultText, pvhAlpha2);
+            fadeOutAnimatorReward.setStartDelay(REWARD_TEXT_FADE_OUT_START_DELAY);
 
             AnimatorSet animatorSetTranslateRewards = new AnimatorSet();
             animatorSetTranslateRewards.playTogether(fadeInAnimatorReward, translateRewardsText);
-            animatorSetTranslateRewards.setDuration(500);
+            animatorSetTranslateRewards.setDuration(REWARDS_IMAGE_TRANSLATE_DURATION);
 
             AnimatorSet rewardsAnimatorSet = new AnimatorSet();
             rewardsAnimatorSet.playSequentially(animatorSetTranslateRewards, fadeOutAnimatorReward);
-            rewardsAnimatorSet.setDuration(1000);
-            rewardsAnimatorSet.setStartDelay(REWARDS_VIEW_TRANSLATE_START_DELAY);
+            rewardsAnimatorSet.setDuration(REWARDS_IMAGE_TRANSLATE_DURATION);
+            rewardsAnimatorSet.setStartDelay(REWARDS_TEXT_TRANSLATE_START_DELAY);
 
 
             AnimatorSet imageTranslateAnimatorSet = new AnimatorSet();
@@ -246,6 +249,7 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
         @Override
         public void onAnimationEnd(Animator animation) {
             clearCrackResult();
+            listener.onCrackResultCleared();
         }
 
         @Override
@@ -295,7 +299,6 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
         listCrackResultText.clearAnimation();
         listCrackResultText.removeAllViews();
         listCrackResultText.setVisibility(View.INVISIBLE);
-        listener.onCrackResultCleared();
     }
 
     public boolean isShowReward() {
