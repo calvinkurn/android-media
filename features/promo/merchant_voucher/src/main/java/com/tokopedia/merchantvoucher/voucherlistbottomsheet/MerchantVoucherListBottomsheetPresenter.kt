@@ -1,8 +1,6 @@
 package com.tokopedia.merchantvoucher.voucherlistbottomsheet
 
-import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
@@ -12,7 +10,6 @@ import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstSte
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
-import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
@@ -34,10 +31,12 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                     override fun onCompleted() {}
 
                     override fun onError(e: Throwable) {
+                        view?.hideProgressLoading()
                         view?.onErrorGetMerchantVoucherList(e)
                     }
 
                     override fun onNext(merchantVoucherModelList: ArrayList<MerchantVoucherModel>) {
+                        view?.hideProgressLoading()
                         val merchantViewModelList: ArrayList<MerchantVoucherViewModel> = ArrayList()
                         for (merchantVoucherModel in merchantVoucherModelList) {
                             val viewModel = MerchantVoucherViewModel(merchantVoucherModel)
@@ -64,7 +63,7 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                 }
             }
 
-            view.showProgressLoading()
+            view.showLoadingDialog()
             checkPromoStackingCodeUseCase.setParams(checkPromoFirstStepParam)
             checkPromoStackingCodeUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
                 override fun onCompleted() {
@@ -73,14 +72,14 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
 
                 override fun onError(e: Throwable) {
                     if (isViewAttached) {
-                        view.hideProgressLoading()
+                        view.hideLoadingDialog()
                         view.onErrorCheckPromoFirstStep(ErrorHandler.getErrorMessage(view.getActivityContext(), e))
                     }
                 }
 
                 override fun onNext(response: GraphqlResponse?) {
                     if (isViewAttached) {
-                        view.hideProgressLoading()
+                        view.hideLoadingDialog()
                         val responseGetPromoStack = checkPromoStackingCodeMapper.call(response)
                         if (responseGetPromoStack.status != "OK" || responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
                             var message = responseGetPromoStack.data.message.text

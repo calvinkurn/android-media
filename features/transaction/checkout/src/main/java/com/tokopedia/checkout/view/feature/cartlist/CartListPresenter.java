@@ -799,7 +799,7 @@ public class CartListPresenter implements ICartListPresenter {
                             @Override
                             public void onError(Throwable e) {
                                 e.printStackTrace();
-                                view.hideProgressLoading();
+                                view.hideLoadingDialog();
                                 if (e instanceof UnknownHostException) {
                                     view.renderErrorCheckPromoCodeFromSuggestedPromo(
                                             ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
@@ -827,7 +827,7 @@ public class CartListPresenter implements ICartListPresenter {
 
                             @Override
                             public void onNext(GraphqlResponse graphqlResponse) {
-                                view.hideProgressLoading();
+                                view.hideLoadingDialog();
                                 System.out.println("++ graphqlResponse = "+graphqlResponse.toString());
                                 // view.renderCheckPromoStackingCodeFromSuggestedPromoSuccess(responseFirstStep);
                             }
