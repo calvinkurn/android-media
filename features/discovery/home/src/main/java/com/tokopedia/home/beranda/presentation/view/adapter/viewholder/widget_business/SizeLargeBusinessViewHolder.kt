@@ -43,7 +43,11 @@ class SizeLargeBusinessViewHolder (itemView: View?) : SizeSmallBusinessViewHolde
                 && element?.title2nd.isNullOrEmpty()
                 && element?.desc2nd.isNullOrEmpty()
         ) {
-            itemView.title1st.maxLines = 2
+            if (hasPrice(element) || hasTagLabel(element)) {
+                itemView.title1st.maxLines = 2
+            } else {
+                itemView.title1st.maxLines = 3
+            }
         } else {
             itemView.title1st.maxLines = 1
         }
@@ -68,8 +72,13 @@ class SizeLargeBusinessViewHolder (itemView: View?) : SizeSmallBusinessViewHolde
                 && element?.title2nd.isNullOrEmpty()
                 && element?.desc2nd.isNullOrEmpty()
         ) {
-            itemView.desc1st.maxLines = 2
-            itemView.desc1st.gravity = Gravity.START
+            if (hasPrice(element) || hasTagLabel(element)) {
+                itemView.desc1st.maxLines = 2
+                itemView.desc1st.gravity = Gravity.START
+            } else {
+                itemView.desc1st.maxLines = 3
+                itemView.desc1st.gravity = Gravity.START
+            }
         } else {
             itemView.desc1st.maxLines = 1
             itemView.desc1st.gravity = Gravity.END

@@ -63,7 +63,11 @@ open class SizeSmallBusinessViewHolder (itemView: View?) : AbstractViewHolder<Ho
         }
 
         if (element?.desc1st.isNullOrEmpty()) {
-            getTitle().maxLines = 2
+            if ((hasPrice(element) || hasTagLabel(element))) {
+                getTitle().maxLines = 2
+            } else {
+                getTitle().maxLines = 3
+            }
         } else {
             getTitle().maxLines = 1
         }
@@ -79,7 +83,11 @@ open class SizeSmallBusinessViewHolder (itemView: View?) : AbstractViewHolder<Ho
 
         if (element?.title1st.isNullOrEmpty() &&
                 element?.tagName.isNullOrEmpty()) {
-            getSubtitle().maxLines = 3
+            if (hasPrice(element) || hasTagLabel(element)) {
+                getSubtitle().maxLines = 2
+            } else {
+                getSubtitle().maxLines = 3
+            }
         } else {
             getSubtitle().maxLines = 1
         }
