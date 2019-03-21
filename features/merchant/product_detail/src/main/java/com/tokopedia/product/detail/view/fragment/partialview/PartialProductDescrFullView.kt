@@ -64,7 +64,6 @@ class PartialProductDescrFullView private constructor(private val view: View,
 
             txt_weight.text = context.getString(R.string.template_weight, data.basic.weight.numberFormatted(),
                     if (data.basic.weightUnit.toLowerCase() == KG) LABEL_KG else LABEL_GRAM )
-            txt_success_rate.text = String.format("%s%%", data.txStats.successRate.numberFormatted())
 
             label_asuransi.visible()
             txt_asuransi.visible()
