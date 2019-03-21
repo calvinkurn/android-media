@@ -57,7 +57,7 @@
                         android:foreground="?selectableItemBackground"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingLeft="@dimen/dp_25"
+                        android:paddingLeft="@dimen/dp_9"
                         android:paddingTop="@dimen/dp_16"
                         android:paddingRight="@dimen/dp_25"
                         android:paddingBottom="@dimen/dp_16">
