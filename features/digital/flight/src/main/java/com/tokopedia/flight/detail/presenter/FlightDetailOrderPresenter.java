@@ -57,7 +57,6 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         implements FlightDetailOrderContract.Presenter {
 
     private static final String NEW_LINE = "\n";
-    private static final int MINIMUM_HOURS_CANCELLATION_DURATION = 6;
 
     private final FlightGetOrderUseCase flightGetOrderUseCase;
     private FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper;
@@ -236,12 +235,6 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         getView().navigateToWebview(FlightUrl.AIRLINES_CONTACT_URL);
     }
 
-    private boolean isDepartureDateMoreThan6Hours(Date departureDate) {
-        Date currentDate = FlightDateUtil.getCurrentDate();
-        long diffHours = (departureDate.getTime() - currentDate.getTime()) / TimeUnit.HOURS.toMillis(1);
-        return diffHours >= MINIMUM_HOURS_CANCELLATION_DURATION || diffHours < 0;
-    }
-
     private void renderPaymentInfo(FlightOrder flightOrder) {
         if (flightOrder.getPayment() != null
                 && flightOrder.getPayment().getGatewayName().length() > 0) {
@@ -388,23 +381,6 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 break;
             default:
                 break;
-        }
-    }
-
-    @Override
-    public void checkIfFlightCancellable(String invoiceId, List<FlightCancellationJourney> items) {
-        boolean canGoToCancelPage = false;
-        for (FlightOrderJourney item : getView().getFlightOrder().getJourneys()) {
-            if (isDepartureDateMoreThan6Hours(
-                    FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, item.getDepartureTime()))) {
-                canGoToCancelPage = true;
-            }
-        }
-
-        if (canGoToCancelPage) {
-            getView().navigateToCancellationPage(invoiceId, items);
-        } else {
-            getView().showLessThan6HoursDialog();
         }
     }
 
