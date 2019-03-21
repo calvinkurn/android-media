@@ -8,10 +8,7 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutRouter
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
-import com.tokopedia.promocheckout.common.domain.CancelPromoUseCase
-import com.tokopedia.promocheckout.common.domain.CheckPromoCodeFinalUseCase
-import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase
-import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
+import com.tokopedia.promocheckout.common.domain.*
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.user.session.UserSession
 import dagger.Module
@@ -40,10 +37,16 @@ class PromoCheckoutModule {
         return CheckPromoStackingCodeUseCase(context)
     }
 
-    @PromoCheckoutQualifier
+    /*@PromoCheckoutQualifier
     @Provides
     fun provideCheckPromoCodeFinalUseCase(@ApplicationContext context: Context): CheckPromoCodeFinalUseCase {
         return CheckPromoCodeFinalUseCase(context.resources, GraphqlUseCase())
+    }*/
+
+    @PromoCheckoutQualifier
+    @Provides
+    fun provideCheckPromoStackingCodeFinalUseCase(@ApplicationContext context: Context): CheckPromoStackingCodeFinalUseCase {
+        return CheckPromoStackingCodeFinalUseCase(context)
     }
 
     @PromoCheckoutQualifier

@@ -13,7 +13,6 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.PurchaseProtecti
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Shop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.UserAddress;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
-import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
@@ -101,7 +100,7 @@ public class ShipmentDataConverter {
 
                     for (VoucherOrdersItemData voucherOrdersItemData : cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders()) {
                         if (groupShop.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
-                            shipmentCartItemModel.setPromoMerchantData(convertFromVoucherOrdersItem(voucherOrdersItemData));
+                            shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(voucherOrdersItemData));
                         }
                     }
 
@@ -121,6 +120,12 @@ public class ShipmentDataConverter {
                 shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
                 shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
                         .get(0).getUserAddress().getAddressId());
+
+                for (VoucherOrdersItemData voucherOrdersItemData : cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders()) {
+                    if (groupShop.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
+                        shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(voucherOrdersItemData));
+                    }
+                }
 
                 getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
                         String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), false);
@@ -163,6 +168,7 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setGoldMerchant(shop.isGold());
         shipmentCartItemModel.setShopBadge(shop.getShopBadge());
 
+        shipmentCartItemModel.setCartString(groupShop.getCartString());
         shipmentCartItemModel.setShippingId(groupShop.getShippingId());
         shipmentCartItemModel.setSpId(groupShop.getSpId());
         shipmentCartItemModel.setDropshiperName(groupShop.getDropshipperName());
@@ -179,7 +185,7 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setProductIsPreorder(fobject.isPreOrder() == 1);
 
         // set promo merchant
-        shipmentCartItemModel.setPromoMerchantData(convertFromVoucherOrdersItem(groupShop.getShop().getVoucherOrdersItemData()));
+        shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(groupShop.getShop().getVoucherOrdersItemData()));
 
         shipmentCartItemModel.setShipmentCartData(new RatesDataConverter()
                 .getShipmentCartData(userAddress, groupShop, shipmentCartItemModel, keroToken, keroUnixTime));

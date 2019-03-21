@@ -51,6 +51,9 @@ data class Data(
 	@field:SerializedName("invoice_description")
 	val invoiceDescription: String? = null,
 
+	@field:SerializedName("benefit_summary_info")
+	val benefitSummaryInfo: BenefitSummaryInfo? = null,
+
 	@field:SerializedName("cashback_voucher_description")
 	val cashbackVoucherDescription: String? = null
 )

@@ -51,7 +51,7 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
     override fun checkPromoFirstStep(promoMerchantCode: String, currentCartString: String,
                                      checkPromoFirstStepParam: CheckPromoFirstStepParam?) {
         if (checkPromoFirstStepParam != null) {
-            val orders = checkPromoFirstStepParam.orders;
+            val orders = checkPromoFirstStepParam.orders
             if (orders != null) {
                 for (order in orders) {
                     if (order.uniqueId == currentCartString) {

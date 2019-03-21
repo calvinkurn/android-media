@@ -8,7 +8,6 @@ import rx.Subscriber
  * Created by fwidjaja on 15/03/19.
  */
 class CheckPromoStackingSubscriber(val mapper: CheckPromoStackingCodeMapper) : Subscriber<GraphqlResponse>() {
-    // butuh param view, presenter -> cari tau view & presenter mana yg diperlukan untuk set applied
     override fun onNext(response: GraphqlResponse) {
         println("++ onNext")
         mapper.call(response)

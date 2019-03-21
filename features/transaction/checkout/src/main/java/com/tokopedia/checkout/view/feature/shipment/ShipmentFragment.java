@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -64,13 +65,18 @@ import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
+import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomsheetParamData;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
+import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam;
+import com.tokopedia.promocheckout.common.data.entity.request.Order;
+import com.tokopedia.promocheckout.common.data.entity.request.ProductDetail;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 // import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -1070,7 +1076,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ShipmentAdapter.RequestData requestData =
                     shipmentAdapter.getRequestData(null, null);
             shipmentPresenter.setPromoCodeCartShipmentRequestData(requestData.getPromoRequestData());
-            shipmentPresenter.checkPromoShipment(cartPromoStacking.getPromoCodeSafe(), isOneClickShipment());
+
+            CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
+            shipmentPresenter.checkPromoShipment(cartPromoStacking.getPromoCodeSafe(), isOneClickShipment(), checkPromoFirstStepParam);
 
             shipmentAdapter.notifyDataSetChanged();
         }
@@ -1504,9 +1512,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentAdapter.hasAppliedPromoCode()) {
             shipmentPresenter.checkPromoShipment(shipmentAdapter.getPromoData().getPromoCodeSafe(), isOneClickShipment());
         }*/
-        if (shipmentAdapter.getPromoStackingData() != null &&
-                shipmentAdapter.hasAppliedPromoCode()) {
-            shipmentPresenter.checkPromoShipment(shipmentAdapter.getPromoStackingData().getPromoCodeSafe(), isOneClickShipment());
+        if (shipmentAdapter.getPromoStackingData() != null && shipmentAdapter.hasAppliedPromoCode()) {
+            CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
+            shipmentPresenter.checkPromoShipment(shipmentAdapter.getPromoStackingData().getPromoCodeSafe(), isOneClickShipment(), checkPromoFirstStepParam);
         }
     }
 
@@ -2151,5 +2159,55 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (shippingCourierBottomsheet != null) {
             shippingCourierBottomsheet.setShippingCourierViewModels(shippingCourierViewModels, cartPosition, shipmentCartItemModel, shopShipmentList);
         }
+    }
+
+    @NonNull
+    private CheckPromoFirstStepParam generateCheckPromoFirstStepParam() {
+        CheckPromoFirstStepParam checkPromoFirstStepParam = new CheckPromoFirstStepParam();
+        ArrayList<Order> orders = new ArrayList<>();
+        List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentAdapter.getShipmentCartItemModelList();
+        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+            Order order = new Order();
+            ArrayList<ProductDetail> productDetails = new ArrayList<>();
+            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                ProductDetail productDetail = new ProductDetail();
+                productDetail.setProductId(cartItemModel.getProductId());
+                productDetail.setQuantity(cartItemModel.getQuantity());
+                productDetails.add(productDetail);
+            }
+            order.setProductDetails(productDetails);
+
+            VoucherOrdersItemUiModel voucherOrdersItemUiModel = shipmentCartItemModel.getVoucherOrdersItemUiModel();
+            ArrayList<String> merchantPromoCodes = new ArrayList<>();
+            merchantPromoCodes.add(voucherOrdersItemUiModel.getCode());
+            if (merchantPromoCodes.size() > 0) {
+                order.setCodes(merchantPromoCodes);
+            }
+
+            order.setUniqueId(shipmentCartItemModel.getCartString());
+            order.setShopId(shipmentCartItemModel.getShopId());
+            order.setShippingId(shipmentCartItemModel.getShippingId());
+            order.setSpId(shipmentCartItemModel.getSpId());
+            order.setInsurancePrice(shipmentCartItemModel.isInsurance() ? 1 : 0);
+            orders.add(order);
+        }
+        checkPromoFirstStepParam.setOrders(orders);
+
+        String cartType = "default";
+        if (isOneClickShipment()) {
+            cartType = "ocs";
+        }
+        checkPromoFirstStepParam.setCartType(cartType);
+
+        PromoStackingData promoStackingGlobalData = shipmentAdapter.getPromoStackingData();
+        if (promoStackingGlobalData != null) {
+            ArrayList<String> globalPromoCodes = new ArrayList<>();
+            globalPromoCodes.add(promoStackingGlobalData.getPromoCode());
+            checkPromoFirstStepParam.setCodes(globalPromoCodes);
+        }
+
+        checkPromoFirstStepParam.setSkipApply(0);
+        checkPromoFirstStepParam.setSuggested(0);
+        return checkPromoFirstStepParam;
     }
 }

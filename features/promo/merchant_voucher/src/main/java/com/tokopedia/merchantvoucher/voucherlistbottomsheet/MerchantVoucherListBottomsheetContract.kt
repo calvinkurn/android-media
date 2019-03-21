@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam
-import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackFirstUiModel
+import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 
 /**
  * Created by Irfan Khoirul on 18/03/19.
@@ -21,7 +21,7 @@ interface MerchantVoucherListBottomsheetContract {
 
         fun onErrorCheckPromoFirstStep(message: String)
 
-        fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackFirstUiModel)
+        fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackUiModel)
 
         fun onClashCheckPromoFirstStep()
 

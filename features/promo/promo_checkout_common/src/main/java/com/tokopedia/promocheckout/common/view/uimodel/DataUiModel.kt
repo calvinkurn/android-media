@@ -18,6 +18,7 @@ data class DataUiModel(
 		var gatewayId: String = "",
 		var isCoupon: Int = -1,
 		var couponDescription: String = "",
+		var benefit: BenefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(),
 		var clashings: ClashingInfoDetailUiModel = ClashingInfoDetailUiModel(),
 		var voucherOrders: List<VoucherOrdersItemUiModel> = emptyList()
 ) : Parcelable {
@@ -36,6 +37,7 @@ data class DataUiModel(
 			parcel.readString(),
 			parcel.readInt(),
 			parcel.readString(),
+			parcel.readParcelable(BenefitSummaryInfoUiModel::class.java.classLoader),
 			parcel.readParcelable(ClashingInfoDetailUiModel::class.java.classLoader),
 			parcel.createTypedArrayList(VoucherOrdersItemUiModel)) {
 	}
@@ -55,6 +57,7 @@ data class DataUiModel(
 		parcel.writeString(gatewayId)
 		parcel.writeInt(isCoupon)
 		parcel.writeString(couponDescription)
+		parcel.writeParcelable(benefit, flags)
 		parcel.writeParcelable(clashings, flags)
 		parcel.writeTypedList(voucherOrders)
 	}

@@ -3,7 +3,7 @@ package com.tokopedia.promocheckout.common.view.uimodel
 import android.os.Parcel
 import android.os.Parcelable
 
-data class ResponseGetPromoStackFirstUiModel(
+data class ResponseGetPromoStackUiModel(
 		val status: String = "",
 		val data: DataUiModel
 ) : Parcelable {
@@ -21,12 +21,12 @@ data class ResponseGetPromoStackFirstUiModel(
 		return 0
 	}
 
-	companion object CREATOR : Parcelable.Creator<ResponseGetPromoStackFirstUiModel> {
-		override fun createFromParcel(parcel: Parcel): ResponseGetPromoStackFirstUiModel {
-			return ResponseGetPromoStackFirstUiModel(parcel)
+	companion object CREATOR : Parcelable.Creator<ResponseGetPromoStackUiModel> {
+		override fun createFromParcel(parcel: Parcel): ResponseGetPromoStackUiModel {
+			return ResponseGetPromoStackUiModel(parcel)
 		}
 
-		override fun newArray(size: Int): Array<ResponseGetPromoStackFirstUiModel?> {
+		override fun newArray(size: Int): Array<ResponseGetPromoStackUiModel?> {
 			return arrayOfNulls(size)
 		}
 	}

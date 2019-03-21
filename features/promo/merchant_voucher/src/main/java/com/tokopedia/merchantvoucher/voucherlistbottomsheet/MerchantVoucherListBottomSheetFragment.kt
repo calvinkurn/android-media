@@ -23,7 +23,7 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
-import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackFirstUiModel
+import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.shop.common.di.ShopCommonModule
 import javax.inject.Inject
 
@@ -192,7 +192,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         // Todo : show snackbar red
     }
 
-    override fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackFirstUiModel) {
+    override fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackUiModel) {
         // Todo : close merchant voucher bottomsheet, navigate to cart fragment to update view
         val intent = Intent()
         intent.putExtra(EXTRA_PROMO_DATA, model)

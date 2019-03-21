@@ -7,20 +7,16 @@ import android.graphics.Typeface;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -43,7 +39,6 @@ import com.tokopedia.logisticdata.data.constant.CourierConstant;
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentItemData;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
@@ -551,9 +546,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         /*if(promoDataMerchant.getState() != TickerMerchantPromoCheckoutView.State.FAILED){
             actionListener.onCartPromoMerchantTrackingImpression(promoDataMerchant, position);
         }*/
-        tickerPromoStackingCheckoutView.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(shipmentCartItemModel.getPromoMerchantData().getMessage().getState()));
-        tickerPromoStackingCheckoutView.setDesc(shipmentCartItemModel.getPromoMerchantData().getInvoiceDescription());
-        tickerPromoStackingCheckoutView.setTitle(shipmentCartItemModel.getPromoMerchantData().getMessage().getText());
+        tickerPromoStackingCheckoutView.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(shipmentCartItemModel.getVoucherOrdersItemUiModel().getMessage().getState()));
+        tickerPromoStackingCheckoutView.setDesc(shipmentCartItemModel.getVoucherOrdersItemUiModel().getInvoiceDescription());
+        tickerPromoStackingCheckoutView.setTitle(shipmentCartItemModel.getVoucherOrdersItemUiModel().getMessage().getText());
         tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
         tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
     }

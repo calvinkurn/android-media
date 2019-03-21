@@ -4,11 +4,11 @@ import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
 
 @Generated("com.robohorse.robopojogenerator")
-data class GetPromoStackFirst(
+data class BenefitSummaryInfo(
 
-	@field:SerializedName("data")
-	val data: Data? = null,
+	@field:SerializedName("final_benefit_amount")
+	val finalBenefitAmount: String? = null,
 
-	@field:SerializedName("status")
-	val status: String? = null
+	@field:SerializedName("final_benefit_text")
+	val finalBenefitText: String? = null
 )

@@ -37,6 +37,8 @@ import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataRequestConverter;
 import com.tokopedia.logisticanalytics.CodAnalytics;
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase;
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter;
@@ -44,7 +46,6 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutRouter;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
-import com.tokopedia.promocheckout.common.domain.CheckPromoCodeFinalUseCase;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierConverter;
@@ -183,7 +184,8 @@ public class ShipmentModule {
 
     @Provides
     @ShipmentScope
-    ShipmentContract.Presenter provideShipmentPresenter(@PromoCheckoutQualifier CheckPromoCodeFinalUseCase checkPromoCodeFinalUseCase,
+    ShipmentContract.Presenter provideShipmentPresenter(@PromoCheckoutQualifier CheckPromoStackingCodeFinalUseCase checkPromoStackingCodeFinalUseCase,
+                                                        CheckPromoStackingCodeMapper checkPromoStackingCodeMapper,
                                                         CompositeSubscription compositeSubscription,
                                                         CheckoutUseCase checkoutUseCase,
                                                         GetThanksToppayUseCase getThanksToppayUseCase,
@@ -201,9 +203,10 @@ public class ShipmentModule {
                                                         UserSessionInterface userSessionInterface,
                                                         IVoucherCouponMapper voucherCouponMapper,
                                                         CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection,
-        CodAnalytics codAnalytics) {return new ShipmentPresenter(checkPromoCodeFinalUseCase,
-                compositeSubscription, checkoutUseCase, getThanksToppayUseCase, getShipmentAddressFormUseCase,getShipmentAddressFormOneClickShipementUseCase,
-                 checkPromoCodeCartListUseCase,
+        CodAnalytics codAnalytics) {return new ShipmentPresenter(checkPromoStackingCodeFinalUseCase,
+            checkPromoStackingCodeMapper, compositeSubscription, checkoutUseCase,
+            getThanksToppayUseCase, getShipmentAddressFormUseCase,
+            getShipmentAddressFormOneClickShipementUseCase, checkPromoCodeCartListUseCase,
                 editAddressUseCase, cancelAutoApplyCouponUseCase, changeShippingAddressUseCase,
                 saveShipmentStateUseCase, getRatesUseCase, getCourierRecommendationUseCase,
                codCheckoutUseCase, shippingCourierConverter,  shipmentAnalyticsActionListener, voucherCouponMapper, userSessionInterface,analyticsPurchaseProtection, codAnalytics);

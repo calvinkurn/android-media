@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.checkout.BuildConfig;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
@@ -33,7 +34,7 @@ import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormOneClickShipe
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
-import com.tokopedia.checkout.view.feature.cartlist.CartListPresenter;
+import com.tokopedia.checkout.view.feature.promostacking.subscriber.CheckPromoStackingSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.CheckPromoCodeFromSelectedCourierSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetRatesSubscriber;
@@ -47,20 +48,22 @@ import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.logisticanalytics.CodAnalytics;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomsheetParamData;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam;
+import com.tokopedia.promocheckout.common.data.entity.request.Order;
+import com.tokopedia.promocheckout.common.data.entity.request.ProductDetail;
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase;
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.shipping_recommendation.domain.ShippingParam;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
-import com.tokopedia.promocheckout.common.domain.CheckPromoCodeFinalUseCase;
-import com.tokopedia.promocheckout.common.domain.model.DataVoucher;
-import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
-import com.tokopedia.promocheckout.common.view.model.PromoData;
-import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
@@ -111,8 +114,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -125,7 +126,9 @@ import rx.subscriptions.CompositeSubscription;
 public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View>
         implements ShipmentContract.Presenter {
 
-    private final CheckPromoCodeFinalUseCase checkPromoCodeFinalUseCase;
+    // private final CheckPromoCodeFinalUseCase checkPromoCodeFinalUseCase;
+    private final CheckPromoStackingCodeFinalUseCase checkPromoStackingCodeFinalUseCase;
+    private final CheckPromoStackingCodeMapper checkPromoStackingCodeMapper;
     private final CheckoutUseCase checkoutUseCase;
     private final CompositeSubscription compositeSubscription;
     private final GetThanksToppayUseCase getThanksToppayUseCase;
@@ -165,7 +168,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private CodAnalytics mTrackerCod;
 
     @Inject
-    public ShipmentPresenter(CheckPromoCodeFinalUseCase checkPromoCodeFinalUseCase,
+    public ShipmentPresenter(CheckPromoStackingCodeFinalUseCase checkPromoStackingCodeFinalUseCase,
+                             CheckPromoStackingCodeMapper checkPromoStackingCodeMapper,
                              CompositeSubscription compositeSubscription,
                              CheckoutUseCase checkoutUseCase,
                              GetThanksToppayUseCase getThanksToppayUseCase,
@@ -185,7 +189,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              UserSessionInterface userSessionInterface,
                              CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection,
                              CodAnalytics codAnalytics) {
-        this.checkPromoCodeFinalUseCase = checkPromoCodeFinalUseCase;
+        this.checkPromoStackingCodeFinalUseCase = checkPromoStackingCodeFinalUseCase;
+        this.checkPromoStackingCodeMapper = checkPromoStackingCodeMapper;
         this.compositeSubscription = compositeSubscription;
         this.checkoutUseCase = checkoutUseCase;
         this.getThanksToppayUseCase = getThanksToppayUseCase;
@@ -657,7 +662,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void checkPromoShipment(String promoCode, boolean isOneClickShipment) {
+    public void checkPromoShipment(String promoCode, boolean isOneClickShipment, CheckPromoFirstStepParam checkPromoFirstStepParam) {
 
         TokopediaCornerData cornerData = null;
         RecipientAddressModel recipientAddressModel = getRecipientAddressModel();
@@ -675,7 +680,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         .cornerData(cornerData)
                         .build();
 
-        checkPromoCodeFinalUseCase.execute(checkPromoCodeFinalUseCase.createRequestParams(
+
+        checkPromoStackingCodeFinalUseCase.setParams(checkPromoFirstStepParam);
+        checkPromoStackingCodeFinalUseCase.execute(RequestParams.create(),
+                new CheckPromoStackingSubscriber(checkPromoStackingCodeMapper));
+
+        /*checkPromoCodeFinalUseCase.execute(checkPromoCodeFinalUseCase.createRequestParams(
                 new Gson().toJson(checkPromoCodeCartShipmentRequest), isOneClickShipment), new Subscriber<DataVoucher>() {
             @Override
             public void onCompleted() {
@@ -698,7 +708,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     getView().cancelAllCourierPromo();
                 }
             }
-        });
+        });*/
     }
 
     @NonNull

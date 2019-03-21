@@ -12,6 +12,7 @@ import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
+import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
@@ -234,7 +235,7 @@ public interface ShipmentContract {
 
         void processVerifyPayment(String transactionId);
 
-        void checkPromoShipment(String promoCode, boolean isOneClickShipment);
+        void checkPromoShipment(String promoCode, boolean isOneClickShipment, CheckPromoFirstStepParam checkPromoFirstStepParam);
 
         void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isOneClickShipment);
 
