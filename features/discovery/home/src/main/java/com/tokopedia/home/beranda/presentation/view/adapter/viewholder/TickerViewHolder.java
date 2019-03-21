@@ -6,11 +6,14 @@ import android.graphics.Color;
 import android.support.annotation.LayoutRes;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.domain.model.Ticker;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
@@ -39,6 +42,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
     private boolean hasStarted = false;
 
     private View view;
+    private String tickerTitle = "";
 
     public TickerViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
@@ -48,14 +52,16 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
         this.view = itemView;
         textMessage = itemView.findViewById(R.id.ticker_message);
         btnClose = itemView.findViewById(R.id.btn_close);
-        itemView.findViewById(R.id.btn_close).setOnClickListener(this);
+        btnClose.setOnClickListener(this);
     }
 
     @Override
     public void bind(TickerViewModel element) {
         Ticker.Tickers ticker = element.getTickers().get(0);
         textMessage.setText(ticker.getMessage());
-        textMessage.setMovementMethod(LinkMovementMethod.getInstance());
+        textMessage.setMovementMethod(new TickerLinkMovementMethod(
+                ticker.getTitle()
+        ));
         ViewCompat.setBackgroundTintList(btnClose, ColorStateList.valueOf(Color.parseColor(ticker.getColor())));
         if (!hasStarted)
             timer.scheduleAtFixedRate(new SwitchTicker(element.getTickers()), 0, SLIDE_DELAY);
@@ -80,6 +86,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
                     else
                         i = 0;
                     Ticker.Tickers ticker = tickers.get(i);
+                    tickerTitle = ticker.getTitle();
                     textMessage.setText(ticker.getMessage());
                     ViewCompat.setBackgroundTintList(btnClose, ColorStateList.valueOf(Color.parseColor(ticker.getColor())));
                 }
@@ -91,9 +98,28 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
     public void onClick(View view) {
         int i = view.getId();
         if (i == R.id.btn_close && getAdapterPosition() != RecyclerView.NO_POSITION) {
+            HomePageTracking.eventClickOnCloseTickerHomePage(
+                    context,
+                    tickerTitle
+            );
             listener.onCloseTicker(getAdapterPosition());
-
         }
     }
 
+    private class TickerLinkMovementMethod extends LinkMovementMethod {
+        String tickerTitle;
+
+        public TickerLinkMovementMethod(String tickerTitle) {
+            this.tickerTitle = tickerTitle;
+        }
+
+        @Override
+        public boolean onTouchEvent(TextView widget, Spannable buffer, MotionEvent event) {
+            HomePageTracking.eventClickTickerHomePage(
+                    context,
+                    tickerTitle
+            );
+            return super.onTouchEvent(widget, buffer, event);
+        }
+    }
 }

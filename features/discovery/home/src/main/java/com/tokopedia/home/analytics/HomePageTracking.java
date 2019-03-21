@@ -93,6 +93,10 @@ public class HomePageTracking {
     public static final String ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION = "add wishlist on product recommendation";
     public static final String ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_NON_LOGIN = "add wishlist on product recommendation - non login";
     public static final String ACTION_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION = "remove wishlist on product recommendation";
+    public static final String EVENT_CLICK_TICKER = "clickTicker";
+    public static final String EVENT_CATEGORY_TICKER_HOMEPAGE = "ticker homepage";
+    public static final String EVENT_ACTION_CLICK_TICKER = "click ticker";
+    public static final String EVENT_ACTION_CLICK_ON_CLOSE_TICKER = "click on close ticker";
 
     public static AnalyticTracker getTracker(Context context){
         if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
@@ -336,14 +340,14 @@ public class HomePageTracking {
     }
 
     public static void eventClickSeeAllThreeLegoBannerChannel(Context context,
-                                                         String applink) {
+                                                         String headerName) {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
             tracker.sendEventTracking(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_CLICK_SEE_ALL_LEGO_THREE_IMAGE_BANNER_CHANNEL,
-                    applink
+                    headerName
             );
         }
     }
@@ -679,6 +683,30 @@ public class HomePageTracking {
                     CATEGORY_HOME_PAGE,
                     ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_NON_LOGIN,
                     tabName
+            );
+        }
+    }
+
+    public static void eventClickTickerHomePage(Context context, String tickerTitle) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_CLICK_TICKER,
+                    EVENT_CATEGORY_TICKER_HOMEPAGE,
+                    EVENT_ACTION_CLICK_TICKER,
+                    tickerTitle
+            );
+        }
+    }
+
+    public static void eventClickOnCloseTickerHomePage(Context context, String tickerTitle) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_CLICK_TICKER,
+                    EVENT_CATEGORY_TICKER_HOMEPAGE,
+                    EVENT_ACTION_CLICK_ON_CLOSE_TICKER,
+                    tickerTitle
             );
         }
     }
