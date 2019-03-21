@@ -16,7 +16,7 @@
 
         <android.support.v7.widget.CardView
             android:id="@+id/cardView"
-            android:layout_width="@dimen/dp_120"
+            android:layout_width="@dimen/dp_140"
             android:layout_height="104dp"
             android:background="@color/white"
             tools:cardCornerRadius="@dimen/dp_8"
@@ -67,11 +67,13 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16">
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <ImageView
             android:layout_width="@dimen/dp_36"
             android:layout_height="@dimen/dp_36"
-            app:corners="@integer/corner_radius_shimmering"
-            app:width_weight="0.6" />
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_square_shimmering_36dp"
+            />
 
     </FrameLayout>
 
