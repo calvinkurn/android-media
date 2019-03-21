@@ -163,13 +163,8 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         if (context == null) {
             return
         }
-        activity?.run {
-            val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.title_voucher_code_copied),
-                    Snackbar.LENGTH_LONG)
-            snackbar.setAction(activity!!.getString(R.string.close), View.OnClickListener { snackbar.dismiss() })
-            snackbar.setActionTextColor(Color.WHITE)
-            snackbar.show()
-        }
+
+        presenter.checkPromoFirstStep(merchantVoucherViewModel.voucherCode, cartString, checkPromoFirstStepParam)
     }
 
     fun initInjector() {
@@ -213,8 +208,9 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     }
 
     override fun onClashCheckPromoFirstStep() {
-        // Todo : close merchant voucher bottomsheet, show clash bottomsheet
+        // Close merchant voucher bottomsheet, show clash bottomsheet
         dismiss()
+        actionListener.onClashCheckPromoFirstStep()
     }
 
 }
