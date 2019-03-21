@@ -8,10 +8,12 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
@@ -312,21 +314,17 @@ public class DeepLinkChecker {
         String searchQuery = uriData.getQueryParameter("q");
         String source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
 
-        bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
         bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
         bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
-        bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
         bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
-        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, source);
 
         Intent intent;
         if (TextUtils.isEmpty(departmentId)) {
             intent = BrowseProductRouter.getSearchProductIntent(context);
+            intent.putExtras(bundle);
         } else {
-            intent = BrowseProductRouter.getIntermediaryIntent(context, departmentId);
+            intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, departmentId);
         }
-
-        intent.putExtras(bundle);
         context.startActivity(intent);
     }
 
@@ -353,27 +351,23 @@ public class DeepLinkChecker {
     }
 
     public static void openCategory(String url, Context context) {
-        Bundle bundle = new Bundle();
-        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, getLinkSegment(url).get(1));
-        bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_DIRECTORY);
-        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, TopAdsApi.SRC_DIRECTORY);
-        Intent intent = BrowseProductRouter.getIntermediaryIntent(context);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
+        String departmentId = getLinkSegment(url).get(1);
+        RouteManager.route(context, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, departmentId);
     }
 
     public static void openProduct(String url, Context context) {
         if (context != null) {
-            Bundle bundle = new Bundle();
-            if (getLinkSegment(url).size() > 1) {
-                bundle.putString("shop_domain", getLinkSegment(url).get(0));
-                bundle.putString("product_key", getLinkSegment(url).get(1));
+            Uri uri = Uri.parse(url);
+            List<String> pathSegmentList = uri.getPathSegments();
+            if (pathSegmentList.size() > 1) {
+                String shopDomain = pathSegmentList.get(pathSegmentList.size() - 2);
+                String productKey = pathSegmentList.get(pathSegmentList.size() - 1);
+                RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
+                        shopDomain, productKey);
+            } else {
+                String productId = uri.getLastPathSegment();
+                RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
             }
-            bundle.putString("url", url);
-            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
-            intent.putExtras(bundle);
-            intent.setData(Uri.parse(url));
-            context.startActivity(intent);
         }
     }
 

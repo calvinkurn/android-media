@@ -45,13 +45,6 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".etalase.view.activity.ShopEtalaseActivity"
-            android:exported="true"
-            android:label="@string/choose_etalase_label"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
-        <activity
             android:name=".favourite.view.activity.ShopFavouriteListActivity"
             android:exported="true"
             android:label="@string/favorited_shop_title"

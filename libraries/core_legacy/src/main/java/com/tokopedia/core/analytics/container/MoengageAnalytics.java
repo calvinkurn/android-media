@@ -45,6 +45,11 @@ public class MoengageAnalytics extends ContextAnalytics {
     }
 
     @Override
+    public void sendGeneralEvent(String event, String category, String action, String label) {
+        // no op, only for GTM
+    }
+
+    @Override
     public void sendEnhanceECommerceEvent(Map<String, Object> value) {
         // no op, only for GTM
     }
