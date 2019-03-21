@@ -2203,20 +2203,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
         UserSessionInterface userSession = new UserSession(this);
         if (userSession.isLoggedIn()) {
-            eventShopSendChat();
+            UnifyTracking.eventShopSendChat();
             Intent intent = getAskSellerIntent(this, shopId, shopName, "", TkpdInboxRouter.SHOP);
             context.startActivity(intent);
         } else {
             Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
             ((Activity) context).startActivityForResult(intent, 100);
         }
-    }
-
-    private void eventShopSendChat(){
-        TrackApp.getInstance().getGTM().sendGeneralEvent(AppEventTracking.Event.SHOP_PAGE,
-                AppEventTracking.Category.SHOP_PAGE,
-                AppEventTracking.Action.SHOP_PAGE,
-                "");
     }
 
     public void init() {
@@ -2329,15 +2322,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public boolean isIndicatorVisible() {
         return remoteConfig.getBoolean(TkpdInboxRouter.INDICATOR_VISIBILITY, false);
-    }
-
-    @Override
-    public void sendTrackingGroupChatLeftNavigation() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GroupChatAnalytics.EVENT_NAME_CLICK_NAVIGATION_DRAWER,
-                GroupChatAnalytics.EVENT_CATEGORY_LEFT_NAVIGATION,
-                GroupChatAnalytics.EVENT_ACTION_CLICK_GROUP_CHAT,
-                ""
-        ));
     }
 
     @Override

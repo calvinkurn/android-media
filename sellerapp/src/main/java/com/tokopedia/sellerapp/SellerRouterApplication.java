@@ -1031,7 +1031,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
         if (getSession().isLoggedIn()) {
-            UnifyTracking.eventShopSendChat(context);
+            UnifyTracking.eventShopSendChat();
             Intent intent = getAskSellerIntent(this, shopId, shopName, TkpdInboxRouter.SHOP, avatar);
             context.startActivity(intent);
         } else {
@@ -1115,10 +1115,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void startAddProduct(Activity activity, String shopId) {
         goToAddProduct(activity);
-    }
-
-    @Override
-    public void sendTrackingGroupChatLeftNavigation() {
     }
 
     @Override

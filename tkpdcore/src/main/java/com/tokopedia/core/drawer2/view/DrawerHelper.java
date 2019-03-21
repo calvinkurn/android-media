@@ -12,11 +12,8 @@ import android.util.Log;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.ManageGeneral;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
@@ -26,6 +23,7 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core2.R;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.referral.view.activity.ReferralActivity;
 import com.tokopedia.track.TrackApp;
@@ -89,8 +87,10 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                             (context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
-                    ((TkpdCoreRouter) context.getApplication())
-                            .sendTrackingGroupChatLeftNavigation();
+                    TrackApp.getInstance().getGTM().sendGeneralEvent("clickNavigationDrawer",
+                            "left navigation",
+                            "click on groupchat",
+                            "");
                     AnalyticsEventTrackingHelper.hamburgerOptionClicked(context, intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX, AppEventTracking.EventLabel.MESSAGE);
 
                 }

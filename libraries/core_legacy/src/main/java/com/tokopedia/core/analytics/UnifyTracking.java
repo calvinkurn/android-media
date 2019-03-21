@@ -49,6 +49,13 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventShopSendChat(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(AppEventTracking.Event.SHOP_PAGE,
+                AppEventTracking.Category.SHOP_PAGE,
+                AppEventTracking.Action.SHOP_PAGE,
+                "");
+    }
+
     public static void eventWishlistBuy(Context context) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
                 AppEventTracking.Event.WISHLIST,
