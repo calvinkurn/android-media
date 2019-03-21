@@ -118,6 +118,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             updateHomeData();
         }
         getTokocashBalance();
+        getTokopoint();
     }
 
     @Override

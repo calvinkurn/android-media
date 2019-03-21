@@ -131,11 +131,12 @@ public class HeaderHomeView extends BaseCustomView {
             View container = view.findViewById(R.id.container_nonlogin);
             AppCompatImageView imgNonLogin = view.findViewById(R.id.bg_container_nonlogin);
 
-            int radius = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()));
+            int radius = Math.round(TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()));
 
             Glide.with(getContext())
                     .load(BG_CONTAINER_URL)
-                    .bitmapTransform(new RoundedRightCornerTransformation(getContext(), 8))
+                    .bitmapTransform(new RoundedRightCornerTransformation(getContext(), radius))
                     .into(imgNonLogin);
 
             container.setOnClickListener(onCheckNowListener());
@@ -428,19 +429,21 @@ public class HeaderHomeView extends BaseCustomView {
 
         private BitmapPool mBitmapPool;
         private int mRadius;
-        private Context mContext;
+        private int mDiameter;
 
         RoundedRightCornerTransformation(Context context, int radius) {
-            mContext = context;
-            mBitmapPool = Glide.get(context).getBitmapPool();
+            this(Glide.get(context).getBitmapPool(), radius);
+        }
+
+        RoundedRightCornerTransformation(BitmapPool pool, int radius) {
+            mBitmapPool = pool;
             mRadius = radius;
+            mDiameter = mRadius * 2;
         }
 
         @Override
         public Resource<Bitmap> transform(Resource<Bitmap> resource, int outWidth, int outHeight) {
             Bitmap source = resource.get();
-
-            int radius = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, mRadius, mContext.getResources().getDisplayMetrics()));
 
             int width = source.getWidth();
             int height = source.getHeight();
@@ -454,14 +457,22 @@ public class HeaderHomeView extends BaseCustomView {
             Paint paint = new Paint();
             paint.setAntiAlias(true);
             paint.setShader(new BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
-            canvas.drawRoundRect(new RectF(width -  8 * 2, 0, width, height), radius, radius,
-                    paint);
-            canvas.drawRect(new RectF(0, 0, width - radius, height), paint);
+            drawRoundRect(canvas, paint, width, height);
             return BitmapResource.obtain(bitmap, mBitmapPool);
         }
 
+        private void drawRoundRect(Canvas canvas, Paint paint, float width, float height) {
+            float right = width - 0;
+            float bottom = height - 0;
+
+            canvas.drawRoundRect(new RectF(right - mDiameter, 0, right, bottom), mRadius, mRadius,
+                    paint);
+            canvas.drawRect(new RectF(0, 0, right - mRadius, bottom), paint);
+        }
+
         @Override public String getId() {
-            return "RoundedRightCornerTransformation";
+            return "RoundedRightCornerTransformation(radius=" + mRadius + ", diameter="
+                    + mDiameter + ")";
         }
     }
 }
