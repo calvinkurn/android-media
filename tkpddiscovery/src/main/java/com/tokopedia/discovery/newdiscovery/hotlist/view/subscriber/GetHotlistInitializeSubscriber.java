@@ -1,5 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber;
 
+import android.content.Context;
+
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.network.MessageErrorException;
@@ -20,6 +22,7 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHashTagVie
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistProductViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistFragmentContract;
+import com.tokopedia.track.TrackApp;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -211,9 +214,20 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
         if (banner.getHotlistPromoInfo() != null) {
             HotlistPromoInfo info = banner.getHotlistPromoInfo();
             headerViewModel.setHotlistPromo(mappingHotlistPromo(info));
-            TrackingUtils.impressionHotlistPromo(MainApplication.getAppContext(), banner.getHotlistTitle(), info.getTitle(), info.getVoucherCode());
+            impressionHotlistPromo(banner.getHotlistTitle(), info.getTitle(), info.getVoucherCode());
         }
         return headerViewModel;
+    }
+
+    public static void impressionHotlistPromo(String hotlistName, String promoName, String promoCode) {
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+                DataLayer.mapOf(
+                        "event", "clickHotlist",
+                        "eventCategory", "hotlist page",
+                        "eventAction", "hotlist promo impression",
+                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
+                )
+        );
     }
 
     private HotlistPromo mappingHotlistPromo(HotlistPromoInfo info) {

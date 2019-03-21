@@ -20,13 +20,9 @@ import com.tokopedia.checkout.view.feature.cartlist.ICartListPresenter;
 import com.tokopedia.checkout.view.feature.cartlist.ICartListView;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
-import com.tokopedia.checkout.view.feature.shipment.di.ShipmentScope;
-import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutRouter;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
-import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
-import com.tokopedia.checkout.view.feature.shipment.di.ShipmentScope;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -130,10 +126,6 @@ public class CartListModule {
     @Provides
     @CartListScope
     TrackingPromoCheckoutUtil provideTrackingPromo(@ApplicationContext Context context) {
-        if(context instanceof TrackingPromoCheckoutRouter){
-            return new TrackingPromoCheckoutUtil((TrackingPromoCheckoutRouter)context);
-        }else{
-            return new TrackingPromoCheckoutUtil(null);
-        }
+        return new TrackingPromoCheckoutUtil();
     }
 }

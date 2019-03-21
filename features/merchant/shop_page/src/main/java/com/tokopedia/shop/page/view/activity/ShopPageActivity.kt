@@ -15,6 +15,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import com.airbnb.deeplinkdispatch.DeepLink
+import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -47,6 +48,7 @@ import com.tokopedia.shop.page.view.listener.ShopPageView
 import com.tokopedia.shop.page.view.presenter.ShopPagePresenter
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
+import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.activity_shop_page.*
 import kotlinx.android.synthetic.main.item_tablayout_new_badge.view.*
@@ -470,9 +472,30 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopPageTracking.clickFollowUnfollowShop(isFavourite,
                     CustomDimensionShopPage.create(shopInfo))
         }
-        shopInfo?.info?.isShopOfficial?.let { (application as ShopModuleRouter).sendMoEngageFavoriteEvent(shopInfo?.info?.shopName, shopInfo?.info?.shopId, shopInfo?.info?.shopDomain, shopInfo?.info?.shopLocation, it, isFavourite) }
+        shopInfo?.info?.isShopOfficial?.let {
+            sendMoEngageFavoriteEvent(shopInfo?.info?.shopName?: "",
+                shopInfo?.info?.shopId?: "",
+                shopInfo?.info?.shopDomain?: "",
+                shopInfo?.info?.shopLocation?: "",
+                it,
+                isFavourite)
+        }
         shopId?.run { presenter.toggleFavouriteShop(this) }
 
+    }
+
+    fun sendMoEngageFavoriteEvent(shopName: String, shopID: String, shopDomain: String, shopLocation: String,
+                                  isShopOfficaial: Boolean, isFollowed: Boolean) {
+        TrackApp.getInstance()?.moEngage?.sendTrackEvent(mapOf(
+            "shop_name" to shopName,
+            "shop_id" to shopID,
+            "shop_location" to shopLocation,
+            "url_slug" to shopDomain,
+            "is_official_store" to isShopOfficaial),
+            if (isFollowed)
+                "Seller_Added_To_Favorite"
+            else
+                "Seller_Removed_From_Favorite")
     }
 
     override fun goToAddProduct() {

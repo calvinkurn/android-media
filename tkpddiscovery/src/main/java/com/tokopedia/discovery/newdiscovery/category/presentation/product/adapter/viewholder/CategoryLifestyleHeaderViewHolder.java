@@ -33,6 +33,7 @@ import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
+import com.tokopedia.track.TrackApp;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -137,8 +138,21 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
                 );
             }
             model.setDoneTrackImpression(true);
-            UnifyTracking.eventCategoryLifestyleImpression(itemView.getContext(), list);
+            eventCategoryLifestyleImpression(list);
         }
+    }
+
+    public static void eventCategoryLifestyleImpression(List<Object> list) {
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+                DataLayer.mapOf("event", "promoView",
+                        "eventCategory", "category page",
+                        "eventAction", "subcategory impression",
+                        "eventLabel", "",
+                        "ecommerce", DataLayer.mapOf(
+                                "promoView", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(list.toArray(new Object[list.size()]))))
+                )
+        );
     }
 
     private void renderBannerCategory(CategoryHeaderModel model) {

@@ -24,6 +24,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -78,6 +79,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -973,8 +975,25 @@ public class HotlistFragment extends BrowseSectionFragment
             list.add(product);
 
             hotlist.setProductList(list);
-            TrackingUtils.eventClickHotlistProductFeatured(getActivity(),hotlist);
+            eventClickHotlistProductFeatured(hotlist);
         }
+    }
+
+    public void eventClickHotlistProductFeatured(Hotlist hotlist) {
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+                DataLayer.mapOf("event", AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
+                        "eventCategory", AppEventTracking.Category.CATEGORY_HOTLIST,
+                        "eventAction", String.format("feature product hotlist %s - click product %s", hotlist.getHotlistAlias(), hotlist.getProductList().get(0).getProductName()),
+                        "eventLabel", String.format("%s - %s", hotlist.getScreenName(), hotlist.getPosition(),
+                                "ecommerce", DataLayer.mapOf(
+                                        "click", DataLayer.mapOf(
+                                                "actionField", DataLayer.mapOf(
+                                                        "list", "hotlist"),
+                                                "products", hotlist.getProduct().toArray(new Object[hotlist.getProduct().size()])
+                                        )
+                                )
+                        )
+                ));
     }
 
     private void trackingImpression(List<Visitable> visitables) {
@@ -1003,9 +1022,22 @@ public class HotlistFragment extends BrowseSectionFragment
             }
             hotlist.setProductList(list);
 
-            TrackingUtils.eventImpressionHotlistProductFeatured(getActivity(),hotlist);
+            eventImpressionHotlistProductFeatured(hotlist);
         }
 
+    }
+
+    public static void eventImpressionHotlistProductFeatured(Hotlist hotlist) {
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+                DataLayer.mapOf("event", AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
+                        "ecommerce", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf("list", "hotlist"),
+                                "impressions",
+                                DataLayer.listOf(
+                                        hotlist.getProduct().toArray(new Object[hotlist.getProduct().size()]))
+                        )
+                )
+        );
     }
 
     @Override

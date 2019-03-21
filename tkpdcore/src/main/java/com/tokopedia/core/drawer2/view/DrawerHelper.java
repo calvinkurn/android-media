@@ -12,6 +12,7 @@ import android.util.Log;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.ManageGeneral;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -27,6 +28,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.referral.view.activity.ReferralActivity;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 
@@ -159,7 +161,15 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
     }
 
     protected void sendGTMNavigationEvent(String label) {
-        UnifyTracking.eventDrawerClick(context, label);
+        eventDrawerClick(label);
+    }
+
+    public void eventDrawerClick(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.NAVIGATION_DRAWER,
+                AppEventTracking.Category.HAMBURGER,
+                AppEventTracking.Action.CLICK,
+                label);
     }
 
     protected static void startIntent(Context context, Class<?> cls) {

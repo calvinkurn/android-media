@@ -8,10 +8,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.track.TrackApp;
 
 public class RedirectCreateShopActivity extends TActivity {
 
@@ -54,9 +57,17 @@ public class RedirectCreateShopActivity extends TActivity {
                             );
                         }
 
-                        UnifyTracking.eventDownloadFromSwitcher(view.getContext());
+                        eventDownloadFromSwitcher();
                     }
                 });
+    }
+
+    public void eventDownloadFromSwitcher() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.NAVIGATION_DRAWER,
+                AppEventTracking.Category.SWITCHER,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.DOWNLOAD_APP);
     }
 
     public static Intent getCallingIntent(Context context) {

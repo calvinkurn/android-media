@@ -199,9 +199,9 @@ public class TrackApp {
      */
     @Deprecated
     public ContextAnalytics getValue(String TAG) {
-        if (!INSTANCES.containsKey(TAG))
+        if (!INSTANCES.containsKey(TAG)) {
             throw new RuntimeException(String.format("no instance related to this TAG : \'%s\' ", TAG));
-
+        }
         TypedValue<? extends ContextAnalytics> typedValue = INSTANCES.get(TAG);
         ContextAnalytics value = typedValue.value;
         return typedValue.type.cast(value);

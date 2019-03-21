@@ -77,20 +77,6 @@ public class TrackingUtils{
         TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.CLICK_MAIN_CATEGORY_ICON);
     }
 
-    public static void sendMoEngageFavoriteEvent(Context context, String shopName, String shopID, String shopDomain, String shopLocation, boolean isShopOfficaial, boolean isFollowed) {
-        Map<String, Object> value = DataLayer.mapOf(
-                AppEventTracking.MOENGAGE.SHOP_NAME, shopName,
-                AppEventTracking.MOENGAGE.SHOP_ID, shopID,
-                AppEventTracking.MOENGAGE.SHOP_LOCATION, shopLocation,
-                AppEventTracking.MOENGAGE.SHOP_URL_SLUG, shopDomain,
-                AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, isShopOfficaial
-        );
-        TrackApp.getInstance().getMoEngage().sendTrackEvent(value,
-                isFollowed ?
-                        AppEventTracking.EventMoEngage.SELLER_ADDED_FAVORITE :
-                        AppEventTracking.EventMoEngage.SELLER_REMOVE_FAVORITE);
-    }
-
     public static void sendMoEngageReferralShareEvent(Context context,String channel) {
         Map<String, Object> value = DataLayer.mapOf(
                 AppEventTracking.MOENGAGE.CHANNEL, channel
@@ -162,137 +148,9 @@ public class TrackingUtils{
         return TrackApp.getInstance().getAppsFlyer().getUniqueId();
     }
 
-    public static void eventClickHotlistProductFeatured(Context context, Hotlist hotlist) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
-                DataLayer.mapOf("event", AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
-                        "eventCategory", AppEventTracking.Category.CATEGORY_HOTLIST,
-                        "eventAction", String.format("feature product hotlist %s - click product %s", hotlist.getHotlistAlias(), hotlist.getProductList().get(0).getProductName()),
-                        "eventLabel", String.format("%s - %s", hotlist.getScreenName(), hotlist.getPosition(),
-                                "ecommerce", DataLayer.mapOf(
-                                        "click", DataLayer.mapOf(
-                                                "actionField", DataLayer.mapOf(
-                                                        "list", "hotlist"),
-                                                "products", hotlist.getProduct().toArray(new Object[hotlist.getProduct().size()])
-                                        )
-                                )
-                        )
-                ));
-    }
-
-    public static void eventImpressionHotlistProductFeatured(Context context, Hotlist hotlist) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
-                DataLayer.mapOf("event", AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
-                        "ecommerce", DataLayer.mapOf(
-                                "actionField", DataLayer.mapOf("list", "hotlist"),
-                                "impressions",
-                                DataLayer.listOf(
-                                        hotlist.getProduct().toArray(new Object[hotlist.getProduct().size()]))
-                        )
-                )
-        );
-    }
-
-    public static void impressionHotlistPromo(Context context, String hotlistName, String promoName, String promoCode) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
-                DataLayer.mapOf(
-                        "event", "clickHotlist",
-                        "eventCategory", "hotlist page",
-                        "eventAction", "hotlist promo impression",
-                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
-                )
-        );
-    }
-
-    public static void clickCopyButtonHotlistPromo(Context context, String hotlistName, String promoName, String promoCode) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
-                DataLayer.mapOf(
-                        "event", "clickHotlist",
-                        "eventCategory", "hotlist page",
-                        "eventAction", "hotlist promo click salin kode",
-                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
-                )
-        );
-    }
-
-    public static void clickTnCButtonHotlistPromo(Context context, String hotlistName, String promoName, String promoCode) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
-                DataLayer.mapOf(
-                        "event", "clickHotlist",
-                        "eventCategory", "hotlist page",
-                        "eventAction", "hotlist promo click syarat ketentuan",
-                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
-                )
-        );
-    }
-
     public static void eventTrackingEnhancedEcommerce(Context context, Map<String, Object> trackingData) {
         TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(trackingData);
     }
 
-    public static void eventImpressionPromoList(Context context, List<Object> list, String promoName) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
-                DataLayer.mapOf(
-                        "event", "promoView",
-                        "eventCategory", "promo microsite - promo list",
-                        "eventAction", "impression on promo",
-                        "eventLabel", promoName,
-                        "ecommerce", DataLayer.mapOf(
-                                "promoView", DataLayer.mapOf(
-                                        "promotions", DataLayer.listOf(
-                                                list.toArray(new Object[list.size()]
-                                                )
-                                        )
-                                )
-                        )
-                )
-        );
-    }
-
-    public static void eventClickPromoListItem(Context context, List<Object> list, String promoName) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
-                DataLayer.mapOf(
-                        "event", "promoView",
-                        "eventCategory", "promo microsite - promo list",
-                        "eventAction", "impression on promo",
-                        "eventLabel", promoName,
-                        "ecommerce", DataLayer.mapOf(
-                                "promoClick", DataLayer.mapOf(
-                                        "promotions", DataLayer.listOf(
-                                                list.toArray(new Object[list.size()]
-                                                )
-                                        )
-                                )
-                        )
-                )
-        );
-    }
-
-
-    public static void eventCategoryLifestyleImpression(Context context, List<Object> list) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
-                DataLayer.mapOf("event", "promoView",
-                        "eventCategory", "category page",
-                        "eventAction", "subcategory impression",
-                        "eventLabel", "",
-                        "ecommerce", DataLayer.mapOf(
-                                "promoView", DataLayer.mapOf(
-                                        "promotions", DataLayer.listOf(list.toArray(new Object[list.size()]))))
-                )
-        );
-    }
-
-    public static void eventCategoryLifestyleClick(Context context, String categoryUrl, List<Object> list) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
-                DataLayer.mapOf("event", "promoClick",
-                        "eventCategory", "category page",
-                        "eventAction", "click subcategory",
-                        "eventLabel", categoryUrl,
-                        "ecommerce", DataLayer.mapOf(
-                                "promoClick", DataLayer.mapOf(
-                                        "promotions", DataLayer.listOf(list.toArray(new Object[list.size()])))),
-                        "destinationURL", categoryUrl
-                )
-        );
-    }
 }
 

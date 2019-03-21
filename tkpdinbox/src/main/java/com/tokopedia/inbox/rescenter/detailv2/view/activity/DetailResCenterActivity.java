@@ -16,6 +16,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailViewListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterImpl;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterPresenter;
 import com.tokopedia.inbox.util.analytics.InboxAnalytics;
+import com.tokopedia.track.TrackApp;
 
 /**
  * Created by hangnadi on 3/8/17.
@@ -152,7 +153,7 @@ public class DetailResCenterActivity extends BasePresenterActivity<DetailResCent
 
     @Override
     public void onBackPressed() {
-        UnifyTracking.eventTracking(this,InboxAnalytics.eventResoClickDetailBack(resolutionID));
+        TrackApp.getInstance().getGTM().sendGeneralEvent(InboxAnalytics.eventResoClickDetailBack(resolutionID).getEvent());
         setResult(RESULT_OK);
         finish();
     }

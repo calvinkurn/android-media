@@ -16,6 +16,7 @@ import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
@@ -57,6 +58,7 @@ import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModule;
 import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModuleLoader;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.tracking.applink.TrackingAppLinkModule;
 import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
@@ -159,9 +161,17 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
             deepLinkDelegate.dispatchFrom(this, intent);
             if (getIntent().getExtras() != null) {
                 Bundle bundle = getIntent().getExtras();
-                UnifyTracking.eventPersonalizedClicked(this, bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
+                eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
             }
         }
+    }
+
+    public void eventPersonalizedClicked(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.OPEN_PUSH_NOTIFICATION,
+                AppEventTracking.Category.PUSH_NOTIFICATION,
+                AppEventTracking.Action.OPEN,
+                label);
     }
 
     public static Intent moveToCreateShop(Context context) {

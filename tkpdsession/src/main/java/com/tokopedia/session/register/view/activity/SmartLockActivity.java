@@ -1,5 +1,6 @@
 package com.tokopedia.session.register.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
@@ -21,7 +22,9 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.session.R;
+import com.tokopedia.track.TrackApp;
 
 
 public class SmartLockActivity extends AppCompatActivity implements
@@ -220,15 +223,23 @@ public class SmartLockActivity extends AppCompatActivity implements
         } else if (requestCode == RC_SAVE) {
             Log.d(TAG, "Result code: " + resultCode);
             if (resultCode == RESULT_OK) {
-                UnifyTracking.eventSmartLock(this, AppEventTracking.EventLabel.SAVE_PASSWORD);
+                eventSmartLock(AppEventTracking.EventLabel.SAVE_PASSWORD);
                 Log.d(TAG, "Credential Save: OK");
             } else {
-                UnifyTracking.eventSmartLock(this,AppEventTracking.EventLabel.NEVER);
+                eventSmartLock(AppEventTracking.EventLabel.NEVER);
                 Log.e(TAG, "Credential Save Failed");
             }
             goToContent();
         }
         mIsResolving = false;
+    }
+
+    public void eventSmartLock(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.SUCCESS_SMART_LOCK,
+                AppEventTracking.Category.SMART_LOCK,
+                AppEventTracking.Action.SUCCESS,
+                label);
     }
 
     private void goToContent() {

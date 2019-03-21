@@ -17,7 +17,9 @@ import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.Option;
@@ -29,6 +31,7 @@ import com.tokopedia.design.component.EditTextCompat;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tkpdpdp.adapter.VariantOptionAdapter;
 import com.tokopedia.tkpdpdp.customview.NumberPickerWithCounterView;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -622,10 +625,28 @@ public class VariantActivity extends TActivity  implements
         List<String> joinVariant = productVariant.generateVariantValueIntoList(productDetailData.getInfo().getProductId());
 
         if (productVariant.getVariant().get(level-1).getIdentifier().equals(IDENTIFIER_SIZE)) {
-            UnifyTracking.eventSelectSizeVariant(this, option.getValue());
+            eventSelectSizeVariant(option.getValue());
         } else if (productVariant.getVariant().get(level-1).getIdentifier().equals(IDENTIFIER_COLOUR)) {
-            UnifyTracking.eventSelectColorVariant(this, option.getValue());
+            eventSelectColorVariant(option.getValue());
         }
+    }
+
+    // will be obsolete, replaced by the new pdp
+    private void eventSelectColorVariant(String optionValue){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                "clickPDP",
+                "product detail page",
+                "select color on variants page",
+                optionValue);
+    }
+
+    // will be obsolete, replaced by the new pdp
+    private void eventSelectSizeVariant(String optionValue){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CLICK_PDP,
+                AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
+                AppEventTracking.Action.SELECT_SIZE_VARIANT,
+                optionValue);
     }
 
     @Override

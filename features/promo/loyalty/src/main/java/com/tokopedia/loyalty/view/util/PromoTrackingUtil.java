@@ -2,7 +2,9 @@ package com.tokopedia.loyalty.view.util;
 
 import android.content.Context;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
+import com.tokopedia.track.TrackApp;
 
 import java.util.List;
 
@@ -42,11 +44,49 @@ public class PromoTrackingUtil {
     }
 
     public void eventImpressionPromoList(Context context, List<Object> dataLayerSinglePromoCodeList, String title) {
-        loyaltyModuleRouter.sendEventImpressionPromoList(dataLayerSinglePromoCodeList, title);
+        eventImpressionPromoList(dataLayerSinglePromoCodeList, title);
+    }
+
+    public void eventImpressionPromoList(List<Object> list, String promoName) {
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+                DataLayer.mapOf(
+                        "event", "promoView",
+                        "eventCategory", "promo microsite - promo list",
+                        "eventAction", "impression on promo",
+                        "eventLabel", promoName,
+                        "ecommerce", DataLayer.mapOf(
+                                "promoView", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
+                                                list.toArray(new Object[list.size()]
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
     }
 
     public void eventClickPromoListItem(Context context,List<Object> dataLayerSinglePromoCodeList, String title) {
-        loyaltyModuleRouter.eventClickPromoListItem(dataLayerSinglePromoCodeList, title);
+        eventClickPromoListItem(dataLayerSinglePromoCodeList, title);
+    }
+
+    public void eventClickPromoListItem(List<Object> list, String promoName) {
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+                DataLayer.mapOf(
+                        "event", "promoView",
+                        "eventCategory", "promo microsite - promo list",
+                        "eventAction", "impression on promo",
+                        "eventLabel", promoName,
+                        "ecommerce", DataLayer.mapOf(
+                                "promoClick", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
+                                                list.toArray(new Object[list.size()]
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
     }
 
     public void eventPromoListClickCopyToClipboardPromoCode(Context context,String promoName) {

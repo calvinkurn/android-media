@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.crashlytics.android.Crashlytics;
@@ -101,6 +102,7 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
@@ -323,7 +325,6 @@ import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
-import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutRouter;
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity;
 import com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListMarketplaceActivity;
 import com.tokopedia.recentview.RecentViewInternalRouter;
@@ -567,7 +568,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TopAdsDashboardRouter,
         NpsRouter,
         DigitalRouter,
-        TrackingPromoCheckoutRouter,
         TopAdsRouter,
         CMRouter,
         ReferralRouter,
@@ -1131,16 +1131,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void actionOpenGeneralWebView(Activity activity, String mobileUrl) {
         activity.startActivity(BannerWebView.getCallingIntent(activity, mobileUrl));
-    }
-
-    @Override
-    public void sendEventImpressionPromoList(List<Object> dataLayerSinglePromoCodeList, String title) {
-        TrackingUtils.eventImpressionPromoList(this, dataLayerSinglePromoCodeList, title);
-    }
-
-    @Override
-    public void eventClickPromoListItem(List<Object> dataLayerSinglePromoCodeList, String title) {
-        TrackingUtils.eventClickPromoListItem(this, dataLayerSinglePromoCodeList, title);
     }
 
     @Override
@@ -2224,13 +2214,20 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
         UserSessionInterface userSession = new UserSession(this);
         if (userSession.isLoggedIn()) {
-            UnifyTracking.eventShopSendChat(context);
+            eventShopSendChat();
             Intent intent = getAskSellerIntent(this, shopId, shopName, "", TkpdInboxRouter.SHOP);
             context.startActivity(intent);
         } else {
             Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
             ((Activity) context).startActivityForResult(intent, 100);
         }
+    }
+
+    private void eventShopSendChat(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(AppEventTracking.Event.SHOP_PAGE,
+                AppEventTracking.Category.SHOP_PAGE,
+                AppEventTracking.Action.SHOP_PAGE,
+                "");
     }
 
     public void init() {
@@ -2539,8 +2536,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                     productId, shopId, source));
         } else {
             goToCreateMerchantRedirect(context);
-            UnifyTracking.eventTopAdsSwitcher(this, AppEventTracking.Category.SWITCHER);
+            eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
         }
+    }
+
+    public static void eventTopAdsSwitcher(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.NAVIGATION_DRAWER,
+                AppEventTracking.Category.TOPADS_SWITCHER,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.OPEN_TOP_SELLER + label);
     }
 
     @Override
@@ -3212,11 +3217,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return MitraToppersRouterInternal.getMitraToppersActivityIntent(context);
     }
 
-    @Override
-    public void sendEventTrackingWithShopInfo(String event, String category, String action, String label, String shopId, boolean isGoldMerchant, boolean isOfficialStore) {
-        // ignore
-    }
-
     public boolean isFeedShopPageEnabled() {
         return remoteConfig.getBoolean("mainapp_enable_feed_shop_page", Boolean.TRUE);
     }
@@ -3310,15 +3310,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return dd4Seesion;
     }
 
-    @Override
-    public void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain, String shopLocation, boolean isShopOfficaial, boolean isFollowed) {
-        TrackingUtils.sendMoEngageFavoriteEvent(getAppContext(), shopName, shopID, shopDomain, shopLocation, isShopOfficaial, isFollowed);
-    }
 
     @Override
     public void setTrackingUserId(String userId, Context applicationContext) {
         onAppsFlyerInit();
-        TrackingUtils.eventPushUserID(getAppContext(), getTkpdCoreRouter().legacySessionHandler().getGTMLoginID());
+        TrackApp.getInstance().getGTM()
+                .pushUserId(userId);
         if (!BuildConfig.DEBUG && Crashlytics.getInstance() != null)
             Crashlytics.setUserIdentifier(userId);
         UserSessionInterface userSession = new UserSession(this);
@@ -3364,18 +3361,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sendEventCouponPageClosed() {
-        UnifyTracking.eventCouponPageClosed(this);
-    }
-
-    @Override
-    public void sendEventMyCouponClicked() {
-        UnifyTracking.eventMyCouponClicked(this);
-    }
-
-    @Override
     public void sendEventCouponChosen(Context context, String title) {
-        UnifyTracking.eventCouponChosen(this, title);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.EVENT_TOKO_POINT,
+                AppEventTracking.Category.TOKO_POINTS_PROMO_COUPON_PAGE,
+                AppEventTracking.Action.CHOOSE_COUPON,
+                title);
     }
 
     @Override

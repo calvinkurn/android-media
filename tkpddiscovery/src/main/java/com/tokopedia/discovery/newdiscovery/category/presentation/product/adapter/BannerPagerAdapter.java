@@ -10,11 +10,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.BannerModel;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +49,7 @@ public class BannerPagerAdapter extends PagerAdapter {
             bannerImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    UnifyTracking.eventBannerClickCategory(view.getContext(), categoryId,bannerList.get(position).getUrl());
+                    eventBannerClickCategory(categoryId,bannerList.get(position).getUrl());
                     switch ((DeepLinkChecker.getDeepLinkType(bannerList.get(position).getUrl()))) {
                         case DeepLinkChecker.BROWSE:
                             DeepLinkChecker.openBrowse(bannerList.get(position).getUrl(), context);
@@ -72,6 +75,14 @@ public class BannerPagerAdapter extends PagerAdapter {
         );
         container.addView(view);
         return view;
+    }
+
+    private void eventBannerClickCategory(String parentCat, String bannerName){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.BANNER_CLICK,
+                bannerName);
     }
 
     @Override

@@ -9,9 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.intermediary.domain.model.BannerModel;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +62,7 @@ public class BannerPagerAdapter extends PagerAdapter {
             bannerImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    UnifyTracking.eventBannerClickCategory(view.getContext(), categoryId, bannerList.get(position).getUrl());
+                    eventBannerClickCategory(categoryId, bannerList.get(position).getUrl());
                     if (listener != null) {
                         BannerModel model = bannerList.get(position);
                         String categoryName =model.getCategoryName().toLowerCase();
@@ -81,6 +84,14 @@ public class BannerPagerAdapter extends PagerAdapter {
         );
         container.addView(view);
         return view;
+    }
+
+    private void eventBannerClickCategory(String parentCat, String bannerName){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.BANNER_CLICK,
+                bannerName);
     }
 
     @Override

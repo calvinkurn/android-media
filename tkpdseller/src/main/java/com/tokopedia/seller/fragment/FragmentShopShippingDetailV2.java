@@ -36,6 +36,8 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -63,6 +65,7 @@ import com.tokopedia.seller.selling.model.orderShipping.OrderShop;
 import com.tokopedia.seller.selling.presenter.listener.SellingView;
 import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
 import com.tokopedia.seller.selling.view.fragment.CustomScannerBarcodeActivity;
+import com.tokopedia.track.TrackApp;
 
 import org.parceler.Parcels;
 
@@ -452,8 +455,16 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     public void onDetailClick() {
-        UnifyTracking.eventConfirmShippingDetails(getActivity());
+        eventConfirmShippingDetails();
         startActivity(ShippingConfirmationDetail.createInstance(getActivity(), orderShippingList, permission, userId, invoiceUrl, invoicePdf));
+    }
+
+    public void eventConfirmShippingDetails() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CONFIRM_SHIPPING,
+                AppEventTracking.Category.SHIPPING,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.DETAILS);
     }
 
     public void onAgencySelect(int position) {
@@ -525,7 +536,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     private void cancelShipping(String remark) {
-        UnifyTracking.eventConfirmShippingCancel(getActivity());
+        eventConfirmShippingCancel();
         bundle = new Bundle();
         ModelParamSelling modelParamSelling = new ModelParamSelling();
         modelParamSelling.setActionType("reject");
@@ -541,6 +552,15 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 //        facadeAction.cancelShipping(remark, onProcessShippingListener());
     }
 
+    public static void eventConfirmShippingCancel() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CONFIRM_SHIPPING,
+                AppEventTracking.Category.SHIPPING,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.CANCEL);
+    }
+
+
     private void confirmShipping() {
         bundle = new Bundle();
         ModelParamSelling modelParamSelling = new ModelParamSelling();
@@ -552,8 +572,16 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         modelParamSelling.setShipmentName(getAgencyName());
         modelParamSelling.setSpId(getServiceId());
         bundle.putParcelable(SellingService.MODEL_PARAM_SELLING_KEY, Parcels.wrap(modelParamSelling));
-        UnifyTracking.eventConfirmShipping(getActivity());
+        eventConfirmShipping();
         ((SellingDetailActivity) getActivity()).SellingAction(SellingService.CONFIRM_SHIPPING, bundle);
+    }
+
+    public void eventConfirmShipping() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CONFIRM_SHIPPING,
+                AppEventTracking.Category.SHIPPING,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.CONFIRMATION);
     }
 
     private boolean checkConfirmationError() {

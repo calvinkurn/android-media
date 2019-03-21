@@ -3,6 +3,7 @@ package com.tokopedia.core.analytics.container;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -41,6 +42,9 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String KEY_CATEGORY = "eventCategory";
     private static final String KEY_ACTION = "eventAction";
     private static final String KEY_LABEL = "eventLabel";
+    private static final String USER_ID = "userId";
+    private static final String SHOP_ID = "shopId";
+    private static final String SHOP_TYPE = "shopType";
 
     // have status that describe pending.
 
@@ -114,6 +118,24 @@ public class GTMAnalytics extends ContextAnalytics {
         log(getContext(), eventName, values);
 
         getTagManager().getDataLayer().pushEvent(eventName, values);
+    }
+
+    @Override
+    public void sendGTMGeneralEvent(String event, String category, String action, String label,
+                                    String shopId, String shopType, String userId,
+                                    @Nullable Map<String, Object> customDimension) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(KEY_EVENT, event);
+        map.put(KEY_CATEGORY, category);
+        map.put(KEY_ACTION, action);
+        map.put(KEY_LABEL, label);
+        map.put(USER_ID, userId);
+        map.put(SHOP_TYPE, shopType);
+        map.put(SHOP_ID, shopId);
+        if (customDimension!= null) {
+            map.putAll(customDimension);
+        }
+        pushGeneral(map);
     }
 
     private static void log(Context context, String eventName, Map<String, Object> values) {

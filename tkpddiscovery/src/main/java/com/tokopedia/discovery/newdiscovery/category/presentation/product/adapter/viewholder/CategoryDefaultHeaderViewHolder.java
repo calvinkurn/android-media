@@ -12,7 +12,9 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -32,6 +34,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
+import com.tokopedia.track.TrackApp;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -138,7 +141,7 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
             expandLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UnifyTracking.eventShowMoreCategory(v.getContext(), categoryHeaderModel.getDepartementId());
+                    eventShowMoreCategory(categoryHeaderModel.getDepartementId());
                     categoryAdapter.addDataChild(categoryHeaderModel.getChildCategoryModelList()
                             .subList(6, categoryHeaderModel.getChildCategoryModelList().size()));
                     expandLayout.setVisibility(View.GONE);
@@ -165,6 +168,16 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
             totalProduct.setVisibility(View.VISIBLE);
         }
     }
+
+    public void eventShowMoreCategory(String parentCat) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.CATEGORY_MORE,
+                AppEventTracking.EventLabel.CATEGORY_SHOW_MORE
+        ).getEvent());
+    }
+
 
     private int getCategoryWidth() {
         WindowManager wm = (WindowManager) MainApplication.getAppContext().getSystemService(Context.WINDOW_SERVICE);

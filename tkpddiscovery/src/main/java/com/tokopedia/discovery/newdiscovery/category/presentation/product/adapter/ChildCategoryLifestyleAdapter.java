@@ -13,6 +13,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,10 +66,24 @@ public class ChildCategoryLifestyleAdapter extends RecyclerView.Adapter<ChildCat
                                 "creative", model.getCategoryName()
                         )
                 );
-                TrackingUtils.eventCategoryLifestyleClick(v.getContext(), model.getCategoryUrl(), list);
+                eventCategoryLifestyleClick(model.getCategoryUrl(), list);
                 listener.onCategoryRevampClick(model);
             }
         });
+    }
+
+    public static void eventCategoryLifestyleClick(String categoryUrl, List<Object> list) {
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+                DataLayer.mapOf("event", "promoClick",
+                        "eventCategory", "category page",
+                        "eventAction", "click subcategory",
+                        "eventLabel", categoryUrl,
+                        "ecommerce", DataLayer.mapOf(
+                                "promoClick", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(list.toArray(new Object[list.size()])))),
+                        "destinationURL", categoryUrl
+                )
+        );
     }
 
 

@@ -31,7 +31,9 @@ import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
@@ -133,6 +135,7 @@ import com.tokopedia.tokopoints.TokopointApplinkModule;
 import com.tokopedia.tokopoints.TokopointApplinkModuleLoader;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.tracking.applink.TrackingAppLinkModule;
 import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
 import com.tokopedia.train.applink.TrainApplinkModule;
@@ -304,7 +307,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             if (getIntent().getExtras() != null) {
                 Bundle bundle = getIntent().getExtras();
                 if (bundle.getBoolean(Constants.EXTRA_PUSH_PERSONALIZATION, false)) {
-                    UnifyTracking.eventPersonalizedClicked(this, bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
+                    eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
                 } else if (bundle.getBoolean(Constant.EXTRA_APPLINK_FROM_PUSH, false)) {
                     int notificationType = bundle.getInt(Constant.EXTRA_NOTIFICATION_TYPE, 0);
                     int notificationId = bundle.getInt(Constant.EXTRA_NOTIFICATION_ID, 0);
@@ -329,6 +332,14 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             }
         }
         finish();
+    }
+
+    public void eventPersonalizedClicked(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.OPEN_PUSH_NOTIFICATION,
+                AppEventTracking.Category.PUSH_NOTIFICATION,
+                AppEventTracking.Action.OPEN,
+                label);
     }
 
     private void routeFromApplink(Uri applink) {

@@ -36,6 +36,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.track.TrackApp;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -155,8 +156,8 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                 .map(new Func1<Boolean, Boolean>() {
                     @Override
                     public Boolean call(Boolean b) {
-                        TrackingUtils.eventPushUserID(BaseActivity.this,
-                                SessionHandler.getGTMLoginID(MainApplication.getAppContext()));
+                        TrackApp.getInstance().getGTM()
+                                .pushUserId(SessionHandler.getGTMLoginID(MainApplication.getAppContext()));
                         TrackingUtils.eventOnline(BaseActivity.this,
                                 SessionHandler.getGTMLoginID(MainApplication.getAppContext()));
                         return true;

@@ -32,14 +32,6 @@ public interface LoyaltyModuleRouter {
 
     void actionOpenGeneralWebView(Activity activity, String url);
 
-    void sendEventImpressionPromoList(List<Object> dataLayerSinglePromoCodeList, String title);
-
-    void eventClickPromoListItem(List<Object> dataLayerSinglePromoCodeList, String title);
-
-    void sendEventCouponPageClosed();
-
-    void sendEventMyCouponClicked();
-
     void sendEventCouponChosen(Context context, String title);
 
     void sendEventDigitalEventTracking(Context context, String text, String failmsg);

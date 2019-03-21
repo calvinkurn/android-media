@@ -1739,11 +1739,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         (getActivity());
                 navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_LOGIN);
                 if (productData.getInfo().getHasVariant())
-                    UnifyTracking.eventClickCartVariant(getActivity(), generateVariantString());
+                    eventClickCartVariant();
             } else {
                 startActivity(TransactionCartRouter.createInstanceCartActivity(getActivity()));
                 if (productData.getInfo().getHasVariant())
-                    UnifyTracking.eventClickCartVariant(getActivity(), generateVariantString());
+                    eventClickCartVariant();
             }
             return true;
         } else if (i == R.id.action_report) {
@@ -1758,6 +1758,14 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void eventClickCartVariant(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                "clickPDP",
+                "product detail page",
+                "click - cart button on sticky header",
+                generateVariantString());
     }
 
     @Override

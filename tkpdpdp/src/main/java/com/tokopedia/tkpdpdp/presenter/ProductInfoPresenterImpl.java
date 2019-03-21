@@ -11,6 +11,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.var.ProductItem;
@@ -18,6 +19,7 @@ import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductInfoView;
 import com.tokopedia.core.analytics.*;
+import com.tokopedia.track.TrackApp;
 
 import java.util.List;
 
@@ -70,7 +72,15 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
     }
 
     public void processToShareProduct(Context context, @NonNull LinkerData shareData) {
-        UnifyTracking.eventShareProduct(context);
+        eventShareProduct();
+    }
+
+    private void eventShareProduct() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.PRODUCT_DETAIL_PAGE,
+                AppEventTracking.Category.PRODUCT_DETAIL,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.SHARE);
     }
 
     private ProductPass generateProductPass(Bundle bundleData, Uri uriData) {

@@ -940,19 +940,6 @@ public abstract class SellerRouterApplication extends MainApplication
                 requestCode);
     }
 
-    /**
-     * Temporary Solution to send custom dimension for shop
-     * should not pass the param, after tkpd common com in
-     */
-    @Override
-    public void sendEventTrackingWithShopInfo(String event, String category, String action, String label,
-                                              String shopId, boolean isGoldMerchant, boolean isOfficialStore) {
-        UnifyTracking.sendGTMEvent(getAppContext(), new EventTracking(event, category, action, label)
-                .setUserId(getSession().getUserId())
-                .setShopId(shopId)
-                .setShopType(isGoldMerchant, isOfficialStore).getEvent());
-    }
-
     @Override
     public void goToCreateTopadsPromo(Context activity, String productId, String shopId, String source) {
         Intent intent = TopAdsCheckProductPromoActivity.createIntent(activity, shopId, productId, source);
@@ -1517,14 +1504,10 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain, String shopLocation, boolean isShopOfficaial, boolean isFollowed) {
-        TrackingUtils.sendMoEngageFavoriteEvent(getAppContext(), shopName, shopID, shopDomain, shopLocation, isShopOfficaial, isFollowed);
-    }
-
-    @Override
     public void setTrackingUserId(String userId, Context applicationContext) {
         onAppsFlyerInit();
-        TrackingUtils.eventPushUserID(applicationContext, userId);
+        TrackApp.getInstance().getGTM()
+                .pushUserId(userId);
         if (!BuildConfig.DEBUG && Crashlytics.getInstance() != null)
             Crashlytics.setUserIdentifier(userId);
         UserData userData = new UserData();

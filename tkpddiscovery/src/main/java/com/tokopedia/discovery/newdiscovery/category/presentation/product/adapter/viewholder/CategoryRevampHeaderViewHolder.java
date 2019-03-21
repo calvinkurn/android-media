@@ -18,7 +18,9 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -38,6 +40,7 @@ import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
+import com.tokopedia.track.TrackApp;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -167,7 +170,7 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
             expandLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UnifyTracking.eventShowMoreCategory(v.getContext(), categoryHeaderModel.getDepartementId());
+                    eventShowMoreCategory(categoryHeaderModel.getDepartementId());
                     categoryAdapter.addDataChild(categoryHeaderModel.getChildCategoryModelList()
                             .subList(9, categoryHeaderModel.getChildCategoryModelList().size()));
                     expandLayout.setVisibility(View.GONE);
@@ -212,6 +215,13 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
         }
     }
 
+    public void eventShowMoreCategory(String parentCat) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.CATEGORY_MORE,
+                AppEventTracking.EventLabel.CATEGORY_SHOW_MORE);
+    }
 
     private Runnable runnableIncrement() {
         return new Runnable() {

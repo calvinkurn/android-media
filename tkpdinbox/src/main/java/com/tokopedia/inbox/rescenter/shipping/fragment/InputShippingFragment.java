@@ -43,6 +43,7 @@ import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingFragmentImp
 import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingFragmentPresenter;
 import com.tokopedia.inbox.rescenter.shipping.view.InputShippingFragmentView;
 import com.tokopedia.inbox.util.analytics.InboxAnalytics;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,9 +112,11 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     public void setOnConfirmButtonClick() {
         if (paramsModel.isFromChat()) {
             if (paramsModel.isEdit())
-                UnifyTracking.eventTracking(getActivity(),InboxAnalytics.eventResoChatClickSaveEditAWB(paramsModel.getResolutionID()));
+                TrackApp.getInstance().getGTM().sendGeneralEvent(
+                        InboxAnalytics.eventResoChatClickSaveEditAWB(paramsModel.getResolutionID()).getEvent());
             else
-                UnifyTracking.eventTracking(getActivity(),InboxAnalytics.eventResoChatClickSaveInputAWB(paramsModel.getResolutionID()));
+                TrackApp.getInstance().getGTM().sendGeneralEvent(
+                        InboxAnalytics.eventResoChatClickSaveInputAWB(paramsModel.getResolutionID()).getEvent());
         }
         presenter.onConfirrmButtonClick();
     }

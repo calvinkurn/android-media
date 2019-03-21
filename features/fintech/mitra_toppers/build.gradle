@@ -25,6 +25,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.trackinterface)
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler

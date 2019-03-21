@@ -3,8 +3,12 @@ package com.tokopedia.loyalty.listener;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
+import com.tokopedia.loyalty.view.LoyaltyTracking;
 import com.tokopedia.loyalty.view.adapter.GlobalMainTabSelectedListener;
+import com.tokopedia.track.TrackApp;
 
 
 /**
@@ -23,7 +27,8 @@ public class LoyaltyActivityTabSelectedListener extends GlobalMainTabSelectedLis
     public void onTabSelected(TabLayout.Tab tab) {
         super.onTabSelected(tab);
         if(tab.getPosition() == 1) {
-            loyaltyModuleRouter.sendEventMyCouponClicked();
+            LoyaltyTracking.sendEventMyCouponClicked();
         }
     }
+
 }

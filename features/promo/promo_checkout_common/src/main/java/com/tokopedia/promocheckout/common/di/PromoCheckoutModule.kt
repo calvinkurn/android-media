@@ -6,8 +6,6 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutRouter
-import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.domain.CancelPromoUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeFinalUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase

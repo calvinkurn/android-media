@@ -11,9 +11,12 @@ import android.widget.RelativeLayout;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.intermediary.view.adapter.YoutubeIntermediaryActivity;
+import com.tokopedia.track.TrackApp;
 
 /**
  * Created by alifa on 5/26/17.
@@ -98,13 +101,21 @@ public class YoutubeViewHolder extends RelativeLayout {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventVideoIntermediary(v.getContext(),departmentId,videoUrl);
+                eventVideoIntermediary(departmentId,videoUrl);
                 youTubeThumbnailLoadInProcess.clickVideo(videoTitle);
                 Intent intent = new Intent(getContext(), YoutubeIntermediaryActivity.class);
                 intent.putExtra(YoutubeIntermediaryActivity.EXTRA_YOUTUBE_VIDEO_URL, videoUrl);
                 getContext().startActivity(intent);
             }
         };
+    }
+
+    public void eventVideoIntermediary(String parentCat, String videoName) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.INTERMEDIARY_VIDEO_CLICK,
+                videoName);
     }
 
     public void destroyReleaseProcess() {

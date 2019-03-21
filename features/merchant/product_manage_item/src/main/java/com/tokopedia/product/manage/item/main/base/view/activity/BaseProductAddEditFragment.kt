@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
+import com.tokopedia.core.analytics.nishikino.model.EventTracking
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_IS_EDITTED
@@ -239,7 +240,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                     val isMoveToGm: Boolean = data.getBooleanExtra(EXTRA_IS_MOVE_TO_GM, false)
                     if (isMoveToGm) {
                         saveDraft(false)
-                        UnifyTracking.eventClickYesGoldMerchantAddProduct(activity)
+                        eventClickYesGoldMerchantAddProduct()
                         goToGoldMerchantPage()
                         activity?.finish()
                     }
@@ -277,6 +278,14 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             populateView(currentProductAddViewModel)
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun eventClickYesGoldMerchantAddProduct() {
+        TrackApp.getInstance()!!.gtm.sendGeneralEvent(
+            AppEventTracking.Event.CLICK_GOLD_MERCHANT,
+            AppEventTracking.Category.GOLD_MERCHANT,
+            AppEventTracking.Action.CLICK,
+            AppEventTracking.EventLabel.BUY_GM_ADD_PRODUCT)
     }
 
     private fun onCategoryChanged(productCategory: ProductCategory) {
@@ -467,7 +476,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         context?.let {
             val app = it.applicationContext
             if (app is AbstractionRouter){
-                TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(ProductVariantConstant.TRACKING_EVENT,
+                TrackApp.getInstance()?.gtm?.sendGeneralEvent(TrackAppUtils.gtmData(ProductVariantConstant.TRACKING_EVENT,
                         ProductVariantConstant.TRACKING_EVENT_CATEGORY,
                         ProductVariantConstant.TRACKING_EVENT_ACTION, null))
             }
@@ -513,11 +522,27 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         )
         for (labelAnalytics in listLabelAnalytics) {
             if (isAddStatus()) {
-                UnifyTracking.eventAddProductAdd(activity, labelAnalytics)
+                eventAddProductAdd(labelAnalytics)
             } else if (isEditStatus()) {
-                UnifyTracking.eventAddProductEdit(activity, labelAnalytics)
+                eventAddProductEdit(labelAnalytics)
             }
         }
+    }
+
+    private fun eventAddProductAdd(label: String) {
+        TrackApp.getInstance()!!.gtm.sendGeneralEvent(
+            AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
+            AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
+            AppEventTracking.AddProduct.EVENT_ACTION_ADD,
+            label)
+    }
+
+    private fun eventAddProductEdit(label: String) {
+        TrackApp.getInstance()!!.gtm.sendGeneralEvent(
+            AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
+            AppEventTracking.AddProduct.CATEGORY_EDIT_PRODUCT,
+            AppEventTracking.AddProduct.EVENT_ACTION_EDIT,
+            label)
     }
 
     private fun isEdittingDraft() = isEditStatus() && productDraftId > 0

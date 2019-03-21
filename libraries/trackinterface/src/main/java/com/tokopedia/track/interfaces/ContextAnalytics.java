@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class ContextAnalytics implements Analytics {
@@ -83,5 +84,7 @@ public abstract class ContextAnalytics implements Analytics {
     public void clearEnhanceEcommerce() {}
     public void pushEvent(String eventName, Map<String, Object> values){}
 
-
+    public void sendGTMGeneralEvent(String event, String category, String action, String label,
+                                    String shopId, String shopType, String userId,
+                                    @Nullable Map<String, Object> customDimension) { }
 }

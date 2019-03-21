@@ -8,6 +8,7 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;

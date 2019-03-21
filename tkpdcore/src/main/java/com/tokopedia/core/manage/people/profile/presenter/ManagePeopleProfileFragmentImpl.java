@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -17,6 +19,7 @@ import com.tokopedia.core.manage.people.profile.model.Profile;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.track.TrackApp;
 
 /**
  * Created on 6/27/16.
@@ -152,9 +155,18 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
 
     @Override
     public void setOnChangePhoneButtonClick(Context context, String userPhone) {
-        UnifyTracking.eventClickChangePhoneNumber(context);
+        eventClickChangePhoneNumber();
         view.startChangePhoneNumber();
     }
+
+    public void eventClickChangePhoneNumber() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
+                AppEventTracking.Category.PROFILE_PAGE,
+                AppEventTracking.Action.CLICK_CHANGE_PHONE_NUMBER,
+                "");
+    }
+
 
     @Override
     public void setOnChangePhoneNumberEmptyEmailClick(Context context) {

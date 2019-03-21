@@ -1,6 +1,7 @@
 package com.tokopedia.core.share.presenter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.Toast;
@@ -12,6 +13,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.share.listener.ShareView;
@@ -25,6 +27,7 @@ import com.tokopedia.linker.interfaces.ShareCallback;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.linker.model.LinkerShareResult;
+import com.tokopedia.track.TrackApp;
 
 import java.io.FileInputStream;
 
@@ -248,8 +251,16 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     public void shareCategory(LinkerData data, String media) {
         String[] shareParam = data.getSplittedDescription(",");
         if (shareParam.length == 2) {
-            UnifyTracking.eventShareCategory(view.getActivity(), shareParam[0], shareParam[1] + "-" + media);
+            eventShareCategory(shareParam[0], shareParam[1] + "-" + media);
         }
+    }
+
+    public void eventShareCategory(String parentCat, String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.CATEGORY_SHARE,
+                label);
     }
 
     private void sendAnalyticsToGTM(String type, String channel) {
