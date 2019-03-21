@@ -16,17 +16,12 @@ import com.tokopedia.gamification.taptap.data.entiity.GamiTapEggHome;
 public interface TapTapTokenContract {
 
     interface View extends CustomerView {
-        void onSuccessGetToken(TokenDataEntity tokenData);
 
         void onSuccessGetToken(GamiTapEggHome gamiTapEggHome, boolean isRefetchEgg);
 
         void onSuccessDownloadAllAsset();
 
-        void onErrorGetToken(CrackResultEntity throwable);
-
         void onSuccessCrackToken(CrackResultEntity crackResult);
-
-        void onErrorCrackToken(CrackResultEntity crackResult);
 
         void onFinishCrackToken();
 

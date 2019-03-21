@@ -42,19 +42,6 @@ import java.util.List;
 
 public class WidgetCrackResultTapTap extends RelativeLayout {
 
-    private static final String TEXT_SIZE_REWARD_LARGE = "large";
-    private static final String TEXT_SIZE_REWARD_MEDIUM = "medium";
-    private static final String TEXT_SIZE_REWARD_SMALL = "small";
-    private static final int DURATION_ROTATION_CRACK_RESULT = 15000;
-    private static final int DURATION_ANIM_BG_CRACK_RESULT = 800;
-    private static final int DURATION_ALPHA_ANIM = 800;
-    private static final int DURATION_ALPHA_ANIM_TEXT = 500;
-    private static final long SLIDE_INFO_LEFT_TO_RIGHT_DURATION = 250;
-    private static final long SLIDE_INFO_LEFT_TO_RIGHT_START_DELAY = 100;
-    private static final long SLIDE_INFO_LEFT_TO_RIGHT_ALPHA_DURATION = 250;
-    private static final long COUNTER_ANIMATION_DURATION = 500;
-    private static final long COUNTER_ANIMATION_START_DELAY = 200;
-    private static final long SLIDE_INFO_LEFT_TO_RIGHT_ALPHA_DURATION_START_OFFSET = 500;
     private static final long REWARDS_TEXT_TRANSLATE_START_DELAY = 200;
     private static final long REWARDS_IMAGE_TRANSLATE_DURATION = 300;
     private static final long REWARDS_IMAGE_STABLE_DURATION_AFTER_FIRST_TRANSLATE = 1000;
@@ -106,15 +93,8 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
     }
 
     private void initImageBound(View rootView) {
-        int rootWidth = rootView.getWidth();
         int rootHeight = rootView.getHeight();
-        int imageWidth = TokenMarginUtil.getEggWidth(rootWidth, rootHeight);
         int imageMarginBottom = rootView.getHeight() - TokenMarginUtil.getEggMarginBottom(rootHeight) + getContext().getResources().getDimensionPixelOffset(R.dimen.dp_32);
-//        RelativeLayout.LayoutParams ivFullLp = (RelativeLayout.LayoutParams) imageViewCrackResult.getLayoutParams();
-//        ivFullLp.width = imageWidth;
-//        ivFullLp.height = imageHeight;
-//        imageViewCrackResult.requestLayout();
-
         RelativeLayout.LayoutParams tvFullLp = (RelativeLayout.LayoutParams) listCrackResultText.getLayoutParams();
         tvFullLp.bottomMargin = imageMarginBottom;
         listCrackResultText.requestLayout();
@@ -123,30 +103,11 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
 
     public void showCrackResult(CrackResultEntity crackResult) {
         this.crackResult = crackResult;
-        showListCrackResultText(crackResult.getBenefits(), crackResult.getBenefitLabel());
+        showListCrackResultText(crackResult.getBenefits());
         showCrackResultImageAnimation(crackResult);
     }
 
     private void showCrackResultImageAnimation(CrackResultEntity crackResult) {
-//        int actionBarHeight = 0;
-//        TypedValue tv = new TypedValue();
-//        if (getContext().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-//            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-//        }
-//
-//        DisplayMetrics metrics = new DisplayMetrics();
-//        ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
-//        float screenHeightQuarter = metrics.heightPixels / 4;
-//        screenHeightQuarter = screenHeightQuarter - actionBarHeight;
-//
-//        final AnimationSet animationCrackResult = new AnimationSet(true);
-//        Animation scaleAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_scale_crack_result);
-//        animationCrackResult.addAnimation(scaleAnimationCrackResult);
-//        TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0f, 0f, 0f, -screenHeightQuarter);
-//        animationCrackResult.addAnimation(translateAnimationCrackResult);
-//        animationCrackResult.setFillAfter(true);
-//        animationCrackResult.setDuration(1000);
-//        animationCrackResult.setInterpolator(new BounceBackExponentialInterpolator(0.1, 15));
         initRewardsTranslateAnimator();
 
         if (crackResult.getImageBitmap() != null && !crackResult.getImageBitmap().isRecycled()) {
@@ -161,7 +122,6 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
                     }
                 }
             }, REWARDS_TEXT_TRANSLATE_START_DELAY);
-//            startImageResultAnimation(imageViewCrackResult, animationCrackResult);
         } else {
             if (!TextUtils.isEmpty(crackResult.getImageUrl())) {
                 Glide.with(getContext())
@@ -183,6 +143,8 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
     void initRewardsTranslateAnimator() {
         if (rewardTranslateAnimatorSet == null) {
             rewardTranslateAnimatorSet = new AnimatorSet();
+
+            // Set Reward Image Translate Animation
             AnimatorSet animatorSetTranslate2 = new AnimatorSet();
 
             PropertyValuesHolder pvhAlpha =
@@ -214,6 +176,10 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
             animatorSetTranslate2.setDuration(REWARDS_IMAGE_TRANSLATE_DURATION);
             animatorSetTranslate2.playTogether(translate2, fadeOut);
 
+
+
+
+            //Set Reward Text Translate Animation
             ObjectAnimator translateRewardsText = ObjectAnimator.ofPropertyValuesHolder(listCrackResultText, pvhTranslateImageResult);
 
             ObjectAnimator fadeInAnimatorReward = ObjectAnimator.ofPropertyValuesHolder(listCrackResultText, pvhAlpha);
@@ -263,8 +229,7 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
         }
     };
 
-    public void showListCrackResultText(List<CrackBenefitEntity> rewardTexts, String
-            labelCrackResult) {
+    public void showListCrackResultText(List<CrackBenefitEntity> rewardTexts) {
         for (CrackBenefitEntity rewardText : rewardTexts) {
             TextView textView = new TextView(getContext());
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);

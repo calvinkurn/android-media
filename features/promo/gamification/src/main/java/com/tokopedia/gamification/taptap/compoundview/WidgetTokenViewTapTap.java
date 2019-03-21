@@ -62,8 +62,6 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
     public static final int STEP1_END_MASKED_PERCENT = 70;
     public static final double RATIO_LIGHT_WIDTH = 0.3;
     public static final int CRACK_STEP3_DEGREE = 4;
-    private static final long INFINITE_BOUNCE_START_DELAY = 2000;
-    private static final long INFINITE_BOUNCE_DURATION = 180;
     private static final long CRACK_BOUNCE_DURATION = 250;
     private static final long CRACK_BOUNCE_BACK_DURATION = 200;
     private static final long GLOW_IN_OUT_DURATION = 1000;

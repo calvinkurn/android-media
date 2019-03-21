@@ -15,15 +15,12 @@ import com.tokopedia.gamification.GamificationConstants;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.data.entity.ResponseCrackResultEntity;
-import com.tokopedia.gamification.data.entity.ResultStatusEntity;
 import com.tokopedia.gamification.taptap.compoundview.NetworkErrorHelper;
 import com.tokopedia.gamification.taptap.contract.TapTapTokenContract;
 import com.tokopedia.gamification.taptap.data.entiity.GamiTapEggHome;
 import com.tokopedia.gamification.taptap.data.entiity.PlayWithPointsEntity;
 import com.tokopedia.gamification.taptap.data.entiity.TapTapBaseEntity;
 import com.tokopedia.gamification.taptap.data.entiity.TokenAsset;
-import com.tokopedia.gamification.taptap.model.ExpiredCrackResult;
-import com.tokopedia.gamification.taptap.model.GeneralErrorCrackResult;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -147,14 +144,6 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
             }
         });
 
-    }
-
-    private CrackResultEntity createExpiredCrackResult(ResultStatusEntity resultStatus) {
-        return new ExpiredCrackResult(getView().getContext(), resultStatus);
-    }
-
-    private CrackResultEntity createGeneralErrorCrackResult() {
-        return new GeneralErrorCrackResult(getView().getContext());
     }
 
     @Override

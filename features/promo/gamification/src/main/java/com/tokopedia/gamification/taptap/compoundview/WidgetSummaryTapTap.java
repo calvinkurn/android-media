@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WidgetSummaryTapTap extends FrameLayout {
-    private View rootView;
     private ImageView imageSinar;
     private Button btnBottomLeft;
     private Button btnBottomRight;
@@ -61,12 +60,12 @@ public class WidgetSummaryTapTap extends FrameLayout {
     }
 
     private void init() {
-        rootView = LayoutInflater.from(getContext()).inflate(R.layout.widget_reward_summary_tap_tap, this, true);
-        imageSinar = findViewById(R.id.image_sinar);
-        rvRewards = findViewById(R.id.rv_rewards);
-        btnTop = findViewById(R.id.btn_top);
-        btnBottomLeft = findViewById(R.id.btn_bottom_left);
-        btnBottomRight = findViewById(R.id.btn_bottom_right);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.widget_reward_summary_tap_tap, this, true);
+        imageSinar = view.findViewById(R.id.image_sinar);
+        rvRewards = view.findViewById(R.id.rv_rewards);
+        btnTop = view.findViewById(R.id.btn_top);
+        btnBottomLeft = view.findViewById(R.id.btn_bottom_left);
+        btnBottomRight = view.findViewById(R.id.btn_bottom_right);
         rewardsAdapter = new RewardsAdapter(null);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), R.drawable.item_divider_summary_page);
         dividerItemDecoration.setHorizontalMargin(getResources().getDimensionPixelOffset(R.dimen.dp_8));
