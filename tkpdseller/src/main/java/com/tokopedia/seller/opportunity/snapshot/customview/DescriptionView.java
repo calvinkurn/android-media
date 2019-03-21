@@ -7,21 +7,22 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.opportunity.customview.DescriptionTextView;
 import com.tokopedia.seller.opportunity.snapshot.listener.SnapShotFragmentView;
+import com.tokopedia.track.TrackApp;
 
 /**
  * Created by hangnadi on 3/1/17.
  */
 public class DescriptionView extends BaseView<ProductDetailData, SnapShotFragmentView> {
 
-    DescriptionTextView tvDesc;
+    TextView tvDesc;
     ImageView ivToggle;
 
     private boolean isExpand = false;
@@ -32,7 +33,7 @@ public class DescriptionView extends BaseView<ProductDetailData, SnapShotFragmen
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(getLayoutView(), this, true);
 
-        tvDesc = (DescriptionTextView) findViewById(R.id.tv_desc);
+        tvDesc = findViewById(R.id.tv_desc);
         ivToggle = (ImageView) findViewById(R.id.iv_toggle);
     }
 
@@ -109,10 +110,18 @@ public class DescriptionView extends BaseView<ProductDetailData, SnapShotFragmen
         public void onClick(View v) {
             if (!isExpand) {
                 renderExpand();
-                UnifyTracking.eventPDPExpandDescription(v.getContext());
+                eventPDPExpandDescription();
             } else {
                 renderCollapse();
             }
         }
+    }
+
+    public void eventPDPExpandDescription() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.PRODUCT_DETAIL_PAGE,
+                AppEventTracking.Category.PRODUCT_DETAIL,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.PRODUCT_DESCRIPTION);
     }
 }
