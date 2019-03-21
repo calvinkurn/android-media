@@ -39,6 +39,7 @@ public class DynamicHomeChannel {
         public static final String LAYOUT_BU_WIDGET = "bu_widget";
         public static final String LAYOUT_TOPADS = "topads";
         public static final String LAYOUT_SPOTLIGHT = "spotlight";
+        public static final String LAYOUT_HOME_WIDGET = "home_widget";
 
         @Expose
         @SerializedName("id")
