@@ -6,6 +6,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -34,10 +35,10 @@ public class AffiliateAnalytics {
     }
 
     private HashMap<String, Object> setDefaultData(String screenName,
-                                                  String event,
-                                                  String category,
-                                                  String action,
-                                                  String label) {
+                                                   String event,
+                                                   String category,
+                                                   String action,
+                                                   String label) {
         HashMap<String, Object> mapEvent = new HashMap<>();
         mapEvent.put(PARAM_SCREEN_NAME, screenName);
         mapEvent.put(PARAM_EVENT_NAME, event);
@@ -48,11 +49,12 @@ public class AffiliateAnalytics {
     }
 
     private HashMap<String, Object> setDefaultDataWithUserId(String screenName,
-                                                            String event,
-                                                            String category,
-                                                            String action,
-                                                            String label) {
-        HashMap<String, Object> mapEvent = setDefaultData(screenName, event, category, action, label);
+                                                             String event,
+                                                             String category,
+                                                             String action,
+                                                             String label) {
+        HashMap<String, Object> mapEvent = setDefaultData(screenName, event, category, action,
+                label);
         mapEvent.put(PARAM_USER_ID, userSession.getUserId());
         return mapEvent;
     }
@@ -80,7 +82,7 @@ public class AffiliateAnalytics {
         return abstractionRouter.getAnalyticTracker();
     }
 
-//    3
+    //    3
     public void onSearchSubmitted(String keyword) {
         getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
@@ -93,7 +95,7 @@ public class AffiliateAnalytics {
         );
     }
 
-//    4
+    //    4
     public void onInfoClicked() {
         getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
@@ -106,7 +108,7 @@ public class AffiliateAnalytics {
         );
     }
 
-//    5
+    //    5
     public void onProfileClicked(String userId) {
         getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
@@ -119,7 +121,7 @@ public class AffiliateAnalytics {
         );
     }
 
-//    6
+    //    6
     public void onBannerClicked(String activityId, String imageUrl) {
         getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
@@ -132,7 +134,7 @@ public class AffiliateAnalytics {
         );
     }
 
-//    7
+    //    7
     public void onQuickFilterClicked(String category) {
         getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
@@ -145,7 +147,7 @@ public class AffiliateAnalytics {
         );
     }
 
-//    9
+    //    9
     public void onProductImpression(String productName, String productId, int productComission,
                                     String sectionName, int position) {
         HashMap<String, Object> data = setDefaultDataWithUserId(
@@ -163,7 +165,7 @@ public class AffiliateAnalytics {
         getAnalyticTracker().sendEnhancedEcommerce(data);
     }
 
-//    10
+    //    10
     public void onProductClicked(String productName, String productId, int productComission,
                                  String sectionName, int position) {
         HashMap<String, Object> data = setDefaultDataWithUserId(
@@ -181,7 +183,7 @@ public class AffiliateAnalytics {
         getAnalyticTracker().sendEventTracking(data);
     }
 
-//    11
+    //    11
     public void onPopularClicked(String profileId) {
         getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
@@ -194,7 +196,7 @@ public class AffiliateAnalytics {
         );
     }
 
-//    12
+    //    12
     public void onSortClicked(String profileId) {
         getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
@@ -207,7 +209,7 @@ public class AffiliateAnalytics {
         );
     }
 
-//    13
+    //    13
     public void onFilterClicked(String profileId) {
         getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
@@ -220,6 +222,78 @@ public class AffiliateAnalytics {
         );
     }
 
+    //    19
+    public void onJatahRekomendasiHabisDialogShow() {
+        getAnalyticTracker().sendEventTracking(
+                setDefaultDataWithUserId(
+                        AffiliateEventTracking.Screen.BYME_CREATE_POST,
+                        AffiliateEventTracking.Event.AFFILIATE_CLICK,
+                        AffiliateEventTracking.Category.BYME_CREATE_POST,
+                        "popup message jatah rekomendasi habis",
+                        userSession.getUserId()
+                )
+        );
+    }
+
+    //    20
+    public void onTambahGambarButtonClicked() {
+        getAnalyticTracker().sendEventTracking(
+                setDefaultDataWithUserId(
+                        AffiliateEventTracking.Screen.BYME_CREATE_POST,
+                        AffiliateEventTracking.Event.AFFILIATE_CLICK,
+                        AffiliateEventTracking.Category.BYME_CREATE_POST,
+                        "click tambah foto",
+                        userSession.getUserId()
+                )
+        );
+    }
+
+    //    21
+    public void onTambahVideoButtonClicked() {
+        getAnalyticTracker().sendEventTracking(
+                setDefaultDataWithUserId(
+                        AffiliateEventTracking.Screen.BYME_CREATE_POST,
+                        AffiliateEventTracking.Event.AFFILIATE_CLICK,
+                        AffiliateEventTracking.Category.BYME_CREATE_POST,
+                        "click tambah video",
+                        userSession.getUserId()
+                )
+        );
+    }
+
+//    22
+    public void onSelesaiCreateButtonClicked(List<String> productIds) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < productIds.size(); i++) {
+            stringBuilder.append(productIds.get(i));
+            if (i != productIds.size() - 1) {
+                stringBuilder.append(",");
+            }
+        }
+        getAnalyticTracker().sendEventTracking(
+                setDefaultDataWithUserId(
+                        AffiliateEventTracking.Screen.BYME_CREATE_POST,
+                        AffiliateEventTracking.Event.AFFILIATE_CLICK,
+                        AffiliateEventTracking.Category.BYME_CREATE_POST,
+                        "click post sekarang",
+                        String.format("%s,%s", userSession.getUserId(), stringBuilder.toString())
+                )
+        );
+    }
+
+//    23
+    public void onTambahTagButtonClicked() {
+        getAnalyticTracker().sendEventTracking(
+                setDefaultDataWithUserId(
+                        AffiliateEventTracking.Screen.BYME_CREATE_POST,
+                        AffiliateEventTracking.Event.AFFILIATE_CLICK,
+                        AffiliateEventTracking.Category.BYME_CREATE_POST,
+                        "click tambah tag",
+                        userSession.getUserId()
+                )
+        );
+    }
+
     public void onSearchNotFound(String keyword) {
         getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
@@ -228,54 +302,6 @@ public class AffiliateAnalytics {
                         AffiliateEventTracking.Category.BYME_EXPLORE,
                         AffiliateEventTracking.Action.SEARCH_NOT_FOUND,
                         keyword
-                )
-        );
-    }
-
-    public void onJatahRekomendasiHabisDialogShow() {
-        getAnalyticTracker().sendEventTracking(
-                setDefaultDataWithUserId(
-                        AffiliateEventTracking.Screen.BYME_EXPLORE,
-                        AffiliateEventTracking.Event.AFFILIATE_VIEW,
-                        AffiliateEventTracking.Category.BYME_EXPLORE,
-                        AffiliateEventTracking.Action.IMPRESSION_JATAH_HABIS,
-                        ""
-                )
-        );
-    }
-
-    public void onJatahRekomendasiHabisPdp() {
-        getAnalyticTracker().sendEventTracking(
-                setDefaultDataWithUserId(
-                        AffiliateEventTracking.Screen.BYME_PDP,
-                        AffiliateEventTracking.Event.AFFILIATE_VIEW,
-                        AffiliateEventTracking.Category.BYME_EXPLORE,
-                        AffiliateEventTracking.Action.IMPRESSION_JATAH_HABIS,
-                        ""
-                )
-        );
-    }
-
-    public void onCobaSekarangButtonClicked() {
-        getAnalyticTracker().sendEventTracking(
-                setDefaultDataWithUserId(
-                        AffiliateEventTracking.Screen.BYME_CLAIM_TOKOPEDIA,
-                        AffiliateEventTracking.Event.AFFILIATE_CLICK,
-                        AffiliateEventTracking.Category.BYME_ONBOARD,
-                        AffiliateEventTracking.Action.CLICK_COBA_SEKARANG,
-                        ""
-                )
-        );
-    }
-
-    public void onTentangKomisiButtonClicked() {
-        getAnalyticTracker().sendEventTracking(
-                setDefaultDataWithUserId(
-                        AffiliateEventTracking.Screen.BYME_CLAIM_TOKOPEDIA,
-                        AffiliateEventTracking.Event.AFFILIATE_CLICK,
-                        AffiliateEventTracking.Category.BYME_ONBOARD,
-                        AffiliateEventTracking.Action.CLICK_TENTANG_KOMISI,
-                        ""
                 )
         );
     }
@@ -311,30 +337,6 @@ public class AffiliateAnalytics {
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
                         AffiliateEventTracking.Category.BYME_CREATE_POST,
                         AffiliateEventTracking.Action.CLICK_LIHAT_CONTOH,
-                        productId
-                )
-        );
-    }
-
-    public void onTambahGambarButtonClicked(String productId) {
-        getAnalyticTracker().sendEventTracking(
-                setDefaultDataWithUserId(
-                        AffiliateEventTracking.Screen.BYME_CREATE_POST,
-                        AffiliateEventTracking.Event.AFFILIATE_CLICK,
-                        AffiliateEventTracking.Category.BYME_CREATE_POST,
-                        AffiliateEventTracking.Action.CLICK_TAMBAH_GAMBAR,
-                        productId
-                )
-        );
-    }
-
-    public void onSelesaiCreateButtonClicked(String productId) {
-        getAnalyticTracker().sendEventTracking(
-                setDefaultDataWithUserId(
-                        AffiliateEventTracking.Screen.BYME_CREATE_POST,
-                        AffiliateEventTracking.Event.AFFILIATE_CLICK,
-                        AffiliateEventTracking.Category.BYME_CREATE_POST,
-                        AffiliateEventTracking.Action.CLICK_SELESAI,
                         productId
                 )
         );

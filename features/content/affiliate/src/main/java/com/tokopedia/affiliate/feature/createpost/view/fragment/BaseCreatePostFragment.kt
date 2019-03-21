@@ -222,9 +222,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             Toast.makeText(it, R.string.text_full_affiliate_title, Toast.LENGTH_LONG)
                     .show()
             it.finish()
-            if (isTypeAffiliate()) {
-                affiliateAnalytics.onJatahRekomendasiHabisPdp()
-            }
+            affiliateAnalytics.onJatahRekomendasiHabisDialogShow()
         }
     }
 
@@ -292,7 +290,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             val numberOfProducts = if (isTypeAffiliate()) viewModel.adIdList.size else
                 viewModel.productIdList.size
             if (numberOfProducts < viewModel.maxProduct) {
-                relatedAddBtn.setOnClickListener { onRelatedAddProductClick() }
+                relatedAddBtn.setOnClickListener {
+                    onRelatedAddProductClick()
+                    affiliateAnalytics.onTambahTagButtonClicked()
+                }
                 relatedAddBtn.setTextColor(MethodChecker.getColor(it, R.color.medium_green))
             } else {
                 relatedAddBtn.setOnClickListener { }
@@ -332,9 +333,14 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         relatedProductRv.setHasFixedSize(true)
         doneBtn.setOnClickListener {
             saveDraftAndSubmit()
+            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList)
         }
         addImageBtn.setOnClickListener {
             goToImagePicker()
+            affiliateAnalytics.onTambahGambarButtonClicked()
+        }
+        addVideoBtn.setOnClickListener {
+            affiliateAnalytics.onTambahVideoButtonClicked()
         }
         caption.afterTextChanged {
             viewModel.caption = it
@@ -356,9 +362,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun goToImagePicker() {
-        if (isTypeAffiliate()) {
-            affiliateAnalytics.onTambahGambarButtonClicked(viewModel.productIdList.firstOrNull())
-        }
         activity?.let {
             startActivityForResult(
                     CreatePostImagePickerActivity.getInstance(
@@ -400,10 +403,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
 
     private fun saveDraftAndSubmit() {
-        if (isTypeAffiliate()) {
-            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList.firstOrNull())
-        }
-
         if (isFormInvalid()) {
             return
         }
