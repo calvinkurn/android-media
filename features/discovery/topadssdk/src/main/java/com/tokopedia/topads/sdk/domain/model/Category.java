@@ -17,25 +17,28 @@ public class Category implements Parcelable {
     private static final String KEY_ID = "id";
 
     @SerializedName(KEY_ID)
-    @Expose
-    private String id = "";
+    private int id = 0;
 
     public Category() {
     }
 
+    public Category(int id) {
+        this.id = id;
+    }
+
     public Category(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_ID)){
-            setId(object.getString(KEY_ID));
+            setId(object.getInt(KEY_ID));
         }
     }
 
     protected Category(Parcel in) {
-        id = in.readString();
+        id = in.readInt();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
+        dest.writeInt(id);
     }
 
     @Override
@@ -55,11 +58,11 @@ public class Category implements Parcelable {
         }
     };
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 }

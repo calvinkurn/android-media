@@ -53,7 +53,7 @@ public class GetExploreDataUseCase {
         String query = GraphqlHelper.loadRawString(context.getResources(),
                 R.raw.query_get_explore_data);
 
-        GraphqlRequest request = new GraphqlRequest(query, GetExploreData.class, variables);
+        GraphqlRequest request = new GraphqlRequest(query, GetExploreData.class, variables, false);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(request);
