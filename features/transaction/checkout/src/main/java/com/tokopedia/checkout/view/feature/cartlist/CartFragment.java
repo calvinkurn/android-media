@@ -1930,16 +1930,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onErrorCheckPromoFirstStep(@NonNull String message) {
-        if (TextUtils.isEmpty(message)) {
-            message = "Terjadi kesalahan. Ulangi beberapa saat lagi.";
-        }
-        if (getView() != null) {
-            ToasterError.make(getView(), message, ToasterError.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
     public void onSuccessClearPromoStack(int shopIndex) {
         if (shopIndex != -1) {
             CartShopHolderData cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(shopIndex);
