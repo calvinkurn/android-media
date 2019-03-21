@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -250,6 +251,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         presenter.attachView(this);
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
+        if(getContext() != null) {
+            view.setPadding(0, DisplayMetricUtils.getStatusBarHeight(getContext()), 0, 0);
+        }
         return view;
     }
 
@@ -259,6 +263,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         fragmentRootView = view;
         initResources();
         disableExpandFeedSection();
+
     }
 
     private void initResources() {
