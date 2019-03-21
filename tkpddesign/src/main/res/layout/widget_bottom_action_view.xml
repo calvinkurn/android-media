@@ -49,7 +49,7 @@
 
         <View
             android:id="@+id/view_separator"
-            android:layout_width="2dp"
+            android:layout_width="0.5dp"
             android:layout_height="@dimen/dp_32"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_5"
