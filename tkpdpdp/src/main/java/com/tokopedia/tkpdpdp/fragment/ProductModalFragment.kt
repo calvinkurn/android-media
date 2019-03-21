@@ -260,6 +260,9 @@ class ProductModalFragment : BaseDaggerFragment() {
         } else {
             if (tradeInParams!!.isEligible != 0) {
                 tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
+                if (tradeInParams!!.usedPrice > 0){
+                    tv_trade_in.setOnClickListener { goToHargaFinal() }
+                }
             }
         }
 
