@@ -4,19 +4,19 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.support.annotation.GuardedBy;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.util.Preconditions;
 
-//import com.google.android.gms.common.util.ProcessUtils;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+//import com.google.android.gms.common.util.ProcessUtils;
 
 
 public class TrackApp {
@@ -52,7 +52,7 @@ public class TrackApp {
     /**
      * @return
      */
-    @Nullable
+    @NonNull
     public static TrackApp getInstance() {
         synchronized (LOCK2) {
             if (trackApp == null) {
@@ -179,14 +179,17 @@ public class TrackApp {
         }
     }
 
+    @NonNull
     public ContextAnalytics getGTM() {
         return getValue(GTM);
     }
 
+    @NonNull
     public ContextAnalytics getAppsFlyer() {
         return getValue(APPSFLYER);
     }
 
+    @NonNull
     public ContextAnalytics getMoEngage() {
         return getValue(MOENGAGE);
     }
@@ -197,7 +200,7 @@ public class TrackApp {
      * @param TAG
      * @return
      */
-    @Deprecated
+    @Deprecated @NonNull
     public ContextAnalytics getValue(String TAG) {
         if (!INSTANCES.containsKey(TAG)) {
             throw new RuntimeException(String.format("no instance related to this TAG : \'%s\' ", TAG));
