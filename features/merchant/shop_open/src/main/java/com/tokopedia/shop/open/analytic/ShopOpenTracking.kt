@@ -17,7 +17,7 @@ import com.tokopedia.shop.open.analytic.ShopOpenTrackingConstant.*
 class ShopOpenTracking(private val sellerModuleRouter: SellerModuleRouter, private val userSession: UserSessionInterface) {
 
     private fun eventOpenShop(category: String, action: String, label: String) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             ShopOpenTrackingConstant.CLICK_CREATE_SHOP,
             category,
             action,
@@ -32,8 +32,8 @@ class ShopOpenTracking(private val sellerModuleRouter: SellerModuleRouter, priva
             "")
     }
 
-    fun eventMoEngageOpenShop(context: Context, sendMoEngageCreateShopEvent: String) {
-        TrackApp.getInstance()?.moEngage?.sendTrackEvent(
+    fun eventMoEngageOpenShop(sendMoEngageCreateShopEvent: String) {
+        TrackApp.getInstance().moEngage.sendTrackEvent(
             mapOf(
                 "screen_name" to sendMoEngageCreateShopEvent,
                 "User_ID" to userSession.userId,
@@ -201,6 +201,6 @@ class ShopOpenTracking(private val sellerModuleRouter: SellerModuleRouter, priva
         eventTracking[EVENT_ACTION] = CLICK_SELL
         eventTracking[EVENT_LABEL] = TAKE_TO_SHOP
         eventTracking[USER_ID] = if (userSession.isLoggedIn) userSession.userId else "0"
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(eventTracking)
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventTracking)
     }
 }

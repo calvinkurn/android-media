@@ -83,11 +83,11 @@ fun sendTrack(it: TrackingDbModel) {
         }
         if (enhanceECommerceMap != null && enhanceECommerceMap.isNotEmpty()) {
             map.putAll(enhanceECommerceMap)
-            TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(map)
+            TrackApp.getInstance().gtm.sendEnhanceECommerceEvent(map)
             hasSent = true
         }
     }
     if (!hasSent) {
-        TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(map)
+        TrackApp.getInstance().gtm.sendEnhanceECommerceEvent(map)
     }
 }

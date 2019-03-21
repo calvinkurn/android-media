@@ -22,7 +22,7 @@ constructor() {
     private val GENERIC_CATEGORY = "homepage"
 
     fun eventClickBackOnBelanjaPage() {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_BACK,
                 GENERIC_CATEGORY,
                 Action.CLICK_BACK_BELANJA,
@@ -30,7 +30,7 @@ constructor() {
     }
 
     fun eventClickViewAllOnBelanjaPage() {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_HOME_PAGE,
                 GENERIC_CATEGORY,
                 Action.CLICK_VIEW_ALL_BELANJA,
@@ -47,7 +47,7 @@ constructor() {
                 promotions.add(promotion)
             }
 
-            TrackApp.getInstance()?.getGTM()?.sendEnhanceECommerceEvent(
+            TrackApp.getInstance().gtm..sendEnhanceECommerceEvent(
                     DataLayer.mapOf(
                             "event", Event.IMPRESSION_PROMO,
                             "eventCategory", GENERIC_CATEGORY,
@@ -72,7 +72,7 @@ constructor() {
             val promotions = ArrayList<Any>()
             promotions.add(promotion)
 
-            TrackApp.getInstance()?.getGTM()?.sendEnhanceECommerceEvent(
+            TrackApp.getInstance().gtm..sendEnhanceECommerceEvent(
                     DataLayer.mapOf(
                             "event", Event.CLICK_PROMO,
                             "eventCategory", GENERIC_CATEGORY,
@@ -91,7 +91,7 @@ constructor() {
     }
 
     fun eventImpressionHomePage(iconName: String, iconPosition: Int) {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.IMPRESSION_HOME_PAGE,
                 GENERIC_CATEGORY,
                 Action.IMPRESSION_CATEGORY_BELANJA,
@@ -99,7 +99,7 @@ constructor() {
     }
 
     fun eventClickOnCategoryBelanja(iconName: String, iconPosition: Int) {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_HOME_PAGE,
                 GENERIC_CATEGORY,
                 Action.CLICK_CATEGORY_BELANJA,
@@ -107,7 +107,7 @@ constructor() {
     }
 
     fun eventClickBackOnLayananPage() {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_HOME_PAGE,
                 GENERIC_CATEGORY,
                 Action.CLICK_BACK_LAYANAN,
@@ -115,7 +115,7 @@ constructor() {
     }
 
     fun eventClickHeaderTabLayanan(tabName: String) {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_HOME_PAGE,
                 GENERIC_CATEGORY,
                 Action.CLICK_TAB_LAYANAN,
@@ -123,7 +123,7 @@ constructor() {
     }
 
     fun eventImpressionIconLayanan(analyticsModel: DigitalBrowseServiceAnalyticsModel) {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.IMPRESSION_HOME_PAGE,
                 GENERIC_CATEGORY,
                 String.format(Action.IMPRESSION_ICON_LAYANAN, analyticsModel.headerName),
@@ -132,7 +132,7 @@ constructor() {
     }
 
     fun eventClickIconLayanan(analyticsModel: DigitalBrowseServiceAnalyticsModel) {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_HOME_PAGE,
                 GENERIC_CATEGORY,
                 String.format(Action.CLICK_ICON_LAYANAN, analyticsModel.headerName),

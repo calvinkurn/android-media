@@ -486,7 +486,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     fun sendMoEngageFavoriteEvent(shopName: String, shopID: String, shopDomain: String, shopLocation: String,
                                   isShopOfficaial: Boolean, isFollowed: Boolean) {
-        TrackApp.getInstance()?.moEngage?.sendTrackEvent(mapOf(
+        TrackApp.getInstance().moEngage.sendTrackEvent(mapOf(
             "shop_name" to shopName,
             "shop_id" to shopID,
             "shop_location" to shopLocation,

@@ -476,7 +476,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         context?.let {
             val app = it.applicationContext
             if (app is AbstractionRouter){
-                TrackApp.getInstance()?.gtm?.sendGeneralEvent(TrackAppUtils.gtmData(ProductVariantConstant.TRACKING_EVENT,
+                TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(ProductVariantConstant.TRACKING_EVENT,
                         ProductVariantConstant.TRACKING_EVENT_CATEGORY,
                         ProductVariantConstant.TRACKING_EVENT_ACTION, null))
             }

@@ -16,7 +16,7 @@ class ChatTemplateAnalytics @Inject constructor() {
     }
 
     fun eventClickTemplate() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 TopChatAnalytics.Name.INBOX_CHAT,
                 TopChatAnalytics.Category.ADD_TEMPLATE,
                 TopChatAnalytics.Action.UPDATE_TEMPLATE,

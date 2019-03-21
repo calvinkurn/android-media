@@ -10,14 +10,14 @@ class InstantLoanAnalytics @Inject
 constructor() {
 
     fun eventLoanBannerImpression(eventLabel: String) {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(InstantLoanEventConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(InstantLoanEventConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
                 InstantLoanEventConstants.Action.PL_BANNER_IMPRESSION,
                 eventLabel))
     }
 
     fun eventLoanBannerClick(eventLabel: String) {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 InstantLoanEventConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
                 InstantLoanEventConstants.Action.PL_BANNER_CLICK,
@@ -26,7 +26,7 @@ constructor() {
     }
 
     fun eventCariPinjamanClick(eventLabel: String) {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 InstantLoanEventConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
                 InstantLoanEventConstants.Action.PL_CARI_PINJAMAN_CLICK,
@@ -35,7 +35,7 @@ constructor() {
     }
 
     fun eventLoanPopupClick(eventLabel: String) {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 InstantLoanEventConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
                 InstantLoanEventConstants.Action.PL_POP_UP_CLICK,
@@ -44,7 +44,7 @@ constructor() {
     }
 
     fun eventIntroSliderScrollEvent(eventLabel: String) {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 InstantLoanEventConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
                 InstantLoanEventConstants.Action.PL_POP_UP_CLICK,
@@ -53,7 +53,7 @@ constructor() {
     }
 
     fun eventInstantLoanPermissionStatus(eventLabel: String) {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 InstantLoanEventConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
                 InstantLoanEventConstants.Action.PL_POP_UP_CLICK,

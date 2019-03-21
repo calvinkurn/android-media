@@ -47,7 +47,7 @@ class BroadcastMessageCreateActivity : BaseSimpleActivity(), HasComponent<Broadc
     }
 
     fun sendGTM(isOk: Boolean) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_CONFIRMATION,
             BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
             BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_CANCEL,

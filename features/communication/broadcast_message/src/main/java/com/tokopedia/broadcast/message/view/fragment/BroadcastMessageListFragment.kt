@@ -122,7 +122,7 @@ class BroadcastMessageListFragment: BaseListFragment<TopChatBlastSeller, Broadca
     }
 
     private fun gotoCreateBroadcast() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
+        TrackApp.getInstance().gtm.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
                         BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
                         BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_CREATE_CLICK,"")
         context?.let {

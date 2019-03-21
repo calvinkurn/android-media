@@ -20,14 +20,14 @@ class TalkAnalytics @Inject constructor() {
 
     fun trackSendCommentTalk(source: String) {
         if (source == TalkDetailsActivity.SOURCE_SHOP) {
-            TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+            TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_SHOP_PAGE,
                     CATEGORY_SHOP_PAGE,
                     "click on send comment on discussion box",
                     ""
             ))
         } else {
-            TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+            TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_INBOX_CHAT,
                     CATEGORY_INBOX_TALK,
                     "send comment talk",
@@ -37,11 +37,11 @@ class TalkAnalytics @Inject constructor() {
     }
 
     fun sendScreen(activity: Activity, screenName: String) {
-        TrackApp.getInstance()?.gtm?.sendScreenAuthenticated(screenName)
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
     fun trackClickReplyButton(talkId: String) {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_INBOX_CHAT,
                 CATEGORY_INBOX_TALK,
                 "click on reply discussion",
@@ -50,7 +50,7 @@ class TalkAnalytics @Inject constructor() {
     }
 
     fun trackClickReplyButtonFromShop(talkId: String) {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_SHOP_PAGE,
                 CATEGORY_SHOP_PAGE,
                 "click on reply discussion box",
@@ -59,7 +59,7 @@ class TalkAnalytics @Inject constructor() {
     }
 
     fun trackClickProduct() {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_INBOX_CHAT,
                 CATEGORY_INBOX_TALK,
                 "click link / photo product",
@@ -68,7 +68,7 @@ class TalkAnalytics @Inject constructor() {
     }
 
     fun trackClickProductFromAttachment() {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_SHOP_PAGE,
                 CATEGORY_SHOP_PAGE,
                 "click link / photo from talk",
@@ -85,7 +85,7 @@ class TalkAnalytics @Inject constructor() {
     }
 
     fun trackClickProductFromAttachmentFromShop() {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_SHOP_PAGE,
                 CATEGORY_SHOP_PAGE,
                 "click product link from talk on shop page",
@@ -94,7 +94,7 @@ class TalkAnalytics @Inject constructor() {
     }
 
     fun trackSelectTab(tabName: String) {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_INBOX_CHAT,
                 CATEGORY_INBOX_TALK,
                 "click on tab",
@@ -103,7 +103,7 @@ class TalkAnalytics @Inject constructor() {
     }
 
     fun trackClickFilter(filter: String) {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_INBOX_CHAT,
                 CATEGORY_INBOX_TALK,
                 "choose filter",
@@ -113,7 +113,7 @@ class TalkAnalytics @Inject constructor() {
 
 
     fun trackClickOnMenuDelete() {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_INBOX_CHAT,
                 CATEGORY_INBOX_TALK,
                 "click three balls menu",
@@ -123,7 +123,7 @@ class TalkAnalytics @Inject constructor() {
 
     fun trackClickOnMenuDeleteInDetail(source: String) {
         if (source == TalkDetailsActivity.SOURCE_SHOP) {
-            TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+            TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_SHOP_PAGE,
                     CATEGORY_SHOP_PAGE,
                     "click three balls menu",
@@ -135,7 +135,7 @@ class TalkAnalytics @Inject constructor() {
     }
 
     fun trackClickOnMenuFollow() {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_INBOX_CHAT,
                 CATEGORY_INBOX_TALK,
                 "click three balls menu",
@@ -146,7 +146,7 @@ class TalkAnalytics @Inject constructor() {
 
     fun trackClickOnMenuFollowInDetail(source: String) {
         if (source == TalkDetailsActivity.SOURCE_SHOP) {
-            TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+            TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_SHOP_PAGE,
                     CATEGORY_SHOP_PAGE,
                     "click three balls menu",
@@ -158,7 +158,7 @@ class TalkAnalytics @Inject constructor() {
     }
 
     fun trackClickOnMenuUnfollow() {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_INBOX_CHAT,
                 CATEGORY_INBOX_TALK,
                 "click three balls menu",
@@ -168,7 +168,7 @@ class TalkAnalytics @Inject constructor() {
 
     fun trackClickOnMenuUnfollowInDetail(source: String) {
         if (source == TalkDetailsActivity.SOURCE_SHOP) {
-            TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+            TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_SHOP_PAGE,
                     CATEGORY_SHOP_PAGE,
                     "click three balls menu",
@@ -180,7 +180,7 @@ class TalkAnalytics @Inject constructor() {
     }
 
     fun trackClickOnMenuReport() {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_INBOX_CHAT,
                 CATEGORY_INBOX_TALK,
                 "click three balls menu",
@@ -191,7 +191,7 @@ class TalkAnalytics @Inject constructor() {
 
     fun trackClickOnMenuReportInDetail(source: String) {
         if (source == TalkDetailsActivity.SOURCE_SHOP) {
-            TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+            TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_SHOP_PAGE,
                     CATEGORY_SHOP_PAGE,
                     "click three balls menu",
@@ -203,7 +203,7 @@ class TalkAnalytics @Inject constructor() {
     }
 
     fun trackClickUserProfile() {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_INBOX_CHAT,
                 CATEGORY_INBOX_TALK,
                 "click user profile from talk on inbox",
@@ -212,7 +212,7 @@ class TalkAnalytics @Inject constructor() {
     }
 
     fun trackClickUserProfileFromShop() {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_SHOP_PAGE,
                 CATEGORY_SHOP_PAGE,
                 "click user profile from talk on shop page",

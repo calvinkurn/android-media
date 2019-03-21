@@ -632,7 +632,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         dismissLoadingLogin()
 
         analytics.trackEventSuccessLoginSosmed(loginMethod)
-        TrackApp.getInstance()?.moEngage?.setMoEUserAttributesLogin(
+        TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
             userSession.userId,
             userSession.name,
             userSession.email,
@@ -653,7 +653,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         analytics.trackLoginPhoneNumberSuccess()
         analytics.eventSuccessLogin(actionLoginMethod)
 
-        TrackApp.getInstance()?.moEngage?.setMoEUserAttributesLogin(
+        TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
             userSession.userId,
             userSession.name,
             userSession.email,
@@ -803,7 +803,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         dismissLoadingLogin()
         analytics.eventSuccessLoginEmail()
         analytics.trackClickOnLoginButtonSuccess()
-        TrackApp.getInstance()?.moEngage?.setMoEUserAttributesLogin(
+        TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
             userSession.userId,
             userSession.name,
             userSession.email,

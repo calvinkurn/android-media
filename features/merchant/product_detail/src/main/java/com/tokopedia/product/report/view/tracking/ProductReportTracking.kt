@@ -14,7 +14,7 @@ class ProductReportTracking() {
     }
 
     fun eventSubmitReport() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 REPORT_SUCCESS_CAMEL,
                 PRODUCT_DETAIL,
                 REPORT_SUCCESS,

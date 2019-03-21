@@ -106,7 +106,7 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
         list_product_upload.adapter = productAdapter
         list_product_upload.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         switch_upload_product.setOnCheckedChangeListener { _, isChecked ->
-            TrackApp.getInstance()?.gtm?.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
+            TrackApp.getInstance().gtm.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
                         BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
                         BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_TOGGLE_ATTACH_PRODUCT, "")
             isShowDialogWhenBack = true
@@ -128,7 +128,7 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
             if (switch_upload_product.isChecked && productIds.isEmpty()){
                 ToasterError.make(view, getString(R.string.empty_attached_product),
                         BaseToaster.LENGTH_INDEFINITE).setAction(R.string.OK){
-                    TrackApp.getInstance()?.gtm?.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_CONFIRMATION,
+                    TrackApp.getInstance().gtm.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_CONFIRMATION,
                                 BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
                                 BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_ERROR_ATTACH_PRODUCT,
                                 BroadcastMessageConstant.VALUE_GTM_EVENT_LABEL_ERROR_OK)
@@ -165,7 +165,7 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
     }
 
     private fun openImagePicker() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
+        TrackApp.getInstance().gtm.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
                     BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
                     BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_CLICK_IMG_UPLOAD, "")
         context?.let {
@@ -186,7 +186,7 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && data != null){
             if (requestCode == REQUEST_CODE_IMAGE) {
-                TrackApp.getInstance()?.gtm?.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
+                TrackApp.getInstance().gtm.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
                             BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
                             BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_PICK_IMG, "")
 

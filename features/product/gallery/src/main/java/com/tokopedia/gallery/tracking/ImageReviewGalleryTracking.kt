@@ -14,7 +14,7 @@ object ImageReviewGalleryTracking {
     private val PRODUCT_DETAIL_PAGE = "product detail page"
 
     fun eventClickReviewGalleryItem(context: Context, productId: String) {
-        TrackApp.getInstance()?.getGTM()?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm..sendGeneralEvent(TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
                 "click - review gallery on review gallery list page",

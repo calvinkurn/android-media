@@ -38,11 +38,11 @@ class SettingBankAnalytics() {
     }
 
     fun sendScreen(activity: Activity, screenName: String) {
-        TrackApp.getInstance()?.gtm?.sendScreenAuthenticated( screenName)
+        TrackApp.getInstance().gtm.sendScreenAuthenticated( screenName)
     }
 
     fun trackAddNewBankAccount() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_BANK_ACCOUNT,
                 Category.BANK_ACCOUNT_PAGE,
                 "click add bank button",
@@ -51,7 +51,7 @@ class SettingBankAnalytics() {
     }
 
     fun trackConfirmYesAddBankAccount() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_CONFIRM,
                 Category.BANK_ACCOUNT_PAGE,
                 "click yes on add bank popup",
@@ -60,7 +60,7 @@ class SettingBankAnalytics() {
     }
 
     fun trackEditBankAccount() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_BANK_ACCOUNT,
                 Category.BANK_ACCOUNT_PAGE,
                 "click edit button",
@@ -69,7 +69,7 @@ class SettingBankAnalytics() {
     }
 
     fun trackConfirmYesEditBankAccount() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_CONFIRM,
                 Category.BANK_ACCOUNT_PAGE,
                 "click yes on edit popup",
@@ -78,7 +78,7 @@ class SettingBankAnalytics() {
     }
 
     fun trackDeleteBankAccount() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_BANK_ACCOUNT,
                 Category.BANK_ACCOUNT_PAGE,
                 "click delete button",
@@ -87,7 +87,7 @@ class SettingBankAnalytics() {
     }
 
     fun trackConfirmYesDeleteBankAccount() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_CONFIRM,
                 Category.BANK_ACCOUNT_PAGE,
                 "click yes on delete popup",
@@ -96,7 +96,7 @@ class SettingBankAnalytics() {
     }
 
     fun trackSetDefaultAccount() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_BANK_ACCOUNT,
                 Category.BANK_ACCOUNT_PAGE,
                 "click set as default button",
@@ -105,7 +105,7 @@ class SettingBankAnalytics() {
     }
 
     fun trackConfirmYesSetDefaultAccount() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_CONFIRM,
                 Category.BANK_ACCOUNT_PAGE,
                 "click yes on set as default popup",

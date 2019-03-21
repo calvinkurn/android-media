@@ -101,7 +101,7 @@ class BroadcastMessagePreviewFragment: BaseDaggerFragment(), BroadcastMessagePre
     private fun getTimeNow() = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
 
     private fun submitMessage() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
+        TrackApp.getInstance().gtm.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
                     BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
                     BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_SUBMIT, "")
         mutationModel?.let {presenter.sendBlastMessage(it)}
