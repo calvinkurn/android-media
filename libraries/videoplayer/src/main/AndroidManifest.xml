@@ -2,7 +2,8 @@
     package="com.tokopedia.videoplayer">
 
     <application>
-        <activity android:name=".view.activity.VideoPlayerActivity"/>
+        <activity android:name=".view.activity.VideoPlayerActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

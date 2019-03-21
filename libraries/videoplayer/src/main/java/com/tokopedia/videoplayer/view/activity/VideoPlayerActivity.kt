@@ -3,8 +3,12 @@ package com.tokopedia.videoplayer.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.support.v4.app.Fragment
+import android.view.Window
+import android.view.WindowManager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.videoplayer.view.fragment.MultipleVideoPlayerFragment
 import com.tokopedia.videoplayer.view.fragment.SingleVideoPlayerFragment
 
@@ -34,7 +38,15 @@ class VideoPlayerActivity(): BaseSimpleActivity() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        super.onCreate(savedInstanceState, persistentState)
+    }
+
     override fun getNewFragment(): Fragment {
+        toolbar.hide()
         if (intent.getStringExtra(PARAM_SINGLE_URL).isNotEmpty()) {
             return SingleVideoPlayerFragment.getInstance(intent.extras)
         } else {

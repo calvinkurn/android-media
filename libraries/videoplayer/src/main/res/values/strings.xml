@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">videoplayer</string>
+
+    <string name="error_unknown">Kesalahan tidak diketahui</string>
+    <string name="default_request_error_internal_server">Terjadi kesalahan pada server. Ulangi beberapa saat lagi</string>
+    <string name="default_request_error_timeout">Koneksi timeout. Silakan coba beberapa saat lagi</string>
 </resources>
