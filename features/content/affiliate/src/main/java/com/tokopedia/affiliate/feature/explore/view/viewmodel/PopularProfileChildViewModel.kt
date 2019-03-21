@@ -6,5 +6,6 @@ package com.tokopedia.affiliate.feature.explore.view.viewmodel
 data class PopularProfileChildViewModel(
         val name: String = "",
         val avatar: String = "",
-        val redirectUrl: String = ""
+        val redirectUrl: String = "",
+        val userId: String = ""
 )

@@ -72,7 +72,7 @@ class ExploreSectionMapper @Inject constructor() : Func1<GraphqlResponse, List<V
     private fun mapPopularProfile(section: ExplorePageSection): PopularProfileViewModel {
         val filters: MutableList<PopularProfileChildViewModel> = arrayListOf()
         section.items.forEach {
-            filters.add(PopularProfileChildViewModel(it.title, it.image, it.appLink))
+            filters.add(PopularProfileChildViewModel(it.title, it.image, it.appLink, it.userId))
         }
         return PopularProfileViewModel(filters, ExploreTitleViewModel(section.title, section.subtitle))
     }

@@ -75,6 +75,8 @@ import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -277,7 +279,10 @@ public class ExploreFragment
         }
 
         ivBack.setOnClickListener(view -> getActivity().onBackPressed());
-        ivBantuan.setOnClickListener(view -> goToEducation());
+        ivBantuan.setOnClickListener(view -> {
+            affiliateAnalytics.onInfoClicked();
+            goToEducation();
+        });
         btnBackToTop.setOnClickListener(view -> rvExplore.scrollToPosition(0));
         layoutProfile.setOnClickListener(view -> {
             if (!userSession.isLoggedIn()) {
@@ -286,7 +291,7 @@ public class ExploreFragment
                 AffiliateHelper.setFirstTimeOpenProfileFromExplore(getActivity());
                 goToProfile();
                 initProfileSection();
-                affiliateAnalytics.onClickProfileOnExplore();
+                affiliateAnalytics.onProfileClicked(userSession.getUserId());
             }
         });
         bottomActionView.setButton2OnClickListener(view -> {
@@ -299,6 +304,7 @@ public class ExploreFragment
                     FilterActivity.getIntent(getActivity(), bundle),
                     REQUEST_DETAIL_FILTER
             );
+            affiliateAnalytics.onFilterClicked(userSession.getUserId());
         });
     }
 
@@ -319,7 +325,7 @@ public class ExploreFragment
 
     @Override
     protected String getScreenName() {
-        return AffiliateEventTracking.Screen.BYME_DISCOVERY_PAGE;
+        return AffiliateEventTracking.Screen.BYME_EXPLORE;
     }
 
     @Override
@@ -465,7 +471,6 @@ public class ExploreFragment
 
     @Override
     public void onBymeClicked(ExploreCardViewModel model) {
-        affiliateAnalytics.onByMeButtonClicked(model.getProductId());
         if (isCanDoAction) {
             isCanDoAction = false;
             if (userSession.isLoggedIn()) {
@@ -492,11 +497,14 @@ public class ExploreFragment
     @Override
     public void onBannerClicked(ExploreBannerChildViewModel model) {
         goToLink(model.getRedirectUrl());
+        //TODO milhamj
+        affiliateAnalytics.onBannerClicked("");
     }
 
     @Override
     public void onProfileClicked(PopularProfileChildViewModel model) {
         goToLink(model.getRedirectUrl());
+        affiliateAnalytics.onPopularClicked(model.getUserId());
     }
 
     @Override
@@ -604,6 +612,7 @@ public class ExploreFragment
                 bundle.putParcelable(SortActivity.PARAM_SORT_SELECTED, exploreParams.getSort());
                 startActivityForResult(SortActivity.getIntent(getActivity(), bundle),
                         REQUEST_DETAIL_SORT);
+                affiliateAnalytics.onSortClicked(userSession.getUserId());
             });
         } else {
             bottomActionView.setVisibility(View.GONE);
@@ -855,8 +864,10 @@ public class ExploreFragment
     }
 
     @Override
-    public void onItemClicked(List<FilterViewModel> filters) {
+    public void onItemClicked(@NotNull List<FilterViewModel> filters,
+                              @NotNull FilterViewModel filterViewModel) {
         getFilteredFirstData(filters);
+        affiliateAnalytics.onQuickFilterClicked(filterViewModel.getName());
     }
 
     private void clearAutoCompleteAdapter(String keyword) {
