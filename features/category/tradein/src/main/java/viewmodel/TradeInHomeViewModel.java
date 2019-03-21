@@ -82,7 +82,7 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
                 gqlDeviceDiagInput.clearRequest();
                 gqlDeviceDiagInput.addRequest(new
                         GraphqlRequest(GraphqlHelper.loadRawString(activityWeakReference.get().getResources(),
-                        R.raw.gql_insert_device_diag), DeviceDiagInputResponse.class, variables,false));
+                        R.raw.gql_insert_device_diag), DeviceDiagInputResponse.class, variables, false));
                 gqlDeviceDiagInput.execute(new Subscriber<GraphqlResponse>() {
                     @Override
                     public void onCompleted() {
@@ -91,7 +91,7 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
 
                     @Override
                     public void onError(Throwable e) {
-
+                        e.printStackTrace();
                     }
 
                     @Override

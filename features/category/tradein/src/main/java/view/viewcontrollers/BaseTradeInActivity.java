@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -90,6 +91,14 @@ public abstract class BaseTradeInActivity<T extends ViewModel> extends BaseSimpl
             }
             getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.abstraction.R.color.white));
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (getMenuRes() != -1) {
+            getMenuInflater().inflate(getMenuRes(), menu);
+        }
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

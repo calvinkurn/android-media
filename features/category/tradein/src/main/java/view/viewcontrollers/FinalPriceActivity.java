@@ -232,6 +232,7 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
             @Override
             public void onClick(View widget) {
                 showTnC(R.string.tradein_tnc);
+                setVisibilityGroup(View.INVISIBLE);
             }
         };
         int greenColor = getResources().getColor(R.color.green_nob);

@@ -66,16 +66,14 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     private StepperListener stepperListener;
     private UserIdentificationAnalytics analytics;
 
-    private int projectId;
+    private static int projectId;
 
     @Inject
     UserIdentificationUploadImage.Presenter presenter;
 
     public static Fragment createInstance(int projectid) {
         UserIdentificationFormFinalFragment fragment = new UserIdentificationFormFinalFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(PARAM_PROJECTID, projectid);
-        fragment.setArguments(bundle);
+        projectId = projectid;
         return fragment;
     }
 
@@ -95,7 +93,6 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
             analytics = UserIdentificationAnalytics.createInstance(getActivity()
                     .getApplicationContext());
         }
-        projectId = getArguments().getInt(PARAM_PROJECTID, -1);
     }
 
     @Override
