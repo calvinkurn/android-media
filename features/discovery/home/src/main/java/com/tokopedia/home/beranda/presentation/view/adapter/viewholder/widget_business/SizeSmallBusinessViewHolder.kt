@@ -145,12 +145,20 @@ open class SizeSmallBusinessViewHolder (itemView: View?) : AbstractViewHolder<Ho
                         itemView.tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.label_pink))
                     }
                     2 -> {
-                        itemView.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_yellow_label)
-                        itemView.tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.label_yellow))
+                        ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_blue_label)
+                        itemView.tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.label_blue))
                     }
                     3 -> {
                         ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_green_label)
                         itemView.tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.label_green))
+                    }
+                    4 -> {
+                        itemView.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_yellow_label)
+                        itemView.tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.label_yellow))
+                    }
+                    5 -> {
+                        ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_grey_label)
+                        itemView.tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.label_grey))
                     }
                     else -> {
                         itemView.tagLine.visibility = View.GONE
