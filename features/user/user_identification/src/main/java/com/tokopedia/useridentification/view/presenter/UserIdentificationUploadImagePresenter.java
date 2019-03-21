@@ -1,10 +1,12 @@
 package com.tokopedia.useridentification.view.presenter;
 
+import android.graphics.Bitmap;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
-import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user_identification_common.KYCConstant;
@@ -80,22 +82,10 @@ public class UserIdentificationUploadImagePresenter extends
                     @Override
                     public Observable<ImageUploadModel> call(ImageUploadModel
                                                                      imageUploadModel) {
-                        return Observable.zip(Observable.just(imageUploadModel),
-                                uploadImageUseCase.createObservable(
-                                        createParam(imageUploadModel.getFilePath())
-                                ), new Func2<ImageUploadModel,
-                                        ImageUploadDomainModel<AttachmentImageModel>,
-                                        ImageUploadModel>() {
-                                    @Override
-                                    public ImageUploadModel call(ImageUploadModel
-                                                                         imageUploadModel,
-                                                                 ImageUploadDomainModel<AttachmentImageModel> uploadDomainModel) {
-                                        imageUploadModel.setPicObjKyc(uploadDomainModel
-                                                .getDataResultImageUpload().getData()
-                                                .getPicObj());
-                                        return imageUploadModel;
-                                    }
-                                });
+                        String filePath = imageUploadModel.getFilePath();
+                        imageUploadModel.setPicObjKyc(ImageHandler.encodeToBase64(filePath, Bitmap.CompressFormat.PNG));
+                        imageUploadModel.setFileName(filePath.substring(filePath.lastIndexOf("/") + 1));
+                        return Observable.just(imageUploadModel);
                     }
                 }).toList()
                 .flatMap(new Func1<List<ImageUploadModel>, Observable<ImageUploadModel>>() {
@@ -114,7 +104,7 @@ public class UserIdentificationUploadImagePresenter extends
                                                         UploadIdentificationUseCase.getRequestParam(
                                                                 imageUploadModel.getKycType(),
                                                                 imageUploadModel.getPicObjKyc(),
-                                                                imageUploadModel.getFilePath(),
+                                                                imageUploadModel.getFileName(),
                                                                 projectId
                                                         )
                                                 ), new Func2<ImageUploadModel,
