@@ -35,7 +35,7 @@
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_search_bar"/>
+                app:srcCompat="@drawable/ic_search_bar"/>
 
             <EditText
                 android:id="@+id/et_search"

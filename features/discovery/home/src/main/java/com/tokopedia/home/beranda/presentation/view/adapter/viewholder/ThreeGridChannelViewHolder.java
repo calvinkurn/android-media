@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -71,9 +72,10 @@ public class ThreeGridChannelViewHolder extends AbstractViewHolder<DynamicChanne
         try {
             final DynamicHomeChannel.Channels channel = element.getChannel();
             String titleText = element.getChannel().getHeader().getName();
-            listener.onServerTimeReceived(channel.getHeader().getServerTimeUnix());
             if (!TextUtils.isEmpty(titleText)) {
                 channelTitleContainer.setVisibility(View.VISIBLE);
+                Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
+                channelTitle.setTypeface(typeface);
                 channelTitle.setText(titleText);
             } else {
                 channelTitleContainer.setVisibility(View.GONE);
@@ -85,7 +87,7 @@ public class ThreeGridChannelViewHolder extends AbstractViewHolder<DynamicChanne
             }
             if (isSprintSale(channel)) {
                 Date expiredTime = DateHelper.getExpiredTime(channel.getHeader().getExpiredTime());
-                countDownView.setup(listener.getServerTimeOffset(), expiredTime, countDownListener);
+                countDownView.setup(element.getServerTimeOffset(), expiredTime, countDownListener);
                 countDownView.setVisibility(View.VISIBLE);
             } else {
                 countDownView.setVisibility(View.GONE);

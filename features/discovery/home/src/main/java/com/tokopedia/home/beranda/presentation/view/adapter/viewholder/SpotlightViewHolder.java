@@ -103,7 +103,7 @@ public class SpotlightViewHolder extends AbstractViewHolder<SpotlightViewModel> 
 
         @Override
         public void onBindViewHolder(SpotlightItemViewHolder holder, final int position) {
-            holder.bind(spotlightItemViewModels.get(position));
+            holder.bind(spotlightItemViewModels.get(position), position);
         }
 
         @Override
@@ -135,7 +135,7 @@ public class SpotlightViewHolder extends AbstractViewHolder<SpotlightViewModel> 
             titleTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
         }
 
-        public void bind(SpotlightItemViewModel model) {
+        public void bind(SpotlightItemViewModel model, final int position) {
             title.setTypeface(titleTypeface);
             title.setText(model.getTitle());
             if (!TextUtils.isEmpty(model.getTagName())) {
@@ -163,18 +163,15 @@ public class SpotlightViewHolder extends AbstractViewHolder<SpotlightViewModel> 
             container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //eventClickSpotlight(view.getContext(), sectionViewModel.getItemList().get(position), position);
+                    eventClickSpotlight(view.getContext(), model, position);
                     listener.onSpotlightItemClicked(DynamicLinkHelper.getActionLink(model));
 
                 }
             });
         }
 
-        private void eventClickSpotlight(Context context, HomeIconItem homeIconItem, int position) {
-            HomePageTracking.eventClickDynamicIcons(context, homeIconItem.getTitle());
-
-            HomeTrackingUtils.homeUsedCaseClick(context,
-                    homeIconItem.getTitle(), position + 1, homeIconItem.getApplink());
+        private void eventClickSpotlight(Context context, SpotlightItemViewModel model, int position) {
+            HomePageTracking.eventEnhancedClickDynamicChannelHomePage(context, model.getEnhanceClickSpotlightHomePage(position));
         }
     }
 }
