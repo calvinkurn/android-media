@@ -30,6 +30,7 @@ class RecommendationViewHolder(v: View,
             return
         }
 
+        adapter.adapterPosition = adapterPosition
         adapter.list.clear()
         adapter.list.addAll(element.cards)
         adapter.notifyDataSetChanged()

@@ -18,8 +18,6 @@ data class ExploreCardViewModel(
         val commissionValue: Int = 0
 ) : Parcelable {
 
-    var position: Int = 0
-
     constructor(source: Parcel) : this(
             source.readString() ?: "",
             source.readString() ?: "",
@@ -27,7 +25,9 @@ data class ExploreCardViewModel(
             source.readString() ?: "",
             source.readString() ?: "",
             source.readString() ?: "",
-            source.readString() ?: ""
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readInt()
     )
 
     override fun describeContents() = 0
@@ -40,6 +40,8 @@ data class ExploreCardViewModel(
         writeString(redirectLink)
         writeString(adId)
         writeString(productId)
+        writeString(sectionName)
+        writeInt(commissionValue)
     }
 
     companion object {

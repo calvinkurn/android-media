@@ -55,6 +55,7 @@ import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreProductView
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.PopularProfileChildViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ProductTitleViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.RecommendationViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortViewModel;
 import com.tokopedia.affiliate.util.AffiliateHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -482,9 +483,9 @@ public class ExploreFragment
     }
 
     @Override
-    public void onProductClicked(ExploreCardViewModel model) {
-        //TODO milhamj
-//        affiliateAnalytics.onProductClicked(model.getProductId());
+    public void onProductClicked(ExploreCardViewModel model, int adapterPosition) {
+        trackProductClick(model, adapterPosition);
+
         if (getContext() != null && isCanDoAction) {
             RouteManager.route(
                     getContext(),
@@ -519,6 +520,8 @@ public class ExploreFragment
         List<Visitable<?>> itemList = new ArrayList<>();
         itemList.addAll(sections);
         itemList.addAll(products);
+
+        trackImpression(itemList);
 
         populateFirstData(itemList, cursor);
         if (!isPullToRefresh) {
@@ -641,6 +644,8 @@ public class ExploreFragment
 
     @Override
     public void onSuccessGetData(List<Visitable<?>> products, String cursor, boolean isSearch) {
+        trackImpression(products);
+
         exploreParams.setLoading(false);
         bottomActionView.show(false);
         if (swipeRefreshLayout.isRefreshing()) {
@@ -690,6 +695,7 @@ public class ExploreFragment
 
     @Override
     public void onSuccessGetMoreData(List<Visitable<?>> itemList, String cursor) {
+        trackImpression(itemList);
         adapter.hideLoading();
         adapter.addElement(itemList);
         if (TextUtils.isEmpty(cursor)) {
@@ -905,6 +911,43 @@ public class ExploreFragment
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();
+    }
+
+    private void trackImpression(List<Visitable<?>> visitables) {
+        for(int i = 0; i < visitables.size(); i++) {
+            Visitable visitable = visitables.get(i);
+            int position = adapter.getData().size() + i;
+
+            if (visitable instanceof ExploreProductViewModel) {
+                ExploreProductViewModel model = (ExploreProductViewModel) visitable;
+                trackProductImpression(model.getExploreCardViewModel(), position);
+            } else if (visitable instanceof RecommendationViewModel) {
+                RecommendationViewModel model = (RecommendationViewModel) visitable;
+                for (ExploreCardViewModel card : model.getCards()) {
+                    trackProductImpression(card, position);
+                }
+            }
+        }
+    }
+
+    private void trackProductImpression(ExploreCardViewModel card, int position) {
+        affiliateAnalytics.onProductImpression(
+                card.getTitle(),
+                card.getProductId(),
+                card.getCommissionValue(),
+                card.getSectionName(),
+                position
+        );
+    }
+
+    private void trackProductClick(ExploreCardViewModel card, int position) {
+        affiliateAnalytics.onProductClicked(
+                card.getTitle(),
+                card.getProductId(),
+                card.getCommissionValue(),
+                card.getSectionName(),
+                position
+        );
     }
 
     private void showError(String message) {

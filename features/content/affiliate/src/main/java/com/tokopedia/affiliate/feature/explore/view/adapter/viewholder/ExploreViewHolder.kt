@@ -23,7 +23,7 @@ class ExploreViewHolder(itemView: View,
     override fun bind(element: ExploreProductViewModel) {
         itemView.card.bind(element.exploreCardViewModel)
         itemView.card.setMainViewClickListener {
-            mainView.onProductClicked(element.exploreCardViewModel)
+            mainView.onProductClicked(element.exploreCardViewModel, adapterPosition)
         }
     }
 

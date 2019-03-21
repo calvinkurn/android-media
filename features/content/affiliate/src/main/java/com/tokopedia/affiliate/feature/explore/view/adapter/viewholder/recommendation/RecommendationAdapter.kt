@@ -15,6 +15,7 @@ class RecommendationAdapter(private val mainView: ExploreContract.View)
     : RecyclerView.Adapter<RecommendationAdapter.ViewHolder>() {
 
     val list: MutableList<ExploreCardViewModel> = arrayListOf()
+    var adapterPosition: Int = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(View.inflate(parent.context, R.layout.item_af_recommendation_child, null))
@@ -28,7 +29,7 @@ class RecommendationAdapter(private val mainView: ExploreContract.View)
         itemView.card.showTitle = false
         itemView.card.bind(element)
         itemView.card.setMainViewClickListener {
-            mainView.onProductClicked(element)
+            mainView.onProductClicked(element, adapterPosition)
         }
     }
 

@@ -52,7 +52,7 @@ public interface ExploreContract {
 
         void onBymeClicked(ExploreCardViewModel model);
 
-        void onProductClicked(ExploreCardViewModel model);
+        void onProductClicked(ExploreCardViewModel model, int adapterPosition);
 
         void onBannerClicked(ExploreBannerChildViewModel model);
 
