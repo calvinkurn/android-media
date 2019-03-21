@@ -26,8 +26,6 @@ public interface LoyaltyModuleRouter {
 
     void trainSendTrackingOnCheckVoucherCodeError(String errorMessage);
 
-    void sendEventTracking(String event, String category, String action, String label);
-
     void sharePromoLoyalty(Activity activity, PromoData promoData);
 
     void actionOpenGeneralWebView(Activity activity, String url);

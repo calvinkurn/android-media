@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.purchase.utils;
 
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 
 
@@ -13,28 +14,28 @@ public class TransactionTrackingUtil {
 
 
     public void sendTrackerOnScanBarcodeClick() {
-        router.sendEventTracking(TransactionTrackingConstant.EVENT_CLICK_SHIPPING,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TransactionTrackingConstant.EVENT_CLICK_SHIPPING,
                 TransactionTrackingConstant.EVENT_CATEGORY_SALES_SHIPPING,
                 TransactionTrackingConstant.EVENT_ACTION_CLICK_TOMBOL_SCAN_AWB,
                 "");
     }
 
     public void sendTrackerOnResultScanBarcode() {
-        router.sendEventTracking(TransactionTrackingConstant.EVENT_VIEW_SHIPPING,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TransactionTrackingConstant.EVENT_VIEW_SHIPPING,
                 TransactionTrackingConstant.EVENT_CATEGORY_SALES_SHIPPING,
                 TransactionTrackingConstant.EVENT_ACTION_VIEW_SCAN_AWB,
                 TransactionTrackingConstant.EVENT_LABEL_SUCCESS);
     }
 
     public void sendTrackerOnSuccessConfirmShipping() {
-        router.sendEventTracking(TransactionTrackingConstant.EVENT_CLICK_SHIPPING,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TransactionTrackingConstant.EVENT_CLICK_SHIPPING,
                 TransactionTrackingConstant.EVENT_CATEGORY_SALES_SHIPPING,
                 TransactionTrackingConstant.EVENT_ACTION_CLICK_TOMBOL_SELESAI,
                 TransactionTrackingConstant.EVENT_LABEL_SUCCESS);
     }
 
     public void sendTrackerOnFailedConfirmShipping() {
-        router.sendEventTracking(TransactionTrackingConstant.EVENT_CLICK_SHIPPING,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TransactionTrackingConstant.EVENT_CLICK_SHIPPING,
                 TransactionTrackingConstant.EVENT_CATEGORY_SALES_SHIPPING,
                 TransactionTrackingConstant.EVENT_ACTION_CLICK_TOMBOL_SELESAI,
                 TransactionTrackingConstant.EVENT_LABEL_FAILED);
@@ -42,14 +43,14 @@ public class TransactionTrackingUtil {
     }
 
     public void sendTrackerImpressionAWB() {
-        router.sendEventTracking(TransactionTrackingConstant.EVENT_CLICK_SHIPPING,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TransactionTrackingConstant.EVENT_CLICK_SHIPPING,
                 TransactionTrackingConstant.EVENT_CATEGORY_SALES_SHIPPING,
                 TransactionTrackingConstant.EVENT_ACTION_IMPRESSION_SCAN_AWB_PAGE,
                 "");
     }
 
     public void sendTrackerOnBackScanAWB() {
-        router.sendEventTracking(TransactionTrackingConstant.EVENT_CLICK_SHIPPING,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TransactionTrackingConstant.EVENT_CLICK_SHIPPING,
                 TransactionTrackingConstant.EVENT_CATEGORY_SALES_SHIPPING,
                 TransactionTrackingConstant.EVENT_ACTION_EXIT_SCAN_AWB,
                 "");

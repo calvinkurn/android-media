@@ -1156,12 +1156,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_INSTANT_LOAN, true);
     }
 
-    @Override
-    public void sendEventTrackingOrderDetail(Map<String, Object> eventTracking) {
-        UnifyTracking.sendGTMEvent(this, eventTracking);
-        CommonUtils.dumper(eventTracking.toString());
-    }
-
     public void sendScreenName(@NonNull String screenName) {
         ScreenTracking.screen(this, screenName);
     }
@@ -1831,11 +1825,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return new GetBalanceTokoCashWrapper(tokoCashComponent.getBalanceTokoCashUseCase(),
                 tokoCashComponent.getPendingCasbackUseCase())
                 .getTokoCashAccountBalance();
-    }
-
-    @Override
-    public void sendEventTracking(String event, String category, String action, String label) {
-        UnifyTracking.sendGTMEvent(ConsumerRouterApplication.this, new EventTracking(event, category, action, label).getEvent());
     }
 
     @Override
