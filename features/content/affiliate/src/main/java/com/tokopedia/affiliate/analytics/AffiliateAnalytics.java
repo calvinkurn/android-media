@@ -120,14 +120,14 @@ public class AffiliateAnalytics {
     }
 
 //    6
-    public void onBannerClicked(String activityId) {
+    public void onBannerClicked(String activityId, String imageUrl) {
         getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_EXPLORE,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
                         AffiliateEventTracking.Category.BYME_EXPLORE,
                         "click banner global announcement",
-                        activityId
+                        String.format("%s-%s", activityId, imageUrl)
                 )
         );
     }

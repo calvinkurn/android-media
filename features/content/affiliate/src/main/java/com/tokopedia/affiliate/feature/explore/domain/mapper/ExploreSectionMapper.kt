@@ -36,7 +36,7 @@ class ExploreSectionMapper @Inject constructor() : Func1<GraphqlResponse, List<V
     private fun mapAnnouncement(section: ExplorePageSection): ExploreBannerViewModel {
         val banners: MutableList<ExploreBannerChildViewModel> = arrayListOf()
         section.items.forEach {
-            banners.add(ExploreBannerChildViewModel(it.image, it.appLink))
+            banners.add(ExploreBannerChildViewModel(it.image, it.appLink, it.categoryId.toString()))
         }
         return ExploreBannerViewModel(banners)
     }

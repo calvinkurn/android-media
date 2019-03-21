@@ -483,7 +483,8 @@ public class ExploreFragment
 
     @Override
     public void onProductClicked(ExploreCardViewModel model) {
-        affiliateAnalytics.onProductClicked(model.getProductId());
+        //TODO milhamj
+//        affiliateAnalytics.onProductClicked(model.getProductId());
         if (getContext() != null && isCanDoAction) {
             RouteManager.route(
                     getContext(),
@@ -497,8 +498,7 @@ public class ExploreFragment
     @Override
     public void onBannerClicked(ExploreBannerChildViewModel model) {
         goToLink(model.getRedirectUrl());
-        //TODO milhamj
-        affiliateAnalytics.onBannerClicked("");
+        affiliateAnalytics.onBannerClicked(model.getActivityId(), model.getImageUrl());
     }
 
     @Override

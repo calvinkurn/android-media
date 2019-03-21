@@ -5,5 +5,6 @@ package com.tokopedia.affiliate.feature.explore.view.viewmodel
  */
 data class ExploreBannerChildViewModel(
         val imageUrl: String = "",
-        val redirectUrl: String = ""
+        val redirectUrl: String = "",
+        val activityId: String = ""
 )
