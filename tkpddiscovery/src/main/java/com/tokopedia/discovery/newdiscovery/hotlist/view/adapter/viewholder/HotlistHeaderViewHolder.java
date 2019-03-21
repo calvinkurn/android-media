@@ -133,37 +133,15 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         hotlistPromoView.renderData(hotlistPromo, new HotlistPromoView.CallbackListener() {
             @Override
             public void onTncButtonClick(String titlePromo, String voucherCode) {
-                clickTnCButtonHotlistPromo(hotlistTitle, titlePromo, voucherCode);
+                HotlistPageTracking.clickTnCButtonHotlistPromo(hotlistTitle, titlePromo, voucherCode);
             }
 
             @Override
             public void onCopyButtonClick(String titlePromo, String voucherCode) {
-                clickCopyButtonHotlistPromo(hotlistTitle, titlePromo, voucherCode);
+                HotlistPageTracking.clickCopyButtonHotlistPromo(hotlistTitle, titlePromo, voucherCode);
             }
         });
         HotlistPageTracking.eventHotlistPromoImpression(hotlistPromoView.getContext(), hotlistTitle, hotlistPromo.getTitle(), hotlistPromo.getVoucherCode());
-    }
-
-    public void clickCopyButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
-                DataLayer.mapOf(
-                        "event", "clickHotlist",
-                        "eventCategory", "hotlist page",
-                        "eventAction", "hotlist promo click salin kode",
-                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
-                )
-        );
-    }
-
-    public void clickTnCButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
-                DataLayer.mapOf(
-                        "event", "clickHotlist",
-                        "eventCategory", "hotlist page",
-                        "eventAction", "hotlist promo click syarat ketentuan",
-                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
-                )
-        );
     }
 
     private static class HasTagAdapter extends RecyclerView.Adapter<HasTagAdapter.ItemViewHolder> {
