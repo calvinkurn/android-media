@@ -321,7 +321,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                     break;
             }
         } else if (requestCode == REQUEST_CODE_OTP) {
-            if (true) {
+            if (resultCode == Activity.RESULT_OK) {
                 presenter.processPatchOtpCart(cartPassData.getCategoryId());
             } else {
                 closeView();
