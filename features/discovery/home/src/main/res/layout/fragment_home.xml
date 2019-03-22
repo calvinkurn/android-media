@@ -29,7 +29,6 @@
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <LinearLayout
-                    android:fitsSystemWindows="true"
                     android:id="@+id/listContainer"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
