@@ -14,14 +14,6 @@
         android:layout_height="?actionBarSize"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <View
-            android:visibility="invisible"
-            app:layout_collapseMode="pin"
-            android:id="@+id/status_bar_bg"
-            android:background="@color/green_600"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"/>
-
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -30,7 +22,6 @@
             android:minHeight="?attr/actionBarSize"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
-            app:layout_anchor="@id/status_bar_bg"
             app:contentInsetStartWithNavigation="0dp" />
 
     </android.support.design.widget.AppBarLayout>
