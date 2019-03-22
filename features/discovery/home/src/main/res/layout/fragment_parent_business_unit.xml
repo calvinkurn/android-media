@@ -61,11 +61,11 @@
             android:layout_height="@dimen/dp_1"
             android:background="@color/grey_100" />
 
-        <com.tokopedia.digital.product.view.compoundview.DigitalWrapContentViewPager
+        <com.tokopedia.home.beranda.presentation.view.adapter.viewholder.widget_business.HomeWidgetViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white" />
+            android:layout_height="144dp"
+            />
 
     </LinearLayout>
 

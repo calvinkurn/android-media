@@ -87,8 +87,8 @@
     <include layout="@layout/layout_template_icon_business_widget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_2"
-        android:layout_marginLeft="@dimen/dp_2"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
         />
 
 </FrameLayout>
