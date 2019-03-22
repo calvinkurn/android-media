@@ -282,6 +282,7 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     public void finishLoading() {
+        saveButton.setEnabled(true);
         mProgressBar.setVisibility(View.GONE);
     }
 
@@ -308,6 +309,7 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     public void showLoading() {
+        saveButton.setEnabled(false);
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
