@@ -8,8 +8,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
@@ -22,24 +20,19 @@ public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> 
 
     private FeedPlus.View mainView;
 
-    private ImageView ivPhoto;
-    private TextView tvTitle, tvDescription;
-    private ButtonCompat btnSeeProfile, btnCreateContent;
+    private ImageView ivAvatar;
+    private TextView tvCaption;
+    private ButtonCompat btnCreatePost;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_post_entry;
 
-    private static final String SHOP_ID = "{shop_id}";
-    private static final String USER_ID = "{user_id}";
-
     public WhitelistViewHolder(View itemView, FeedPlus.View mainView) {
         super(itemView);
         this.mainView = mainView;
-        this.ivPhoto = itemView.findViewById(R.id.ivPhoto);
-        this.tvTitle = itemView.findViewById(R.id.tvTitle);
-        this.tvDescription = itemView.findViewById(R.id.tvDescription);
-        this.btnSeeProfile = itemView.findViewById(R.id.btnSeeProfile);
-        this.btnCreateContent = itemView.findViewById(R.id.btnCreateContent);
+        this.ivAvatar = itemView.findViewById(R.id.ivAvatar);
+        this.tvCaption = itemView.findViewById(R.id.tvCaption);
+        this.btnCreatePost = itemView.findViewById(R.id.btnCreatePost);
     }
 
     @Override
@@ -49,45 +42,21 @@ public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> 
     }
 
     private void initView(WhitelistViewModel model) {
-        tvTitle.setText(MethodChecker.fromHtml(model.getWhitelist().getTitle()));
-        tvDescription.setText(MethodChecker.fromHtml(model.getWhitelist().getDesc()));
+        tvCaption.setText(MethodChecker.fromHtml(String.format("<b>%s,</b> %s",
+                mainView.getUserSession().hasShop()? mainView.getUserSession().getShopName() :
+                        mainView.getUserSession().getName(),
+                model.getWhitelist().getDesc())));
+
         ImageHandler.loadImageCircle2(
-                ivPhoto.getContext(),
-                ivPhoto,
+                ivAvatar.getContext(),
+                ivAvatar,
                 model.getWhitelist().getImage()
         );
-
-        if (!mainView.getUserSession().hasShop()) {
-            btnSeeProfile.setText(R.string.feed_see_profile);
-        } else {
-            btnSeeProfile.setText(R.string.feed_see_shop);
-        }
     }
 
     private void initViewListener() {
-        btnSeeProfile.setOnClickListener(v -> onProfileClick());
-        tvTitle.setOnClickListener(v -> onProfileClick());
-        ivPhoto.setOnClickListener(v -> onProfileClick());
-
-        btnCreateContent.setOnClickListener(view ->
+        btnCreatePost.setOnClickListener(view ->
                 mainView.onWhitelistClicked()
         );
-    }
-
-    private void onProfileClick() {
-        if (!mainView.getUserSession().hasShop()) {
-            RouteManager.route(
-                    btnSeeProfile.getContext(),
-                    ApplinkConst.PROFILE.replace(USER_ID, mainView.getUserSession()
-                            .getUserId())
-            );
-
-        } else {
-            RouteManager.route(
-                    btnSeeProfile.getContext(),
-                    ApplinkConst.SHOP.replace(SHOP_ID, mainView.getUserSession()
-                            .getShopId())
-            );
-        }
     }
 }
