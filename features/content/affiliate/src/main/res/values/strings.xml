@@ -21,7 +21,7 @@
     <string name="text_empty_have_recommendation_formatted">Kamu masih memiliki %1$s jatah kurasi yang bisa diambil.</string>
 
     <!--EXPLORE-->
-    <string name="text_search_hint">Cari Produk di By Me</string>
+    <string name="text_search_hint">Cari Barang Kurasimu</string>
     <string name="text_empty_search_title">Duh, kami gak nemu yang kamu cari.</string>
     <string name="text_empty_search_desc">Bisa coba pakai kata kunci lain, ya.</string>
     <string name="text_empty_search_btn">Cari Lagi</string>
