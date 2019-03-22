@@ -20,8 +20,8 @@
             app:cardPreventCornerOverlap="true"
             app:cardCornerRadius="@dimen/dp_8"
             app:cardBackgroundColor="@color/white"
-            app:cardElevation="@dimen/dp_10"
-            app:cardMaxElevation="@dimen/dp_14">
+            app:cardElevation="@dimen/dp_2"
+            app:cardMaxElevation="@dimen/dp_4">
 
             <LinearLayout
                 android:layout_width="match_parent"
