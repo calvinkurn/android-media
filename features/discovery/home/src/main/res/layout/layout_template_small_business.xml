@@ -38,6 +38,8 @@
                     android:gravity="right"
                     android:textSize="@dimen/sp_10"
                     android:textColor="#ae31353b"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:letterSpacing="0.02"
                     android:layout_gravity="end"
                     android:visibility="gone"

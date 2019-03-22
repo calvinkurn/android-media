@@ -40,6 +40,8 @@
                     android:textColor="#ae31353b"
                     android:letterSpacing="0.02"
                     android:layout_gravity="end"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     tools:text="EVENTS"
                     />
 
