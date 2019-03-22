@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
+import android.text.TextUtils
 import android.util.SparseArray
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -29,8 +30,8 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.checkouttype.GetCheckoutTypeResponse
 import com.tokopedia.product.detail.data.model.installment.InstallmentResponse
-import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailRequest
+import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.shop.ShopBadge
 import com.tokopedia.product.detail.data.model.shop.ShopCodStatus
@@ -178,7 +179,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
         ppParam.productId = productId
         ppParam.shopId = shopId
-        ppParam.userId = userSessionInterface.userId.toInt()
+        if (!TextUtils.isEmpty(userSessionInterface.userId)) {
+            ppParam.userId = userSessionInterface.userId.toInt()
+        } else {
+            ppParam.userId = 0
+        }
         ppParam.condition = condition.toLowerCase()
         ppParam.productTitle = productTitle
         ppParam.price = productPrice.toInt()
