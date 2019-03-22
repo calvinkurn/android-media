@@ -184,7 +184,6 @@ class GlCameraPreview extends CameraPreview<GLSurfaceView, SurfaceTexture> imple
     public void onDrawFrame(GL10 gl) {
         // Latch the latest frame.  If there isn't anything new,
         // we'll just re-use whatever was there before.
-        mInputSurfaceTexture.updateTexImage();
         if (mInputStreamWidth <= 0 || mInputStreamHeight <= 0) {
             // Skip drawing. Camera was not opened.
             return;
