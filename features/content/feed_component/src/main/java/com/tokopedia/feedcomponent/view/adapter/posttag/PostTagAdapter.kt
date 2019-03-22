@@ -1,22 +1,26 @@
 package com.tokopedia.feedcomponent.view.adapter.posttag
 
+import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTag
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItemTag
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 
 /**
  * @author by yfsx on 22/03/19.
  */
-class PostTagAdapter(private val itemList: List<MediaItem>,
+class PostTagAdapter(private val itemList: List<PostTagItem>,
                      private val listener: DynamicPostViewHolder.DynamicPostListener,
                      private val positionInFeed: Int)
     : RecyclerView.Adapter<PostTagAdapter.Holder>() {
@@ -48,7 +52,7 @@ class PostTagAdapter(private val itemList: List<MediaItem>,
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        val item: MediaItem = itemList.get(position)
+        val item: PostTagItem = itemList.get(position)
         holder.bind(item, layoutType, listener, positionInFeed)
     }
 
@@ -57,15 +61,25 @@ class PostTagAdapter(private val itemList: List<MediaItem>,
         private lateinit var productImage: ImageView
         private lateinit var productPrice: TextView
         private lateinit var productName: TextView
+        private lateinit var productTag: TextView
+        private lateinit var productTagBackground: RelativeLayout
 
-        fun bind(item: MediaItem, layoutType: String,
+        fun bind(item: PostTagItem, layoutType: String,
                  listener: DynamicPostViewHolder.DynamicPostListener,
                  positionInFeed: Int) {
             productLayout = itemView.findViewById(R.id.productLayout)
             productImage = itemView.findViewById(R.id.productImage)
             productPrice = itemView.findViewById(R.id.productPrice)
+            productTag = itemView.findViewById(R.id.productTag)
+            productTagBackground = itemView.findViewById(R.id.productTagBackground)
             ImageHandler.loadImageRounded2(itemView.context, productImage, item.thumbnail)
             productPrice.text = item.price
+            if (item.tags.isNotEmpty()) {
+                productTagBackground.visibility = View.VISIBLE
+                renderTag(productTag, item.tags.get(0))
+            } else {
+                productTagBackground.visibility = View.GONE
+            }
             productLayout.setOnClickListener({
                 listener.onPostTagItemClick(positionInFeed, item.applink)
             })
@@ -76,5 +90,24 @@ class PostTagAdapter(private val itemList: List<MediaItem>,
             }
         }
 
+        private fun renderTag(textView: TextView, tag: PostTagItemTag) {
+            textView.text = tag.text
+            textView.setTextColor(Color.parseColor(tag.textColor.hex))
+            textView.background = renderDrawable(tag.bgColor.hex, tag.bgColor.opacity)
+        }
+
+        private fun renderDrawable(hex: String, opacity: String): Drawable {
+            val drawable = GradientDrawable()
+            drawable.shape = GradientDrawable.RECTANGLE
+            drawable.cornerRadii = floatArrayOf(10f, 10f, 10f ,10f ,0f, 0f, 0f, 0f)
+            drawable.setColor(Color.parseColor(hex))
+            drawable.alpha = calculateBackgroundAlpha(opacity)
+            return drawable
+        }
+
+        private fun calculateBackgroundAlpha(opacityString: String) : Int {
+            val floatValue = opacityString.toFloat()
+            return (floatValue*100).toInt()
+        }
     }
 }

@@ -178,11 +178,25 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
                 percentage
                 isSelected
                 position
+                isWishlisted
+                rating
                 tracking {
                   clickURL
                   viewURL
                   type
                   source
+                }
+                tags {
+                  linkType
+                  text
+                  textColor {
+                    hex
+                    opacity
+                  }
+                  bgColor {
+                    hex
+                    opacity
+                  }
                 }
               }
               isVoted
@@ -409,6 +423,7 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
             }
             body {
               media
+              postTag
               caption
               mediaGridButton
             }

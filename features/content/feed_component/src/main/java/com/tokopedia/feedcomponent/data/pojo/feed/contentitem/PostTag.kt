@@ -22,5 +22,5 @@ data class PostTag (
         var totalItems:Int = 0,
         @SerializedName("items")
         @Expose
-        var items: List<MediaItem> = ArrayList()
+        var items: List<PostTagItem> = ArrayList()
 ){}
