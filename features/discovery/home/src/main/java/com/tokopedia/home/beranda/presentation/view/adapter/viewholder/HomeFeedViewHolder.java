@@ -29,13 +29,14 @@ public class HomeFeedViewHolder extends AbstractViewHolder<HomeFeedViewModel> {
         productCardView.setTitle(element.getProductName());
         productCardView.setPrice(element.getPrice());
         productCardView.setTopAdsVisible(element.isTopAds());
-        if(element.isTopAds()) {
-            productCardView.imageView.setViewHintListener(element, new ImpressedImageView.ViewHintListener() {
-                @Override
-                public void onViewHint() {
-                    homeFeedview.onProductImpression(element, getAdapterPosition());
-                }
-            });
-        }
+        productCardView.setWishlistButtonVisible(false);
+        productCardView.setSlashedPrice(element.getSlashedPrice());
+        productCardView.setDiscount(element.getDiscountPercentage());
+        productCardView.getImageView().setViewHintListener(element, new ImpressedImageView.ViewHintListener() {
+            @Override
+            public void onViewHint() {
+                homeFeedview.onProductImpression(element, getAdapterPosition());
+            }
+        });
     }
 }
