@@ -81,7 +81,8 @@
     <string name="format_text_product_po_info_process_time">Waktu Proses %1$s %2$s</string>
     <string name="promo">Promo</string>
     <string name="title_wishlist_pdp">Wishlist</string>
-    <string name="button_add_to_affiliate">Kurasi Produk Ini</string>
+    <string name="button_add_to_affiliate">Kurasi</string>
+    <string name="affiliate_get_commission">Raih Komisi</string>
     <string name="label_atc_open_cart">Lihat</string>
     <string name="label_description">Deskripsi</string>
     <string name="default_max_rating">5</string>

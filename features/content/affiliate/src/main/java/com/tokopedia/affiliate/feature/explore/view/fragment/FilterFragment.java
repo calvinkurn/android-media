@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.feature.explore.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -64,33 +65,47 @@ public class FilterFragment extends BaseDaggerFragment {
             filterList.addAll(getArguments().getParcelableArrayList(FilterActivity.PARAM_FILTER_LIST));
             initView();
             initViewListener();
-
-        } else getActivity().finish();
+        } else {
+            if (getActivity() != null) {
+                getActivity().finish();
+            }
+        }
 
     }
 
     private void initView() {
-        adapter = new FilterAdapter(getActivity(), filterList, getFilterClickListener(), R.layout.item_explore_filter_detail);
+        adapter = new FilterAdapter(getFilterClickListener(), R.layout.item_explore_filter_detail);
         rvFilter.setLayoutManager(new GridLayoutManager(getActivity(), 3));
-        adapter.addItem(filterList);
         rvFilter.setAdapter(adapter);
+        rvFilter.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
+                                       RecyclerView.State state) {
+                super.getItemOffsets(outRect, view, parent, state);
+                outRect.bottom = (int) getResources().getDimension(R.dimen.dp_4);
+            }
+        });
+        adapter.setList(filterList);
     }
 
     private void initViewListener() {
         btnApply.setOnClickListener(view -> {
-            Intent result = new Intent();
-            Bundle bundle = new Bundle();
-            ArrayList<FilterViewModel> data = new ArrayList<>(adapter.getFilterListCurrentSelectedSorted());
-            bundle.putParcelableArrayList(FilterActivity.PARAM_FILTER_LIST, data);
-            result.putExtras(bundle);
-            getActivity().setResult(Activity.RESULT_OK, result);
-            getActivity().finish();
+            if (getActivity() != null) {
+                Intent result = new Intent();
+                Bundle bundle = new Bundle();
+                ArrayList<FilterViewModel> data =
+                        new ArrayList<>(adapter.getFilterListCurrentSelectedSorted());
+                bundle.putParcelableArrayList(FilterActivity.PARAM_FILTER_LIST, data);
+                result.putExtras(bundle);
+                getActivity().setResult(Activity.RESULT_OK, result);
+                getActivity().finish();
+            }
         });
     }
 
     private FilterAdapter.OnFilterClickedListener getFilterClickListener() {
-        return filters -> {
-
+        return (filters, filterViewModel) -> {
+            adapter.notifyDataSetChanged();
         };
     }
 
