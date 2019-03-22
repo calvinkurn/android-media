@@ -26,16 +26,27 @@ public class GraphqlClient {
     public synchronized static void init(@NonNull Context context) {
         if (sRetrofit == null) {
             UserSession userSession = new UserSession(context.getApplicationContext());
-            sRetrofit = CommonNetwork.createRetrofit(context.getApplicationContext(),
-                    GraphqlUrl.BASE_URL, (NetworkRouter) context.getApplicationContext(),
-                    userSession,
-                    (com.tokopedia.cpm.CharacterPerMinuteInterface) context.getApplicationContext());
-            sFingerprintManager = new FingerprintManager(userSession);
+            if(context.getApplicationContext() instanceof com.tokopedia.cpm.CharacterPerMinuteInterface){
+                sRetrofit = CommonNetwork.createRetrofit(context.getApplicationContext(),
+                        GraphqlUrl.BASE_URL, (NetworkRouter) context.getApplicationContext(),
+                        userSession,
+                        (com.tokopedia.cpm.CharacterPerMinuteInterface) context.getApplicationContext());
+                sFingerprintManager = new FingerprintManager(userSession);
 
-            sGraphqlDatabase = GraphqlDatabase.getInstance(context);
+                sGraphqlDatabase = GraphqlDatabase.getInstance(context);
+            }else{
+                sRetrofit = CommonNetwork.createRetrofit(context.getApplicationContext(),
+                        GraphqlUrl.BASE_URL, (NetworkRouter) context.getApplicationContext(),
+                        userSession);
+                sFingerprintManager = new FingerprintManager(userSession);
+
+                sGraphqlDatabase = GraphqlDatabase.getInstance(context);
+            }
 
         }
     }
+    
+    
 
     private static Retrofit getRetrofit() {
         if (sRetrofit == null) {
