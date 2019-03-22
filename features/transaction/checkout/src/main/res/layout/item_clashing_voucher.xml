@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_20"
-    android:layout_marginBottom="@dimen/dp_20"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginBottom="@dimen/dp_12"
     app:cardCornerRadius="@dimen/dp_8">
 
     <RelativeLayout
@@ -33,6 +34,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tv_title_voucher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_3"
@@ -41,6 +43,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tv_voucher_amout_total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_10"
@@ -49,6 +52,7 @@
                 android:textStyle="bold" />
 
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_voucher_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 

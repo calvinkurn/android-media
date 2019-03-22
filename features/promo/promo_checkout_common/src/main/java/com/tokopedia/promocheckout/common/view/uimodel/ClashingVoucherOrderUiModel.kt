@@ -12,7 +12,8 @@ data class ClashingVoucherOrderUiModel(
         var uniqueId: String = "",
         var cartId: Int = 0,
         var promoName: String = "",
-        var potentialBenefit: Int = 0
+        var potentialBenefit: Int = 0,
+        var shopName: String = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),
