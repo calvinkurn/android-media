@@ -250,5 +250,9 @@
         <key>mainapp_flight_new_search_flow</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>android_customer_flight_booking_new_flow</key>
+        <value>true</value>
+    </entry>
 
 </defaultsMap>

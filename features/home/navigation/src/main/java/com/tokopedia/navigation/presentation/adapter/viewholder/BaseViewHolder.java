@@ -1,7 +1,9 @@
-package com.tokopedia.navigation.presentation.adapter;
+package com.tokopedia.navigation.presentation.adapter.viewholder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import com.tokopedia.navigation.presentation.adapter.BaseListAdapter;
 
 public abstract class BaseViewHolder<T> extends RecyclerView.ViewHolder implements View.OnClickListener {
 
