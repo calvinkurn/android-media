@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.applink.internal.ApplinkConstInternal;
+
 import static com.tokopedia.applink.ProductDetailRouteManager.getProductIntent;
 
 /**
@@ -40,18 +42,24 @@ public class RouteManager {
     }
 
     public static Intent getIntent(Context context, String applinkPattern, String... parameter) {
+        // Temporary solution: Only internal scheme to build internal Uri
         String applink = UriUtil.buildUri(applinkPattern, parameter);
-        // TEMPORARY SOLUTION TO route product to old PDP by remote config
-        Intent intent;
-        if (ProductDetailRouteManager.isProductApplink(applink)) {
-            intent = getProductIntent(context, applink);
-        } else {
-            intent = buildInternalUri(context, applink);
-        }
-        if (intent.resolveActivity(context.getPackageManager()) != null) {
-            return intent;
-        } else {
+        if (!applink.startsWith(ApplinkConstInternal.INTERNAL_SCHEME)) {
+            // this will bring user to DeeplinkHandlerActivity
             return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, applink);
+        } else {
+            Intent intent;
+            // TEMPORARY SOLUTION TO route product to old PDP by remote config
+            if (ProductDetailRouteManager.isProductApplink(applink)) {
+                intent = getProductIntent(context, applink);
+            } else {
+                intent = buildInternalUri(context, applink);
+            }
+            if (intent.resolveActivity(context.getPackageManager()) != null) {
+                return intent;
+            } else {
+                return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, applink);
+            }
         }
     }
 
