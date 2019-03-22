@@ -174,16 +174,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val imageReviewRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_IMAGE_REVIEW],
                 ImageReviewGqlResponse::class.java, imageReviewParams)
 
-        //TODO add more request params if required
-        /* val productPPParams = mapOf(PARAM_PRODUCT_ID to productId, PARAM_SHOP_ID to shopId,
-                 PARAM_USER_ID to userSessionInterface.userId, PARAM_CONDITION to condition.toLowerCase(),
-                 PARAM_PRODUCT_TITLE to productTitle, PARAM_PRICE to productPrice)*/
-
         val ppParam = PPItemDetailRequest()
 
         ppParam.productId = productId
         ppParam.shopId = shopId
-        ppParam.userId = userSessionInterface.userId
+        ppParam.userId = userSessionInterface.userId.toInt()
         ppParam.condition = condition.toLowerCase()
         ppParam.productTitle = productTitle
         ppParam.price = productPrice.toInt()

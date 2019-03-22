@@ -11,7 +11,7 @@ data class PPItemDetailRequest(
         var shopId: Int = 0,
 
         @SerializedName("userID")
-        var userId: String? = null,
+        var userId: Int = 0,
 
         @SerializedName("condition")
         var condition: String? = null,
