@@ -20,7 +20,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.cameraView)
+    implementation project(rootProject.ext.libraries.cameraview)
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
