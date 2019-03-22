@@ -126,7 +126,6 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     private CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress;
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
-    private String extraPlatformPage;
     private boolean isFromMarketPlaceCartEmptyAddressFirst;
 
     @Inject AddAddressContract.Presenter mPresenter;
@@ -152,7 +151,6 @@ public class AddAddressFragment extends BaseDaggerFragment
             Bundle arguments = getArguments();
             this.token = arguments.getParcelable(KERO_TOKEN);
             this.address = arguments.getParcelable(EDIT_PARAM);
-            this.extraPlatformPage = arguments.getString(EXTRA_PLATFORM_PAGE, "");
             this.isFromMarketPlaceCartEmptyAddressFirst = arguments.getBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, false);
             this.instanceType = arguments.getInt(EXTRA_INSTANCE_TYPE, INSTANCE_TYPE_DEFAULT);
         }
@@ -180,7 +178,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void onStart() {
         super.onStart();
-        sendAnalyticsScreenName(getScreenName());
+        if (!isEdit()) sendAnalyticsScreenName(getScreenName());
     }
 
     @Override
@@ -941,7 +939,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     private boolean isAddAddressFromCartCheckoutMarketplace() {
-        return extraPlatformPage.equalsIgnoreCase(PLATFORM_MARKETPLACE_CART);
+        return (instanceType >= 10 && instanceType < 30);
     }
 
     private boolean isFromMarketPlaceCartEmptyAddressFirst() {

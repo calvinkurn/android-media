@@ -22,11 +22,6 @@ public class AddressConstants {
     public static final int REQUEST_CODE_PARAM_EDIT = 102;
     public static final int RESULT_ERROR = 999;
 
-
-    public static final int GET_LIST_PROVINCE = 1;
-    public static final int GET_LIST_DISTRICT = 2;
-    public static final int GET_LIST_CITY = 3;
-
     public static final String EXTRA_ADDRESS = "EXTRA_ADDRESS";
 
     public static final String KERO_TOKEN = "token";
