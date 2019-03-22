@@ -31,6 +31,10 @@ public class RouteManager {
         return intent;
     }
 
+    public static void route(Context context, String applinkPattern) {
+        ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, applinkPattern);
+    }
+
     public static void route(Context context, String applinkPattern, String... parameter) {
         String uriString = UriUtil.buildUri(applinkPattern, parameter);
         Intent intent = getIntent(context, uriString);
