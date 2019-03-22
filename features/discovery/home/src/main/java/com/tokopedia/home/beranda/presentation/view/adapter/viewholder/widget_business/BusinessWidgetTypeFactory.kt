@@ -35,10 +35,10 @@ class BusinessWidgetTypeFactory(private val listener: BusinessUnitItemView) : Ba
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            SizeSmallBusinessViewHolder.LAYOUT -> SizeSmallBusinessViewHolder(parent)
-            SizeMiddleBusinessViewHolder.LAYOUT -> SizeMiddleBusinessViewHolder(parent)
-            SizeLargeBusinessViewHolder.LAYOUT -> SizeLargeBusinessViewHolder(parent)
-            DefaultBusinessViewHolder.LAYOUT -> DefaultBusinessViewHolder(parent)
+            SizeSmallBusinessViewHolder.LAYOUT -> SizeSmallBusinessViewHolder(parent, listener)
+            SizeMiddleBusinessViewHolder.LAYOUT -> SizeMiddleBusinessViewHolder(parent, listener)
+            SizeLargeBusinessViewHolder.LAYOUT -> SizeLargeBusinessViewHolder(parent, listener)
+            DefaultBusinessViewHolder.LAYOUT -> DefaultBusinessViewHolder(parent, listener)
             ErrorBusinessViewHolder.LAYOUT -> ErrorBusinessViewHolder(parent, listener)
             LoadingBusinessViewHolder.LAYOUT -> LoadingBusinessViewHolder(parent)
             else -> super.createViewHolder(parent, type)

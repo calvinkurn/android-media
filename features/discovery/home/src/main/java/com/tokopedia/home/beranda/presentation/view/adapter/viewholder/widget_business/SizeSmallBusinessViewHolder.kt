@@ -10,12 +10,16 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.HomeWidget
+import com.tokopedia.home.beranda.presentation.view.fragment.BusinessUnitItemView
 import kotlinx.android.synthetic.main.layout_template_footer_business.view.*
 import kotlinx.android.synthetic.main.layout_template_icon_business_widget.view.*
 import kotlinx.android.synthetic.main.layout_template_small_business.view.*
 
 
-open class SizeSmallBusinessViewHolder (itemView: View?) : AbstractViewHolder<HomeWidget.ContentItemTab>(itemView) {
+open class SizeSmallBusinessViewHolder (
+        itemView: View?,
+        private val listener: BusinessUnitItemView
+) : AbstractViewHolder<HomeWidget.ContentItemTab>(itemView) {
 
     override fun bind(element: HomeWidget.ContentItemTab?) {
         renderImage(element)

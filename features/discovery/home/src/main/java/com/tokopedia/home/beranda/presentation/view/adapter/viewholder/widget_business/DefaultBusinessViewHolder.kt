@@ -4,8 +4,12 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.presentation.view.fragment.BusinessUnitItemView
 
-class DefaultBusinessViewHolder (itemView: View?) : EmptyViewHolder(itemView) {
+class DefaultBusinessViewHolder (
+        itemView: View?,
+        private val listener: BusinessUnitItemView
+) : EmptyViewHolder(itemView) {
 
     override fun bind(element: EmptyModel?) {
 
