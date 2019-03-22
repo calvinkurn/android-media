@@ -77,7 +77,7 @@ public class HomePageTracking {
     public static final String PRODUCT_VIEW = "productView";
     public static final String EVENT_ACTION_PRODUCT_RECOMMENDATION_IMPRESSION = "product recommendation impression";
     public static final String EVENT_ACTION_PRODUCT_RECOMMENDATION_IMPRESSION_NON_LOGIN =
-            "product recommendation impression - non login recommendation impression";
+            "product recommendation impression - non login";
     public static final String CURRENCY_CODE = "currencyCode";
     public static final String IDR = "IDR";
     public static final String IMPRESSIONS = "impressions";
