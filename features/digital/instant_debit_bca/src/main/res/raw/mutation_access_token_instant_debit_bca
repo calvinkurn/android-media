@@ -1,0 +1,17 @@
+mutation{
+  merchantAuth(
+    merchantCode:"tokopedia",
+    profileCode:"TKPD_DEFAULT") {
+    status
+    message
+    success
+    data{
+      token{
+        accessToken
+        scope
+        tokenType
+        expiresIn
+      }
+    }
+  }
+}

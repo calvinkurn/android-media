@@ -1,2 +1,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.instantdebitbca" />
+    package="com.tokopedia.instantdebitbca" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/instant_debit_bca_title"
+        android:supportsRtl="true">
+
+    <activity
+        android:name=".InstantDebitBcaActivity"
+        android:label="@string/instant_debit_bca_title"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.White"
+        android:windowSoftInputMode="adjustResize" />
+
+    </application>
+</manifest>

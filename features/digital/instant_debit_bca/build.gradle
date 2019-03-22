@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -23,11 +23,15 @@ dependencies {
     implementation (name: 'BCAXCOWidget', ext: 'aar')
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.graphql)
+
+    implementation rootProject.ext.miscDependencies.multiDex
+
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
-
-    implementation rootProject.ext.debugToolsDependencies.stetho
 }
