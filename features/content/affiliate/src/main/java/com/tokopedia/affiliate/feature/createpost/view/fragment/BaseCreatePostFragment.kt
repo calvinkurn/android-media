@@ -487,12 +487,14 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun updateThumbnail() {
+        //testing purpose
+        thumbnail.setOnClickListener {
+            goToMediaPreview()
+        }
+
         if (viewModel.completeImageList.isNotEmpty()) {
             thumbnail.loadImageRounded(viewModel.completeImageList.first().path?:"", 25f)
             edit.show()
-            thumbnail.setOnClickListener {
-                goToMediaPreview()
-            }
             carouselIcon.setOnClickListener {
                 goToMediaPreview()
             }
