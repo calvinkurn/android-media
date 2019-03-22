@@ -1486,6 +1486,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onWhitelistClicked() {
+        analytics.trackClickCreatePost(userSession.getUserId());
         showBottomSheetCreatePost();
     }
 
@@ -1541,6 +1542,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         userLayout.setOnClickListener(v -> {
             if (getContext() != null) {
+                analytics.trackClickCreatePostAsUser(userSession.getUserId());
                 startActivityForResult(
                         RouteManager.getIntent(getContext(), ApplinkConst.AFFILIATE_EXPLORE),
                         CREATE_POST
@@ -1569,6 +1571,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         shopLayout.setOnClickListener(v -> {
             if (getContext() != null) {
+                analytics.trackClickCreatePostAsShop(userSession.getShopId());
+
                 startActivityForResult(
                         RouteManager.getIntent(getContext(), ApplinkConst.CONTENT_CREATE_POST),
                         CREATE_POST
