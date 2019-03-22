@@ -41,7 +41,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewMo
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsDynamicChannelModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.DummyModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.RetryModel;
 
