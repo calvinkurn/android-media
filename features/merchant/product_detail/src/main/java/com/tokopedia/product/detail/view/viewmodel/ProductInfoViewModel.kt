@@ -112,7 +112,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 productInfoP1.productInfo.basic.id, productInfoP1.productInfo.basic.price, forceRefresh)
 
             productInfoP2resp.value = productInfoP2
-            multiOrigin = productInfoP2.nearestWarehouse.warehouseInfo
+            productInfoP2.nearestWarehouse?.let { multiOrigin = it.warehouseInfo }
 
             val domain = productParams.shopDomain ?: productInfoP2.shopInfo?.shopCore?.domain
             ?: return@launchCatchError
@@ -279,8 +279,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             }
 
             if (gqlResponse.getError(MultiOriginWarehouse.Response::class.java)?.isNotEmpty() != true){
-                gqlResponse.getData<MultiOriginWarehouse.Response>(MultiOriginWarehouse.Response::class.java)
-                        .result.data.firstOrNull()?.let { productInfoP2.nearestWarehouse = it }
+                val dataMultiOrigin = gqlResponse.getData<MultiOriginWarehouse.Response>(MultiOriginWarehouse.Response::class.java)
+                        .result.data
+                if (dataMultiOrigin.isNotEmpty()){
+                    productInfoP2.nearestWarehouse = dataMultiOrigin.first()
+                }
             }
 
             productInfoP2

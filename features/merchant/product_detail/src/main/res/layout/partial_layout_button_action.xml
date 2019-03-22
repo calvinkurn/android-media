@@ -168,6 +168,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/txt_add_to_cart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/add_product_to_cart"
