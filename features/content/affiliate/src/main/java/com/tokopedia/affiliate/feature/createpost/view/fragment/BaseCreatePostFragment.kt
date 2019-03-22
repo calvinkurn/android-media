@@ -4,11 +4,13 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.TaskStackBuilder
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -179,6 +181,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessGetContentForm(feedContentForm: FeedContentForm) {
+        Log.d("CreatePostItems", Gson().toJson(feedContentForm))
         viewModel.token = feedContentForm.token
         viewModel.maxImage = feedContentForm.media.maxMedia
         viewModel.allowImage = feedContentForm.media.allowImage

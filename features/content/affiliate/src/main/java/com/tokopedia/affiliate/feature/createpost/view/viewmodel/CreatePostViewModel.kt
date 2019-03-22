@@ -60,8 +60,8 @@ data class CreatePostViewModel(
         writeInt((if (allowVideo) 1 else 0))
         writeStringList(productIdList)
         writeStringList(adIdList)
-        writeList(fileImageList)
-        writeList(urlImageList)
+        writeTypedList(fileImageList)
+        writeTypedList(urlImageList)
         writeTypedList(relatedProducts)
         writeString(videoPath)
 
