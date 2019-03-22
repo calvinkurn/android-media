@@ -1,5 +1,5 @@
-query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: String, $sourceID: String, $detailID: String) {
-  feedv2(limit: $limit, cursor: $cursor, userID: $userID, source: $source, sourceID: $sourceID, limitDetail: $limit, detailID: $detailID) {
+query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: String, $sourceID: String) {
+  feedv2(limit: $limit, cursor: $cursor, userID: $userID, source: $source, sourceID: $sourceID, limitDetail: $limit) {
     data {
       id
       createTime
@@ -153,6 +153,9 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
                 viewURL
                 type
                 source
+              }
+              videos {
+                url
               }
             }
 						postTag {
@@ -407,7 +410,6 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
             body {
               media
               caption
-              postTag
               mediaGridButton
             }
             footer {

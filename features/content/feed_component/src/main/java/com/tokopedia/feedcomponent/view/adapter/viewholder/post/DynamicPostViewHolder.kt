@@ -332,7 +332,10 @@ class DynamicPostViewHolder(v: View,
 
     private fun bindPostTag(postTag: PostTag, template: TemplateBody) {
         itemView.layoutPostTag.shouldShowWithAction(shouldShowPostTag(template)) {
-            itemView.cardTitlePostTag.text = postTag.text
+            if (postTag.text.isNotEmpty()) {
+                itemView.cardTitlePostTag.text = postTag.text
+                itemView.cardTitlePostTag.visibility = View.VISIBLE
+            }
             val layoutManager: RecyclerView.LayoutManager = when(postTag.totalItems) {
                 1 -> LinearLayoutManager(itemView.context)
                 else -> GridLayoutManager(itemView.context, 3)
