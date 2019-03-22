@@ -14,7 +14,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.BannerVie
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicIconSectionViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.UseCaseIconSectionViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DigitalsViewHolder;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DummyViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicChannelHeroViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicChannelSprintViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.EmptyBlankViewHolder;
@@ -123,10 +122,6 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
         return RetryViewHolder.LAYOUT;
     }
 
-    public int type(DummyModel dummyModel) {
-        return DummyViewHolder.Companion.getLAYOUT();
-    }
-
     @Override
     public int type(TopAdsViewModel topAdsViewModel) {
         return TopAdsViewHolder.LAYOUT;
@@ -198,9 +193,6 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new EmptyBlankViewHolder(view);
         else if (type == InspirationHeaderViewHolder.LAYOUT)
             viewHolder = new InspirationHeaderViewHolder(view);
-        else if (type == DummyViewHolder.Companion.getLAYOUT()) {
-            viewHolder = new DummyViewHolder(view,listener);
-        }
         else viewHolder = super.createViewHolder(view, type);
 
         return viewHolder;
