@@ -29,24 +29,25 @@
         tools:layout_width="100dp" />
 
     <TextView
-        android:fontFamily="sans-serif-medium"
-        android:layout_centerVertical="true"
-        android:lineSpacingExtra="3sp"
-        android:layout_marginTop="@dimen/dp_8"
         android:id="@+id/promo_link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:clickable="true"
         android:focusableInTouchMode="false"
+        android:fontFamily="sans-serif-medium"
         android:gravity="center_horizontal|center_vertical"
+        android:lineSpacingExtra="3sp"
         android:text="Lihat Semua"
         android:textColor="@color/medium_green"
         android:textSize="@dimen/sp_10"
         android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewpager_banner_category" />
 

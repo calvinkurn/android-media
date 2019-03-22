@@ -5,23 +5,34 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.RectF;
+import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatImageView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.Transformation;
+import com.bumptech.glide.load.engine.Resource;
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
+import com.bumptech.glide.load.resource.bitmap.BitmapResource;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
@@ -61,14 +72,14 @@ public class HeaderHomeView extends BaseCustomView {
     private View tokoCashHolder;
     private TextView tvTitleTokocash;
     private TextView tvBalanceTokocash;
-    private ImageView ivLogoTokocash;
+    private AppCompatImageView ivLogoTokocash;
     private TextView tvActionTokocash;
     private ProgressBar tokocashProgressBar;
 
     private View tokoPointHolder;
     private TextView tvBalanceTokoPoint;
     private TextView tvActionTokopoint;
-    private ImageView ivLogoTokoPoint;
+    private AppCompatImageView ivLogoTokoPoint;
     private ProgressBar tokopointProgressBarLayout;
     private LinearLayout tokopointActionContainer;
     private WalletAnalytics walletAnalytics;
@@ -118,9 +129,15 @@ public class HeaderHomeView extends BaseCustomView {
             view = inflate(getContext(), R.layout.layout_item_widget_ovo_tokopoint_nonlogin, this);
             scanHolder = view.findViewById(R.id.container_action_scan);
             View container = view.findViewById(R.id.container_nonlogin);
-            ImageView imgNonLogin = view.findViewById(R.id.bg_container_nonlogin);
+            AppCompatImageView imgNonLogin = view.findViewById(R.id.bg_container_nonlogin);
 
-            ImageHandler.loadImageWithoutPlaceholder(imgNonLogin, BG_CONTAINER_URL);
+            int radius = Math.round(TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()));
+
+            Glide.with(getContext())
+                    .load(BG_CONTAINER_URL)
+                    .bitmapTransform(new RoundedRightCornerTransformation(getContext(), radius))
+                    .into(imgNonLogin);
 
             container.setOnClickListener(onCheckNowListener());
             scanHolder.setOnClickListener(onScanListener());
@@ -157,7 +174,7 @@ public class HeaderHomeView extends BaseCustomView {
     }
 
     private OnClickListener onCheckNowListener() {
-        return v -> RouteManager.route(getContext(), ApplinkConst.LOGIN);
+        return v -> listener.onTokopointCheckNowClicked(ApplinkConst.LOGIN);
     }
 
     private void viewListener() {
@@ -225,19 +242,16 @@ public class HeaderHomeView extends BaseCustomView {
                 mTextCouponCount.setTextColor(getContext().getResources().getColor(R.color.tkpd_main_green));
             }
 
-            tokoPointHolder.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (headerViewModel.getTokopointsDrawerHomeData() != null) {
-                        HomePageTracking.eventUserProfileTokopoints(getContext());
-                        listener.actionTokoPointClicked(
-                                headerViewModel.getTokopointsDrawerHomeData().getRedirectAppLink(),
-                                headerViewModel.getTokopointsDrawerHomeData().getRedirectURL(),
-                                TextUtils.isEmpty(headerViewModel.getTokopointsDrawerHomeData().getMainPageTitle())
-                                        ? TITLE_HEADER_WEBSITE
-                                        : headerViewModel.getTokopointsDrawerHomeData().getMainPageTitle()
-                        );
-                    }
+            tokoPointHolder.setOnClickListener(view -> {
+                if (headerViewModel.getTokopointsDrawerHomeData() != null) {
+                    HomePageTracking.eventUserProfileTokopoints(getContext());
+                    listener.actionTokoPointClicked(
+                            headerViewModel.getTokopointsDrawerHomeData().getRedirectAppLink(),
+                            headerViewModel.getTokopointsDrawerHomeData().getRedirectURL(),
+                            TextUtils.isEmpty(headerViewModel.getTokopointsDrawerHomeData().getMainPageTitle())
+                                    ? TITLE_HEADER_WEBSITE
+                                    : headerViewModel.getTokopointsDrawerHomeData().getMainPageTitle()
+                    );
                 }
             });
         }
@@ -257,7 +271,6 @@ public class HeaderHomeView extends BaseCustomView {
                         int verticalPadding = getContext().getResources().getDimensionPixelSize(R.dimen.dp_2);
                         tokopointsTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimension(R.dimen.sp_8));
                         tokopointsTextView.setTypeface(null, Typeface.NORMAL);
-                        tokopointsTextView.setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
                     }
                     tokopointsTextView.setTextColor(getResources().getColor(R.color.white));
                 } else {
@@ -410,5 +423,56 @@ public class HeaderHomeView extends BaseCustomView {
 
             listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkBalance());
         };
+    }
+
+    class RoundedRightCornerTransformation implements Transformation<Bitmap> {
+
+        private BitmapPool mBitmapPool;
+        private int mRadius;
+        private int mDiameter;
+
+        RoundedRightCornerTransformation(Context context, int radius) {
+            this(Glide.get(context).getBitmapPool(), radius);
+        }
+
+        RoundedRightCornerTransformation(BitmapPool pool, int radius) {
+            mBitmapPool = pool;
+            mRadius = radius;
+            mDiameter = mRadius * 2;
+        }
+
+        @Override
+        public Resource<Bitmap> transform(Resource<Bitmap> resource, int outWidth, int outHeight) {
+            Bitmap source = resource.get();
+
+            int width = source.getWidth();
+            int height = source.getHeight();
+
+            Bitmap bitmap = mBitmapPool.get(width, height, Bitmap.Config.ARGB_8888);
+            if (bitmap == null) {
+                bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            }
+
+            Canvas canvas = new Canvas(bitmap);
+            Paint paint = new Paint();
+            paint.setAntiAlias(true);
+            paint.setShader(new BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
+            drawRoundRect(canvas, paint, width, height);
+            return BitmapResource.obtain(bitmap, mBitmapPool);
+        }
+
+        private void drawRoundRect(Canvas canvas, Paint paint, float width, float height) {
+            float right = width - 0;
+            float bottom = height - 0;
+
+            canvas.drawRoundRect(new RectF(right - mDiameter, 0, right, bottom), mRadius, mRadius,
+                    paint);
+            canvas.drawRect(new RectF(0, 0, right - mRadius, bottom), paint);
+        }
+
+        @Override public String getId() {
+            return "RoundedRightCornerTransformation(radius=" + mRadius + ", diameter="
+                    + mDiameter + ")";
+        }
     }
 }

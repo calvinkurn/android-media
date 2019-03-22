@@ -49,8 +49,8 @@ import com.tokopedia.talk.common.applink.InboxTalkApplinkModule;
 import com.tokopedia.talk.common.applink.InboxTalkApplinkModuleLoader;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
-import com.tokopedia.tkpdpdp.applink.PdpApplinkModule;
-import com.tokopedia.tkpdpdp.applink.PdpApplinkModuleLoader;
+import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
+import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.topads.applink.TopAdsApplinkModule;
 import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
 import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModule;
@@ -86,7 +86,7 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         CustomerCareApplinkModule.class,
         ReputationApplinkModule.class,
         SessionApplinkModule.class,
-        PdpApplinkModule.class,
+        ProductDetailApplinkModule.class,
         SettingBankApplinkModule.class,
         InboxTalkApplinkModule.class,
         LoginRegisterApplinkModule.class,
@@ -118,7 +118,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new CustomerCareApplinkModuleLoader(),
                 new ReputationApplinkModuleLoader(),
                 new SessionApplinkModuleLoader(),
-                new PdpApplinkModuleLoader(),
+                new ProductDetailApplinkModuleLoader(),
                 new SettingBankApplinkModuleLoader(),
                 new InboxTalkApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),

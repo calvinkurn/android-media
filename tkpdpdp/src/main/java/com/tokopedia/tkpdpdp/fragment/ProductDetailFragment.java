@@ -2908,6 +2908,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             Intent intent = ((PdpRouter) getActivity().getApplicationContext())
                     .getExpressCheckoutIntent(getActivity(), atcRequestParam);
             if (intent != null) {
+                intent.putExtra("tracker_attribution", productPass.getTrackerAttribution());
+                intent.putExtra("tracker_list_name", productPass.getTrackerListName());
                 startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS);
                 getActivity().overridePendingTransition(R.anim.pull_up, 0);
             }

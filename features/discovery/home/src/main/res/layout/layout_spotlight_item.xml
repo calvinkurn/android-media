@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/spotlightContainer"
-    android:layout_marginBottom="@dimen/dp_16"
-    android:layout_marginTop="@dimen/dp_16"
     android:layout_width="@dimen/spotlight_width"
     android:layout_height="@dimen/spotlight_height">
 
@@ -23,9 +21,11 @@
         android:orientation="horizontal">
 
         <TextView
+            android:text="Spotlight title"
             android:id="@+id/spotlightTitle"
             style="@style/TextView.Title"
             android:lines="1"
+            android:maxLength="@integer/spotlight_title_char_limit"
             android:ellipsize="end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -33,6 +33,8 @@
         <TextView
             android:id="@+id/spotlightTag"
             style="@style/TextView"
+            tools:text="Label"
+            android:maxLength="@integer/spotlight_label_char_limit"
             android:textSize="@dimen/sp_10"
             android:textStyle="bold"
             android:layout_width="wrap_content"

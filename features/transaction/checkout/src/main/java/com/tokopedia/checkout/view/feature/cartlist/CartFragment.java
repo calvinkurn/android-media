@@ -6,6 +6,7 @@ import android.app.IntentService;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -31,6 +32,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
@@ -319,11 +323,22 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     private void setupToolbar(View view) {
         Toolbar appbar = view.findViewById(R.id.toolbar);
+        View statusBarBackground = view.findViewById(R.id.status_bar_bg);
+
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            statusBarBackground.setVisibility(View.VISIBLE);
+        } else {
+            statusBarBackground.setVisibility(View.INVISIBLE);
+        }
+
         appBarLayout = view.findViewById(R.id.app_bar_layout);
         if (isToolbarWithBackButton) {
             toolbar = toolbarRemoveWithBackView();
         } else {
             toolbar = toolbarRemoveView();
+            // add padding programmatically
+            int padding = (int) (24*getResources().getDisplayMetrics().density + 0.5f);
+            view.setPadding(0,padding,0,0);
         }
         appbar.addView(toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(appbar);
@@ -506,10 +521,15 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onCartItemProductClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition) {
         sendAnalyticsOnClickProductNameCartItem(cartItemHolderData.getCartItemData().getOriginData().getProductName());
-        navigateToActivity(
-                checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntent(
-                        cartItemHolderData.getCartItemData().getOriginData().getProductId()
-                ));
+        navigateToActivity(getProductIntent(cartItemHolderData.getCartItemData().getOriginData().getProductId()));
+    }
+
+    private Intent getProductIntent(String productId) {
+        if (getContext() != null) {
+            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -542,7 +562,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onTopAdsItemClicked(Product product) {
         if (getActivity() != null) {
-            Intent intent = checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product);
+            Intent intent = getProductIntent(product.getId());
             getActivity().startActivity(intent);
         }
     }
@@ -1352,7 +1372,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        navigateToActivity(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product));
+        navigateToActivity(getProductIntent(product.getId()));
     }
 
     @Override

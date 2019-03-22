@@ -111,6 +111,7 @@ public class MainToolbar extends Toolbar {
                 getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
                         .gotoWishlistPage(getContext()));
             } else {
+                searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName);
                 RouteManager.route(context, ApplinkConst.LOGIN);
             }
         });
@@ -121,6 +122,7 @@ public class MainToolbar extends Toolbar {
                 getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
                         .gotoInboxMainPage(getContext()));
             } else {
+                searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName);
                 RouteManager.route(context, ApplinkConst.LOGIN);
             }
         });

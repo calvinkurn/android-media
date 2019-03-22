@@ -13,6 +13,13 @@ import com.tokopedia.design.banner.BannerView
 
 class Banner : BannerView {
 
+    @Indicator.Type
+    var typeIndicator: Int? = 0
+
+    companion object {
+        const val GREEN_INDICATOR = 1
+    }
+
     constructor(context: Context) : super(context) {}
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
@@ -40,17 +47,31 @@ class Banner : BannerView {
                             context.resources.getDimensionPixelSize(R.dimen.dp_0))
             )
         }
+        bannerSeeAll.setOnClickListener {
+            if (onPromoAllClickListener != null)
+                onPromoAllClickListener.onPromoAllClick()
+        }
     }
 
     override fun getBannerPagerAdapter(): BannerPagerAdapter {
         return BannerAdapter(promoImageUrls, onPromoClickListener)
     }
 
+    fun setBannerIndicator(@Indicator.Type indicatorType: Int) {
+        typeIndicator = indicatorType
+    }
+
     override fun getIndicator(): Int {
+        if (typeIndicator == GREEN_INDICATOR) {
+            return R.drawable.banner_green_indicator_default
+        }
         return R.drawable.banner_indicator_default
     }
 
     override fun getIndicatorFocus(): Int {
+        if (typeIndicator == GREEN_INDICATOR) {
+            return R.drawable.banner_green_indicator_focus
+        }
         return R.drawable.banner_indicator_focus
     }
 

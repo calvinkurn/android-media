@@ -10,6 +10,7 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -37,6 +38,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
@@ -62,6 +65,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedPagerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
@@ -70,7 +74,6 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home.constant.ConstantKey;
-import com.tokopedia.home.util.ServerTimeOffsetUtil;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
@@ -122,22 +125,18 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private ActivityStateListener activityStateListener;
 
-    public static final long ONE_SECOND = 1000l;
     @Inject
     HomePresenter presenter;
 
     private UserSessionInterface userSession;
     private View fragmentRootView;
     private RecyclerView recyclerView;
-    private TabLayout tabLayout;
     private CoordinatorLayout root;
-    private SectionContainer tabContainer;
     private ToggleableSwipeRefreshLayout refreshLayout;
     private HomeRecycleAdapter adapter;
     private RemoteConfig firebaseRemoteConfig;
     private PerformanceMonitoring performanceMonitoring;
     private SnackbarRetry messageSnackbar;
-    private String[] tabSectionTitle;
     private LinearLayoutManager layoutManager;
     private FloatingTextButton floatingTextButton;
     private boolean showRecomendation;
@@ -147,6 +146,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private CollapsingTabLayout homeFeedsTabLayout;
     private AppBarLayout appBarLayout;
     private HomeFeedPagerAdapter homeFeedPagerAdapter;
+    private View viewFeedShadow;
     private int lastOffset;
     private int fragmentHeight;
     private int actionBarHeight;
@@ -155,8 +155,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private HomeMainToolbar homeMainToolbar;
 
-    private long serverTimeOffset = 0;
-
     public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
 
     private boolean scrollToRecommendList = false;
@@ -164,7 +162,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private boolean isFeedLoaded = false;
 
     private View statusBarBackground;
-          
+
+    int startToMainToolbarShadowTransition = 0;
+
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -240,6 +240,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         homeMainToolbar = view.findViewById(R.id.toolbar);
+        viewFeedShadow = view.findViewById(R.id.view_feed_shadow);
         statusBarBackground = view.findViewById(R.id.status_bar_bg);
         statusBarBackground.setBackground(new ColorDrawable(
                 ContextCompat.getColor(getActivity(), R.color.green_600)
@@ -247,9 +248,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         setStatusBarAlpha(0f);
 
         recyclerView = view.findViewById(R.id.list);
+        if (recyclerView.getItemDecorationCount() == 0) {
+            recyclerView.addItemDecoration(new HomeRecyclerDecoration(
+                    getResources().getDimensionPixelSize(R.dimen.dp_8)
+            ));
+        }
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout);
-        tabLayout = view.findViewById(R.id.tabs);
-        tabContainer = view.findViewById(R.id.tab_container);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
         root = view.findViewById(R.id.root);
         homeFeedsViewPager = view.findViewById(R.id.view_pager_home_feeds);
@@ -341,7 +345,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         presenter.onFirstLaunch();
-        initTabNavigation();
         initAdapter();
         initRefreshLayout();
         initAppBarScrollListener();
@@ -424,16 +427,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         scrollToRecommendList = false;
     }
 
-    private void initTabNavigation() {
-        tabSectionTitle = getResources().getStringArray(R.array.section_title);
-        TypedArray icons = getResources().obtainTypedArray(R.array.section_icon);
-        for (int i = 0; i < tabSectionTitle.length; i++) {
-            TabLayout.Tab tab = tabLayout.newTab();
-            tab.setIcon(icons.getResourceId(i, R.drawable.ic_beli));
-            tabLayout.addTab(tab);
-        }
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -497,37 +490,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     return;
                 }
 
-                //searchbar transparent behaviour
-                float offsetAlpha = (appBarLayout.getY() / 100) * -1;
-
-                //2.5 is maximum
-                offsetAlpha-=2.5;
-                if (offsetAlpha < 0) {
-                    offsetAlpha = 0;
-                }
-
-                if (offsetAlpha >= 2.55) {
-                    offsetAlpha = 2.55f;
-                    homeMainToolbar.switchToDarkToolbar();
-                } else {
-                    homeMainToolbar.switchToLightToolbar();
-                }
-
-                if (offsetAlpha >= 0 && offsetAlpha <= 2.55) {
-                    float alpha = offsetAlpha*100;
-                    homeMainToolbar.setBackgroundAlpha(alpha);
-                    setStatusBarAlpha(alpha);
-                }
-
-                if (isAppBarFullyCollapsed(offset) &&
-                        homeMainToolbar.getToolbarType() == HomeMainToolbar.Companion.getTOOLBAR_DARK_TYPE()) {
-                    homeMainToolbar.hideShadow();
-                }
-
-                if (!isAppBarFullyCollapsed(offset) &&
-                        homeMainToolbar.getToolbarType() == HomeMainToolbar.Companion.getTOOLBAR_DARK_TYPE()) {
-                    homeMainToolbar.showShadow();
-                }
+                calculateSearchbarView(offset);
 
                 if (isAppBarFullyExpanded(offset)) {
                     refreshLayout.setCanChildScrollUp(false);
@@ -551,6 +514,54 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 lastOffset = offset;
             }
         });
+    }
+
+    private void calculateSearchbarView(int offset) {
+        int positiveOffset = offset*-1;
+
+        int searchBarTransitionRange =
+                getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
+        int startToTransitionOffset =
+                (getResources().getDimensionPixelSize(R.dimen.banner_background_height))/2;
+        int endTransitionOffset =
+                startToTransitionOffset + searchBarTransitionRange;
+        int maxTransitionOffset = endTransitionOffset - startToTransitionOffset;
+
+        //mapping alpha to be rendered per pixel for x height
+        float offsetAlpha =
+                (255f / maxTransitionOffset) * (positiveOffset - startToTransitionOffset);
+        //2.5 is maximum
+        if (offsetAlpha < 0) {
+            offsetAlpha = 0;
+        }
+
+        if (offsetAlpha >= 255) {
+            offsetAlpha = 255;
+            homeMainToolbar.switchToDarkToolbar();
+        } else {
+            homeMainToolbar.switchToLightToolbar();
+        }
+
+        if (offsetAlpha >= 0 && offsetAlpha <= 255) {
+            homeMainToolbar.setBackgroundAlpha(offsetAlpha);
+            setStatusBarAlpha(offsetAlpha);
+        }
+
+        if (positiveOffset >= startToMainToolbarShadowTransition) {
+            homeMainToolbar.hideShadow();
+        }
+
+        if (isAppBarFullyCollapsed(offset) &&
+                homeMainToolbar.getToolbarType() == HomeMainToolbar.Companion.getTOOLBAR_DARK_TYPE()) {
+            viewFeedShadow.setVisibility(View.VISIBLE);
+        }
+
+        if (!isAppBarFullyCollapsed(offset) &&
+                homeMainToolbar.getToolbarType() == HomeMainToolbar.Companion.getTOOLBAR_DARK_TYPE() &&
+                positiveOffset <= startToMainToolbarShadowTransition) {
+            homeMainToolbar.showShadow();
+            viewFeedShadow.setVisibility(View.GONE);
+        }
     }
 
     private void setStatusBarAlpha(float alpha) {
@@ -632,7 +643,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 this,
                 this,
                 this
-                );
+        );
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         recyclerView.setAdapter(adapter);
     }
@@ -884,23 +895,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setItems(List<Visitable> items) {
-        this.serverTimeOffset = 0;
-
-//        Visitable dummyTicker = new TickerViewModel();
-//        ArrayList<Ticker.Tickers> tickers = new ArrayList<>();
-//        Ticker.Tickers tis = new Ticker.Tickers();
-//        tis.setMessage("Ayo\u003cb\u003e mari kita berbelanja di \u003c/b\u003e\u003ci\u003eBukalapak\u0026nbsp;\u003ca href=\"https://www.tokopedia.com/\" title=\"#KeTokopedia\"\u003e#KeTokopedia\u003c/a\u003e\u003c/i\u003e");
-//        tis.setColor("#0a8f08");
-//        tickers.add(tis);
-//        ((TickerViewModel) dummyTicker).setTickers(tickers);
-//        items.add(1, dummyTicker);
         adapter.setItems(items);
+        startToMainToolbarShadowTransition = (appBarLayout.getTotalScrollRange()-
+                getResources().getDimensionPixelSize(R.dimen.dp_36));
     }
 
     @Override
     public void updateListOnResume(List<Visitable> visitables) {
-        this.serverTimeOffset = 0;
-
         adapter.updateItems(visitables);
     }
 
@@ -909,6 +910,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (adapter.getItemCount() > 1 && adapter.getItem(1) instanceof HeaderViewModel) {
             adapter.getItems().set(1, headerViewModel);
             adapter.notifyItemChanged(1);
+        } else if (adapter.getItemCount() > 2 && adapter.getItem(2) instanceof HeaderViewModel) {
+            adapter.getItems().set(2, headerViewModel);
+            adapter.notifyItemChanged(2);
         }
     }
 
@@ -1227,12 +1231,22 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void startDeeplinkShopInfo(String url) {
-        if (getActivity() != null) {
-            if ((getActivity()).getApplication() instanceof IHomeRouter) {
-                ((IHomeRouter) (getActivity()).getApplication())
-                        .goToProductDetail(
-                                getActivity(),
-                                url);
+        Context context = getContext();
+        if (context != null) {
+            Uri uri = Uri.parse(url);
+            List<String> pathSegmentList = uri.getPathSegments();
+            if (pathSegmentList.size() > 1) {
+                String shopDomain = pathSegmentList.get(pathSegmentList.size() - 2);
+                String productKey = pathSegmentList.get(pathSegmentList.size() - 1);
+                Intent intent = RouteManager.getIntent(context,ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
+                                shopDomain, productKey);
+                if (intent != null) {
+                    startActivity(intent);
+                } else {
+                    RouteManager.route(context, url);
+                }
+            } else {
+                RouteManager.route(context, url);
             }
         }
     }
@@ -1312,19 +1326,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         return userSession.getShopId();
     }
 
-    @Override
-    public void onServerTimeReceived(long serverTimeUnix) {
-        if (serverTimeOffset == 0) {
-            long serverTimemillis = serverTimeUnix * ONE_SECOND;
-            this.serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffset(serverTimemillis);
-        }
-    }
-
-    @Override
-    public long getServerTimeOffset() {
-        return this.serverTimeOffset;
-    }
-
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         setUserVisibleHint(!hidden);
@@ -1359,14 +1360,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void goToProductDetail(String productId, String imageSourceSingle, String name, String price) {
-        if (getActivity().getApplication() instanceof IHomeRouter) {
-            ((IHomeRouter) getActivity().getApplication()).goToProductDetail(
-                    getActivity(),
-                    productId,
-                    imageSourceSingle,
-                    name,
-                    price
-            );
+        getActivity().startActivity(getProductIntent(productId));
+    }
+
+    private Intent getProductIntent(String productId) {
+        if (getContext() != null) {
+            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
         }
     }
 
@@ -1379,6 +1380,21 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (homeMainToolbar != null) {
             homeMainToolbar.setNotificationNumber(notificationCount);
             homeMainToolbar.setInboxNumber(inboxCount);
+        }
+    }
+
+    @Override
+    public void onTokopointCheckNowClicked(String applink) {
+        if (TextUtils.isEmpty(applink)) {
+            return;
+        }
+
+        if (getActivity() != null
+                && getActivity().getApplicationContext() instanceof IHomeRouter
+                && ((IHomeRouter) getActivity().getApplicationContext()).isSupportApplink(applink)) {
+            openApplink(applink);
+        } else {
+            openWebViewURL(applink, getContext());
         }
     }
 }

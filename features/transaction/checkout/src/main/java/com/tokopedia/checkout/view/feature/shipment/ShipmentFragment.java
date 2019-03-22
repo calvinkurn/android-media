@@ -932,7 +932,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ShipmentAdapter.RequestData requestData =
                     shipmentAdapter.getRequestData(null, null);
             shipmentPresenter.setPromoCodeCartShipmentRequestData(requestData.getPromoRequestData());
-            shipmentPresenter.checkPromoShipment(cartPromo.getPromoCodeSafe(), isOneClickShipment());
+            if (!cartPromo.getPromoCodeSafe().equals("")) {
+                shipmentPresenter.checkPromoShipment(cartPromo.getPromoCodeSafe(), isOneClickShipment());
+            }
 
             shipmentAdapter.notifyDataSetChanged();
         }
@@ -1343,7 +1345,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onFinishChoosingShipment(List<CheckPromoCodeCartShipmentRequest.Data> promoRequestData) {
         shipmentPresenter.setPromoCodeCartShipmentRequestData(promoRequestData);
         if (shipmentAdapter.getPromoData() != null &&
-                shipmentAdapter.hasAppliedPromoCode()) {
+                shipmentAdapter.hasAppliedPromoCode() && !shipmentAdapter.getPromoData().getPromoCodeSafe().equals("")) {
             shipmentPresenter.checkPromoShipment(shipmentAdapter.getPromoData().getPromoCodeSafe(), isOneClickShipment());
         }
     }
@@ -1422,12 +1424,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (shipmentAdapter != null && shipmentAdapter.getPromoData() != null) {
                 voucherCode = shipmentAdapter.getPromoData().getPromoCodeSafe();
             }
-            RecipientAddressModel addressModel = shipmentPresenter.getRecipientAddressModel();
-            String cornerId = (addressModel != null) ? addressModel.getCornerId() : null;
             switch (requestCode) {
                 case REQUEST_CODE_NORMAL_CHECKOUT:
-                    shipmentPresenter.processCheckShipmentPrepareCheckout(voucherCode, isOneClickShipment(), cornerId);
                     shipmentPresenter.processSaveShipmentState();
+                    shipmentPresenter.processCheckout(voucherCode, isOneClickShipment());
                     break;
                 case REQUEST_CODE_COD:
                     shipmentPresenter.proceedCodCheckout(voucherCode, isOneClickShipment());

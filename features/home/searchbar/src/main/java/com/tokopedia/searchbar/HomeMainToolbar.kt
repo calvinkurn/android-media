@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
+import android.support.graphics.drawable.VectorDrawableCompat
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
@@ -101,7 +102,12 @@ class HomeMainToolbar : MainToolbar {
     fun hideShadow() {
         if(isShadowApplied()){
             shadowApplied = false
+            val pL = toolbar.paddingLeft
+            var pT = ViewHelper.getStatusBarHeight(context)
+            val pR = toolbar.paddingRight
+            val pB = 0
             toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.white))
+            toolbar!!.setPadding(pL, pT, pR, pB)
         }
     }
 
@@ -111,7 +117,7 @@ class HomeMainToolbar : MainToolbar {
             val pL = toolbar.paddingLeft
             var pT = ViewHelper.getStatusBarHeight(context)
             val pR = toolbar.paddingRight
-            val pB = toolbar.paddingBottom
+            val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
 
             toolbar!!.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
 //            toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.white))

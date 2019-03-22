@@ -39,6 +39,10 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.util.isOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.util.setOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_AVAILABLE
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.expresscheckout.view.variant.di.DaggerCheckoutVariantComponent
 import com.tokopedia.logisticcommon.LogisticCommonConstant
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
@@ -78,8 +82,8 @@ import javax.inject.Inject
  */
 
 class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
-        CheckoutVariantContract.View, CheckoutVariantActionListener, CheckoutProfileFragmentListener,
-        ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener {
+    CheckoutVariantContract.View, CheckoutVariantActionListener, CheckoutProfileFragmentListener,
+    ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener {
 
     @Inject
     lateinit var presenter: CheckoutVariantContract.Presenter
@@ -106,6 +110,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     private lateinit var fragmentListener: CheckoutVariantFragmentListener
     private lateinit var reloadRatesDebounceListener: ReloadRatesDebounceListener
     private lateinit var tkpdProgressDialog: ProgressDialog
+    private var trackerAttribution: String? = ""
+    private var trackerListName: String? = ""
 
     private var isDataLoaded = false
 
@@ -113,10 +119,16 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         const val REQUEST_CODE_GEOLOCATION = 63
 
         const val ARGUMENT_ATC_REQUEST = "ARGUMENT_ATC_REQUEST"
+        const val TRACKER_ATTRIBUTION = "tracker_attribution"
+        const val TRACKER_LIST_NAME = "tracker_list_name"
 
-        fun createInstance(atcRequestParam: AtcRequestParam): CheckoutVariantFragment {
+        fun createInstance(atcRequestParam: AtcRequestParam,
+                           trackerAttribution: String? = "",
+                           trackerListName: String? = ""): CheckoutVariantFragment {
             val bundle = Bundle()
             bundle.putParcelable(ARGUMENT_ATC_REQUEST, atcRequestParam)
+            bundle.putString(TRACKER_ATTRIBUTION, trackerAttribution ?: "")
+            bundle.putString(TRACKER_LIST_NAME, trackerListName ?: "")
             val fragment = CheckoutVariantFragment()
             fragment.arguments = bundle
 
@@ -129,11 +141,17 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             val baseAppComponent = it.application
             if (baseAppComponent is BaseMainApplication) {
                 DaggerCheckoutVariantComponent.builder()
-                        .baseAppComponent(baseAppComponent.baseAppComponent)
-                        .build()
-                        .inject(this)
+                    .baseAppComponent(baseAppComponent.baseAppComponent)
+                    .build()
+                    .inject(this)
             }
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        trackerAttribution = arguments?.getString(TRACKER_ATTRIBUTION) ?: ""
+        trackerListName = arguments?.getString(TRACKER_LIST_NAME) ?: ""
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -237,6 +255,14 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
+    override fun onVariantGuidelineClick(variantGuideline: String) {
+        context?.run {
+            startActivity(ImagePreviewActivity.getCallingIntent(context!!,
+                arrayListOf(variantGuideline),
+                null, 0))
+        }
+    }
+
     override fun onClickEditProfile() {
         if (!checkoutProfileBottomSheet.isAdded) {
             checkoutProfileBottomSheet.updateArguments(fragmentViewModel.getProfileViewModel())
@@ -250,11 +276,11 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun showDurationOptions() {
         val shippingParam = presenter.getShippingParam(fragmentViewModel.getQuantityViewModel()?.orderQuantity
-                ?: 0, fragmentViewModel.getProductViewModel()?.productPrice?.toLong() ?: 0)
+            ?: 0, fragmentViewModel.getProductViewModel()?.productPrice?.toLong() ?: 0)
         val shopShipmentList = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopShipmentModels
         val selectedServiceId = fragmentViewModel.getProfileViewModel()?.shippingDurationId
         shippingDurationBottomsheet.updateArguments(shippingParam, selectedServiceId
-                ?: 0, -1, true, shopShipmentList)
+            ?: 0, -1, true, shopShipmentList)
         if (!shippingDurationBottomsheet.isAdded) {
             shippingDurationBottomsheet.show(activity?.supportFragmentManager, "")
         }
@@ -325,7 +351,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 onNeedToNotifySingleItem(fragmentViewModel.getIndex(productViewModel))
 
                 if (summaryViewModel != null) {
-                    summaryViewModel.itemPrice = quantityViewModel?.orderQuantity?.times(newSelectedProductChild.productPrice.toLong()) ?: 0
+                    summaryViewModel.itemPrice = quantityViewModel?.orderQuantity?.times(newSelectedProductChild.productPrice.toLong())
+                        ?: 0
                     onNeedToNotifySingleItem(fragmentViewModel.getIndex(summaryViewModel))
                 }
 
@@ -346,9 +373,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                             val otherVariantSelectedOptionIds = ArrayList<Int>()
                             for (otherVariantViewModel: TypeVariantViewModel in variantTypeViewModels) {
                                 if (otherVariantViewModel.variantId != variantTypeViewModel.variantId &&
-                                        otherVariantViewModel.variantId != selectedOptionViewModel.variantId) {
+                                    otherVariantViewModel.variantId != selectedOptionViewModel.variantId) {
                                     for (otherVariantTypeOption: OptionVariantViewModel in otherVariantViewModel.variantOptions) {
-                                        if (otherVariantTypeOption.currentState == otherVariantTypeOption.STATE_SELECTED) {
+                                        if (otherVariantTypeOption.currentState == STATE_SELECTED) {
                                             otherVariantSelectedOptionIds.add(otherVariantTypeOption.optionId)
                                             break
                                         }
@@ -366,10 +393,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                             // Set option id state with checking result
                             if (!hasAvailableChild) {
                                 optionViewModel.hasAvailableChild = false
-                                optionViewModel.currentState = optionViewModel.STATE_NOT_AVAILABLE
-                            } else if (optionViewModel.currentState != optionViewModel.STATE_SELECTED) {
+                                optionViewModel.currentState = STATE_NOT_AVAILABLE
+                            } else if (optionViewModel.currentState != STATE_SELECTED) {
                                 optionViewModel.hasAvailableChild = true
-                                optionViewModel.currentState = optionViewModel.STATE_NOT_SELECTED
+                                optionViewModel.currentState = STATE_NOT_SELECTED
                             }
                         }
                         onNeedToNotifySingleItem(fragmentViewModel.getIndex(variantTypeViewModel))
@@ -422,15 +449,16 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 var eligibleForWholesalePrice = false
                 for (wholesalePriceModel: WholesalePriceModel in wholesalePriceModels) {
                     if (quantityViewModel.orderQuantity >= wholesalePriceModel.qtyMax ||
-                            (quantityViewModel.orderQuantity < wholesalePriceModel.qtyMax &&
-                                    quantityViewModel.orderQuantity >= wholesalePriceModel.qtyMin)) {
+                        (quantityViewModel.orderQuantity < wholesalePriceModel.qtyMax &&
+                            quantityViewModel.orderQuantity >= wholesalePriceModel.qtyMin)) {
                         productViewModel?.productPrice = wholesalePriceModel.prdPrc
                         eligibleForWholesalePrice = true
                         break
                     }
                 }
                 if (!eligibleForWholesalePrice) {
-                    productViewModel?.productPrice = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productPrice ?: 0
+                    productViewModel?.productPrice = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productPrice
+                        ?: 0
                 }
             }
         }
@@ -443,7 +471,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 }
             }
         } else {
-            summaryViewModel?.itemPrice = productViewModel?.productPrice?.toLong()?.times(quantityViewModel.orderQuantity) ?: 0
+            summaryViewModel?.itemPrice = productViewModel?.productPrice?.toLong()?.times(quantityViewModel.orderQuantity)
+                ?: 0
         }
 
         if (summaryViewModel != null) {
@@ -467,7 +496,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         fragmentViewModel.totalPayment = totalPayment
 
         tv_total_payment_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentViewModel.totalPayment
-                ?: 0, false)
+            ?: 0, false)
     }
 
     override fun onInsuranceCheckChanged(insuranceViewModel: InsuranceViewModel) {
@@ -501,7 +530,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 bt_buy.setOnClickListener { }
             } else {
                 bt_buy.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_orange_enabled)
-                bt_buy.setOnClickListener { presenter.checkoutExpress(fragmentViewModel) }
+                bt_buy.setOnClickListener { presenter.checkoutExpress(fragmentViewModel, trackerAttribution, trackerListName) }
             }
         }
     }
@@ -551,7 +580,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun showToasterError(message: String?) {
         ToasterError.make(view, message
-                ?: activity?.getString(R.string.default_request_error_unknown), Snackbar.LENGTH_LONG).show()
+            ?: activity?.getString(R.string.default_request_error_unknown), Snackbar.LENGTH_LONG).show()
     }
 
     override fun finishWithError(messages: String) {
@@ -561,7 +590,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     override fun generateFingerprintPublicKey() {
         if (!fragmentViewModel.hasGenerateFingerprintPublicKey) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                    && router.checkoutModuleRouterGetEnableFingerprintPayment()) {
+                && router.checkoutModuleRouterGetEnableFingerprintPayment()) {
                 val publicKey = router.checkoutModuleRouterGeneratePublicKey()
                 if (publicKey != null) {
                     fragmentViewModel.fingerprintPublicKey = router.checkoutModuleRouterGetPublicKey(publicKey)
@@ -586,8 +615,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun navigateCheckoutToPayment(paymentPassData: PaymentPassData) {
         if (activity != null) startActivityForResult(
-                TopPayActivity.createInstance(activity, paymentPassData),
-                TopPayActivity.REQUEST_CODE)
+            TopPayActivity.createInstance(activity, paymentPassData),
+            TopPayActivity.REQUEST_CODE)
         activity?.finish()
     }
 
@@ -652,14 +681,14 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         errorBottomsheets.actionListener = object : ErrorBottomsheetsActionListenerWithRetry {
             override fun onActionButtonClicked() {
                 errorBottomsheets.dismiss()
-                presenter.checkoutOneClickShipment(fragmentViewModel)
+                presenter.checkoutOneClickShipment(fragmentViewModel, trackerAttribution, trackerListName)
             }
 
             override fun onRetryClicked() {
                 errorBottomsheets.dismiss()
                 when (retryAction) {
                     RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT -> {
-                        presenter.checkoutExpress(fragmentViewModel)
+                        presenter.checkoutExpress(fragmentViewModel, trackerAttribution, trackerListName)
                     }
                     RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT -> {
                         presenter.hitOldCheckout(fragmentViewModel)
@@ -678,7 +707,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 errorBottomsheets.dismiss()
                 presenter.hitOldCheckout(fragmentViewModel)
                 analyticsTracker.clickPilihMetodePembayaran(fragmentViewModel.getProfileViewModel()?.paymentDetail
-                        ?: "")
+                    ?: "")
             }
         }
         analyticsTracker.eventClickBuyAndError(message)
@@ -863,8 +892,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 insuranceViewModel.shippingId = productData.shipperId
                 insuranceViewModel.spId = productData.shipperProductId
                 insuranceViewModel.isChecked = insuranceViewModel.isChecked ||
-                        productData.insurance.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES ||
-                        productData.insurance.insuranceType == InsuranceConstant.INSURANCE_TYPE_MUST
+                    productData.insurance.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES ||
+                    productData.insurance.insuranceType == InsuranceConstant.INSURANCE_TYPE_MUST
                 insuranceViewModel.isVisible = true
                 onNeedToNotifySingleItem(fragmentViewModel.getIndex(insuranceViewModel))
 
@@ -912,8 +941,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             for (shippingCourierViewModel: ShippingCourierViewModel in shippingCourierViewModels) {
                 if (shippingCourierViewModel.productData.isRecommend || shippingCourierViewModel.serviceData.serviceId == selectedServiceId) {
                     if (shippingCourierViewModel.serviceData.error != null &&
-                            !TextUtils.isEmpty(shippingCourierViewModel.serviceData.error.errorMessage) &&
-                            shippingCourierViewModel.serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
+                        !TextUtils.isEmpty(shippingCourierViewModel.serviceData.error.errorMessage) &&
+                        shippingCourierViewModel.serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                         goToGeolocationActivity()
                     } else {
                         updateShippingData(shippingCourierViewModel.productData, shippingCourierViewModel.serviceData, shippingCourierViewModels)
@@ -979,7 +1008,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             currentProfileViewModel.isCourierError = false
             currentProfileViewModel.isStateHasChangedProfile = true
             currentProfileViewModel.isShowDefaultProfileCheckBox =
-                    selectedProfileViewModel.profileId != currentProfileViewModel.profileId
+                selectedProfileViewModel.profileId != currentProfileViewModel.profileId
             currentProfileViewModel.isEditable = false
             currentProfileViewModel.isDefaultProfileCheckboxChecked = false
             currentProfileViewModel.paymentDetail = selectedProfileViewModel.paymentDetail
@@ -1005,38 +1034,38 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 }
             }
         }).debounce(700, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<Boolean>() {
-                    override fun onCompleted() {
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Subscriber<Boolean>() {
+                override fun onCompleted() {
 
-                    }
+                }
 
-                    override fun onError(e: Throwable) {
-                        e.printStackTrace()
-                    }
+                override fun onError(e: Throwable) {
+                    e.printStackTrace()
+                }
 
-                    override fun onNext(forceReload: Boolean) {
-                        if (forceReload || fragmentViewModel.getQuantityViewModel()?.orderQuantity != fragmentViewModel.lastQuantity ||
-                                fragmentViewModel.getProductViewModel()?.productPrice != fragmentViewModel.lastPrice) {
-                            if (activity != null) bt_buy.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_disabled)
-                            fragmentViewModel.lastQuantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity
-                            fragmentViewModel.lastPrice = fragmentViewModel.getProductViewModel()?.productPrice
-                            presenter.loadShippingRates(fragmentViewModel.getProductViewModel()?.productPrice?.toLong()
-                                    ?: 0, fragmentViewModel.getQuantityViewModel()?.orderQuantity
-                                    ?: 0, fragmentViewModel.getProfileViewModel()?.shippingDurationId
-                                    ?: 0, fragmentViewModel.getProfileViewModel()?.shippingCourierId
-                                    ?: 0)
-                        }
+                override fun onNext(forceReload: Boolean) {
+                    if (forceReload || fragmentViewModel.getQuantityViewModel()?.orderQuantity != fragmentViewModel.lastQuantity ||
+                        fragmentViewModel.getProductViewModel()?.productPrice != fragmentViewModel.lastPrice) {
+                        if (activity != null) bt_buy.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_disabled)
+                        fragmentViewModel.lastQuantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity
+                        fragmentViewModel.lastPrice = fragmentViewModel.getProductViewModel()?.productPrice
+                        presenter.loadShippingRates(fragmentViewModel.getProductViewModel()?.productPrice?.toLong()
+                            ?: 0, fragmentViewModel.getQuantityViewModel()?.orderQuantity
+                            ?: 0, fragmentViewModel.getProfileViewModel()?.shippingDurationId
+                            ?: 0, fragmentViewModel.getProfileViewModel()?.shippingCourierId
+                            ?: 0)
                     }
-                }))
+                }
+            }))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_GEOLOCATION) {
             val locationPass = data?.extras?.getParcelable<LocationPass>(LogisticCommonConstant.EXTRA_EXISTING_LOCATION)
             presenter.updateAddress(fragmentViewModel, locationPass?.latitude
-                    ?: "", locationPass?.longitude ?: "")
+                ?: "", locationPass?.longitude ?: "")
         }
     }
 

@@ -1,12 +1,15 @@
 package com.tokopedia.transaction.common.sharedata;
 
+import android.support.annotation.Nullable;
+
 /**
  * @author anggaprasetiyo on 13/02/18.
  */
 
 public class AddToCartResult {
     private boolean success;
-    private String message;
+    private @Nullable
+    String message;
     private String cartId;
     private String source = "";
 
@@ -31,11 +34,11 @@ public class AddToCartResult {
         this.success = success;
     }
 
-    public String getMessage() {
+    public @Nullable String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(@Nullable String message) {
         this.message = message;
     }
 

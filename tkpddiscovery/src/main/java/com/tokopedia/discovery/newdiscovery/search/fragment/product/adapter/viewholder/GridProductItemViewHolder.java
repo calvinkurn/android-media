@@ -18,6 +18,11 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.list
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.BadgeItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.tkpdpdp.customview.RatingView;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
+import com.tokopedia.topads.sdk.domain.model.Category;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.topads.sdk.view.ImpressedImageView;
 
 import java.util.List;
 
@@ -30,7 +35,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
     @LayoutRes
     public static final int LAYOUT = R.layout.search_result_product_item_grid;
 
-    protected ImageView productImage;
+    protected ImpressedImageView productImage;
     private TextView title;
     private TextView price;
     private TextView location;
@@ -41,14 +46,18 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
     private ImageView rating;
     private TextView reviewCount;
     private LinearLayout ratingReviewContainer;
-    private ProductListener itemClickListener;
+    private ProductListener productListener;
     protected Context context;
     private TextView topLabel;
     private TextView bottomLabel;
+    private TextView newLabel;
+    private String searchQuery;
+    private RelativeLayout topadsIcon;
 
-    public GridProductItemViewHolder(View itemView, ProductListener itemClickListener) {
+    public GridProductItemViewHolder(View itemView, ProductListener productListener, String searchQuery) {
         super(itemView);
-        productImage = (ImageView) itemView.findViewById(R.id.product_image);
+        this.searchQuery = searchQuery;
+        productImage = itemView.findViewById(R.id.product_image);
         title = (TextView) itemView.findViewById(R.id.title);
         price = (TextView) itemView.findViewById(R.id.price);
         location = (TextView) itemView.findViewById(R.id.location);
@@ -61,8 +70,10 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         ratingReviewContainer = (LinearLayout) itemView.findViewById(R.id.rating_review_container);
         topLabel = itemView.findViewById(R.id.topLabel);
         bottomLabel = itemView.findViewById(R.id.bottomLabel);
+        newLabel = itemView.findViewById(R.id.new_label);
+        topadsIcon = itemView.findViewById(R.id.topads_icon);
         context = itemView.getContext();
-        this.itemClickListener = itemClickListener;
+        this.productListener = productListener;
     }
 
     @Override
@@ -95,7 +106,17 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         }
 
         setImageProduct(productItem);
-
+        if (productItem.isTopAds()) {
+            topadsIcon.setVisibility(View.VISIBLE);
+        } else {
+            topadsIcon.setVisibility(View.GONE);
+        }
+        productImage.setViewHintListener(productItem, new ImpressedImageView.ViewHintListener() {
+            @Override
+            public void onViewHint() {
+                productListener.onProductImpressed(productItem, getAdapterPosition());
+            }
+        });
         wishlistButtonContainer.setVisibility(View.VISIBLE);
         wishlistButton.setBackgroundResource(R.drawable.ic_wishlist);
 
@@ -111,7 +132,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             @Override
             public void onClick(View v) {
                 if (productItem.isWishlistButtonEnabled()) {
-                    itemClickListener.onWishlistButtonClicked(productItem);
+                    productListener.onWishlistButtonClicked(productItem);
                 }
             }
         });
@@ -119,7 +140,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         container.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                itemClickListener.onLongClick(productItem,getAdapterPosition());
+                productListener.onLongClick(productItem, getAdapterPosition());
                 return true;
             }
         });
@@ -127,21 +148,31 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemClickListener.onItemClicked(productItem, getAdapterPosition());
+                productListener.onItemClicked(productItem, getAdapterPosition());
             }
         });
 
-        if (productItem.getRating()!=0) {
+        if (productItem.getRating() != 0) {
             ratingReviewContainer.setVisibility(View.VISIBLE);
             rating.setImageResource(
-                    RatingView.getRatingDrawable(Math.round(productItem.getRating()))
-            );
+                    RatingView.getRatingDrawable((productItem.isTopAds())
+                            ? getStarCount(productItem.getRating())
+                            : Math.round(productItem.getRating())
+                    ));
             reviewCount.setText("(" + productItem.getCountReview() + ")");
         } else {
             ratingReviewContainer.setVisibility(View.GONE);
         }
-
+        if (productItem.isNew()) {
+            newLabel.setVisibility(View.VISIBLE);
+        } else {
+            newLabel.setVisibility(View.GONE);
+        }
         renderBadges(productItem.getBadgesList());
+    }
+
+    private int getStarCount(int rating) {
+        return Math.round(rating / 20f);
     }
 
     private boolean isBadgesExist(ProductItem productItem) {

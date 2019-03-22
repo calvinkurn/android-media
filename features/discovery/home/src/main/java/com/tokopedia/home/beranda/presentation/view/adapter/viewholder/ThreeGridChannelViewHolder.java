@@ -57,9 +57,9 @@ public class ThreeGridChannelViewHolder extends AbstractViewHolder<DynamicChanne
 
     private void findViews(View itemView) {
         recyclerView = itemView.findViewById(R.id.recycleList);
-        channelTitle = (TextView) itemView.findViewById(R.id.channel_title);
+        channelTitle = itemView.findViewById(R.id.channel_title);
         channelTitleContainer = itemView.findViewById(R.id.channel_title_container);
-        seeAllButton = (TextView) itemView.findViewById(R.id.see_all_button);
+        seeAllButton = itemView.findViewById(R.id.see_all_button);
         countDownView = itemView.findViewById(R.id.count_down);
         recyclerView = itemView.findViewById(R.id.recycleList);
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
@@ -72,7 +72,6 @@ public class ThreeGridChannelViewHolder extends AbstractViewHolder<DynamicChanne
         try {
             final DynamicHomeChannel.Channels channel = element.getChannel();
             String titleText = element.getChannel().getHeader().getName();
-            listener.onServerTimeReceived(channel.getHeader().getServerTimeUnix());
             if (!TextUtils.isEmpty(titleText)) {
                 channelTitleContainer.setVisibility(View.VISIBLE);
                 Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
@@ -88,7 +87,7 @@ public class ThreeGridChannelViewHolder extends AbstractViewHolder<DynamicChanne
             }
             if (isSprintSale(channel)) {
                 Date expiredTime = DateHelper.getExpiredTime(channel.getHeader().getExpiredTime());
-                countDownView.setup(listener.getServerTimeOffset(), expiredTime, countDownListener);
+                countDownView.setup(element.getServerTimeOffset(), expiredTime, countDownListener);
                 countDownView.setVisibility(View.VISIBLE);
             } else {
                 countDownView.setVisibility(View.GONE);
@@ -101,7 +100,7 @@ public class ThreeGridChannelViewHolder extends AbstractViewHolder<DynamicChanne
                             DynamicLinkHelper.getActionLink(channel.getHeader()));
                     HomePageTracking.eventClickSeeAllThreeLegoBannerChannel(
                             context,
-                            DynamicLinkHelper.getActionLink(channel.getHeader()));
+                            channel.getName());
                 }
             });
             itemAdapter.setChannel(channel, getAdapterPosition());
