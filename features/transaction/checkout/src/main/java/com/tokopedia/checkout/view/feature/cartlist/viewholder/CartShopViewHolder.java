@@ -156,27 +156,22 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                 tickerPromoStackingCheckoutView.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
                     @Override
                     public void onClickUsePromo() {
-                        // actionListener.onCartPromoUseVoucherMerchantPromoClicked(promoDataMerchant, position);
-                        actionListener.onCartPromoUseVoucherMerchantPromoClickedTest(getAdapterPosition());
+                        actionListener.onVoucherMerchantPromoClicked(getAdapterPosition());
                     }
 
                     @Override
                     public void onResetPromoDiscount() {
-                        // actionListener.onCartPromoCancelVoucherPromoMerchantClicked(voucherOrdersItemData, position);
-
-                        actionListener.onCartPromoUseVoucherMerchantPromoClickedTest(getAdapterPosition());
-                        // actionListener.onCartPromoMerchantTrackingCancelled(promoDataMerchant, position);
+                        actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData(), getAdapterPosition(), false);
                     }
 
                     @Override
                     public void onClickDetailPromo() {
-                        // actionListener.onClickDetailPromoMerchant(promoDataMerchant, position);
-                        actionListener.onCartPromoUseVoucherMerchantPromoClickedTest(getAdapterPosition());
+
                     }
 
                     @Override
                     public void onDisablePromoDiscount() {
-
+                        actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData(), getAdapterPosition(), true);
                     }
                 });
             }

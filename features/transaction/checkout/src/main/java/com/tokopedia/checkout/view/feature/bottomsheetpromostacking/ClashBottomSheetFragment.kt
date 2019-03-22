@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.feature.promostacking
+package com.tokopedia.checkout.view.feature.bottomsheetpromostacking
 
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialogFragment

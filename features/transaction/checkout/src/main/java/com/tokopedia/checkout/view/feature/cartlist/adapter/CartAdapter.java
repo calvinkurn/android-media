@@ -27,6 +27,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
@@ -419,17 +420,14 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    public void cancelAutoApplyStackCoupon(int position) {
-        // for (int i = 0; i < cartDataList.size(); i++) {
-        /*Object object = cartDataList.get(position);
-        if (object instanceof VoucherOrdersItemData) {
-            ((VoucherOrdersItemData) object).setState("grey");
-            notifyItemChanged(position);
-        } else if (object instanceof CartPromoSuggestion) {
-            ((CartPromoSuggestion) object).setVisible(true);
-            notifyItemChanged(position);
-        }*/
-        // }
+    public void cancelAutoApplyStackCoupon() {
+        for (int i = 0; i < cartDataList.size(); i++) {
+            Object object = cartDataList.get(i);
+            if (object instanceof PromoStackingData) {
+                ((PromoStackingData) object).setState(TickerPromoStackingCheckoutView.State.EMPTY);
+                notifyItemChanged(i);
+            }
+        }
     }
 
 
@@ -450,7 +448,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         checkForShipmentForm();
     }
 
-    public void adaPromoStackingVoucherData(PromoStackingData promoStackingData) {
+    public void addPromoStackingVoucherData(PromoStackingData promoStackingData) {
         cartDataList.add(promoStackingData);
         notifyDataSetChanged();
         checkForShipmentForm();
@@ -561,6 +559,13 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (cartDataList.get(i) instanceof PromoStackingData) {
                 return (PromoStackingData) cartDataList.get(i);
             }
+        }
+        return null;
+    }
+
+    public CartShopHolderData getCartShopHolderDataByIndex(int index) {
+        if (cartDataList.get(index) instanceof CartShopHolderData) {
+            return (CartShopHolderData) cartDataList.get(index);
         }
         return null;
     }

@@ -11,7 +11,7 @@ import com.tokopedia.promocheckout.common.domain.CancelPromoUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.GetDetailCouponMarketplaceUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingFirstCodeMapper
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailPresenter
 import dagger.Module
 import dagger.Provides
@@ -31,7 +31,7 @@ class PromoCheckoutDetailModule {
     @Provides
     fun providePresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                          @PromoCheckoutQualifier checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
-                         checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
+                         checkPromoStackingCodeMapper: CheckPromoStackingFirstCodeMapper,
                          @PromoCheckoutQualifier cancelPromoUseCase: CancelPromoUseCase): PromoCheckoutDetailPresenter {
         return PromoCheckoutDetailPresenter(getDetailCouponMarketplaceUseCase, checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, cancelPromoUseCase)
     }

@@ -7,13 +7,18 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v4.app.FragmentManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.BottomSheets
+import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
@@ -32,7 +37,6 @@ import javax.inject.Inject
  */
 
 open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVoucherListBottomsheetContract.View, MerchantVoucherViewUsed.OnMerchantVoucherViewListener {
-
     @Suppress("DEPRECATION")
     private var progressDialog: ProgressDialog? = null
     private lateinit var merchantVoucherListBottomSheetAdapter: MerchantVoucherListBottomSheetAdapter
@@ -48,9 +52,12 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     @Inject
     lateinit var presenter: MerchantVoucherListBottomsheetPresenter
 
+    lateinit var actionListener: ActionListener
+
     interface ActionListener {
         fun onClashCheckPromoFirstStep()
-        fun onSuccessCheckPromoFirstStep()
+        fun onSuccessCheckPromoFirstStep(promoData: ResponseGetPromoStackUiModel)
+        fun onErrorCheckPromoFirstStep(message: String)
     }
 
     companion object {
@@ -88,8 +95,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         buttonUse = view.findViewById(R.id.buttonUse)
         textInputCoupon = view.findViewById(R.id.textInputCoupon)
 
-        presenter.clearCache()
-        presenter.getVoucherList(shopId.toString(), 0)
+        loadData()
 
         buttonUse.setOnClickListener {
             presenter.checkPromoFirstStep(textInputCoupon.text.toString(), cartString, checkPromoFirstStepParam)
@@ -100,6 +106,11 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         shopId = arguments?.getInt(ARGUMENT_SHOP_ID, 0) ?: 0
         checkPromoFirstStepParam = arguments?.getParcelable(ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM)
         cartString = arguments?.getString(ARGUMENT_CART_STRING) ?: ""
+    }
+
+    fun loadData() {
+        presenter.clearCache()
+        presenter.getVoucherList(shopId.toString(), 0)
     }
 
     override fun getLayoutResourceId(): Int {
@@ -151,13 +162,8 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         if (context == null) {
             return
         }
-        activity?.run {
-            val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.title_voucher_code_copied),
-                    Snackbar.LENGTH_LONG)
-            snackbar.setAction(activity!!.getString(R.string.close), View.OnClickListener { snackbar.dismiss() })
-            snackbar.setActionTextColor(Color.WHITE)
-            snackbar.show()
-        }
+
+        presenter.checkPromoFirstStep(merchantVoucherViewModel.voucherCode, cartString, checkPromoFirstStepParam)
     }
 
     fun initInjector() {
@@ -186,22 +192,23 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     }
 
     override fun onErrorGetMerchantVoucherList(e: Throwable) {
+        dismiss()
     }
 
     override fun onErrorCheckPromoFirstStep(message: String) {
-        // Todo : show snackbar red
+        dismiss()
+        actionListener.onErrorCheckPromoFirstStep(message)
     }
 
     override fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackUiModel) {
-        // Todo : close merchant voucher bottomsheet, navigate to cart fragment to update view
-        val intent = Intent()
-        intent.putExtra(EXTRA_PROMO_DATA, model)
-        activity?.setResult(Activity.RESULT_OK, intent)
-        activity?.finish()
+        dismiss()
+        actionListener.onSuccessCheckPromoFirstStep(model)
     }
 
     override fun onClashCheckPromoFirstStep() {
-        // Todo : close merchant voucher bottomsheet, show clash bottomsheet
+        // Close merchant voucher bottomsheet, show clash bottomsheet
+        dismiss()
+        actionListener.onClashCheckPromoFirstStep()
     }
 
 }

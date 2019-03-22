@@ -6,10 +6,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutRouter
-import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.domain.*
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides

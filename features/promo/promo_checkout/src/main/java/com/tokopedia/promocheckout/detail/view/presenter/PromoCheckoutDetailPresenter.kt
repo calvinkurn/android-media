@@ -1,6 +1,5 @@
 package com.tokopedia.promocheckout.detail.view.presenter
 
-import android.content.res.Resources
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.common.network.data.model.RestResponse
@@ -9,7 +8,7 @@ import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstSte
 import com.tokopedia.promocheckout.common.domain.CancelPromoUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.GetDetailCouponMarketplaceUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingFirstCodeMapper
 import com.tokopedia.promocheckout.common.domain.model.cancelpromo.ResponseCancelPromo
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
@@ -21,7 +20,7 @@ import java.lang.reflect.Type
 
 class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                                    private val checkPromoStackingUseCase: CheckPromoStackingCodeUseCase,
-                                   val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
+                                   val checkPromoStackingCodeMapper: CheckPromoStackingFirstCodeMapper,
                                    private val cancelPromoUseCase: CancelPromoUseCase) :
         BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailContract.Presenter {
 

@@ -524,12 +524,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             @Override
             public void onClickUsePromo() {
                 // actionListener.onCartPromoUseVoucherMerchantPromoClicked(promoDataMerchant, position);
-                mActionListener.onCartPromoUseVoucherMerchantPromoClickedTest(getAdapterPosition());
+                mActionListener.onVoucherMerchantPromoClicked(getAdapterPosition());
             }
 
             @Override
             public void onResetPromoDiscount() {
-                // actionListener.onCartPromoCancelVoucherPromoMerchantClicked(promoDataMerchant, position);
+                // actionListener.onCancelVoucherMerchantClicked(promoDataMerchant, position);
                 // actionListener.onCartPromoMerchantTrackingCancelled(promoDataMerchant, position);
             }
 

@@ -16,6 +16,7 @@ import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstSte
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
+import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
@@ -82,7 +83,9 @@ public interface ShipmentContract {
 
         void renderErrorCheckPromoShipmentData(String message);
 
-        void renderCheckPromoShipmentDataSuccess(PromoCodeCartShipmentData checkPromoCodeCartShipmentResult);
+        // void renderCheckPromoShipmentDataSuccess(PromoCodeCartShipmentData checkPromoCodeCartShipmentResult);
+
+        void renderCheckPromoStackingShipmentDataSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel);
 
         void renderEditAddressSuccess(String latitude, String longitude);
 

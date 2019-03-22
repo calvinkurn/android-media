@@ -23,6 +23,12 @@ mutation get_promo_stack_use($params: PromoStackRequest) {
       benefit_summary_info {
               final_benefit_text
               final_benefit_amount
+              summaries {
+                description
+                type
+                amount_str
+                amount
+              }
         }
       clashing_info_detail {
           clash_message

@@ -6,13 +6,13 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingFirstCodeMapper
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 
-class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingUseCase: CheckPromoStackingCodeUseCase, val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper) : BaseDaggerPresenter<PromoCheckoutListMarketplaceContract.View>(), PromoCheckoutListMarketplaceContract.Presenter {
+class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingUseCase: CheckPromoStackingCodeUseCase, val checkPromoStackingCodeMapper: CheckPromoStackingFirstCodeMapper) : BaseDaggerPresenter<PromoCheckoutListMarketplaceContract.View>(), PromoCheckoutListMarketplaceContract.Presenter {
 
     override fun checkPromoStackingCode(promoCode: String, oneClickShipment: Boolean, checkPromoFirstStepParam: CheckPromoFirstStepParam?) {
         if (checkPromoFirstStepParam == null) return

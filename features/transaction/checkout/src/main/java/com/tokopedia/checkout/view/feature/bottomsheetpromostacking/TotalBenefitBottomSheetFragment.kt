@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.feature.promostacking
+package com.tokopedia.checkout.view.feature.bottomsheetpromostacking
 
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialogFragment
@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.tokopedia.checkout.R
+import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel
 
 /**
  * Created by fwidjaja on 10/03/19.
@@ -16,10 +17,15 @@ import com.tokopedia.checkout.R
 
 open class TotalBenefitBottomSheetFragment : BottomSheetDialogFragment() {
     private var mTitle: String? = null
+    private var benefitUiModel = BenefitSummaryInfoUiModel()
+
 
     companion object {
+        private var benefitUiModel = BenefitSummaryInfoUiModel()
+
         @JvmStatic
-        fun newInstance(): TotalBenefitBottomSheetFragment {
+        fun newInstance(benefitSummaryInfoUiModel: BenefitSummaryInfoUiModel): TotalBenefitBottomSheetFragment {
+            benefitUiModel = benefitSummaryInfoUiModel
             return TotalBenefitBottomSheetFragment()
         }
     }

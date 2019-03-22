@@ -44,7 +44,7 @@ public interface ICartListPresenter {
 
     void processCancelAutoApply();
 
-    void processCancelAutoApplyStackMerchant(int shopId, int position);
+    void processCancelAutoApplyPromoStack(int shopIndex, String promoCode, boolean ignoreAPIResponse);
 
     Map<String, Object> generateCartDataAnalytics(CartItemData removedCartItem, String enhancedECommerceAction);
 
@@ -65,7 +65,5 @@ public interface ICartListPresenter {
     void setCheckedCartItemState(List<CartItemHolderData> cartItemHolderDataList);
 
     Map<Integer, Boolean> getCheckedCartItemState();
-
-    void processCheckPromoStackingCode();
 
 }

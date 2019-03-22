@@ -1,17 +1,7 @@
 package com.tokopedia.checkout.view.feature.shipment.viewholder;
 
 import android.content.Context;
-import android.graphics.Typeface;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.TextPaint;
-import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,7 +10,6 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 
 /**
@@ -47,6 +36,8 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvDonationLabel;
     private TextView mTvDonationPrice;
     private RelativeLayout mRlTotalPromo;
+    private TextView mTvTotalPromoStackAmount;
+    private TextView mTvTotalPromoStackLabel;
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
 
@@ -70,6 +61,8 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvDonationLabel = itemView.findViewById(R.id.tv_donation_label);
         mTvDonationPrice = itemView.findViewById(R.id.tv_donation_price);
         mRlTotalPromo = itemView.findViewById(R.id.rl_total_promo);
+        mTvTotalPromoStackAmount = itemView.findViewById(R.id.tv_total_promo_amount);
+        mTvTotalPromoStackLabel = itemView.findViewById(R.id.tv_total_promo_label);
 
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
     }
@@ -91,7 +84,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvDonationPrice.setText(getPriceFormat(mTvDonationLabel, mTvDonationPrice, shipmentCost.getDonation()));
     }*/
 
-    public void bindViewHolder(ShipmentCostModel shipmentCost, PromoStackingData promoStackingData) {
+    public void bindViewHolder(ShipmentCostModel shipmentCost) {
         mRlShipmentCostLayout.setVisibility(View.VISIBLE);
 
         mTvTotalItemLabel.setText(getTotalItemLabel(mTvTotalItemLabel.getContext(), shipmentCost.getTotalItem()));
@@ -106,6 +99,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
                 getPriceFormat(mTvPromoOrCouponLabel, mTvPromoDiscount, shipmentCost.getPromoPrice())));
         mTvSellerCostAdditionFee.setText(getPriceFormat(mTvSellerCostAdditionLabel, mTvSellerCostAdditionFee, shipmentCost.getAdditionalFee()));
         mTvDonationPrice.setText(getPriceFormat(mTvDonationLabel, mTvDonationPrice, shipmentCost.getDonation()));
+        mTvTotalPromoStackAmount.setText(shipmentCost.getTotalPromoStackAmount());
         mRlTotalPromo.setOnClickListener(v -> shipmentAdapterActionListener.showBottomSheetTotalBenefit());
     }
 

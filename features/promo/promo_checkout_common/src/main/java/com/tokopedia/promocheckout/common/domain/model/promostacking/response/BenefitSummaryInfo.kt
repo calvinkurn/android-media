@@ -10,5 +10,8 @@ data class BenefitSummaryInfo(
 	val finalBenefitAmount: String? = null,
 
 	@field:SerializedName("final_benefit_text")
-	val finalBenefitText: String? = null
+	val finalBenefitText: String? = null,
+
+	@field:SerializedName("summaries")
+	val summaries: List<SummariesItem?>? = null
 )

@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
  * Created by Irfan Khoirul on 18/03/19.
  */
 
-data class ClearCacheAutoApplyStack(
+data class ClearCacheAutoApplyStackResponse(
         @SerializedName("Success")
         val success: Boolean = false
 )

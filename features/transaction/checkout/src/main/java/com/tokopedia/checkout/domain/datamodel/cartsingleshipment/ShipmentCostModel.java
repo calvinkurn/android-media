@@ -23,6 +23,7 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
     private double promoPrice;
     private double donation;
     private String promoMessage;
+    private String totalPromoStackAmount;
 
     public int getTotalItem() {
         return totalItem;
@@ -120,6 +121,14 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         this.purchaseProtectionFee = purchaseProtectionFee;
     }
 
+    public String getTotalPromoStackAmount() {
+        return totalPromoStackAmount;
+    }
+
+    public void setTotalPromoStackAmount(String totalPromoStackAmount) {
+        this.totalPromoStackAmount = totalPromoStackAmount;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -137,6 +146,7 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         dest.writeString(this.promoMessage);
         dest.writeDouble(this.additionalFee);
         dest.writeDouble(this.donation);
+        dest.writeString(this.totalPromoStackAmount);
     }
 
     public ShipmentCostModel() {
@@ -153,6 +163,7 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         this.promoMessage = in.readString();
         this.additionalFee = in.readDouble();
         this.donation = in.readDouble();
+        this.totalPromoStackAmount = in.readString();
     }
 
     public static final Creator<ShipmentCostModel> CREATOR = new Creator<ShipmentCostModel>() {

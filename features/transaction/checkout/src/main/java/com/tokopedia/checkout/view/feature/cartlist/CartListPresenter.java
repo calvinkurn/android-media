@@ -9,7 +9,6 @@ import com.tokopedia.checkout.BuildConfig;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
@@ -28,24 +27,24 @@ import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
+import com.tokopedia.checkout.view.feature.cartlist.subscriber.ClearCacheAutoApplySubscriber;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.XcartParam;
-import com.tokopedia.checkout.view.feature.promostacking.subscriber.CheckPromoStackingSubscriber;
-import com.tokopedia.checkout.view.feature.shipment.subscriber.GetCourierRecommendationSubscriber;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingFirstCodeMapper;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
+import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
@@ -76,8 +75,11 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -115,8 +117,9 @@ public class CartListPresenter implements ICartListPresenter {
     private final RemoveWishListUseCase removeWishListUseCase;
     private final UpdateAndReloadCartUseCase updateAndReloadCartUseCase;
     private final CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase;
-    private final CheckPromoStackingCodeMapper checkPromoStackingCodeMapper;
+    private final CheckPromoStackingFirstCodeMapper checkPromoStackingCodeMapper;
     private final TopAdsGqlUseCase topAdsUseCase;
+    private final ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
     private final UserSessionInterface userSessionInterface;
     private CartListData cartListData;
     private boolean hasPerformChecklistChange;
@@ -163,7 +166,7 @@ public class CartListPresenter implements ICartListPresenter {
                              UpdateCartUseCase updateCartUseCase,
                              ResetCartGetCartListUseCase resetCartGetCartListUseCase,
                              CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase,
-                             CheckPromoStackingCodeMapper checkPromoStackingCodeMapper,
+                             CheckPromoStackingFirstCodeMapper checkPromoStackingCodeMapper,
                              CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                              CompositeSubscription compositeSubscription,
                              CartApiRequestParamGenerator cartApiRequestParamGenerator,
@@ -172,7 +175,8 @@ public class CartListPresenter implements ICartListPresenter {
                              RemoveWishListUseCase removeWishListUseCase,
                              UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
                              UserSessionInterface userSessionInterface,
-                             TopAdsGqlUseCase topAdsUseCase) {
+                             TopAdsGqlUseCase topAdsUseCase,
+                             ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase) {
         this.view = cartListView;
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
@@ -190,6 +194,7 @@ public class CartListPresenter implements ICartListPresenter {
         this.updateAndReloadCartUseCase = updateAndReloadCartUseCase;
         this.userSessionInterface = userSessionInterface;
         this.topAdsUseCase = topAdsUseCase;
+        this.clearCacheAutoApplyStackUseCase = clearCacheAutoApplyStackUseCase;
     }
 
     @Override
@@ -230,7 +235,7 @@ public class CartListPresenter implements ICartListPresenter {
                 view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList(null))
         );
         compositeSubscription.add(getCartListUseCase.createObservable(requestParams)
-                /*.flatMap(new Func1<CartListData, Observable<CartListData>>() {
+                .flatMap(new Func1<CartListData, Observable<CartListData>>() {
                     @Override
                     public Observable<CartListData> call(CartListData cartListData) {
                         RequestParams adsParam = RequestParams.create();
@@ -245,7 +250,7 @@ public class CartListPresenter implements ICartListPresenter {
                                     }
                                 });
                     }
-                })*/
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -329,7 +334,7 @@ public class CartListPresenter implements ICartListPresenter {
                 view.getGeneratedAuthParamNetwork(paramGetList));
 
         compositeSubscription.add(deleteCartGetCartListUseCase.createObservable(requestParams)
-                /*.flatMap(new Func1<DeleteAndRefreshCartListData, Observable<DeleteAndRefreshCartListData>>() {
+                .flatMap(new Func1<DeleteAndRefreshCartListData, Observable<DeleteAndRefreshCartListData>>() {
                     @Override
                     public Observable<DeleteAndRefreshCartListData> call(DeleteAndRefreshCartListData deleteAndRefreshCartListData) {
                         RequestParams adsParam = RequestParams.create();
@@ -345,7 +350,7 @@ public class CartListPresenter implements ICartListPresenter {
                                     }
                                 });
                     }
-                })*/
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -1228,7 +1233,7 @@ public class CartListPresenter implements ICartListPresenter {
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
                 view.hideProgressLoading();
-                System.out.println("++ graphqlResponse = "+graphqlResponse.toString());
+                System.out.println("++ graphqlResponse = " + graphqlResponse.toString());
                 // view.renderCheckPromoStackingCodeFromSuggestedPromoSuccess(responseFirstStep);
             }
 
@@ -1236,56 +1241,14 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processCancelAutoApplyStackMerchant(int shopId, int position) {
-        Map<String, String> authParam = AuthUtil.generateParamsNetwork(
-                userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new com.tokopedia.network.utils.TKPDMapParam<>());
-
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(CancelAutoApplyCouponUseCase.PARAM_REQUEST_AUTH_MAP_STRING, authParam);
-
-        compositeSubscription.add(cancelAutoApplyCouponUseCase.createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        view.renderCancelAutoApplyCouponError();
-                    }
-
-                    @Override
-                    public void onNext(String stringResponse) {
-                        boolean resultSuccess = false;
-                        try {
-                            JSONObject jsonObject = new JSONObject(stringResponse);
-                            NullCheckerKt.isContainNull(jsonObject, s -> {
-                                ContainNullException exception = new ContainNullException("Found " + s + " on " + CartListPresenter.class.getSimpleName());
-                                if (!BuildConfig.DEBUG) {
-                                    Crashlytics.logException(exception);
-                                }
-                                throw exception;
-                            });
-
-                            resultSuccess = jsonObject.getJSONObject(CancelAutoApplyCouponUseCase.RESPONSE_DATA)
-                                    .getBoolean(CancelAutoApplyCouponUseCase.RESPONSE_SUCCESS);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        if (resultSuccess) {
-                            view.renderCancelAutoApplyCouponSuccess();
-                        } else {
-                            view.renderCancelAutoApplyCouponError();
-                        }
-                    }
-                })
-        );
+    public void processCancelAutoApplyPromoStack(int shopIndex, String promoCode, boolean ignoreAPIResponse) {
+        if (!TextUtils.isEmpty(promoCode)) {
+            if (!ignoreAPIResponse) {
+                view.showProgressLoading();
+            }
+            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCode);
+            clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearCacheAutoApplySubscriber(view, this, shopIndex, ignoreAPIResponse));
+        }
     }
 
     @Override
@@ -1500,14 +1463,5 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public Map<Integer, Boolean> getCheckedCartItemState() {
         return lastCheckedItem;
-    }
-
-    @Override
-    public void processCheckPromoStackingCode() {
-//        checkPromoStackingCodeUseCase.setParams(123, 1, "VOUCHERTOKO10",
-//                "JNE100", 1, "", "CASHBACK50",
-//                0, 1);
-        checkPromoStackingCodeUseCase.execute(RequestParams.create(),
-                new CheckPromoStackingSubscriber(checkPromoStackingCodeMapper));
     }
 }

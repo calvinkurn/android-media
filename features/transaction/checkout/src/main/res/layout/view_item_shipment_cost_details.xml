@@ -162,6 +162,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
         android:text="@string/label_promo"
+        android:visibility="gone"
         tools:ignore="HardcodedText" />
 
     <TextView
@@ -176,6 +177,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:gravity="end"
+        android:visibility="gone"
         tools:text="Rp100.000" />
 
     <TextView
@@ -185,6 +187,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_promo_or_coupon_label"
         android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:text="@string/label_donation"
         tools:ignore="HardcodedText" />
 
@@ -218,7 +222,7 @@
         android:layout_below="@+id/item_shipment_divider">
 
         <TextView
-            android:id="@+id/tv_total_promo"
+            android:id="@+id/tv_total_promo_label"
             style="@style/TextMidMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -233,7 +237,7 @@
             tools:ignore="HardcodedText" />
 
         <TextView
-            android:id="@+id/tv_total_promo_price"
+            android:id="@+id/tv_total_promo_amount"
             style="@style/TextMidMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

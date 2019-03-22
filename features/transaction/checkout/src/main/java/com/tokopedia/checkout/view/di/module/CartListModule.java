@@ -20,15 +20,13 @@ import com.tokopedia.checkout.view.feature.cartlist.ICartListPresenter;
 import com.tokopedia.checkout.view.feature.cartlist.ICartListView;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
-import com.tokopedia.checkout.view.feature.shipment.di.ShipmentScope;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutRouter;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
-import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingFirstCodeMapper;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
-import com.tokopedia.checkout.view.feature.shipment.di.ShipmentScope;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -94,7 +92,7 @@ public class CartListModule {
                                                  UpdateCartUseCase updateCartUseCase,
                                                  ResetCartGetCartListUseCase resetCartGetCartListUseCase,
                                                  CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase,
-                                                 CheckPromoStackingCodeMapper checkPromoStackingCodeMapper,
+                                                 CheckPromoStackingFirstCodeMapper checkPromoStackingCodeMapper,
                                                  CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                                                  CompositeSubscription compositeSubscription,
                                                  CartApiRequestParamGenerator cartApiRequestParamGenerator,
@@ -103,13 +101,15 @@ public class CartListModule {
                                                  RemoveWishListUseCase removeWishListUseCase,
                                                  UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
                                                  UserSessionInterface userSessionInterface,
-                                                 TopAdsGqlUseCase topAdsGqlUseCase) {
+                                                 TopAdsGqlUseCase topAdsGqlUseCase,
+                                                 ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase) {
         return new CartListPresenter(
                 cartListView, getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoStackingCodeUseCase,
                 checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase, compositeSubscription,
                 cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase, addWishListUseCase,
-                removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface, topAdsGqlUseCase);
+                removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface, topAdsGqlUseCase,
+                clearCacheAutoApplyStackUseCase);
     }
 
     @Provides

@@ -2,20 +2,22 @@ package com.tokopedia.promocheckout.common.view.uimodel
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.promocheckout.common.domain.model.promostacking.response.BenefitSummaryInfo
 
 data class BenefitSummaryInfoUiModel(
 		var finalBenefitText: String = "",
-		var finalBenefitAmount: String = ""
+		var finalBenefitAmount: String = "",
+		var summaries: List<SummariesUiModel> = emptyList()
 ) : Parcelable {
 	constructor(parcel: Parcel) : this(
 			parcel.readString(),
-			parcel.readString()) {
+			parcel.readString(),
+			parcel.createTypedArrayList(SummariesUiModel)) {
 	}
 
 	override fun writeToParcel(parcel: Parcel, flags: Int) {
 		parcel.writeString(finalBenefitText)
 		parcel.writeString(finalBenefitAmount)
+		parcel.writeTypedList(summaries)
 	}
 
 	override fun describeContents(): Int {
@@ -31,5 +33,4 @@ data class BenefitSummaryInfoUiModel(
 			return arrayOfNulls(size)
 		}
 	}
-
 }

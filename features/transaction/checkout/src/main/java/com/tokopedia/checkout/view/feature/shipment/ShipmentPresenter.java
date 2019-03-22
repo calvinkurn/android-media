@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.checkout.BuildConfig;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
@@ -34,7 +33,6 @@ import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormOneClickShipe
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
-import com.tokopedia.checkout.view.feature.promostacking.subscriber.CheckPromoStackingSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.CheckPromoCodeFromSelectedCourierSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetRatesSubscriber;
@@ -48,17 +46,16 @@ import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.logisticanalytics.CodAnalytics;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomsheetParamData;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam;
-import com.tokopedia.promocheckout.common.data.entity.request.Order;
-import com.tokopedia.promocheckout.common.data.entity.request.ProductDetail;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase;
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingFinalCodeMapper;
+import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
-import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.shipping_recommendation.domain.ShippingParam;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase;
@@ -128,7 +125,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     // private final CheckPromoCodeFinalUseCase checkPromoCodeFinalUseCase;
     private final CheckPromoStackingCodeFinalUseCase checkPromoStackingCodeFinalUseCase;
-    private final CheckPromoStackingCodeMapper checkPromoStackingCodeMapper;
+    private final CheckPromoStackingFinalCodeMapper checkPromoStackingFinalCodeMapper;
     private final CheckoutUseCase checkoutUseCase;
     private final CompositeSubscription compositeSubscription;
     private final GetThanksToppayUseCase getThanksToppayUseCase;
@@ -169,7 +166,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Inject
     public ShipmentPresenter(CheckPromoStackingCodeFinalUseCase checkPromoStackingCodeFinalUseCase,
-                             CheckPromoStackingCodeMapper checkPromoStackingCodeMapper,
+                             CheckPromoStackingFinalCodeMapper checkPromoStackingFinalCodeMapper,
                              CompositeSubscription compositeSubscription,
                              CheckoutUseCase checkoutUseCase,
                              GetThanksToppayUseCase getThanksToppayUseCase,
@@ -190,7 +187,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection,
                              CodAnalytics codAnalytics) {
         this.checkPromoStackingCodeFinalUseCase = checkPromoStackingCodeFinalUseCase;
-        this.checkPromoStackingCodeMapper = checkPromoStackingCodeMapper;
+        this.checkPromoStackingFinalCodeMapper = checkPromoStackingFinalCodeMapper;
         this.compositeSubscription = compositeSubscription;
         this.checkoutUseCase = checkoutUseCase;
         this.getThanksToppayUseCase = getThanksToppayUseCase;
@@ -683,7 +680,35 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         checkPromoStackingCodeFinalUseCase.setParams(checkPromoFirstStepParam);
         checkPromoStackingCodeFinalUseCase.execute(RequestParams.create(),
-                new CheckPromoStackingSubscriber(checkPromoStackingCodeMapper));
+                new Subscriber<GraphqlResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        if (getView() != null) {
+                            getView().renderErrorCheckPromoShipmentData(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
+                        }
+                    }
+
+                    @Override
+                    public void onNext(GraphqlResponse graphqlResponse) {
+                        ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingFinalCodeMapper.call(graphqlResponse);
+                        // Todo : hapus jika response status tidak string kosong lagi!
+                        // if (!responseGetPromoStack.getStatus().equalsIgnoreCase("OK") || TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
+                        if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
+                            String message = responseGetPromoStack.getData().getMessage().getText();
+                            if (getView() != null) {
+                                getView().renderErrorCheckPromoShipmentData(message);
+                            }
+                        } else {
+                            getView().renderCheckPromoStackingShipmentDataSuccess(responseGetPromoStack);
+                        }
+                    }
+                });
 
         /*checkPromoCodeFinalUseCase.execute(checkPromoCodeFinalUseCase.createRequestParams(
                 new Gson().toJson(checkPromoCodeCartShipmentRequest), isOneClickShipment), new Subscriber<DataVoucher>() {
