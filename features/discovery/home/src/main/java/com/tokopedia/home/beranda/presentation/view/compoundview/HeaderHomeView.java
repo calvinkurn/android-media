@@ -169,12 +169,18 @@ public class HeaderHomeView extends BaseCustomView {
     }
 
     private OnClickListener onScanListener() {
-        return v -> getContext().startActivity(((IHomeRouter) getContext().getApplicationContext())
-                .gotoQrScannerPage(false));
+        return v -> {
+            HomePageTracking.eventQrCode();
+            getContext().startActivity(((IHomeRouter) getContext().getApplicationContext())
+                    .gotoQrScannerPage(false));
+        };
     }
 
     private OnClickListener onCheckNowListener() {
-        return v -> RouteManager.route(getContext(), ApplinkConst.LOGIN);
+        return v -> {
+            HomePageTracking.eventTokopointNonLogin();
+            RouteManager.route(getContext(), ApplinkConst.LOGIN);
+        };
     }
 
     private void viewListener() {
@@ -394,12 +400,14 @@ public class HeaderHomeView extends BaseCustomView {
     private OnClickListener getOnclickOvoApplink(boolean linkedOvo, String applinkString) {
         return view -> {
             if (RouteManager.isSupportApplink(getContext(), applinkString)) {
-                Intent intentBalanceWalet = RouteManager.getIntent(getContext(), applinkString);
-                getContext().startActivity(intentBalanceWalet);
                 if (!linkedOvo) {
                     showAnimationBottomSheetActivation();
                     walletAnalytics.eventClickActivationOvoHomepage();
+                } else {
+                    HomePageTracking.eventOvo();
                 }
+                Intent intentBalanceWalet = RouteManager.getIntent(getContext(), applinkString);
+                getContext().startActivity(intentBalanceWalet);
             }
         };
     }

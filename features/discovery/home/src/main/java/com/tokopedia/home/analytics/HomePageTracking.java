@@ -93,6 +93,11 @@ public class HomePageTracking {
     public static final String ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_NON_LOGIN = "add wishlist on product recommendation - non login";
     public static final String ACTION_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION = "remove wishlist on product recommendation";
 
+    public static final String ON = "on";
+    public static final String NON_LOGIN = "non login";
+    public static final String QR_CODE = "qr code";
+    public static final String OVO = "ovo";
+
     public static AnalyticTracker getTracker(Context context){
         if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return null;
@@ -660,6 +665,42 @@ public class HomePageTracking {
                     CATEGORY_HOME_PAGE,
                     ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_NON_LOGIN,
                     tabName
+            );
+        }
+    }
+
+    public static void eventOvo() {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    String.format("%s %s %s", CLICK, ON, OVO),
+                    ""
+            );
+        }
+    }
+
+    public static void eventQrCode() {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    String.format("%s %s %s", CLICK, ON, QR_CODE),
+                    ""
+            );
+        }
+    }
+
+    public static void eventTokopointNonLogin() {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    String.format("%s %s %s - %s", CLICK, ON, LABEL_TOKOPOINTS, NON_LOGIN),
+                    ""
             );
         }
     }
