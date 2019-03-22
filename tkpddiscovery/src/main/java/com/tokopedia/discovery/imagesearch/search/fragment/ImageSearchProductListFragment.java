@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -548,6 +547,11 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public List<Option> getSelectedFilterAsOptionList() {
+        return null;
+    }
+
+    @Override
     public void onErrorAddWishList(String errorMessage, String productId) {
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
@@ -654,7 +658,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void onSelectedFilterRemoved(String uniqueId) {
+    public void onSelectedFilterRemoved(Option option) {
 
     }
 

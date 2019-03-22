@@ -205,6 +205,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                         List<Visitable> list = new ArrayList<Visitable>();
                         getView().removeLoading();
                         list.addAll(enrich(productViewModel));
+                        getView().initQuickFilter(productViewModel.getQuickFilterModel().getFilter());
                         getView().setProductList(list);
                         getView().addLoading();
                     }
@@ -332,6 +333,10 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     SearchProductGqlResponse gqlResponse = objects.getData(SearchProductGqlResponse.class);
                     ProductViewModel productViewModel
                             = ProductViewModelHelper.convertToProductViewModelFirstPageGql(gqlResponse);
+
+                    getView().storeTotalData(productViewModel.getTotalData());
+                    getView().renderDynamicFilter(productViewModel.getDynamicFilterModel());
+
                     List<Visitable> list = new ArrayList<Visitable>();
                     if (productViewModel.getProductList().isEmpty()) {
                         getView().removeLoading();
@@ -357,12 +362,11 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                         }
                         getView().removeLoading();
                         getView().setProductList(list);
+                        getView().initQuickFilter(productViewModel.getQuickFilterModel().getFilter());
                         getView().addLoading();
                         getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
                         getView().stopTracePerformanceMonitoring();
                     }
-                    getView().storeTotalData(productViewModel.getTotalData());
-                    getView().renderDynamicFilter(productViewModel.getDynamicFilterModel());
                 }
             }
         };

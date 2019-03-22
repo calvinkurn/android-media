@@ -16,6 +16,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.DiscoveryRouter;
@@ -289,7 +290,9 @@ public class ShopListFragment extends SearchSectionFragment
         isNextPageAvailable = false;
         adapter.removeLoading();
         if (adapter.isListEmpty()) {
-            adapter.showEmptyState(getActivity(), getSearchParameter().getSearchQuery(), isFilterActive(), getFlagFilterHelper(), getString(R.string.shop_tab_title).toLowerCase());
+            emptySearchFilterController.initFilterController(searchParameter.getSearchParameterHashMap(), getFilters());
+
+            adapter.showEmptyState(getActivity(), getSearchParameter().getSearchQuery(), isFilterActive(), null, getString(R.string.shop_tab_title).toLowerCase());
             SearchTracking.eventSearchNoResult(getActivity(), getSearchParameter().getSearchQuery(), getScreenName(), getSelectedFilter());
         }
     }
@@ -346,13 +349,18 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onSelectedFilterRemoved(String uniqueId) {
-        removeSelectedFilter(uniqueId);
+    public void onSelectedFilterRemoved(Option option) {
+        removeSelectedFilter(option.getUniqueId());
     }
 
     @Override
     public void onEmptyButtonClicked() {
         showSearchInputView();
+    }
+
+    @Override
+    public List<Option> getSelectedFilterAsOptionList() {
+        return getOptionListFromEmptySearchFilterController();
     }
 
     @Override

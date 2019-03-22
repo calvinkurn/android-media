@@ -219,4 +219,21 @@ public class OptionHelper {
         option.setValue(categoryId);
         return option;
     }
+
+    public static Option createOptionFromUniqueId(String uniqueId) {
+        String key = parseKeyFromUniqueId(uniqueId);
+        String value = parseValueFromUniqueId(uniqueId);
+        String name = parseNameFromUniqueId(uniqueId);
+
+        Option option = new Option();
+        option.setKey(key);
+        option.setValue(value);
+        option.setName(name);
+
+        return option;
+    }
+
+    public static String constructUniqueId(String key, String value, String name) {
+        return key + Option.UID_FIRST_SEPARATOR_SYMBOL + value + Option.UID_SECOND_SEPARATOR_SYMBOL + name;
+    }
 }

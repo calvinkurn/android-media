@@ -152,7 +152,7 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
         wholesaleTitle.setOnClickListener(v -> wholesaleToggle.setChecked(!wholesaleToggle.isChecked()));
 
         CompoundButton.OnCheckedChangeListener onCheckedChangeListener =
-                (buttonView, isChecked) -> setFlagFilterValueAndApply(option, isChecked);
+                (buttonView, isChecked) -> setFilterValueExpandableItemAndApply(option, isChecked);
 
         String filterValueString = filterView.getFilterValue(option.getKey());
         boolean filterValueBoolean = Boolean.parseBoolean(filterValueString);

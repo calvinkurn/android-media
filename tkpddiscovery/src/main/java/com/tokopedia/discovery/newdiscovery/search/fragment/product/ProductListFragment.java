@@ -110,7 +110,7 @@ public class ProductListFragment extends SearchSectionFragment
     private PerformanceMonitoring performanceMonitoring;
     private TrackingQueue trackingQueue;
 
-    private FilterController filterController = new FilterController();
+    private FilterController quickFilterController = new FilterController();
 
     public static ProductListFragment newInstance(ProductViewModel productViewModel) {
         Bundle args = new Bundle();
@@ -146,7 +146,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     private void initFilterControllerForQuickFilterIfExists() {
         if(isProductViewModelHasQuickFilter()) {
-            filterController.initFilterController(searchParameter.getSearchParameterHashMap(), productViewModel.getQuickFilterModel().getFilter());
+            quickFilterController.initFilterController(searchParameter.getSearchParameterHashMap(), productViewModel.getQuickFilterModel().getFilter());
         }
     }
 
@@ -595,11 +595,11 @@ public class ProductListFragment extends SearchSectionFragment
     public boolean isQuickFilterSelected(Option option) {
         return option.isCategoryOption() ?
                 getFilterViewStateForCategory(option) :
-                filterController.getFilterViewStateValue(option.getUniqueId());
+                quickFilterController.getFilterViewStateValue(option.getUniqueId());
     }
 
     private boolean getFilterViewStateForCategory(Option option) {
-        return filterController.getFilterValue(option.getKey()).equals(option.getValue());
+        return quickFilterController.getFilterValue(option.getKey()).equals(option.getValue());
     }
 
     @Override
@@ -607,7 +607,7 @@ public class ProductListFragment extends SearchSectionFragment
         boolean isQuickFilterSelected = !Boolean.parseBoolean(option.getInputState());
 
         setFilterToController(option, isQuickFilterSelected);
-        applyFilterToSearchParameter(filterController.getFilterParameter());
+        applyFilterToSearchParameter(quickFilterController.getFilterParameter());
 
         clearDataFilterSort();
         reloadData();
@@ -618,9 +618,9 @@ public class ProductListFragment extends SearchSectionFragment
     private void setFilterToController(Option option, boolean isQuickFilterSelected) {
         if (option.isCategoryOption()) {
             String categoryValue = isQuickFilterSelected ? option.getValue() : "";
-            filterController.setFilterValue(option, categoryValue);
+            quickFilterController.setFilterValue(option, categoryValue);
         } else {
-            filterController.setFilterValueExpandableItem(option, isQuickFilterSelected);
+            quickFilterController.setFilterValueExpandableItem(option, isQuickFilterSelected);
         }
     }
 
@@ -635,8 +635,8 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onSelectedFilterRemoved(String uniqueId) {
-        removeSelectedFilter(uniqueId);
+    public void onSelectedFilterRemoved(Option option) {
+        removeSelectedFilter(option.getUniqueId());
     }
 
     @Override
@@ -651,6 +651,11 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     public void onEmptyButtonClicked() {
         showSearchInputView();
+    }
+
+    @Override
+    public List<Option> getSelectedFilterAsOptionList() {
+        return getOptionListFromEmptySearchFilterController();
     }
 
     @Override
@@ -728,6 +733,8 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void setEmptyProduct() {
+        emptySearchFilterController.initFilterController(searchParameter.getSearchParameterHashMap(), getFilters());
+
         adapter.showEmptyState(getActivity(), productViewModel.getQuery(), isFilterActive(), getFlagFilterHelper(), getString(R.string.product_tab_title).toLowerCase());
         SearchTracking.eventSearchNoResult(getActivity(), productViewModel.getQuery(), getScreenName(), getSelectedFilter());
     }
@@ -947,5 +954,10 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     public void removeLoading() {
         adapter.removeLoading();
+    }
+
+    @Override
+    public void initQuickFilter(List<Filter> quickFilterList) {
+        quickFilterController.initFilterController(searchParameter.getSearchParameterHashMap(), quickFilterList);
     }
 }

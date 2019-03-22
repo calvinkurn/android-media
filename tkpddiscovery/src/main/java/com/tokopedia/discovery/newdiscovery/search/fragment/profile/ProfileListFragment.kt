@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.core.discovery.model.Option
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener
@@ -256,11 +257,15 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
         redirectionListener.showSearchInputView()
     }
 
+    override fun getSelectedFilterAsOptionList(): MutableList<Option>? {
+        return null
+    }
+
     override fun onBannerAdsClicked(appLink: String?) {
 
     }
 
-    override fun onSelectedFilterRemoved(uniqueId: String?) {
+    override fun onSelectedFilterRemoved(option: Option) {
 
     }
 

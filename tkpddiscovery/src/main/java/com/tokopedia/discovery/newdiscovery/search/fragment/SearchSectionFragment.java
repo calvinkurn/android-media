@@ -28,6 +28,7 @@ import com.tokopedia.discovery.activity.SortProductActivity;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
@@ -44,6 +45,7 @@ import com.tokopedia.topads.sdk.domain.TopAdsParams;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -92,6 +94,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     private boolean isUsingBottomSheetFilter;
 
     protected SearchParameter searchParameter;
+    protected FilterController emptySearchFilterController = new FilterController();
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -617,5 +620,47 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     public void applyFilterToSearchParameter(Map<String, String> filterParameter) {
         this.searchParameter.getSearchParameterHashMap().clear();
         this.searchParameter.getSearchParameterHashMap().putAll(filterParameter);
+    }
+
+    protected List<Option> getOptionListFromEmptySearchFilterController() {
+        List<Option> activeFilterOptionList = emptySearchFilterController.getActiveFilterOptionList();
+
+        combinePriceFilterIfExists(activeFilterOptionList);
+
+        return activeFilterOptionList;
+    }
+
+    private void combinePriceFilterIfExists(List<Option> activeFilterOptionList) {
+        boolean hasActivePriceFilter = false;
+
+        Iterator<Option> activeFilterOptionIterator = activeFilterOptionList.iterator();
+        while(activeFilterOptionIterator.hasNext()) {
+            Option option = activeFilterOptionIterator.next();
+
+            if(isPriceOption(option)) {
+                hasActivePriceFilter = true;
+                activeFilterOptionIterator.remove();
+            }
+        }
+
+        addGenericFilterOptionIfExists(hasActivePriceFilter, activeFilterOptionList);
+    }
+
+    private boolean isPriceOption(Option option) {
+        return option.getKey().equals(SearchApiConst.PMIN) || option.getKey().equals(SearchApiConst.PMAX);
+    }
+
+    private void addGenericFilterOptionIfExists(boolean hasActivePriceFilter, List<Option> activeFilterOptionList) {
+        if(hasActivePriceFilter) {
+            activeFilterOptionList.add(generatePriceOption());
+        }
+    }
+
+    private Option generatePriceOption() {
+        Option option = new Option();
+        option.setName(getResources().getString(R.string.empty_state_selected_filter_price_name));
+        option.setKey(Option.KEY_PRICE_MIN);
+        option.setValue("0");
+        return option;
     }
 }

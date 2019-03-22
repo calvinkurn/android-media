@@ -39,7 +39,7 @@ class FilterController() : Parcelable {
 
         loadFilterParameter(filterParameter)
         loadFilterList(filterList)
-        loadFlagFilterHelper()
+        loadFilterViewState()
         loadActiveFilter()
     }
 
@@ -143,17 +143,21 @@ class FilterController() : Parcelable {
         return null
     }
 
-    private fun loadFlagFilterHelper() {
-        val optionsForFlagFilterHelper = mutableListOf<Option>()
+    private fun loadFilterViewState() {
+        val optionsForFilterViewState = mutableListOf<Option>()
 
-        loopOptionsInFilterList { option ->
+        loopOptionsInFilterList { _, option ->
             if(isOptionSelected(option))
-                addOrCombineOptions(optionsForFlagFilterHelper, option)
+                addOrCombineOptions(optionsForFilterViewState, option)
         }
 
-        for(option in optionsForFlagFilterHelper) {
+        for(option in optionsForFilterViewState) {
             filterViewState[option.uniqueId] = true
         }
+    }
+
+    private fun canAddToFilterViewState(filter: Filter, option: Option) : Boolean {
+        return filter.isExpandableFilter && !filter.isCategoryFilter && isOptionSelected(option)
     }
 
     private fun isOptionSelected(option: Option) : Boolean {
@@ -169,18 +173,18 @@ class FilterController() : Parcelable {
         return false
     }
 
-    private fun addOrCombineOptions(optionsForFlagFilterHelper: MutableList<Option>, option: Option) {
-        val optionsWithSameKey = optionsForFlagFilterHelper.filter { it.key == option.key }
+    private fun addOrCombineOptions(optionsForFilterViewState: MutableList<Option>, option: Option) {
+        val optionsWithSameKey = optionsForFilterViewState.filter { it.key == option.key }
 
         if (optionsWithSameKey.isEmpty()) {
-            optionsForFlagFilterHelper.add(option)
+            optionsForFilterViewState.add(option)
         } else {
-            setBundledOptionsForFlagFilterHelper(optionsForFlagFilterHelper, option)
+            setBundledOptionsForFlagFilterHelper(optionsForFilterViewState, option)
         }
     }
 
-    private fun setBundledOptionsForFlagFilterHelper(optionsForFlagFilterHelper: MutableList<Option>, option: Option) {
-        val iterator = optionsForFlagFilterHelper.listIterator()
+    private fun setBundledOptionsForFlagFilterHelper(optionsForFilterViewState: MutableList<Option>, option: Option) {
+        val iterator = optionsForFilterViewState.listIterator()
         var optionHasBeenAddedOrReplaced = false
 
         while (iterator.hasNext()
@@ -193,7 +197,7 @@ class FilterController() : Parcelable {
         }
 
         if(!optionHasBeenAddedOrReplaced) {
-            optionsForFlagFilterHelper.add(option)
+            optionsForFilterViewState.add(option)
         }
     }
 
@@ -220,17 +224,17 @@ class FilterController() : Parcelable {
     }
 
     private fun loadActiveFilter() {
-        loopOptionsInFilterList { option ->
+        loopOptionsInFilterList { _, option ->
             if(filterParameter.containsKey(option.key)) {
                 activeFilterKeyList.add(option.key)
             }
         }
     }
 
-    private fun loopOptionsInFilterList(action: (option: Option) -> Unit) {
+    private fun loopOptionsInFilterList(action: (filter: Filter, option: Option) -> Unit) {
         for(filter in filterList)
             for(option in filter.options)
-                action(option)
+                action(filter, option)
     }
 
     fun saveSliderValueStates(minValue: Int, maxValue: Int) {
@@ -473,6 +477,119 @@ class FilterController() : Parcelable {
 
     fun getFilterList() : List<Filter> {
         return filterList
+    }
+
+    fun getActiveFilterOptionList() : List<Option> {
+        val activeFilterOptionList = mutableListOf<Option>()
+
+        loopOptionsInFilterList { filter, option ->
+            if(activeFilterKeyList.contains(option.key)) {
+                when {
+                    filter.isPriceFilter -> addIntoActiveFilterOptionListFromFilterParameter(activeFilterOptionList, option)
+                    filter.isExpandableFilter -> addintoActiveFilterListExpandableFilter(filter, activeFilterOptionList, option)
+                    else -> addIntoActiveFilterOptionListFromFilterViewState(activeFilterOptionList, option)
+                }
+            }
+        }
+
+        return activeFilterOptionList
+    }
+
+    private fun addintoActiveFilterListExpandableFilter(filter: Filter, activeFilterOptionList: MutableList<Option>, option: Option) {
+        if(filter.isCategoryFilter) {
+            addIntoActiveFilterOptionListFromFilterParameter(activeFilterOptionList, option)
+        }
+        else {
+            addIntoActiveFilterOptionListFromFilterViewState(activeFilterOptionList, option)
+        }
+    }
+
+    private fun addIntoActiveFilterOptionListFromFilterParameter(activeFilterOptionList: MutableList<Option>, option: Option) {
+        if(filterParameter.containsKey(option.key)) {
+            activeFilterOptionList.add(option)
+        }
+    }
+
+    private fun addIntoActiveFilterOptionListFromFilterViewState(activeFilterOptionList: MutableList<Option>, option: Option) {
+        if(filterViewState.containsKey(option.key)) {
+            activeFilterOptionList.add(option)
+        }
+    }
+
+    // New functionality
+    // TODO:: remove previous functions to set and get filter values / state
+    fun setFilter(optionList: List<Option>) {
+        val tempHashMapFilterParameter = mutableMapOf<String, String>()
+
+        for(option in optionList) {
+            filterParameter.remove(option.key)
+
+            val isFilterApplied = isFilterApplied(option.inputState)
+
+            if(isFilterApplied) {
+                filterViewState[option.uniqueId] = true
+
+                val currentValueInTempHashMap = tempHashMapFilterParameter[option.key] ?: ""
+                val currentValueInTempHashMapList = currentValueInTempHashMap.split(Option.VALUE_SEPARATOR).toMutableList()
+                currentValueInTempHashMapList.addAll(option.value.split(Option.VALUE_SEPARATOR).toList())
+                currentValueInTempHashMapList.removeAll { it == "" }
+
+                tempHashMapFilterParameter[option.key] = currentValueInTempHashMapList.joinToString(separator = Option.VALUE_SEPARATOR)
+            }
+            else {
+                filterViewState.remove(option.uniqueId)
+            }
+        }
+
+        filterParameter.putAll(tempHashMapFilterParameter)
+    }
+
+    @JvmOverloads
+    fun setFilter(option: Option, isFilterApplied: Boolean, isCleanUpExistingFilterWithSameKey: Boolean = false) {
+        if(isCleanUpExistingFilterWithSameKey) {
+            filterParameter.remove(option.key)
+
+            val filterViewStateIterator = filterViewState.entries.iterator()
+            while(filterViewStateIterator.hasNext()) {
+                val entrySet = filterViewStateIterator.next()
+                val optionKey = OptionHelper.parseKeyFromUniqueId(entrySet.key)
+                if(optionKey == option.key) {
+                    filterViewStateIterator.remove()
+                }
+            }
+        }
+
+        val existingValue = filterParameter[option.key] ?: ""
+        val existingValueList = existingValue.split(Option.VALUE_SEPARATOR).toMutableList()
+
+        if(isFilterApplied) {
+            if(!getFilterViewState(option)) {
+                existingValueList.addAll(option.value.split(Option.VALUE_SEPARATOR).toList())
+                existingValueList.removeAll { it == "" }
+
+                filterParameter[option.key] =
+                    existingValueList.joinToString(separator = Option.VALUE_SEPARATOR)
+                filterViewState[option.uniqueId] = true
+            }
+        }
+        else {
+            if(getFilterViewState(option)) {
+                val newValueList = option.value.split(Option.VALUE_SEPARATOR).toList()
+                for (newValue in newValueList) {
+                    existingValueList.remove(newValue)
+                }
+
+                filterViewState.remove(option.uniqueId)
+            }
+        }
+    }
+
+    fun getFilterValue(option: Option) : String {
+        return filterParameter[option.key] ?: ""
+    }
+
+    fun getFilterViewState(option: Option) : Boolean {
+        return filterViewState[option.uniqueId] ?: false
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

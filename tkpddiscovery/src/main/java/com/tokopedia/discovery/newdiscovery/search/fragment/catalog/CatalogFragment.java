@@ -13,7 +13,6 @@ import android.widget.ProgressBar;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
@@ -21,12 +20,11 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
@@ -288,13 +286,18 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     @Override
-    public void onSelectedFilterRemoved(String uniqueId) {
-        removeSelectedFilter(uniqueId);
+    public void onSelectedFilterRemoved(Option option) {
+        removeSelectedFilter(option.getUniqueId());
     }
 
     @Override
     public void onEmptyButtonClicked() {
         showSearchInputView();
+    }
+
+    @Override
+    public List<Option> getSelectedFilterAsOptionList() {
+        return getOptionListFromEmptySearchFilterController();
     }
 
     protected void setupAdapter() {

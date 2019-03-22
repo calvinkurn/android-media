@@ -39,12 +39,7 @@ public abstract class DynamicFilterViewHolder extends AbstractViewHolder<Filter>
         switchView.setOnCheckedChangeListener(onCheckedChangeListener);
     }
 
-    void setFilterValueAndApply(Option option, String value) {
-        filterView.setFilterValue(option, value);
-        filterView.applyFilter();
-    }
-
-    void setFlagFilterValueAndApply(Option option, boolean value) {
+    void setFilterValueExpandableItemAndApply(Option option, boolean value) {
         filterView.setFilterValueExpandableItem(option, value);
         filterView.applyFilter();
     }

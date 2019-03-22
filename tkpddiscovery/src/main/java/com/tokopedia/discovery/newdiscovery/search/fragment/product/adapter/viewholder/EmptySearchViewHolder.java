@@ -3,7 +3,6 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.vie
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,14 +18,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.base.EmptyStateListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
@@ -61,7 +57,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     public static final String SEARCH_NF_VALUE = "1";
     private final int MAX_TOPADS = 4;
     private TopAdsView topAdsView;
-    private TopAdsParams params;
+    private TopAdsParams topAdsParams;
     private Context context;
     private ImageView noResultImage;
     private TextView emptyTitleTextView;
@@ -71,6 +67,8 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     private TopAdsBannerView topAdsBannerView;
     private RecyclerView selectedFilterRecyclerView;
     private SelectedFilterAdapter selectedFilterAdapter;
+    private EmptySearchModel boundedEmptySearchModel;
+
     @LayoutRes
     public static final int LAYOUT = R.layout.list_empty_search_product;
 
@@ -87,8 +85,8 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
         selectedFilterRecyclerView = itemView.findViewById(R.id.selectedFilterRecyclerView);
 
         if (topAdsConfig != null) {
-            params = topAdsConfig.getTopAdsParams();
-            params.getParam().put(TopAdsParams.KEY_SEARCH_NF, SEARCH_NF_VALUE);
+            topAdsParams = topAdsConfig.getTopAdsParams();
+            topAdsParams.getParam().put(TopAdsParams.KEY_SEARCH_NF, SEARCH_NF_VALUE);
         }
         initSelectedFilterRecyclerView();
     }
@@ -108,7 +106,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(emptyStateListener.getUserId())
                 .withMerlinCategory()
-                .topAdsParams(params)
+                .topAdsParams(topAdsParams)
                 .setEndpoint(Endpoint.PRODUCT)
                 .build();
         topAdsView.setConfig(productAdsConfig);
@@ -123,7 +121,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(emptyStateListener.getUserId())
                 .withMerlinCategory()
-                .topAdsParams(params)
+                .topAdsParams(topAdsParams)
                 .setEndpoint(Endpoint.CPM)
                 .build();
         topAdsBannerView.setConfig(bannerAdsConfig);
@@ -173,38 +171,69 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
 
     @Override
     public void bind(EmptySearchModel model) {
+        boundedEmptySearchModel = model;
 
-        noResultImage.setImageResource(model.getImageRes());
-        emptyTitleTextView.setText(model.getTitle());
+        bindNoResultImage();
+        bindTitleTextView();
+        bindContentTextView();
+        bindNewSearchButton();
+        bindRecylerView();
+        loadBannerAdsIfNotNull();
+    }
 
-        if (!TextUtils.isEmpty(model.getContent())) {
-            emptyContentTextView.setText(boldTextBetweenQuotes(model.getContent()));
+    private void bindNoResultImage() {
+        noResultImage.setImageResource(boundedEmptySearchModel.getImageRes());
+    }
+
+    private void bindTitleTextView() {
+        emptyTitleTextView.setText(boundedEmptySearchModel.getTitle());
+    }
+
+    private void bindContentTextView() {
+        if (!TextUtils.isEmpty(boundedEmptySearchModel.getContent())) {
+            emptyContentTextView.setText(boldTextBetweenQuotes(boundedEmptySearchModel.getContent()));
             emptyContentTextView.setVisibility(View.VISIBLE);
         } else {
             emptyContentTextView.setVisibility(View.GONE);
         }
+    }
 
-        if (TextUtils.isEmpty(model.getButtonText())) {
+    private void bindNewSearchButton() {
+        if (TextUtils.isEmpty(boundedEmptySearchModel.getButtonText())) {
             emptyButtonItemButton.setVisibility(View.GONE);
         } else {
-            emptyButtonItemButton.setText(model.getButtonText());
-            emptyButtonItemButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (emptyStateListener != null) {
-                        emptyStateListener.onEmptyButtonClicked();
-                    }
-                }
-            });
+            emptyButtonItemButton.setText(boundedEmptySearchModel.getButtonText());
+            emptyButtonItemButton.setOnClickListener(this::newSearchButtonOnClick);
             emptyButtonItemButton.setVisibility(View.VISIBLE);
         }
-        if (model.getFilterFlagSelectedModel() != null) {
-            selectedFilterRecyclerView.setVisibility(View.VISIBLE);
-            selectedFilterAdapter.setOptionList(convertToOptionList(model.getFilterFlagSelectedModel()));
+    }
+
+    private void newSearchButtonOnClick(View view) {
+        if (emptyStateListener != null) {
+            emptyStateListener.onEmptyButtonClicked();
+        }
+    }
+
+    private void bindRecylerView() {
+        List<Option> selectedFilterFromEmptyStateListener = emptyStateListener.getSelectedFilterAsOptionList();
+
+        if(selectedFilterFromEmptyStateListener != null
+            && !selectedFilterFromEmptyStateListener.isEmpty()) {
+            populateSelectedFilterToRecylerView(selectedFilterFromEmptyStateListener);
+        } else if (boundedEmptySearchModel.getFilterFlagSelectedModel() != null) {
+            populateSelectedFilterToRecylerView(convertToOptionList(boundedEmptySearchModel.getFilterFlagSelectedModel()));
         } else {
             selectedFilterRecyclerView.setVisibility(View.GONE);
         }
-        if (params != null) {
+    }
+
+    private void populateSelectedFilterToRecylerView(List<Option> selectedFilterOptionList) {
+        selectedFilterRecyclerView.setVisibility(View.VISIBLE);
+        selectedFilterAdapter.setOptionList(selectedFilterOptionList);
+    }
+
+    private void loadBannerAdsIfNotNull() {
+        if (topAdsParams != null) {
             loadBannerAds();
         }
     }
@@ -317,12 +346,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
 
         public void bind(final Option option) {
             filterText.setText(option.getName());
-            deleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    clickListener.onSelectedFilterRemoved(option.getUniqueId());
-                }
-            });
+            deleteButton.setOnClickListener(view -> clickListener.onSelectedFilterRemoved(option));
         }
     }
 }
