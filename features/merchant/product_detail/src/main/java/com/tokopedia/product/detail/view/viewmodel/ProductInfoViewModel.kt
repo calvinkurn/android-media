@@ -171,7 +171,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
         //TODO add more request params if required
         val productPPParams = mapOf(PARAM_PRODUCT_ID to productId, PARAM_SHOP_ID to shopId,
-                PARAM_USER_ID to userSessionInterface.userId, PARAM_CONDITION to condition, PARAM_PRODUCT_TITLE to productTitle)
+                PARAM_USER_ID to userSessionInterface.userId, PARAM_CONDITION to condition.toLowerCase(), PARAM_PRODUCT_TITLE to productTitle)
         val productPurchaseProtectionRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_PP],
                 ProductPurchaseProtectionInfo::class.java, productPPParams)
 
