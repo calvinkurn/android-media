@@ -92,7 +92,6 @@ public class SpotlightViewHolder extends AbstractViewHolder<SpotlightViewModel> 
             this.spotlightItemViewModels.clear();
             this.spotlightItemViewModels.addAll(spotlightItemViewModels);
             notifyDataSetChanged();
-            //HomeTrackingUtils.homeUsedCaseImpression(context, sectionViewModel.getItemList());
         }
 
         @Override
