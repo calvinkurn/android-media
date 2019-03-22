@@ -126,27 +126,19 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
         presenter.loadData(recomId, DEFAULT_TOTAL_ITEM_PER_PAGE, page);
     }
 
-    @Override
-    public void renderList(@NonNull List<HomeFeedViewModel> list, boolean hasNextPage) {
-        super.renderList(list, hasNextPage);
-        hitHomeFeedImpressionTracker(list);
-    }
-
-    private void hitHomeFeedImpressionTracker(List<HomeFeedViewModel> list) {
-        if (list.size() > 0) {
-            if (userSession.isLoggedIn()){
-                HomePageTracking.eventImpressionOnProductRecommendationForLoggedInUser(
-                        homeTrackingQueue,
-                        list,
-                        tabName.toLowerCase()
-                );
-            } else {
-                HomePageTracking.eventImpressionOnProductRecommendationForNonLoginUser(
-                        homeTrackingQueue,
-                        list,
-                        tabName.toLowerCase()
-                );
-            }
+    private void hitHomeFeedImpressionTracker(HomeFeedViewModel homeFeedViewModel) {
+        if (userSession.isLoggedIn()){
+            HomePageTracking.eventImpressionOnProductRecommendationForLoggedInUser(
+                    homeTrackingQueue,
+                    homeFeedViewModel,
+                    tabName.toLowerCase()
+            );
+        } else {
+            HomePageTracking.eventImpressionOnProductRecommendationForNonLoginUser(
+                    homeTrackingQueue,
+                    homeFeedViewModel,
+                    tabName.toLowerCase()
+            );
         }
     }
 
@@ -308,7 +300,9 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
             new ImpresionTask().execute(model.getTrackerImageUrl());
             TopAdsGtmTracker.getInstance().addRecomendationProductViewImpressions(p,
                     model.getCategoryBreadcrumbs(), tabName.toLowerCase(),
-                    model.getRecommendationType(), userSession.isLoggedIn(), model.getPosition());
+                    model.getRecommendationType(), model.getPosition());
+        } else {
+            hitHomeFeedImpressionTracker(model);
         }
     }
 

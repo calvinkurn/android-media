@@ -149,7 +149,17 @@ class HomeMainToolbar : MainToolbar {
 
     fun getBitmapDrawableFromVectorDrawable(context: Context, drawableId: Int): BitmapDrawable {
         return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            ContextCompat.getDrawable(context, drawableId) as BitmapDrawable
+            val vectorDrawableCompat =
+                    VectorDrawableCompat.create(context.getResources(), drawableId, null)
+            val bitmap = Bitmap.createBitmap(
+                    vectorDrawableCompat!!.intrinsicWidth,
+                    vectorDrawableCompat.intrinsicHeight,
+                    Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            vectorDrawableCompat.setBounds(0, 0, canvas.width, canvas.height)
+            vectorDrawableCompat.draw(canvas)
+
+            BitmapDrawable(resources, bitmap)
         } else BitmapDrawable(context.resources, getBitmapFromVectorDrawable(context, drawableId))
     }
 

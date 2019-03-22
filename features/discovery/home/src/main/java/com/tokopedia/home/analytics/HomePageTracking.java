@@ -77,7 +77,7 @@ public class HomePageTracking {
     public static final String PRODUCT_VIEW = "productView";
     public static final String EVENT_ACTION_PRODUCT_RECOMMENDATION_IMPRESSION = "product recommendation impression";
     public static final String EVENT_ACTION_PRODUCT_RECOMMENDATION_IMPRESSION_NON_LOGIN =
-            "product recommendation impression - non login recommendation impression";
+            "product recommendation impression - non login";
     public static final String CURRENCY_CODE = "currencyCode";
     public static final String IDR = "IDR";
     public static final String IMPRESSIONS = "impressions";
@@ -542,7 +542,7 @@ public class HomePageTracking {
 
     public static void eventImpressionOnProductRecommendationForLoggedInUser(
             TrackingQueue trackingQueue,
-            List<HomeFeedViewModel> feedViewModels,
+            HomeFeedViewModel feedViewModel,
             String tabName) {
 
         Map<String, Object> data = DataLayer.mapOf(
@@ -553,7 +553,7 @@ public class HomePageTracking {
                 ECOMMERCE, DataLayer.mapOf(
                         CURRENCY_CODE, IDR,
                         IMPRESSIONS,
-                        convertHomeFeedViewModelListToObjectForLoggedInUser(feedViewModels, tabName)
+                        convertHomeFeedViewModelListToObjectForLoggedInUser(feedViewModel, tabName)
                 )
         );
         trackingQueue.putEETracking((HashMap<String, Object>) data);
@@ -561,7 +561,7 @@ public class HomePageTracking {
 
     public static void eventImpressionOnProductRecommendationForNonLoginUser(
             TrackingQueue trackingQueue,
-            List<HomeFeedViewModel> feedViewModels,
+            HomeFeedViewModel feedViewModel,
             String tabName) {
 
         Map<String, Object> data = DataLayer.mapOf(
@@ -572,31 +572,27 @@ public class HomePageTracking {
                 ECOMMERCE, DataLayer.mapOf(
                         CURRENCY_CODE, IDR,
                         IMPRESSIONS,
-                        convertHomeFeedViewModelListToObjectForNonLoginUser(feedViewModels, tabName)
+                        convertHomeFeedViewModelListToObjectForNonLoginUser(feedViewModel, tabName)
                 )
         );
         trackingQueue.putEETracking((HashMap<String, Object>) data);
     }
 
     private static List<Object> convertHomeFeedViewModelListToObjectForLoggedInUser(
-            List<HomeFeedViewModel> feedViewModels,
+            HomeFeedViewModel feedViewModel,
             String tabName
     ) {
         List<Object> objects = new ArrayList<>();
-        for (HomeFeedViewModel homeFeedViewModel : feedViewModels) {
-            objects.add(homeFeedViewModel.convertFeedTabModelToImpressionDataForLoggedInUser(tabName));
-        }
+        objects.add(feedViewModel.convertFeedTabModelToImpressionDataForLoggedInUser(tabName));
         return objects;
     }
 
     private static List<Object> convertHomeFeedViewModelListToObjectForNonLoginUser(
-            List<HomeFeedViewModel> feedViewModels,
+            HomeFeedViewModel feedViewModel,
             String tabName
     ) {
         List<Object> objects = new ArrayList<>();
-        for (HomeFeedViewModel homeFeedViewModel : feedViewModels) {
-            objects.add(homeFeedViewModel.convertFeedTabModelToImpressionDataForNonLoginUser(tabName));
-        }
+        objects.add(feedViewModel.convertFeedTabModelToImpressionDataForNonLoginUser(tabName));
         return objects;
     }
 
