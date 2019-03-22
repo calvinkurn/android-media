@@ -152,7 +152,7 @@ public class TopAdsGtmTracker {
                                             "brand", "none/other",
                                             "category", categoryBreadcrumbs,
                                             "varian", "none/other",
-                                            "position", position + 1))))
+                                            "position", position))))
             );
             tracker.sendEnhancedEcommerce(map);
         }
@@ -185,7 +185,7 @@ public class TopAdsGtmTracker {
                 "varian", "none/other",
                 "category", categoryBreadcrumbs,
                 "list", "/ - p2"+(isLogin?" - ":" - non login - ")+tabName+" - rekomendasi untuk anda - "+recomendationType+" - product topads",
-                "position", position + 1));
+                "position", position));
     }
 
     public void  addInboxProductViewImpressions(Product product, int position) {
