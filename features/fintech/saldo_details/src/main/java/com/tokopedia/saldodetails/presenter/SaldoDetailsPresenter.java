@@ -5,24 +5,26 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
-import com.tokopedia.saldodetails.deposit.listener.MerchantSaldoDetailsActionListener;
+import com.tokopedia.saldodetails.deposit.listener.MerchantFinancialStatusActionListener;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
+import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
 import com.tokopedia.saldodetails.response.model.GqlSaldoBalanceResponse;
 import com.tokopedia.saldodetails.response.model.GqlWithdrawalTickerResponse;
+import com.tokopedia.saldodetails.subscriber.GetMerchantCreditDetailsSubscriber;
+import com.tokopedia.saldodetails.subscriber.GetMerchantFinancialStatusSubscriber;
 import com.tokopedia.saldodetails.subscriber.GetMerchantSaldoDetailsSubscriber;
 import com.tokopedia.saldodetails.usecase.GetDepositSummaryUseCase;
+import com.tokopedia.saldodetails.usecase.GetMerchantCreditDetails;
+import com.tokopedia.saldodetails.usecase.GetMerchantFinancialStatus;
 import com.tokopedia.saldodetails.usecase.GetMerchantSaldoDetails;
 import com.tokopedia.saldodetails.usecase.GetSaldoBalanceUseCase;
 import com.tokopedia.saldodetails.usecase.GetTickerWithdrawalMessageUseCase;
 import com.tokopedia.saldodetails.usecase.SetMerchantSaldoStatus;
-import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -37,7 +39,7 @@ import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUND
 import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT;
 
 public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContract.View>
-        implements SaldoDetailContract.Presenter, MerchantSaldoDetailsActionListener {
+        implements SaldoDetailContract.Presenter, MerchantFinancialStatusActionListener {
 
     public static final int REQUEST_WITHDRAW_CODE = 1;
     private static final String IS_SELLER = "is_seller";
@@ -52,6 +54,12 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     GetTickerWithdrawalMessageUseCase getTickerWithdrawalMessageUseCase;
     @Inject
     SetMerchantSaldoStatus setMerchantSaldoStatusUseCase;
+    @Inject
+    GetMerchantSaldoDetails getMerchantSaldoDetails;
+    @Inject
+    GetMerchantCreditDetails getMerchantCreditDetails;
+    @Inject
+    GetMerchantFinancialStatus getMerchantFinancialStatus;
     private boolean isSeller;
 
     @Inject
@@ -66,22 +74,37 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
             getDepositSummaryUseCase.unsubscribe();
             getSaldoBalanceUseCase.unsubscribe();
             getTickerWithdrawalMessageUseCase.unsubscribe();
+            getMerchantSaldoDetails.unsubscribe();
+            getMerchantCreditDetails.unsubscribe();
+            getMerchantFinancialStatus.unsubscribe();
         } catch (NullPointerException e) {
 
         }
     }
 
     @Override
-    public void getMerchantSaldoDetails() {
-        GetMerchantSaldoDetails getMerchantSaldoDetails =
-                new GetMerchantSaldoDetails(getView().getContext());
+    public void getUserFinancialStatus() {
+        GetMerchantFinancialStatusSubscriber getMerchantFinancialStatusSubscribe =
+                new GetMerchantFinancialStatusSubscriber(this);
 
+        getMerchantFinancialStatus.execute(getMerchantFinancialStatusSubscribe);
+    }
+
+    @Override
+    public void getMerchantSaldoDetails() {
         GetMerchantSaldoDetailsSubscriber getMerchantSaldoDetailsSubscriber =
                 new GetMerchantSaldoDetailsSubscriber(this);
 
         getMerchantSaldoDetails.execute(getMerchantSaldoDetailsSubscriber);
     }
 
+    @Override
+    public void getMerchantCreditLineDetails() {
+        GetMerchantCreditDetailsSubscriber getMerchantCreditDetailsSubscriber =
+                new GetMerchantCreditDetailsSubscriber(this);
+
+        getMerchantCreditDetails.execute(getMerchantCreditDetailsSubscriber);
+    }
 
     @Override
     public void getSaldoBalance() {
@@ -221,11 +244,35 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     }
 
     @Override
+    public void hideUserFinancialStatusLayout() {
+        if (!isViewAttached()) {
+            return;
+        }
+        getView().hideUserFinancialStatusLayout();
+    }
+
+    @Override
     public void showSaldoPrioritasFragment(GqlDetailsResponse sellerDetails) {
         if (!isViewAttached()) {
             return;
         }
         getView().showSaldoPrioritasFragment(sellerDetails);
+    }
+
+    @Override
+    public void hideMerchantCreditLineFragment() {
+        if (!isViewAttached()) {
+            return;
+        }
+        getView().hideMerchantCreditLineFragment();
+    }
+
+    @Override
+    public void showMerchantCreditLineFragment(GqlMerchantCreditResponse response) {
+        if (!isViewAttached()) {
+            return;
+        }
+        getView().showMerchantCreditLineFragment(response);
     }
 
     public boolean isSeller() {

@@ -2,15 +2,16 @@ package com.tokopedia.saldodetails.subscriber;
 
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.saldodetails.deposit.listener.MerchantFinancialStatusActionListener;
+import com.tokopedia.saldodetails.response.model.GqlMerchantCreditDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
 
 import rx.Subscriber;
 
-public class GetMerchantSaldoDetailsSubscriber extends Subscriber<GraphqlResponse> {
+public class GetMerchantFinancialStatusSubscriber extends Subscriber<GraphqlResponse> {
 
     private MerchantFinancialStatusActionListener viewListener;
 
-    public GetMerchantSaldoDetailsSubscriber(MerchantFinancialStatusActionListener viewListener) {
+    public GetMerchantFinancialStatusSubscriber(MerchantFinancialStatusActionListener viewListener) {
         this.viewListener = viewListener;
     }
 
@@ -21,7 +22,7 @@ public class GetMerchantSaldoDetailsSubscriber extends Subscriber<GraphqlRespons
 
     @Override
     public void onError(Throwable e) {
-        viewListener.hideSaldoPrioritasFragment();
+        viewListener.hideUserFinancialStatusLayout();
     }
 
     @Override
@@ -38,5 +39,18 @@ public class GetMerchantSaldoDetailsSubscriber extends Subscriber<GraphqlRespons
         } else {
             viewListener.hideSaldoPrioritasFragment();
         }
+
+        if (graphqlResponse != null &&
+                graphqlResponse.getData(GqlMerchantCreditDetailsResponse.class) != null) {
+
+            GqlMerchantCreditDetailsResponse response =
+                    graphqlResponse.getData(GqlMerchantCreditDetailsResponse.class);
+            viewListener.showMerchantCreditLineFragment(response.getData());
+
+        } else {
+            viewListener.hideMerchantCreditLineFragment();
+        }
     }
 }
+
+

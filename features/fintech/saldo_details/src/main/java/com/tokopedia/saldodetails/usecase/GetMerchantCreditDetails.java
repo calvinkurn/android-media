@@ -8,7 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.saldodetails.R;
-import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
+import com.tokopedia.saldodetails.response.model.GqlMerchantCreditDetailsResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,13 +17,13 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
-public class GetMerchantSaldoDetails {
+public class GetMerchantCreditDetails {
 
     private GraphqlUseCase graphqlUseCase;
     private Context context;
 
     @Inject
-    public GetMerchantSaldoDetails(@ApplicationContext Context context) {
+    public GetMerchantCreditDetails(@ApplicationContext Context context) {
         graphqlUseCase = new GraphqlUseCase();
         this.context = context;
     }
@@ -39,12 +39,11 @@ public class GetMerchantSaldoDetails {
         Map<String, Object> variables = new HashMap<>();
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
-                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_merchant_saldo_details),
-                GqlMerchantSaldoDetailsResponse.class,
+                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_merchant_credit_details),
+                GqlMerchantCreditDetailsResponse.class,
                 variables, false);
 
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(subscriber);
     }
 }
-

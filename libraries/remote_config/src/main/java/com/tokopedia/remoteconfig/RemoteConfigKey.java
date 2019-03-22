@@ -85,4 +85,5 @@ public class RemoteConfigKey {
     public static final String APP_ENABLE_SALDO_SPLIT = "app_enable_saldo_split";
 
     public static final String MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL = "main_app_disable_new_product_detail";
+    public static final String APP_ENABLE_MERCHANT_CREDIT_LINE = "app_enable_merchant_credit_line";
 }
