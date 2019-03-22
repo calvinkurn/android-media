@@ -145,6 +145,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void onCreate() {
+        com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
         setVersionCode();
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;

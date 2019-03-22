@@ -297,7 +297,7 @@ afterEvaluate {
 dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-
+    implementation project(":libraries:akamai_bot_lib")
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.gamification)
