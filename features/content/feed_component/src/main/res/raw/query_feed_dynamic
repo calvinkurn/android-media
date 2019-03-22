@@ -407,6 +407,7 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
             body {
               media
               caption
+              postTag
               mediaGridButton
             }
             footer {

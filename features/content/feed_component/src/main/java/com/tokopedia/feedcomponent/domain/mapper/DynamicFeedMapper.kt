@@ -228,6 +228,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                             feed.id,
                             feed.content.cardpost.title,
                             feed.content.cardpost.header,
+                            feed.content.cardpost.body.postTag.get(0),
                             feed.content.cardpost.footer,
                             feed.content.cardpost.body.caption,
                             contentList,
