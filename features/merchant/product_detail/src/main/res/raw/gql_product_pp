@@ -1,5 +1,5 @@
-query getProductPurchaseProtection($productID: Int!, $shopID: Int!, $userID: Int!, $condition: String!, $productTitle: String!, $price: Int!){
-    ppGetItemDetailPage(productID: $productID, shopID: $shopID, userID: $userID, condition: $condition, productTitle: $productTitle, price: $price ){
+query getProductPurchaseProtection($param: ProductPurchaseProtectionRequest!){
+    ppGetItemDetailPage(params: $param) {
         protectionAvailable
         title
         subTitle
