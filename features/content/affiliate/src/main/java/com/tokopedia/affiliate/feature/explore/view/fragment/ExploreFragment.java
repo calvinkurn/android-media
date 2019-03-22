@@ -403,6 +403,7 @@ public class ExploreFragment
         }
         exploreParams.setSearchParam(text);
         adapter.clearProductElements();
+        presenter.unsubscribeAutoComplete();
         presenter.getData(exploreParams);
     }
 
@@ -719,6 +720,7 @@ public class ExploreFragment
         presenter.unsubscribeAutoComplete();
         bottomActionView.show();
         exploreParams.resetParams();
+        exploreParams.setLoading(false);
         searchView.getSearchTextView().setText("");
         searchView.getSearchTextView().setCursorVisible(false);
         adapter.clearAllElements();
@@ -728,6 +730,7 @@ public class ExploreFragment
 
     @Override
     public void onEmptySearchResult() {
+        exploreParams.setLoading(false);
         presenter.unsubscribeAutoComplete();
         bottomActionView.hide();
         if (swipeRefreshLayout.isRefreshing()) {
@@ -743,6 +746,7 @@ public class ExploreFragment
 
     @Override
     public void onEmptyProduct() {
+        exploreParams.setLoading(false);
         presenter.unsubscribeAutoComplete();
         bottomActionView.hide();
         if (swipeRefreshLayout.isRefreshing()) {
