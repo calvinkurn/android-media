@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal|top"
     android:layout_gravity="center_horizontal"
@@ -15,14 +15,14 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:layout_width="@dimen/dp_72"
-            android:layout_height="@dimen/dp_72"
+            android:layout_width="@dimen/dep_64"
+            android:layout_height="@dimen/dep_64"
             app:srcCompat="@drawable/ic_squircle" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/iv_category"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
             android:layout_gravity="center" />
     </FrameLayout>
 

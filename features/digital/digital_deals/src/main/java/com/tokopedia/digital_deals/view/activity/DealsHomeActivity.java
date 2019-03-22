@@ -29,6 +29,7 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
     public final static int REQUEST_CODE_LOGIN=104;
 
     List<ProductItem> trendingDeals;
+    private String title;
 
     @DeepLink({DealsUrl.AppLink.DIGITAL_DEALS})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
@@ -65,8 +66,14 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
     }
 
     @Override
-    public void replaceFragment(List<ProductItem> trendingDeals, int flag) {
+    public String getToolBarTitle() {
+        return title;
+    }
+
+    @Override
+    public void replaceFragment(List<ProductItem> trendingDeals, int flag, String title) {
         this.trendingDeals = trendingDeals;
+        this.title = title;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
         transaction.add(R.id.parent_view, TrendingDealsFragment.createInstance());

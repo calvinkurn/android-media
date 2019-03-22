@@ -18,6 +18,7 @@ import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetCategoryDetailRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetNextDealPageUseCase;
@@ -35,6 +36,7 @@ import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.model.response.AllBrandsResponse;
+import com.tokopedia.digital_deals.view.model.response.CategoryDetailsResponse;
 import com.tokopedia.digital_deals.view.model.response.DealsResponse;
 import com.tokopedia.digital_deals.view.model.response.LocationResponse;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
@@ -86,15 +88,17 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     private boolean isTopLocations = true;
 
     private GetLocationListRequestUseCase getSearchLocationListRequestUseCase;
+    private GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase;
     private List<Location> mTopLocations;
 
 
     @Inject
-    public DealsHomePresenter(GetDealsListRequestUseCase getDealsListRequestUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetNextDealPageUseCase getNextDealPageUseCase, GetLocationListRequestUseCase getSearchLocationListRequestUseCase, DealsAnalytics dealsAnalytics) {
+    public DealsHomePresenter(GetDealsListRequestUseCase getDealsListRequestUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetNextDealPageUseCase getNextDealPageUseCase, GetLocationListRequestUseCase getSearchLocationListRequestUseCase, GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase, DealsAnalytics dealsAnalytics) {
         this.getDealsListRequestUseCase = getDealsListRequestUseCase;
         this.getAllBrandsUseCase = getAllBrandsUseCase;
         this.getNextDealPageUseCase = getNextDealPageUseCase;
         this.getSearchLocationListRequestUseCase = getSearchLocationListRequestUseCase;
+        this.getCategoryDetailRequestUseCase = getCategoryDetailRequestUseCase;
         this.dealsAnalytics = dealsAnalytics;
     }
 
@@ -111,6 +115,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         getNextDealPageUseCase.unsubscribe();
         if (getSearchLocationListRequestUseCase != null) {
             getSearchLocationListRequestUseCase.unsubscribe();
+        }
+        if (getCategoryDetailRequestUseCase != null) {
+            getCategoryDetailRequestUseCase.unsubscribe();
         }
         stopBannerSlide();
     }
@@ -287,10 +294,11 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 processSearchResponse(dealsResponse);
                 isDealsLoaded = true;
 
-                getView().renderCategoryList(getCategories(categoryItems),
-                        getCarouselOrTop(categoryItems, CAROUSEL),
-                        getCarouselOrTop(categoryItems, TOP));
-                getView().renderCuratedDealsList(getCuratedDeals(categoryItems, TOP));
+                getView().renderTopDeals(getCarouselOrTop(categoryItems, TOP));
+                getView().renderCarousels(getCarouselOrTop(categoryItems, CAROUSEL));
+
+                getView().renderCategoryList(getCategories(dealsResponse.getCategoryItems()));
+                getView().renderCuratedDealsList(getCuratedDeals(dealsResponse.getCategoryItems(), TOP));
 
                 Type token2 = new TypeToken<DataResponse<AllBrandsResponse>>() {
                 }.getType();
@@ -386,16 +394,16 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
     private CategoryItem getCarouselOrTop(List<CategoryItem> categoryList, String carouselOrTop) {
 
-        if (categoryList.get(0).getName().equalsIgnoreCase(carouselOrTop)) {
-            return categoryList.get(0);
-        } else {
+        if (categoryList.get(1).getName().equalsIgnoreCase(carouselOrTop)) {
             return categoryList.get(1);
+        } else {
+            return categoryList.get(0);
         }
     }
 
     private List<CategoryItem> getCuratedDeals(List<CategoryItem> categoryItems, String carouselOrTop) {
         curatedItems = new ArrayList<>();
-        for (CategoryItem categoryItem: categoryItems) {
+        for (CategoryItem categoryItem : categoryItems) {
             if (categoryItem.getIsCard() == 1 && !categoryItem.getName().equalsIgnoreCase(carouselOrTop)) {
                 curatedItems.add(categoryItem);
             }
@@ -408,7 +416,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         categoriesModels = new ArrayList<>();
         if (listItems != null && listItems.size() > 2) {
             categoryList = new ArrayList<>();
-            for (int i = 2; i < listItems.size(); i++) {
+            for (int i = listItems.size() -1; i > 1; i--) {
                 if (listItems.get(i).getIsCard() != 1) {
                     categoryList.add(listItems.get(i));
                     CategoriesModel categoriesModel = new CategoriesModel();
@@ -446,7 +454,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         dealEntity.setCategoryItems(dealsCategoryDomains);
 
         categoryItems = Utils.getSingletonInstance()
-                .convertIntoCategoryListViewModel(dealEntity);
+                .convertIntoCategoryListViewModel(dealsCategoryDomains);
     }
 
     private void stopBannerSlide() {
@@ -495,5 +503,48 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 getView().startLocationFragment(mTopLocations, isForFirstime);
             }
         });
+    }
+
+    public void getAllTrendingDeals(String url, String title) {
+        if (isViewAttached()) {
+            RequestParams requestParams = RequestParams.create();
+            requestParams.putString(DealsHomePresenter.TAG, url);
+            getCategoryDetailRequestUseCase.setRequestParams(requestParams);
+            getCategoryDetailRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    if (getView() == null) {
+                        return;
+                    }
+                    CommonUtils.dumper("enter error");
+                    throwable.printStackTrace();
+                    getView().hideProgressBar();
+                    NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            getAllTrendingDeals(url, title);
+                        }
+                    });
+                }
+
+                @Override
+                public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                    if (getView() == null) {
+                        return;
+                    }
+                    Type token = new TypeToken<DataResponse<CategoryDetailsResponse>>() {
+                    }.getType();
+                    RestResponse restResponse = typeRestResponseMap.get(token);
+                    DataResponse dataResponse = restResponse.getData();
+                    CategoryDetailsResponse dealEntity = (CategoryDetailsResponse) dataResponse.getData();
+                    getView().renderAllTrendingDeals(dealEntity.getDealItems(), title);
+                }
+            });
+        }
     }
 }

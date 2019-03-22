@@ -7,4 +7,6 @@ import java.util.List;
 public interface TrendingDealsCallBacks {
 
     List<ProductItem> getTrendingDeals();
+
+    String getToolBarTitle();
 }

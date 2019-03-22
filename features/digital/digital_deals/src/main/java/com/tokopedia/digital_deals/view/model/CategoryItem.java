@@ -38,6 +38,9 @@ public class CategoryItem implements Parcelable {
     @SerializedName("is_card")
     @Expose
     private int isCard;
+    @SerializedName("priority")
+    @Expose
+    private int priority;
 
     public CategoryItem() {
     }
@@ -116,6 +119,14 @@ public class CategoryItem implements Parcelable {
         this.isCard = isCard;
     }
 
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -132,6 +143,7 @@ public class CategoryItem implements Parcelable {
         dest.writeInt(categoryId);
         dest.writeInt(count);
         dest.writeInt(isCard);
+        dest.writeInt(priority);
     }
 
     protected CategoryItem(Parcel in) {
@@ -145,6 +157,7 @@ public class CategoryItem implements Parcelable {
         this.categoryId = in.readInt();
         this.count = in.readInt();
         this.isCard = in.readInt();
+        this.priority = in.readInt();
     }
 
     public static final Parcelable.Creator<CategoryItem> CREATOR = new Parcelable.Creator<CategoryItem>() {

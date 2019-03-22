@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -66,7 +67,12 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -202,14 +208,18 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         }
 
         appBarLayout = view.findViewById(R.id.app_bar_layout);
-        appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
-            if (verticalOffset == 0) {
-                hideSearchButton();
-            } else {
-                showSearchButton();
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (verticalOffset == 0) {
+                    DealsHomeFragment.this.hideSearchButton();
+                } else {
+                    DealsHomeFragment.this.showSearchButton();
+                }
+                Log.d("Offest Changed", "Offset : " + verticalOffset);
             }
-            Log.d("Offest Changed", "Offset : " + verticalOffset);
         });
+
     }
 
     private void setDrawableTint(Drawable img) {
@@ -294,47 +304,17 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
-    public void renderCategoryList(List<CategoryItem> categoryList, CategoryItem
-            carousel, CategoryItem top) {
-
-        if (top.getItems() != null && top.getItems().size() > 0) {
-            trendingDeals.setVisibility(View.VISIBLE);
-            tvSeeAllTrendingDeals.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    openTrendingDeals.replaceFragment(top.getItems(), 0);
-                }
-            });
-            noContent.setVisibility(View.GONE);
-            categoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.HOME_PAGE, this, IS_SHORT_LAYOUT);
-            categoryAdapter.setDealsHomeLayout(true);
-            rvTrendingDeals.setAdapter(categoryAdapter);
-            categoryAdapter.addAll(top.getItems(), false);
-            categoryAdapter.notifyDataSetChanged();
-        } else {
-            mPresenter.sendEventView(DealsAnalytics.EVENT_NO_DEALS_AVAILABLE_ON_YOUR_LOCATION,
-                    tvLocationName.getText().toString());
-            trendingDeals.setVisibility(View.GONE);
-            rvTrendingDeals.setVisibility(View.GONE);
-            noContent.setVisibility(View.VISIBLE);
-        }
-        if (carousel.getItems() != null && carousel.getItems().size() > 0) {
-            clPromos.setVisibility(View.VISIBLE);
-            rvPromos.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-            rvPromos.setAdapter(new PromoAdapter(carousel.getItems(), mPresenter));
-        } else {
-            clPromos.setVisibility(View.GONE);
-        }
+    public void renderCategoryList(List<CategoryItem> categoryList) {
         if (categoryList != null) {
+            applyFilterOnCategories(categoryList);
             catItems.removeAllViews();
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.weight = 1.0f;
+            params.weight = 0.5f;
             View view;
             ImageView imageViewCatItem;
             TextView textViewCatItem;
 
             for (int position = 0; position < 4; position++) {
-                if (categoryList.get(position).getIsCard() != 1) {
                     LayoutInflater inflater = getLayoutInflater();
                     view = inflater.inflate(R.layout.category_item, mainContent, false);
                     imageViewCatItem = view.findViewById(R.id.iv_category);
@@ -356,7 +336,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                     });
                     view.setLayoutParams(params);
                     catItems.addView(view);
-                }
             }
             LayoutInflater inflater = getLayoutInflater();
             view = inflater.inflate(R.layout.category_item, mainContent, false);
@@ -375,15 +354,82 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         }
     }
 
+    public void applyFilterOnCategories(List<CategoryItem> categoryRespons) {
+        Map<Integer, Integer> sortOrder = new HashMap<>();
+        for (CategoryItem categoryItem : categoryRespons) {
+            sortOrder.put(categoryItem.getCategoryId(), categoryItem.getPriority());
+            if (sortOrder.size() == categoryRespons.size()) {
+                Collections.sort(categoryRespons, new CategoryItemComparator(sortOrder));
+            }
+        }
+    }
+
+    private class CategoryItemComparator implements Comparator<CategoryItem> {
+        private Map<Integer, Integer> sortOrder;
+
+        public CategoryItemComparator(Map<Integer, Integer> sortOrder) {
+            this.sortOrder = sortOrder;
+        }
+
+        @Override
+        public int compare(CategoryItem i1, CategoryItem i2) {
+            Integer id1 = sortOrder.get(i1.getCategoryId());
+            if (id1 == null) {
+                throw new IllegalArgumentException("Bad id encountered: " +
+                        i1.getCategoryId());
+            }
+            Integer id2 = sortOrder.get(i2.getCategoryId());
+            if (id2 == null) {
+                throw new IllegalArgumentException("Bad id encountered: " +
+                        i2.getCategoryId());
+            }
+            return id2.compareTo(id1);
+        }
+    }
+
+    @Override
+    public void renderTopDeals(CategoryItem categoryItem) {
+        if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {
+            trendingDeals.setVisibility(View.VISIBLE);
+            tvSeeAllTrendingDeals.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!TextUtils.isEmpty(categoryItem.getCategoryUrl())) {
+                        mPresenter.getAllTrendingDeals(categoryItem.getCategoryUrl(),  getContext().getResources().getString(R.string.trending_deals));
+                    }
+                }
+            });
+            noContent.setVisibility(View.GONE);
+            categoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.HOME_PAGE, this, IS_SHORT_LAYOUT);
+            categoryAdapter.setDealsHomeLayout(true);
+            rvTrendingDeals.setAdapter(categoryAdapter);
+            categoryAdapter.addAll(categoryItem.getItems(), false);
+            categoryAdapter.notifyDataSetChanged();
+        } else {
+            mPresenter.sendEventView(DealsAnalytics.EVENT_NO_DEALS_AVAILABLE_ON_YOUR_LOCATION,
+                    tvLocationName.getText().toString());
+            trendingDeals.setVisibility(View.GONE);
+            rvTrendingDeals.setVisibility(View.GONE);
+            noContent.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void renderCarousels(CategoryItem carousel) {
+        if (carousel.getItems() != null && carousel.getItems().size() > 0) {
+            clPromos.setVisibility(View.VISIBLE);
+            rvPromos.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+            rvPromos.setAdapter(new PromoAdapter(carousel.getItems(), mPresenter));
+        } else {
+            clPromos.setVisibility(View.GONE);
+        }
+    }
+
     @Override
     public void renderBrandList(List<Brand> brandList) {
-        int spanCount = 2;
         if (brandList != null) {
-            if (brandList.size() == 1) {
-                spanCount = 1;
-            }
             clBrands.setVisibility(View.VISIBLE);
-            rvBrandItems.setLayoutManager(new GridLayoutManager(getActivity(), spanCount,
+            rvBrandItems.setLayoutManager(new GridLayoutManager(getActivity(), 1,
                     GridLayoutManager.HORIZONTAL, false));
             DealsBrandAdapter dealsBrandAdapter = new DealsBrandAdapter(brandList, DealsBrandAdapter.ITEM_BRAND_HOME);
             dealsBrandAdapter.setPopularBrands(true);
@@ -401,12 +447,17 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             curatedDealsLayout.removeAllViews();
             noContent.setVisibility(View.GONE);
             for (CategoryItem categoryItem : categoryItems) {
-                CuratedDealsView curatedDealsView = new CuratedDealsView(getActivity(), categoryItem, openTrendingDeals, "");
+                CuratedDealsView curatedDealsView = new CuratedDealsView(getActivity(), categoryItem, openTrendingDeals, "", mPresenter);
                 curatedDealsLayout.addView(curatedDealsView);
             }
         } else {
             curatedDealsLayout.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void renderAllTrendingDeals(List<ProductItem> items, String title) {
+        openTrendingDeals.replaceFragment(items, 0, title);
     }
 
     @Override
@@ -451,7 +502,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public RequestParams getParams() {
         RequestParams requestParams = RequestParams.create();
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        requestParams.putString(DealsHomePresenter.TAG, location.getSearchName());
+        requestParams.putInt(DealsHomePresenter.TAG, location.getId());
         return requestParams;
     }
 
@@ -590,7 +641,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void startLocationFragment(List<Location> locationList, boolean isForFirstime) {
         Utils.getSingletonInstance().updateLocation(getContext(), locationList.get(0));
         mPresenter.getDealsList(false);
-        selectLocationFragment.setContentView(new SelectLocationBottomSheet(getContext(), isForFirstime, locationList, this, tvLocationName.getText().toString(), this));
+        selectLocationFragment.setCustomContentView(new SelectLocationBottomSheet(getContext(), isForFirstime, locationList, this, tvLocationName.getText().toString(), this), "", false);
         selectLocationFragment.show();
         if (isForFirstime) {
             selectLocationFragment.setCanceledOnTouchOutside(false);
@@ -613,7 +664,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 5,
                 GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(gridLayoutManager);
-        dealsCategoryBottomSheet.setContentView(categoryView);
+        dealsCategoryBottomSheet.setCustomContentView(categoryView, "", false);
         dealsCategoryBottomSheet.show();
         dealsCategoryBottomSheet.setCanceledOnTouchOutside(true);
     }
@@ -643,6 +694,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     public interface OpenTrendingDeals {
-        void replaceFragment(List<ProductItem> trendingDeals, int flag);
+        void replaceFragment(List<ProductItem> trendingDeals, int flag, String title);
     }
 }

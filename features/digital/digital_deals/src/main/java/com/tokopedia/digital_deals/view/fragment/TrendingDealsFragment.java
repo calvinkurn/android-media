@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ public class TrendingDealsFragment extends BaseDaggerFragment implements DealsCa
     private AppBarLayout appBarLayout;
     private RecyclerView recyclerView;
     private int adapterPosition;
+    private static String title;
 
     public static Fragment createInstance() {
         Fragment fragment = new TrendingDealsFragment();
@@ -68,7 +70,11 @@ public class TrendingDealsFragment extends BaseDaggerFragment implements DealsCa
         appBarLayout = view.findViewById(R.id.app_bar_layout);
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_arrow_back_black));
-        toolbar.setTitle("Trending Deals");//getActivity().getResources().getString(R.string.redeem_locations));
+        if (!TextUtils.isEmpty(trendingDealsCallBacks.getToolBarTitle())) {
+            toolbar.setTitle(trendingDealsCallBacks.getToolBarTitle());
+        } else {
+            toolbar.setTitle("Trending Deals");
+        }
         recyclerView = view.findViewById(R.id.rv_trending_deals);
     }
 

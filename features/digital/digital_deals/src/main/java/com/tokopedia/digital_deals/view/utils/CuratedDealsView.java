@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 
 import org.w3c.dom.Text;
 
@@ -31,17 +33,19 @@ public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapt
     private final boolean IS_SHORT_LAYOUT = false;
     DealsCategoryAdapter.INavigateToActivityRequest listener;
     DealsHomeFragment.OpenTrendingDeals openTrendingDeals;
+    DealsHomePresenter mPresenter;
 
     public CuratedDealsView(Context context) {
         super(context);
         initView();
     }
 
-    public CuratedDealsView(Context context, CategoryItem categoryItem, DealsHomeFragment.OpenTrendingDeals openTrendingDeals, String addView) {
+    public CuratedDealsView(Context context, CategoryItem categoryItem, DealsHomeFragment.OpenTrendingDeals openTrendingDeals, String addView, DealsHomePresenter mPresenter) {
         super(context);
         this.context = context;
         this.categoryItem = categoryItem;
         this.openTrendingDeals = openTrendingDeals;
+        this.mPresenter = mPresenter;
         initView();
     }
 
@@ -62,18 +66,24 @@ public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapt
         dealTitle = view.findViewById(R.id.tv_popular);
         seeAllCuratedDeals = view.findViewById(R.id.tv_see_all_curated_deals);
         curatedDealsRecyclerView = view.findViewById(R.id.rv_curated_deals);
-        seeAllCuratedDeals.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openTrendingDeals.replaceFragment(categoryItem.getItems(), 0);
-            }
-        });
 
-        dealTitle.setText(categoryItem.getTitle() + " Deals");
-        curatedDealsRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        categoryAdapter = new DealsCategoryAdapter(categoryItem.getItems(), DealsCategoryAdapter.HOME_PAGE, this, IS_SHORT_LAYOUT);
-        categoryAdapter.setDealsHomeLayout(true);
-        curatedDealsRecyclerView.setAdapter(categoryAdapter);
+
+        if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {
+            dealTitle.setText(categoryItem.getTitle() + " Deals");
+            seeAllCuratedDeals.setVisibility(VISIBLE);
+            seeAllCuratedDeals.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!TextUtils.isEmpty(categoryItem.getCategoryUrl())) {
+                        mPresenter.getAllTrendingDeals(categoryItem.getCategoryUrl(), dealTitle.getText().toString());
+                    }
+                }
+            });
+            curatedDealsRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+            categoryAdapter = new DealsCategoryAdapter(categoryItem.getItems(), DealsCategoryAdapter.HOME_PAGE, this, IS_SHORT_LAYOUT);
+            categoryAdapter.setDealsHomeLayout(true);
+            curatedDealsRecyclerView.setAdapter(categoryAdapter);
+        }
 
     }
 

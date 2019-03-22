@@ -3,29 +3,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_12">
+    android:layout_marginTop="@dimen/dp_32">
 
     <TextView
         android:id="@+id/tv_popular"
         style="@style/TextView.Medium.FontMedium.BlackPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:textStyle="bold"
-        android:text="Deals"
+        android:textSize="@dimen/sp_16"
+        android:textColor="#f531353b"
+        android:lineSpacingExtra="@dimen/sp_6"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_see_all_curated_deals"
-        style="@style/TextView.Micro.Green"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         android:text="@string/see_all"
+        android:textSize="@dimen/sp_12"
+        android:textColor="#03ac0e"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tv_popular"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_popular" />
@@ -36,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_4"
         android:nestedScrollingEnabled="false"
         app:layout_constraintTop_toBottomOf="@+id/tv_popular" />

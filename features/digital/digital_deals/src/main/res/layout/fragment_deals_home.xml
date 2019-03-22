@@ -19,12 +19,15 @@
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/dp_1">
+            app:elevation="@dimen/dp_0">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/deals_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
+                app:contentInsetLeft="@dimen/dp_0"
+                app:contentInsetStart="@dimen/dp_0"
+                app:contentInsetStartWithNavigation="@dimen/dp_0"
                 android:background="@color/white">
 
                 <android.support.constraint.ConstraintLayout
@@ -50,6 +53,8 @@
                         android:textColor="#f531353b"
                         android:textSize="16sp"
                         android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_marginBottom="@dimen/dp_2"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/toolbar_title" />
 
@@ -67,7 +72,6 @@
 
                 <TextView
                     android:id="@+id/search_input_view"
-                    style="@style/TextView.Small.BlackPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
@@ -125,30 +129,32 @@
                     android:id="@+id/cl_brands"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_32"
                     android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@+id/category_items">
 
                     <TextView
                         android:id="@+id/tv_popular_brand"
-                        style="@style/TextView.Medium.FontMedium.BlackPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_32"
                         android:text="@string/popular_brand"
                         android:textStyle="bold"
+                        android:textSize="@dimen/sp_16"
+                        android:textColor="#f531353b"
+                        android:lineSpacingExtra="@dimen/sp_6"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tv_see_all_brands"
-                        style="@style/TextView.Micro.Green"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingLeft="@dimen/dp_16"
                         android:paddingRight="@dimen/dp_16"
                         android:text="@string/see_all"
+                        android:textSize="@dimen/sp_12"
+                        android:textColor="#03ac0e"
                         app:layout_constraintBottom_toBottomOf="@+id/tv_popular_brand"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/tv_popular_brand" />
@@ -172,7 +178,7 @@
                     android:id="@+id/cl_topDeals"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_24"
                     android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@+id/bg_layout">
 
@@ -182,22 +188,24 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
-                        android:paddingTop="@dimen/dp_16"
                         android:paddingBottom="@dimen/dp_16"
                         android:text="@string/text_trending_deals"
                         android:textStyle="bold"
+                        android:textSize="@dimen/sp_16"
+                        android:textColor="#f531353b"
+                        android:lineSpacingExtra="@dimen/sp_6"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
 
                     <TextView
                         android:id="@+id/tv_see_all_deals"
-                        style="@style/TextView.Micro.Green"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="@dimen/dp_16"
                         android:paddingRight="@dimen/dp_16"
                         android:text="@string/see_all"
+                        android:textSize="@dimen/sp_12"
+                        android:textColor="#03ac0e"
                         app:layout_constraintBottom_toBottomOf="@+id/tv_popular"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/tv_popular" />
@@ -210,7 +218,7 @@
                         android:layout_marginTop="@dimen/dp_16"
                         android:clipToPadding="false"
                         android:nestedScrollingEnabled="false"
-                        android:paddingLeft="@dimen/dp_4"
+                        android:layout_marginLeft="@dimen/dp_16"
                         android:paddingRight="@dimen/dp_4"
                         app:layout_constraintTop_toBottomOf="@+id/tv_popular" />
                 </android.support.constraint.ConstraintLayout>
