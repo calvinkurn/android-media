@@ -60,7 +60,6 @@
                 android:lineSpacingExtra="@dimen/sp_6"
                 android:textSize="@dimen/sp_16"
                 android:textColor="#f531353b"
-                tools:text="Konten gagal ditampilkan"
                 />
 
             <TextView
@@ -78,7 +77,6 @@
                 android:textColor="#ae31353b"
                 android:lineSpacingExtra="@dimen/sp_6"
                 android:layout_below="@id/title"
-                tools:text="Klik ikon untuk coba lagi"
                 />
 
         </RelativeLayout>
