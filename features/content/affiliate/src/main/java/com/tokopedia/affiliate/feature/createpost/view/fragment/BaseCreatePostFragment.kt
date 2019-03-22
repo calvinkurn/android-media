@@ -5,11 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.TaskStackBuilder
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics
 import com.tokopedia.affiliate.analytics.AffiliateEventTracking
@@ -38,6 +40,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videorecorder.main.VideoPickerActivity.Companion.VIDEOS_RESULT
 import kotlinx.android.synthetic.main.fragment_af_create_post.*
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -68,6 +71,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         private const val REQUEST_VIDEO_PICKER = 1235
         private const val REQUEST_PREVIEW = 13
         private const val REQUEST_LOGIN = 83
+        private const val MAX_CHAR = 2000
     }
 
     override fun initInjector() {
@@ -295,6 +299,20 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         viewModel.adIdList.addAll(adIds)
     }
 
+    protected fun updateAddTagText() {
+        context?.let {
+            val numberOfProducts = if (isTypeAffiliate()) viewModel.adIdList.size else
+                viewModel.productIdList.size
+            if (numberOfProducts < viewModel.maxProduct) {
+                relatedAddBtn.setOnClickListener { onRelatedAddProductClick() }
+                relatedAddBtn.setTextColor(MethodChecker.getColor(it, R.color.medium_green))
+            } else {
+                relatedAddBtn.setOnClickListener { }
+                relatedAddBtn.setTextColor(MethodChecker.getColor(it, R.color.af_add_disabled))
+            }
+        }
+    }
+
     private fun initDraft(arguments: Bundle) {
         activity?.let {
             val draftId = arguments.getString(DRAFT_ID)
@@ -338,21 +356,14 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         addVideoBtn.setOnClickListener {
             goToVideoPicker()
         }
-        relatedAddBtn.setOnClickListener {
-            onRelatedAddProductClick()
-        }
-        thumbnail.setOnClickListener {
-            goToMediaPreview()
-        }
-        updateButton()
-    }
-
-    private fun goToVideoPicker() {
-        activity?.let {
-            startActivityForResult(
-                    CreatePostVideoPickerActivity.getInstance(it,
-                            viewModel.fileImageList.isNotEmpty()),
-                    REQUEST_VIDEO_PICKER)
+        caption.setOnTouchListener { v, event ->
+            if (v.id == R.id.caption) {
+                v.parent.requestDisallowInterceptTouchEvent(true)
+                when (event.action and MotionEvent.ACTION_MASK) {
+                    MotionEvent.ACTION_UP -> v.parent.requestDisallowInterceptTouchEvent(false)
+                }
+            }
+            false
         }
         caption.hint = getString(if (isTypeAffiliate())
             R.string.af_caption_hint_affiliate else
@@ -362,6 +373,22 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         updateMaxCharacter()
         updateThumbnail()
         updateAddTagText()
+    }
+
+    private fun updateMaxCharacter() {
+        maxCharacter.text = String.format(Locale.GERMAN, "%,d/%,d",
+                viewModel.caption.length,
+                MAX_CHAR
+        )
+    }
+
+    private fun goToVideoPicker() {
+        activity?.let {
+            startActivityForResult(
+                    CreatePostVideoPickerActivity.getInstance(it,
+                            viewModel.fileImageList.isNotEmpty()),
+                    REQUEST_VIDEO_PICKER)
+        }
     }
 
     private fun goToImagePicker() {
@@ -405,6 +432,26 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun isFormInvalid(): Boolean {
+        var isFormInvalid = false
+        if (isTypeAffiliate() && viewModel.adIdList.isEmpty()) {
+            isFormInvalid = true
+            view?.showErrorToaster(getString(R.string.af_warning_empty_product), R.string.label_add) {
+                onRelatedAddProductClick()
+            }
+        } else if (!isTypeAffiliate() && viewModel.productIdList.isEmpty()) {
+            isFormInvalid = true
+            view?.showErrorToaster(getString(R.string.af_warning_empty_product), R.string.label_add) {
+                onRelatedAddProductClick()
+            }
+        } else if (viewModel.completeImageList.isEmpty()) {
+            isFormInvalid = true
+            view?.showErrorToaster(getString(R.string.af_warning_empty_photo), R.string.label_add) {
+                goToImagePicker()
+            }
+        }
+        return isFormInvalid
+    }
 
     private fun saveDraftAndSubmit() {
         affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList.firstOrNull())

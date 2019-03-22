@@ -144,7 +144,7 @@ class MediaPreviewFragment : BaseDaggerFragment() {
                     tabLayout.selectedTabPosition - viewModel.fileImageList.size
             )
         }
-        imageAdapter.setList(viewModel.completeImageList)
+        imageAdapter.setList(ArrayList(viewModel.completeImageList.map { it.path?: "" }))
 
         updateDeleteBtn()
         updateResultIntent()
