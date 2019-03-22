@@ -337,7 +337,7 @@ public class AddAddressFragment extends BaseDaggerFragment
 
         // Check address validity
         int addressLength = addressEditText.getText().length();
-        if (addressLength < 20) {
+        if (addressLength < ADDRESS_MIN_CHARACTER) {
             String errorMessage = getString(R.string.error_min_address);
 
             if (addressLength == 0) {
