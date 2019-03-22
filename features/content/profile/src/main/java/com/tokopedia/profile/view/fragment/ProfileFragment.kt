@@ -700,6 +700,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     }
 
+    override fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String) {
+        onGoToLink(redirectUrl)
+    }
+
     override fun onBannerItemClick(positionInFeed: Int, adapterPosition: Int, redirectUrl: String) {
         onGoToLink(redirectUrl)
     }
