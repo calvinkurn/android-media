@@ -32,7 +32,11 @@ public class RouteManager {
     }
 
     public static void route(Context context, String applinkPattern, String... parameter) {
-        String uriString = UriUtil.buildUri(applinkPattern, parameter);
+        String uriString = applinkPattern;
+        Uri uri = Uri.parse(applinkPattern);
+        if (uri.getHost().equals("product") && uri.getScheme().equals("tokopedia"))
+            uriString = UriUtil.buildUri(applinkPattern, parameter);
+
         Intent intent = getIntent(context, uriString);
         if (intent != null) {
             context.startActivity(intent);
