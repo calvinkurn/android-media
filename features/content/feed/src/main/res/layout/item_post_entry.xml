@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_100"
-    android:background="@drawable/background_shadow_feed_bottom"
+    android:background="@drawable/card_shadow_bottom"
     android:elevation="@dimen/dp_4"
     android:padding="@dimen/dp_16"
     >
