@@ -326,6 +326,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     }
 
     public HeaderViewModel getHeaderViewModel() {
+        if (headerViewModel == null) {
+            headerViewModel = new HeaderViewModel();
+        }
         headerViewModel.setUserLogin(userSession.isLoggedIn());
         return headerViewModel;
     }
