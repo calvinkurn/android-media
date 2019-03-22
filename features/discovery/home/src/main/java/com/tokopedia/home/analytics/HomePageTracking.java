@@ -669,7 +669,7 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventOvo() {
+    public static void eventOvo(Context context) {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
             tracker.sendEventTracking(
@@ -681,7 +681,7 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventQrCode() {
+    public static void eventQrCode(Context context) {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
             tracker.sendEventTracking(
@@ -693,7 +693,7 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventTokopointNonLogin() {
+    public static void eventTokopointNonLogin(Context context) {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
             tracker.sendEventTracking(

@@ -170,7 +170,7 @@ public class HeaderHomeView extends BaseCustomView {
 
     private OnClickListener onScanListener() {
         return v -> {
-            HomePageTracking.eventQrCode();
+            HomePageTracking.eventQrCode(getContext());
             getContext().startActivity(((IHomeRouter) getContext().getApplicationContext())
                     .gotoQrScannerPage(false));
         };
@@ -178,7 +178,7 @@ public class HeaderHomeView extends BaseCustomView {
 
     private OnClickListener onCheckNowListener() {
         return v -> {
-            HomePageTracking.eventTokopointNonLogin();
+            HomePageTracking.eventTokopointNonLogin(getContext());
             RouteManager.route(getContext(), ApplinkConst.LOGIN);
         };
     }
@@ -404,7 +404,7 @@ public class HeaderHomeView extends BaseCustomView {
                     showAnimationBottomSheetActivation();
                     walletAnalytics.eventClickActivationOvoHomepage();
                 } else {
-                    HomePageTracking.eventOvo();
+                    HomePageTracking.eventOvo(getContext());
                 }
                 Intent intentBalanceWalet = RouteManager.getIntent(getContext(), applinkString);
                 getContext().startActivity(intentBalanceWalet);
