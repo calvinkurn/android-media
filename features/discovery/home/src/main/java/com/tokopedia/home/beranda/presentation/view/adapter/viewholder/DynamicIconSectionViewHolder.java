@@ -120,7 +120,8 @@ public class DynamicIconSectionViewHolder extends AbstractViewHolder<DynamicIcon
         }
 
         private void eventClickDynamicIcon(Context context, HomeIconItem homeIconItem, int position) {
-            HomePageTracking.eventClickDynamicIcons(context, homeIconItem.getTitle());
+            HomePageTracking.eventEnhancedClickDynamicIconHomePage(context,
+                    homeIconItem.getEnhanceClickDynamicIconHomePage(position));
 
             HomeTrackingUtils.homeUsedCaseClick(context,
                     homeIconItem.getTitle(), position + 1, homeIconItem.getApplink());

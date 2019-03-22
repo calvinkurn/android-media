@@ -26,12 +26,9 @@ import java.util.*
 
 class BannerViewDynamicBackground : BannerView {
 
-    var isUseCrossfade = true
+    private lateinit var imgBannerBackground: ImageView
 
-    internal lateinit var img_banner_background: ImageView
-
-    internal var currentBitmapDrawable: BitmapDrawable? = null
-
+    private var currentBitmapDrawable: BitmapDrawable? = null
 
     constructor(context: Context) : super(context) {}
 
@@ -41,11 +38,10 @@ class BannerViewDynamicBackground : BannerView {
 
     override fun init() {
         val view = View.inflate(context, R.layout.layout_card_banner_dynamic_background, this)
-
         bannerRecyclerView = view.findViewById(R.id.banner_recyclerview)
         bannerIndicator = view.findViewById(R.id.banner_indicator_container)
         bannerSeeAll = view.findViewById(R.id.banner_see_all)
-        img_banner_background = view.findViewById(R.id.img_banner_background)
+        imgBannerBackground = view.findViewById(R.id.img_banner_background)
         indicatorItems = ArrayList()
         impressionStatusList = ArrayList()
         promoImageUrls = ArrayList()
@@ -55,16 +51,9 @@ class BannerViewDynamicBackground : BannerView {
         bannerSeeAll.setTextColor(ContextCompat.getColor(context, R.color.medium_green));
         bannerSeeAll.typeface = Typeface.DEFAULT
         super.buildView()
-
         banner_root.visibility = View.VISIBLE
-
         val url = promoImageUrls[0]
 
-        ImageHandler.loadImageBlurWithViewTarget(
-                context,
-                url,
-                getBitmapImageViewTarget()
-        )
         if (bannerRecyclerView.itemDecorationCount == 0) {
             bannerRecyclerView.addItemDecoration(
                     HomeBannerViewDecorator(
@@ -74,61 +63,33 @@ class BannerViewDynamicBackground : BannerView {
                             context.resources.getDimensionPixelSize(R.dimen.dp_2))
             )
         }
-        bannerSeeAll.setOnClickListener {
-            isUseCrossfade = !isUseCrossfade
-        }
+
+        //render first image on banner
+        ImageHandler.loadImageBlurWithViewTarget(
+                context,
+                url,
+                getBitmapImageViewTarget()
+        )
+
         bannerRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            internal var currentImagePosition = 0
+            var currentImagePosition = 0
             var oldImagePosition = 0
 
-//            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
-//                if (isUseCrossfade) {
-//                    if (newState == RecyclerView.SCROLL_STATE_IDLE
-//                            && currentImagePosition != currentPosition
-//                            && currentPosition != -1) {
-//                        setBackgroundImageCrossfade()
-//                        currentImagePosition = currentPosition
-//                    }
-//                }
-//            }
-
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                if (!isUseCrossfade) {
-                    val manager : LinearLayoutManager =
-                            recyclerView!!.layoutManager as LinearLayoutManager
-                    val position = manager.findFirstCompletelyVisibleItemPosition()
-                    Log.d("Fikry pos", " "+position)
-                    if (
-                            position != currentImagePosition && position != -1) {
+                val manager : LinearLayoutManager =
+                        recyclerView!!.layoutManager as LinearLayoutManager
+                val position = manager.findFirstCompletelyVisibleItemPosition()
+                if (
+                        position != currentImagePosition && position != -1) {
 
-                        val url = promoImageUrls[position]
-
-//                        ImageHandler.loadImageBlur(
-//                                context,
-//                                getBitmapImageViewTarget(img_banner_background.getImg1()),
-//                                url
-//                        )
-                        oldImagePosition = currentImagePosition
-                        currentImagePosition = position
-                    }
-                } else {
-                    val manager : LinearLayoutManager =
-                            recyclerView!!.layoutManager as LinearLayoutManager
-                    val position = manager.findFirstCompletelyVisibleItemPosition()
-                    if (
-                            position != currentImagePosition && position != -1) {
-
-                        val url = promoImageUrls[position]
-                        val oldUrl = promoImageUrls[oldImagePosition]
-
-                        ImageHandler.loadImageBlurWithViewTarget(
-                                context,
-                                url,
-                                getBitmapImageViewTarget()
-                        )
-                        oldImagePosition = currentImagePosition
-                        currentImagePosition = position
-                    }
+                    val url = promoImageUrls[position]
+                    ImageHandler.loadImageBlurWithViewTarget(
+                            context,
+                            url,
+                            getBitmapImageViewTarget()
+                    )
+                    oldImagePosition = currentImagePosition
+                    currentImagePosition = position
                 }
             }
         })
@@ -144,12 +105,12 @@ class BannerViewDynamicBackground : BannerView {
     }
 
     fun showImage(bitmap: Bitmap) {
-        if (currentBitmapDrawable == null) {
-            img_banner_background.setImageBitmap(bitmap)
+        if (currentBitmapDrawable == null && ::imgBannerBackground.isInitialized) {
+            imgBannerBackground.setImageBitmap(bitmap)
             currentBitmapDrawable = BitmapDrawable(resources, bitmap)
-        } else {
+        } else if(::imgBannerBackground.isInitialized) {
             val td = TransitionDrawable(arrayOf<Drawable>(currentBitmapDrawable!!, BitmapDrawable(resources, bitmap)))
-            img_banner_background.setImageDrawable(td)
+            imgBannerBackground.setImageDrawable(td)
             td.startTransition(250)
             currentBitmapDrawable = BitmapDrawable(resources, bitmap)
         }

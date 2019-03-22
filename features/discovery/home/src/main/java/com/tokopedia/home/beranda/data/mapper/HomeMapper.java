@@ -25,6 +25,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicCha
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsDynamicChannelModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
+import com.tokopedia.home.util.ServerTimeOffsetUtil;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel;
@@ -78,6 +79,10 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                     && homeData.getDynamicHomeIcon().getDynamicIcon() != null
                     && !homeData.getDynamicHomeIcon().getDynamicIcon().isEmpty()) {
                 list.add(mappingDynamicIcon(homeData.getDynamicHomeIcon().getDynamicIcon()));
+                if(!homeData.isCache()) {
+                    HomePageTracking.eventEnhancedImpressionDynamicIconHomePage(context,
+                            homeData.getDynamicHomeIcon().getEnhanceImpressionDynamicIconHomePage());
+                }
             }
 
             if (homeData.getDynamicHomeChannel() != null
@@ -119,8 +124,13 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                 HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(context,
                                         channel.getEnhanceImpressionDynamicSprintLegoHomePage(position)
                                 );
-                            } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT)
-                                    || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)
+                            } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT)) {
+                                homeData.getSpotlight().setPromoName(String.format("/ - p%s - spotlight banner", String.valueOf(position)));
+                                homeData.getSpotlight().setHomeAttribution(String.format("%s - spotlightBanner - $1 - $2", String.valueOf(position)));
+                                HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(context,
+                                        homeData.getSpotlight().getEnhanceImpressionSpotlightHomePage(position)
+                                );
+                            } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)
                                     || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_HERO)
                                     || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_ORGANIC)
                                     || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_TOPADS)
@@ -208,7 +218,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
     private Visitable mappingUseCaseIcon(List<DynamicHomeIcon.UseCaseIcon> iconList) {
         UseCaseIconSectionViewModel viewModel = new UseCaseIconSectionViewModel();
         for (DynamicHomeIcon.UseCaseIcon icon : iconList) {
-            viewModel.addItem(new HomeIconItem(icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
+            viewModel.addItem(new HomeIconItem(icon.getId(), icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
         }
         return viewModel;
     }
@@ -216,7 +226,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
     private Visitable mappingDynamicIcon(List<DynamicHomeIcon.DynamicIcon> iconList) {
         DynamicIconSectionViewModel viewModelDynamicIcon = new DynamicIconSectionViewModel();
         for (DynamicHomeIcon.DynamicIcon icon : iconList) {
-            viewModelDynamicIcon.addItem(new HomeIconItem(icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
+            viewModelDynamicIcon.addItem(new HomeIconItem(icon.getId(), icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
         }
         return viewModelDynamicIcon;
     }
@@ -224,6 +234,12 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
     private Visitable mappingDynamicChannel(DynamicHomeChannel.Channels channel) {
         DynamicChannelViewModel viewModel = new DynamicChannelViewModel();
         viewModel.setChannel(channel);
+
+        viewModel.setServerTimeOffset(
+                ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(
+                        channel.getHeader().getServerTimeUnix()
+                )
+        );
         return viewModel;
     }
 
@@ -242,7 +258,8 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                     spotlightItem.getCtaText(),
                     spotlightItem.getCtaTextHexcolor(),
                     spotlightItem.getUrl(),
-                    spotlightItem.getApplink()
+                    spotlightItem.getApplink(),
+                    spotlight.getPromoName()
                     ));
         }
 

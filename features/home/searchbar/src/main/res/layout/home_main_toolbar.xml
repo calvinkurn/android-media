@@ -35,12 +35,12 @@
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_search_bar"/>
+                app:srcCompat="@drawable/ic_search_bar"/>
 
             <EditText
                 android:id="@+id/et_search"
-                android:layout_marginLeft="@dimen/margin_16"
-                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginLeft="@dimen/dp_4"
+                android:layout_marginStart="@dimen/dp_4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="@string/search_tokopedia"
