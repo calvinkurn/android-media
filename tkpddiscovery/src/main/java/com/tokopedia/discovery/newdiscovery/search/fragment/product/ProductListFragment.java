@@ -83,6 +83,7 @@ public class ProductListFragment extends SearchSectionFragment
         implements SearchSectionGeneralAdapter.OnItemChangeView, ProductListFragmentView,
         ProductListener, WishListActionListener {
 
+    public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     public static final int REQUEST_CODE_LOGIN = 561;
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
     private static final int REQUEST_ACTIVITY_SORT_PRODUCT = 1233;
@@ -392,7 +393,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public String getScreenNameId() {
-        return AppScreen.SCREEN_SEARCH_PAGE_PRODUCT_TAB;
+        return SCREEN_SEARCH_PAGE_PRODUCT_TAB;
     }
 
     @Override

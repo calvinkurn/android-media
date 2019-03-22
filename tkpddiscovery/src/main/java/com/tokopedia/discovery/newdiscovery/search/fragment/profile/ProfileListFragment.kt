@@ -139,7 +139,7 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     override fun getScreenName(): String {
-        return AppScreen.SCREEN_SEARCH_PAGE_PROFILE_TAB
+        return SCREEN_SEARCH_PAGE_PROFILE_TAB
     }
 
     override fun initInjector() {
@@ -200,6 +200,7 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
 
     companion object {
         private val EXTRA_QUERY = "EXTRA_QUERY"
+        private const val SCREEN_SEARCH_PAGE_PROFILE_TAB = "Search result - Profile tab"
 
         fun newInstance(query: String,
                         searchhNavigationListener: SearchNavigationListener,
