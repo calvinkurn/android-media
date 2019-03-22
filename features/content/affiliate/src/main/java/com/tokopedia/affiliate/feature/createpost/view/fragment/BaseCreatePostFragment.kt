@@ -181,7 +181,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessGetContentForm(feedContentForm: FeedContentForm) {
-        Log.d("CreatePostItems", Gson().toJson(feedContentForm))
         viewModel.token = feedContentForm.token
         viewModel.maxImage = feedContentForm.media.maxMedia
         viewModel.allowImage = feedContentForm.media.allowImage
@@ -490,11 +489,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun updateThumbnail() {
-        //testing purpose
-        thumbnail.setOnClickListener {
-            goToMediaPreview()
-        }
-
         if (viewModel.completeImageList.isNotEmpty()) {
             thumbnail.loadImageRounded(viewModel.completeImageList.first().path?:"", 25f)
             edit.show()
@@ -502,6 +496,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 goToMediaPreview()
             }
             edit.setOnClickListener {
+                goToMediaPreview()
+            }
+            thumbnail.setOnClickListener {
                 goToMediaPreview()
             }
         } else {
