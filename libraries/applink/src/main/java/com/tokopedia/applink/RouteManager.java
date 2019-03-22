@@ -49,6 +49,10 @@ public class RouteManager {
         }
     }
 
+    public static Intent getIntent(Context context, String applinkPattern) {
+        return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, applinkPattern);
+    }
+
     public static Intent getIntent(Context context, String applinkPattern, String... parameter) {
         // Temporary solution: Only internal scheme to build internal Uri
         String applink = UriUtil.buildUri(applinkPattern, parameter);
@@ -72,8 +76,7 @@ public class RouteManager {
     }
 
     public static boolean isSupportApplink(Context context, String applink) {
-        return buildInternalUri(context, applink).resolveActivity(context.getPackageManager()) != null ||
-                ((ApplinkRouter) context.getApplicationContext()).isSupportApplink(applink);
+        return ((ApplinkRouter) context.getApplicationContext()).isSupportApplink(applink);
     }
 
     public static String routeWithAttribution(Context context, String applink,
