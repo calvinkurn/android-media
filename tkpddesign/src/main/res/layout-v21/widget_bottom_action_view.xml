@@ -37,7 +37,8 @@
 
             <TextView
                 android:id="@+id/text_view_label_1"
-                style="@style/TextView.Micro"
+                style="@style/TextView.Micro.Bold"
+                android:textStyle="bold"
                 tools:text="@string/app_name" />
 
             <View
@@ -84,7 +85,8 @@
 
             <TextView
                 android:id="@+id/text_view_label_2"
-                style="@style/TextView.Micro"
+                style="@style/TextView.Micro.Bold"
+                android:textStyle="bold"
                 tools:text="@string/app_name" />
 
             <View
