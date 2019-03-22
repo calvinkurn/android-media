@@ -370,4 +370,16 @@ class ProductModalFragment : BaseDaggerFragment() {
             }
         }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+    }
+
+    override fun onStop() {
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()super.onDestroy()
+    }
 }
