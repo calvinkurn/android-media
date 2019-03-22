@@ -88,7 +88,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     private static final double MONAS_LATITUDE = -6.175794;
     private static final double MONAS_LONGITUDE = 106.826457;
     private static final int ADDRESS_MAX_CHARACTER = 175;
-    private static final int ADDRESS_MIN_CHARACTER = 20;
+    private static final int ADDRESS_MIN_CHARACTER = 5;
     private static final String ADDRESS_WATCHER_STRING = "%1$d karakter lagi diperlukan";
     private static final String ADDRESS_WATCHER_STRING2 = "%1$d karakter tersisa";
 
