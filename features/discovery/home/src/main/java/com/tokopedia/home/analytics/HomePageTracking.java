@@ -537,7 +537,7 @@ public class HomePageTracking {
 
     public static void eventImpressionOnProductRecommendationForLoggedInUser(
             TrackingQueue trackingQueue,
-            List<HomeFeedViewModel> feedViewModels,
+            HomeFeedViewModel feedViewModel,
             String tabName) {
 
         Map<String, Object> data = DataLayer.mapOf(
@@ -548,7 +548,7 @@ public class HomePageTracking {
                 ECOMMERCE, DataLayer.mapOf(
                         CURRENCY_CODE, IDR,
                         IMPRESSIONS,
-                        convertHomeFeedViewModelListToObjectForLoggedInUser(feedViewModels, tabName)
+                        convertHomeFeedViewModelListToObjectForLoggedInUser(feedViewModel, tabName)
                 )
         );
         trackingQueue.putEETracking((HashMap<String, Object>) data);
@@ -556,7 +556,7 @@ public class HomePageTracking {
 
     public static void eventImpressionOnProductRecommendationForNonLoginUser(
             TrackingQueue trackingQueue,
-            List<HomeFeedViewModel> feedViewModels,
+            HomeFeedViewModel feedViewModel,
             String tabName) {
 
         Map<String, Object> data = DataLayer.mapOf(
@@ -567,31 +567,27 @@ public class HomePageTracking {
                 ECOMMERCE, DataLayer.mapOf(
                         CURRENCY_CODE, IDR,
                         IMPRESSIONS,
-                        convertHomeFeedViewModelListToObjectForNonLoginUser(feedViewModels, tabName)
+                        convertHomeFeedViewModelListToObjectForNonLoginUser(feedViewModel, tabName)
                 )
         );
         trackingQueue.putEETracking((HashMap<String, Object>) data);
     }
 
     private static List<Object> convertHomeFeedViewModelListToObjectForLoggedInUser(
-            List<HomeFeedViewModel> feedViewModels,
+            HomeFeedViewModel feedViewModel,
             String tabName
     ) {
         List<Object> objects = new ArrayList<>();
-        for (HomeFeedViewModel homeFeedViewModel : feedViewModels) {
-            objects.add(homeFeedViewModel.convertFeedTabModelToImpressionDataForLoggedInUser(tabName));
-        }
+        objects.add(feedViewModel.convertFeedTabModelToImpressionDataForLoggedInUser(tabName));
         return objects;
     }
 
     private static List<Object> convertHomeFeedViewModelListToObjectForNonLoginUser(
-            List<HomeFeedViewModel> feedViewModels,
+            HomeFeedViewModel feedViewModel,
             String tabName
     ) {
         List<Object> objects = new ArrayList<>();
-        for (HomeFeedViewModel homeFeedViewModel : feedViewModels) {
-            objects.add(homeFeedViewModel.convertFeedTabModelToImpressionDataForNonLoginUser(tabName));
-        }
+        objects.add(feedViewModel.convertFeedTabModelToImpressionDataForNonLoginUser(tabName));
         return objects;
     }
 
