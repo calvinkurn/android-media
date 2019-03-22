@@ -23,7 +23,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -40,7 +39,7 @@ import com.tokopedia.groupchat.chatroom.view.listener.ChannelVoteContract;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.presenter.ChannelVotePresenter;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
-import com.tokopedia.groupchat.common.design.CloseableBottomSheetDialog;
+import com.tokopedia.groupchat.common.design.ChannelCloseableBottomSheetDialog;
 import com.tokopedia.groupchat.common.design.GridVoteItemDecoration;
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration;
 import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
@@ -50,10 +49,10 @@ import com.tokopedia.groupchat.vote.view.adapter.typefactory.VoteTypeFactory;
 import com.tokopedia.groupchat.vote.view.adapter.typefactory.VoteTypeFactoryImpl;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
-import com.tokopedia.vote.di.VoteModule;
-import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.vote.di.VoteModule;
+import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 import javax.inject.Inject;
 
@@ -85,7 +84,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     private ImageView iconVote;
     private View votedView;
     private TextView voteStatus;
-    private CloseableBottomSheetDialog channelInfoDialog;
+    private ChannelCloseableBottomSheetDialog channelInfoDialog;
 
     private VoteInfoViewModel voteInfoViewModel;
     private VoteAdapter voteAdapter;
@@ -130,7 +129,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_channel_vote, container, false);
 
-        channelInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
+        channelInfoDialog = ChannelCloseableBottomSheetDialog.createInstance(getActivity());
         channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {

@@ -43,8 +43,8 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.ActionInterfaces.ActionCreator;
-import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
+import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
+import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
@@ -2908,6 +2908,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             Intent intent = ((PdpRouter) getActivity().getApplicationContext())
                     .getExpressCheckoutIntent(getActivity(), atcRequestParam);
             if (intent != null) {
+                intent.putExtra("tracker_attribution", productPass.getTrackerAttribution());
+                intent.putExtra("tracker_list_name", productPass.getTrackerListName());
                 startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS);
                 getActivity().overridePendingTransition(R.anim.pull_up, 0);
             }

@@ -111,7 +111,7 @@ buildscript {
         classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
             exclude group: 'com.android.tools.build', module: 'gradle'
         }
-        classpath 'io.fabric.tools:gradle:1.+'
+        classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
@@ -240,7 +240,7 @@ android {
         applicationId "com.tokopedia.tkpd"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
-        vectorDrawables.useSupportLibrary = false
+        vectorDrawables.useSupportLibrary = vectorDrawable
         testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
         ndk {
             abiFilters "x86", "armeabi-v7a"
@@ -269,7 +269,7 @@ android {
     }
 
     // Specifies 4 flavor dimensions.
-    flavorDimensions "tier", "client"
+    flavorDimensions "tier" , "client"
 
     productFlavors {
         live {
@@ -323,12 +323,13 @@ dependencies {
     implementation project(rootProject.ext.features.session)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flight)
-    implementation project(rootProject.ext.features.flightDbFlow)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transaction)
     implementation project(rootProject.ext.features.seller)
     implementation project(rootProject.ext.features.productDetail)
+    implementation project(rootProject.ext.features.productDetailCommon)
+    implementation project(rootProject.ext.features.productDetailRevamp)
     implementation project(rootProject.ext.features.discovery)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.topAdsSdk)
@@ -364,6 +365,7 @@ dependencies {
     implementation project(rootProject.ext.features.developerOptions)
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.tokopoints)
+    implementation project(rootProject.ext.features.ovo)
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.productCard)
@@ -439,10 +441,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.config)
 
-    implementation rootProject.ext.playServicesDependencies.remoteConfig
-    implementation rootProject.ext.playServicesDependencies.firebase
+    implementation rootProject.ext.firebase.config
+    implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.playServicesDependencies.analytics
-    implementation rootProject.ext.playServicesDependencies.perfMon
+    implementation rootProject.ext.firebase.performance
     implementation rootProject.ext.playServicesDependencies.location
     implementation project(rootProject.ext.features.train)
     implementation project(rootProject.ext.features.paymentSetting)
@@ -466,6 +468,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
+    implementation project(rootProject.ext.libraries.cpm)
 
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation (rootProject.ext.analyticsDependencies.moengage) {
@@ -559,6 +562,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.referral)
     implementation project(rootProject.ext.libraries.cacheManager)
+    implementation project(rootProject.ext.features.kyc)
 }
 
 

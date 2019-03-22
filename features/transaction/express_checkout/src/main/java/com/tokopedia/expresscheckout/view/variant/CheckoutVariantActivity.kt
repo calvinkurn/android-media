@@ -6,23 +6,37 @@ import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.router.ExpressCheckoutInternalRouter.Companion.EXTRA_ATC_REQUEST
+import com.tokopedia.expresscheckout.router.ExpressCheckoutInternalRouter.Companion.TRACKER_ATTRIBUTION
+import com.tokopedia.expresscheckout.router.ExpressCheckoutInternalRouter.Companion.TRACKER_LIST_NAME
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
+ * For navigate: use ApplinkConstInternalMarketplace.EXPRESS_CHECKOUT
  */
+open class CheckoutVariantActivity : BaseSimpleActivity(), CheckoutVariantFragmentListener {
 
-class CheckoutVariantActivity : BaseSimpleActivity(), CheckoutVariantFragmentListener {
+    lateinit var atcRequestParam:AtcRequestParam
+    var trackerAttribution:String? = null
+    var trackerListName:String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val extra = intent.extras
+        if (extra == null) {
+            finish()
+            return
+        }
+        atcRequestParam = extra.getParcelable(EXTRA_ATC_REQUEST) ?: AtcRequestParam()
+        trackerAttribution = extra.getString(TRACKER_ATTRIBUTION)
+        trackerListName = extra.getString(TRACKER_LIST_NAME)
         super.onCreate(savedInstanceState)
         val actionBar = supportActionBar
         actionBar?.setHomeAsUpIndicator(R.drawable.ic_close)
     }
 
     override fun getNewFragment(): Fragment {
-        return CheckoutVariantFragment.createInstance(intent.extras[EXTRA_ATC_REQUEST] as AtcRequestParam)
+        return CheckoutVariantFragment.createInstance(atcRequestParam, trackerAttribution,trackerListName)
     }
 
     override fun finishWithResult(messages: String) {

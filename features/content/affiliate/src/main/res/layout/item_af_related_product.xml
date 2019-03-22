@@ -80,10 +80,10 @@
         android:clickable="true"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
-        android:src="@drawable/ic_system_action_close_grayscale_24"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_system_action_close_grayscale_24"
         tools:ignore="UnusedAttribute"
         tools:visibility="visible" />
 

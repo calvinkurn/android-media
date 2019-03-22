@@ -514,9 +514,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
-                            .subscribe(new GetShipmentAddressFormReloadCheckoutPageBecauseOfErrorSubscriber(
-                                    this, getView())
-                            )
+                            .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
+                                    true, true))
+
             );
         } else {
             compositeSubscription.add(
@@ -524,16 +524,17 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
-                            .subscribe(new GetShipmentAddressFormReloadCheckoutPageBecauseOfErrorSubscriber(
-                                    this, getView())
-                            )
+                            .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
+                                    true, false))
+
             );
         }
     }
 
+    @Deprecated
     @Override
     public void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment, @Nullable String cornerId) {
-        boolean isNeedToRemoveErrorProduct = isNeedToremoveErrorShopProduct();
+        boolean isNeedToRemoveErrorProduct = removeErrorShopProduct();
         if (partialCheckout || isNeedToRemoveErrorProduct) {
             processCheckout(voucherCode, isOneClickShipment);
         } else {
@@ -584,6 +585,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void processCheckout(String voucherCode, boolean isOneClickShipment) {
+        removeErrorShopProduct();
         CheckoutRequest checkoutRequest = generateCheckoutRequest(
                 !TextUtils.isEmpty(voucherCode) ?
                         voucherCode : "",
@@ -607,7 +609,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
-    private boolean isNeedToremoveErrorShopProduct() {
+    private boolean removeErrorShopProduct() {
         List<ShipmentCartItemModel> newShipmentCartItemModelList = new ArrayList<>();
         for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
             List<CartItemModel> cartItemModels = new ArrayList<>(shipmentCartItemModel.getCartItemModels());
@@ -768,6 +770,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             public void onError(Throwable e) {
                 e.printStackTrace();
                 analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed();
+                getView().showToastError(e.getMessage());
                 processReloadCheckoutPageBecauseOfError(isOneClickShipment);
             }
 
@@ -987,6 +990,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(SaveShipmentStateUseCase.PARAM_CART_DATA_OBJECT, param);
 
+        getView().showLoading();
         compositeSubscription.add(saveShipmentStateUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1378,6 +1382,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (getRecipientAddressModel() != null) {
             cornerId = getRecipientAddressModel().getCornerId();
         }
+
         getCourierRecommendationUseCase.execute(query, counter, cornerId, shippingParam, spId, 0,
                 shopShipmentList, new GetCourierRecommendationSubscriber(
                         getView(), this, shipperId, spId, itemPosition, shippingCourierConverter,

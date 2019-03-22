@@ -72,13 +72,13 @@ public class FlightDetailRouteViewModelMapper {
         return viewModel;
     }
 
-    public List<FlightDetailRouteViewModel> transform(List<Route> routes, List<FlightAirlineViewModel> airlineList) {
+    public List<FlightDetailRouteViewModel> transform(List<Route> routes, int totalTransit) {
         List<FlightDetailRouteViewModel> flightDetailRouteViewModels = new ArrayList<>();
         FlightDetailRouteViewModel flightDetailRouteViewModel;
         if (routes != null) {
             for (Route route : routes) {
                 flightDetailRouteViewModel = transform(route);
-                if (flightDetailRouteViewModel != null) {
+                if (flightDetailRouteViewModel != null && flightDetailRouteViewModels.size() <= totalTransit) {
                     flightDetailRouteViewModels.add(flightDetailRouteViewModel);
                 }
             }

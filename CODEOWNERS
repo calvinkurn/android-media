@@ -31,6 +31,7 @@
 /features/merchant/gold_merchant/                       @tokopedia/minion-stuart
 /features/merchant/gold_merchant_common/                @tokopedia/minion-stuart
 /features/merchant/gold_merchant_subscribe/             @tokopedia/minion-stuart
+/features/merchant/product_detail/                      @tokopedia/minion-stuart
 /features/merchant/product_draft_database/              @tokopedia/minion-stuart
 /features/merchant/product_manage_item/                 @tokopedia/minion-stuart
 /features/merchant/product_manage_list/                 @tokopedia/minion-stuart
@@ -104,7 +105,6 @@
 /features/content/kol_common/           @tokopedia/minion-kevin
 /features/content/profile/              @tokopedia/minion-kevin
 
-/features/payment/withdraw/             @tokopedia/minion-kevin
 
 /libraries/applink/                     @tokopedia/core-team
 /libraries/base_list_seller/            @tokopedia/minion-stuart
@@ -118,12 +118,12 @@
 /libraries/use_case/                    @tokopedia/core-team
 /libraries/react_native/                @tokopedia/core-team
 /libraries/applink/                     @tokopedia/core-team
-/libraries/push_notification/           @ricoharisin
+/libraries/push_notification/           @tokopedia/core-team
 /libraries/user_session/                @tokopedia/minion-kevin
 /libraries/youtubeutils/                @tokopedia/minion-kevin
 
 /features/user/updateinactivephone      @tokopedia/india-android-team
-/libraries/common_network/              @ricoharisin
+/libraries/common_network/              @tokopedia/core-team
 
 /features/digital/event                 @tokopedia/minion-darth
 /features/operational/contact_us        @tokopedia/minion-darth
@@ -131,19 +131,22 @@
 /libraries/oms                          @tokopedia/minion-darth
 
 /features/fintech/instant_loan          @tokopedia/minion-solo
+/features/fintech/ovo_pay_with_qr       @tokopedia/minion-solo
 /features/fintech/saldo_details         @tokopedia/minion-solo
 /features/fintech/home_credit           @tokopedia/minion-solo
 /features/promo/tokopoints              @tokopedia/minion-solo
 /features/promo/tokopoints_notification @tokopedia/minion-solo
 /features/promo/gamification            @tokopedia/minion-solo
+/features/payment/withdraw/             @tokopedia/minion-solo
+/features/kyc                           @tokopedia/minion-solo
 
 /features/im/challenges                 @tokopedia/minion-yoda
 /features/im/referral                   @tokopedia/minion-yoda
 /libraries/linker                       @tokopedia/minion-yoda
 
-/libraries/pagination                   @lavekush-t
-/libraries/common_network/              @lavekush-t
-/libraries/graphql/                     @lavekush-t
+/libraries/pagination                   @tokopedia/minion-solo
+/libraries/common_network/              @tokopedia/minion-solo
+/libraries/graphql/                     @tokopedia/minion-solo
 /kelontongapp                           @tokopedia/core-team
 
-/libraries/graph_view/                  @aarsy17
+/libraries/graph_view/                  @tokopedia/minion-solo

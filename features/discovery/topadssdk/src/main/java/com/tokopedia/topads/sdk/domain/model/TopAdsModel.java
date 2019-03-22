@@ -4,6 +4,7 @@ package com.tokopedia.topads.sdk.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONArray;
@@ -22,16 +23,27 @@ public class TopAdsModel implements Parcelable {
     private static final String KEY_HEADER = "header";
     private static final String KEY_STATUS = "status";
     private static final String KEY_DATA = "data";
+    private static final String KEY_TEMPLATE = "template";
     private static final String KEY_ERROR = "errors";
 
     @SerializedName(KEY_ERROR)
+    @Expose
     private Error error = new Error();
+
     @SerializedName(KEY_STATUS)
+    @Expose
     private Status status = new Status();
+
     @SerializedName(KEY_HEADER)
+    @Expose
     private Header header = new Header();
+
     @SerializedName(KEY_DATA)
+    @Expose
     private List<Data> data = new ArrayList<>();
+    @SerializedName(KEY_TEMPLATE)
+    private List<Template> templates = new ArrayList<>();
+    @Expose(deserialize = false, serialize = false)
     private int adsPosition = 0;
 
     public TopAdsModel() {
@@ -54,16 +66,31 @@ public class TopAdsModel implements Parcelable {
                 data.add(new Data(dataArray.getJSONObject(i)));
             }
         }
+        if(!object.isNull(KEY_TEMPLATE)) {
+            JSONArray dataArray = object.getJSONArray(KEY_TEMPLATE);
+            for (int i = 0; i < dataArray.length(); i++) {
+                templates.add(new Template(dataArray.getJSONObject(i)));
+            }
+        }
     }
 
+
     protected TopAdsModel(Parcel in) {
+        error = in.readParcelable(Error.class.getClassLoader());
+        status = in.readParcelable(Status.class.getClassLoader());
+        header = in.readParcelable(Header.class.getClassLoader());
         data = in.createTypedArrayList(Data.CREATOR);
+        templates = in.createTypedArrayList(Template.CREATOR);
         adsPosition = in.readInt();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(error, flags);
+        dest.writeParcelable(status, flags);
+        dest.writeParcelable(header, flags);
         dest.writeTypedList(data);
+        dest.writeTypedList(templates);
         dest.writeInt(adsPosition);
     }
 
@@ -122,5 +149,13 @@ public class TopAdsModel implements Parcelable {
 
     public void setAdsPosition(int adsPosition) {
         this.adsPosition = adsPosition;
+    }
+
+    public List<Template> getTemplates() {
+        return templates;
+    }
+
+    public void setTemplates(List<Template> templates) {
+        this.templates = templates;
     }
 }

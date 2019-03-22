@@ -101,18 +101,20 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
         return shippingParam
     }
 
-    override fun checkoutExpress(fragmentViewModel: FragmentViewModel) {
+    override fun checkoutExpress(fragmentViewModel: FragmentViewModel, trackerAttribution:String?,
+                                 trackerListName:String?) {
         view?.showLoadingDialog()
         view?.generateFingerprintPublicKey()
         if (fragmentViewModel.getProfileViewModel()?.isStateHasRemovedProfile == false) {
             doCheckoutExpressUseCase.setParams(fragmentViewModel, getDataCheckoutRequest(fragmentViewModel))
             doCheckoutExpressUseCase.execute(RequestParams.create(), DoCheckoutExpressSubscriber(view, this, checkoutDomainModelMapper))
         } else {
-            checkoutOneClickShipment(fragmentViewModel)
+            checkoutOneClickShipment(fragmentViewModel,trackerAttribution, trackerListName)
         }
     }
 
-    override fun checkoutOneClickShipment(fragmentViewModel: FragmentViewModel) {
+    override fun checkoutOneClickShipment(fragmentViewModel: FragmentViewModel, trackerAttribution:String?,
+                                          trackerListName:String?) {
         view?.getAddToCartObservable(getCheckoutOcsParams(fragmentViewModel))
                 ?.subscribeOn(Schedulers.io())
                 ?.unsubscribeOn(Schedulers.io())
