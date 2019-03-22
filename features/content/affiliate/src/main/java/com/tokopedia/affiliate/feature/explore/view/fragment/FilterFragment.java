@@ -105,7 +105,7 @@ public class FilterFragment extends BaseDaggerFragment {
 
     private FilterAdapter.OnFilterClickedListener getFilterClickListener() {
         return (filters, filterViewModel) -> {
-
+            adapter.notifyDataSetChanged();
         };
     }
 

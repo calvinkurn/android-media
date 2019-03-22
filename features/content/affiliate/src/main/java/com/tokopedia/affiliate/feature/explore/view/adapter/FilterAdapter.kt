@@ -38,14 +38,15 @@ class FilterAdapter(private val filterClickedListener: OnFilterClickedListener,
     }
 
     private fun initViewListener(holder: Holder) {
-        holder.itemView.setOnClickListener { v ->
+        holder.itemView.setOnClickListener {
+            val isSelected = allFilterList[holder.adapterPosition].isSelected
             allFilterList.filter {
                 it.isSelected
             }.forEachIndexed { index, model ->
                 model.isSelected = false
                 notifyItemChanged(index)
             }
-            allFilterList[holder.adapterPosition].isSelected = true
+            allFilterList[holder.adapterPosition].isSelected = !isSelected
             notifyItemChanged(holder.adapterPosition)
             filterClickedListener.onItemClicked(getOnlySelectedFilter())
         }
