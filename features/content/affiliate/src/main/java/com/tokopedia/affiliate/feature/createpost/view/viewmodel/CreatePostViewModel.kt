@@ -23,6 +23,7 @@ data class CreatePostViewModel(
     val completeImageList: ArrayList<MediaModel>
         get() {
             val completeImageList = ArrayList<MediaModel>()
+            completeImageList.clear()
             completeImageList.addAll(fileImageList)
             completeImageList.addAll(urlImageList)
             return completeImageList

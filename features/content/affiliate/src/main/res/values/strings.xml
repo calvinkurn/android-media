@@ -87,7 +87,7 @@
     <string name="af_warning_empty_photo">Tambah foto dulu, dong.</string>
     <string name="af_delete_warning_desc">Kalau dihapus, post kamu diganti dengan foto barang yang dipilih.</string>
     <string name="af_title_update_post">Update Post</string>
-    <string name="af_message_update_post">Foto sebelumnya akan diganti dengan video yang dipilih</string>
+    <string name="af_message_update_post">Media sebelumnya akan diganti dengan video yang dipilih</string>
 
     <!--EDUCATION-->
     <string name="af_skip">Lewatkan</string>

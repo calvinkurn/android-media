@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.MediaModel
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.*
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
@@ -41,8 +42,34 @@ class CreatePostImagePickerActivity : ImagePickerActivity() {
                 imagePickerBuilder.ratioOptionList)
     }
 
+    override fun onDoneClicked() {
+        val isImageExist = intent?.getBooleanExtra(
+                CreatePostImagePickerActivity.VIDEO_EXIST,
+                false)?: false
+
+        if (isImageExist) {
+            val dialog = Dialog(this, Dialog.Type.PROMINANCE)
+            dialog.setTitle(getString(R.string.af_title_update_post))
+            dialog.setDesc(getString(R.string.af_message_update_post))
+            dialog.setBtnCancel(getString(R.string.cancel))
+            dialog.setBtnOk(getString(R.string.af_continue))
+            dialog.setOnOkClickListener{
+                dialog.dismiss()
+                super.onDoneClicked()
+            }
+            dialog.setOnCancelClickListener{
+                dialog.dismiss()
+            }
+            dialog.setCancelable(true)
+            dialog.show()
+        } else {
+            super.onDoneClicked()
+        }
+    }
+
     companion object {
         private const val ARGS_SHOW_WARNING = "show_warning"
+        private const val VIDEO_EXIST = "video_exist"
 
         fun getInstance(context: Context, selectedImageList: ArrayList<MediaModel>,
                         maxImage: Int, showWarningDialog: Boolean): Intent {
@@ -64,6 +91,7 @@ class CreatePostImagePickerActivity : ImagePickerActivity() {
             val bundle = Bundle()
             bundle.putParcelable(ImagePickerActivity.EXTRA_IMAGE_PICKER_BUILDER, builder)
             intent.putExtra(ImagePickerActivity.EXTRA_IMAGE_PICKER_BUILDER, bundle)
+            intent.putExtra(CreatePostImagePickerActivity.VIDEO_EXIST, selectedImageList.isNotEmpty())
             intent.putExtra(ARGS_SHOW_WARNING, showWarningDialog)
             return intent
         }
