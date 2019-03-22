@@ -306,7 +306,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
             new ImpresionTask().execute(model.getTrackerImageUrl());
             TopAdsGtmTracker.getInstance().addRecomendationProductViewImpressions(p,
                     model.getCategoryBreadcrumbs(), tabName.toLowerCase(),
-                    model.getRecommendationType(), position);
+                    model.getRecommendationType(), userSession.isLoggedIn(), position);
         }
     }
 
