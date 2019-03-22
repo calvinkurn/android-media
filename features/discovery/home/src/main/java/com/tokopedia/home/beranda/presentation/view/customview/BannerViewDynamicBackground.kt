@@ -2,28 +2,27 @@ package com.tokopedia.home.beranda.presentation.view.customview
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
-
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.banner.BannerPagerAdapter
 import com.tokopedia.design.banner.BannerView
-import com.tokopedia.home.beranda.presentation.view.adapter.CardBannerPagerAdapter
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.presentation.view.adapter.CardBannerPagerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeBannerViewDecorator
 import kotlinx.android.synthetic.main.layout_card_banner_dynamic_background.view.*
-
-import java.util.ArrayList
+import java.util.*
 
 class BannerViewDynamicBackground : BannerView {
 
@@ -39,9 +38,9 @@ class BannerViewDynamicBackground : BannerView {
 
     override fun init() {
         val view = View.inflate(context, R.layout.layout_card_banner_dynamic_background, this)
-        bannerRecyclerView = view.findViewById(R.id.viewpager_banner_category)
-        bannerIndicator = view.findViewById<ViewGroup>(R.id.indicator_banner_container)
-        bannerSeeAll = view.findViewById(R.id.promo_link)
+        bannerRecyclerView = view.findViewById(R.id.banner_recyclerview)
+        bannerIndicator = view.findViewById(R.id.banner_indicator_container)
+        bannerSeeAll = view.findViewById(R.id.banner_see_all)
         imgBannerBackground = view.findViewById(R.id.img_banner_background)
         indicatorItems = ArrayList()
         impressionStatusList = ArrayList()
@@ -49,6 +48,8 @@ class BannerViewDynamicBackground : BannerView {
     }
 
     override fun buildView() {
+        bannerSeeAll.setTextColor(ContextCompat.getColor(context, R.color.medium_green));
+        bannerSeeAll.typeface = Typeface.DEFAULT
         super.buildView()
         banner_root.visibility = View.VISIBLE
         val url = promoImageUrls[0]

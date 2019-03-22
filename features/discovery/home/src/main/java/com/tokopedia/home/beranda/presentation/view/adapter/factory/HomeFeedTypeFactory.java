@@ -11,6 +11,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeFeedL
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
+import com.tokopedia.topads.sdk.view.ImpressedImageView;
 
 public class HomeFeedTypeFactory extends BaseAdapterTypeFactory {
 

@@ -98,6 +98,11 @@ public class HomePageTracking {
     public static final String EVENT_ACTION_CLICK_TICKER = "click ticker";
     public static final String EVENT_ACTION_CLICK_ON_CLOSE_TICKER = "click on close ticker";
 
+    public static final String ON = "on";
+    public static final String NON_LOGIN = "non login";
+    public static final String QR_CODE = "qr code";
+    public static final String OVO = "ovo";
+
     public static AnalyticTracker getTracker(Context context){
         if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return null;
@@ -707,6 +712,42 @@ public class HomePageTracking {
                     EVENT_CATEGORY_TICKER_HOMEPAGE,
                     EVENT_ACTION_CLICK_ON_CLOSE_TICKER,
                     tickerTitle
+            );
+        }
+    }
+
+    public static void eventOvo(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    String.format("%s %s %s", CLICK, ON, OVO),
+                    ""
+            );
+        }
+    }
+
+    public static void eventQrCode(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    String.format("%s %s %s", CLICK, ON, QR_CODE),
+                    ""
+            );
+        }
+    }
+
+    public static void eventTokopointNonLogin(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    String.format("%s %s %s - %s", CLICK, ON, LABEL_TOKOPOINTS, NON_LOGIN),
+                    ""
             );
         }
     }

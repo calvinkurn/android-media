@@ -58,7 +58,7 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="?actionBarSize" />
 
-    <com.tokopedia.home.beranda.presentation.view.customview.CardBannerView
+    <com.tokopedia.banner.Banner
         android:id="@+id/card_banner_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
