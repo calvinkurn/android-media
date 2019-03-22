@@ -1,4 +1,4 @@
-query getProductPurchaseProtection($param: ProductPurchaseProtectionRequest!){
+query getProductPurchaseProtection($param: PPItemDetailRequest!){
     ppGetItemDetailPage(params: $param) {
         protectionAvailable
         title
