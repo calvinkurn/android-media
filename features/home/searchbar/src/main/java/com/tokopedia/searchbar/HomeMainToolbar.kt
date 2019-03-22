@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
+import android.support.graphics.drawable.VectorDrawableCompat
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
@@ -148,7 +149,17 @@ class HomeMainToolbar : MainToolbar {
 
     fun getBitmapDrawableFromVectorDrawable(context: Context, drawableId: Int): BitmapDrawable {
         return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            ContextCompat.getDrawable(context, drawableId) as BitmapDrawable
+            val vectorDrawableCompat =
+                    VectorDrawableCompat.create(context.getResources(), drawableId, null)
+            val bitmap = Bitmap.createBitmap(
+                    vectorDrawableCompat!!.intrinsicWidth,
+                    vectorDrawableCompat.intrinsicHeight,
+                    Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            vectorDrawableCompat.setBounds(0, 0, canvas.width, canvas.height)
+            vectorDrawableCompat.draw(canvas)
+
+            BitmapDrawable(resources, bitmap)
         } else BitmapDrawable(context.resources, getBitmapFromVectorDrawable(context, drawableId))
     }
 
