@@ -214,6 +214,7 @@ ext {
             productCard                     : ":features:discovery:productcard",
 
             homecredit                      : ":features:fintech:home_credit",
+            instantDebitBca                 : ":features:digital:instant_debit_bca"
             instantLoan                     : ":features:fintech:instant_loan",
 //            instantLoan                   : ":features:fintech:instant_loan_no_op",
             mitraToppers                    : ":features:fintech:mitra_toppers",
