@@ -161,7 +161,7 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
             if (kycDetails == null) {
                 setbuttonCheckout();
             } else {
-                if (kycDetails.getDetail().getStatus() != 1) {
+                if (kycDetails.getDetail().getIsSuccess() != 1) {
                     setButtonKyc();
                 } else {
                     setbuttonCheckout();
