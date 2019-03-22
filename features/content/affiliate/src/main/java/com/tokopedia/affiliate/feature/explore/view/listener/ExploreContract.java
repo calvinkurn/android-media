@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.feature.explore.view.listener;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -20,6 +21,8 @@ import java.util.List;
  */
 public interface ExploreContract {
     interface View extends CustomerView {
+
+        Activity getActivity();
 
         Context getContext();
 
