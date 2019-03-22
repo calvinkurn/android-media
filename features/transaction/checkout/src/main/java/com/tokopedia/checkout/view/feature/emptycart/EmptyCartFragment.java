@@ -529,14 +529,6 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     private void setupToolbar(View view) {
         Toolbar appbar = view.findViewById(R.id.toolbar);
-        View statusBarBackground = view.findViewById(R.id.status_bar_bg);
-
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            statusBarBackground.setVisibility(View.VISIBLE);
-        } else {
-            statusBarBackground.setVisibility(View.INVISIBLE);
-        }
-
         appBarLayout = view.findViewById(R.id.app_bar_layout);
         if (isToolbarWithBackButton) {
             toolbar = toolbarRemoveWithBackView();
