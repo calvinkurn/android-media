@@ -155,7 +155,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                     viewModel = resultViewModel
                     updateRelatedProduct()
                     updateThumbnail()
-                    updateButton()
+
+                    if (viewModel.completeImageList.isEmpty()) {
+                        fetchContentForm()
+                    }
                 }
             }
             REQUEST_LOGIN -> fetchContentForm()
@@ -351,9 +354,18 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                             viewModel.fileImageList.isNotEmpty()),
                     REQUEST_VIDEO_PICKER)
         }
+        caption.hint = getString(if (isTypeAffiliate())
+            R.string.af_caption_hint_affiliate else
+            R.string.af_caption_hint
+        )
+        caption.setText(viewModel.caption)
+        updateMaxCharacter()
+        updateThumbnail()
+        updateAddTagText()
     }
 
     private fun goToImagePicker() {
+        affiliateAnalytics.onTambahGambarButtonClicked(viewModel.productIdList.firstOrNull())
         activity?.let {
             startActivityForResult(
                     CreatePostImagePickerActivity.getInstance(
@@ -395,14 +407,19 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
 
     private fun saveDraftAndSubmit() {
+        affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList.firstOrNull())
+
+        if (isFormInvalid()) {
+            return
+        }
+
         activity?.let {
             showLoading()
 
             val cacheManager = PersistentCacheManager(it, true)
             cacheManager.put(CreatePostViewModel.TAG, viewModel, TimeUnit.DAYS.toMillis(7))
 
-            val intent = SubmitPostService.createIntent(it, cacheManager.id!!)
-            it.startService(intent)
+            SubmitPostService.startService(it, cacheManager.id!!)
 
             hideLoading()
 

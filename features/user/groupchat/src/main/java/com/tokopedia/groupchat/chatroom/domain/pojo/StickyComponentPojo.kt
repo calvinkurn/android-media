@@ -38,5 +38,5 @@ class StickyComponentData (
         @Expose
         var stickyTime: Int = 0
 ){
-
+        constructor() : this("")
 }

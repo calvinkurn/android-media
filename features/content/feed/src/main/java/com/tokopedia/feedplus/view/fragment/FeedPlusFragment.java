@@ -1471,12 +1471,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onWhitelistClicked(String url) {
+    public void onWhitelistClicked() {
         if (getContext() != null) {
-            startActivityForResult(
-                    RouteManager.getIntent(getContext(), ApplinkConst.CONTENT_CREATE_POST),
-                    CREATE_POST
-            );
+            if (userSession.hasShop()) {
+                startActivityForResult(
+                        RouteManager.getIntent(getContext(), ApplinkConst.CONTENT_CREATE_POST),
+                        CREATE_POST
+                );
+            } else {
+                RouteManager.route(getContext(), ApplinkConst.AFFILIATE_EXPLORE);
+            }
         }
     }
 

@@ -86,12 +86,12 @@
             android:id="@+id/mainImageIcon"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
-            android:src="@drawable/ic_af_check_gray"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/mainImageText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/mainImageText"
             app:layout_constraintTop_toTopOf="@+id/mainImageText"
+            app:srcCompat="@drawable/ic_af_check_gray"
             tools:visibility="visible" />
 
         <View
