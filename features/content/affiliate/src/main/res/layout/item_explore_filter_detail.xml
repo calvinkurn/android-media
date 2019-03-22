@@ -7,7 +7,7 @@
     android:layout_height="@dimen/dp_48"
     android:layout_marginEnd="@dimen/dp_4"
     android:layout_marginRight="@dimen/dp_4"
-    android:background="@drawable/chips_background"
+    android:background="@drawable/bg_af_chips_background"
     android:gravity="center_vertical|start"
     android:padding="@dimen/dp_8">
 
