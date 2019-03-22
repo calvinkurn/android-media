@@ -12,25 +12,21 @@ data class MediaModel(
         val type: String? = "image"
 ): Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString())
+            parcel.readString()?: "",
+            parcel.readString()?: "")
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(path)
-        parcel.writeString(type)
+    override fun writeToParcel(parcel: Parcel, flags: Int) = with(parcel) {
+        writeString(path)
+        writeString(type)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    override fun describeContents(): Int = 0
 
-    companion object CREATOR : Parcelable.Creator<MediaModel> {
-        override fun createFromParcel(parcel: Parcel): MediaModel {
-            return MediaModel(parcel)
-        }
-
-        override fun newArray(size: Int): Array<MediaModel?> {
-            return arrayOfNulls(size)
+    companion object {
+        @JvmField
+        val CREATOR: Parcelable.Creator<MediaModel> = object : Parcelable.Creator<MediaModel> {
+            override fun createFromParcel(source: Parcel): MediaModel = MediaModel(source)
+            override fun newArray(size: Int): Array<MediaModel?> = arrayOfNulls(size)
         }
     }
 }
