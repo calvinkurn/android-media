@@ -15,13 +15,18 @@
 
         <TextView
             android:id="@+id/channel_title"
+            android:layout_width="0dp"
             style="@style/TextView.Title"
-            android:layout_height="27dp"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:maxEms="12"
             android:textSize="@dimen/sp_18"
+            app:layout_constraintEnd_toStartOf="@+id/count_down"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_default="wrap"
             tools:text="Hypebeast Banget Pokoknya" />
 
         <com.tokopedia.design.countdown.CountDownView
@@ -34,7 +39,8 @@
             android:layout_toRightOf="@id/channel_title"
             app:coundDownBackgroud="@drawable/background_countdown"
             app:layout_constraintBottom_toBottomOf="@+id/channel_title"
-            app:layout_constraintStart_toEndOf="@+id/channel_title"
+            app:layout_constraintEnd_toStartOf="@+id/see_all_button"
+            app:layout_constraintStart_toEndOf="@id/channel_title"
             app:layout_constraintTop_toTopOf="@+id/channel_title"
             tools:layout_height="40dp"
             tools:layout_width="100dp"
@@ -46,8 +52,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:fontFamily="sans-serif-medium"
             android:gravity="end"
             android:lineSpacingExtra="3sp"
@@ -56,7 +60,8 @@
             android:textSize="13sp"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="@+id/channel_title"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/channel_title" />
     </android.support.constraint.ConstraintLayout>
 
     <android.support.v7.widget.RecyclerView

@@ -28,14 +28,29 @@
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-                <android.support.v7.widget.RecyclerView
+                <LinearLayout
                     android:fitsSystemWindows="true"
-                    android:id="@+id/list"
-                    android:background="@color/white"
+                    android:id="@+id/listContainer"
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:descendantFocusability="beforeDescendants"
-                    android:tag="home_list"/>
+                    android:layout_height="wrap_content">
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/list"
+                        android:background="@color/white"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:descendantFocusability="beforeDescendants"
+                        android:tag="home_list"/>
+
+                    <View
+                        android:background="@color/grey_default_background"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_8"/>
+                    <View
+                        android:background="@color/white"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_8"/>
+                </LinearLayout>
 
                 <com.tokopedia.searchbar.HomeMainToolbar
                     android:id="@+id/toolbar"
@@ -44,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="top"
                     app:layout_collapseMode="pin"
-                    app:layout_anchor="@id/list"
+                    app:layout_anchor="@id/listContainer"
                     app:contentInsetStart="0dp"
                     app:contentInsetLeft="0dp"
                     app:screenName="/"/>
@@ -71,6 +86,7 @@
                 android:id="@+id/tab_layout_home_feeds"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/tab_home_feed_max_height"
+                app:tabBackground="@android:color/transparent"
                 app:tabPaddingStart="0dp"
                 app:tabPaddingEnd="0dp"
                 app:tabMode="scrollable"

@@ -65,8 +65,8 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     }
 
     private void findViews(View itemView) {
-        homeChannelTitle = (TextView) itemView.findViewById(R.id.home_channel_title);
-        seeAllButton = (TextView) itemView.findViewById(R.id.see_all_button);
+        homeChannelTitle = itemView.findViewById(R.id.channel_title);
+        seeAllButton = itemView.findViewById(R.id.see_all_button);
         countDownView = itemView.findViewById(R.id.count_down);
         recyclerView = itemView.findViewById(R.id.recycleList);
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
@@ -107,8 +107,10 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         seeAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isSprintSale(channel) || isSprintSaleLego(channel)) {
+                if (isSprintSale(channel)) {
                     HomePageTracking.eventClickSeeAllProductSprint(context);
+                } else if (isSprintSaleLego(channel)) {
+                    HomePageTracking.eventClickSeeAllLegoProduct(context, channel.getHeader().getName());
                 } else {
                     HomePageTracking.eventClickSeeAllDynamicChannel(
                             context,
@@ -177,7 +179,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), attr);
                             } else if(isSprintSaleLego(channel)){
                                 HomePageTracking.eventEnhancedClickSprintSaleProduct(context,
-                                        channel.getEnhanceClickSprintSaleLegoHomePage(position, countDownView.getCurrentCountDown()));
+                                        channel.getEnhanceClickSprintSaleLegoHomePage(position));
                                 String attr = channel.getHomeAttribution(position + 1, channel.getGrids()[position].getId());
                                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), attr);
                             } else  {
