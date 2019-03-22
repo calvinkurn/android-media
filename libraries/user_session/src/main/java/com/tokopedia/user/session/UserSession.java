@@ -41,6 +41,7 @@ public class UserSession implements UserSessionInterface {
 
     private static final String SHOP_ID = "SHOP_ID";
     private static final String SHOP_NAME = "SHOP_NAME";
+    private static final String SHOP_AVATAR = "SHOP_AVATAR";
     private static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
     private static final String REFRESH_TOKEN_KEY = "REFRESH_TOKEN_KEY";
     private static final String KEY_IV = "tokopedia1234567";
@@ -204,6 +205,12 @@ public class UserSession implements UserSessionInterface {
     public boolean hasPassword() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getBoolean(HAS_PASSWORD, true);
+    }
+
+    @Override
+    public String getShopAvatar() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(SHOP_AVATAR, "");
     }
 
     /**
@@ -436,6 +443,14 @@ public class UserSession implements UserSessionInterface {
         editor.apply();
     }
 
+    @Override
+    public void setShopAvatar(String shopAvatar) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(SHOP_AVATAR, shopAvatar);
+        editor.apply();
+    }
+
     public void logoutSession() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -454,6 +469,7 @@ public class UserSession implements UserSessionInterface {
         editor.putString(ACCESS_TOKEN, null);
         editor.putString(PROFILE_PICTURE, null);
         editor.putString(GC_TOKEN, "");
+        editor.putString(SHOP_AVATAR, "");
         editor.apply();
     }
 }

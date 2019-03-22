@@ -1,8 +1,12 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post
 
+import android.os.Handler
 import android.support.annotation.LayoutRes
 import android.text.TextUtils
 import android.view.View
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.ButtonCompat
@@ -43,6 +47,7 @@ class DynamicPostViewHolder(v: View,
         const val PAYLOAD_LIKE = 13
         const val PAYLOAD_COMMENT = 14
         const val PAYLOAD_FOLLOW = 15
+        const val PAYLOAD_ANIMATE_FOOTER = 16
 
         const val MAX_CHAR = 140
         const val CAPTION_END = 90
@@ -73,6 +78,7 @@ class DynamicPostViewHolder(v: View,
             PAYLOAD_LIKE -> bindLike(element.footer.like)
             PAYLOAD_COMMENT -> bindComment(element.footer.comment)
             PAYLOAD_FOLLOW -> bindFollow(element.header.followCta)
+            PAYLOAD_ANIMATE_FOOTER -> animateFooter()
             else -> bind(element)
         }
     }
@@ -160,6 +166,13 @@ class DynamicPostViewHolder(v: View,
         }
     }
 
+    private fun animateFooter() {
+        Handler().postDelayed({
+            itemView.footerBackground.animation = AnimationUtils.loadAnimation(itemView.context, R.anim.anim_fade_in);
+            itemView.footerBackground.visibility = View.VISIBLE
+        }, 2000)
+    }
+
 
     private fun shouldShowHeader(template: TemplateHeader): Boolean {
         return template.avatar || template.avatarBadge || template.avatarDate
@@ -208,12 +221,13 @@ class DynamicPostViewHolder(v: View,
 
     private fun bindFooter(id: Int, footer: Footer, template: TemplateFooter) {
         itemView.footer.shouldShowWithAction(shouldShowFooter(template)) {
+            itemView.footerBackground.visibility = View.GONE
             if (template.ctaLink && !TextUtils.isEmpty(footer.buttonCta.text)) {
-                itemView.footerAction.show()
+                itemView.layoutFooterAction.show()
                 itemView.footerAction.text = footer.buttonCta.text
                 itemView.footerAction.setOnClickListener { listener.onFooterActionClick(adapterPosition, footer.buttonCta.appLink) }
             } else {
-                itemView.footerAction.hide()
+                itemView.layoutFooterAction.hide()
             }
 
             if (template.like) {

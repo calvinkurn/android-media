@@ -1,0 +1,36 @@
+<resources>
+    <string name="oqr_app_name">Ovo</string>
+    <string name="oqr_payment_summary">Pembayaran</string>
+    <string name="oqr_ovo_cash_point_amnt">%s</string>
+    <string name="oqr_balance_exceed_error">Saldo Anda tidak mencukupi</string>
+    <string name="oqr_min_input_hint">Minimal pembayaran Rp1.000</string>
+    <string name="oqr_error_message">Terjadi kendala teknis. Coba lagi.</string>
+    <string name="oqr_max_input_hint">Maksimal pembayaran Rp10.000.000</string>
+    <string name="oqr_copied_to_clipboard">Copied to Clipboard</string>
+    <string name="oqr_cash_point">Sisa Saldo %1$s &amp; OVO Points %2$s</string>
+    <string name="oqr_ovo_cash_title">OVO CASH TERPAKAI</string>
+    <string name="oqr_ovo_point_title">OVO POINTS TERPAKAI</string>
+    <string name="oqr_use_ovo_points">Gunakan OVO Points</string>
+    <string name="oqr_ovo_cash_text">OVO Cash</string>
+    <string name="oqr_payment_method">Metode Pembayaran</string>
+    <string name="oqr_rp_string">Rp</string>
+    <string name="oqr_input_amount">Nominal Pembelian</string>
+    <string name="oqr_default_shop_description">Marketplace</string>
+    <string name="oqr_default_shop_name">Tokopedia</string>
+    <string name="oqr_buy_string">BAYAR</string>
+    <string name="oqr_go_back">BATALKAN</string>
+    <string name="oqr_go_to_tokopedia">KEMBALI KE TOKOPEDIA</string>
+    <string name="oqr_fake_number">305679638</string>
+    <string name="oqr_transaction_id_text">Kode Transaksi</string>
+    <string name="oqr_merchant">Merchant</string>
+    <string name="oqr_fake_date">12 Des 2018, 11.20</string>
+    <string name="oqr_success_transaction">  Transaksi Berhasil</string>
+    <string name="oqr_fail_transaction">  Transaksi Gagal</string>
+    <string name="oqr_default_error_message">Saat ini transaksi Anda tidak dapat diproses, silakan mencoba kembali</string>
+    <string name="oqr_try_again">COBA LAGI</string>
+    <string name="oqr_back_to_main">KEMBALI KE TOKOPEDIA</string>
+    <string name="oqr_powered_by">Powered by</string>
+    <string name="oqr_pin_page_title">Verifikasi PIN OVO</string>
+    <string name="oqr_contact_us">Contact Us</string>
+
+</resources>

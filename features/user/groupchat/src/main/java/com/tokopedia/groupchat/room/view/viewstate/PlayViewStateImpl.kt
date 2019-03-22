@@ -56,10 +56,7 @@ import com.tokopedia.groupchat.room.view.fragment.PlayWebviewDialogFragment
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 import rx.Observable
@@ -135,6 +132,9 @@ open class PlayViewStateImpl(
             R.drawable.bg_play_2,
             R.drawable.bg_play_3
     )
+
+    private var defaultType = arrayListOf(
+            "default", "default1", "default2", "default3")
 
     init {
         val groupChatTypeFactory = GroupChatTypeFactoryImpl(
@@ -233,6 +233,7 @@ open class PlayViewStateImpl(
         viewModel?.let { viewModel ->
             dynamicButtonsViewModel = it
 
+            webviewIcon.hide()
             if (!it.floatingButton.imageUrl.isBlank() && !it.floatingButton.contentLinkUrl.isBlank()) {
                 it.floatingButton.run {
                     setFloatingIcon(this)
@@ -391,7 +392,8 @@ open class PlayViewStateImpl(
 
         lateinit var url: String
         it.let {
-            background = defaultBackground[it.default]
+            var index = defaultType.indexOf(it.default)
+            background = defaultBackground[Math.max(0, index-1)]
             url = it.url
 
             if (url.isBlank()) {
@@ -534,6 +536,8 @@ open class PlayViewStateImpl(
                 }
                 (pinnedMessageContainer.findViewById(R.id.message) as TextView).text =
                         it.title
+                (pinnedMessageContainer.findViewById(R.id.nickname) as TextView).text =
+                        channelInfoViewModel.adminName
                 pinnedMessageContainer.setOnClickListener { view ->
                     channelInfoViewModel.pinnedMessageViewModel?.let {
                         analytics.eventClickAdminPinnedMessage(
@@ -914,8 +918,7 @@ open class PlayViewStateImpl(
     private fun setFloatingIcon(floatingButton: DynamicButtonsViewModel.Button) {
         webviewIcon.hide()
         if (floatingButton.imageUrl.isBlank()
-                || floatingButton.contentLinkUrl.isBlank()
-                || !RouteManager.isSupportApplink(view.context, floatingButton.contentLinkUrl)) {
+                || floatingButton.contentLinkUrl.isBlank()) {
             return
         }
 
@@ -1083,7 +1086,7 @@ open class PlayViewStateImpl(
     private fun showInfoBottomSheet(channelInfoViewModel: ChannelInfoViewModel,
                                     onDismiss: () -> Unit) {
         if (!::welcomeInfoDialog.isInitialized) {
-            welcomeInfoDialog = CloseableBottomSheetDialog.createInstance(view.context)
+            welcomeInfoDialog = CloseableBottomSheetDialog.createInstanceRounded(view.context)
         }
 
         welcomeInfoDialog.setOnDismissListener {
@@ -1101,7 +1104,7 @@ open class PlayViewStateImpl(
             }
         }
 
-        welcomeInfoDialog.setContentView(welcomeInfoView, "")
+        welcomeInfoDialog.setCustomContentView(welcomeInfoView, "", false)
         view.setOnClickListener(null)
         welcomeInfoDialog.show()
 
@@ -1141,7 +1144,7 @@ open class PlayViewStateImpl(
 
     private fun showPinnedMessage(viewModel: ChannelInfoViewModel) {
         if (!::pinnedMessageDialog.isInitialized) {
-            pinnedMessageDialog = CloseableBottomSheetDialog.createInstance(view.context)
+            pinnedMessageDialog = CloseableBottomSheetDialog.createInstanceRounded(view.context)
         }
 
         val pinnedMessageView = createPinnedMessageView(viewModel)
@@ -1155,7 +1158,7 @@ open class PlayViewStateImpl(
             }
         }
 
-        pinnedMessageDialog.setContentView(pinnedMessageView, "Pinned Chat")
+        pinnedMessageDialog.setCustomContentView(pinnedMessageView, "", false)
         pinnedMessageDialog.show()
 
     }
@@ -1163,9 +1166,7 @@ open class PlayViewStateImpl(
     private fun createPinnedMessageView(channelInfoViewModel: ChannelInfoViewModel): View {
         val view = activity.layoutInflater.inflate(R.layout
                 .layout_pinned_message_expanded, null)
-        ImageHandler.loadImageCircle2(activity, view.findViewById(R.id.pinned_message_avatar) as ImageView, channelInfoViewModel!!.adminPicture, R.drawable.ic_loading_toped_new)
-        (view.findViewById<View>(R.id.chat_header).findViewById(R.id.nickname) as TextView).text =
-                channelInfoViewModel.adminName
+        (view.findViewById(R.id.nickname) as TextView).text = getStringResource(R.string.from) + " "+ channelInfoViewModel.adminName
         channelInfoViewModel.pinnedMessageViewModel?.let {
             (view.findViewById(R.id.message) as TextView).text = it.message
             ImageHandler.loadImage(activity, view.findViewById(R.id.thumbnail), it.thumbnail, R

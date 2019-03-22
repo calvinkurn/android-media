@@ -42,11 +42,11 @@ public class AddWishListSubscriber extends Subscriber<GraphqlResponse> {
                 viewListener.onSuccessAddWishlist(productId);
             else
                 viewListener.onErrorAddWishList(
-                        viewListener.getString(R.string.msg_error_add_wishlist),
+                        context.getString(R.string.msg_error_add_wishlist),
                         productId);
         } else {
             viewListener.onErrorAddWishList(
-                    viewListener.getString(R.string.default_request_error_unknown),
+                    context.getString(R.string.default_request_error_unknown),
                     productId);
         }
     }

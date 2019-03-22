@@ -7,20 +7,28 @@ import com.google.gson.annotations.SerializedName;
 
 public class GqlAnchorListResponse implements Parcelable {
 
-    @SerializedName("label")
+    @SerializedName("title")
     private String label;
 
-    @SerializedName("url")
-    private String url;
-
-    @SerializedName("color")
+    @SerializedName("text_color")
     private String color;
 
+    @SerializedName("show_dialog")
+    private boolean showDialog;
 
-    protected GqlAnchorListResponse(Parcel in) {
+    @SerializedName("dialog")
+    private GqlMclDialogResponse dialogInfo;
+
+    @SerializedName("link")
+    private String link;
+
+
+    public GqlAnchorListResponse(Parcel in) {
         this.label = in.readString();
-        this.url = in.readString();
         this.color = in.readString();
+        this.showDialog = in.readByte() != 0;
+        this.dialogInfo = ((GqlMclDialogResponse) in.readValue((GqlMclDialogResponse.class.getClassLoader())));
+        this.link = in.readString();
     }
 
     public static final Creator<GqlAnchorListResponse> CREATOR = new Creator<GqlAnchorListResponse>() {
@@ -35,6 +43,11 @@ public class GqlAnchorListResponse implements Parcelable {
         }
     };
 
+    public GqlAnchorListResponse() {
+
+
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -43,8 +56,10 @@ public class GqlAnchorListResponse implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(label);
-        dest.writeString(url);
         dest.writeString(color);
+        dest.writeByte((byte) (showDialog ? 1 : 0));
+        dest.writeValue(dialogInfo);
+        dest.writeString(link);
     }
 
     public String getLabel() {
@@ -55,19 +70,35 @@ public class GqlAnchorListResponse implements Parcelable {
         this.label = label;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public String getColor() {
         return color;
     }
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public boolean isShowDialog() {
+        return showDialog;
+    }
+
+    public void setShowDialog(boolean showDialog) {
+        this.showDialog = showDialog;
+    }
+
+    public GqlMclDialogResponse getDialogInfo() {
+        return dialogInfo;
+    }
+
+    public void setDialogInfo(GqlMclDialogResponse dialogInfo) {
+        this.dialogInfo = dialogInfo;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 }

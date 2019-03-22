@@ -72,21 +72,24 @@
     <string name="af_set_main_image">Tampilkan Pertama</string>
     <string name="af_main_image">Tampil Pertama</string>
     <string name="af_caption_hint">Tulis caption, yuk!\nContoh: “Promo! Cek produk terbaru kami…”</string>
-    <string name="af_related_product">Produk pada Post</string>
+    <string name="af_caption_hint_affiliate">Kenapa sih kamu suka barang ini?</string>
+    <string name="af_related_product">Barang pada Post</string>
     <string name="af_add_product_tag">+ Tambah</string>
-    <string name="af_error_create_post">Gagal mengunggah post</string>
-    <string name="af_notif_uploading">"Mengunggah post"</string>
+    <string name="af_error_create_post">Ada sedikit kendala nih. Coba beberapa saat lagi ya.</string>
+    <string name="af_notif_uploading">Meng-upload post</string>
     <string name="af_notif_media" formatted="false">%d dari %d Media…</string>
     <string name="af_notif_submit">Menyiapkan post…</string>
-    <string name="af_notif_success">Klik untuk melihat post</string>
+    <string name="af_notif_success">Selesai! Cek post kamu di sini ya</string>
     <string name="af_notif_error">Gagal mengunggah post, klik untuk coba lagi</string>
     <string name="af_update_post">Update Post</string>
     <string name="af_add_image_warning">Foto sebelumnya akan diganti dengan foto yang dipilih</string>
     <string name="af_add_video_warning">Foto sebelumnya akan diganti dengan video yang dipilih</string>
-    <string name="af_leave_warning">Apa Kamu yakin ingin keluar?</string>
-    <string name="af_leave_warning_desc">Jika kamu keluar dari form, maka media dan produk akan hilang</string>
-    <string name="af_warning_empty_product">Yuk tambah produk dulu\nbuat post ini</string>
-    <string name="af_warning_empty_photo">Yuk tambah foto dulu\nbuat post ini</string>
+    <string name="af_leave_warning">Yakin nih mau keluar?</string>
+    <string name="af_leave_warning_desc">Post yang telah kamu buat tidak akan disimpan loh.</string>
+    <string name="af_leave_title">Keluar</string>
+    <string name="af_warning_empty_product">Tambah barang yang mau kamu post dulu ya.</string>
+    <string name="af_warning_empty_photo">Tambah foto dulu, dong.</string>
+    <string name="af_delete_warning_desc">Kalau dihapus, post kamu diganti dengan foto barang yang dipilih.</string>
 
     <!--EDUCATION-->
     <string name="af_skip">Lewatkan</string>

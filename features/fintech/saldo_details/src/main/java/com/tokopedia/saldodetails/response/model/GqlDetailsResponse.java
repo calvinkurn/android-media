@@ -59,7 +59,7 @@ public class GqlDetailsResponse implements Parcelable {
     private List<GqlInfoListResponse> infoList = null;
 
     @SerializedName("anchorList")
-    private List<GqlAnchorListResponse> anchorList = null;
+    private List<GqlSpAnchorListResponse> anchorList = null;
 
     public static final Creator<GqlDetailsResponse> CREATOR = new Creator<GqlDetailsResponse>() {
         @Override
@@ -91,7 +91,7 @@ public class GqlDetailsResponse implements Parcelable {
         this.popupDesc = in.readString();
         this.popupButtonText = in.readString();
         infoList = in.createTypedArrayList(GqlInfoListResponse.CREATOR);
-        anchorList = in.createTypedArrayList(GqlAnchorListResponse.CREATOR);
+        anchorList = in.createTypedArrayList(GqlSpAnchorListResponse.CREATOR);
     }
 
 
@@ -249,11 +249,11 @@ public class GqlDetailsResponse implements Parcelable {
         this.infoList = infoList;
     }
 
-    public List<GqlAnchorListResponse> getAnchorList() {
+    public List<GqlSpAnchorListResponse> getAnchorList() {
         return anchorList;
     }
 
-    public void setAnchorList(List<GqlAnchorListResponse> anchorList) {
+    public void setAnchorList(List<GqlSpAnchorListResponse> anchorList) {
         this.anchorList = anchorList;
     }
 }

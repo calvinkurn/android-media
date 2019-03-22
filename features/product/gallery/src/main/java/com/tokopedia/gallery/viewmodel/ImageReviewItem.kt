@@ -5,52 +5,45 @@ import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.gallery.adapter.TypeFactory
 
-class ImageReviewItem : Visitable<TypeFactory>, Parcelable {
+data class ImageReviewItem(var reviewId: String? = null,
+                           var formattedDate: String? = null,
+                           var reviewerName: String? = null,
+                           var imageUrlThumbnail: String? = null,
+                           var imageUrlLarge: String? = null,
+                           var rating: Int = NO_RATING_DATA) : Visitable<TypeFactory>, Parcelable {
 
-    var reviewId: String? = null
-    var formattedDate: String? = null
-    var reviewerName: String? = null
-    var imageUrlThumbnail: String? = null
-    var imageUrlLarge: String? = null
-    var rating = NO_RATING_DATA
+    override fun type(typeFactory: TypeFactory): Int  = typeFactory.type(this)
+
+    constructor(parcel: Parcel) : this(
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readInt())
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(reviewId)
+        parcel.writeString(formattedDate)
+        parcel.writeString(reviewerName)
+        parcel.writeString(imageUrlThumbnail)
+        parcel.writeString(imageUrlLarge)
+        parcel.writeInt(rating)
+    }
 
     override fun describeContents(): Int {
         return 0
     }
 
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(this.formattedDate)
-        dest.writeString(this.reviewerName)
-        dest.writeString(this.imageUrlThumbnail)
-        dest.writeString(this.imageUrlLarge)
-        dest.writeInt(this.rating)
-    }
+    companion object CREATOR : Parcelable.Creator<ImageReviewItem> {
+        const val NO_RATING_DATA = -1
 
-    constructor() {}
+        override fun createFromParcel(parcel: Parcel): ImageReviewItem {
+            return ImageReviewItem(parcel)
+        }
 
-    protected constructor(`in`: Parcel) {
-        this.formattedDate = `in`.readString()
-        this.reviewerName = `in`.readString()
-        this.imageUrlThumbnail = `in`.readString()
-        this.imageUrlLarge = `in`.readString()
-        this.rating = `in`.readInt()
-    }
-
-    override fun type(typeFactory: TypeFactory): Int {
-        return typeFactory.type(this)
-    }
-
-    companion object {
-        val NO_RATING_DATA = -1
-
-        val CREATOR: Parcelable.Creator<ImageReviewItem> = object : Parcelable.Creator<ImageReviewItem> {
-            override fun createFromParcel(source: Parcel): ImageReviewItem {
-                return ImageReviewItem(source)
-            }
-
-            override fun newArray(size: Int): Array<ImageReviewItem?> {
-                return arrayOfNulls(size)
-            }
+        override fun newArray(size: Int): Array<ImageReviewItem?> {
+            return arrayOfNulls(size)
         }
     }
 }

@@ -40,14 +40,6 @@ public interface IHomeRouter {
 
     void goToWallet(Context context, String url);
 
-    void goToProductDetail(Context context,
-                           String productId,
-                           String imageSourceSingle,
-                           String name,
-                           String price);
-
-    void goToProductDetail(Context context, String productUrl);
-
     void goToTokoCash(String appLinkBalance, Activity activity);
 
     void actionOpenGeneralWebView(Activity activity, String mobileUrl);
@@ -66,12 +58,6 @@ public interface IHomeRouter {
 
     Intent getInstantLoanIntent(Context context);
 
-    Intent getTopAdsProductDetailIntentForHome(Context context,
-                                                      String id,
-                                                      String name,
-                                                      String priceFormat,
-                                                      String imageMUrl);
-
     Intent getLoginIntent(Context context);
 
     Intent getHomeIntent(Context context);
@@ -81,4 +67,6 @@ public interface IHomeRouter {
     Intent getIntentCreateShop(Context context);
 
     AnalyticTracker getAnalyticTracker();
+
+    Intent gotoQrScannerPage(boolean needResult);
 }

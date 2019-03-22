@@ -10,19 +10,19 @@ import com.google.gson.annotations.SerializedName
 class PaymentInfoEntity(
         @SerializedName("gateway_name")
         @Expose
-        val gatewayName: String = "",
+        var gatewayName: String = "",
         @SerializedName("gateway_icon")
         @Expose
-        val gatewayIcon: String = "",
+        var gatewayIcon: String = "",
         @SerializedName("expire_on")
         @Expose
-        val expireOn: String = "",
+        var expireOn: String = "",
         @SerializedName("transaction_code")
         @Expose
-        val transactionCode: String = "",
+        var transactionCode: String = "",
         @SerializedName("need_to_pay_amt")
         @Expose
-        val needToPayAmount: Int = 0,
+        var needToPayAmount: Int = 0,
         @SerializedName("manual_transfer")
         @Expose
-        val manualTransfer: ManualTransferEntity)
+        var manualTransfer: ManualTransferEntity = ManualTransferEntity())
