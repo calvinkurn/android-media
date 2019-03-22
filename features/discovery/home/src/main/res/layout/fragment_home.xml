@@ -29,12 +29,12 @@
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <LinearLayout
-                    android:fitsSystemWindows="true"
                     android:id="@+id/listContainer"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <android.support.v7.widget.RecyclerView
+                        android:fitsSystemWindows="true"
                         android:id="@+id/list"
                         android:background="@color/white"
                         android:layout_width="match_parent"
