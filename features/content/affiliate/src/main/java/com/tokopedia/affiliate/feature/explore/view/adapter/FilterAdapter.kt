@@ -53,8 +53,7 @@ class FilterAdapter(private val filterClickedListener: OnFilterClickedListener,
     }
 
     override fun getItemCount(): Int {
-        return if (isFilterDetail() && allFilterList.size > MAX_CHIP) MAX_CHIP
-        else allFilterList.size
+        return allFilterList.size
     }
 
     fun clearAllData() {
@@ -123,10 +122,6 @@ class FilterAdapter(private val filterClickedListener: OnFilterClickedListener,
 
     private fun isFilterDetail(): Boolean {
         return layout == R.layout.item_explore_filter_child
-    }
-
-    companion object {
-        private const val MAX_CHIP = 5
     }
 
     interface OnFilterClickedListener {
