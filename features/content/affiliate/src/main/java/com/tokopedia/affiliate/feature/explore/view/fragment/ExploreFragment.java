@@ -892,6 +892,25 @@ public class ExploreFragment
     }
 
     @Override
+    public boolean shouldBackPressed() {
+        if (adapter == null) {
+            return true;
+        }
+
+        for (Visitable visitable : adapter.getData()) {
+            if (visitable instanceof ExploreEmptySearchViewModel) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void refresh() {
+        onButtonEmptySearchClicked();
+    }
+
+    @Override
     public void onItemClicked(@NotNull List<FilterViewModel> filters,
                               @NotNull FilterViewModel filterViewModel) {
         getFilteredFirstData(filters);

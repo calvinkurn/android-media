@@ -85,6 +85,10 @@ public interface ExploreContract {
         void stopTrace();
 
         void unsubscribeAutoComplete();
+
+        boolean shouldBackPressed();
+
+        void refresh();
     }
 
     interface Presenter extends CustomerPresenter<View> {
