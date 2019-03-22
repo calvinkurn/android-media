@@ -1,7 +1,6 @@
 package com.tokopedia.feedplus.view.adapter.viewholder.kol;
 
 import android.support.annotation.LayoutRes;
-import android.support.design.widget.BottomSheetDialog;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,7 +38,7 @@ public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> 
     @Override
     public void bind(WhitelistViewModel element) {
         initView(element);
-        initViewListener(element);
+        initViewListener();
     }
 
     private void initView(WhitelistViewModel model) {
@@ -54,9 +53,9 @@ public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> 
         );
     }
 
-    private void initViewListener(final WhitelistViewModel model) {
+    private void initViewListener() {
         btnCreatePost.setOnClickListener(view ->
-                mainView.onWhitelistClicked(model.getWhitelist().getUrl())
+                mainView.onWhitelistClicked()
         );
     }
 }
