@@ -1,11 +1,15 @@
 package com.tokopedia.tkpdpdp.fragment
 
 import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Paint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.LocalBroadcastManager
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -90,6 +94,13 @@ class ProductModalFragment : BaseDaggerFragment() {
         selectedQuantity = arguments?.getInt(ARGS_SELECTED_QUANTITY)
         selectedRemarkNotes = arguments?.getString(ARGS_SELECTED_REMARK_NOTES)
         stateProductModal = arguments?.getInt(ARGS_STATE_FORM_PRODUCT_MODAL)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val tradeInOpenCartReceiver = TradeInOpenCartReceiver()
+        val intentFilter = IntentFilter("ACTION_GO_TO_SHIPMENT")
+        LocalBroadcastManager.getInstance(context!!).registerReceiver(tradeInOpenCartReceiver, intentFilter)
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -233,6 +244,15 @@ class ProductModalFragment : BaseDaggerFragment() {
         activity?.overridePendingTransition(0, R.anim.push_down)
     }
 
+    private fun onGotoTradeinShipment(deviceid: String) {
+        val intent = generateExtraSelectedIntent()
+        intent.putExtra(ARGS_STATE_RESULT_PDP_MODAL, SELECTED_VARIANT_RESULT_TRADEIN)
+        intent.putExtra(TradeInParams.PARAM_DEVICE_ID, deviceid)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
+        activity?.overridePendingTransition(0, R.anim.push_down)
+    }
+
     private fun renderButtonVariant() {
 
     }
@@ -260,21 +280,19 @@ class ProductModalFragment : BaseDaggerFragment() {
         } else {
             if (tradeInParams!!.isEligible != 0) {
                 tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
-                if (tradeInParams!!.usedPrice > 0){
+                if (tradeInParams!!.usedPrice > 0) {
                     tv_trade_in.setOnClickListener { goToHargaFinal() }
                 }
             }
         }
-
+        number_picker_quantitiy_product.setInitialState(
+                Integer.parseInt(productData?.info?.productMinOrder),
+                DEFAULT_MAXIMUM_STOCK_PICKER,
+                selectedQuantity!!
+        )
         if (stateProductModal == STATE_BUTTON_TRADEIN) {
             view_qty_product.visibility = View.GONE
         } else {
-            number_picker_quantitiy_product.setInitialState(
-                    Integer.parseInt(productData?.info?.productMinOrder),
-                    DEFAULT_MAXIMUM_STOCK_PICKER,
-                    selectedQuantity!!
-            )
-
             number_picker_quantitiy_product.setOnPickerActionListener { num ->
                 selectedQuantity = num
                 text_product_price.text = generateTextCartPrice()
@@ -316,7 +334,7 @@ class ProductModalFragment : BaseDaggerFragment() {
         tradeInData.putInt(TradeInParams.PARAM_NEW_PRICE, tradeInParams!!.newPrice)
         tradeInData.putString(TradeInParams.PARAM_DEVICE_ID, tradeInParams!!.deviceId)
         tradeInData.putInt(TradeInParams.PARAM_USER_ID, tradeInParams!!.userId)
-        tradeInData.putInt(TradeInParams.PARAM_PRODUCT_ID,tradeInParams!!.productId)
+        tradeInData.putInt(TradeInParams.PARAM_PRODUCT_ID, tradeInParams!!.productId)
         tradeInData.putString(TradeInParams.PARAM_NEW_DEVICE_NAME, tradeInParams!!.productName)
         tradeInData.putBoolean(TradeInParams.PARAM_USE_KYC, tradeInParams!!.isUseKyc == 1)
 
@@ -345,4 +363,11 @@ class ProductModalFragment : BaseDaggerFragment() {
         activity?.overridePendingTransition(0, R.anim.push_down)
     }
 
+    inner class TradeInOpenCartReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, inIntent: Intent?) {
+            if (inIntent!!.action!!.equals("ACTION_GO_TO_SHIPMENT")) {
+                onGotoTradeinShipment(inIntent!!.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
+            }
+        }
+    }
 }

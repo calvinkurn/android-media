@@ -51,35 +51,6 @@ import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
-import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.product.model.productdetail.mosthelpful.ReviewImageAttachment;
-import com.tokopedia.design.component.TextViewCompat;
-import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets;
-import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry;
-import com.tokopedia.gallery.ImageReviewGalleryActivity;
-import com.tokopedia.gallery.domain.GetImageReviewUseCase;
-import com.tokopedia.gallery.viewmodel.ImageReviewItem;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.linker.model.LinkerData;
-import com.tokopedia.product.share.ProductData;
-import com.tokopedia.product.share.ProductShare;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
-import com.tokopedia.tkpdpdp.DescriptionActivityNew;
-import com.tokopedia.tkpdpdp.ProductInfoShortDetailActivity;
-import com.tokopedia.tkpdpdp.customview.ImageFromBuyerView;
-import com.tokopedia.tkpdpdp.customview.ProductInfoAttributeView;
-import com.tokopedia.tkpdpdp.customview.ProductInfoShortView;
-import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
-import com.tokopedia.tkpdpdp.customview.VarianCourierSimulationView;
-import com.tokopedia.tkpdpdp.customview.WholesaleInstallmentView;
-import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
-import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
-import com.tokopedia.tkpdpdp.util.ProductNotFoundException;
-import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
-import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -156,6 +127,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.ShopCommonModule;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -226,6 +198,7 @@ import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
+import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
@@ -977,13 +950,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     private String generateShopType(ProductShopInfo productShopInfo) {
-        if(productShopInfo!=null){
+        if (productShopInfo != null) {
             if (productShopInfo.getShopIsOfficial() == 1)
                 return "official_store";
             else if (productShopInfo.getShopIsGold() == 1)
                 return "gold_merchant";
             else return "reguler";
-        }else {
+        } else {
             return EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER;
         }
     }
@@ -1655,12 +1628,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void showProgressLoading() {
-
+        buttonBuyView.showLoadingBuyNow();
     }
 
     @Override
     public void hideProgressLoading() {
         performanceMonitoring.stopTrace();
+        buttonBuyView.removeLoading();
     }
 
     @Override
@@ -1835,6 +1809,14 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                             if (getActivity() != null && SessionHandler.isV4Login(getActivity())) {
                                 onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_CART_PDP),
                                         SOURCE_BUTTON_CART_PDP);
+                            }
+                            break;
+                        case ConstantKey.SELECTED_VARIANT_RESULT_TRADEIN:
+                            if (getActivity() != null && SessionHandler.isV4Login(getActivity())) {
+                                Intent shipmentIntent = ((PdpRouter) getActivity().getApplication())
+                                        .getCheckoutIntent(getActivity(), data.getStringExtra(TradeInParams.PARAM_DEVICE_ID));
+                                presenter.processToShippingTradeIn(getActivity(),shipmentIntent,createProductCartPass(SOURCE_BUTTON_TRADEIN));
+
                             }
                             break;
                         case ConstantKey.KILL_PDP_BACKGROUND:
@@ -2676,7 +2658,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     private String generateCategoryStringLevel(List<ProductBreadcrumb> breadcrumb) {
-        if(breadcrumb!=null && !breadcrumb.isEmpty()){
+        if (breadcrumb != null && !breadcrumb.isEmpty()) {
             Collections.sort(breadcrumb, new Comparator<ProductBreadcrumb>() {
                 @Override
                 public int compare(ProductBreadcrumb productBreadcrumb, ProductBreadcrumb t1) {
@@ -2693,14 +2675,14 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 }
             }
             return stringBuilder.toString();
-        }else {
+        } else {
             return EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER;
         }
     }
 
 
     private String generateCategoryId(List<ProductBreadcrumb> breadcrumb) {
-        if(breadcrumb!=null && !breadcrumb.isEmpty()){
+        if (breadcrumb != null && !breadcrumb.isEmpty()) {
             Collections.sort(breadcrumb, new Comparator<ProductBreadcrumb>() {
                 @Override
                 public int compare(ProductBreadcrumb productBreadcrumb, ProductBreadcrumb t1) {
@@ -2708,8 +2690,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 }
             });
             return breadcrumb.get(breadcrumb.size() - 1).getDepartmentId();
-        }else {
-          return EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER;
+        } else {
+            return EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER;
         }
     }
 

@@ -73,6 +73,8 @@ public interface PdpRouter {
 
     Intent getProductTalk(Context context, String productId);
 
+    Intent getCheckoutIntent(Context context, String deviceid);
+
     void eventClickFilterReview(Context context,
                                 String filterName,
                                 String productId);

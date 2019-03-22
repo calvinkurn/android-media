@@ -277,6 +277,54 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         UnifyTracking.eventPDPCart(context);
     }
 
+    @Override
+    public void processToShippingTradeIn(Activity context, Intent shippingIntent, ProductCartPass data) {
+        sendAppsFlyerCheckout(viewListener.getActivityContext(), data);
+        if (context.getApplication() instanceof PdpRouter) {
+            viewListener.showProgressLoading();
+            ((PdpRouter) context.getApplication()).addToCartProduct(
+                    new AddToCartRequest.Builder()
+                            .productId(Integer.parseInt(data.getProductId()))
+                            .notes(data.getNotes())
+                            .quantity(data.getOrderQuantity())
+                            .trackerAttribution(data.getTrackerAttribution())
+                            .trackerListName(data.getListName())
+                            .shopId(Integer.parseInt(data.getShopId()))
+                            .isTradein(1)
+                            .build(), true
+            ).subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<AddToCartResult>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onNext(AddToCartResult addToCartResult) {
+                            NullCheckerKt.isContainNull(addToCartResult, s -> {
+                                ContainNullException exception = new ContainNullException("Found " + s + " on " + ProductDetailPresenterImpl.class.getSimpleName());
+                                if (!BuildConfig.DEBUG) {
+                                    Crashlytics.logException(exception);
+                                }
+                                throw exception;
+                            });
+
+                            viewListener.hideProgressLoading();
+                            if (addToCartResult.isSuccess()) {
+                                viewListener.navigateToActivityRequest(shippingIntent, 629);
+                            }
+                        }
+                    });
+        }
+    }
+
     private Subscriber getCartSubscriber(String sourceAtc) {
         return new Subscriber<AddToCartResult>() {
             @Override

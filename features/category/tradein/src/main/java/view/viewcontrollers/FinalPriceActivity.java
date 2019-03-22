@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -26,6 +27,7 @@ import java.util.List;
 import model.DeviceDataResponse;
 import model.KYCDetails;
 import model.TradeInParams;
+import tradein_common.Constants;
 import tradein_common.router.TradeInRouter;
 import viewmodel.FinalPriceViewModel;
 
@@ -194,14 +196,16 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
     }
 
     private void goToCheckout() {
-        TradeInRouter router = (TradeInRouter) getApplication();
+//        TradeInRouter router = (TradeInRouter) getApplication();
         String deviceid = getDeviceId();
-        Intent checkoutIntent;
-        if (deviceid != null) {
-            checkoutIntent = router.getCheckoutIntent(this, deviceid);
-            startActivity(checkoutIntent);
-        } else
-            throw new RuntimeException("Device ID null");
+        LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Constants.ACTION_GO_TO_SHIPMENT).putExtra(TradeInParams.PARAM_DEVICE_ID, deviceid));
+        finish();
+//        Intent checkoutIntent;
+//        if (deviceid != null) {
+//            checkoutIntent = router.getCheckoutIntent(this, deviceid);
+//            startActivity(checkoutIntent);
+//        } else
+//            throw new RuntimeException("Device ID null");
     }
 
     private void setbuttonCheckout() {

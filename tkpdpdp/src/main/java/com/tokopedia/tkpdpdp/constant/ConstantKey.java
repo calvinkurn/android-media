@@ -10,6 +10,7 @@ public class ConstantKey {
 
     public static final int SELECTED_VARIANT_RESULT_SKIP_TO_CART = 98;
     public static final int SELECTED_VARIANT_RESULT_STAY_IN_PDP = 97;
+    public static final int SELECTED_VARIANT_RESULT_TRADEIN = 99;
 
     public static final int KILL_PDP_BACKGROUND = 96;
 

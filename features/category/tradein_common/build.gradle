@@ -30,6 +30,7 @@ dependencies {
     implementation project(rootProject.ext.features.transactioncommon)
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.supportLibDependencies.supportV4
+    implementation rootProject.ext.miscDependencies.rxJava
 
     implementation project(rootProject.ext.libraries.userSession)
 }

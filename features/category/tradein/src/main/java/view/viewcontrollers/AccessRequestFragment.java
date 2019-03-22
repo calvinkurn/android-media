@@ -23,8 +23,6 @@ public class AccessRequestFragment extends DialogFragment {
 
     public static final String TAG = "ACCESS REQUEST FRAGMENT";
 
-    private AccessRequestViewModel mViewModel;
-
     private IAccessRequestListener accessRequestListener;
 
     public static AccessRequestFragment newInstance() {
@@ -67,13 +65,7 @@ public class AccessRequestFragment extends DialogFragment {
         accessRequestListener = (IAccessRequestListener) activity;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(AccessRequestViewModel.class);
-    }
-
-    public class AccessRequestClickListener implements View.OnClickListener {
+   public class AccessRequestClickListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
