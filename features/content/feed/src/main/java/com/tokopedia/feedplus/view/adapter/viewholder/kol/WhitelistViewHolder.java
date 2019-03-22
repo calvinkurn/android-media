@@ -43,7 +43,8 @@ public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> 
 
     private void initView(WhitelistViewModel model) {
         tvCaption.setText(MethodChecker.fromHtml(String.format("<b>%s,</b> %s",
-                mainView.getUserSession().getShopName(),
+                mainView.getUserSession().hasShop()? mainView.getUserSession().getShopName() :
+                        mainView.getUserSession().getName(),
                 model.getWhitelist().getDesc())));
 
         ImageHandler.loadImageCircle2(
