@@ -17,6 +17,7 @@
         tools:targetApi="lollipop">
 
         <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
