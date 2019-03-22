@@ -1,59 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@color/transparent"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/transparent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_15"
-        android:layout_marginLeft="@dimen/dp_4"
-        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_20"
         android:orientation="horizontal">
 
         <android.support.v7.widget.CardView
             android:id="@+id/cardView"
-            android:layout_width="@dimen/dp_140"
+            android:layout_width="@dimen/dp_120"
             android:layout_height="104dp"
-            android:background="@color/white"
-            tools:cardCornerRadius="@dimen/dp_8"
-            tools:cardElevation="@dimen/dp_10"
-            tools:cardMaxElevation="@dimen/dp_14">
+            app:cardPreventCornerOverlap="true"
+            app:cardCornerRadius="@dimen/dp_8"
+            app:cardBackgroundColor="@color/white"
+            app:cardElevation="@dimen/dp_10"
+            app:cardMaxElevation="@dimen/dp_14">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/white"
                 android:orientation="vertical">
 
-                <com.elyeproj.loaderviewlibrary.LoaderTextView
-                    android:layout_width="@dimen/dp_72"
-                    android:layout_height="@dimen/dp_10"
-                    android:layout_marginStart="@dimen/dp_12"
-                    android:layout_marginLeft="@dimen/dp_12"
-                    android:layout_marginTop="38dp"
-                    android:layout_marginBottom="@dimen/dp_12"
-                    app:corners="@integer/corner_radius_shimmering"
-                    app:width_weight="0.8" />
+                <TextView
+                    android:id="@+id/productName"
+                    android:layout_width="@dimen/dp_60"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:gravity="right"
+                    android:textSize="@dimen/sp_10"
+                    android:textColor="#ae31353b"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:letterSpacing="0.02"
+                    android:layout_gravity="end"
+                    android:visibility="invisible"
+                    tools:text="PAKET DATA"
+                    />
 
-                <com.elyeproj.loaderviewlibrary.LoaderTextView
-                    android:layout_width="@dimen/dp_72"
-                    android:layout_height="@dimen/dp_10"
-                    android:layout_marginStart="@dimen/dp_12"
-                    android:layout_marginLeft="@dimen/dp_12"
-                    android:layout_marginBottom="@dimen/dp_12"
-                    app:corners="@integer/corner_radius_shimmering"
-                    app:width_weight="0.8" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8">
 
-                <com.elyeproj.loaderviewlibrary.LoaderTextView
-                    android:layout_width="@dimen/dp_72"
-                    android:layout_height="@dimen/dp_10"
-                    android:layout_marginStart="@dimen/dp_12"
-                    android:layout_marginLeft="@dimen/dp_12"
-                    app:corners="@integer/corner_radius_shimmering"
-                    app:width_weight="0.8" />
+                    <com.elyeproj.loaderviewlibrary.LoaderTextView
+                        android:layout_width="@dimen/dp_72"
+                        android:layout_height="@dimen/dp_10"
+                        android:layout_marginStart="@dimen/dp_12"
+                        android:layout_marginLeft="@dimen/dp_12"
+                        android:layout_marginBottom="@dimen/dp_8"
+                        app:corners="@integer/corner_radius_shimmering"
+                        app:width_weight="0.8" />
+
+                    <com.elyeproj.loaderviewlibrary.LoaderTextView
+                        android:layout_width="@dimen/dp_72"
+                        android:layout_height="@dimen/dp_10"
+                        android:layout_marginStart="@dimen/dp_12"
+                        android:layout_marginLeft="@dimen/dp_12"
+                        android:layout_marginBottom="@dimen/dp_8"
+                        app:corners="@integer/corner_radius_shimmering"
+                        app:width_weight="0.8" />
+
+                    <com.elyeproj.loaderviewlibrary.LoaderTextView
+                        android:layout_width="@dimen/dp_72"
+                        android:layout_height="@dimen/dp_10"
+                        android:layout_marginStart="@dimen/dp_12"
+                        android:layout_marginLeft="@dimen/dp_12"
+                        app:corners="@integer/corner_radius_shimmering"
+                        app:width_weight="0.8" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -64,16 +94,24 @@
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16">
+        android:layout_marginStart="@dimen/dp_2"
+        android:layout_marginLeft="@dimen/dp_2">
 
         <ImageView
-            android:layout_width="@dimen/dp_36"
-            android:layout_height="@dimen/dp_36"
+            android:layout_width="@dimen/dp_52"
+            android:layout_height="@dimen/dp_52"
             android:layout_gravity="center"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/ic_square_shimmering_36dp"
-            />
+            app:srcCompat="@drawable/ic_squircle" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/icon"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:layout_margin="@dimen/dp_4"
+            android:layout_gravity="center"
+            android:visibility="invisible"
+            tools:ignore="VectorDrawableCompat" />
 
     </FrameLayout>
 
