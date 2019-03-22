@@ -106,36 +106,44 @@ public class NewOnboardingActivity extends AppIntro {
 
     private void addSlides() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        addSlide(NewOnBoardingFragment.newInstance(remoteConfig.getString(RemoteConfigKey.NONB1_TTL,
-                getString(R.string.nonb_1_title)),
-                remoteConfig.getString(RemoteConfigKey.NONB1_DESC, getString(R.string.nonb_1_desc)),
+        addSlide(NewOnBoardingFragment.newInstance(setMessageValue(remoteConfig, RemoteConfigKey.NONB1_TTL,
+                R.string.nonb_1_title),
+                setMessageValue(remoteConfig, RemoteConfigKey.NONB1_DESC, R.string.nonb_1_desc),
                 "onboarding1.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[0]),
                 NewOnBoardingFragment.VIEW_DEFAULT, 0));
-        addSlide(NewOnBoardingFragment.newInstance(remoteConfig.getString(RemoteConfigKey.NONB2_TTL,
-                getString(R.string.nonb_2_title)),
-                remoteConfig.getString(RemoteConfigKey.NONB2_DESC, getString(R.string.nonb_2_desc)),
+        addSlide(NewOnBoardingFragment.newInstance(setMessageValue(remoteConfig, RemoteConfigKey.NONB2_TTL,
+                R.string.nonb_2_title),
+                setMessageValue(remoteConfig, RemoteConfigKey.NONB2_DESC, R.string.nonb_2_desc),
                 "onboarding2.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[1]),
                 NewOnBoardingFragment.VIEW_DEFAULT, 1));
-        addSlide(NewOnBoardingFragment.newInstance(remoteConfig.getString(RemoteConfigKey.NONB3_TTL,
-                getString(R.string.nonb_3_title)),
-                remoteConfig.getString(RemoteConfigKey.NONB3_DESC, getString(R.string.nonb_3_desc)),
+        addSlide(NewOnBoardingFragment.newInstance(setMessageValue(remoteConfig, RemoteConfigKey.NONB3_TTL,
+                R.string.nonb_3_title),
+                setMessageValue(remoteConfig, RemoteConfigKey.NONB3_DESC, R.string.nonb_3_desc),
                 "onboarding3.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[2]),
                 NewOnBoardingFragment.VIEW_DEFAULT, 2));
-        addSlide(NewOnBoardingFragment.newInstance(remoteConfig.getString(RemoteConfigKey.NONB4_TTL,
-                getString(R.string.nonb_4_title)),
-                remoteConfig.getString(RemoteConfigKey.NONB4_DESC, getString(R.string.nonb_4_desc)),
+        addSlide(NewOnBoardingFragment.newInstance(setMessageValue(remoteConfig, RemoteConfigKey.NONB4_TTL,
+                R.string.nonb_4_title),
+                setMessageValue(remoteConfig, RemoteConfigKey.NONB4_DESC, R.string.nonb_4_desc),
                 "onboarding4.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[3]),
                 NewOnBoardingFragment.VIEW_DEFAULT, 3));
-        addSlide(NewOnBoardingFragment.newInstance(remoteConfig.getString(RemoteConfigKey.NONB5_TTL,
-                getString(R.string.nonb_5_title)),
-                remoteConfig.getString(RemoteConfigKey.NONB5_DESC, getString(R.string.nonb_5_desc)),
+        addSlide(NewOnBoardingFragment.newInstance(setMessageValue(remoteConfig, RemoteConfigKey.NONB5_TTL,
+                R.string.nonb_5_title),
+                setMessageValue(remoteConfig, RemoteConfigKey.NONB5_DESC, R.string.nonb_5_desc),
                 "onboarding5.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[4]),
                 NewOnBoardingFragment.VIEW_ENDING, 4));
+    }
+
+    private String setMessageValue(RemoteConfig remoteConfig, String firebaseKey, int defaultValue){
+        String msg = remoteConfig.getString(firebaseKey);
+        if(TextUtils.isEmpty(msg)){
+            msg = getString(defaultValue);
+        }
+        return msg;
     }
 
     private void setSkip() {
