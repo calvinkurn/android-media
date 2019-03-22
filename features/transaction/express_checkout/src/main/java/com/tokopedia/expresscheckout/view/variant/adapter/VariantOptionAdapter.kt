@@ -7,6 +7,9 @@ import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.VariantChangeListener
 import com.tokopedia.expresscheckout.view.variant.viewholder.OptionVariantViewHolder
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_AVAILABLE
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -35,9 +38,9 @@ class VariantOptionAdapter(var dataList: ArrayList<OptionVariantViewModel>, val 
     override fun onSelectedVariantChanged(selectedVariant: OptionVariantViewModel) {
         for (item: OptionVariantViewModel in dataList) {
             if (item.equals(selectedVariant)) {
-                item.currentState = item.STATE_SELECTED
-            } else if (item.currentState != item.STATE_NOT_AVAILABLE) {
-                item.currentState = item.STATE_NOT_SELECTED
+                item.currentState = STATE_SELECTED
+            } else if (item.currentState != STATE_NOT_AVAILABLE) {
+                item.currentState = STATE_NOT_SELECTED
             }
         }
         notifyDataSetChanged()

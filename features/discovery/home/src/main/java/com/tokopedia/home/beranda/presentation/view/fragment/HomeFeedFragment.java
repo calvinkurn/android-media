@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +13,9 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
@@ -26,6 +30,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedType
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
 import com.tokopedia.home.constant.ConstantKey;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
+import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -34,7 +40,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFeedTypeFactory> implements HomeFeedContract.View {
+public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFeedTypeFactory>
+        implements HomeFeedContract.View {
 
     public static final String ARG_TAB_INDEX = "ARG_TAB_INDEX";
     public static final String ARG_RECOM_ID = "ARG_RECOM_ID";
@@ -164,7 +171,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
 
     @Override
     protected HomeFeedTypeFactory getAdapterTypeFactory() {
-        return new HomeFeedTypeFactory();
+        return new HomeFeedTypeFactory(this);
     }
 
     private void initListeners() {
@@ -200,33 +207,48 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     @Override
     public void onItemClicked(HomeFeedViewModel homeFeedViewModel) {
         if (userSession.isLoggedIn()) {
-            HomePageTracking.eventClickOnHomeProductFeedForLoggedInUser(
-                    homeTrackingQueue,
-                    homeFeedViewModel,
-                    tabName.toLowerCase()
-            );
+            if(!homeFeedViewModel.isTopAds()){
+                HomePageTracking.eventClickOnHomeProductFeedForLoggedInUser(
+                        homeTrackingQueue,
+                        homeFeedViewModel,
+                        tabName.toLowerCase()
+                );
+            }
         } else {
-            HomePageTracking.eventClickOnHomeProductFeedForNonLoginUser(
-                    homeTrackingQueue,
-                    homeFeedViewModel,
-                    tabName.toLowerCase()
-            );
+            if(!homeFeedViewModel.isTopAds()){
+                HomePageTracking.eventClickOnHomeProductFeedForNonLoginUser(
+                        homeTrackingQueue,
+                        homeFeedViewModel,
+                        tabName.toLowerCase()
+                );
+            }
         }
-        new ImpresionTask().execute(homeFeedViewModel.getClickUrl());
+        if(homeFeedViewModel.isTopAds()) {
+            new ImpresionTask().execute(homeFeedViewModel.getClickUrl());
+            Product p = new Product();
+            p.setId(homeFeedViewModel.getProductId());
+            p.setName(homeFeedViewModel.getProductName());
+            p.setPriceFormat(homeFeedViewModel.getPrice());
+            TopAdsGtmTracker.getInstance().eventRecomendationProductClick(getContext(), p,
+                    tabName.toLowerCase(), homeFeedViewModel.getRecommendationType(),
+                    homeFeedViewModel.getCategoryBreadcrumbs(),
+                    userSession.isLoggedIn(),
+                    homeFeedViewModel.getPosition());
+        }
         goToProductDetail(homeFeedViewModel.getProductId(),
                 homeFeedViewModel.getImageUrl(),
                 homeFeedViewModel.getProductName(), homeFeedViewModel.getPrice());
     }
 
     private void goToProductDetail(String productId, String imageSourceSingle, String name, String price) {
-        if (getActivity().getApplication() instanceof IHomeRouter) {
-            ((IHomeRouter) getActivity().getApplication()).goToProductDetail(
-                    getActivity(),
-                    productId,
-                    imageSourceSingle,
-                    name,
-                    price
-            );
+        getActivity().startActivity(getProductIntent(productId));
+    }
+
+    private Intent getProductIntent(String productId){
+        if (getContext() != null) {
+            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
         }
     }
 
@@ -274,5 +296,27 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
             getRecyclerView(getView()).scrollToPosition(10);
         }
         getRecyclerView(getView()).smoothScrollToPosition(0);
+    }
+
+    @Override
+    public void onProductImpression(HomeFeedViewModel model, int position) {
+        if(model.isTopAds()) {
+            Product p = new Product();
+            p.setId(model.getProductId());
+            p.setName(model.getProductName());
+            p.setPriceFormat(model.getPrice());
+            new ImpresionTask().execute(model.getTrackerImageUrl());
+            TopAdsGtmTracker.getInstance().addRecomendationProductViewImpressions(p,
+                    model.getCategoryBreadcrumbs(), tabName.toLowerCase(),
+                    model.getRecommendationType(), position);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        TopAdsGtmTracker.getInstance().eventRecomendationProductView(homeTrackingQueue,
+                tabName.toLowerCase(), userSession.isLoggedIn());
+        homeTrackingQueue.sendAll();
+        super.onPause();
     }
 }

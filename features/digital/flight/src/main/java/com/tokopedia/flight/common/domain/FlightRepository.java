@@ -4,6 +4,8 @@ import com.tokopedia.flight.country.database.FlightAirportCountryTable;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
+import com.tokopedia.flight.bookingV2.data.entity.AddToCartEntity;
+import com.tokopedia.flight.bookingV2.data.entity.GetCartEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
@@ -42,6 +44,10 @@ public interface FlightRepository {
     Observable<FlightClassEntity> getFlightClassById(int classId);
 
     Observable<CartEntity> addCart(FlightCartRequest request, String idEmpotencyKey);
+
+    Observable<AddToCartEntity> addCartV11(FlightCartRequest request, String idEmpotencyKey);
+
+    Observable<GetCartEntity> getCart(String cartId);
 
     Observable<AttributesVoucher> checkVoucherCode(HashMap<String, String> paramsAllValueInString);
 

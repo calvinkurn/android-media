@@ -51,6 +51,7 @@ ext {
             config            : ":libraries:global_config",
             graphql           : ":libraries:graphql",
             imagePicker       : ":libraries:image_picker",
+            imagePreview      : ":libraries:image_preview",
             imageuploader     : ":libraries:imageuploader",
             inappupdate       : ":libraries:inappupdate",
             kotlinExtensions  : ":libraries:kotlin_extensions",
@@ -79,7 +80,8 @@ ext {
             trackinterface    : ":libraries:trackinterface",
             graphView         :":libraries:graph_view",
             iris              : ":libraries:iris",
-//            iris              : ":libraries:iris_no_op",
+//            iris              : ":libraries:iris_no_op"
+            cpm              : ":libraries:cpm",
             banner            : ":libraries:banner"
     ]
 }

@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONException;
@@ -15,10 +16,15 @@ import org.json.JSONObject;
 public class Error implements Parcelable {
 
     @SerializedName(KEY_CODE)
+    @Expose
     private int code;
+
     @SerializedName(KEY_TITLE)
+    @Expose
     private String title;
+
     @SerializedName(KEY_DETAIL)
+    @Expose
     private String detail;
 
     private static final String KEY_CODE = "code";
