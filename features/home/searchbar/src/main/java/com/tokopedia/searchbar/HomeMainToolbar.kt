@@ -16,6 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.searchbar.helper.ViewHelper
 import kotlinx.android.synthetic.main.home_main_toolbar.view.*
 import android.support.v4.graphics.drawable.DrawableCompat
+import android.support.v7.content.res.AppCompatResources
 
 
 class HomeMainToolbar : MainToolbar {
@@ -148,12 +149,12 @@ class HomeMainToolbar : MainToolbar {
 
     fun getBitmapDrawableFromVectorDrawable(context: Context, drawableId: Int): BitmapDrawable {
         return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            ContextCompat.getDrawable(context, drawableId) as BitmapDrawable
+            AppCompatResources.getDrawable(context, drawableId) as BitmapDrawable
         } else BitmapDrawable(context.resources, getBitmapFromVectorDrawable(context, drawableId))
     }
 
     fun getBitmapFromVectorDrawable(context: Context, drawableId: Int): Bitmap {
-        var drawable = ContextCompat.getDrawable(context, drawableId)
+        var drawable = AppCompatResources.getDrawable(context, drawableId)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             drawable = DrawableCompat.wrap(drawable!!).mutate()
         }
