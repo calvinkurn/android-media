@@ -24,6 +24,8 @@ project.ext {
 
 dependencies {
 
+    implementation project(":libraries:akamai_bot_lib")
+
     implementation rootProject.ext.miscDependencies.reactNative
     implementation rootProject.ext.miscDependencies.codePushReactNative
 
