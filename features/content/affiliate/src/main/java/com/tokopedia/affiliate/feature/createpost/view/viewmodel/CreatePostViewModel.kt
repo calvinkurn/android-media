@@ -17,7 +17,8 @@ data class CreatePostViewModel(
         val adIdList: MutableList<String> = arrayListOf(),
         val fileImageList: MutableList<MediaModel> = arrayListOf(),
         val urlImageList: MutableList<MediaModel> = arrayListOf(),
-        val relatedProducts: MutableList<RelatedProductItem> = arrayListOf()
+        val relatedProducts: MutableList<RelatedProductItem> = arrayListOf(),
+        val videoPath: String = ""
 ) : Parcelable {
     val completeImageList: ArrayList<MediaModel>
         get() {
