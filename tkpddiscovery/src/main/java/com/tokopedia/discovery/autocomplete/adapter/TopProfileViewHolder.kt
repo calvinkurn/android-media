@@ -78,7 +78,7 @@ class TopProfileViewHolder(val view: View, val clickListener : ItemClickListener
             boundedProfileSearch.searchTerm,
             boundedProfileSearch.keyword,
             boundedProfileSearch.peopleId,
-            (adapterPosition + 1).toString()
+            boundedProfileSearch.positionOfType.toString()
         )
     }
 }

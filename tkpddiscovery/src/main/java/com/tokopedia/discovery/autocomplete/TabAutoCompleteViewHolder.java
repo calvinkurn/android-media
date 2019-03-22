@@ -289,6 +289,7 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
 
     private List<Visitable> prepareProfileSearch(SearchData searchData, String searchTerm) {
         List<Visitable> list = new ArrayList<>();
+        int positionOfProfileSearch = 1;
         for(SearchItem item : searchData.getItems()) {
             ProfileSearch model = new ProfileSearch();
             model.setKeyword(item.getKeyword());
@@ -300,13 +301,18 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
             model.setKOL(item.isKOL());
             model.setPostCount(item.getPostCount());
             model.setSearchTerm(searchTerm);
+            model.setPositionOfType(positionOfProfileSearch);
             list.add(model);
+
+            positionOfProfileSearch += 1;
         }
         return list;
     }
 
     private List<Visitable> prepareTopProfileSearch(SearchData searchData, String searchTerm) {
         List<Visitable> list = new ArrayList<>();
+        int positionOfTopProfileSearch = 1;
+
         for(SearchItem item : searchData.getItems()) {
             TopProfileSearch model = new TopProfileSearch();
             model.setKeyword(item.getKeyword());
@@ -318,7 +324,10 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
             model.setKOL(item.isKOL());
             model.setPostCount(item.getPostCount());
             model.setSearchTerm(searchTerm);
+            model.setPositionOfType(positionOfTopProfileSearch);
             list.add(model);
+
+            positionOfTopProfileSearch += 1;
         }
         return list;
     }
