@@ -290,7 +290,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/title_delivery_location_pickup"
                 android:textColor="@color/label_color"
-                android:textSize="@dimen/dp_5" />
+                android:textSize="@dimen/sp_14" />
 
             <RelativeLayout
                 android:id="@+id/layout_value_location"
