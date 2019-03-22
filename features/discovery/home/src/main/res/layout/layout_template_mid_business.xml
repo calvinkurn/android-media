@@ -17,7 +17,6 @@
             android:id="@+id/cardView"
             android:layout_width="170dp"
             android:layout_height="104dp"
-            app:cardCornerRadius="@dimen/dp_8"
             app:background="@drawable/bg_ovo_tokopoint_widget">
 
             <LinearLayout
