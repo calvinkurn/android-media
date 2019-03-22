@@ -735,7 +735,25 @@ public class ExploreFragment
         }
         exploreParams.disableLoadMore();
         adapter.clearAllElements();
-        adapter.addElement(new ExploreEmptySearchViewModel());
+        adapter.addElement(new ExploreEmptySearchViewModel(
+                getString(R.string.text_empty_search_title),
+                getString(R.string.text_empty_search_desc)
+        ));
+    }
+
+    @Override
+    public void onEmptyProduct() {
+        presenter.unsubscribeAutoComplete();
+        bottomActionView.hide();
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
+        exploreParams.disableLoadMore();
+        adapter.clearAllElements();
+        adapter.addElement(new ExploreEmptySearchViewModel(
+                getString(R.string.text_empty_product_title),
+                getString(R.string.text_empty_product_desc)
+        ));
     }
 
     @Override

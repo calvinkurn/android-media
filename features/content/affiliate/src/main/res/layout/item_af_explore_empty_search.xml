@@ -17,6 +17,7 @@
         tools:src="@tools:sample/avatars" />
 
     <TextView
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -28,6 +29,7 @@
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

@@ -24,6 +24,8 @@
     <string name="text_search_hint">Cari Barang Kurasimu</string>
     <string name="text_empty_search_title">Duh, kami gak nemu yang kamu cari.</string>
     <string name="text_empty_search_desc">Bisa coba pakai kata kunci lain, ya.</string>
+    <string name="text_empty_product_title">Barang yang kamu cari belum ada.</string>
+    <string name="text_empty_product_desc">Yuk cari di kategori lainnya.</string>
     <string name="text_empty_search_btn">Cari Lagi</string>
     <string name="text_product_not_found">Produk Tidak Ditemukan</string>
     <string name="text_full_affiliate_title">Jatah Kurasimu Habis</string>

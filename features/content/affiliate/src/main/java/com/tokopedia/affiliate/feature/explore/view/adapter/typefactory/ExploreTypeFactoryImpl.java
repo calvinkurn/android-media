@@ -49,7 +49,7 @@ public class ExploreTypeFactoryImpl extends BaseAdapterTypeFactory implements Ex
 
     @Override
     public int type(ExploreEmptySearchViewModel exploreEmptySearchViewModel) {
-        return ExploreEmptySearchViewHolder.LAYOUT;
+        return ExploreEmptySearchViewHolder.Companion.getLAYOUT();
     }
 
     @Override
@@ -84,7 +84,7 @@ public class ExploreTypeFactoryImpl extends BaseAdapterTypeFactory implements Ex
             abstractViewHolder = new ExploreViewHolder(view, mainView);
         } else if (type == EmptyViewHolder.LAYOUT) {
             abstractViewHolder = new EmptyViewHolder(view);
-        } else if (type == ExploreEmptySearchViewHolder.LAYOUT) {
+        } else if (type == ExploreEmptySearchViewHolder.Companion.getLAYOUT()) {
             abstractViewHolder = new ExploreEmptySearchViewHolder(view, mainView);
         } else if (type == FilterViewHolder.LAYOUT) {
             abstractViewHolder = new FilterViewHolder(view, filterClickedListener);

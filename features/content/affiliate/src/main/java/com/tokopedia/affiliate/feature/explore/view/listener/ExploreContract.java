@@ -64,6 +64,8 @@ public interface ExploreContract {
 
         void onEmptySearchResult();
 
+        void onEmptyProduct();
+
         void onSuccessCheckAffiliate(boolean isAffiliate, String productId, String adId);
 
         void onErrorCheckAffiliate(String error, String productId, String adId);

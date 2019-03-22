@@ -19,9 +19,13 @@ class GetExploreDataSubscriber(private val mainView: ExploreContract.View?,
         mainView?.hideLoading()
         mainView?.unsubscribeAutoComplete()
 
-        if (isSearch && exploreViewModel.exploreProducts.isEmpty()) {
-            mainView?.affiliateAnalytics?.onSearchNotFound(exploreParams.keyword)
-            mainView?.onEmptySearchResult()
+        if (exploreViewModel.exploreProducts.isEmpty()) {
+            if (isSearch) {
+                mainView?.affiliateAnalytics?.onSearchNotFound(exploreParams.keyword)
+                mainView?.onEmptySearchResult()
+            } else {
+                mainView?.onEmptyProduct()
+            }
         } else {
             mainView?.onSuccessGetData(
                     exploreViewModel.exploreProducts,
