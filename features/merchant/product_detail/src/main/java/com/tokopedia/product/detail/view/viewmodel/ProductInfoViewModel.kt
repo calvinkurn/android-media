@@ -30,7 +30,7 @@ import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.checkouttype.GetCheckoutTypeResponse
 import com.tokopedia.product.detail.data.model.installment.InstallmentResponse
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
-import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionRequest
+import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailRequest
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.shop.ShopBadge
 import com.tokopedia.product.detail.data.model.shop.ShopCodStatus
@@ -179,7 +179,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                  PARAM_USER_ID to userSessionInterface.userId, PARAM_CONDITION to condition.toLowerCase(),
                  PARAM_PRODUCT_TITLE to productTitle, PARAM_PRICE to productPrice)*/
 
-        val ppParam = ProductPurchaseProtectionRequest()
+        val ppParam = PPItemDetailRequest()
 
         ppParam.productId = productId
         ppParam.shopId = shopId
@@ -188,7 +188,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         ppParam.productTitle = productTitle
         ppParam.price = productPrice.toInt()
 
-        val productPPParams = mapOf("variables" to ppParam)
+        val productPPParams = mapOf("param" to ppParam)
 
         val productPurchaseProtectionRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_PP],
                 ProductPurchaseProtectionInfo::class.java, productPPParams)

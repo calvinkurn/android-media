@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.data.model.purchaseprotection
 
 import com.google.gson.annotations.SerializedName
 
-data class ProductPurchaseProtectionRequest(
+data class PPItemDetailRequest(
 
         @SerializedName("productID")
         var productId: Int = 0,
