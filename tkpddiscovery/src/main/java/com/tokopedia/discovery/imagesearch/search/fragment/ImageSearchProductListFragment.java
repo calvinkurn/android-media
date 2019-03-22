@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -78,6 +77,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         SearchSectionGeneralAdapter.OnItemChangeView, ImageProductListFragmentView,
         ProductListener, WishListActionListener, TopAdsItemClickListener, TopAdsListener {
 
+    public static final String SCREEN_IMAGE_SEARCH_TAB = "Image Search result - Image tab";
     public static final int REQUEST_CODE_LOGIN = 561;
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
 
@@ -158,7 +158,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     public String getScreenNameId() {
-        return AppScreen.SCREEN_IMAGE_SEARCH_TAB;
+        return SCREEN_IMAGE_SEARCH_TAB;
     }
 
     protected void reloadData() {
@@ -538,6 +538,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public void onEmptyButtonClicked() {
+        SearchTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
         showSearchInputView();
     }
 
