@@ -1044,15 +1044,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         otherProductView.renderData(productInfoP2.productOthers)
 
-        val nearestWarehouse = productInfoP2.nearestWarehouse
-        if (nearestWarehouse == null){
-            actionButtonView.activateButtonBuy(false)
-        } else {
-            actionButtonView.activateButtonBuy(true)
-            partialVariantAndRateEstView.renderFulfillment(nearestWarehouse.warehouseInfo.isFulfillment)
-            if (productInfo != null && nearestWarehouse.warehouseInfo.id.isNotBlank())
-                headerView.updateStockAndPriceWarehouse(nearestWarehouse, productInfo!!.campaign)
-        }
+        partialVariantAndRateEstView.renderFulfillment(productInfoP2.nearestWarehouse.warehouseInfo.isFulfillment)
+        if (productInfo != null && productInfoP2.nearestWarehouse.warehouseInfo.id.isNotBlank())
+            headerView.updateStockAndPriceWarehouse(productInfoP2.nearestWarehouse, productInfo!!.campaign)
 
         productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, productInfoP2.shopInfo, trackerAttribution)
 

@@ -27,8 +27,6 @@ class PartialButtonActionView private constructor(private val view: View,
             }
         }
 
-    var isBuyable: Boolean = false
-
     var hasComponentLoading = false
     var isExpressCheckout = false
     var isWarehouseProduct: Boolean = false
@@ -61,14 +59,12 @@ class PartialButtonActionView private constructor(private val view: View,
     }
 
     private fun renderButton(){
-        isBuyable = false
         if (isWarehouseProduct) {
             showNoStockButton()
         } else if (hasShopAuthority) {
             showShopManageButton()
         } else if (GlobalConfig.isCustomerApp()) {
             showNewCheckoutButton(preOrder)
-            isBuyable = true
         }
     }
 
@@ -164,24 +160,6 @@ class PartialButtonActionView private constructor(private val view: View,
                 btn_byme.setOnClickListener { byMeClick?.invoke(pdpAffiliate, true) }
                 btn_byme.visible()
             } else btn_byme.gone()
-        }
-    }
-
-    fun activateButtonBuy(isActive: Boolean) {
-        if (isBuyable){
-            with(view){
-                btn_buy_now.isEnabled = isActive
-                btn_add_to_cart.isEnabled = isActive
-                if (isActive){
-                    tv_buy_now.setTextColor(ContextCompat.getColor(context, R.color.orange_red))
-                    txt_add_to_cart.setTextColor(ContextCompat.getColor(context, R.color.dark_primary))
-                    btn_add_to_cart.background = ContextCompat.getDrawable(context, R.drawable.bg_btn_add_to_cart)
-                } else {
-                    tv_buy_now.setTextColor(ContextCompat.getColor(context, R.color.black_38))
-                    txt_add_to_cart.setTextColor(ContextCompat.getColor(context, R.color.black_38))
-                    btn_add_to_cart.background = ContextCompat.getDrawable(context, R.drawable.bg_btn_add_to_cart_disabled)
-                }
-            }
         }
     }
 }
