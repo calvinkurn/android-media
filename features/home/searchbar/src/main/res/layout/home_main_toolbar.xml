@@ -60,7 +60,6 @@
             android:layout_width="@dimen/icon_toolbar"
             android:layout_height="@dimen/icon_toolbar"
             android:scaleType="center"
-            android:src="@drawable/ic_searchbar_wishlist_white"
             android:layout_toStartOf="@+id/btn_inbox"
             android:layout_toLeftOf="@+id/btn_inbox"/>
 
@@ -70,7 +69,6 @@
             android:layout_width="@dimen/icon_toolbar"
             android:layout_height="@dimen/icon_toolbar"
             android:scaleType="center"
-            android:src="@drawable/ic_searchbar_inbox_white"
             android:layout_toStartOf="@+id/btn_notification"
             android:layout_toLeftOf="@+id/btn_notification"/>
 
@@ -81,8 +79,7 @@
             android:layout_centerVertical="true"
             android:layout_width="@dimen/icon_toolbar"
             android:layout_height="@dimen/icon_toolbar"
-            android:scaleType="center"
-            android:src="@drawable/ic_searchbar_notif_white"/>
+            android:scaleType="center"/>
 
     </RelativeLayout>
 </android.support.v7.widget.Toolbar>
