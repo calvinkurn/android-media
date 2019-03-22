@@ -26,5 +26,5 @@ data class ProductInfoP2(
         var latestTalk: Talk = Talk(),
         var productOthers: List<ProductOther> = listOf(),
         var shopCod: Boolean = false,
-        var nearestWarehouse: MultiOriginWarehouse? = null
+        var nearestWarehouse: MultiOriginWarehouse = MultiOriginWarehouse()
         )

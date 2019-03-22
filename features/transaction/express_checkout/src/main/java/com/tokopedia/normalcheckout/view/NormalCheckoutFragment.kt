@@ -250,12 +250,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         return selectedChild
     }
 
-    private fun renderActionButton(productInfo: ProductInfo, selectedwarehouse: MultiOriginWarehouse?) {
+    private fun renderActionButton(productInfo: ProductInfo) {
         if (GlobalConfig.isCustomerApp() && !viewModel.isShopOwner(productInfo.basic.shopID) &&
             productInfo.basic.isActive()) {
             button_buy_full.gone()
             rl_bottom_action_container.visible()
-            if (action == ATC_AND_BUY && selectedwarehouse != null) {
+            if (action == ATC_AND_BUY) {
                 button_cart.visible()
             } else {
                 button_cart.gone()
@@ -267,12 +267,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             } else {
                 getString(R.string.label_button_buy)
             }
-            if (hasError() || selectedwarehouse == null) {
+            if (hasError()) {
                 button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_disabled)
-                button_buy_partial.isEnabled = false
             } else {
                 button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_orange_enabled)
-                button_buy_partial.isEnabled = true
             }
         } else { // sellerapp or warehouse product or owner
             showFullButton(!productInfo.basic.isActive(), productInfo.isPreorderActive, false)
@@ -660,8 +658,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         inputSelectedVariantId?.let {
             if (viewModel.warehouses.isNotEmpty()){
                 viewModel.selectedwarehouse = viewModel.warehouses[it]
-            } else {
-                viewModel.selectedwarehouse = null
             }
         }
         selectedVariantId = inputSelectedVariantId
@@ -675,7 +671,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             adapter.clearAllElements()
             adapter.addDataViewModel(viewModels)
             adapter.notifyDataSetChanged()
-            renderActionButton(it, viewModel.selectedwarehouse)
+            renderActionButton(it)
             renderTotalPrice(it, viewModel.selectedwarehouse)
         }
     }
@@ -683,7 +679,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     override fun onChangeQuantity(quantityViewModel: QuantityViewModel) {
         quantity = quantityViewModel.orderQuantity
         selectedProductInfo?.let {
-            renderActionButton(it, viewModel.selectedwarehouse)
+            renderActionButton(it)
             renderTotalPrice(it, viewModel.selectedwarehouse)
         }
         fragmentViewModel.isStateChanged = true
