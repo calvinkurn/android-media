@@ -31,26 +31,14 @@ public class RouteManager {
         return intent;
     }
 
-    public static void route(Context context, String applinkPattern) {
-        ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, applinkPattern);
-    }
-
     public static void route(Context context, String applinkPattern, String... parameter) {
-        String uriString = applinkPattern;
-        Uri uri = Uri.parse(applinkPattern);
-        if (uri.getHost().equals("product") && uri.getScheme().equals("tokopedia"))
-            uriString = UriUtil.buildUri(applinkPattern, parameter);
-
+        String uriString = UriUtil.buildUri(applinkPattern, parameter);
         Intent intent = getIntent(context, uriString);
         if (intent != null) {
             context.startActivity(intent);
         } else {
             ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, uriString);
         }
-    }
-
-    public static Intent getIntent(Context context, String applinkPattern) {
-        return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, applinkPattern);
     }
 
     public static Intent getIntent(Context context, String applinkPattern, String... parameter) {
