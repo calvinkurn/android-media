@@ -155,7 +155,7 @@ public class AddAddressFragment extends BaseDaggerFragment
             this.instanceType = arguments.getInt(EXTRA_INSTANCE_TYPE, INSTANCE_TYPE_DEFAULT);
         }
 
-        if (token == null) {
+        if (token == null && getActivity() != null) {
             getActivity().setResult(ERROR_RESULT_CODE);
             getActivity().finish();
         }
@@ -268,11 +268,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void stopPerformaceMonitoring() {
         performanceMonitoring.stopTrace();
-    }
-
-    @Override
-    public Context context() {
-        return getActivity();
     }
 
     @Override

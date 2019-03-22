@@ -11,8 +11,6 @@ public interface AddAddressContract {
 
     interface View {
 
-        Context context();
-
         boolean isEdit();
 
         boolean isDistrictRecommendation();

@@ -61,9 +61,9 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                 userSession.getUserId(), userSession.getDeviceId(), getParam()
         );
         if (mView.isEdit()) {
-            networkInteractor.editAddress(mView.context(), param, getListener(true));
+            networkInteractor.editAddress(param, getListener(true));
         } else {
-            networkInteractor.addAddress(mView.context(), param, getListener(false));
+            networkInteractor.addAddress(param, getListener(false));
         }
     }
 
