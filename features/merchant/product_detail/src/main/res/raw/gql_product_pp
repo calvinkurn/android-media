@@ -3,5 +3,7 @@ query getProductPurchaseProtection($param: PPItemDetailRequest!){
         protectionAvailable
         title
         subTitle
+        titlePDP
+        subTitlePDP
     }
 }
