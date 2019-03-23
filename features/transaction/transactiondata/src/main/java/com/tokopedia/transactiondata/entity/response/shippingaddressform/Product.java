@@ -125,7 +125,7 @@ public class Product {
     @SerializedName("wholesale_price")
     @Expose
     private List<WholesalePrice> wholesalePrice;
-    @SerializedName("tradein_info")
+    @SerializedName("trade_in_info")
     @Expose
     private TradeInInfo tradeInInfo;
 
