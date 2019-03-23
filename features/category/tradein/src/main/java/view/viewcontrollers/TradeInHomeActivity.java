@@ -92,6 +92,13 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                                 showTnC(R.string.tradein_tnc);
                             }
                         };
+                        mTvGoToProductDetails.setText(R.string.go_to_product_details);
+                        mTvGoToProductDetails.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                finish();
+                            }
+                        });
                         int greenColor = getResources().getColor(R.color.green_nob);
                         ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
                         spannableString.setSpan(foregroundColorSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
@@ -100,11 +107,10 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                         mTvPriceElligible.setVisibility(View.VISIBLE);
                         mTvPriceElligible.setClickable(true);
                         mTvPriceElligible.setMovementMethod(LinkMovementMethod.getInstance());
-                        mTvInitialPrice.setText(String.format("%1$s - %2$s",
-                                CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true),
-                                CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true)));
                     }
-                    mTvInitialPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true));
+                    mTvInitialPrice.setText(String.format("%1$s - %2$s",
+                            CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true),
+                            CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true)));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
