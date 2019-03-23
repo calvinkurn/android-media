@@ -115,6 +115,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             val productInfoP2 = getProductInfoP2(productInfoP1.productInfo.basic.shopID,
                     productInfoP1.productInfo.basic.id, productInfoP1.productInfo.basic.price,
                     productInfoP1.productInfo.basic.condition, productInfoP1.productInfo.basic.name,
+                    productInfoP1.productInfo.category.id,
                     forceRefresh)
             productInfoP2resp.value = productInfoP2
             val domain = productParams.shopDomain ?: productInfoP2.shopInfo?.shopCore?.domain
@@ -138,7 +139,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     }
 
     private suspend fun getProductInfoP2(shopId: Int, productId: Int, productPrice: Float,
-                                         condition: String, productTitle: String,
+                                         condition: String, productTitle: String, categoryId: String,
                                          forceRefresh: Boolean): ProductInfoP2 = withContext(Dispatchers.IO) {
         val productInfoP2 = ProductInfoP2()
 
@@ -184,6 +185,13 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         } else {
             ppParam.userId = 0
         }
+
+        if (!TextUtils.isEmpty(categoryId)) {
+            ppParam.categoryId = categoryId.toInt()
+        } else {
+            ppParam.categoryId = 0
+        }
+
         ppParam.condition = condition.toLowerCase()
         ppParam.productTitle = productTitle
         ppParam.price = productPrice.toInt()

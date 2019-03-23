@@ -20,5 +20,8 @@ data class PPItemDetailRequest(
         var productTitle: String? = null,
 
         @SerializedName("price")
-        var price: Int = 0
+        var price: Int = 0,
+
+        @SerializedName("categoryID")
+        var categoryId: Int = 0
 )
