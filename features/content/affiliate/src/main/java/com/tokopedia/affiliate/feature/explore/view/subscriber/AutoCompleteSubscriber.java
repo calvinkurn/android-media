@@ -36,9 +36,13 @@ public class AutoCompleteSubscriber extends Subscriber<GraphqlResponse> {
 
     @Override
     public void onNext(GraphqlResponse response) {
-        mainView.hideLoading();
         AutoCompleteQuery query = response.getData(AutoCompleteQuery.class);
-        mainView.onSuccessGetAutoComplete(mappingData(query));
+        List<AutoCompleteViewModel> autoCompleteViewModels = mappingData(query);
+
+        mainView.hideLoading();
+        if (!autoCompleteViewModels.isEmpty()) {
+            mainView.onSuccessGetAutoComplete(autoCompleteViewModels);
+        }
     }
 
     private List<AutoCompleteViewModel> mappingData(AutoCompleteQuery query) {

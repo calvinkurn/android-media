@@ -82,6 +82,7 @@ ext {
             laku6tradein      : ":libraries:laku6tradein",
             iris              : ":libraries:iris",
 //            iris              : ":libraries:iris_no_op"
+            cpm              : ":libraries:cpm",
             banner            : ":libraries:banner"
     ]
 }
