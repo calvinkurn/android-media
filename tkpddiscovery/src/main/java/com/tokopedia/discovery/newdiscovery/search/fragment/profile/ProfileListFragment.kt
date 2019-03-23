@@ -60,14 +60,14 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
         if (savedInstanceState == null) {
             onSwipeRefresh()
         }
-        if (userVisibleHint) {
+        if (userVisibleHint && ::searchNavigationListener.isInitialized) {
             searchNavigationListener.hideBottomNavigation()
         }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser && view != null) {
+        if (isVisibleToUser && view != null && ::searchNavigationListener.isInitialized) {
             searchNavigationListener.hideBottomNavigation()
         }
     }
@@ -215,8 +215,17 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
         }
     }
 
-    private fun loadDataFromSavedState(savedInstanceState: Bundle?) {
-        query = savedInstanceState?.getString(EXTRA_QUERY) ?: ""
+    private fun loadDataFromArguments() {
+        query = arguments!!.getString(EXTRA_QUERY)?:""
+    }
+
+    private fun loadDataFromSavedState(savedInstanceState: Bundle) {
+        query = savedInstanceState.getString(EXTRA_QUERY)?:""
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(EXTRA_QUERY, query)
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {

@@ -304,9 +304,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         if (details.getItems() != null && details.getItems().size() > 0) {
             getView().setItems(details.getItems());
         }
-        if (details.getItems() != null && details.getItems().size() > 0) {
-            getView().setItems(details.getItems());
-        }
         if (details.additionalInfo().size() > 0) {
             getView().setAdditionInfoVisibility(View.VISIBLE);
         }

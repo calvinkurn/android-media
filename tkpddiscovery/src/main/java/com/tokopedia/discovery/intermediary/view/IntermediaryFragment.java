@@ -988,6 +988,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
             case HOT_KEY:
                 startActivity(
                         BrowseProductRouter.getHotlistIntent(getContext(), url));
+                break;
             case CATALOG_KEY:
                 startActivity(
                         DetailProductRouter.getCatalogDetailActivity(getContext(), urlParser.getHotAlias()));
