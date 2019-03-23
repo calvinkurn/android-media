@@ -34,7 +34,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -64,6 +63,8 @@ import com.tokopedia.gamification.taptap.utils.TapTapConstants;
 import com.tokopedia.gamification.taptap.utils.TokenMarginUtilTapTap;
 import com.tokopedia.gamification.util.HexValidator;
 import com.tokopedia.gamification.util.TapTapAnalyticsTrackerUtil;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -89,15 +90,11 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     private WidgetTokenViewTapTap widgetTokenView;
     private WidgetCrackResultTapTap widgetCrackResult;
     private ProgressBar progressBar;
-    private AbstractionRouter abstractionRouter;
     private TextView infoTitlePage;
 
-    private ImageView imageRemainingToken;
-    private TextView tvCounter;
-    private FrameLayout flRemainingToken;
+    private ImageView imageShareVia;
     private GamiTapEggHome tokenData;
     private ImageView ivContainer;
-    private long prevTimeStamp;
     private Handler crackTokenSuccessHandler;
     private Toolbar toolbar;
     private TextView toolbarTitle;
@@ -105,6 +102,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     private PerformanceMonitoring fpmRender;
     private PerformanceMonitoring fpmCrack;
     private View rootContainer;
+    private UserSessionInterface userSession;
 
     @Inject
     GamificationDatabaseWrapper gamificationDatabaseWrapper;
@@ -143,12 +141,12 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         buttonDown = rootView.findViewById(R.id.button_return);
         toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
         toolbarTitle.setText(getString(R.string.tap_tap_title));
-        imageRemainingToken = toolbar.findViewById(R.id.image_remaining_token);
-        tvCounter = toolbar.findViewById(R.id.tv_floating_counter);
-        flRemainingToken = toolbar.findViewById(R.id.fl_remaining_token);
+        imageShareVia = toolbar.findViewById(R.id.image_share);
+        userSession = new UserSession(getContext());
         setUpToolBar();
-        abstractionRouter = (AbstractionRouter) getActivity().getApplication();
-
+        imageShareVia.setOnClickListener(view -> {
+            openShareActivity();
+        });
         widgetCrackResult.setListener(new WidgetCrackResultTapTap.WidgetCrackResultListener() {
             @Override
             public void onCrackResultCleared() {
@@ -164,6 +162,16 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         });
 
         return rootView;
+    }
+
+    private void openShareActivity() {
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        String shareBody = String.format(getString(R.string.share_branch_link_body), userSession.getName());
+        sharingIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.share_branch_link_msg_title));
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share_branch_link_msg_title));
+        startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_via_label)));
     }
 
     private void setUpToolBar() {
@@ -199,37 +207,10 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         crackTokenPresenter.detachView();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        // restart the timer (only if the timer was paused in onPaused)
-        if (tokenData != null) {
-//            if (prevTimeStamp > 0) {
-//                long currentTimeStamp = System.currentTimeMillis();
-//                long diffSeconds = (long) ((currentTimeStamp - prevTimeStamp) / 1000L);
-//
-//                long prevTimeRemainingSecond = tokenData.getTimeRemaining().getSeconds();
-//                tokenData.getTimeRemaining().setSeconds(prevTimeRemainingSecond - diffSeconds);
-//
-//                showInfoAndTimerView(tokenData);
-//
-//                prevTimeStamp = 0;
-//            }
-        }
-    }
 
     @Override
     public void onPause() {
         super.onPause();
-        // save the previous time to enable the timer in onResume.
-        if (tokenData != null) {
-//            if (tokenData.getTimeRemaining().getIsShow() && countDownTimer != null) {
-//                prevTimeStamp = System.currentTimeMillis();
-//            } else {
-//                prevTimeStamp = 0;
-//            }
-//            stopTimer();
-        }
         if (crackTokenSuccessHandler != null) {
             crackTokenSuccessHandler.removeCallbacksAndMessages(null);
         }

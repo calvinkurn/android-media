@@ -99,25 +99,15 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginRight="@dimen/dp_16"
-                android:visibility="gone">
+                android:layout_marginEnd="@dimen/dp_16">
 
                 <ImageView
                     android:id="@+id/image_remaining_token"
-                    android:layout_width="@dimen/dp_32"
-                    android:layout_height="@dimen/dp_32"
+                    android:layout_width="@dimen/dp_18"
+                    android:layout_height="@dimen/dp_18"
                     android:layout_margin="@dimen/dp_8"
-                    tools:src="@drawable/ic_empty_egg" />
+                    app:srcCompat="@drawable/ic_share_white" />
 
-                <TextView
-                    android:id="@+id/tv_floating_counter"
-                    style="@style/TextView.Micro10"
-                    android:layout_width="@dimen/dp_22"
-                    android:layout_height="@dimen/dp_22"
-                    android:layout_gravity="top|end"
-                    android:background="@drawable/circle_red_shadow"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    tools:text="99+" />
             </FrameLayout>
 
         </FrameLayout>
