@@ -328,6 +328,8 @@ dependencies {
     implementation project(rootProject.ext.features.transaction)
     implementation project(rootProject.ext.features.seller)
     implementation project(rootProject.ext.features.productDetail)
+    implementation project(rootProject.ext.features.productDetailCommon)
+    implementation project(rootProject.ext.features.productDetailRevamp)
     implementation project(rootProject.ext.features.discovery)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.topAdsSdk)

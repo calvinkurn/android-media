@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/title_bbinfo"
+        android:padding="@dimen/dp_16"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:fontSize="small"
+        app:weight="medium"
+        android:text="@string/label_bb_info_desc"/>
+
+    <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

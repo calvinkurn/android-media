@@ -97,5 +97,5 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
 
     void onNotifierClicked(String url);
 
-    void onClickChangePhoneNumber();
+    void onClickChangePhoneNumber(RecipientAddressModel recipientAddressModel);
 }

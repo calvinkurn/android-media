@@ -33,7 +33,8 @@ public class FollowKolPostGqlUseCase extends GraphqlUseCase {
 
     public GraphqlRequest getRequest(int userId, int status) {
         return new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.query_follow_kol), FollowKolQuery.class, getParam(userId, status).getParameters());
+                R.raw.query_follow_kol), FollowKolQuery.class,
+                getParam(userId, status).getParameters(), false);
     }
 
     public static RequestParams getParam(int userId, int status) {

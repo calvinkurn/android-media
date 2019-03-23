@@ -12,6 +12,7 @@ import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
@@ -306,6 +307,7 @@ public interface ShipmentContract {
 
         void proceedCodCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn, String deviceId);
 
+        Token getKeroToken();
     }
 
 }

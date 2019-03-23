@@ -47,6 +47,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.logisticanalytics.CodAnalytics;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
@@ -150,6 +151,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private EgoldAttributeModel egoldAttributeModel;
     private ShipmentDonationModel shipmentDonationModel;
     private CodModel codData;
+    private Token token;
 
     private List<DataCheckoutRequest> dataCheckoutRequestList;
     private List<CheckPromoCodeCartShipmentRequest.Data> promoCodeCartShipmentRequestDataList;
@@ -409,6 +411,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         setEgoldAttributeModel(cartShipmentAddressFormData.getEgoldAttributes());
+
+        token = new Token();
+        token.setUt(cartShipmentAddressFormData.getKeroUnixTime());
+        token.setDistrictRecommendation(cartShipmentAddressFormData.getKeroDiscomToken());
     }
 
     private boolean checkHaveSameCurrentCodAddress(String cornerId) {
@@ -511,9 +517,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
-                            .subscribe(new GetShipmentAddressFormReloadCheckoutPageBecauseOfErrorSubscriber(
-                                    this, getView())
-                            )
+                            .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
+                                    true, true))
+
             );
         } else {
             requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
@@ -522,17 +528,18 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
-                            .subscribe(new GetShipmentAddressFormReloadCheckoutPageBecauseOfErrorSubscriber(
-                                    this, getView())
-                            )
+                            .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
+                                    true, false))
+
             );
         }
     }
 
+    @Deprecated
     @Override
     public void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn,
                                                     @Nullable String cornerId, String deviceId) {
-        boolean isNeedToRemoveErrorProduct = isNeedToremoveErrorShopProduct();
+        boolean isNeedToRemoveErrorProduct = removeErrorShopProduct();
         if (partialCheckout || isNeedToRemoveErrorProduct) {
             processCheckout(voucherCode, isOneClickShipment, isTradeIn, deviceId);
         } else {
@@ -588,6 +595,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void processCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn, String deviceId) {
+        removeErrorShopProduct();
         CheckoutRequest checkoutRequest = generateCheckoutRequest(
                 !TextUtils.isEmpty(voucherCode) ?
                         voucherCode : "",
@@ -617,7 +625,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
-    private boolean isNeedToremoveErrorShopProduct() {
+    private boolean removeErrorShopProduct() {
         List<ShipmentCartItemModel> newShipmentCartItemModelList = new ArrayList<>();
         for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
             List<CartItemModel> cartItemModels = new ArrayList<>(shipmentCartItemModel.getCartItemModels());
@@ -779,6 +787,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             public void onError(Throwable e) {
                 e.printStackTrace();
                 analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed();
+                getView().showToastError(e.getMessage());
                 processReloadCheckoutPageBecauseOfError(isOneClickShipment, isTradeIn, deviceId);
             }
 
@@ -998,6 +1007,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(SaveShipmentStateUseCase.PARAM_CART_DATA_OBJECT, param);
 
+        getView().showLoading();
         compositeSubscription.add(saveShipmentStateUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1511,5 +1521,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }
             }
         });
+    }
+
+    @Override
+    public Token getKeroToken() {
+        return token;
     }
 }

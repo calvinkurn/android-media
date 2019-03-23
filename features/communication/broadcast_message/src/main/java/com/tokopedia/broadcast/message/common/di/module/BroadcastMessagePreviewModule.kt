@@ -9,7 +9,6 @@ import com.tokopedia.imageuploader.domain.GenerateHostRepository
 import com.tokopedia.imageuploader.domain.UploadImageRepository
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -23,7 +22,7 @@ class BroadcastMessagePreviewModule{
             @ImageUploaderQualifier uploadImageRepository: UploadImageRepository,
             @ImageUploaderQualifier generateHostRepository: GenerateHostRepository,
             @ImageUploaderQualifier gson: Gson,
-            @ImageUploaderQualifier UserSessionInterface: UserSession,
+            @ImageUploaderQualifier userSession: UserSessionInterface,
             @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils): UploadImageUseCase<ImageAttachment.Data> {
         return UploadImageUseCase(uploadImageRepository, generateHostRepository, gson, userSession, ImageAttachment.Data::class.java, imageUploaderUtils)
     }

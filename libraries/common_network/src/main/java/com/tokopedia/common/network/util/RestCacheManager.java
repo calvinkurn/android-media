@@ -3,78 +3,36 @@ package com.tokopedia.common.network.util;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.sql.language.Delete;
-import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
-import com.tokopedia.common.network.data.model.DbMetadata;
-import com.tokopedia.common.network.data.model.RestDatabaseModel;
-import com.tokopedia.common.network.data.model.RestDatabaseModel_Table;
+import com.tokopedia.common.network.data.db.RestDatabaseDao;
+import com.tokopedia.common.network.data.db.RestDatabaseModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RestCacheManager {
 
-    private String Key;
-    private String Value;
-    private long expiredTime = 0;
     private static String TAG = "RestCacheManager";
-
+    private RestDatabaseDao databaseDao;
     public RestCacheManager() {
-
+        databaseDao =  NetworkClient.getRestDatabase().getRestDatabaseDao();
     }
 
-    public RestCacheManager setKey(String key) {
-        this.Key = key;
-        return this;
-    }
-
-    public RestCacheManager setValue(String value) {
-        this.Value = value;
-        return this;
-    }
-
-    /**
-     * @param duration value in second
-     * @return
-     */
-    public RestCacheManager setCacheDuration(long duration) {
-        Log.d(TAG, "Storing expired time: " + (System.currentTimeMillis()));
-        this.expiredTime = System.currentTimeMillis() + (duration * 1000);
-        return this;
-    }
-
-    public long getCacheDuration(int duration) {
-        return System.currentTimeMillis() / 1000L + (duration * 1000);
-    }
-
-    public void store() {
-        RestDatabaseModel simpleDB = new RestDatabaseModel();
-        simpleDB.key = Key;
-        simpleDB.value = Value;
-        simpleDB.expiredTime = expiredTime;
-        simpleDB.save();
-    }
-
-    public void store(RestDatabaseModel data) {
-
-    }
-
-    public void save(String key, String value, long durationInSeconds) {
+    public void save(String key, String value, long durationInMilliSeconds) {
         RestDatabaseModel simpleDB = new RestDatabaseModel();
         simpleDB.key = key;
         simpleDB.value = value;
-        simpleDB.expiredTime = System.currentTimeMillis() + durationInSeconds * 1000L;
-        simpleDB.save();
+        simpleDB.expiredTime = System.currentTimeMillis() + durationInMilliSeconds;
+        databaseDao.insertSingle(simpleDB);
     }
 
     public void delete(String key) {
-        new Delete().from(RestDatabaseModel.class).where(RestDatabaseModel_Table.key.is(key)).execute();
+        RestDatabaseModel simpleDB = new RestDatabaseModel();
+        simpleDB.key = key;
+        databaseDao.delete(simpleDB);
     }
 
     public String get(String key) {
-        RestDatabaseModel cache = new Select().from(RestDatabaseModel.class)
-                .where(RestDatabaseModel_Table.key.is(key)).querySingle();
+        RestDatabaseModel cache = databaseDao.getRestModel(key);
         if (cache == null)
             return null;
         if (isExpired(cache.expiredTime)) {
@@ -85,30 +43,25 @@ public class RestCacheManager {
     }
 
     public boolean isExpired(String key) {
-        RestDatabaseModel cache = new Select().from(RestDatabaseModel.class)
-                .where(RestDatabaseModel_Table.key.is(key)).querySingle();
+        RestDatabaseModel cache = databaseDao.getRestModel(key);
         return cache == null || isExpired(cache.expiredTime);
     }
 
     public void bulkInsert(List<String> key, List<String> value) {
-        final DatabaseWrapper database = FlowManager.getDatabase(DbMetadata.NAME).getWritableDatabase();
-        database.beginTransaction();
+        List<RestDatabaseModel> models = new ArrayList<>();
         try {
             for (int i = 0; i < key.size(); i++) {
                 RestDatabaseModel simpleDB = new RestDatabaseModel();
                 simpleDB.key = key.get(i);
                 simpleDB.value = value.get(i);
-                simpleDB.save();
+                models.add(simpleDB);
             }
-            database.setTransactionSuccessful();
-        } finally {
-            database.endTransaction();
-        }
+            databaseDao.insertMultiple(models);
+        } catch (Exception e){e.getLocalizedMessage();}
     }
 
     public String getValueString(String key) {
-        RestDatabaseModel cache = new Select().from(RestDatabaseModel.class)
-                .where(RestDatabaseModel_Table.key.is(key)).querySingle();
+        RestDatabaseModel cache = databaseDao.getRestModel(key);
         if (cache == null)
             return null;
         if (isExpired(cache.expiredTime)) {
@@ -139,12 +92,11 @@ public class RestCacheManager {
     }
 
     public void deleteAll() {
-        new Delete().from(RestDatabaseModel.class).execute();
+        databaseDao.deleteTable();
     }
 
     public static boolean isAvailable(String key) {
-        RestDatabaseModel cache = new Select().from(RestDatabaseModel.class)
-                .where(RestDatabaseModel_Table.key.is(key)).querySingle();
+        RestDatabaseModel cache = NetworkClient.getRestDatabase().getRestDatabaseDao().getRestModel(key);
         return cache != null;
     }
 }

@@ -28,10 +28,6 @@ public interface ICheckoutModuleRouter {
     Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
             boolean couponActive, String additionalStringData, boolean isOneClickShipment, int pageTracking);
 
-    Intent checkoutModuleRouterGetProductDetailIntent(String productId);
-
-    Intent checkoutModuleRouterGetProductDetailIntentForTopAds(Product product);
-
     Intent checkoutModuleRouterGetTransactionSummaryIntent();
 
     void checkoutModuleRouterResetBadgeCart();
@@ -41,8 +37,6 @@ public interface ICheckoutModuleRouter {
     Intent checkoutModuleRouterGetShopInfoIntent(String shopId);
 
     Intent checkoutModuleRouterGetWhislistIntent();
-
-    Intent getManageProfileIntent(Context context);
 
     Interceptor checkoutModuleRouterGetCartCheckoutChuckInterceptor();
 

@@ -124,7 +124,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(@NonNull View textView) {
-                shipmentAdapterActionListener.onClickChangePhoneNumber();
+                shipmentAdapterActionListener.onClickChangePhoneNumber(recipientAddressModel);
             }
 
             @Override
