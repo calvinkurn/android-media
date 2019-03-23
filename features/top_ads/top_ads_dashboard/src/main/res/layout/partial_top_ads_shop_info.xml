@@ -35,9 +35,13 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@string/label_top_ads_impression" />
 
-        <TextView
+        <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/text_view_deposit_desc"
-            style="@style/TextView.Micro.BlackSecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fontSize="micro"
+            app:textViewTheme="lightSecondary"
+            android:drawablePadding="@dimen/dp_5"
             android:text="@string/top_ads_desc_credit_label"
             app:layout_constraintLeft_toLeftOf="@+id/text_view_shop_title"
             app:layout_constraintStart_toStartOf="@+id/text_view_shop_title"

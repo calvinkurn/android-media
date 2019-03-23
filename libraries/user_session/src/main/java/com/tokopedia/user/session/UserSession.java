@@ -24,6 +24,7 @@ public class UserSession implements UserSessionInterface {
     private static final String PROFILE_PICTURE = "PROFILE_PICTURE";
     private static final String EMAIL = "EMAIL";
     private static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
+    private static final String IS_AFFILIATE = "is_affiliate";
     private static final String PHONE_NUMBER = "PHONE_NUMBER";
     private static final String GC_TOKEN = "GC_TOKEN";
 
@@ -48,6 +49,7 @@ public class UserSession implements UserSessionInterface {
     private static final String IS_FIRST_TIME_USER_NEW_ONBOARDING = "IS_FIRST_TIME_NEW_ONBOARDING";
     private static final String HAS_PASSWORD = "HAS_PASSWORD";
     private static final String HAS_SHOWN_SALDO_WARNING = "HAS_SHOWN_SALDO_WARNING";
+    private static final String HAS_SHOWN_SALDO_INTRO_PAGE = "HAS_SHOWN_SALDO_INTRO_PAGE";
 
     private Context context;
 
@@ -166,9 +168,19 @@ public class UserSession implements UserSessionInterface {
         return sharedPrefs.getBoolean(IS_MSISDN_VERIFIED, false);
     }
 
+    public boolean isAffiliate() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getBoolean(IS_AFFILIATE, false);
+    }
+
     public boolean hasShownSaldoWithdrawalWarning() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getBoolean(HAS_SHOWN_SALDO_WARNING, false);
+    }
+
+    public boolean hasShownSaldoIntroScreen() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getBoolean(HAS_SHOWN_SALDO_INTRO_PAGE, false);
     }
 
     public String getPhoneNumber() {
@@ -343,6 +355,7 @@ public class UserSession implements UserSessionInterface {
         editor.putString(EMAIL, email);
         editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
         editor.putBoolean(HAS_SHOWN_SALDO_WARNING, false);
+        editor.putBoolean(HAS_SHOWN_SALDO_INTRO_PAGE, false);
         editor.putBoolean(IS_GOLD_MERCHANT, isGoldMerchant);
         editor.putString(PHONE_NUMBER, phoneNumber);
 
@@ -354,6 +367,14 @@ public class UserSession implements UserSessionInterface {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
+        editor.apply();
+    }
+
+    @Override
+    public void setIsAffiliateStatus(boolean isAffiliate) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putBoolean(IS_AFFILIATE, isAffiliate);
         editor.apply();
     }
 
@@ -392,6 +413,14 @@ public class UserSession implements UserSessionInterface {
     }
 
     @Override
+    public void setSaldoIntroPageStatus(boolean value) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putBoolean(HAS_SHOWN_SALDO_INTRO_PAGE, value);
+        editor.apply();
+    }
+
+    @Override
     public void setProfilePicture(String profilePicture) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -417,6 +446,8 @@ public class UserSession implements UserSessionInterface {
         editor.putBoolean(IS_LOGIN, false);
         editor.putBoolean(IS_MSISDN_VERIFIED, false);
         editor.putBoolean(HAS_SHOWN_SALDO_WARNING, false);
+        editor.putBoolean(HAS_SHOWN_SALDO_INTRO_PAGE, false);
+        editor.putBoolean(IS_AFFILIATE, false);
         editor.putString(PHONE_NUMBER, null);
         editor.putString(REFRESH_TOKEN, null);
         editor.putString(TOKEN_TYPE, null);

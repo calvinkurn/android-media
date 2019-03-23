@@ -539,6 +539,8 @@ open class PlayViewStateImpl(
                 }
                 (pinnedMessageContainer.findViewById(R.id.message) as TextView).text =
                         it.title
+                (pinnedMessageContainer.findViewById(R.id.nickname) as TextView).text =
+                        channelInfoViewModel.adminName
                 pinnedMessageContainer.setOnClickListener { view ->
                     channelInfoViewModel.pinnedMessageViewModel?.let {
                         analytics.eventClickAdminPinnedMessage(
@@ -1087,7 +1089,7 @@ open class PlayViewStateImpl(
     private fun showInfoBottomSheet(channelInfoViewModel: ChannelInfoViewModel,
                                     onDismiss: () -> Unit) {
         if (!::welcomeInfoDialog.isInitialized) {
-            welcomeInfoDialog = CloseableBottomSheetDialog.createInstance(view.context)
+            welcomeInfoDialog = CloseableBottomSheetDialog.createInstanceRounded(view.context)
         }
 
         welcomeInfoDialog.setOnDismissListener {
@@ -1105,7 +1107,7 @@ open class PlayViewStateImpl(
             }
         }
 
-        welcomeInfoDialog.setContentView(welcomeInfoView, "")
+        welcomeInfoDialog.setCustomContentView(welcomeInfoView, "", false)
         view.setOnClickListener(null)
         welcomeInfoDialog.show()
 
@@ -1145,7 +1147,7 @@ open class PlayViewStateImpl(
 
     private fun showPinnedMessage(viewModel: ChannelInfoViewModel) {
         if (!::pinnedMessageDialog.isInitialized) {
-            pinnedMessageDialog = CloseableBottomSheetDialog.createInstance(view.context)
+            pinnedMessageDialog = CloseableBottomSheetDialog.createInstanceRounded(view.context)
         }
 
         val pinnedMessageView = createPinnedMessageView(viewModel)
@@ -1159,7 +1161,7 @@ open class PlayViewStateImpl(
             }
         }
 
-        pinnedMessageDialog.setContentView(pinnedMessageView, "Pinned Chat")
+        pinnedMessageDialog.setCustomContentView(pinnedMessageView, "", false)
         pinnedMessageDialog.show()
 
     }
@@ -1167,9 +1169,7 @@ open class PlayViewStateImpl(
     private fun createPinnedMessageView(channelInfoViewModel: ChannelInfoViewModel): View {
         val view = activity.layoutInflater.inflate(R.layout
                 .layout_pinned_message_expanded, null)
-        ImageHandler.loadImageCircle2(activity, view.findViewById(R.id.pinned_message_avatar) as ImageView, channelInfoViewModel!!.adminPicture, R.drawable.ic_loading_toped_new)
-        (view.findViewById<View>(R.id.chat_header).findViewById(R.id.nickname) as TextView).text =
-                channelInfoViewModel.adminName
+        (view.findViewById(R.id.nickname) as TextView).text = getStringResource(R.string.from) + " "+ channelInfoViewModel.adminName
         channelInfoViewModel.pinnedMessageViewModel?.let {
             (view.findViewById(R.id.message) as TextView).text = it.message
             ImageHandler.loadImage(activity, view.findViewById(R.id.thumbnail), it.thumbnail, R

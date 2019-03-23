@@ -46,7 +46,9 @@ class DynamicButtonsMapper @Inject constructor() : Func1<Response<DataResponse<B
                         pojo.contentLinkUrl,
                         pojo.contentImageUrl,
                         pojo.redDot,
-                        pojo.tooltip))
+                        pojo.tooltip,
+                        pojo.tooltipDuration,
+                        pojo.priority))
             }
         }
         return buttonList

@@ -80,4 +80,11 @@ public class RemoteConfigKey {
     public static final String APP_ENTRY_CHALLENGE_BARU = "app_entry_challenges_baru";
 
     public static final String CHECKOUT_TEMPLATE_SETTING_TOGGLE = "android_customer_enable_express_checkout_template_setting";
+
+    public static final String APP_ENABLE_SALDO_SPLIT = "app_enable_saldo_split";
+
+    public static final String MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL = "main_app_disable_new_product_detail";
+    public static final String OVO_ENABLE_FLAG = "app_enable_ovo_pay_by_qr";
+    public static final String OVO_QR_MIN_AMOUNT = "app_ovo_min_balance";
+    public static final String OVO_QR_MAX_AMOUNT = "app_ovo_max_balance";
 }

@@ -2,13 +2,13 @@ package com.tokopedia.product.manage.list.view.presenter;
 
 import android.accounts.NetworkErrorException;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
 import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
 import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase;
+import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.product.manage.list.domain.DeleteProductUseCase;
 import com.tokopedia.product.manage.list.domain.EditPriceProductUseCase;
 import com.tokopedia.product.manage.list.domain.MultipleDeleteProductUseCase;
@@ -16,19 +16,17 @@ import com.tokopedia.product.manage.list.domain.model.MultipleDeleteProductModel
 import com.tokopedia.product.manage.list.view.listener.ProductManageView;
 import com.tokopedia.product.manage.list.view.mapper.GetProductListManageMapperView;
 import com.tokopedia.product.manage.list.view.model.ProductListManageModelView;
-import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
 import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
 import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
-import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.topads.common.data.model.DataDeposit;
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +49,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     private final TopAdsGetShopDepositGraphQLUseCase topAdsGetShopDepositGraphQLUseCase;
     private final GetFeatureProductListUseCase getFeatureProductListUseCase;
     private SetCashbackUseCase setCashbackUseCase;
-    private final UserSession userSession;
+    private final UserSessionInterface userSession;
 
     public ProductManagePresenterImpl(GetShopInfoUseCase getShopInfoUseCase,
                                       GetProductListSellingUseCase getProductListSellingUseCase,
@@ -59,7 +57,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
                                       DeleteProductUseCase deleteProductUseCase,
                                       GetProductListManageMapperView getProductListManageMapperView,
                                       MultipleDeleteProductUseCase multipleDeleteProductUseCase,
-                                      UserSession userSession,
+                                      UserSessionInterface userSession,
                                       TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,
                                       TopAdsGetShopDepositGraphQLUseCase topAdsGetShopDepositGraphQLUseCase,
                                       GetFeatureProductListUseCase getFeatureProductListUseCase,

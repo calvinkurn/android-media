@@ -8,6 +8,13 @@
         tools:node="remove"
         tools:selector="com.google.firebase"/>
 
+    <uses-permission
+        android:name="android.permission.WRITE_CALL_LOG"
+        tools:node="remove"/>
+    <uses-permission
+        android:name="android.permission.READ_CALL_LOG"
+        tools:node="remove"/>
+
     <uses-sdk tools:overrideLibrary="com.tokopedia.core"/>
 
     <application
@@ -79,6 +86,9 @@
         <meta-data
             android:name="APP_ID"
             android:value="@string/key_moengage" />
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
         <activity
             android:name=".deeplink.DeepLinkActivity"
             android:hardwareAccelerated="true"
@@ -200,6 +210,12 @@
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider411083689235522"
             android:exported="true" />
+
+        <activity
+            android:name="com.tokopedia.saldodetails.activity.SaldoDepositActivity"
+            android:label="@string/title_activity_people_deposit"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".deeplink.DeepLinkHandlerActivity"
