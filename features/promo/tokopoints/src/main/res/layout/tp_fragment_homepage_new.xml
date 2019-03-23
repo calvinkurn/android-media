@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -23,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+
             <android.support.design.widget.AppBarLayout
                 android:id="@+id/app_bar"
                 android:layout_width="match_parent"
@@ -30,30 +32,141 @@
                 android:background="@color/white"
                 app:elevation="0dp">
 
-                <include layout="@layout/tp_content_homepage_new" />
+                <android.support.design.widget.CollapsingToolbarLayout
+                    android:id="@+id/collapsing_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    app:contentScrim="@color/white"
+                    app:expandedTitleGravity="left|bottom"
+                    app:expandedTitleMarginBottom="@dimen/dp_8"
+                    app:expandedTitleMarginStart="@dimen/dp_16"
+                    app:expandedTitleTextAppearance="@style/ToolbarExpandedTitle3"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_scrollFlags="scroll">
+
+                        <ImageView
+                            android:id="@+id/img_bg_header"
+                            android:layout_width="0dp"
+                            android:layout_height="192dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/temp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/img_egg"
+                            android:layout_width="@dimen/dp_48"
+                            android:layout_height="@dimen/dp_48"
+                            android:layout_marginStart="@dimen/tp_margin_medium"
+                            android:layout_marginLeft="@dimen/tp_margin_medium"
+                            android:layout_marginTop="80dp"
+                            android:contentDescription="@string/tp_label_see_loyalty"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/text_membership_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/tp_margin_regular"
+                            android:layout_marginLeft="@dimen/tp_margin_regular"
+                            android:layout_marginTop="@dimen/dp_4"
+                            android:fontFamily="sans-serif-medium"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/tp_text_size_medium"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toEndOf="@+id/img_egg"
+                            app:layout_constraintTop_toTopOf="@+id/img_egg"
+                            tools:text="Gulfikar Rinjani" />
+
+                        <TextView
+                            android:id="@+id/text_membership_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/tp_margin_regular"
+                            android:layout_marginLeft="@dimen/tp_margin_regular"
+                            android:layout_marginTop="@dimen/dp_12"
+                            android:layout_marginBottom="@dimen/dp_4"
+                            android:drawableRight="@drawable/ic_arrow_right_grey"
+                            android:drawablePadding="@dimen/dp_16"
+                            android:drawableTint="@color/white"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:paddingEnd="@dimen/tp_padding_regular"
+                            android:paddingRight="@dimen/tp_padding_regular"
+                            android:textColor="@color/colorGray"
+                            android:textSize="@dimen/tp_text_size_xsmall"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="@+id/img_egg"
+                            app:layout_constraintStart_toEndOf="@+id/img_egg"
+                            app:layout_constraintTop_toBottomOf="@+id/text_membership_label"
+                            tools:text="Classic Member" />
+
+                        <android.support.v7.widget.CardView
+                            android:id="@+id/card_point"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/dp_16"
+                            app:cardCornerRadius="8dp"
+                            app:cardUseCompatPadding="true"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/text_membership_value">
+
+                            <include layout="@layout/tp_home_point" />
+
+
+                        </android.support.v7.widget.CardView>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintTop_toBottomOf="@id/card_point"
+                            app:layout_scrollFlags="scroll">
+
+                            <include layout="@layout/tp_layout_section_category_parent" />
+
+                            <include layout="@layout/tp_layout_ticker" />
+                        </LinearLayout>
+
+
+                    </android.support.constraint.ConstraintLayout>
+
+                    <android.support.v7.widget.Toolbar
+                        android:id="@+id/toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        app:contentInsetLeft="0dp"
+                        app:contentInsetStart="0dp"
+                        app:contentInsetStartWithNavigation="0dp"
+                        app:layout_collapseMode="pin" />
+
+                </android.support.design.widget.CollapsingToolbarLayout>
+
+
+                <include layout="@layout/tp_content_homepage_pager" />
 
             </android.support.design.widget.AppBarLayout>
 
-            <LinearLayout
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/view_pager_promos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-                <android.support.design.widget.AppBarLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white">
-
-                    <include layout="@layout/tp_content_homepage_pager" />
-
-                </android.support.design.widget.AppBarLayout>
-
-                <android.support.v4.view.ViewPager
-                    android:id="@+id/view_pager_promos"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
             <LinearLayout

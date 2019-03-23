@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -37,6 +38,7 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
     protected void onCreate(Bundle savedInstanceState) {
         mUserSession = new UserSession(getApplicationContext());
         super.onCreate(savedInstanceState);
+        toolbar.setVisibility(View.GONE);
         updateTitle(getString(R.string.tp_title_tokopoints));
     }
 
