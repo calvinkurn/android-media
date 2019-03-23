@@ -16,6 +16,7 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItemTag
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
 
 /**
  * @author by yfsx on 22/03/19.
@@ -72,7 +73,7 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
             productPrice = itemView.findViewById(R.id.productPrice)
             productTag = itemView.findViewById(R.id.productTag)
             productTagBackground = itemView.findViewById(R.id.productTagBackground)
-            ImageHandler.loadImageRounded2(itemView.context, productImage, item.thumbnail)
+            productImage.loadImageRounded(item.thumbnail)
             productPrice.text = item.price
             if (item.tags.isNotEmpty()) {
                 productTagBackground.visibility = View.VISIBLE
