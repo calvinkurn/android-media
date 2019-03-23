@@ -88,11 +88,11 @@ public class RemoteConfigKey {
 
     public static final String NONB1_TTL = "nonb_1_ttl";
     public static final String NONB1_DESC = "nonb_1_dsc";
-    public static final String NONB2_TTL = "nonb_2_tte";
+    public static final String NONB2_TTL = "nonb_2_ttl";
     public static final String NONB2_DESC = "nonb_2_dsc";
-    public static final String NONB3_TTL = "nonb_3_tte";
+    public static final String NONB3_TTL = "nonb_3_ttl";
     public static final String NONB3_DESC = "nonb_3_dsc";
-    public static final String NONB4_TTL = "nonb_4_tte";
+    public static final String NONB4_TTL = "nonb_4_ttl";
     public static final String NONB4_DESC = "nonb_4_dsc";
     public static final String NONB5_TTL = "nonb_5_ttl";
     public static final String NONB5_DESC = "nonb_5_dsc";
