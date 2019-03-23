@@ -216,11 +216,15 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     private fun loadDataFromArguments() {
-        query = arguments!!.getString(EXTRA_QUERY)?:""
+        if(arguments != null) {
+            query = arguments!!.getString(EXTRA_QUERY) ?: ""
+        }
     }
 
-    private fun loadDataFromSavedState(savedInstanceState: Bundle) {
-        query = savedInstanceState.getString(EXTRA_QUERY)?:""
+    private fun loadDataFromSavedState(savedInstanceState: Bundle?) {
+        if(savedInstanceState != null) {
+            query = savedInstanceState.getString(EXTRA_QUERY)?:""
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
