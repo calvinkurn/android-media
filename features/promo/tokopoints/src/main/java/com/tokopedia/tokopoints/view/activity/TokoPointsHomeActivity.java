@@ -21,6 +21,7 @@ import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.fragment.HomepageFragment;
+import com.tokopedia.tokopoints.view.fragment.TokoPointsHomeFragmentNew;
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
@@ -41,8 +42,9 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
 
     @Override
     protected Fragment getNewFragment() {
+        //TODO firebase configuration to on-off new design
         if (mUserSession.isLoggedIn()) {
-            return HomepageFragment.newInstance();
+            return TokoPointsHomeFragmentNew.newInstance();
         } else {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
             return null;

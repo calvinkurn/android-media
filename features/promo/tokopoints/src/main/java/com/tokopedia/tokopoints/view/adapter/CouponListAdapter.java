@@ -78,7 +78,8 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
     @Override
     public void onBindViewHolder(CouponListAdapter.ViewHolder holder, int position) {
         final CouponValueEntity item = mItems.get(position);
-        ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getThumbnailUrlMobile());
+        ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner,
+                TextUtils.isEmpty(item.getThumbnailUrlMobile()) ? item.getImageUrlMobile() : item.getThumbnailUrlMobile());
 
         if (item.getUsage() != null) {
             holder.label.setVisibility(View.VISIBLE);
@@ -109,7 +110,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
             bundle.putString(CommonConstant.EXTRA_COUPON_CODE, mItems.get(position).getCode());
             holder.imgBanner.getContext().startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
 
-            sendClickEvent(holder.imgBanner.getContext(),item ,position);
+            sendClickEvent(holder.imgBanner.getContext(), item, position);
         });
 
 

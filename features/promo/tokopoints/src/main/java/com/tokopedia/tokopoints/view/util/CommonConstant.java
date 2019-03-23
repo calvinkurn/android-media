@@ -89,4 +89,25 @@ public interface CommonConstant {
         String HISTORY = WEB_DOMAIN_MOBILE + "tokopoints/mobile/history";
         String INFO = WEB_DOMAIN_MOBILE + "tokopoints/info";
     }
+
+    interface SectionLayoutType {
+        String CATEGORY = "category";
+        String TICKER = "ticker";
+        String TAB = "tab";
+        String COUPON = "coupon";
+        String CATALOG = "catalog";
+        String BANNER = "banner";
+    }
+
+    interface BannerType {
+        String BANNER_1_1 = "full_width_1:1";
+        String BANNER_2_1 = "full_width_2:1";
+        String BANNER_3_1 = "full_width_3:1";
+        String CAROUSEL_1_1 = "carousel_1:1";
+        String CAROUSEL_2_1 = "carousel_2:1";
+        String CAROUSEL_3_1 = "carousel_3:1";
+        String COLUMN_3_1_BY_1 = "3_column_1:1";
+        String COLUMN_2_1_BY_1 = "2_column_1:1";
+        String COLUMN_2_3_BY_4 = "2_column_3:4";
+    }
 }

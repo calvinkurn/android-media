@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="64dp"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/dp_2"
+    android:layout_marginRight="@dimen/dp_2"
+    android:layout_marginBottom="@dimen/dp_4"
+    android:orientation="vertical"
+    app:cardCornerRadius="@dimen/dp_4"
+    app:cardUseCompatPadding="true">
+
+    <ImageView
+        android:id="@+id/iv_bg"
+        android:layout_width="@dimen/dep_64"
+        android:layout_height="@dimen/dp_64"
+        android:background="@drawable/ic_squircle"
+        android:padding="@dimen/dp_8" />
+
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:maxLines="2"
+        android:paddingStart="@dimen/dp_2"
+        android:paddingLeft="@dimen/dp_2"
+        android:paddingEnd="@dimen/dp_2"
+        android:paddingRight="@dimen/dp_2"
+        android:textColor="#f531353b"
+        android:textSize="10sp"
+        tools:text="Kupon Membership" />
+</LinearLayout>
