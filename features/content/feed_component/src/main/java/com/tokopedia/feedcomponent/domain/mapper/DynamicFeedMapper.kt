@@ -6,16 +6,18 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.BuildConfig
 import com.tokopedia.feedcomponent.data.pojo.FeedQuery
 import com.tokopedia.feedcomponent.data.pojo.TemplateData
+import com.tokopedia.feedcomponent.data.pojo.feed.Cardpost
 import com.tokopedia.feedcomponent.data.pojo.feed.Feed
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Body
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Media
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Video
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
 import com.tokopedia.feedcomponent.data.pojo.template.Template
+import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel
+import com.tokopedia.feedcomponent.view.viewmodel.data.*
+import com.tokopedia.feedcomponent.view.viewmodel.data.template.TemplateFooterViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
@@ -88,6 +90,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     }
                     TYPE_CARDPOST -> {
                         if (feed.activity != ACTIVITY_TOPADS) {
+                            feed
                             mapCardPost(posts, feed, templateData.template)
                         }
                     }
@@ -222,7 +225,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
     }
 
     private fun mapCardPost(posts: MutableList<Visitable<*>>, feed: Feed, template: Template) {
-        val contentList: MutableList<BasePostViewModel> = mapPostContent(feed.content.cardpost.body, template)
+        val contentList: MutableList<BasePostViewModel> = mapPostContent(feed.content.cardpost, template)
         val trackingPostModel = mapPostTracking(feed)
 
         if (shouldAddCardPost(feed, contentList)) {
@@ -254,16 +257,16 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 isGridNotEmpty
     }
 
-    private fun mapPostContent(body: Body, template: Template): MutableList<BasePostViewModel> {
+    private fun mapPostContent(cardPost: Cardpost, template: Template): MutableList<BasePostViewModel> {
         val list: MutableList<BasePostViewModel> = ArrayList()
 
-        for (media in body.media) {
+        for (media in cardPost.body.media) {
             when (media.type) {
                 CONTENT_IMAGE -> list.add(mapPostImage(media))
                 CONTENT_YOUTUBE -> list.add(mapPostYoutube(media))
                 CONTENT_VOTE -> list.add(mapPostPoll(media))
                 CONTENT_GRID -> list.add(mapPostGrid(media, template))
-                CONTENT_VIDEO -> list.add(mapPostVideo(media))
+                CONTENT_VIDEO -> list.add(mapPostVideo(media, cardPost, template))
             }
         }
 
@@ -303,11 +306,14 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         )
     }
 
-    private fun mapPostVideo(media: Media): VideoViewModel {
+    private fun mapPostVideo(media: Media, cardPost: Cardpost, template: Template): VideoViewModel {
         return VideoViewModel(
                 media.id,
                 media.thumbnail,
-                media.videoList.get(0).url
+                media.videoList.get(0).url,
+                mapHeaderViewModel(cardPost.header),
+                mapFooterViewModel(cardPost.footer),
+                mapTemplateFooterViewModel(template.cardpost.footer)
         )
     }
 
@@ -387,5 +393,82 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
             ))
         }
         return trackingList
+    }
+
+    private fun mapHeaderViewModel(header: Header): HeaderViewModel {
+        return HeaderViewModel(
+                header.avatar,
+                header.avatarApplink,
+                header.avatarBadgeImage,
+                header.avatarDate,
+                header.avatarDescription,
+                header.avatarTitle,
+                header.avatarWeblink,
+                header.deletable,
+                header.editable,
+                mapFollowCta(header.followCta),
+                header.reportable
+        )
+    }
+
+    private fun mapFollowCta(followCta: FollowCta): FollowCtaViewModel{
+        return FollowCtaViewModel(
+                followCta.authorID,
+                followCta.authorType,
+                followCta.isFollow,
+                followCta.textFalse,
+                followCta.textTrue
+        )
+    }
+
+    private fun mapFooterViewModel(footer: Footer): FooterViewModel {
+        return FooterViewModel(
+                mapLike(footer.like),
+                mapComment(footer.comment),
+                mapButtonCta(footer.buttonCta),
+                mapShare(footer.share)
+        )
+    }
+
+    private fun mapLike(like: Like): LikeViewModel {
+        return LikeViewModel(
+                like.fmt,
+                like.value,
+                like.isChecked
+        )
+    }
+
+    private fun mapComment(comment: Comment): CommentViewModel {
+        return CommentViewModel(
+                comment.fmt,
+                comment.value
+        )
+    }
+
+    private fun mapButtonCta(buttonCta: ButtonCta): ButtonCtaViewModel {
+        return ButtonCtaViewModel(
+                buttonCta.text,
+                buttonCta.appLink,
+                buttonCta.webLink
+        )
+    }
+
+    private fun mapShare(share: Share): ShareViewModel {
+        return ShareViewModel(
+                share.description,
+                share.imageUrl,
+                share.text,
+                share.title,
+                share.url
+        )
+    }
+
+    private fun mapTemplateFooterViewModel(templateFooter: TemplateFooter): TemplateFooterViewModel {
+        return TemplateFooterViewModel(
+                templateFooter.like,
+                templateFooter.comment,
+                templateFooter.share,
+                templateFooter.ctaLink
+        )
     }
 }

@@ -40,6 +40,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking;
+import com.tokopedia.feedcomponent.view.activity.VideoPlayerActivity;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
@@ -52,6 +53,9 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopView
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel;
+import com.tokopedia.feedcomponent.view.viewmodel.data.FooterViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.data.HeaderViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.data.template.TemplateFooterViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel;
@@ -106,7 +110,6 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.videoplayer.view.activity.VideoPlayerActivity;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -1921,8 +1924,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String url) {
-        startActivity(VideoPlayerActivity.Companion.getInstance(getActivity(), url));
+    public void onVideoPlayerClicked(int positionInFeed,
+                                     int contentPosition,
+                                     @NotNull String url,
+                                     @NotNull HeaderViewModel header,
+                                     @NotNull FooterViewModel footer,
+                                     @NotNull TemplateFooterViewModel templateFooter) {
+        startActivity(VideoPlayerActivity.Companion.getInstance(
+                getActivity(),
+                url,
+                header,
+                footer,
+                templateFooter));
     }
 
     private void goToContentReport(int contentId) {

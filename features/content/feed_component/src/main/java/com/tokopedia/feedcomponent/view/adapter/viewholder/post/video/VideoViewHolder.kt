@@ -4,6 +4,9 @@ import android.os.Build
 import android.view.ViewTreeObserver
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
+import com.tokopedia.feedcomponent.view.viewmodel.data.FooterViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.data.HeaderViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.data.template.TemplateFooterViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -18,7 +21,13 @@ class VideoViewHolder(private val listener: VideoViewListener): BasePostViewHold
 
     override fun bind(element: VideoViewModel) {
         itemView.image.setOnClickListener {
-           listener.onVideoPlayerClicked(element.positionInFeed, pagerPosition, element.url)
+           listener.onVideoPlayerClicked(
+                   element.positionInFeed,
+                   pagerPosition,
+                   element.url,
+                   element.header,
+                   element.footer,
+                   element.templateFooter)
         }
         itemView.image.viewTreeObserver.addOnGlobalLayoutListener(
                 object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -41,7 +50,12 @@ class VideoViewHolder(private val listener: VideoViewListener): BasePostViewHold
 
     interface VideoViewListener {
 
-        fun onVideoPlayerClicked(positionInFeed: Int, contentPosition: Int, url: String)
+        fun onVideoPlayerClicked(positionInFeed: Int,
+                                 contentPosition: Int,
+                                 url: String,
+                                 header: HeaderViewModel,
+                                 footer: FooterViewModel,
+                                 templateFooter: TemplateFooterViewModel)
 
         fun onAffiliateTrackClicked(trackList : MutableList<TrackingViewModel>)
     }

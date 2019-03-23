@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize">
+
+        <ImageView
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:src="@drawable/ic_close_white_24"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            />
+    </LinearLayout>
+
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:visibility="visible"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/authorImage"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:background="@drawable/bg_circle_gray_border"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription"
+            tools:src="@tools:sample/avatars"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/authorBadge"
+            android:layout_width="@dimen/dp_14"
+            android:layout_height="@dimen/dp_14"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:visibility="visible"
+            app:layout_constraintStart_toEndOf="@+id/authorImage"
+            app:layout_constraintTop_toTopOf="@+id/authorTitle"
+            app:layout_constraintBottom_toBottomOf="@+id/authorTitle"
+            tools:src="@tools:sample/avatars"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/authorTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:lines="1"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/authorSubtitile"
+            app:layout_constraintEnd_toStartOf="@+id/headerAction"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/authorBadge"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Febrian Putra Muhammad Ilham Jamaludin Andhika Kuma Djaffri Febby Mulia"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/authorSubtitile"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:lines="1"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_10"
+            android:textStyle="normal"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/headerAction"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/authorImage"
+            app:layout_constraintTop_toBottomOf="@+id/authorTitle"
+            tools:text="12 October pukul 13.55 2018 akhir kiamat semua dunia akan musnah"
+            tools:visibility="visible" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <com.tokopedia.videoplayer.view.widget.VideoPlayerView
+        android:id="@+id/videoView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_16">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_alignParentLeft="true">
+
+            <ImageView
+                android:id="@+id/likeIcon"
+                android:layout_width="@dimen/dp_18"
+                android:layout_height="@dimen/dp_18"
+                android:contentDescription="@string/kol_action_like"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_thumb"
+                android:tint="@color/white"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/likeText"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/likeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:paddingStart="@dimen/dp_4"
+                android:paddingLeft="@dimen/dp_4"
+                android:paddingEnd="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:text="@string/kol_action_like"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="normal"
+                android:visibility="visible"
+                tools:ignore="RtlSymmetry"
+                tools:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/commentIcon"
+                android:layout_width="@dimen/dp_18"
+                android:layout_height="@dimen/dp_18"
+                android:contentDescription="@string/kol_action_comment"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_comment"
+                android:tint="@color/white"
+                android:visibility="visible"
+                tools:ignore="RtlSymmetry"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/commentText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:paddingStart="@dimen/dp_4"
+                android:paddingLeft="@dimen/dp_4"
+                android:paddingEnd="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:text="@string/kol_action_comment"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="normal"
+                android:visibility="visible"
+                tools:ignore="RtlSymmetry"
+                tools:visibility="visible" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_alignParentRight="true">
+
+            <ImageView
+                android:id="@+id/shareIcon"
+                android:layout_width="@dimen/dp_18"
+                android:layout_height="@dimen/dp_18"
+                android:contentDescription="@string/kol_action_share"
+                android:scaleType="fitCenter"
+                android:tint="@color/white"
+                android:src="@drawable/ic_share_grey_profile"
+                android:visibility="visible"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/shareText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:paddingStart="@dimen/dp_4"
+                android:paddingLeft="@dimen/dp_4"
+                android:text="@string/kol_action_share"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="normal"
+                android:visibility="visible"
+                tools:ignore="RtlSymmetry"
+                tools:visibility="visible" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

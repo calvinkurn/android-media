@@ -37,6 +37,7 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
+import com.tokopedia.feedcomponent.view.activity.VideoPlayerActivity
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
@@ -46,6 +47,9 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
+import com.tokopedia.feedcomponent.view.viewmodel.data.FooterViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.data.HeaderViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.data.template.TemplateFooterViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
@@ -87,7 +91,6 @@ import com.tokopedia.showcase.ShowCaseContentPosition
 import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.videoplayer.view.activity.VideoPlayerActivity
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.*
 import javax.inject.Inject
@@ -808,8 +811,20 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onVideoPlayerClicked(positionInFeed: Int, contentPosition: Int, url: String) {
-        startActivity(VideoPlayerActivity.getInstance(activity!!, url))
+    override fun onVideoPlayerClicked(
+            positionInFeed: Int,
+            contentPosition: Int,
+            url: String,
+            header: HeaderViewModel,
+            footer: FooterViewModel,
+            templateFooter: TemplateFooterViewModel) {
+        startActivity(VideoPlayerActivity.getInstance(
+                activity!!,
+                url,
+                header,
+                footer,
+                templateFooter))
+
     }
 
     //end of new feed section
