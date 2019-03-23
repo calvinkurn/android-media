@@ -1027,10 +1027,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Observable<PendingCashback> getPendingCashbackUseCase() {
-        SessionHandler sessionHandler = new SessionHandler(this);
-        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-        requestParams.putString("msisdn", sessionHandler.getPhoneNumber());
-        return tokoCashComponent.getPendingCasbackUseCase().createObservable(requestParams);
+        return tokoCashComponent.getPendingCasbackUseCase().createObservable(null);
     }
 
     @Override
@@ -2765,7 +2762,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean isSaldoNativeEnabled() {
-        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
+        return remoteConfig.getBoolean(RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
+                true);
+    }
+
+    @Override
+    public boolean isMerchantCreditLineEnabled() {
+        return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_MERCHANT_CREDIT_LINE,
                 true);
     }
 

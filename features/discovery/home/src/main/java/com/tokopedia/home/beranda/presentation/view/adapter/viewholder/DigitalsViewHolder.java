@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
+import android.graphics.Typeface;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
@@ -46,7 +47,6 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
         this.fragmentManager = fragmentManager;
     }
 
-
     @Override
     public void bind(DigitalsViewModel element) {
         if (isDigitalWidget) {
@@ -79,6 +79,8 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
                 listener.onDigitalMoreClicked(getAdapterPosition());
             }
         });
+        Typeface typeface = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
+        titleTextView.setTypeface(typeface);
     }
 
     @Override

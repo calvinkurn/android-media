@@ -3,6 +3,7 @@ package com.tokopedia.tkpd;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
@@ -11,6 +12,7 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
@@ -40,10 +42,13 @@ import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.common.category.CategoryDbFlow;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.cpm.CharacterPerMinuteActivityLifecycleCallbacks;
+import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.digital.newcart.data.DigitalDealsUrl;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
@@ -105,6 +110,8 @@ import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL;
 import com.tokopedia.user_identification_common.KycCommonUrl;
 import com.tokopedia.vote.data.VoteUrl;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.MessageDigest;
@@ -119,7 +126,9 @@ import java.security.cert.X509Certificate;
 
 public class ConsumerMainApplication extends ConsumerRouterApplication implements
         MoEPushCallBacks.OnMoEPushNavigationAction,
-        InAppManager.InAppMessageListener {
+        InAppManager.InAppMessageListener,
+        CharacterPerMinuteInterface
+{
 
     private final String NOTIFICATION_CHANNEL_NAME = "Promo";
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
@@ -176,13 +185,29 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (!GlobalConfig.DEBUG) {
             new ANRWatchDog().setANRListener(Crashlytics::logException).start();
         }
+
+        cacheManager = new GlobalCacheManager();
+        cacheManager.setCacheDuration(600);
+        if(callback == null) {
+            callback = new CharacterPerMinuteActivityLifecycleCallbacks(this);
+        }
+        registerActivityLifecycleCallbacks(callback);
     }
+
+    CharacterPerMinuteActivityLifecycleCallbacks callback;
 
     @Override
     public void onTerminate() {
         super.onTerminate();
         TrackApp.getInstance().delete();
         TrackApp.deleteInstance();
+        unregisterActivityLifecycleCallbacks(callback);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        unregisterActivityLifecycleCallbacks(callback);
     }
 
     private void createCustomSoundNotificationChannel() {
@@ -535,4 +560,23 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     public Class<?> getDeeplinkClass() {
         return DeepLinkActivity.class;
     }
+
+    GlobalCacheManager cacheManager;
+
+    @Override
+    public void saveCPM(@NonNull String cpm) {
+        cacheManager.save(CharacterPerMinuteInterface.KEY, cpm, 60);
+    }
+
+    @Override
+    public String getCPM() {
+        return cacheManager.get(CharacterPerMinuteInterface.KEY);
+    }
+
+    @Override
+    public boolean isEnable() {
+        return getBooleanRemoteConfig("android_customer_typing_tracker_enabled", false);
+    }
+
+
 }

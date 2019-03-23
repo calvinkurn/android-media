@@ -60,10 +60,10 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
             txt_rate_estimation_start.text = summarize.minPrice
             txt_rate_estimation_start.visible()
             icon_shop_location.visible()
-            txt_shop_location.text = context.getString(R.string.from, shopLocation).boldPartial("dari".length)
+            txt_shop_location.text = context.getString(R.string.from_x, shopLocation).boldPartial("dari".length)
             txt_shop_location.visible()
             icon_courier_est.visible()
-            txt_courier_dest.text = context.getString(R.string.to, summarize.destination).boldPartial("ke".length)
+            txt_courier_dest.text = context.getString(R.string.to_x, summarize.destination).boldPartial("ke".length)
             txt_courier_dest.visible()
 
             if (label_variant.isVisible) {

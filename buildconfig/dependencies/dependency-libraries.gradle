@@ -81,7 +81,8 @@ ext {
             graphView         :":libraries:graph_view",
             graphView         :":libraries:graph_view",
             iris              : ":libraries:iris",
-//            iris              : ":libraries:iris_no_op",
+//            iris              : ":libraries:iris_no_op"
+            cpm              : ":libraries:cpm",
             banner            : ":libraries:banner"
     ]
 }

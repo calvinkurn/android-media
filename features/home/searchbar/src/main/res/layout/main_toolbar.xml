@@ -16,11 +16,12 @@
         android:padding="@dimen/dp_8">
 
         <ImageButton
+            android:visibility="gone"
             android:id="@+id/btn_qrcode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@null"
-            android:src="@drawable/ic_qr_bar"
+            app:srcCompat="@drawable/ic_product_fintech_qr_normal_24"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_4"
@@ -35,7 +36,7 @@
             android:layout_toStartOf="@+id/btn_wishlist"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:background="@drawable/bg_corner"
             android:layout_height="match_parent"
             android:orientation="horizontal"
@@ -47,7 +48,7 @@
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_search_bar"/>
+                app:srcCompat="@drawable/ic_search_bar"/>
 
             <EditText
                 android:id="@+id/et_search"
@@ -66,29 +67,29 @@
 
         </LinearLayout>
 
-        <ImageButton
+        <ImageView
             android:id="@+id/btn_wishlist"
             android:layout_centerVertical="true"
             android:layout_width="@dimen/icon_toolbar"
             android:layout_height="@dimen/icon_toolbar"
             android:scaleType="center"
             android:background="@color/white"
-            android:src="@drawable/ic_wishlist_bar"
+            app:srcCompat="@drawable/ic_wishlist_bar"
             android:layout_toStartOf="@+id/btn_inbox"
             android:layout_toLeftOf="@+id/btn_inbox"/>
 
-        <ImageButton
+        <ImageView
             android:id="@+id/btn_inbox"
             android:layout_centerVertical="true"
             android:layout_width="@dimen/icon_toolbar"
             android:layout_height="@dimen/icon_toolbar"
             android:scaleType="center"
             android:background="@color/white"
-            android:src="@drawable/ic_inbox_bar"
+            app:srcCompat="@drawable/ic_inbox_bar"
             android:layout_toStartOf="@+id/btn_notification"
             android:layout_toLeftOf="@+id/btn_notification"/>
 
-        <ImageButton
+        <ImageView
             android:id="@+id/btn_notification"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
@@ -97,7 +98,7 @@
             android:layout_height="@dimen/icon_toolbar"
             android:scaleType="center"
             android:background="@color/white"
-            android:src="@drawable/ic_notification_bar"/>
+            app:srcCompat="@drawable/ic_notification_bar"/>
 
     </RelativeLayout>
 

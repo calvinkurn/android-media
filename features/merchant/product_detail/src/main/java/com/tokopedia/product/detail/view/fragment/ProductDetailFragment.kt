@@ -6,6 +6,7 @@ import android.app.ProgressDialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
@@ -18,8 +19,12 @@ import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.text.TextUtils
 import android.view.*
+import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
+import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -36,12 +41,8 @@ import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
@@ -81,8 +82,11 @@ import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
+import com.tokopedia.referral.Constants.Action.Companion.ACTION_GET_REFERRAL_CODE
+import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.topads.sdk.base.adapter.Item
@@ -95,13 +99,11 @@ import com.tokopedia.topads.sdk.listener.TopAdsListener
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.transaction.common.TransactionRouter
-import com.tokopedia.transactiondata.entity.response.expresscheckout.profile.ProfileListGqlResponse
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
-import com.tokopedia.transactiondata.usecase.GetProfileListUseCase
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_product_detail.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import kotlinx.android.synthetic.main.partial_most_helpful_review_view.*
@@ -115,7 +117,6 @@ import kotlinx.android.synthetic.main.partial_product_latest_talk.*
 import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
-import rx.Subscriber
 import javax.inject.Inject
 
 class ProductDetailFragment : BaseDaggerFragment() {
@@ -307,6 +308,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
             override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
                 activity?.let {
+                    //TOGGLE_MVC_OFF
                     productDetailTracking.eventClickMerchantVoucherUse(merchantVoucherViewModel, position)
                     showSnackbarClose(getString(R.string.title_voucher_code_copied))
                 }
@@ -343,7 +345,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     if (productInfo?.basic?.status != ProductStatusTypeDef.PENDING) {
                         gotoEditProduct()
                     } else {
-                        // TODO show toast product status title
+                        activity?.run {
+                            val statusMessage = productInfo?.basic?.statusMessage(this)
+                            if (statusMessage?.isNotEmpty() == true) {
+                                ToasterError.showClose(this, getString(R.string.product_is_at_status_x, statusMessage))
+                            }
+                        }
                     }
                 } else if (productP3value != null) {
                     if (it.isActivated) {
@@ -351,6 +358,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                             productInfoViewModel.removeWishList(it,
                                 onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
                                 onErrorRemoveWishList = this::onErrorRemoveWishList)
+                            productDetailTracking.eventPDPRemoveToWishlist(productInfo?.basic?.id.toString())
                         }
 
                     } else {
@@ -358,14 +366,21 @@ class ProductDetailFragment : BaseDaggerFragment() {
                             productInfoViewModel.addWishList(it,
                                 onSuccessAddWishlist = this::onSuccessAddWishlist,
                                 onErrorAddWishList = this::onErrorAddWishList)
-                            productDetailTracking.eventPDPWishlit()
-                            // TODO APPFLYER IMPL 943
-                            productInfo?.basic?.let { productDetailTracking.eventPDPAddToWishlist(it.name) }
+                            productInfo?.let {
+                                productDetailTracking.eventPDPWishlistAppsFyler(it)
+                            }
+                            productDetailTracking.eventPDPAddToWishlist(productInfo?.basic?.id.toString())
                         }
                     }
-                    // TODO tracking for affiliate
+                    if (isAffiliate && productId?.isNotEmpty() == true) {
+                        productDetailTracking.eventClickWishlistOnAffiliate(
+                            productInfoViewModel.userId,
+                            productId!!
+                        )
+                    }
                 }
             } else {
+                productDetailTracking.eventPDPAddToWishlistNonLogin(productInfo?.basic?.id.toString())
                 context?.run {
                     startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                         REQUEST_CODE_LOGIN)
@@ -384,7 +399,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
             }
         }
         actionButtonView.addToCartClick = {
-            //TODO tracking
+            productDetailTracking.eventClickAddToCart(productInfo?.basic?.id?.toString() ?: "",
+                productInfo?.variant?.isVariant ?: false)
             if (productInfoViewModel.isUserSessionActive()) {
                 goToNormalCheckout(ATC_ONLY)
             } else {
@@ -396,8 +412,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
         }
         actionButtonView.buyNowClick = {
             // buy now / buy / preorder
+            productDetailTracking.eventClickBuy(productInfo?.basic?.id?.toString() ?: "",
+                productInfo?.variant?.isVariant ?: false)
             if (productInfoViewModel.isUserSessionActive()) {
-                //TODO tracking
                 val isExpressCheckout = (productInfoViewModel.productInfoP3resp.value)?.isExpressCheckoutType
                     ?: false
                 if (isExpressCheckout) {
@@ -406,7 +423,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     goToNormalCheckout()
                 }
             } else { // not login
-                //TODO tracking
                 context?.let {
                     startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                         REQUEST_CODE_LOGIN)
@@ -419,20 +435,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 if (productInfoViewModel.isUserSessionActive()) {
                     val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.OPEN_SHOP)
                         ?: return@let
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-                } else {
-                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                        REQUEST_CODE_LOGIN)
-                }
-            }
-        }
-        open_shop.setOnClickListener {
-            activity?.let {
-                if (productInfoViewModel.isUserSessionActive() && !productInfoViewModel.isUserHasShop) {
-                    val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.OPEN_SHOP)
-                        ?: return@let
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                 } else {
                     startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
@@ -453,40 +455,17 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     userInputQuantity,
                     userInputVariant,
                     action,
-                    null), REQUEST_CODE_NORMAL_CHECKOUT)
+                    null,
+                    trackerAttribution,
+                    trackerListName,
+                    shopInfo?.goldOS?.shopTypeString,
+                    shopInfo?.shopCore?.name),
+                    REQUEST_CODE_NORMAL_CHECKOUT)
             }
         }
     }
 
     private fun goToAtcExpress() {
-        actionButtonView.showLoadingBuy()
-        activity?.run {
-            val useCase = GetProfileListUseCase(this)
-            useCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
-                override fun onCompleted() {
-
-                }
-
-                override fun onError(e: Throwable) {
-                    actionButtonView.hideLoadingBuy()
-                    goToNormalCheckout()
-                }
-
-                override fun onNext(graphqlResponse: GraphqlResponse) {
-                    actionButtonView.hideLoadingBuy()
-                    val profileResponse = graphqlResponse.getData<ProfileListGqlResponse>(ProfileListGqlResponse::class.java)
-                    if (profileResponse?.data != null && profileResponse.data.status.equals("OK")
-                        && profileResponse.data.data.defaultProfileId != 0) {
-                        navigateToExpressCheckout()
-                    } else {
-                        goToNormalCheckout()
-                    }
-                }
-            })
-        }
-    }
-
-    fun navigateToExpressCheckout() {
         activity?.let {
             try {
                 val productInfo = (productInfoViewModel.productInfoP1Resp.value as Success).data
@@ -783,7 +762,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_CODE_ETALASE -> {
-                //TODO need to check if product id is null when device don't keep activity
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val selectedEtalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)
                     val selectedEtalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME)
@@ -798,12 +776,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
             REQUEST_CODE_MERCHANT_VOUCHER_DETAIL,
             REQUEST_CODE_MERCHANT_VOUCHER -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    //TODO reload merchant voucher data;
-                    //presenter.loadMerchantVoucher
+                    // no op //TOGGLE_MVC_OFF
                 }
             }
             REQUEST_CODE_NORMAL_CHECKOUT -> {
-                //TODO need to check when device don't keep activity
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     if (data.hasExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)) {
                         //refresh product by selected variant/product
@@ -906,7 +882,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             }
             ToasterNormal.make(view, messageString.replace("\n", " "), BaseToaster.LENGTH_LONG)
                 .setAction(getString(R.string.label_atc_open_cart)) { v ->
-                    //TODO tracking
+                    productDetailTracking.eventAtcClickLihat(productId)
                     val intent = RouteManager.getIntent(this, ApplinkConst.CART)
                     startActivity(intent)
                 }
@@ -953,8 +929,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (productInfoViewModel.isUserSessionActive()) {
                 RouteManager.route(it,
                     ApplinkConst.AFFILIATE_CREATE_POST,
-                        pdpAffiliate.productId.toString(),
-                        pdpAffiliate.adId.toString())
+                    pdpAffiliate.productId.toString(),
+                    pdpAffiliate.adId.toString())
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                     REQUEST_CODE_LOGIN)
@@ -971,7 +947,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun renderProductInfo2(productInfoP2: ProductInfoP2) {
-        productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, productInfoP2.shopInfo, trackerAttribution)
         productInfoP2.shopInfo?.let { shopInfo ->
             this.shopInfo = shopInfo
             productDescrView.shopInfo = shopInfo
@@ -993,6 +968,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (productInfoP2.vouchers.isNotEmpty()) {
                 merchantVoucherListWidget.setData(ArrayList(productInfoP2.vouchers))
                 merchantVoucherListWidget.visible()
+                if (!productInfoViewModel.isUserSessionActive() || !productInfoViewModel.isShopOwner(productInfo?.basic?.shopID
+                        ?: 0)) {
+                    productDetailTracking.eventImpressionMerchantVoucherUse(productInfoP2.vouchers)
+                }
             } else {
                 merchantVoucherListWidget.gone()
             }
@@ -1035,6 +1014,15 @@ class ProductDetailFragment : BaseDaggerFragment() {
             productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
 
         otherProductView.renderData(productInfoP2.productOthers)
+
+        productInfo?.run {
+            productDetailTracking.sendScreen(basic.shopID.toString(),
+                shopInfo?.goldOS?.shopTypeString ?:"", productId ?: "")
+            productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, this, productInfoP2.shopInfo, trackerAttribution)
+            productDetailTracking.sendMoEngageOpenProduct(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name ?: "")
+            productDetailTracking.eventAppsFylerOpenProduct(this)
+        }
+
     }
 
     private fun updateWishlist(shopInfo: ShopInfo, wishlisted: Boolean) {
@@ -1124,7 +1112,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (label_desc_installment.isVisible) base_view_wholesale.visibility = View.VISIBLE
             else base_view_wholesale.gone()
         }
-        if (productInfoViewModel.isUserSessionActive() && !productInfoViewModel.isUserHasShop) {
+        if (!productInfoViewModel.isUserSessionActive() || !productInfoViewModel.isUserHasShop) {
             open_shop.visible()
         } else {
             open_shop.gone()
@@ -1156,7 +1144,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun onSuccessFavoriteShop(isSuccess: Boolean) {
         val favorite = shopInfo?.favoriteData ?: return
         if (isSuccess) {
-            //TODO TRACKING FOLLOW / UNFOLLOW
             val newFavorite =
                 if (favorite.alreadyFavorited == 1)
                     ShopInfo.FavoriteData(0, favorite.totalFavorite - 1)
@@ -1223,7 +1210,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productInfoViewModel.productInfoP3resp.value?.isWishlisted = false
         updateWishlist(false)
         //TODO clear cache
-        //TODO action success remove wishlist. in old version, will broadcast
         sendIntentResusltWishlistChange(productId ?: "", false)
 
     }
@@ -1245,7 +1231,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productInfoViewModel.productInfoP3resp.value?.isWishlisted = true
         updateWishlist(true)
         //TODO clear cache
-        //TODO action success add wishlist. in old version, will broadcast
         sendIntentResusltWishlistChange(productId ?: "", true)
     }
 
@@ -1258,15 +1243,17 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 ApplinkConst.PRODUCT_TALK, productInfo?.basic?.id.toString())
             startActivityForResult(intent, REQUEST_CODE_TALK_PRODUCT)
         }
-        if (productInfo != null) {
-            //TODO SENT MOENGAGE
+        productInfo?.run {
+            productDetailTracking.sendMoEngageClickDiskusi(this,
+                (shopInfo?.goldOS?.isOfficial?: 0) > 0,
+                shopInfo?.shopCore?.name ?: "")
         }
     }
 
     private fun onReviewClicked() {
-        productDetailTracking.eventReviewClicked()
-        if (productInfo != null) {
-            //TODO SENT MOENGAGE
+        productInfo?.run {
+            productDetailTracking.eventReviewClicked()
+            productDetailTracking.sendMoEngageClickReview(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name ?: "")
             context?.let {
                 val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_REVIEW, productInfo!!.basic.id.toString())
                 intent?.run {
@@ -1284,8 +1271,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (productInfoViewModel.isUserSessionActive()) {
                 val intent = RouteManager.getIntent(it,
                     ApplinkConst.TOPCHAT_ASKSELLER,
-                        shop.shopCore.shopID, product.basic.url,
-                        "product", shop.shopCore.name, shop.shopAssets.avatar)
+                    shop.shopCore.shopID, product.basic.url,
+                    "product", shop.shopCore.name, shop.shopAssets.avatar)
                 startActivity(intent)
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
@@ -1308,11 +1295,20 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun getImageURIPaths(): ArrayList<String> {
         return ArrayList(productInfo?.run { pictures?.map { it.urlOriginal } } ?: listOf())
-        //TODO need to add variant images?
     }
 
     private fun onVariantClicked() {
+        productDetailTracking.eventClickVariant(generateVariantString())
         goToNormalCheckout(ATC_AND_BUY)
+    }
+
+    private fun generateVariantString(): String {
+        return try {
+            val productVariant = (productInfoViewModel.productVariantResp.value as Success).data
+            productVariant.variant.map { it.name }.joinToString(separator = ", ")
+        } catch (e: Throwable) {
+            ""
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -1464,37 +1460,80 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                     REQUEST_CODE_LOGIN)
             }
-            if (hasVariant())
-            //TODO tracking
-                productDetailTracking.eventCartMenuClicked(""/*generated variant */)
+            productDetailTracking.eventCartMenuClicked(generateVariantString())
         }
-    }
-
-    private fun hasVariant(): Boolean {
-        //TODO CHECK VARIAN
-        return false
     }
 
     private fun shareProduct() {
         if (productInfo == null && activity == null) return
-
-        val productShare = ProductShare(activity!!)
         val productData = ProductData(
             productInfo!!.basic.price.getCurrencyFormatted(),
             "${productInfo!!.cashback.percentage}%",
             MethodChecker.fromHtml(productInfo!!.basic.name).toString(),
             productInfo!!.basic.priceCurrency,
             productInfo!!.basic.url,
-            "",
+            shopInfo?.shopCore?.url ?: "",
+            shopInfo?.shopCore?.name ?: "",
             productInfo!!.basic.id.toString(),
             productInfo!!.pictures?.getOrNull(0)?.urlOriginal ?: ""
         )
 
+        checkAndExecuteReferralAction(productData)
+    }
+
+    private fun checkAndExecuteReferralAction(productData: ProductData) {
+        val userSession = UserSession(activity)
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+
+        val fireBaseRemoteMsgGuest = remoteConfig.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "")
+        if (!TextUtils.isEmpty(fireBaseRemoteMsgGuest)) productData.productShareDescription = fireBaseRemoteMsgGuest
+
+        if (userSession.isLoggedIn && userSession.isMsisdnVerified) {
+            val fireBaseRemoteMsg = remoteConfig.getString(RemoteConfigKey.fireBaseShareMsgKey, "")
+            if (!TextUtils.isEmpty(fireBaseRemoteMsg) && fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
+                doReferralShareAction(productData, fireBaseRemoteMsg)
+                return
+            }
+        }
+        executeProductShare(productData)
+    }
+
+    private fun doReferralShareAction(productData: ProductData, fireBaseRemoteMsg: String) {
+        val actionCreator = object : ActionCreator<String, Int> {
+            override fun actionSuccess(actionId: Int, dataObj: String) {
+                if (!TextUtils.isEmpty(dataObj) && !TextUtils.isEmpty(fireBaseRemoteMsg)) {
+                    productData.productShareDescription = FindAndReplaceHelper.findAndReplacePlaceHolders(fireBaseRemoteMsg,
+                        ProductData.PLACEHOLDER_REFERRAL_CODE, dataObj)
+                    productDetailTracking.sendMoEngagePDPReferralCodeShareEvent()
+                }
+                executeProductShare(productData)
+            }
+
+            override fun actionError(actionId: Int, dataObj: Int?) {
+                executeProductShare(productData)
+            }
+        }
+        val referralAction = ReferralAction<Context, String, Int, String, String, String, Context>()
+        referralAction.doAction(ACTION_GET_REFERRAL_CODE, context, actionCreator, object: ActionUIDelegate<String, String> {
+            override fun waitForResult(actionId: Int, dataObj: String?) {
+                showProgressDialog()
+            }
+
+            override fun stopWaiting(actionId: Int, dataObj: String?) {
+                hideProgressDialog()
+            }
+        })
+
+    }
+
+    private fun executeProductShare(productData: ProductData) {
+        val productShare = ProductShare(activity!!, ProductShare.MODE_TEXT)
         productShare.share(productData, {
             showProgressLoading()
-        }) {
+        }, {
             hideProgressLoading()
-        }
+        })
+
     }
 
     private fun hideProgressLoading() {
@@ -1509,7 +1548,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         if (loadingProgressDialog == null) {
             loadingProgressDialog = activity?.createDefaultProgressDialog(
                 getString(R.string.title_loading),
-                cancelable = true,
+                cancelable = onCancelClicked!= null,
                 onCancelClicked = {
                     onCancelClicked?.invoke()
                 })

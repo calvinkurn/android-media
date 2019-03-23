@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.feature.emptycart;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.NestedScrollView;
@@ -59,9 +60,9 @@ import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.widget.TopAdsView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
-import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
 
 import java.util.List;
 

@@ -3,11 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
+    <View
+        android:id="@+id/view_separator"
+        android:background="@color/grey_default_background"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
         android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal">

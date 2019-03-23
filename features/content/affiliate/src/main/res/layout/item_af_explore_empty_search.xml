@@ -1,49 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:src="@drawable/ic_empty_search"
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/image"
+        android:layout_width="@dimen/dp_200"
+        android:layout_height="@dimen/dp_200"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/dp_56"
-        />
+        android:layout_marginTop="@dimen/dp_32"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/ic_loading_image"
+        tools:src="@tools:sample/avatars" />
 
     <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_16"
+        android:fontFamily="sans-serif-black"
         android:text="@string/text_empty_search_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_40"
-        android:textColor="@color/black_54"
-        android:textSize="@dimen/sp_18"
-        android:textStyle="bold"
-        android:layout_gravity="center"/>
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold" />
+
     <TextView
-        android:text="@string/text_empty_search_desc"
+        android:id="@+id/desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/sp_16"
+        android:layout_gravity="center"
         android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_4"
         android:layout_marginRight="@dimen/dp_16"
         android:gravity="center"
+        android:text="@string/text_empty_search_desc"
         android:textColor="@color/black_54"
-        android:textSize="@dimen/sp_18"
-        android:layout_gravity="center"/>
+        android:textSize="@dimen/sp_12" />
 
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btn_search"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_50"
-        android:layout_marginTop="@dimen/dp_24"
-        android:layout_marginRight="@dimen/dp_24"
+        android:layout_width="@dimen/dp_180"
+        android:layout_height="@dimen/dp_44"
+        android:layout_gravity="center"
         android:layout_marginLeft="@dimen/dp_24"
-        android:textSize="@dimen/sp_14"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_24"
         android:text="@string/text_empty_search_btn"
-        android:textColor="@color/white"
         android:textAllCaps="false"
-        android:background="@drawable/bg_button_green"/>
+        app:buttonCompatType="primary"
+        app:buttonCompatSize="big"/>
 
 </LinearLayout>

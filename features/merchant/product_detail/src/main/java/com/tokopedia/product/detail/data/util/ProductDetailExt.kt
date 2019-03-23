@@ -11,7 +11,7 @@ const val LABEL_KG = "Kg"
 const val LABEL_GRAM = "gram"
 
 val Video.thumbnailUrl: String
-    get() = "http://img.youtube.com/vi/$url/1.jpg"
+    get() = "https://img.youtube.com/vi/$url/1.jpg"
 
 val TxStats.successRate: Float
     get() = if (txSuccess == 0 && txReject == 0) 0f
