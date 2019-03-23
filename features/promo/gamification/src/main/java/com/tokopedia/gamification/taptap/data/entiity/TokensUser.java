@@ -3,6 +3,7 @@ package com.tokopedia.gamification.taptap.data.entiity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.gamification.taptap.utils.TapTapConstants;
 
 
 @SuppressWarnings("unused")
@@ -53,7 +54,7 @@ public class TokensUser {
     }
 
     public boolean isEmptyState() {
-        return "empty".equalsIgnoreCase(mState);
+        return TapTapConstants.TokenState.STATE_EMPTY.equalsIgnoreCase(mState);
     }
 
 }

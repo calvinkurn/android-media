@@ -29,6 +29,7 @@ import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.taptap.activity.TapTapTokenActivity;
 import com.tokopedia.gamification.taptap.data.entiity.RewardButton;
 import com.tokopedia.gamification.taptap.utils.TapTapConstants;
+import com.tokopedia.gamification.util.TapTapAnalyticsTrackerUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,7 @@ public class WidgetSummaryTapTap extends FrameLayout {
     private View errorView;
     private TextView tvErrorMessage;
     private TextView tvBtnErrorOk;
+
     public interface SummaryPageActionListener {
 
         void playWithPoints();
@@ -74,8 +76,8 @@ public class WidgetSummaryTapTap extends FrameLayout {
         btnBottomRight = view.findViewById(R.id.btn_bottom_right);
         rlChildSummary = view.findViewById(R.id.rl_child_summary);
         errorView = view.findViewById(R.id.error_view);
-        tvErrorMessage=view.findViewById(R.id.tv_msg);
-        tvBtnErrorOk=view.findViewById(R.id.snack_ok);
+        tvErrorMessage = view.findViewById(R.id.tv_msg);
+        tvBtnErrorOk = view.findViewById(R.id.snack_ok);
         rewardsAdapter = new RewardsAdapter(null);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), R.drawable.item_divider_summary_page);
         dividerItemDecoration.setHorizontalMargin(getResources().getDimensionPixelOffset(R.dimen.dp_8));
@@ -92,12 +94,17 @@ public class WidgetSummaryTapTap extends FrameLayout {
     public void showErrorSnackBar(String errorMessage) {
         errorView.setVisibility(VISIBLE);
         tvErrorMessage.setText(errorMessage);
+        TapTapAnalyticsTrackerUtil.sendEvent(getContext(),
+                TapTapAnalyticsTrackerUtil.EventKeys.VIEW_GAME,
+                TapTapAnalyticsTrackerUtil.CategoryKeys.CATEGORY_TAP_TAP,
+                TapTapAnalyticsTrackerUtil.ActionKeys.REWARD_SUMMARY_IMPRESSION_ON_ERROR_TOASTER,
+                "");
     }
 
 
     private void initListBound(int height, int width) {
         ViewGroup.LayoutParams ivFullLp = rvRewards.getLayoutParams();
-        ivFullLp.height = (int) (height /2.5f);
+        ivFullLp.height = (int) (height / 2.5f);
         rvRewards.requestLayout();
         rvRewards.setAdapter(rewardsAdapter);
     }
@@ -155,6 +162,11 @@ public class WidgetSummaryTapTap extends FrameLayout {
                             rewardButton.getUrl(),
                             TapTapTokenActivity.class);
                 }
+                TapTapAnalyticsTrackerUtil.sendEvent(getContext(),
+                        TapTapAnalyticsTrackerUtil.EventKeys.CLICK_GAME,
+                        TapTapAnalyticsTrackerUtil.CategoryKeys.CATEGORY_TAP_TAP,
+                        TapTapAnalyticsTrackerUtil.ActionKeys.REWARD_SUMMARY_CLICK,
+                        rewardButton.getText());
             }
         });
     }
@@ -205,13 +217,13 @@ public class WidgetSummaryTapTap extends FrameLayout {
                 ImageHandler.loadImage(getContext(), imageReward, crackResultEntity.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
                 ArrayList<String> rewardString = null;
                 if (crackResultEntity.getBenefits() != null) {
-                    rewardString=new ArrayList<>();
+                    rewardString = new ArrayList<>();
                     for (CrackBenefitEntity crackBenefitEntity : crackResultEntity.getBenefits()) {
                         rewardString.add(crackBenefitEntity.getText());
                     }
                 }
 
-                if (rewardString!=null)
+                if (rewardString != null)
                     rewardText.setText(TextUtils.join("\n", rewardString));
             }
         }

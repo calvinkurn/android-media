@@ -33,6 +33,7 @@ import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.taptap.utils.TokenMarginUtilTapTap;
 import com.tokopedia.gamification.util.HexValidator;
+import com.tokopedia.gamification.util.TapTapAnalyticsTrackerUtil;
 
 import java.util.List;
 
@@ -44,8 +45,8 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
 
     private static final long REWARDS_TEXT_TRANSLATE_START_DELAY = 100;
     private static final long REWARDS_IMAGE_TRANSLATE_DURATION = 150;
-    private static final long REWARDS_IMAGE_STABLE_DURATION_AFTER_FIRST_TRANSLATE = 400;
-    private static final long REWARD_TEXT_FADE_OUT_START_DELAY = 300;
+    private static final long REWARDS_IMAGE_STABLE_DURATION_AFTER_FIRST_TRANSLATE = 700;
+    private static final long REWARD_TEXT_FADE_OUT_START_DELAY = 600;
     private static final long REWARD_TEXT_FADE_OUT_DURATION = 100;
 
     private ImageView imageViewCrackResult;
@@ -106,6 +107,12 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
         this.crackResult = crackResult;
         showListCrackResultText(crackResult.getBenefits());
         showCrackResultImageAnimation(crackResult);
+        TapTapAnalyticsTrackerUtil.sendEvent(getContext(),
+                TapTapAnalyticsTrackerUtil.EventKeys.VIEW_GAME,
+                TapTapAnalyticsTrackerUtil.CategoryKeys.CATEGORY_TAP_TAP,
+                TapTapAnalyticsTrackerUtil.ActionKeys.REWARDS_IMPRESSION,
+                crackResult.getBenefitType());
+
     }
 
     private void showCrackResultImageAnimation(CrackResultEntity crackResult) {

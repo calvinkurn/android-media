@@ -20,6 +20,7 @@ query {
         seconds
         backgroundColor
         fontColor
+        borderColor
     }
     actionButton {
         text

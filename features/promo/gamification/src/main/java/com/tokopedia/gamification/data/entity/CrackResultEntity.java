@@ -103,6 +103,18 @@ public class CrackResultEntity {
     @Expose(serialize = false, deserialize = false)
     private static final String STATUS_CODE_CAMPAIGN_EXPIRED = "42504";
 
+    @Ignore
+    @Expose(serialize = false, deserialize = false)
+    private static final String STATUS_CODE_NO_SESSION_AVAILABLE_TAP_TAP = "42505";
+
+    @Ignore
+    @Expose(serialize = false, deserialize = false)
+    private static final String STATUS_CODE_GRACE_PERIOD_TAP_TAP = "42508";
+
+    @Ignore
+    @Expose(serialize = false, deserialize = false)
+    private static final String STATUS_CODE_MAX_QUOTA_REACHED_TAP_TAP = "47004";
+
 
     public long getCampaignId() {
         return campaignId;
@@ -207,5 +219,11 @@ public class CrackResultEntity {
 
     public boolean isCrackButtonRedirect(CrackButtonEntity crackButton) {
         return crackButton.getType().equals(TYPE_BTN_REDIRECT);
+    }
+
+    public boolean isCrackButtonErrorTapTap() {
+        return STATUS_CODE_GRACE_PERIOD_TAP_TAP.equals(resultStatus.getCode())
+                || STATUS_CODE_MAX_QUOTA_REACHED_TAP_TAP.equals(resultStatus.getCode())
+                || STATUS_CODE_NO_SESSION_AVAILABLE_TAP_TAP.equals(resultStatus.getCode());
     }
 }

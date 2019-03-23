@@ -6,6 +6,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,9 +16,9 @@ import com.tokopedia.gamification.R;
 public class NetworkErrorHelper {
 
     public interface ErrorButtonsListener {
-        void onRetryClicked();
+        void onRetryClicked(String buttonText);
 
-        void onHomeClick();
+        void onHomeClick(String buttonText);
 
     }
 
@@ -30,8 +31,8 @@ public class NetworkErrorHelper {
             params.gravity = Gravity.CENTER;
             params.weight = 1.0f;
             View retryLoad = inflater.inflate(R.layout.widget_error_page_tap_tap, (ViewGroup) rootview);
-            View retryButon = retryLoad.findViewById(R.id.button_retry);
-            View homeButton = retryLoad.findViewById(R.id.button_home);
+            Button retryButon = retryLoad.findViewById(R.id.button_retry);
+            Button homeButton = retryLoad.findViewById(R.id.button_home);
             ImageView imageError = retryLoad.findViewById(R.id.image_error);
             imageError.setImageResource(errorImage);
             TextView textError = retryLoad.findViewById(R.id.text_error);
@@ -42,7 +43,7 @@ public class NetworkErrorHelper {
                     @Override
                     public void onClick(View v) {
                         rootview.findViewById(R.id.main_retry).setVisibility(View.GONE);
-                        listener.onRetryClicked();
+                        listener.onRetryClicked(retryButon.getText().toString());
                     }
                 });
             }
@@ -52,7 +53,7 @@ public class NetworkErrorHelper {
                     @Override
                     public void onClick(View v) {
                         rootview.findViewById(R.id.main_retry).setVisibility(View.GONE);
-                        listener.onHomeClick();
+                        listener.onHomeClick(homeButton.getText().toString());
                     }
                 });
             }

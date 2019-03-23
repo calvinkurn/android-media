@@ -21,6 +21,7 @@ import com.tokopedia.gamification.taptap.data.entiity.GamiTapEggHome;
 import com.tokopedia.gamification.taptap.data.entiity.PlayWithPointsEntity;
 import com.tokopedia.gamification.taptap.data.entiity.TapTapBaseEntity;
 import com.tokopedia.gamification.taptap.data.entiity.TokenAsset;
+import com.tokopedia.gamification.util.TapTapAnalyticsTrackerUtil;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -114,7 +115,11 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
                         getView().onSuccessCrackToken(crackResult);
                     } else if (crackResult.isCrackTokenExpired()) {
                         showErrorView(R.drawable.image_error_crack_result_expired, getView().getResources().getString(R.string.expired_reward_title));
-
+                    } else if (crackResult.getResultStatus() != null
+                            && crackResult.getResultStatus().getMessage() != null
+                            && crackResult.getResultStatus().getMessage().size() != 0
+                            && crackResult.isCrackButtonErrorTapTap()) {
+                        getView().showErrorSnackBar(TextUtils.join(",", crackResult.getResultStatus().getMessage()));
                     } else {
                         showErrorView(R.drawable.gf_ic_toped_sorry, getView().getResources().getString(R.string.server_error_occured));
                         getView().onFinishCrackToken();
@@ -132,18 +137,37 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
                         , string
                         , new NetworkErrorHelper.ErrorButtonsListener() {
                             @Override
-                            public void onRetryClicked() {
+                            public void onRetryClicked(String buttonText) {
                                 crackToken(tokenUserId, campaignId);
+                                sendErrorEventOnErrorButton(buttonText);
                             }
 
                             @Override
-                            public void onHomeClick() {
+                            public void onHomeClick(String buttonText) {
                                 getView().navigateToHomePage();
+                                sendErrorEventOnErrorButton(buttonText);
                             }
                         });
+                sendErrorImpressionEvent();
             }
         });
 
+    }
+
+    private void sendErrorImpressionEvent() {
+        TapTapAnalyticsTrackerUtil.sendEvent(getView().getContext(),
+                TapTapAnalyticsTrackerUtil.EventKeys.VIEW_GAME,
+                TapTapAnalyticsTrackerUtil.CategoryKeys.CATEGORY_TAP_TAP,
+                TapTapAnalyticsTrackerUtil.ActionKeys.POPUP_AND_ERROR_IMPRESSION,
+                "");
+    }
+
+    private void sendErrorEventOnErrorButton(String buttonText) {
+        TapTapAnalyticsTrackerUtil.sendEvent(getView().getContext(),
+                TapTapAnalyticsTrackerUtil.EventKeys.CLICK_GAME,
+                TapTapAnalyticsTrackerUtil.CategoryKeys.CATEGORY_TAP_TAP,
+                TapTapAnalyticsTrackerUtil.ActionKeys.POPUP_AND_ERROR_CLICK,
+                buttonText);
     }
 
     @Override
@@ -198,15 +222,18 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
                         , string
                         , new NetworkErrorHelper.ErrorButtonsListener() {
                             @Override
-                            public void onRetryClicked() {
+                            public void onRetryClicked(String buttonText) {
                                 getGetTokenTokopoints(showLoading, isRefetchEgg);
+                                sendErrorEventOnErrorButton(buttonText);
                             }
 
                             @Override
-                            public void onHomeClick() {
+                            public void onHomeClick(String buttonText) {
                                 getView().navigateToHomePage();
+                                sendErrorEventOnErrorButton(buttonText);
                             }
                         });
+                sendErrorImpressionEvent();
             }
         });
     }
@@ -227,6 +254,7 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
 
         assetUrls.add(new Pair<>(tokenAsset.getBackgroundImgURL(), tokenAsset.getVersion()));
         assetUrls.add(new Pair<>(tokenAsset.getGlowShadowImgURL(), tokenAsset.getVersion()));
+        assetUrls.add(new Pair<>(tokenAsset.getGlowImgURL(), tokenAsset.getVersion()));
 
         String tokenAssetVersion = tokenAsset.getVersion();
         assetUrls.add(new Pair<>(full, tokenAssetVersion));
@@ -289,8 +317,6 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
                         getView().showErrorSnackBar();
                     getView().hideLoading();
                 }
-
-
             }
 
             @Override

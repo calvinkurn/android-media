@@ -36,6 +36,7 @@ import com.tokopedia.gamification.taptap.data.entiity.TokenAsset;
 import com.tokopedia.gamification.taptap.data.entiity.TokensUser;
 import com.tokopedia.gamification.taptap.utils.TapTapConstants;
 import com.tokopedia.gamification.taptap.utils.TokenMarginUtilTapTap;
+import com.tokopedia.gamification.util.TapTapAnalyticsTrackerUtil;
 
 import java.util.List;
 import java.util.Random;
@@ -69,7 +70,7 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
 
     private static final float LOBBY_IMAGE_SCALE = 1.16976127321f;
     private static final int MIN_TAP_COUNT = 1;
-    private static final int MAX_TAP_COUNT = 3;
+    private static final int MAX_TAP_COUNT = 5;
     private static final float TAP_BACKGROUND_IMAGE_HEIGHT_SCALE = 1.10909f;
 
     private volatile ImageView imageViewFull;
@@ -99,6 +100,7 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
     private ObjectAnimator fadeInEggAfterMerge;
     private TapCounterView widgetTapCounter;
     private int tapCount;
+    private long tokenUserId;
 
     @Override
     public void onTapCountEnds() {
@@ -151,6 +153,7 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
                     clearTokenAnimationAndCrack();
                     widgetTapCounter.onTap();
                     isTokenClicked = true;
+                    sendEggClickEvent();
                 } else if (tapCount > 1) {
                     playTapSound();
                     tapCount--;
@@ -176,6 +179,14 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
             }
         });
 
+    }
+
+    private void sendEggClickEvent() {
+        TapTapAnalyticsTrackerUtil.sendEvent(getContext(),
+                TapTapAnalyticsTrackerUtil.EventKeys.CLICK_GAME,
+                TapTapAnalyticsTrackerUtil.CategoryKeys.CATEGORY_TAP_TAP,
+                TapTapAnalyticsTrackerUtil.ActionKeys.TAP_EGG_CLICKED,
+                String.valueOf(tokenUserId));
     }
 
     @SuppressWarnings("SuspiciousNameCombination")
@@ -251,6 +262,7 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
 
     public void setToken(TokenAsset tokenAsset, TokensUser tokenUser) {
         List<String> imageUrls = tokenAsset.getImageV2URLs();
+        this.tokenUserId=tokenUser.getTokenUserID();
         String full = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_FULL);
         String cracked = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_CRACKED);
         String imageLeftUrl = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_LEFT);
@@ -294,6 +306,7 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
 
     public void setEmptyToken(TokenAsset tokenAsset, TokensUser tokenUser) {
         List<String> imageUrls = tokenAsset.getImageV2URLs();
+        this.tokenUserId=tokenUser.getTokenUserID();
         String empty = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_EMPTY);
         StringSignature stringSignature = new StringSignature(String.valueOf(tokenAsset.getVersion()));
         ImageHandler.loadImageWithSignature(imageViewFull, empty, stringSignature);

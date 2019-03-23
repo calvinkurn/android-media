@@ -11,9 +11,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkConstant;
-import com.tokopedia.gamification.cracktoken.fragment.CrackEmptyTokenFragment;
-import com.tokopedia.gamification.data.entity.TokenDataEntity;
 import com.tokopedia.gamification.taptap.fragment.TapTapTokenFragment;
+import com.tokopedia.gamification.util.TapTapAnalyticsTrackerUtil;
 
 public class TapTapTokenActivity extends BaseSimpleActivity {
 
@@ -68,6 +67,11 @@ public class TapTapTokenActivity extends BaseSimpleActivity {
         } else {
             onBackPressedRoot();
         }
+        TapTapAnalyticsTrackerUtil.sendEvent(this,
+                TapTapAnalyticsTrackerUtil.EventKeys.CLICK_GAME,
+                TapTapAnalyticsTrackerUtil.CategoryKeys.CATEGORY_TAP_TAP,
+                TapTapAnalyticsTrackerUtil.ActionKeys.TAP_EGG_CLICK,
+                TapTapAnalyticsTrackerUtil.LabelKeys.PRESS_BACK_BUTTON);
     }
 
     private void onBackPressedRoot() {

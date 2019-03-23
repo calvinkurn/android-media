@@ -34,6 +34,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -62,6 +63,7 @@ import com.tokopedia.gamification.taptap.presenter.TapTapTokenPresenter;
 import com.tokopedia.gamification.taptap.utils.TapTapConstants;
 import com.tokopedia.gamification.taptap.utils.TokenMarginUtilTapTap;
 import com.tokopedia.gamification.util.HexValidator;
+import com.tokopedia.gamification.util.TapTapAnalyticsTrackerUtil;
 
 import java.util.List;
 
@@ -262,8 +264,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
             }
         }
         setActionButtons();
-        ImageHandler.loadImageAndCache(ivContainer, tokenAsset.getBackgroundImgURL());
-
+        loadBackgroundImage(tokenAsset.getBackgroundImgURL());
         if (tokenUser.isEmptyState()) {
             widgetTokenView.setEmptyToken(tokenAsset, tokenUser);
         } else {
@@ -304,6 +305,15 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         showInfoAndTimerView(tokenData);
     }
 
+    private void loadBackgroundImage(String backgroundImgURL) {
+        ImageHandler.loadImageBitmap2(getContext(), backgroundImgURL, new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                ivContainer.setImageBitmap(resource);
+            }
+        });
+    }
+
     private void setActionButtons() {
         buttonUp.setVisibility(View.GONE);
         buttonDown.setVisibility(View.GONE);
@@ -335,9 +345,17 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
                             actionButton.getUrl(),
                             TapTapTokenActivity.class);
                 }
+                if (TapTapConstants.TokenState.STATE_LOBBY.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
+                    sendActionButtonEvent(TapTapAnalyticsTrackerUtil.ActionKeys.TAP_EGG_CLICK, actionButton.getText());
+                }
+                if (TapTapConstants.TokenState.STATE_EMPTY.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
+                    sendActionButtonEvent(TapTapAnalyticsTrackerUtil.ActionKeys.EMPTY_STATE_CLICK, actionButton.getText());
+                }
+
             }
         });
     }
+
 
     private int getButtonBackgroundId(String backgroundColor) {
         if (TapTapConstants.ButtonColor.GREEN.equalsIgnoreCase(backgroundColor)) {
@@ -620,11 +638,16 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
                 showSummaryPopup();
             }
         }
+        if (tokenData == null && gamiTapEggHome != null && gamiTapEggHome.getTokensUser() != null) {
+            if (gamiTapEggHome.getTokensUser().isEmptyState()) {
+                sendScreenEvent(TapTapAnalyticsTrackerUtil.ActionKeys.EMPTY_STATE_IMPRESSION, "");
+            } else {
+                sendScreenEvent(TapTapAnalyticsTrackerUtil.ActionKeys.TAP_TAP_IMPRESSION, String.valueOf(gamiTapEggHome.getTokensUser().getTokenUserID()));
+            }
+        }
         this.tokenData = gamiTapEggHome;
         checkPendingCampaignAndShowSummary();
         downloadAssets();
-
-
     }
 
     private void downloadAssets() {
@@ -744,7 +767,13 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         if (summaryPageDialogFragment != null && summaryPageDialogFragment.getDialog() != null && summaryPageDialogFragment.getDialog().isShowing()) {
             summaryPageDialogFragment.dismiss();
         } else if (summaryPageDialogFragment != null) {
+
             summaryPageDialogFragment.show(getChildFragmentManager(), "summaryPageDialogFragment");
+            TapTapAnalyticsTrackerUtil.sendEvent(getContext(),
+                    TapTapAnalyticsTrackerUtil.EventKeys.VIEW_GAME,
+                    TapTapAnalyticsTrackerUtil.CategoryKeys.CATEGORY_TAP_TAP,
+                    TapTapAnalyticsTrackerUtil.ActionKeys.REWARD_SUMMARY_IMPRESSION,
+                    "");
         }
 
     }
@@ -792,6 +821,11 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
                 @Override
                 public void onClick(View v) {
                     dialog.dismiss();
+                    TapTapAnalyticsTrackerUtil.sendEvent(getContext(),
+                            TapTapAnalyticsTrackerUtil.EventKeys.CLICK_GAME,
+                            TapTapAnalyticsTrackerUtil.CategoryKeys.CATEGORY_TAP_TAP,
+                            TapTapAnalyticsTrackerUtil.ActionKeys.POPUP_AND_ERROR_CLICK,
+                            backButton.getCancelText());
                 }
             });
 
@@ -800,6 +834,11 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
                 public void onClick(View v) {
                     dialog.dismiss();
                     onExitFromDialog();
+                    TapTapAnalyticsTrackerUtil.sendEvent(getContext(),
+                            TapTapAnalyticsTrackerUtil.EventKeys.CLICK_GAME,
+                            TapTapAnalyticsTrackerUtil.CategoryKeys.CATEGORY_TAP_TAP,
+                            TapTapAnalyticsTrackerUtil.ActionKeys.POPUP_AND_ERROR_CLICK,
+                            backButton.getYesText());
                 }
             });
 
@@ -831,4 +870,20 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     public void onPlayWithPointsClickedOnSummaryPage() {
         crackTokenPresenter.playWithPoints(true);
     }
+
+    private void sendActionButtonEvent(String action, String label) {
+        TapTapAnalyticsTrackerUtil.sendEvent(getContext(),
+                TapTapAnalyticsTrackerUtil.EventKeys.CLICK_GAME,
+                TapTapAnalyticsTrackerUtil.CategoryKeys.CATEGORY_TAP_TAP,
+                action, label);
+    }
+
+    private void sendScreenEvent(String action, String label) {
+        TapTapAnalyticsTrackerUtil.sendEvent(getContext(),
+                TapTapAnalyticsTrackerUtil.EventKeys.VIEW_GAME,
+                TapTapAnalyticsTrackerUtil.CategoryKeys.CATEGORY_TAP_TAP,
+                action,
+                label);
+    }
+
 }
