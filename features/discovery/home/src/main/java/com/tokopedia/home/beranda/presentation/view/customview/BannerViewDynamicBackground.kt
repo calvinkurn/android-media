@@ -20,7 +20,9 @@ import com.tokopedia.design.banner.BannerPagerAdapter
 import com.tokopedia.design.banner.BannerView
 import com.tokopedia.home.beranda.presentation.view.adapter.CardBannerPagerAdapter
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.helper.ViewHelper
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeBannerViewDecorator
+import com.tokopedia.kotlin.extensions.view.setMargin
 import kotlinx.android.synthetic.main.layout_card_banner_dynamic_background.view.*
 
 import java.util.ArrayList
@@ -28,6 +30,8 @@ import java.util.ArrayList
 class BannerViewDynamicBackground : BannerView {
 
     private lateinit var imgBannerBackground: ImageView
+
+    private lateinit var cardBannerView: CardBannerView
 
     private var currentBitmapDrawable: BitmapDrawable? = null
 
@@ -43,6 +47,17 @@ class BannerViewDynamicBackground : BannerView {
         bannerIndicator = view.findViewById<ViewGroup>(R.id.indicator_banner_container)
         bannerSeeAll = view.findViewById(R.id.promo_link)
         imgBannerBackground = view.findViewById(R.id.img_banner_background)
+        cardBannerView = view.findViewById(R.id.card_banner_view)
+
+        if (::cardBannerView.isInitialized) {
+            cardBannerView.setMargin(
+                    cardBannerView.left,
+                    ViewHelper.getStatusBarHeight(context),
+                    cardBannerView.right,
+                    cardBannerView.bottom
+            )
+        }
+
         indicatorItems = ArrayList()
         impressionStatusList = ArrayList()
         promoImageUrls = ArrayList()
