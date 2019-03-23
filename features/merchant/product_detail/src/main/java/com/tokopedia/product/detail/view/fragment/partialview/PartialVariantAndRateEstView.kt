@@ -109,7 +109,11 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
         with(view) {
             if (productInfo.ppItemDetailPage?.isProtectionAvailable!!) {
 
-                purchase_protection_divider.visible()
+                if (txt_courier_dest.isVisible || txt_shop_location.isVisible) {
+                    purchase_protection_divider.visible()
+                } else {
+                    purchase_protection_divider.gone()
+                }
                 icon_purchase_protection.visible()
                 txt_purchase_protection_title.visible()
                 txt_purchase_protection_message.visible()
