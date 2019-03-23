@@ -9,37 +9,67 @@ import com.google.gson.annotations.SerializedName;
 
 public class PendingCashbackEntity {
 
-    @SerializedName("amount")
+    @SerializedName("balance")
     @Expose
-    private Integer amount;
-    @SerializedName("amount_text")
+    private String balance;
+
+    @SerializedName("balance_text")
     @Expose
-    private String amountText;
-    @SerializedName("currency")
+    private String balanceText;
+
+    @SerializedName("cash_balance")
     @Expose
-    private String currency;
+    private String cashBalance;
 
-    public Integer getAmount() {
-        return amount;
+    @SerializedName("cash_balance_text")
+    @Expose
+    private String cashBalanceText;
+
+    @SerializedName("point_balance")
+    @Expose
+    private String pointBalance;
+
+    @SerializedName("point_balance_text")
+    @Expose
+    private String pointBalanceText;
+
+    @SerializedName("wallet_type")
+    @Expose
+    private String walletType;
+
+    @SerializedName("phone_number")
+    @Expose
+    private String phoneNumber;
+
+    public String getBalance() {
+        return balance;
     }
 
-    public void setAmount(Integer amount) {
-        this.amount = amount;
+    public String getBalanceText() {
+        return balanceText;
     }
 
-    public String getAmountText() {
-        return amountText;
+    public String getCashBalance() {
+        return cashBalance;
     }
 
-    public void setAmountText(String amountText) {
-        this.amountText = amountText;
+    public String getCashBalanceText() {
+        return cashBalanceText;
     }
 
-    public String getCurrency() {
-        return currency;
+    public String getPointBalance() {
+        return pointBalance;
     }
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
+    public String getPointBalanceText() {
+        return pointBalanceText;
+    }
+
+    public String getWalletType() {
+        return walletType;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 }

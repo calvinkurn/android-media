@@ -25,6 +25,10 @@ public class HomeData {
     @SerializedName("dynamicHomeIcon")
     private DynamicHomeIcon dynamicHomeIcon;
 
+    @Expose
+    @SerializedName("spotlight")
+    private Spotlight spotlight = new Spotlight();
+
     private boolean isCache;
 
     public DynamicHomeChannel getDynamicHomeChannel() {
@@ -57,6 +61,14 @@ public class HomeData {
 
     public void setDynamicHomeIcon(DynamicHomeIcon dynamicHomeIcon) {
         this.dynamicHomeIcon = dynamicHomeIcon;
+    }
+
+    public Spotlight getSpotlight() {
+        return spotlight;
+    }
+
+    public void setSpotlight(Spotlight spotlight) {
+        this.spotlight = spotlight;
     }
 
     public boolean isCache() {

@@ -12,7 +12,7 @@ class Detail {
     @SerializedName("label")
     @Expose
     var label: String? = null
-    @SerializedName("varue")
+    @SerializedName("value")
     @Expose
     var value: String? = null
 }

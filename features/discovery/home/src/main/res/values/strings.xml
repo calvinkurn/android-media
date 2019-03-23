@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">tkpdhome</string>
     <string name="explore">Browse</string>
     <string name="beli">Beli</string>
     <string name="bayar">Bayar</string>
@@ -31,7 +30,7 @@
     <string name="gold_merchant">Gold Merchant</string>
     <string name="home_header_tokopoint_unable_to_load_label">Gagal Memuat</string>
     <string name="home_header_tokopoint_no_coupons">Cari Kupon!</string>
-    <string name="home_header_tokopoint_no_tokopoints">TokoPoints</string>
+    <string name="home_header_tokopoint_no_tokopoints">Tokopoints</string>
     <string name="home_header_tokopoint_refresh_label">Coba Lagi</string>
     <string name="home_header_tokopoint_coupon_count_text">%1$d Kupon</string>
     <string name="home_header_tokocash_unable_to_load_label">Gagal Memuat</string>
@@ -39,6 +38,9 @@
     <string name="home_header_tokopoint_new_label">Baru</string>
     <string name="cek_recomendasi">Cek Rekomendasi</string>
     <string name="hampir_habis">Hampir Habis</string>
+    <string name="home_header_fintech_scan">Scan</string>
+    <string name="home_header_fintech_points">Points %1$s</string>
+    <string name="home_header_fintech_cek_sekarang">Cek Sekarang</string>
 
     <string name="sc_notif_title">Notifikasi tersimpan rapi</string>
     <string name="sc_notif_desc">Tak ada yang terlewat, semua notifikasi ada di sini. </string>
@@ -47,4 +49,6 @@
     <string name="sc_wishlist_desc">Produk Wishlist tersimpan di sini. Siap dipindahkan ke keranjang belanja kapan pun.</string>
     <string name="home_feed_retry">Mohon maaf terjadi kendala, silakan coba lagi.</string>
     <string name="home_feed_retry_button">Coba Lagi</string>
+
+    <string name="ticker_details_text">Info Lengkap</string>
 </resources>
