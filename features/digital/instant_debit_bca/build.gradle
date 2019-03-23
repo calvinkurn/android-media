@@ -28,7 +28,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
 
     implementation rootProject.ext.miscDependencies.multiDex
-
+    implementation rootProject.ext.miscDependencies.bcaxcoWidget
+    
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
