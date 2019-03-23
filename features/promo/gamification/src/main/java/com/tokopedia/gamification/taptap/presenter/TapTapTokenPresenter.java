@@ -183,7 +183,7 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-                if(isViewNotAttached())
+                if (isViewNotAttached())
                     return;
                 TapTapBaseEntity responseTokenTokopointEntity = graphqlResponse.getData(TapTapBaseEntity.class);
                 getView().hideLoading();
@@ -267,7 +267,7 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
     }
 
     @Override
-    public void playWithPoints() {
+    public void playWithPoints(boolean fromSummaryPage) {
         getView().showLoading();
 
         getCrackResultEggUseCase.clearRequest();
@@ -283,31 +283,44 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached()) {
-                    getView().showErrorSnackBar();
+                    if (fromSummaryPage)
+                        getView().showErrorSnackBarOnSummaryPage();
+                    else
+                        getView().showErrorSnackBar();
+                    getView().hideLoading();
                 }
-                getView().hideLoading();
+
 
             }
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-                if(isViewNotAttached())
+                if (isViewNotAttached())
                     return;
                 getView().hideLoading();
                 if (graphqlResponse != null) {
                     PlayWithPointsEntity playWithPointsEntity = graphqlResponse.getData(PlayWithPointsEntity.class);
                     if (playWithPointsEntity != null && playWithPointsEntity.getGamiPlayWithPoints() != null) {
                         if (playWithPointsEntity.getGamiPlayWithPoints().getCode().equals("200")) {
+                            if (fromSummaryPage) {
+                                getView().dismissSummaryPage();
+                            }
                             getGetTokenTokopoints(true, false);
                             return;
                         } else if (playWithPointsEntity.getGamiPlayWithPoints().getMessage() != null) {
-                            getView().showErrorSnackBar(TextUtils.join(",", playWithPointsEntity.getGamiPlayWithPoints().getMessage()));
+                            if (fromSummaryPage)
+                                getView().showErrorSnackBarOnSummaryPage(TextUtils.join(",", playWithPointsEntity.getGamiPlayWithPoints().getMessage()));
+                            else
+                                getView().showErrorSnackBar(TextUtils.join(",", playWithPointsEntity.getGamiPlayWithPoints().getMessage()));
+                            return;
                         }
-
 
                     }
                 }
-                getView().showErrorSnackBar();
+                if (fromSummaryPage)
+                    getView().showErrorSnackBarOnSummaryPage();
+                else
+                    getView().showErrorSnackBar();
 
             }
         });

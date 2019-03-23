@@ -29,9 +29,9 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.model.GeneralErrorCrackResult;
-import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
+import com.tokopedia.gamification.taptap.utils.TokenMarginUtilTapTap;
 import com.tokopedia.gamification.util.HexValidator;
 
 import java.util.List;
@@ -42,10 +42,11 @@ import java.util.List;
 
 public class WidgetCrackResultTapTap extends RelativeLayout {
 
-    private static final long REWARDS_TEXT_TRANSLATE_START_DELAY = 200;
-    private static final long REWARDS_IMAGE_TRANSLATE_DURATION = 300;
-    private static final long REWARDS_IMAGE_STABLE_DURATION_AFTER_FIRST_TRANSLATE = 1000;
-    private static final long REWARD_TEXT_FADE_OUT_START_DELAY = 800;
+    private static final long REWARDS_TEXT_TRANSLATE_START_DELAY = 100;
+    private static final long REWARDS_IMAGE_TRANSLATE_DURATION = 150;
+    private static final long REWARDS_IMAGE_STABLE_DURATION_AFTER_FIRST_TRANSLATE = 400;
+    private static final long REWARD_TEXT_FADE_OUT_START_DELAY = 300;
+    private static final long REWARD_TEXT_FADE_OUT_DURATION = 100;
 
     private ImageView imageViewCrackResult;
 
@@ -94,7 +95,7 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
 
     private void initImageBound(View rootView) {
         int rootHeight = rootView.getHeight();
-        int imageMarginBottom = rootView.getHeight() - TokenMarginUtil.getEggMarginBottom(rootHeight) + getContext().getResources().getDimensionPixelOffset(R.dimen.dp_32);
+        int imageMarginBottom = rootView.getHeight() - TokenMarginUtilTapTap.getEggMarginBottom(rootHeight) + getContext().getResources().getDimensionPixelOffset(R.dimen.dp_32);
         RelativeLayout.LayoutParams tvFullLp = (RelativeLayout.LayoutParams) listCrackResultText.getLayoutParams();
         tvFullLp.bottomMargin = imageMarginBottom;
         listCrackResultText.requestLayout();
@@ -186,6 +187,7 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
 
             ObjectAnimator fadeOutAnimatorReward = ObjectAnimator.ofPropertyValuesHolder(listCrackResultText, pvhAlpha2);
             fadeOutAnimatorReward.setStartDelay(REWARD_TEXT_FADE_OUT_START_DELAY);
+            fadeOutAnimatorReward.setDuration(REWARD_TEXT_FADE_OUT_DURATION);
 
             AnimatorSet animatorSetTranslateRewards = new AnimatorSet();
             animatorSetTranslateRewards.playTogether(fadeInAnimatorReward, translateRewardsText);
@@ -193,7 +195,6 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
 
             AnimatorSet rewardsAnimatorSet = new AnimatorSet();
             rewardsAnimatorSet.playSequentially(animatorSetTranslateRewards, fadeOutAnimatorReward);
-            rewardsAnimatorSet.setDuration(REWARDS_IMAGE_TRANSLATE_DURATION);
             rewardsAnimatorSet.setStartDelay(REWARDS_TEXT_TRANSLATE_START_DELAY);
 
 

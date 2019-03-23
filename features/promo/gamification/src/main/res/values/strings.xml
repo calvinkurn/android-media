@@ -22,10 +22,14 @@
     <string name="rewards_increased_points">+%1$s %2$s</string>
     <string name="rewards_increased_points_front_text">+%1$s\u0020</string>
     <string name="egg_source">%1$s %2$s</string>
+
+
+
+    <!--For TapTap-->
     <string name="points_not_available">Maaf, Points kamu tidak mencukupi untuk main lagi.</string>
-    <string name="tap_arg_text">Tap\n%1$sX</string>
-    <string name="error_server_full">Maaf, saat ini arena main sedang penuh. Silakan coba lagi nanti, ya!</string>
+    <string name="tap_arg_text">TAP\n%1$sX</string>
+    <string name="error_server_full">Wah, antusiasme Toppers sedang tinggi sekali. Yuk coba akses Tap Tap lagi.</string>
     <string name="server_error_occured">Maaf, terjadi kesalahan teknis</string>
-    <string name="internet_not_connected_error_occured">Maaf, sepertinya kamu kehilangan koneksi internet!</string>
+    <string name="internet_not_connected_error_occured">Oops! Sepertinya ada masalah dengan koneksi internet kamu. Coba cek dulu ya.</string>
 
 </resources>

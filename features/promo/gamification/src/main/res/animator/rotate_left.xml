@@ -3,7 +3,7 @@
     android:ordering="together">
 
     <objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
-        android:duration="250">
+        android:duration="150">
         <propertyValuesHolder
             android:propertyName="rotation"
             android:valueFrom="-3"
@@ -11,7 +11,7 @@
             android:valueType="floatType" />
     </objectAnimator>
 
-    <objectAnimator android:duration="250">
+    <objectAnimator android:duration="150">
         <propertyValuesHolder
             android:propertyName="translationX"
             android:valueTo="0" />

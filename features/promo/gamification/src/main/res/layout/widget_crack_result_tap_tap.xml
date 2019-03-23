@@ -30,7 +30,7 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/dp_16"
-        android:background="@drawable/bg_info_crack_egg"
+        android:background="@drawable/bg_info_tap_tap"
         android:visibility="invisible"
         tools:visibility="visible"
         android:orientation="vertical"

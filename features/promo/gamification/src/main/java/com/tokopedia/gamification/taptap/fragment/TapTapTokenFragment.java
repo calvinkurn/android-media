@@ -34,7 +34,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -43,7 +42,6 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkUtil;
-import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.di.GamificationComponentInstance;
@@ -62,6 +60,7 @@ import com.tokopedia.gamification.taptap.database.GamificationDatabaseWrapper;
 import com.tokopedia.gamification.taptap.database.GamificationDbCallback;
 import com.tokopedia.gamification.taptap.presenter.TapTapTokenPresenter;
 import com.tokopedia.gamification.taptap.utils.TapTapConstants;
+import com.tokopedia.gamification.taptap.utils.TokenMarginUtilTapTap;
 import com.tokopedia.gamification.util.HexValidator;
 
 import java.util.List;
@@ -69,7 +68,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 
-public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTokenContract.View, GamificationDbCallback {
+public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTokenContract.View, GamificationDbCallback, TapTapSummaryDialogFragment.InteractionListener {
 
     private static final String FPM_RENDER = "ft_gamification";
     private static final String FPM_CRACKING = "ft_gamification_cracking_egg";
@@ -203,17 +202,17 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         super.onResume();
         // restart the timer (only if the timer was paused in onPaused)
         if (tokenData != null) {
-            if (prevTimeStamp > 0) {
-                long currentTimeStamp = System.currentTimeMillis();
-                long diffSeconds = (long) ((currentTimeStamp - prevTimeStamp) / 1000L);
-
-                long prevTimeRemainingSecond = tokenData.getTimeRemaining().getSeconds();
-                tokenData.getTimeRemaining().setSeconds(prevTimeRemainingSecond - diffSeconds);
-
-                showRewards(tokenData);
-
-                prevTimeStamp = 0;
-            }
+//            if (prevTimeStamp > 0) {
+//                long currentTimeStamp = System.currentTimeMillis();
+//                long diffSeconds = (long) ((currentTimeStamp - prevTimeStamp) / 1000L);
+//
+//                long prevTimeRemainingSecond = tokenData.getTimeRemaining().getSeconds();
+//                tokenData.getTimeRemaining().setSeconds(prevTimeRemainingSecond - diffSeconds);
+//
+//                showInfoAndTimerView(tokenData);
+//
+//                prevTimeStamp = 0;
+//            }
         }
     }
 
@@ -222,12 +221,12 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         super.onPause();
         // save the previous time to enable the timer in onResume.
         if (tokenData != null) {
-            if (tokenData.getTimeRemaining().getIsShow() && countDownTimer != null) {
-                prevTimeStamp = System.currentTimeMillis();
-            } else {
-                prevTimeStamp = 0;
-            }
-            stopTimer();
+//            if (tokenData.getTimeRemaining().getIsShow() && countDownTimer != null) {
+//                prevTimeStamp = System.currentTimeMillis();
+//            } else {
+//                prevTimeStamp = 0;
+//            }
+//            stopTimer();
         }
         if (crackTokenSuccessHandler != null) {
             crackTokenSuccessHandler.removeCallbacksAndMessages(null);
@@ -263,8 +262,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
             }
         }
         setActionButtons();
-        ImageHandler.loadImageWithSignature(ivContainer, tokenAsset.getBackgroundImgURL(),
-                new StringSignature(tokenAsset.getVersion()));
+        ImageHandler.loadImageAndCache(ivContainer, tokenAsset.getBackgroundImgURL());
 
         if (tokenUser.isEmptyState()) {
             widgetTokenView.setEmptyToken(tokenAsset, tokenUser);
@@ -290,14 +288,25 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
                 @Override
                 public void reShowEgg() {
+                    if (tokenData != null && tokenData.getTokensUser() != null)
+                        if (TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState()))
+                            widgetTokenView.resetForUnlimitedCrack(tokenData.getTokensUser());
+                        else
+                            downloadAssets();
+                }
+
+                @Override
+                public void reShowFromLobby() {
                     downloadAssets();
                 }
             });
         }
-        showRewards(tokenData);
+        showInfoAndTimerView(tokenData);
     }
 
     private void setActionButtons() {
+        buttonUp.setVisibility(View.GONE);
+        buttonDown.setVisibility(View.GONE);
         if (tokenData.getActionButton() != null && tokenData.getActionButton().size() != 0) {
             for (int i = 0; i < tokenData.getActionButton().size(); i++) {
                 ActionButton actionButton = tokenData.getActionButton().get(i);
@@ -307,9 +316,6 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
                     setActionButton(buttonDown, actionButton);
                 }
             }
-        } else {
-            buttonUp.setVisibility(View.GONE);
-            buttonDown.setVisibility(View.GONE);
         }
     }
 
@@ -323,7 +329,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
             @Override
             public void onClick(View v) {
                 if (TapTapConstants.ButtonType.PLAY_WITH_POINTS.equalsIgnoreCase(actionButton.getType())) {
-                    crackTokenPresenter.playWithPoints();
+                    crackTokenPresenter.playWithPoints(true);
                 } else {
                     ApplinkUtil.navigateToAssociatedPage(getActivity(), actionButton.getApplink(),
                             actionButton.getUrl(),
@@ -382,7 +388,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     private void initTimerBound() {
         int rootHeight = rootView.getHeight();
-        int marginTop = TokenMarginUtil.getTimerMarginBottom(rootHeight);
+        int marginTop = TokenMarginUtilTapTap.getTimerMarginBottom(rootHeight);
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) textCountdownTimer.getLayoutParams();
         ivFullLp.gravity = Gravity.CENTER_HORIZONTAL;
         ivFullLp.topMargin = marginTop;
@@ -393,8 +399,8 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
         int rootWidth = rootView.getWidth();
         int rootHeight = rootView.getHeight();
-        int imageHeight = TokenMarginUtil.getEggWidth(rootWidth, rootHeight);
-        int marginTop = TokenMarginUtil.getEggMarginBottom(rootHeight) - imageHeight
+        int imageHeight = TokenMarginUtilTapTap.getEggWidth(rootWidth, rootHeight);
+        int marginTop = TokenMarginUtilTapTap.getEggMarginBottom(rootHeight) - imageHeight
                 - getContext().getResources().getDimensionPixelOffset(R.dimen.dp_112);
 
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) infoTitlePage.getLayoutParams();
@@ -404,7 +410,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     }
 
-    private void showRewards(@NonNull GamiTapEggHome tokenData) {
+    private void showInfoAndTimerView(@NonNull GamiTapEggHome tokenData) {
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -424,7 +430,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
             textCountdownTimer.setVisibility(View.VISIBLE);
             showCountdownTimer(tokenRemaining.getSeconds());
         } else {
-            textCountdownTimer.setVisibility(View.GONE);
+            stopTimer();
         }
     }
 
@@ -441,16 +447,6 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
                 @Override
                 public void onFinish() {
-                    stopTimer();
-//                    if (TapTapConstants.TokenState.STATE_LOBBY.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
-                    if (crackTokenPresenter != null) {
-                        crackTokenPresenter.getGetTokenTokopoints(false, true);
-                    }
-//                    } else if (TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
-//                        crackTokenPresenter.getGetTokenTokopoints(false, i);
-//                    } else if (TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
-//                        showSummaryPopup();
-//                    }
                 }
             }.start();
             textCountdownTimer.setVisibility(View.VISIBLE);
@@ -476,13 +472,20 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         int timeRemainingSeconds = (int) (millisUntilFinished / COUNTDOWN_INTERVAL_SECOND);
         timeRemainingSeconds--;
         tokenData.getTimeRemaining().setSeconds(timeRemainingSeconds);
-//        if (timeRemainingSeconds <= 0) {
-//            stopTimer();
-//            widgetTokenView.hide();
-//            crackTokenPresenter.getGetTokenTokopoints();
-//        } else {
-        setUIFloatingTimer(timeRemainingSeconds);
-//        }
+        if (timeRemainingSeconds <= 0) {
+            setUIFloatingTimer(timeRemainingSeconds);
+            stopTimer();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (crackTokenPresenter != null) {
+                        crackTokenPresenter.getGetTokenTokopoints(false, true);
+                    }
+                }
+            }, 1500);
+        } else {
+            setUIFloatingTimer(timeRemainingSeconds);
+        }
     }
 
     private void setUIFloatingTimer(long timeRemainingSeconds) {
@@ -554,6 +557,27 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
             ((GamificationRouter) getContext().getApplicationContext()).goToHome(getContext());
     }
 
+    @Override
+    public void showErrorSnackBarOnSummaryPage() {
+        if (getContext() != null && summaryPageDialogFragment != null && summaryPageDialogFragment.isAdded() && summaryPageDialogFragment.isVisible()) {
+            summaryPageDialogFragment.showErrorSnackBar(getContext().getResources().getString(R.string.points_not_available));
+        }
+    }
+
+    @Override
+    public void showErrorSnackBarOnSummaryPage(String errorMessage) {
+        if (getContext() != null && summaryPageDialogFragment != null && summaryPageDialogFragment.isAdded() && summaryPageDialogFragment.isVisible()) {
+            summaryPageDialogFragment.showErrorSnackBar(errorMessage);
+        }
+    }
+
+    @Override
+    public void dismissSummaryPage() {
+        if (summaryPageDialogFragment != null && summaryPageDialogFragment.isAdded() && summaryPageDialogFragment.isVisible()) {
+            summaryPageDialogFragment.dismiss();
+        }
+    }
+
 
     @Override
     public void onSuccessGetToken(GamiTapEggHome gamiTapEggHome, boolean isRefetchEgg) {
@@ -561,6 +585,8 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
                 && tokenData.getTokensUser() != null
                 && gamiTapEggHome.getTokensUser() != null
                 && tokenData.getTokensUser().getCampaignID() == gamiTapEggHome.getTokensUser().getCampaignID()) {
+
+
             boolean isPreviousStateLobby = TapTapConstants.TokenState.STATE_LOBBY.equalsIgnoreCase(tokenData.getTokensUser().getState());
             boolean isCurrentStateLobby = TapTapConstants.TokenState.STATE_LOBBY.equalsIgnoreCase(gamiTapEggHome.getTokensUser().getState());
             boolean isPreviousStateLimited = TapTapConstants.TokenState.STATE_CRACK_LIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState());
@@ -568,11 +594,18 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
             boolean isPreviousStateUnLimited = TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState());
             boolean isCurrentStateUnLimited = TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(gamiTapEggHome.getTokensUser().getState());
 
+            if (!tokenData.getTokensUser().getState().equalsIgnoreCase(gamiTapEggHome.getTokensUser().getState())
+                    || (isCurrentStateLobby && isPreviousStateLobby)) {
+                stopTimer();
+            }
+
 
             if (isPreviousStateLobby
                     && (isCurrentStateLimited
                     || isCurrentStateUnLimited)) {
+                this.tokenData = gamiTapEggHome;
                 widgetTokenView.fadeOutEggs();
+                return;
             } else if (isPreviousStateLimited && isCurrentStateLimited) {
                 this.tokenData = gamiTapEggHome;
                 widgetTokenView.startRotateBackAnimation();
@@ -654,7 +687,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
                         widgetTokenView.clearTokenAnimation();
                         widgetTokenView.split(crackResult);
                     } else {
-                        crackTokenSuccessHandler.postDelayed(this, 100);
+                        crackTokenSuccessHandler.postDelayed(this, 50);
                     }
                 }
             }
@@ -703,6 +736,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     private void showSummaryDialogOnSuccess() {
         if (getContext() != null) {
             summaryPageDialogFragment = TapTapSummaryDialogFragment.createDialog();
+            summaryPageDialogFragment.setListener(this);
         }
         if (tokenData != null) {
             summaryPageDialogFragment.setRewardButtons(tokenData.getRewardButton());
@@ -793,4 +827,8 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     }
 
 
+    @Override
+    public void onPlayWithPointsClickedOnSummaryPage() {
+        crackTokenPresenter.playWithPoints(true);
+    }
 }

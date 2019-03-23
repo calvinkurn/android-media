@@ -19,6 +19,7 @@
         android:textColor="#ffe7b0"
         android:textSize="12sp"
         android:layout_marginLeft="16dp"
+        android:textStyle="bold"
         android:layout_gravity="center_vertical"
         tools:text="+540 Points" />
 

@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.data.entity.ResponseTokenTokopointEntity;
+import com.tokopedia.gamification.floating.data.entity.FloatingButtonResponseEntity;
 import com.tokopedia.gamification.floating.view.contract.FloatingEggContract;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -34,8 +35,8 @@ public class FloatingEggPresenter extends BaseDaggerPresenter<FloatingEggContrac
     @Override
     public void getGetTokenTokopoints() {
         getTokenTokopointsUseCase.clearRequest();
-        GraphqlRequest tokenTokopointsRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.token_tokopoint_query),
-                ResponseTokenTokopointEntity.class, false);
+        GraphqlRequest tokenTokopointsRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.gami_floating_query),
+                FloatingButtonResponseEntity.class, false);
         getTokenTokopointsUseCase.addRequest(tokenTokopointsRequest);
         getTokenTokopointsUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
@@ -51,9 +52,9 @@ public class FloatingEggPresenter extends BaseDaggerPresenter<FloatingEggContrac
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-                ResponseTokenTokopointEntity responseTokenTokopointEntity = graphqlResponse.getData(ResponseTokenTokopointEntity.class);
-                if (responseTokenTokopointEntity != null && responseTokenTokopointEntity.getTokopointsToken() != null)
-                    getView().onSuccessGetToken(responseTokenTokopointEntity.getTokopointsToken());
+                FloatingButtonResponseEntity responseTokenTokopointEntity = graphqlResponse.getData(FloatingButtonResponseEntity.class);
+                if (responseTokenTokopointEntity != null && responseTokenTokopointEntity.getGamiFloatingButtonEntity() != null)
+                    getView().onSuccessGetToken(responseTokenTokopointEntity.getGamiFloatingButtonEntity());
 
             }
         });

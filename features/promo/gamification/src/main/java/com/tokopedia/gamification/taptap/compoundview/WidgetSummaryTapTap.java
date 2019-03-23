@@ -1,7 +1,8 @@
 package com.tokopedia.gamification.taptap.compoundview;
 
-import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -10,12 +11,14 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -38,7 +41,10 @@ public class WidgetSummaryTapTap extends FrameLayout {
     private RecyclerView rvRewards;
     private RewardsAdapter rewardsAdapter;
     private SummaryPageActionListener interactionListener;
-
+    private RelativeLayout rlChildSummary;
+    private View errorView;
+    private TextView tvErrorMessage;
+    private TextView tvBtnErrorOk;
     public interface SummaryPageActionListener {
 
         void playWithPoints();
@@ -66,12 +72,34 @@ public class WidgetSummaryTapTap extends FrameLayout {
         btnTop = view.findViewById(R.id.btn_top);
         btnBottomLeft = view.findViewById(R.id.btn_bottom_left);
         btnBottomRight = view.findViewById(R.id.btn_bottom_right);
+        rlChildSummary = view.findViewById(R.id.rl_child_summary);
+        errorView = view.findViewById(R.id.error_view);
+        tvErrorMessage=view.findViewById(R.id.tv_msg);
+        tvBtnErrorOk=view.findViewById(R.id.snack_ok);
         rewardsAdapter = new RewardsAdapter(null);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), R.drawable.item_divider_summary_page);
         dividerItemDecoration.setHorizontalMargin(getResources().getDimensionPixelOffset(R.dimen.dp_8));
         rvRewards.addItemDecoration(dividerItemDecoration);
-        rvRewards.setAdapter(rewardsAdapter);
+        initListBound(getScreenHeight(), 0);
+        tvBtnErrorOk.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                errorView.setVisibility(GONE);
+            }
+        });
+    }
 
+    public void showErrorSnackBar(String errorMessage) {
+        errorView.setVisibility(VISIBLE);
+        tvErrorMessage.setText(errorMessage);
+    }
+
+
+    private void initListBound(int height, int width) {
+        ViewGroup.LayoutParams ivFullLp = rvRewards.getLayoutParams();
+        ivFullLp.height = (int) (height /2.5f);
+        rvRewards.requestLayout();
+        rvRewards.setAdapter(rewardsAdapter);
     }
 
     public void setInteractionListener(SummaryPageActionListener interactionListener) {
@@ -198,5 +226,9 @@ public class WidgetSummaryTapTap extends FrameLayout {
         rvRewards.setLayoutAnimation(controller);
         rvRewards.getAdapter().notifyDataSetChanged();
         rvRewards.scheduleLayoutAnimation();
+    }
+
+    public int getScreenHeight() {
+        return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 }

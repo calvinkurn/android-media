@@ -35,6 +35,7 @@ import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.taptap.data.entiity.TokenAsset;
 import com.tokopedia.gamification.taptap.data.entiity.TokensUser;
 import com.tokopedia.gamification.taptap.utils.TapTapConstants;
+import com.tokopedia.gamification.taptap.utils.TokenMarginUtilTapTap;
 
 import java.util.List;
 import java.util.Random;
@@ -49,26 +50,27 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
 
     public static final float Y_PIVOT_PERCENT = 0.9f;
     public static final int CRACK_STEP1_SHAKE_DURATION = 150;
-    public static final int CRACK_STEP1_DURATION = 350;
+    public static final int CRACK_STEP1_DURATION = 100;
     public static final int CRACK_STEP1_DEGREE = 3;
     public static final int CRACK_STEP2_DEGREE = 3;
-    public static final int CRACK_STEP2_DURATION = 350;
+    public static final int CRACK_STEP2_DURATION = 100;
     public static final int CRACK_STEP2_SHAKE_DURATION = 120;
-    public static final int CRACK_STEP2_START_DELAY = 80;
-    public static final int CRACK_STEP3_START_DELAY = 100;
-    public static final int CRACK_STEP3_DURATION = 350;
+    public static final int CRACK_STEP2_START_DELAY = 30;
+    public static final int CRACK_STEP3_START_DELAY = 50;
+    public static final int CRACK_STEP3_DURATION = 100;
     public static final int CRACK_STEP3_SHAKE_DURATION = 150;
     public static final int STEP2_END_MASKED_PERCENT = 30;
     public static final int STEP1_END_MASKED_PERCENT = 70;
     public static final double RATIO_LIGHT_WIDTH = 0.3;
     public static final int CRACK_STEP3_DEGREE = 4;
-    private static final long CRACK_BOUNCE_DURATION = 250;
-    private static final long CRACK_BOUNCE_BACK_DURATION = 200;
+    private static final long CRACK_BOUNCE_DURATION = 100;
+    private static final long CRACK_BOUNCE_BACK_DURATION = 100;
     private static final long GLOW_IN_OUT_DURATION = 1000;
 
     private static final float LOBBY_IMAGE_SCALE = 1.16976127321f;
     private static final int MIN_TAP_COUNT = 1;
     private static final int MAX_TAP_COUNT = 3;
+    private static final float TAP_BACKGROUND_IMAGE_HEIGHT_SCALE = 1.10909f;
 
     private volatile ImageView imageViewFull;
     private volatile MaskedHeightImageView imageViewCracked;
@@ -109,6 +111,8 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
         void showCrackResult(CrackResultEntity crackResult);
 
         void reShowEgg();
+
+        void reShowFromLobby();
     }
 
     public WidgetTokenViewTapTap(@NonNull Context context) {
@@ -148,6 +152,7 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
                     widgetTapCounter.onTap();
                     isTokenClicked = true;
                 } else if (tapCount > 1) {
+                    playTapSound();
                     tapCount--;
                     shakeEggOnTap();
                     widgetTapCounter.onTap();
@@ -177,9 +182,9 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
     private void initImageBound() {
         int rootWidth = rootView.getWidth();
         int rootHeight = rootView.getHeight();
-        int imageWidth = TokenMarginUtil.getEggWidth(rootWidth, rootHeight);
+        int imageWidth = TokenMarginUtilTapTap.getEggWidth(rootWidth, rootHeight);
         int imageHeight = imageWidth;
-        int imageMarginBottom = TokenMarginUtil.getEggMarginBottom(rootHeight);
+        int imageMarginBottom = TokenMarginUtilTapTap.getEggMarginBottom(rootHeight);
         int imageMarginTop = imageMarginBottom - imageHeight;
         int marginDiff = (int) (((imageHeight * LOBBY_IMAGE_SCALE) - imageHeight) / 2.0f);
         int imageLobbyMarginTop = imageMarginBottom - imageHeight - marginDiff;
@@ -228,7 +233,7 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
 
 
         int lightImageWidth = (int) (RATIO_LIGHT_WIDTH * imageWidth);
-        int lightImageHeight = lightImageWidth;
+        int lightImageHeight = (int) (TAP_BACKGROUND_IMAGE_HEIGHT_SCALE*lightImageWidth);
         int marginTopLightRight = imageMarginBottom - (int) (0.80 * imageHeight) - lightImageHeight / 2;
         int marginLeftLightRight = (int) (0.5 * (rootWidth + (int) (0.70 * imageWidth) - lightImageWidth));
         FrameLayout.LayoutParams ivLightRightLp = (FrameLayout.LayoutParams) widgetTapCounter.getLayoutParams();
@@ -336,10 +341,7 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
             imageFullWhiteEgg.clearAnimation();
             imageSemiWhiteEgg.clearAnimation();
             imageViewFull.setEnabled(true);
-            Random rand = new Random();
-            tapCount = rand.nextInt((MAX_TAP_COUNT - MIN_TAP_COUNT) + 1) + MIN_TAP_COUNT;
-            widgetTapCounter.setVisibility(View.VISIBLE);
-            widgetTapCounter.initialize(tapCount, R.string.tap_arg_text, WidgetTokenViewTapTap.this);
+            listener.reShowFromLobby();
         }
 
         @Override
@@ -400,6 +402,18 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
 
     private void playRewardSound() {
         playSound(R.raw.reward_tap_tap);
+    }
+
+    private void playEggBounce() {
+        playSound(R.raw.egg_bounce_tap_tap);
+    }
+
+    private void playTapSound() {
+        playSound(R.raw.egg_tap_response_tap_tap);
+    }
+
+    private void playReverseEggSound() {
+        playSound(R.raw.reverse_egg_tap_tap);
     }
 
     public void playSound(int resId) {
@@ -576,8 +590,8 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
 
             }
         });
-
         bounceAnimatorSet.start();
+        playEggBounce();
 
     }
 
@@ -608,6 +622,7 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
         }
         animatorSetRotateBackEggs.addListener(rotateBackListener);
         animatorSetRotateBackEggs.start();
+        playReverseEggSound();
 
     }
 
@@ -692,6 +707,10 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
 
         }
     };
+
+    public void resetForUnlimitedCrack(TokensUser tokensUser){
+        reset(tokensUser);
+    }
 
     private void reset(TokensUser tokenUser) {
         isTokenClicked = false;

@@ -1,6 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
-    <solid android:color="#ffffff"/>
-
-</shape>
+<vector android:height="24dp" android:viewportHeight="61"
+    android:viewportWidth="55" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillAlpha="0.8047805" android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M26,32m-26,0a26,26 0,1 1,52 0a26,26 0,1 1,-52 0"
+        android:strokeAlpha="0.8047805" android:strokeColor="#00000000" android:strokeWidth="1"/>
+    <path android:fillAlpha="0.8047805" android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M13.6219,0.9256L13.6219,0.9256C14.2325,1.7101 14.0916,2.8411 13.3071,3.4517C13.23,3.5117 13.1482,3.5653 13.0624,3.612C7.1738,6.8193 3.4007,10.1085 1.7432,13.4794C1.7432,13.4794 1.7432,13.4794 1.7432,13.4794L1.7432,13.4794C1.5185,13.9364 0.9658,14.1247 0.5088,13.9C0.1273,13.7124 -0.0765,13.2882 0.0154,12.8731C0.0962,12.5084 0.1911,12.1526 0.3001,11.8056C1.5396,7.859 4.9183,4.0585 10.4363,0.4043L10.4363,0.4042C11.4713,-0.2811 12.8595,-0.0539 13.6219,0.9256Z"
+        android:strokeAlpha="0.8047805" android:strokeColor="#00000000" android:strokeWidth="1"/>
+    <path android:fillAlpha="0.8047805" android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M43.6565,60.4797L43.6565,60.4797C42.9505,59.9469 42.8101,58.9426 43.3429,58.2366C43.4292,58.1222 43.5305,58.0199 43.644,57.9324C48.9766,53.8253 52.1334,50.0673 53.1144,46.6584C53.1144,46.6584 53.1144,46.6584 53.1144,46.6584L53.1144,46.6584C53.2612,46.1483 53.7937,45.8538 54.3038,46.0006C54.7236,46.1214 55.0091,46.5101 54.9988,46.9468C54.9913,47.2677 54.9699,47.5842 54.9347,47.8961C54.501,51.7437 51.8577,55.8856 47.0048,60.3219L47.0049,60.322C46.0725,61.1743 44.6649,61.2406 43.6565,60.4797Z"
+        android:strokeAlpha="0.8047805" android:strokeColor="#00000000" android:strokeWidth="1"/>
+</vector>

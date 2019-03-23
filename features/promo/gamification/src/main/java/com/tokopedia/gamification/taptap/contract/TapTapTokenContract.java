@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
-import com.tokopedia.gamification.data.entity.TokenDataEntity;
 import com.tokopedia.gamification.taptap.data.entiity.GamiTapEggHome;
 
 /**
@@ -46,6 +45,12 @@ public interface TapTapTokenContract {
         android.view.View getRootView();
 
         void navigateToHomePage();
+
+        void showErrorSnackBarOnSummaryPage();
+
+        void showErrorSnackBarOnSummaryPage(String join);
+
+        void dismissSummaryPage();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -59,6 +64,6 @@ public interface TapTapTokenContract {
 
         void initializePage();
 
-        void playWithPoints();
+        void playWithPoints(boolean fromSummaryPage);
     }
 }

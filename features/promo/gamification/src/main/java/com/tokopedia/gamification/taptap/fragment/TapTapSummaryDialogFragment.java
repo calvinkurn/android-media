@@ -34,7 +34,11 @@ public class TapTapSummaryDialogFragment extends DialogFragment implements Gamif
     private WidgetSummaryTapTap widgetSummaryTapTap;
     private List<RewardButton> rewardButtons;
     private GamificationDatabaseWrapper gamificationDatabaseWrapper;
+    private InteractionListener interactionListener;
 
+    public interface InteractionListener {
+        void onPlayWithPointsClickedOnSummaryPage();
+    }
 
     public static TapTapSummaryDialogFragment createDialog() {
 
@@ -44,7 +48,11 @@ public class TapTapSummaryDialogFragment extends DialogFragment implements Gamif
     }
 
     public void setRewardButtons(List<RewardButton> rewardButtons) {
-        this.rewardButtons= rewardButtons;
+        this.rewardButtons = rewardButtons;
+    }
+
+    public void setListener(InteractionListener interactionListener) {
+        this.interactionListener = interactionListener;
     }
 
     @Override
@@ -81,6 +89,10 @@ public class TapTapSummaryDialogFragment extends DialogFragment implements Gamif
         }
     }
 
+    public void showErrorSnackBar(String errorMessage) {
+        widgetSummaryTapTap.showErrorSnackBar(errorMessage);
+    }
+
     @Override
     public void onErrorGetFromDb() {
         dismiss();
@@ -93,6 +105,8 @@ public class TapTapSummaryDialogFragment extends DialogFragment implements Gamif
 
     @Override
     public void playWithPoints() {
+        if (interactionListener != null)
+            interactionListener.onPlayWithPointsClickedOnSummaryPage();
 
     }
 }
