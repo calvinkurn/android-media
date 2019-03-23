@@ -30,7 +30,8 @@ public class FlightBookingDataSourceCloud {
     private FlightVerifyJsonDeserializer flightVerifyJsonDeserializer;
 
     @Inject
-    public FlightBookingDataSourceCloud(FlightApi flightApi, UserSessionInterface userSession, @FlightGsonPlainQualifier Gson gson, FlightVerifyJsonDeserializer flightVerifyJsonDeserializer) {
+    public FlightBookingDataSourceCloud(FlightApi flightApi, UserSessionInterface userSession, @FlightGsonPlainQualifier Gson gson,
+                                        FlightVerifyJsonDeserializer flightVerifyJsonDeserializer) {
         this.flightApi = flightApi;
         this.userSession = userSession;
         this.flightVerifyJsonDeserializer = flightVerifyJsonDeserializer;

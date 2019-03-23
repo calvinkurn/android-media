@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -64,8 +65,8 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     }
 
     private void findViews(View itemView) {
-        homeChannelTitle = (TextView) itemView.findViewById(R.id.home_channel_title);
-        seeAllButton = (TextView) itemView.findViewById(R.id.see_all_button);
+        homeChannelTitle = itemView.findViewById(R.id.channel_title);
+        seeAllButton = itemView.findViewById(R.id.see_all_button);
         countDownView = itemView.findViewById(R.id.count_down);
         recyclerView = itemView.findViewById(R.id.recycleList);
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
@@ -78,8 +79,9 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     public void bind(final DynamicChannelViewModel element) {
         try {
             final DynamicHomeChannel.Channels channel = element.getChannel();
-            listener.onServerTimeReceived(element.getChannel().getHeader().getServerTimeUnix());
             itemAdapter.setChannel(channel);
+            Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
+            homeChannelTitle.setTypeface(typeface);
             homeChannelTitle.setText(channel.getHeader().getName());
 
             if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channel.getHeader()))) {
@@ -91,7 +93,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
 
             if (isSprintSale(channel) || isSprintSaleLego(channel)) {
                 Date expiredTime = DateHelper.getExpiredTime(channel.getHeader().getExpiredTime());
-                countDownView.setup(listener.getServerTimeOffset(), expiredTime, countDownListener);
+                countDownView.setup(element.getServerTimeOffset(), expiredTime, countDownListener);
                 countDownView.setVisibility(View.VISIBLE);
             } else {
                 countDownView.setVisibility(View.GONE);
@@ -105,8 +107,10 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         seeAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isSprintSale(channel) || isSprintSaleLego(channel)) {
+                if (isSprintSale(channel)) {
                     HomePageTracking.eventClickSeeAllProductSprint(context);
+                } else if (isSprintSaleLego(channel)) {
+                    HomePageTracking.eventClickSeeAllLegoProduct(context, channel.getHeader().getName());
                 } else {
                     HomePageTracking.eventClickSeeAllDynamicChannel(
                             context,
@@ -175,7 +179,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), attr);
                             } else if(isSprintSaleLego(channel)){
                                 HomePageTracking.eventEnhancedClickSprintSaleProduct(context,
-                                        channel.getEnhanceClickSprintSaleLegoHomePage(position, countDownView.getCurrentCountDown()));
+                                        channel.getEnhanceClickSprintSaleLegoHomePage(position));
                                 String attr = channel.getHomeAttribution(position + 1, channel.getGrids()[position].getId());
                                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), attr);
                             } else  {

@@ -34,6 +34,7 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
     private boolean pendingTokocashChecked;
     private boolean isWalletError;
     private boolean isTokoPointError;
+    private boolean isUserLogin;
 
     public HeaderViewModel() {
     }
@@ -85,7 +86,6 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
         this.pendingTokocashChecked = pendingTokocashChecked;
     }
 
-
     public void setWalletDataSuccess() {
         this.isWalletError = false;
     }
@@ -100,6 +100,14 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
 
     public void setTokoPointDataSuccess() {
         this.isTokoPointError = false;
+    }
+
+    public boolean isUserLogin() {
+        return isUserLogin;
+    }
+
+    public void setUserLogin(boolean userLogin) {
+        isUserLogin = userLogin;
     }
 
     public void setTokoPointDataError() {

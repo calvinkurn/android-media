@@ -80,14 +80,14 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     fun getProductInfo(productParams: ProductParams, forceRefresh: Boolean = false) {
         launchCatchError(block = {
+            val cacheStrategy = GraphqlCacheStrategy
+                .Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
             val data = withContext(Dispatchers.IO) {
                 val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId?.toInt(),
                         PARAM_SHOP_DOMAIN to productParams.shopDomain,
                         PARAM_PRODUCT_KEY to productParams.productName)
                 val graphqlInfoRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_INFO],
-                        ProductInfo.Response::class.java, paramsInfo)
-                val cacheStrategy = GraphqlCacheStrategy
-                        .Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
+                    ProductInfo.Response::class.java, paramsInfo)
                 graphqlRepository.getReseponse(listOf(graphqlInfoRequest), cacheStrategy)
             }
             val productInfoP1 = ProductInfoP1()
@@ -104,13 +104,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 try {
                     val paramsVariant = mapOf(PARAM_PRODUCT_ID to productInfoP1.productInfo.basic.id.toString())
                     val graphqlVariantRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_VARIANT], ProductDetailVariantResponse::class.java, paramsVariant)
-                    val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
                     graphqlRepository.getReseponse(listOf(graphqlVariantRequest), cacheStrategy).getSuccessData<ProductDetailVariantResponse>()
                 } catch (t: Throwable) {
                     t
                 }
             }
-
 
             val productInfoP2 = getProductInfoP2(productInfoP1.productInfo.basic.shopID,
                     productInfoP1.productInfo.basic.id, productInfoP1.productInfo.basic.price,
@@ -161,16 +159,16 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 Rating.Response::class.java, ratingParams)
 
         val wishlistCountRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_COUNT],
-                WishlistCount.Response::class.java, ratingParams)
+            WishlistCount.Response::class.java, ratingParams)
 
         val voucherParams = mapOf(GetMerchantVoucherListUseCase.SHOP_ID to shopId,
-                GetMerchantVoucherListUseCase.NUM_VOUCHER to DEFAULT_NUM_VOUCHER)
+            GetMerchantVoucherListUseCase.NUM_VOUCHER to DEFAULT_NUM_VOUCHER)
         val voucherRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_VOUCHER],
-                MerchantVoucherQuery::class.java, voucherParams)
+            MerchantVoucherQuery::class.java, voucherParams)
 
         val installmentParams = mapOf(PARAM_PRICE to productPrice, "qty" to 1)
         val installmentRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_INSTALLMENT],
-                InstallmentResponse::class.java, installmentParams)
+            InstallmentResponse::class.java, installmentParams)
 
         val imageReviewParams = mapOf(PARAM_PRODUCT_ID to productId, PARAM_PAGE to 1, PARAM_TOTAL to DEFAULT_NUM_IMAGE_REVIEW)
         val imageReviewRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_IMAGE_REVIEW],
@@ -353,23 +351,23 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 GetCheckoutTypeResponse::class.java)
 
         val affilateParams = mapOf(ParamAffiliate.PRODUCT_ID_PARAM to listOf(productInfo.basic.id),
-                ParamAffiliate.SHOP_ID_PARAM to productInfo.basic.shopID,
-                ParamAffiliate.INCLUDE_UI_PARAM to true)
+            ParamAffiliate.SHOP_ID_PARAM to productInfo.basic.shopID,
+            ParamAffiliate.INCLUDE_UI_PARAM to true)
 
         val affiliateRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_AFFILIATE],
-                TopAdsPdpAffiliateResponse::class.java, affilateParams)
+            TopAdsPdpAffiliateResponse::class.java, affilateParams)
 
         val requests = mutableListOf(isWishlistedRequest, estimationRequest,
                 getCheckoutTypeRequest, affiliateRequest)
 
-        if (GlobalConfig.isCustomerApp()) {
+        if (GlobalConfig.isCustomerApp()){
             val topadsParams = mapOf(KEY_PARAM to generateTopAdsParams(productInfo))
             val topAdsRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_DISPLAY_ADS],
                     TopAdsDisplayResponse::class.java, topadsParams)
             requests.add(topAdsRequest)
         }
 
-        if (needRequestCod) {
+        if (needRequestCod){
             val userCodParams = mapOf("isPDP" to true)
             val userCodRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_USER_COD_STATUS],
                     UserCodStatus.Response::class.java, userCodParams)
@@ -400,17 +398,17 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
             if (response.getError(TopAdsPdpAffiliateResponse::class.java)?.isNotEmpty() != true) {
                 productInfoP3.pdpAffiliate = response
-                        .getData<TopAdsPdpAffiliateResponse>(TopAdsPdpAffiliateResponse::class.java)
-                        .topAdsPDPAffiliate?.data?.affiliate?.firstOrNull()
+                    .getData<TopAdsPdpAffiliateResponse>(TopAdsPdpAffiliateResponse::class.java)
+                    .topAdsPDPAffiliate?.data?.affiliate?.firstOrNull()
             }
 
             if (response.getError(GetCheckoutTypeResponse::class.java)?.isNotEmpty() != true) {
                 productInfoP3.isExpressCheckoutType = response
-                        .getData<GetCheckoutTypeResponse>(GetCheckoutTypeResponse::class.java)
-                        .getCartType.isExpress
+                    .getData<GetCheckoutTypeResponse>(GetCheckoutTypeResponse::class.java)
+                    .getCartType.isExpress
             }
 
-            if (needRequestCod && response.getError(UserCodStatus.Response::class.java)?.isNotEmpty() != true) {
+            if (needRequestCod && response.getError(UserCodStatus.Response::class.java)?.isNotEmpty() != true){
                 productInfoP3.userCod = response.getData<UserCodStatus.Response>(UserCodStatus.Response::class.java)
                         .result.userCodStatus.isCod
             }
@@ -428,7 +426,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             })
 
             val request = GraphqlRequest(rawQueries[RawQueryKeyConstant.MUTATION_FAVORITE_SHOP],
-                    DataFollowShop::class.java, param)
+                DataFollowShop::class.java, param)
             val result = withContext(Dispatchers.IO) { graphqlRepository.getReseponse(listOf(request)) }
 
             onSuccess(result.getSuccessData<DataFollowShop>().followShop.isSuccess)
@@ -439,7 +437,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                        onSuccessRemoveWishlist: ((productId: String?) -> Unit)?,
                        onErrorRemoveWishList: ((errorMessage: String?) -> Unit)?) {
         removeWishlistUseCase.createObservable(productId,
-                userSessionInterface.userId, object : WishListActionListener {
+            userSessionInterface.userId, object : WishListActionListener {
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                 // no op
             }
@@ -462,7 +460,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     onErrorAddWishList: ((errorMessage: String?) -> Unit)?,
                     onSuccessAddWishlist: ((productId: String?) -> Unit)?) {
         addWishListUseCase.createObservable(productId,
-                userSessionInterface.userId, object : WishListActionListener {
+            userSessionInterface.userId, object : WishListActionListener {
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                 onErrorAddWishList?.invoke(errorMessage)
             }

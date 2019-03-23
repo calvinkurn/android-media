@@ -30,9 +30,9 @@ import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.MerchantSaldoPriorityPresenter;
-import com.tokopedia.saldodetails.response.model.GqlAnchorListResponse;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlInfoListResponse;
+import com.tokopedia.saldodetails.response.model.GqlSpAnchorListResponse;
 
 import java.util.List;
 
@@ -251,7 +251,7 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         }
     }
 
-    private void populateAnchorListData(List<GqlAnchorListResponse> anchorList) {
+    private void populateAnchorListData(List<GqlSpAnchorListResponse> anchorList) {
         LayoutInflater layoutInflater = getLayoutInflater();
         spActionListLinearLayout.removeAllViews();
 
@@ -261,7 +261,7 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         int list_size = anchorList.size();
         for (int i = list_size - 1; i >= 0; i--) {
 
-            GqlAnchorListResponse gqlAnchorListResponse = anchorList.get(i);
+            GqlSpAnchorListResponse gqlAnchorListResponse = anchorList.get(i);
             if (gqlAnchorListResponse != null) {
                 View view = layoutInflater.inflate(R.layout.layout_anchor_list, null);
                 TextView anchorLabel = view.findViewById(R.id.anchor_label);

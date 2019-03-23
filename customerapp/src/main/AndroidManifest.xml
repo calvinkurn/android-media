@@ -170,6 +170,7 @@
             android:exported="true"
             android:label="Tokopedia"
             android:launchMode="singleTask"
+            android:theme="@style/TokopediaTransparentStatus"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
         <activity

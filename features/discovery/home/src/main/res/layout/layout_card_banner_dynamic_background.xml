@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/banner_root"
+    android:visibility="gone"
+    tools:visibility="visible"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <FrameLayout
+        android:id="@+id/container_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <ImageView
+            android:scaleType="centerCrop"
+            android:id="@+id/img_banner_background"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/banner_background_height"
+            tools:src="@drawable/ic_icon_market_toped" />
+
+        <ImageView
+            android:id="@+id/overlay_img"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/banner_background_height"
+            android:scaleType="centerCrop"
+            android:background="#31353B"
+            android:alpha="0.32" />
+
+        <View
+            android:layout_gravity="bottom"
+            android:id="@+id/overlay_round"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/banner_background_overlay_size"
+            android:background="@drawable/background_banner_image_mask"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </FrameLayout>
+
+    <View
+        android:layout_gravity="bottom"
+        android:id="@+id/white_space"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_20"
+        android:background="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/container_background" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="?actionBarSize" />
+
+    <com.tokopedia.banner.Banner
+        android:id="@+id/card_banner_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/banner_margin_top"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline"
+        tools:layout_height="wrap_content" />
+
+
+</android.support.constraint.ConstraintLayout>

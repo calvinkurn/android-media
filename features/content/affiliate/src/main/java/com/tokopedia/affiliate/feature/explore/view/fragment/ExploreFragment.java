@@ -2,11 +2,13 @@ package com.tokopedia.affiliate.feature.explore.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.CardView;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -35,6 +36,8 @@ import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
 import com.tokopedia.affiliate.common.preference.AffiliatePreference;
+import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel;
+import com.tokopedia.affiliate.common.viewmodel.ExploreTitleViewModel;
 import com.tokopedia.affiliate.common.widget.ExploreSearchView;
 import com.tokopedia.affiliate.feature.education.view.activity.AffiliateEducationActivity;
 import com.tokopedia.affiliate.feature.explore.di.DaggerExploreComponent;
@@ -47,11 +50,14 @@ import com.tokopedia.affiliate.feature.explore.view.adapter.FilterAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreTypeFactoryImpl;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.AutoCompleteViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreBannerChildViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreProductViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortFilterModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.PopularProfileChildViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ProductTitleViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.RecommendationViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortViewModel;
 import com.tokopedia.affiliate.util.AffiliateHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -63,15 +69,17 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.kotlin.extensions.view.ViewExtKt;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,9 +93,12 @@ public class ExploreFragment
         extends BaseDaggerFragment
         implements ExploreContract.View,
         SearchInputView.Listener,
-        SearchInputView.ResetListener, SwipeToRefresh.OnRefreshListener {
+        SearchInputView.ResetListener,
+        SwipeToRefresh.OnRefreshListener,
+        FilterAdapter.OnFilterClickedListener {
 
-    private static final String TAG_SHOWCASE = ExploreActivity.class.getName() + ".bottomNavigation";
+    private static final String TAG_SHOWCASE = ExploreActivity.class.getName() +
+            ".bottomNavigation";
     private static final String PRODUCT_ID_PARAM = "{product_id}";
     private static final String AD_ID_PARAM = "{ad_id}";
     private static final String USER_ID_USER_ID = "{user_id}";
@@ -95,7 +106,7 @@ public class ExploreFragment
     private static final String PERFORMANCE_AFFILIATE = "mp_affiliate";
 
     private static final int ITEM_COUNT = 10;
-    private static final int IMAGE_SPAN_COUNT = 2;
+    private static final int FULL_SPAN_COUNT = 2;
     private static final int SINGLE_SPAN_COUNT = 1;
     private static final int LOGIN_CODE = 13;
 
@@ -106,26 +117,27 @@ public class ExploreFragment
 
     private ExploreAdapter adapter;
     private ExploreParams exploreParams;
-    private FilterAdapter filterAdapter;
     private EmptyModel emptyResultModel;
     private String firstCursor = "";
-    private List<Visitable> tempFirstData = new ArrayList<>();
-    private SortFilterModel tempLocalSortFilterData = new SortFilterModel();
+    private List<Visitable<?>> tempFirstData = new ArrayList<>();
+    private List<Visitable<?>> sections = new ArrayList<>();
+    private List<SortViewModel> tempLocalSortData = new ArrayList<>();
     private RemoteConfig remoteConfig;
     private PerformanceMonitoring performanceMonitoring;
 
+    private CollapsingToolbarLayout toolbar;
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
     private ImageView ivBack, ivBantuan, ivProfile;
-    private RecyclerView rvExplore, rvAutoComplete, rvFilter;
+    private RecyclerView rvExplore, rvAutoComplete;
     private GridLayoutManager layoutManager;
     private SwipeToRefresh swipeRefreshLayout;
     private ExploreSearchView searchView;
-    private FrameLayout layoutEmpty, layoutProfile;
-    private LinearLayout layoutFilter;
-    private CardView btnFilterMore;
-    private BottomActionView sortButton;
+    private FrameLayout layoutEmpty;
+    private FrameLayout layoutProfile;
+    private BottomActionView bottomActionView;
     private FloatingActionButton btnBackToTop;
+    private BadgeView badgeView;
 
     private boolean isCanDoAction;
     private boolean isTraceStopped;
@@ -159,6 +171,7 @@ public class ExploreFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_af_explore, container, false);
+        toolbar = view.findViewById(R.id.toolbar);
         rvExplore = view.findViewById(R.id.rv_explore);
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         searchView = view.findViewById(R.id.search_input_view);
@@ -167,14 +180,11 @@ public class ExploreFragment
         autoCompleteLayout = view.findViewById(R.id.layout_auto_complete);
         rvAutoComplete = view.findViewById(R.id.rv_search_auto_complete);
         layoutEmpty = view.findViewById(R.id.layout_empty);
-        rvFilter = view.findViewById(R.id.rv_filter);
-        layoutFilter = view.findViewById(R.id.layout_filter);
         layoutProfile = view.findViewById(R.id.action_profile);
         ivProfile = view.findViewById(R.id.iv_profile);
-        btnFilterMore = view.findViewById(R.id.btn_filter_more);
-        sortButton = view.findViewById(R.id.bav);
+        bottomActionView = view.findViewById(R.id.bav);
         btnBackToTop = view.findViewById(R.id.btn_back_to_top);
-        adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
+        adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this, this), new ArrayList<>());
         return view;
     }
 
@@ -185,8 +195,7 @@ public class ExploreFragment
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         initView();
         initListener();
-        exploreParams.setLoading(true);
-        presenter.getFirstData(exploreParams, false);
+        loadFirstData(false);
 
         if (affiliatePreference.isFirstTimeEducation(userSession.getUserId())) {
             goToEducation();
@@ -194,13 +203,13 @@ public class ExploreFragment
     }
 
     private void initView() {
+        ViewCompat.setElevation(toolbar, getResources().getDimension(R.dimen.dp_4));
         layoutEmpty.setVisibility(View.GONE);
         dropKeyboard();
         initEmptyResultModel();
         initProfileSection();
         autoCompleteLayout.setVisibility(View.GONE);
         btnBackToTop.hide();
-        layoutFilter.setVisibility(View.GONE);
         exploreParams = new ExploreParams();
         swipeRefreshLayout.setOnRefreshListener(this);
         searchView.setListener(this);
@@ -210,26 +219,27 @@ public class ExploreFragment
             searchView.getSearchTextView().setCursorVisible(true);
         });
         layoutManager = new GridLayoutManager(getContext(),
-                IMAGE_SPAN_COUNT,
+                FULL_SPAN_COUNT,
                 GridLayoutManager.VERTICAL,
                 false);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (adapter == null) {
+                if (adapter == null || adapter.getData().isEmpty()) {
                     return 0;
                 }
 
-                if (adapter.getData().get(position) instanceof ExploreViewModel) {
+                if (adapter.getData().get(position) instanceof ExploreProductViewModel) {
                     return SINGLE_SPAN_COUNT;
                 }
-                return IMAGE_SPAN_COUNT;
+                return FULL_SPAN_COUNT;
             }
         });
         rvExplore.setLayoutManager(layoutManager);
         rvExplore.addOnScrollListener(getScrollListener());
+        rvExplore.addItemDecoration(getItemDecoration());
 
-        adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
+        adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this, this), new ArrayList<>());
         rvExplore.setAdapter(adapter);
     }
 
@@ -237,21 +247,33 @@ public class ExploreFragment
         emptyResultModel = new EmptyModel();
         emptyResultModel.setIconRes(R.drawable.ic_empty_search);
         emptyResultModel.setTitle(
-                getActivity().getResources().getString(R.string.text_product_not_found)
+                getString(R.string.text_product_not_found)
         );
     }
 
     private void initProfileSection() {
         //init image
         if (userSession.isLoggedIn()) {
-            ImageHandler.loadImageCircle2(getActivity(), ivProfile, userSession.getProfilePicture(), R.drawable.loading_page);
+            ImageHandler.loadImageCircle2(getActivity(), ivProfile,
+                    userSession.getProfilePicture(), R.drawable.loading_page);
         }
+
+        if (getActivity() == null) {
+            return;
+        }
+
         //init red dot
         if (AffiliateHelper.isFirstTimeOpenProfileFromExplore(getActivity())) {
-            BadgeView badgeView = new BadgeView(getActivity());
+            if (badgeView == null) {
+                badgeView = new BadgeView(getActivity());
+            }
             badgeView.bindTarget(layoutProfile);
             badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
             badgeView.setBadgeNumber(-1);
+        } else {
+            if (badgeView != null) {
+                badgeView.hide(true);
+            }
         }
         if (!ShowCasePreference.hasShown(getActivity(), TAG_SHOWCASE)) {
             showShowCase();
@@ -259,11 +281,16 @@ public class ExploreFragment
     }
 
     private void initListener() {
+        if (getActivity() == null) {
+            return;
+        }
+
         ivBack.setOnClickListener(view -> getActivity().onBackPressed());
-        ivBantuan.setOnClickListener(view -> goToEducation());
-        btnBackToTop.setOnClickListener(view -> {
-            rvExplore.scrollToPosition(0);
+        ivBantuan.setOnClickListener(view -> {
+            affiliateAnalytics.onInfoClicked();
+            goToEducation();
         });
+        btnBackToTop.setOnClickListener(view -> rvExplore.scrollToPosition(0));
         layoutProfile.setOnClickListener(view -> {
             if (!userSession.isLoggedIn()) {
                 goToLogin();
@@ -271,10 +298,21 @@ public class ExploreFragment
                 AffiliateHelper.setFirstTimeOpenProfileFromExplore(getActivity());
                 goToProfile();
                 initProfileSection();
-                affiliateAnalytics.onClickProfileOnExplore();
+                affiliateAnalytics.onProfileClicked(userSession.getUserId());
             }
         });
-
+        bottomActionView.setButton2OnClickListener(view -> {
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList(
+                    FilterActivity.PARAM_FILTER_LIST,
+                    new ArrayList<>(getAllFilterList())
+            );
+            startActivityForResult(
+                    FilterActivity.getIntent(getActivity(), bundle),
+                    REQUEST_DETAIL_FILTER
+            );
+            affiliateAnalytics.onFilterClicked(userSession.getUserId());
+        });
     }
 
     @Override
@@ -294,7 +332,7 @@ public class ExploreFragment
 
     @Override
     protected String getScreenName() {
-        return AffiliateEventTracking.Screen.BYME_DISCOVERY_PAGE;
+        return AffiliateEventTracking.Screen.BYME_EXPLORE;
     }
 
     @Override
@@ -331,12 +369,33 @@ public class ExploreFragment
                     adapter.addElement(new LoadingMoreModel());
                     presenter.loadMoreData(exploreParams);
                 }
-                if (layoutManager.findFirstCompletelyVisibleItemPosition() > IMAGE_SPAN_COUNT){
+                if (layoutManager.findFirstCompletelyVisibleItemPosition() > FULL_SPAN_COUNT) {
                     btnBackToTop.show();
-                }else{
+                } else {
                     btnBackToTop.hide();
                 }
 
+            }
+        };
+    }
+
+    private RecyclerView.ItemDecoration getItemDecoration() {
+        return new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
+                                       RecyclerView.State state) {
+                super.getItemOffsets(outRect, view, parent, state);
+                int position = parent.getChildAdapterPosition(view);
+                Visitable visitable = adapter.getData().get(position);
+                if (visitable instanceof ExploreProductViewModel
+                        && view.getLayoutParams() instanceof GridLayoutManager.LayoutParams) {
+                    int spanIndex = ((GridLayoutManager.LayoutParams) view.getLayoutParams()).getSpanIndex();
+                    if (spanIndex == 0) {
+                        outRect.left = (int) getResources().getDimension(R.dimen.dp_4);
+                    } else {
+                        outRect.right = (int) getResources().getDimension(R.dimen.dp_4);
+                    }
+                }
             }
         };
     }
@@ -345,12 +404,13 @@ public class ExploreFragment
     public void onSearchSubmitted(String text) {
         dropKeyboard();
         searchView.removeSearchTextWatcher();
-        if (autoCompleteLayout.getVisibility() == View.VISIBLE)
+        if (autoCompleteLayout.getVisibility() == View.VISIBLE) {
             autoCompleteLayout.setVisibility(View.GONE);
-        adapter.clearAllElements();
-        layoutFilter.setVisibility(View.GONE);
+        }
         exploreParams.setSearchParam(text);
-        loadFirstData(false);
+        adapter.clearProductElements();
+        presenter.unsubscribeAutoComplete();
+        presenter.getData(exploreParams);
     }
 
     @Override
@@ -377,17 +437,13 @@ public class ExploreFragment
         dropKeyboard();
         searchView.removeSearchTextWatcher();
         exploreParams.resetSearch();
+        bottomActionView.show(false);
         populateLocalDataToAdapter();
     }
 
     private void populateLocalDataToAdapter() {
         adapter.clearAllElements();
         adapter.addElement(getLocalFirstData());
-        if (filterAdapter != null) {
-            filterAdapter.clearAllData();
-            filterAdapter.resetAllFilters();
-            filterAdapter.addItem(tempLocalSortFilterData.getFilterList());
-        }
     }
 
     @Override
@@ -401,8 +457,18 @@ public class ExploreFragment
     }
 
     @Override
+    public void showLoadingScreen() {
+        if (getView() != null) {
+            ViewExtKt.showLoadingTransparent(getView());
+        }
+    }
+
+    @Override
     public void hideLoading() {
         adapter.hideLoading();
+        if (getView() != null) {
+            ViewExtKt.hideLoadingTransparent(getView());
+        }
     }
 
     @Override
@@ -412,8 +478,7 @@ public class ExploreFragment
     }
 
     @Override
-    public void onBymeClicked(ExploreViewModel model) {
-        affiliateAnalytics.onByMeButtonClicked(model.getProductId());
+    public void onBymeClicked(ExploreCardViewModel model) {
         if (isCanDoAction) {
             isCanDoAction = false;
             if (userSession.isLoggedIn()) {
@@ -425,63 +490,90 @@ public class ExploreFragment
     }
 
     @Override
-    public void onProductClicked(ExploreViewModel model) {
-        affiliateAnalytics.onProductClicked(model.getProductId());
-        if (isCanDoAction) {
-            isCanDoAction = false;
-            if (getContext()!= null) {
-                Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, model.getProductId());
-                intent.putExtra("is_from_explore_affiliate", true);
-                startActivity(intent);
-            }
+    public void onProductClicked(ExploreCardViewModel model, int adapterPosition) {
+        trackProductClick(model, adapterPosition);
+        if (getContext() != null && isCanDoAction) {
+            Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, model.getProductId());
+            intent.putExtra("is_from_explore_affiliate", true);
+            startActivity(intent);
         }
+        isCanDoAction = false;
     }
 
     @Override
-    public void onSuccessGetFirstData(List<Visitable> itemList,
+    public void onBannerClicked(ExploreBannerChildViewModel model) {
+        goToLink(model.getRedirectUrl());
+        affiliateAnalytics.onBannerClicked(model.getActivityId(), model.getImageUrl());
+    }
+
+    @Override
+    public void onProfileClicked(PopularProfileChildViewModel model) {
+        goToLink(model.getRedirectUrl());
+        affiliateAnalytics.onPopularClicked(model.getUserId());
+    }
+
+    @Override
+    public void onSuccessGetFirstData(List<Visitable<?>> sections,
+                                      List<Visitable<?>> products,
                                       String cursor,
                                       boolean isSearch,
                                       boolean isPullToRefresh,
-                                      SortFilterModel sortFilterModel) {
-       populateFirstData(itemList, cursor);
-       if (!isPullToRefresh) {
-            populateFilter(sortFilterModel.getFilterList());
-            populateSort(sortFilterModel.getSortList());
-            if (!isSearch) saveFirstDataToLocal(itemList, cursor, sortFilterModel);
-       }
-    }
+                                      List<SortViewModel> sortViewModels) {
+        addTitleBeforeProducts(sections);
 
-    @Override
-    public void onSuccessGetFilteredSortedFirstData(List<Visitable> itemList,
-                                                    String cursor,
-                                                    boolean isSearch,
-                                                    boolean isPullToRefresh) {
+        List<Visitable<?>> itemList = new ArrayList<>();
+        itemList.addAll(sections);
+        itemList.addAll(products);
+
+        trackImpression(itemList);
+
         populateFirstData(itemList, cursor);
+        if (!isPullToRefresh) {
+            populateSort(sortViewModels);
+            if (!isSearch) saveFirstDataToLocal(sections, itemList, cursor, sortViewModels);
+        }
     }
 
-    private void populateFirstData(List<Visitable> itemList, String cursor) {
-        rvExplore.scrollTo(0,0);
+    private void addTitleBeforeProducts(List<Visitable<?>> sections) {
+        sections.add(getProductTitleModel());
+    }
+
+    private ProductTitleViewModel getProductTitleModel() {
+        return new ProductTitleViewModel(new ExploreTitleViewModel(
+                getString(R.string.af_product_title),
+                getString(R.string.af_product_desc)
+        ));
+    }
+
+    private void populateFirstData(List<Visitable<?>> itemList, String cursor) {
+        rvExplore.scrollTo(0, 0);
         layoutEmpty.setVisibility(View.GONE);
         exploreParams.setLoading(false);
-        if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
         searchView.addTextWatcherToSearch();
         presenter.unsubscribeAutoComplete();
-        sortButton.setVisibility(View.VISIBLE);
+        bottomActionView.setVisibility(View.VISIBLE);
         populateExploreItem(itemList, cursor);
     }
 
-    private void saveFirstDataToLocal(List<Visitable> itemList, String firstCursor, SortFilterModel sortFilterModel) {
-        tempFirstData = itemList;
+    private void saveFirstDataToLocal(List<Visitable<?>> sections,
+                                      List<Visitable<?>> itemList,
+                                      String firstCursor,
+                                      List<SortViewModel> sortViewModels) {
+        this.sections = sections;
+        this.tempFirstData = itemList;
         this.firstCursor = firstCursor;
-        this.tempLocalSortFilterData = sortFilterModel;
+        this.tempLocalSortData = sortViewModels;
     }
 
-    private List<Visitable> getLocalFirstData() {
+    private List<Visitable<?>> getLocalFirstData() {
         exploreParams.setCursorForLoadMore(this.firstCursor);
         return tempFirstData;
     }
 
-    private void populateExploreItem(List<Visitable> itemList, String cursor) {
+    private void populateExploreItem(List<Visitable<?>> itemList, String cursor) {
         if (itemList.size() == 0) {
             itemList = new ArrayList<>();
             itemList.add(emptyResultModel);
@@ -494,74 +586,106 @@ public class ExploreFragment
         }
         adapter.clearAllElements();
         adapter.addElement(itemList);
-        if (autoCompleteLayout.getVisibility() == View.VISIBLE)
+        if (autoCompleteLayout.getVisibility() == View.VISIBLE) {
             autoCompleteLayout.setVisibility(View.GONE);
+        }
     }
 
-    private void populateFilter(List<FilterViewModel> filterList) {
-        if (remoteConfig.getBoolean(RemoteConfigKey.AFFILIATE_EXPLORE_ENABLE_FILTER, true)) {
-            layoutFilter.setVisibility(View.VISIBLE);
-            rvFilter.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-            if (filterAdapter == null) {
-                filterAdapter = new FilterAdapter(getActivity(), filterList, getFilterClickedListener(), R.layout.item_explore_filter);
-            } else {
-                filterAdapter.clearAllData();
-                filterAdapter.addItem(filterList);
+    private void populateFilter(List<FilterViewModel> currentFilter) {
+        adapter.setFilterList(currentFilter);
+    }
+
+    private List<FilterViewModel> getOnlySelectedFilter(List<FilterViewModel> filters) {
+        ArrayList<FilterViewModel> selectedFilters = new ArrayList<>();
+        for (FilterViewModel filter : filters) {
+            if (filter.isSelected()) {
+                selectedFilters.add(filter);
             }
-            rvFilter.setAdapter(filterAdapter);
-            btnFilterMore.setOnClickListener(v -> {
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList(FilterActivity.PARAM_FILTER_LIST, new ArrayList<>(filterAdapter.getAllFilterList()));
-                startActivityForResult(FilterActivity.getIntent(getActivity(), bundle), REQUEST_DETAIL_FILTER);
-            });
         }
+        return selectedFilters;
     }
 
     private void populateSort(List<SortViewModel> sortList) {
         //1. show button sort
         //2. handle onclick and passing sortlist and current selected sort (default is first data)
         if (sortList.size() > 0) {
-            sortButton.setVisibility(View.VISIBLE);
+            bottomActionView.setVisibility(View.VISIBLE);
             sortList.get(0).setSelected(true);
             exploreParams.setSort(sortList.get(0));
-            sortButton.setButton2OnClickListener(view -> {
+            bottomActionView.setButton1OnClickListener(view -> {
                 Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList(SortActivity.PARAM_SORT_LIST, new ArrayList<>(sortList));
+                bundle.putParcelableArrayList(SortActivity.PARAM_SORT_LIST,
+                        new ArrayList<>(sortList));
                 bundle.putParcelable(SortActivity.PARAM_SORT_SELECTED, exploreParams.getSort());
-                startActivityForResult(SortActivity.getIntent(getActivity(), bundle), REQUEST_DETAIL_SORT);
+                startActivityForResult(SortActivity.getIntent(getActivity(), bundle),
+                        REQUEST_DETAIL_SORT);
+                affiliateAnalytics.onSortClicked(userSession.getUserId());
             });
         } else {
-            sortButton.setVisibility(View.GONE);
+            bottomActionView.setVisibility(View.GONE);
         }
-    }
-
-    private FilterAdapter.OnFilterClickedListener getFilterClickedListener() {
-        return filters -> {
-            getFilteredFirstData(filters);
-            rvFilter.smoothScrollToPosition(0);
-        };
     }
 
     private void getFilteredFirstData(List<FilterViewModel> filters) {
         exploreParams.setFilters(filters);
         exploreParams.resetForFilterClick();
         exploreParams.setLoading(true);
-        presenter.getFirstData(exploreParams, false);
+        adapter.clearProductElements();
+        presenter.getData(exploreParams);
     }
 
     private void getSortedData(SortViewModel sort) {
         exploreParams.setSort(sort);
         exploreParams.resetForFilterClick();
         exploreParams.setLoading(true);
-        presenter.getFirstData(exploreParams, false);
+        adapter.clearProductElements();
+        presenter.getData(exploreParams);
+    }
+
+    private List<FilterViewModel> getAllFilterList() {
+        return adapter.getFilterList();
+    }
+
+    @Override
+    public void onSuccessGetData(List<Visitable<?>> products, String cursor, boolean isSearch) {
+        trackImpression(products);
+
+        exploreParams.setLoading(false);
+        bottomActionView.show(false);
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
+
+        int lastIndex = adapter.getLastIndex();
+        int offset = products.size() > 4 ? 4 : products.size();
+        adapter.addElement(products);
+        rvExplore.smoothScrollToPosition(lastIndex + offset);
+
+        if (TextUtils.isEmpty(cursor)) {
+            exploreParams.disableLoadMore();
+        } else {
+            exploreParams.setCursorForLoadMore(cursor);
+        }
+        if (autoCompleteLayout.getVisibility() == View.VISIBLE) {
+            autoCompleteLayout.setVisibility(View.GONE);
+        }
+
+        presenter.unsubscribeAutoComplete();
+    }
+
+    @Override
+    public void onErrorGetData(String error) {
+        showError(error, (view) -> presenter.getData(exploreParams));
     }
 
     @Override
     public void onErrorGetFirstData(String error) {
-        sortButton.setVisibility(View.GONE);
+        bottomActionView.setVisibility(View.GONE);
         layoutEmpty.setVisibility(View.VISIBLE);
         exploreParams.setLoading(false);
-        if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
         NetworkErrorHelper.showEmptyState(getActivity(),
                 layoutEmpty,
                 error,
@@ -574,7 +698,8 @@ public class ExploreFragment
     }
 
     @Override
-    public void onSuccessGetMoreData(List<Visitable> itemList, String cursor) {
+    public void onSuccessGetMoreData(List<Visitable<?>> itemList, String cursor) {
+        trackImpression(itemList);
         adapter.hideLoading();
         adapter.addElement(itemList);
         if (TextUtils.isEmpty(cursor)) {
@@ -582,8 +707,9 @@ public class ExploreFragment
         } else {
             exploreParams.setCursorForLoadMore(cursor);
         }
-        if (autoCompleteLayout.getVisibility() == View.VISIBLE)
+        if (autoCompleteLayout.getVisibility() == View.VISIBLE) {
             autoCompleteLayout.setVisibility(View.GONE);
+        }
         presenter.unsubscribeAutoComplete();
     }
 
@@ -595,20 +721,46 @@ public class ExploreFragment
     @Override
     public void onButtonEmptySearchClicked() {
         presenter.unsubscribeAutoComplete();
-        adapter.clearAllElements();
+        bottomActionView.show();
         exploreParams.resetParams();
+        exploreParams.setLoading(false);
         searchView.getSearchTextView().setText("");
         searchView.getSearchTextView().setCursorVisible(false);
+        adapter.clearAllElements();
+        adapter.showLoading();
         loadFirstData(false);
     }
 
     @Override
     public void onEmptySearchResult() {
-        if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
-        adapter.clearAllElements();
-        adapter.addElement(new ExploreEmptySearchViewModel());
-        exploreParams.disableLoadMore();
+        exploreParams.setLoading(false);
         presenter.unsubscribeAutoComplete();
+        bottomActionView.hide();
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
+        exploreParams.disableLoadMore();
+        adapter.clearAllElements();
+        adapter.addElement(new ExploreEmptySearchViewModel(
+                getString(R.string.text_empty_search_title),
+                getString(R.string.text_empty_search_desc)
+        ));
+    }
+
+    @Override
+    public void onEmptyProduct() {
+        exploreParams.setLoading(false);
+        presenter.unsubscribeAutoComplete();
+        bottomActionView.hide();
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
+        exploreParams.disableLoadMore();
+        adapter.clearAllElements();
+        adapter.addElement(new ExploreEmptySearchViewModel(
+                getString(R.string.text_empty_product_title),
+                getString(R.string.text_empty_product_desc)
+        ));
     }
 
     @Override
@@ -616,12 +768,14 @@ public class ExploreFragment
         if (isAffiliate) {
             presenter.checkAffiliateQuota(productId, adId);
         } else {
-            String onboardingApplink = ApplinkConst.AFFILIATE_ONBOARDING
-                    .concat(PRODUCT_ID_QUERY_PARAM)
-                    .concat(productId);
-            Intent intent = RouteManager.getIntent(getContext(), onboardingApplink);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            if (getContext() != null) {
+                String onboardingApplink = ApplinkConst.AFFILIATE_ONBOARDING
+                        .concat(PRODUCT_ID_QUERY_PARAM)
+                        .concat(productId);
+                Intent intent = RouteManager.getIntent(getContext(), onboardingApplink);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
         }
     }
 
@@ -632,12 +786,14 @@ public class ExploreFragment
 
     @Override
     public void onSuccessCheckQuota(String productId, String adId) {
-        RouteManager.route(
-                getActivity(),
-                ApplinkConst.AFFILIATE_CREATE_POST
-                        .replace(PRODUCT_ID_PARAM, productId)
-                        .replace(AD_ID_PARAM, adId)
-        );
+        if (getActivity() != null) {
+            RouteManager.route(
+                    getActivity(),
+                    ApplinkConst.AFFILIATE_CREATE_POST
+                            .replace(PRODUCT_ID_PARAM, productId)
+                            .replace(AD_ID_PARAM, adId)
+            );
+        }
     }
 
     @Override
@@ -654,27 +810,43 @@ public class ExploreFragment
     }
 
     private void goToProfile() {
-        RouteManager.route(
-                getActivity(),
-                ApplinkConst.PROFILE.replace(USER_ID_USER_ID, userSession.getUserId()));
+        if (getContext() != null) {
+            RouteManager.route(
+                    getContext(),
+                    ApplinkConst.PROFILE.replace(USER_ID_USER_ID, userSession.getUserId()));
+        }
     }
 
     private void goToLogin() {
-        startActivityForResult(
-                RouteManager.getIntent(
-                        getActivity(),
-                        ApplinkConst.LOGIN
-                ),
-                LOGIN_CODE);
+        if (getContext() != null) {
+            startActivityForResult(
+                    RouteManager.getIntent(
+                            getContext(),
+                            ApplinkConst.LOGIN
+                    ),
+                    LOGIN_CODE);
+        }
+    }
+
+    private void goToLink(String url) {
+        if (getContext() != null && !TextUtils.isEmpty(url)) {
+            if (RouteManager.isSupportApplink(getContext(), url)) {
+                RouteManager.route(getContext(), url);
+            } else {
+                RouteManager.route(
+                        getContext(),
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+                );
+            }
+        }
     }
 
     private Dialog buildDialog() {
         Dialog dialog = new Dialog(getActivity(), Dialog.Type.LONG_PROMINANCE);
-        dialog.setTitle(getActivity().getResources().getString(R.string.text_full_affiliate_title));
-        dialog.setDesc(getActivity().getResources().getString(R.string.text_full_affiliate));
-        dialog.setBtnOk(getActivity().getResources().getString(R.string.text_full_affiliate_ok));
-        dialog.setBtnCancel(getActivity().getResources().getString(R.string
-                .text_full_affiliate_no));
+        dialog.setTitle(getString(R.string.text_full_affiliate_title));
+        dialog.setDesc(getString(R.string.text_full_affiliate));
+        dialog.setBtnOk(getString(R.string.text_full_affiliate_ok));
+        dialog.setBtnCancel(getString(R.string.text_full_affiliate_no));
         dialog.getAlertDialog().setCancelable(true);
         dialog.getAlertDialog().setCanceledOnTouchOutside(true);
         return dialog;
@@ -717,6 +889,56 @@ public class ExploreFragment
         }
     }
 
+    @Override
+    public void unsubscribeAutoComplete() {
+        presenter.unsubscribeAutoComplete();
+    }
+
+    @Override
+    public boolean shouldBackPressed() {
+        if (adapter == null) {
+            return true;
+        }
+
+        for (Visitable visitable : adapter.getData()) {
+            if (visitable instanceof ExploreEmptySearchViewModel) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void refresh() {
+        onButtonEmptySearchClicked();
+    }
+
+    @Override
+    public boolean shouldBackPressed() {
+        if (adapter == null) {
+            return true;
+        }
+
+        for (Visitable visitable : adapter.getData()) {
+            if (visitable instanceof ExploreEmptySearchViewModel) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void refresh() {
+        onButtonEmptySearchClicked();
+    }
+
+    @Override
+    public void onItemClicked(@NotNull List<FilterViewModel> filters,
+                              @NotNull FilterViewModel filterViewModel) {
+        getFilteredFirstData(filters);
+        affiliateAnalytics.onQuickFilterClicked(filterViewModel.getName());
+    }
+
     private void clearAutoCompleteAdapter(String keyword) {
         searchView.setDelayTextChanged(0);
         searchView.getSearchTextView().setText(keyword);
@@ -729,15 +951,14 @@ public class ExploreFragment
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_DETAIL_FILTER) {
-                List<FilterViewModel> currentFilter = new ArrayList<>(data.<FilterViewModel>getParcelableArrayListExtra(FilterActivity.PARAM_FILTER_LIST));
+                List<FilterViewModel> currentFilter = new ArrayList<>(data.getParcelableArrayListExtra(FilterActivity.PARAM_FILTER_LIST));
                 populateFilter(currentFilter);
-                getFilteredFirstData(filterAdapter.getOnlySelectedFilter());
-            }
-            else if (requestCode == REQUEST_DETAIL_SORT) {
-                SortViewModel selectedSort = data.getParcelableExtra(SortActivity.PARAM_SORT_SELECTED);
+                getFilteredFirstData(getOnlySelectedFilter(currentFilter));
+            } else if (requestCode == REQUEST_DETAIL_SORT) {
+                SortViewModel selectedSort =
+                        data.getParcelableExtra(SortActivity.PARAM_SORT_SELECTED);
                 getSortedData(selectedSort);
-            }
-            else if (requestCode == LOGIN_CODE) {
+            } else if (requestCode == LOGIN_CODE) {
                 initProfileSection();
             }
         }
@@ -753,6 +974,43 @@ public class ExploreFragment
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();
+    }
+
+    private void trackImpression(List<Visitable<?>> visitables) {
+        for(int i = 0; i < visitables.size(); i++) {
+            Visitable visitable = visitables.get(i);
+            int position = adapter.getData().size() + i;
+
+            if (visitable instanceof ExploreProductViewModel) {
+                ExploreProductViewModel model = (ExploreProductViewModel) visitable;
+                trackProductImpression(model.getExploreCardViewModel(), position);
+            } else if (visitable instanceof RecommendationViewModel) {
+                RecommendationViewModel model = (RecommendationViewModel) visitable;
+                for (ExploreCardViewModel card : model.getCards()) {
+                    trackProductImpression(card, position);
+                }
+            }
+        }
+    }
+
+    private void trackProductImpression(ExploreCardViewModel card, int position) {
+        affiliateAnalytics.onProductImpression(
+                card.getTitle(),
+                card.getProductId(),
+                card.getCommissionValue(),
+                card.getSectionName(),
+                position
+        );
+    }
+
+    private void trackProductClick(ExploreCardViewModel card, int position) {
+        affiliateAnalytics.onProductClicked(
+                card.getTitle(),
+                card.getProductId(),
+                card.getCommissionValue(),
+                card.getSectionName(),
+                position
+        );
     }
 
     private void showError(String message) {

@@ -55,6 +55,7 @@ public class HomePageTracking {
     private static final String ACTION_CLICK_TAB_EXPLORER = "click explorer tab";
     private static final String ACTION_CLICK_DYNAMIC_ICONS = "click 5 dynamic icons";
     private static final String ACTION_CLICK_SEE_ALL_PRODUCT_SPRINT = "sprint sale click view all";
+    private static final String ACTION_CLICK_SEE_ALL_LEGO_PRODUCT = "click view all on lego product";
     private static final String ACTION_CLICK_SEE_ALL_PRODUCT_SPRINT_BACKGROUND = "sprint sale with backgroud click view all";
     private static final String ACTION_CLICK_SEE_ALL_DYNAMIC_CHANNEL = "curated list click view all";
     private static final String ACTION_CLICK_SEE_ALL_LEGO_BANNER_CHANNEL = "lego banner click view all";
@@ -76,7 +77,7 @@ public class HomePageTracking {
     public static final String PRODUCT_VIEW = "productView";
     public static final String EVENT_ACTION_PRODUCT_RECOMMENDATION_IMPRESSION = "product recommendation impression";
     public static final String EVENT_ACTION_PRODUCT_RECOMMENDATION_IMPRESSION_NON_LOGIN =
-            "product recommendation impression - non login recommendation impression";
+            "product recommendation impression - non login";
     public static final String CURRENCY_CODE = "currencyCode";
     public static final String IDR = "IDR";
     public static final String IMPRESSIONS = "impressions";
@@ -92,6 +93,15 @@ public class HomePageTracking {
     public static final String ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION = "add wishlist on product recommendation";
     public static final String ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_NON_LOGIN = "add wishlist on product recommendation - non login";
     public static final String ACTION_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION = "remove wishlist on product recommendation";
+    public static final String EVENT_CLICK_TICKER = "clickTicker";
+    public static final String EVENT_CATEGORY_TICKER_HOMEPAGE = "ticker homepage";
+    public static final String EVENT_ACTION_CLICK_TICKER = "click ticker";
+    public static final String EVENT_ACTION_CLICK_ON_CLOSE_TICKER = "click on close ticker";
+
+    public static final String ON = "on";
+    public static final String NON_LOGIN = "non login";
+    public static final String QR_CODE = "qr code";
+    public static final String OVO = "ovo";
 
     public static AnalyticTracker getTracker(Context context){
         if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
@@ -221,14 +231,12 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventClickDynamicIcons(Context context, String title) {
+    public static void eventEnhancedClickDynamicIconHomePage(Context context,
+                                                                Map<String, Object> data) {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
-            tracker.sendEventTracking(
-                    EVENT_CLICK_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    ACTION_CLICK_DYNAMIC_ICONS,
-                    title
+            tracker.sendEnhancedEcommerce(
+                    data
             );
         }
     }
@@ -241,6 +249,18 @@ public class HomePageTracking {
                     CATEGORY_HOME_PAGE,
                     ACTION_CLICK_SEE_ALL_PRODUCT_SPRINT,
                     LABEL_EMPTY
+            );
+        }
+    }
+
+    public static void eventClickSeeAllLegoProduct(Context context, String headerName) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    ACTION_CLICK_SEE_ALL_LEGO_PRODUCT,
+                    headerName
             );
         }
     }
@@ -275,6 +295,14 @@ public class HomePageTracking {
 
     public static void eventEnhancedImpressionDynamicChannelHomePage(Context context,
                                                                      Map<String, Object> data) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(data);
+        }
+    }
+
+    public static void eventEnhancedImpressionDynamicIconHomePage(Context context,
+                                                                  Map<String, Object> data) {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
             tracker.sendEnhancedEcommerce(data);
@@ -317,14 +345,14 @@ public class HomePageTracking {
     }
 
     public static void eventClickSeeAllThreeLegoBannerChannel(Context context,
-                                                         String applink) {
+                                                         String headerName) {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
             tracker.sendEventTracking(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_CLICK_SEE_ALL_LEGO_THREE_IMAGE_BANNER_CHANNEL,
-                    applink
+                    headerName
             );
         }
     }
@@ -514,7 +542,7 @@ public class HomePageTracking {
 
     public static void eventImpressionOnProductRecommendationForLoggedInUser(
             TrackingQueue trackingQueue,
-            List<HomeFeedViewModel> feedViewModels,
+            HomeFeedViewModel feedViewModel,
             String tabName) {
 
         Map<String, Object> data = DataLayer.mapOf(
@@ -525,7 +553,7 @@ public class HomePageTracking {
                 ECOMMERCE, DataLayer.mapOf(
                         CURRENCY_CODE, IDR,
                         IMPRESSIONS,
-                        convertHomeFeedViewModelListToObjectForLoggedInUser(feedViewModels, tabName)
+                        convertHomeFeedViewModelListToObjectForLoggedInUser(feedViewModel, tabName)
                 )
         );
         trackingQueue.putEETracking((HashMap<String, Object>) data);
@@ -533,7 +561,7 @@ public class HomePageTracking {
 
     public static void eventImpressionOnProductRecommendationForNonLoginUser(
             TrackingQueue trackingQueue,
-            List<HomeFeedViewModel> feedViewModels,
+            HomeFeedViewModel feedViewModel,
             String tabName) {
 
         Map<String, Object> data = DataLayer.mapOf(
@@ -544,31 +572,27 @@ public class HomePageTracking {
                 ECOMMERCE, DataLayer.mapOf(
                         CURRENCY_CODE, IDR,
                         IMPRESSIONS,
-                        convertHomeFeedViewModelListToObjectForNonLoginUser(feedViewModels, tabName)
+                        convertHomeFeedViewModelListToObjectForNonLoginUser(feedViewModel, tabName)
                 )
         );
         trackingQueue.putEETracking((HashMap<String, Object>) data);
     }
 
     private static List<Object> convertHomeFeedViewModelListToObjectForLoggedInUser(
-            List<HomeFeedViewModel> feedViewModels,
+            HomeFeedViewModel feedViewModel,
             String tabName
     ) {
         List<Object> objects = new ArrayList<>();
-        for (HomeFeedViewModel homeFeedViewModel : feedViewModels) {
-            objects.add(homeFeedViewModel.convertFeedTabModelToImpressionDataForLoggedInUser(tabName));
-        }
+        objects.add(feedViewModel.convertFeedTabModelToImpressionDataForLoggedInUser(tabName));
         return objects;
     }
 
     private static List<Object> convertHomeFeedViewModelListToObjectForNonLoginUser(
-            List<HomeFeedViewModel> feedViewModels,
+            HomeFeedViewModel feedViewModel,
             String tabName
     ) {
         List<Object> objects = new ArrayList<>();
-        for (HomeFeedViewModel homeFeedViewModel : feedViewModels) {
-            objects.add(homeFeedViewModel.convertFeedTabModelToImpressionDataForNonLoginUser(tabName));
-        }
+        objects.add(feedViewModel.convertFeedTabModelToImpressionDataForNonLoginUser(tabName));
         return objects;
     }
 
@@ -660,6 +684,66 @@ public class HomePageTracking {
                     CATEGORY_HOME_PAGE,
                     ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_NON_LOGIN,
                     tabName
+            );
+        }
+    }
+
+    public static void eventClickTickerHomePage(Context context, String tickerTitle) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_CLICK_TICKER,
+                    EVENT_CATEGORY_TICKER_HOMEPAGE,
+                    EVENT_ACTION_CLICK_TICKER,
+                    tickerTitle
+            );
+        }
+    }
+
+    public static void eventClickOnCloseTickerHomePage(Context context, String tickerTitle) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_CLICK_TICKER,
+                    EVENT_CATEGORY_TICKER_HOMEPAGE,
+                    EVENT_ACTION_CLICK_ON_CLOSE_TICKER,
+                    tickerTitle
+            );
+        }
+    }
+
+    public static void eventOvo(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    String.format("%s %s %s", CLICK, ON, OVO),
+                    ""
+            );
+        }
+    }
+
+    public static void eventQrCode(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    String.format("%s %s %s", CLICK, ON, QR_CODE),
+                    ""
+            );
+        }
+    }
+
+    public static void eventTokopointNonLogin(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    String.format("%s %s %s - %s", CLICK, ON, LABEL_TOKOPOINTS, NON_LOGIN),
+                    ""
             );
         }
     }
