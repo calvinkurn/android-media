@@ -96,4 +96,7 @@ public class RemoteConfigKey {
     public static final String NONB4_DESC = "nonb_4_dsc";
     public static final String NONB5_TTL = "nonb_5_ttl";
     public static final String NONB5_DESC = "nonb_5_dsc";
+    public static final String OVO_ENABLE_FLAG = "app_enable_ovo_pay_by_qr";
+    public static final String OVO_QR_MIN_AMOUNT = "app_ovo_min_balance";
+    public static final String OVO_QR_MAX_AMOUNT = "app_ovo_max_balance";
 }

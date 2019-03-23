@@ -613,8 +613,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         Uri uri = Uri.parse(actionButton.getUri());
                         invoiceUrl = uri.getQueryParameter("invoiceUrl");
                         String applink = "tokopedia://topchat/askseller/" + shopId;
-                        applink = applink.concat("?customMessage=" + invoiceUrl + "&source=" + "tx_ask_seller" + "&opponent_name=" + "" + "&avatar=" + "");
                         RouteManager.route(getContext(), applink);
+                        Intent intent = RouteManager.getIntent(getContext(), applink);
+                        intent.putExtra(ApplinkConst.Chat.CUSTOM_MESSAGE, invoiceUrl);
+                        intent.putExtra(ApplinkConst.Chat.SOURCE, "tx_ask_seller");
+                        startActivity(intent);
                     }
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                     Intent intent = new Intent(getContext(), RequestCancelActivity.class);

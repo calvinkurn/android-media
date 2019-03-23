@@ -181,7 +181,10 @@ class DynamicPostViewHolder(v: View,
 
     private fun bindCaption(caption: Caption, template: TemplateBody) {
         itemView.caption.shouldShowWithAction(template.caption) {
-            if (caption.text.length > MAX_CHAR) {
+            if (caption.text.isEmpty()) {
+                itemView.caption.visibility = View.GONE
+            } else if (caption.text.length > MAX_CHAR) {
+                itemView.caption.visibility = View.VISIBLE
                 val captionText = caption.text.substring(0, CAPTION_END)
                         .replace(NEWLINE, "<br />")
                         .plus("... ")
