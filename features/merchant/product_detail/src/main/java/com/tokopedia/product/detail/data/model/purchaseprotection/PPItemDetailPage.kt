@@ -10,5 +10,13 @@ data class PPItemDetailPage(
         var title: String? = null,
 
         @SerializedName("subTitle")
-        var subTitle: String? = null
+        var subTitle: String? = null,
+
+        @SerializedName("titlePDP")
+        var titlePDP: String? = null,
+
+        @SerializedName("subTitlePDP")
+        var subTitlePDP: String? = null
+
+
 )
