@@ -76,8 +76,8 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
             loadDataFromSavedState(savedInstanceState)
-        } else {
-            loadDataFromSavedState(arguments)
+        } else if (arguments != null) {
+            loadDataFromSavedState(arguments!!)
         }
     }
 
