@@ -11,7 +11,7 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
-        vectorDrawables.useSupportLibrary = vectorDrawable
+        vectorDrawables.useSupportLibrary=vectorDrawable.toBoolean()
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -57,6 +57,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.cardViewV7
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
+    implementation rootProject.ext.supportLibDependencies.kotlinReflection
 
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava

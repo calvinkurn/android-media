@@ -26,7 +26,7 @@ public class ReactNativeOfficialStoreCategoryActivity extends ReactFragmentActiv
         ReactUtils.startTracing(MP_OFFICIAL_STORE_CATEGORY);
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         if(remoteConfig.getBoolean(ANDROID_CUSTOMER_NEW_OS_CATEGORY_ENABLED)) {
-            return ReactNativeOfficialStoreActivity.createApplinkCallingIntent(context, bundle);
+            return ReactNativeOfficialStoreCategoryActivity.createApplinkCallingIntent(context, bundle);
         } else {
             return OldReactNativeOfficialStoreActivity.getCategoryIntent(context, bundle.getString(KEY_CATEGORY));
         }

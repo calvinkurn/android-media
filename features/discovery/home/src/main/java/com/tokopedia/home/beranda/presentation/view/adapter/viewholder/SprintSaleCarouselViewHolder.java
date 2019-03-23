@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
@@ -62,7 +63,6 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
     private Context context;
     private TextView title;
     private TextView seeMore;
-    private CardView seeMoreContainer;
     private ImageView headerBg;
     private CountDownView countDownView;
     private HomeCategoryListener listener;
@@ -78,10 +78,9 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         countDownView = itemView.findViewById(R.id.count_down);
         container = itemView.findViewById(R.id.container);
         headerBg = itemView.findViewById(R.id.header_bg);
-        title = itemView.findViewById(R.id.title);
+        title = itemView.findViewById(R.id.channel_title);
         title.setSelected(true);
-        seeMore = itemView.findViewById(R.id.see_more);
-        seeMoreContainer = itemView.findViewById(R.id.see_more_container);
+        seeMore = itemView.findViewById(R.id.see_all_button);
         recyclerView = itemView.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(itemAdapter);
@@ -113,7 +112,8 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
     public void bind(DynamicChannelViewModel element) {
         try {
             this.channels = element.getChannel();
-            listener.onServerTimeReceived(channels.getHeader().getServerTimeUnix());
+            Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
+            title.setTypeface(typeface);
             title.setText(channels.getHeader().getName());
             if (channels.getHeader().getBackColor() != null) {
                 Glide.with(context).load(channels.getHeader().getBackImage()).into(headerBg);
@@ -123,11 +123,11 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             HomeTrackingUtils.homeSprintSaleImpression(context,
                     channels.getGrids(),channels.getType());
             Date expiredTime = DateHelper.getExpiredTime(channels.getHeader().getExpiredTime());
-            countDownView.setup(listener.getServerTimeOffset(), expiredTime, countDownListener);
+            countDownView.setup(element.getServerTimeOffset(), expiredTime, countDownListener);
             if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channels.getHeader()))) {
-                seeMoreContainer.setVisibility(View.VISIBLE);
+                seeMore.setVisibility(View.VISIBLE);
             } else {
-                seeMoreContainer.setVisibility(View.GONE);
+                seeMore.setVisibility(View.GONE);
             }
             seeMore.setOnClickListener(new View.OnClickListener() {
                 @Override

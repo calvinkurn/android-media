@@ -37,7 +37,8 @@
 
             <TextView
                 android:id="@+id/text_view_label_1"
-                style="@style/TextView.Micro"
+                style="@style/TextView.Micro.Bold"
+                android:textStyle="bold"
                 tools:text="@string/app_name" />
 
             <View
@@ -53,7 +54,7 @@
 
         <View
             android:id="@+id/view_separator"
-            android:layout_width="2dp"
+            android:layout_width="0.5dp"
             android:layout_height="@dimen/dp_32"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_5"
@@ -84,7 +85,8 @@
 
             <TextView
                 android:id="@+id/text_view_label_2"
-                style="@style/TextView.Micro"
+                style="@style/TextView.Micro.Bold"
+                android:textStyle="bold"
                 tools:text="@string/app_name" />
 
             <View

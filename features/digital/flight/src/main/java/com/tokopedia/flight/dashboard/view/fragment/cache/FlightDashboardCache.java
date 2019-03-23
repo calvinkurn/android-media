@@ -9,14 +9,12 @@ import android.content.SharedPreferences;
 
 public class FlightDashboardCache {
     private static final String CACHE_NAME = "FlightDashboardNewCache";
-    private static final String DEPARTURE = "DEPARTURE_AIRPORT_ID";
-    private static final String ARRIVAL = "ARRIVAL_AIRPORT_ID";
     private static final String DEPARTURE_CITY_CODE = "DEPARTURE_CITY_CODE";
     private static final String ARRIVAL_CITY_CODE = "ARRIVAL_CITY_CODE";
     private static final String DEPARTURE_CITY_NAME = "DEPARTURE_CITY_NAME";
     private static final String ARRIVAL_CITY_NAME = "ARRIVAL_CITY_NAME";
-    private static final String DEPARTURE_CITY_ID = "DEPARTURE_CITY_ID";
-    private static final String ARRIVAL_CITY_ID = "ARRIVAL_CITY_ID";
+    private static final String DEPARTURE_AIRPORT_CODE = "DEPARTURE_AIRPORT_CODE";
+    private static final String ARRIVAL_AIRPORT_CODE = "ARRIVAL_AIRPORT_CODE";
     private static final String DEPARTURE_DATE = "DEPARTURE_DATE";
     private static final String RETURN_DATE = "RETURN_DATE";
     private static final String PASSENGER_ADULT = "PASSENGER_ADULT";
@@ -46,22 +44,22 @@ public class FlightDashboardCache {
 
     public void putDepartureAirport(String airportId) {
         editor
-                .putString(DEPARTURE, airportId)
+                .putString(DEPARTURE_AIRPORT_CODE, airportId)
                 .apply();
     }
 
     public String getDepartureAirport() {
-        return sharedPrefs.getString(DEPARTURE, DEFAULT_DEPARTURE_AIRPORT_ID);
+        return sharedPrefs.getString(DEPARTURE_AIRPORT_CODE, DEFAULT_DEPARTURE_AIRPORT_ID);
     }
 
     public void putArrivalAirport(String airportId) {
         editor
-                .putString(ARRIVAL, airportId)
+                .putString(ARRIVAL_AIRPORT_CODE, airportId)
                 .apply();
     }
 
     public String getArrivalAirport() {
-        return sharedPrefs.getString(ARRIVAL, DEFAULT_ARRIVAL_AIRPORT_ID);
+        return sharedPrefs.getString(ARRIVAL_AIRPORT_CODE, DEFAULT_ARRIVAL_AIRPORT_ID);
     }
 
     public void putDepartureCityCode(String cityCode) {

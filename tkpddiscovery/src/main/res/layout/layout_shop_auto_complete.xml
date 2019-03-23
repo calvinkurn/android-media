@@ -10,40 +10,22 @@
     android:paddingTop="@dimen/dp_8"
     android:paddingBottom="@dimen/dp_8">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/shopContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:id="@+id/shop_avatar"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
+        android:src="@drawable/ic_loading_image"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginRight="@dimen/dp_8"
-        android:padding="@dimen/dp_5"
-        android:gravity="center_vertical"
-        app:cardUseCompatPadding="true"
-        app:contentPadding="2dp">
-
-        <ImageView
-            android:id="@+id/shop_avatar"
-            android:layout_width="38dp"
-            android:layout_height="38dp" />
-
-    </android.support.v7.widget.CardView>
-
-    <ImageView
-        android:id="@+id/icon"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        app:srcCompat="@drawable/ic_diagonal_arrow"/>
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/shopContainer"
-        android:layout_toEndOf="@id/shopContainer"
+        android:layout_toRightOf="@id/shop_avatar"
+        android:layout_toEndOf="@id/shop_avatar"
         android:layout_toStartOf="@id/icon"
         android:layout_toLeftOf="@id/icon"
         android:layout_marginRight="@dimen/dp_8"
@@ -61,8 +43,8 @@
                 android:id="@+id/badgesOfficialStore"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_4"
+                android:layout_marginRight="@dimen/dp_4"
                 android:layout_gravity="center_vertical"
                 app:srcCompat="@drawable/ic_badge_shop_official"
                 />
@@ -89,10 +71,10 @@
             <ImageView
                 android:layout_width="@dimen/dp_14"
                 android:layout_height="@dimen/dp_14"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_4"
+                android:layout_marginRight="@dimen/dp_4"
                 android:layout_gravity="center_vertical"
-                app:srcCompat="@drawable/ic_icon_location_grey"
+                app:srcCompat="@drawable/ic_location_solid"
                 />
 
             <TextView

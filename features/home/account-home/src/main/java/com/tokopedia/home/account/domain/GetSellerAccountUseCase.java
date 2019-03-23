@@ -52,8 +52,8 @@ public class GetSellerAccountUseCase extends UseCase<SellerViewModel> {
                     int[] shopIds = (int[]) variables.get("shop_ids");
                     String shopId = (shopIds != null && shopIds.length > 0) ? shopIds[0] + "" : "";
 
-                    if (!TextUtils.isEmpty(query) && variables != null) {
-                        GraphqlRequest request = new GraphqlRequest(query, AccountModel.class, variables);
+                    if(!TextUtils.isEmpty(query) && variables != null) {
+                        GraphqlRequest request = new GraphqlRequest(query, AccountModel.class, variables, false);
                         graphqlUseCase.clearRequest();
                         graphqlUseCase.addRequest(request);
                         graphqlUseCase.addRequest(TopAdsGetShopDepositGraphQLUseCase.createGraphqlRequest(topadsQuery,

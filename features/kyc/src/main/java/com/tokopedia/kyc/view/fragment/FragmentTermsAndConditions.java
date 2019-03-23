@@ -38,6 +38,8 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
+import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
+
 public class FragmentTermsAndConditions extends BaseDaggerFragment implements View.OnClickListener,
         CompoundButton.OnCheckedChangeListener, GenericOperationsView<ConfirmSubmitResponse> {
     private ActivityListener activityListener;
@@ -234,6 +236,9 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
                             activityListener.getDataContatainer().setFlipCardIdImg((Boolean) dataObj.get(keysList.get(1)));
                             activityListener.getDataContatainer().setCardIdImage((String) dataObj.get(keysList.get(0)));
                         }
+                        if(getActivity() != null) {
+                            getActivity().getSupportFragmentManager().popBackStackImmediate(FragmentCardIDUpload.TAG, POP_BACK_STACK_INCLUSIVE);
+                        }
                         activityListener.addReplaceFragment(FragmentCardIDUpload.newInstance(bundle), true,
                                 FragmentCardIDUpload.TAG);
                     }
@@ -243,6 +248,9 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
                         if(activityListener.getDataContatainer() != null){
                             activityListener.getDataContatainer().setFlipSelfieIdImg((Boolean) dataObj.get(keysList.get(1)));
                             activityListener.getDataContatainer().setSelfieIdImage((String) dataObj.get(keysList.get(0)));
+                        }
+                        if(getActivity() != null) {
+                            getActivity().getSupportFragmentManager().popBackStackImmediate(FragmentCardIDUpload.TAG, 0);
                         }
                         activityListener.addReplaceFragment(FragmentSelfieIdPreviewAndUpload.newInstance(bundle), true,
                                 FragmentCardIDUpload.TAG);

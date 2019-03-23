@@ -11,19 +11,4 @@ query getExploreAffiliate($keyword: String, $nextCursor: String, $filter: [Topad
       nextCursor
     }
   }
-  topadsGetExploreCategory{
-      category{
-        ids
-        name
-        image
-      }
-    }
-  topadsGetExploreSort {
-      sort {
-          key
-          asc
-          text
-        }
-   }
-
 }

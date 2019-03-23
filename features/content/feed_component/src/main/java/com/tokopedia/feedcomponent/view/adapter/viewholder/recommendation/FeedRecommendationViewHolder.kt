@@ -52,7 +52,7 @@ class FeedRecommendationViewHolder(v: View,
         }
     }
 
-    fun onViewRecycled() {
+    override fun onViewRecycled() {
         cardAdapter?.list?.forEachIndexed { index, _ ->
             val holder = itemView.recommendationRv.findViewHolderForAdapterPosition(index)
             (holder as? RecommendationCardAdapter.RecommendationCardViewHolder)?.let {

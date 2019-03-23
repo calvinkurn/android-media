@@ -35,11 +35,6 @@ public class GqlMerchantSaldoDetailsResponse implements Parcelable {
         this.data = data;
     }
 
-    public GqlMerchantSaldoDetailsResponse withData(GqlDetailsResponse data) {
-        this.data = data;
-        return this;
-    }
-
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(data);
     }

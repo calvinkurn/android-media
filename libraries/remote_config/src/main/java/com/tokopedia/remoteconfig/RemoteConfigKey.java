@@ -42,6 +42,7 @@ public class RemoteConfigKey {
     public static final String SHOW_NEARBY_CABS = "app_uber_show_nearby_cabs";
     public static final String MAINAPP_FLIGHT_TRANSACTION_MENU = "mainapp_flight_transaction_menu";
     public static final String MAINAPP_FLIGHT_NEW_SEARCH_FLOW = "mainapp_flight_new_search_flow";
+    public static final String ANDROID_CUSTOMER_FLIGHT_BOOKING_NEW_FLOW = "android_customer_flight_booking_new_flow";
     public static final String SHOW_IMAGE_SEARCH = "enable_image_search";
     public static final String IMAGE_SEARCH_ONBOARD_DESC = "app_image_search_showcase_message";
 
@@ -64,7 +65,6 @@ public class RemoteConfigKey {
     public static final String PINJAMAN_MODAL_AKUN_PAGE_POSITION_TOP = "app_widget_pinjamin_show_on_top";
 
     public static final String APP_ENABLE_ACCOUNT_AFFILIATE = "app_enable_account_affiliate";
-    public static final String AFFILIATE_EXPLORE_ENABLE_FILTER = "affiliate_explore_enable_filter";
     public static final String AFFILIATE_PROFILE_SHARE_ALL = "android_customer_enable_profile_share_allow_all";
     public static final String AFFILIATE_PROFILE_SHARE_RULES = "android_customer_enable_profile_share_rules";
 
@@ -77,7 +77,15 @@ public class RemoteConfigKey {
 
     public static final String APP_WEBVIEW_RESO_ENABLED_TOGGLE = "android_webview_resolution_enabled";
 
+    public static final String APP_ENTRY_CHALLENGE_BARU = "app_entry_challenges_baru";
+
     public static final String CHECKOUT_TEMPLATE_SETTING_TOGGLE = "android_customer_enable_express_checkout_template_setting";
 
     public static final String APP_ENABLE_SALDO_SPLIT = "app_enable_saldo_split";
+
+    public static final String MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL = "main_app_disable_new_product_detail";
+    public static final String APP_ENABLE_MERCHANT_CREDIT_LINE = "app_enable_merchant_credit_line";
+    public static final String OVO_ENABLE_FLAG = "app_enable_ovo_pay_by_qr";
+    public static final String OVO_QR_MIN_AMOUNT = "app_ovo_min_balance";
+    public static final String OVO_QR_MAX_AMOUNT = "app_ovo_max_balance";
 }

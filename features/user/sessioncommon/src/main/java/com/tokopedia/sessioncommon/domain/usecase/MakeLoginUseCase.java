@@ -77,6 +77,7 @@ public class MakeLoginUseCase extends UseCase<MakeLoginPojo> {
                         userSession.getTempEmail(),
                         makeLoginDomain.getShopIsGold() == 1,
                         userSession.getTempPhoneNumber());
+                userSession.setShopAvatar(makeLoginDomain.getShopAvatar());
             } else {
                 userSession.setTempLoginName(makeLoginDomain.getFullName());
                 userSession.setTempUserId(String.valueOf(makeLoginDomain.getUserId()));

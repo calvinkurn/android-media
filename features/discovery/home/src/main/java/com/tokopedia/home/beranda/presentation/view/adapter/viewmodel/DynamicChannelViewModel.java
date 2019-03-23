@@ -12,6 +12,16 @@ public class DynamicChannelViewModel implements Visitable<HomeTypeFactory> {
 
     private DynamicHomeChannel.Channels channel;
 
+    private long serverTimeOffset;
+
+    public long getServerTimeOffset() {
+        return serverTimeOffset;
+    }
+
+    public void setServerTimeOffset(long serverTimeOffset) {
+        this.serverTimeOffset = serverTimeOffset;
+    }
+
     public DynamicHomeChannel.Channels getChannel() {
         return channel;
     }

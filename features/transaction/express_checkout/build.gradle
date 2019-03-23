@@ -23,6 +23,14 @@ dependencies {
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.imagePreview)
+    implementation project(rootProject.ext.libraries.cacheManager)
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.trackinterface)
+
+    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.analyticsDependencies.appsflyer
 
     implementation project(rootProject.ext.features.expressCheckoutCommon)
     implementation project(rootProject.ext.features.transactiondata)
@@ -32,6 +40,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.features.shippingRecommendation)
     implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.productDetailCommon)
 
     implementation rootProject.ext.miscDependencies.chips
 
@@ -40,4 +49,7 @@ dependencies {
     }
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 }
