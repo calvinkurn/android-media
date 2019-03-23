@@ -72,7 +72,7 @@ class DynamicPostViewHolder(v: View,
         bindCaption(element.caption, element.template.cardpost.body)
         bindContentList(element.id, element.contentList, element.template.cardpost.body)
         bindPostTag(element.postTag, element.template.cardpost.body)
-        bindFooter(element.id, element.footer, element.template.cardpost.footer)
+        bindFooter(element.id, element.footer, element.template.cardpost.footer, element.template.cardpost.body)
     }
 
     override fun bind(element: DynamicPostViewModel?, payloads: MutableList<Any>) {
@@ -229,10 +229,10 @@ class DynamicPostViewHolder(v: View,
         }
     }
 
-    private fun bindFooter(id: Int, footer: Footer, template: TemplateFooter) {
+    private fun bindFooter(id: Int, footer: Footer, template: TemplateFooter, templateBody: TemplateBody) {
         itemView.footer.shouldShowWithAction(shouldShowFooter(template)) {
             itemView.footerBackground.visibility = View.GONE
-            if (template.ctaLink && !TextUtils.isEmpty(footer.buttonCta.text)) {
+            if (template.ctaLink && !TextUtils.isEmpty(footer.buttonCta.text) && !templateBody.postTag) {
                 itemView.layoutFooterAction.show()
                 itemView.footerAction.text = footer.buttonCta.text
                 itemView.footerAction.setOnClickListener { listener.onFooterActionClick(adapterPosition, footer.buttonCta.appLink) }
@@ -331,7 +331,7 @@ class DynamicPostViewHolder(v: View,
     }
 
     private fun bindPostTag(postTag: PostTag, template: TemplateBody) {
-        itemView.layoutPostTag.shouldShowWithAction(shouldShowPostTag(template)) {
+        itemView.layoutPostTag.shouldShowWithAction(shouldShowPostTag(postTag, template)) {
             if (postTag.text.isNotEmpty()) {
                 itemView.cardTitlePostTag.text = postTag.text
                 itemView.cardTitlePostTag.visibility = View.VISIBLE
@@ -346,8 +346,8 @@ class DynamicPostViewHolder(v: View,
         }
     }
 
-    private fun shouldShowPostTag(template: TemplateBody): Boolean {
-        return template.postTag
+    private fun shouldShowPostTag(postTag: PostTag, template: TemplateBody): Boolean {
+        return template.postTag || postTag.totalItems != 0 || postTag.items.size != 0
     }
 
     interface DynamicPostListener {
