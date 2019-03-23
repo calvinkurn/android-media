@@ -138,7 +138,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
     lateinit var mostHelpfulReviewView: PartialMostHelpfulReviewView
     lateinit var latestTalkView: PartialLatestTalkView
     lateinit var otherProductView: PartialOtherProductView
-    lateinit var productPurchaseProtectionView: PartialProductPurchaseProtectionView
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -563,8 +562,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
         if (!::otherProductView.isInitialized)
             otherProductView = PartialOtherProductView.build(base_other_product)
 
-        if (!::productPurchaseProtectionView.isInitialized)
-            productPurchaseProtectionView = PartialProductPurchaseProtectionView.build(base_variant)
     }
 
     private fun onImageReviewClick(imageReview: ImageReviewItem, isSeeAll: Boolean = false) {
@@ -1039,7 +1036,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
 
         otherProductView.renderData(productInfoP2.productOthers)
-        productPurchaseProtectionView.renderData(productInfoP2.productPurchaseProtectionInfo)
+        partialVariantAndRateEstView.renderPurchaseProtectionData(productInfoP2.productPurchaseProtectionInfo)
     }
 
     private fun updateWishlist(shopInfo: ShopInfo, wishlisted: Boolean) {
