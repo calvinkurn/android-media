@@ -1197,6 +1197,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public long getMinAmountFromRemoteConfig() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
+        return remoteConfig.getLong(RemoteConfigKey.OVO_QR_MIN_AMOUNT, 1000);
+    }
+
+    @Override
+    public long getMaxAmountFromRemoteConfig() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
+        return remoteConfig.getLong(RemoteConfigKey.OVO_QR_MAX_AMOUNT, 10000000);
+    }
+
+    @Override
     public Intent getContactUsIntent(Activity activity, FlightContactUsPassData passData) {
         return ContactUsCreateTicketActivity.getCallingIntent(
                 activity,
