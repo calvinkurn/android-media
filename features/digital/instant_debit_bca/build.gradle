@@ -4,9 +4,9 @@ apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
     maven { url 'https://hansel.io/maven' }
-    flatDir {
-        dirs project(rootProject.ext.features.instantDebitBca).file('libs')
-    }
+//    flatDir {
+//        dirs project(rootProject.ext.features.instantDebitBca).file('libs')
+//    }
 }
 
 buildscript {
@@ -20,7 +20,7 @@ buildscript {
 }
 
 dependencies {
-    implementation (name: 'BCAXCOWidget', ext: 'aar')
+//    implementation (name: 'BCAXCOWidget', ext: 'aar')
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.applink)
