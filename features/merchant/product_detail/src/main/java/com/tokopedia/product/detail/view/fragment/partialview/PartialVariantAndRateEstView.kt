@@ -114,7 +114,7 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
                 txt_purchase_protection_title.visible()
                 txt_purchase_protection_message.visible()
 
-                txt_purchase_protection_message.text = productInfo.ppItemDetailPage!!.titlePDP
+                txt_purchase_protection_title.text = productInfo.ppItemDetailPage!!.titlePDP
                 txt_purchase_protection_message.text = productInfo.ppItemDetailPage!!.subTitlePDP
             } else {
                 purchase_protection_divider.gone()
