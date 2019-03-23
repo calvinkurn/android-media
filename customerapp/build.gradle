@@ -434,7 +434,6 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.viewDependencies.appIntro
-    implementation rootProject.ext.miscDependencies.bcaOneClick
     implementation rootProject.ext.miscDependencies.bcaxcoWidget
 
     implementation project(rootProject.ext.features.transactioncommon)
