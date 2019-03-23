@@ -62,6 +62,7 @@ import com.tokopedia.gamification.taptap.presenter.TapTapTokenPresenter;
 import com.tokopedia.gamification.taptap.utils.TapTapConstants;
 import com.tokopedia.gamification.taptap.utils.TokenMarginUtilTapTap;
 import com.tokopedia.gamification.util.HexValidator;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
 
@@ -91,7 +92,6 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     private TextView infoTitlePage;
 
     private ImageView imageRemainingToken;
-    private TextView tvCounter;
     private FrameLayout flRemainingToken;
     private GamiTapEggHome tokenData;
     private ImageView ivContainer;
@@ -142,11 +142,19 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
         toolbarTitle.setText(getString(R.string.tap_tap_title));
         imageRemainingToken = toolbar.findViewById(R.id.image_remaining_token);
-        tvCounter = toolbar.findViewById(R.id.tv_floating_counter);
         flRemainingToken = toolbar.findViewById(R.id.fl_remaining_token);
         setUpToolBar();
+        UserSession session = new UserSession(getActivity());
         abstractionRouter = (AbstractionRouter) getActivity().getApplication();
-
+        imageRemainingToken.setOnClickListener(view -> {
+            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            String shareBody = String.format(getString(R.string.share_branch_link_body), session.getName());
+            sharingIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.share_branch_link_msg_title));
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+            sharingIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share_branch_link_msg_title));
+            startActivity(Intent.createChooser(sharingIntent, "Share via"));
+        });
         widgetCrackResult.setListener(new WidgetCrackResultTapTap.WidgetCrackResultListener() {
             @Override
             public void onCrackResultCleared() {
