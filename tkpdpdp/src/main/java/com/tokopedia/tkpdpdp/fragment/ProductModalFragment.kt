@@ -28,6 +28,7 @@ import kotlinx.android.synthetic.main.layout_variant_activity_section_quantity.*
 import kotlinx.android.synthetic.main.variant_title_item.*
 import model.TradeInParams
 import view.viewcontrollers.FinalPriceActivity
+import view.viewcontrollers.TradeInHomeActivity
 
 
 class ProductModalFragment : BaseDaggerFragment() {
@@ -187,7 +188,7 @@ class ProductModalFragment : BaseDaggerFragment() {
                 if (stateProductModal == STATE_BUTTON_CART)
                     onButtonCartClick()
                 else if (stateProductModal == STATE_BUTTON_TRADEIN) {
-                    if (tradeInParams!=null && tradeInParams!!.usedPrice > 0)
+                    if (tradeInParams != null && tradeInParams!!.usedPrice > 0)
                         goToHargaFinal()
                     else
                         tv_trade_in.performClick()
@@ -278,7 +279,7 @@ class ProductModalFragment : BaseDaggerFragment() {
         if (stateProductModal == STATE_BUTTON_TRADEIN) {
             tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, true)
         } else {
-            if (tradeInParams!=null && tradeInParams!!.isEligible != 0) {
+            if (tradeInParams != null && tradeInParams!!.isEligible != 0) {
                 tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
                 if (tradeInParams!!.usedPrice > 0) {
                     tv_trade_in.setOnClickListener { goToHargaFinal() }
@@ -374,21 +375,14 @@ class ProductModalFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if(requestCode == FinalPriceActivity.FINAL_PRICE_REQUEST_CODE){
-            if(resultCode == Activity.RESULT_OK){
+        if (requestCode == FinalPriceActivity.FINAL_PRICE_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                onGotoTradeinShipment(data!!.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
+            }
+        } else if (requestCode == TradeInHomeActivity.TRADEIN_HOME_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
                 onGotoTradeinShipment(data!!.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
             }
         }
-    }
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
-
-    override fun onStop() {
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 }

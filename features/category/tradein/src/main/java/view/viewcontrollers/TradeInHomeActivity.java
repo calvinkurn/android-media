@@ -1,5 +1,6 @@
 package view.viewcontrollers;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
@@ -34,6 +35,8 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     private TextView mTvGoToProductDetails;
     private TradeInHomeViewModel tradeInHomeViewModel;
     private int newPrice;
+
+    public static final int TRADEIN_HOME_REQUEST = 22345;
 
     public static Intent getIntent(Context context) {
         return new Intent(context, TradeInHomeActivity.class);
@@ -172,12 +175,13 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == FinalPriceActivity.FINAL_PRICE_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                setResult(Activity.RESULT_OK, data);
+                finish();
+            }
+        }
     }
 }

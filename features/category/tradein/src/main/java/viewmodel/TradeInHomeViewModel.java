@@ -100,13 +100,13 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
                             if (graphqlResponse.getData(DeviceDiagInputResponse.class) != null) {
                                 Intent finalPriceIntent = new Intent(activityWeakReference.get(), FinalPriceActivity.class);
                                 finalPriceIntent.putExtras(inData);
-                                activityWeakReference.get().startActivityForResult(finalPriceIntent, 10101);
+                                activityWeakReference.get().startActivityForResult(finalPriceIntent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE);
                             } else {
                                 List<GraphqlError> errors = graphqlResponse.getError(DeviceDiagInputResponse.class);
                                 if (errors.get(0).getMessage().contains("duplicate key value")) {
                                     Intent finalPriceIntent = new Intent(activityWeakReference.get(), FinalPriceActivity.class);
                                     finalPriceIntent.putExtras(inData);
-                                    activityWeakReference.get().startActivityForResult(finalPriceIntent, 10101);
+                                    activityWeakReference.get().startActivityForResult(finalPriceIntent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE);
                                 }
                             }
                         }
