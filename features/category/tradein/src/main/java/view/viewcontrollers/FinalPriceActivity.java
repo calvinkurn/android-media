@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -198,7 +197,7 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
     private void goToCheckout() {
 //        TradeInRouter router = (TradeInRouter) getApplication();
         String deviceid = getDeviceId();
-        LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Constants.ACTION_GO_TO_SHIPMENT).putExtra(TradeInParams.PARAM_DEVICE_ID, deviceid));
+        setResult(Activity.RESULT_OK, new Intent(Constants.ACTION_GO_TO_SHIPMENT).putExtra(TradeInParams.PARAM_DEVICE_ID, deviceid));
         finish();
 //        Intent checkoutIntent;
 //        if (deviceid != null) {

@@ -1629,6 +1629,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void showProgressLoading() {
         buttonBuyView.showLoadingBuyNow();
+        buttonBuyView.showLoadingAddToCart();
     }
 
     @Override
@@ -1815,7 +1816,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                             if (getActivity() != null && SessionHandler.isV4Login(getActivity())) {
                                 Intent shipmentIntent = ((PdpRouter) getActivity().getApplication())
                                         .getCheckoutIntent(getActivity(), data.getStringExtra(TradeInParams.PARAM_DEVICE_ID));
-                                presenter.processToShippingTradeIn(getActivity(),shipmentIntent,createProductCartPass(SOURCE_BUTTON_TRADEIN));
+                                presenter.processToShippingTradeIn(getActivity(), shipmentIntent, createProductCartPass(SOURCE_BUTTON_TRADEIN));
 
                             }
                             break;
