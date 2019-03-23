@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.util.TrainDateUtil;
@@ -16,6 +15,7 @@ import com.tokopedia.train.homepage.presentation.model.TrainPassengerViewModel;
 import com.tokopedia.train.homepage.presentation.model.TrainPromoViewModel;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationAndCityViewModel;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -35,14 +35,14 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
     private final int MAX_BOOKING_DAYS_FROM_TODAY = 90;
 
     private TrainHomepageCache trainHomepageCache;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private GetTrainPromoUseCase getTrainPromoUseCase;
     private TrainRouter trainRouter;
 
     @Inject
     public TrainHomepagePresenterImpl(TrainHomepageCache trainHomepageCache,
                                       GetTrainPromoUseCase getTrainPromoUseCase,
-                                      UserSession userSession, TrainRouter trainRouter) {
+                                      UserSessionInterface userSession, TrainRouter trainRouter) {
         this.trainHomepageCache = trainHomepageCache;
         this.getTrainPromoUseCase = getTrainPromoUseCase;
         this.userSession = userSession;

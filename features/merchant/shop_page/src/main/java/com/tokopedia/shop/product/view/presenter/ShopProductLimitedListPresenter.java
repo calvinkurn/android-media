@@ -4,13 +4,11 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel;
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase;
 import com.tokopedia.shop.common.util.PagingListUtils;
-import com.tokopedia.shop.etalase.domain.interactor.GetShopEtalaseUseCase;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductFeaturedWithAttributeUseCase;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductListWithAttributeUseCase;
@@ -21,6 +19,7 @@ import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.shop.product.view.model.ShopProductPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -46,24 +45,21 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
 
     private final GetShopProductFeaturedWithAttributeUseCase getShopProductFeaturedWithAttributeUseCase;
     private final GetShopProductListWithAttributeUseCase productListWithAttributeUseCase;
-    private final GetShopEtalaseUseCase getShopEtalaseUseCase;
     private final GetShopEtalaseByShopUseCase getShopEtalaseByShopUseCase;
     private final AddWishListUseCase addWishListUseCase;
     private final RemoveWishListUseCase removeWishListUseCase;
-    private final UserSession userSession;
+    private final UserSessionInterface userSession;
     private WishListActionListener wishListActionListener;
 
     @Inject
     public ShopProductLimitedListPresenter(GetShopProductListWithAttributeUseCase productListWithAttributeUseCase,
                                            GetShopProductFeaturedWithAttributeUseCase getShopProductFeaturedWithAttributeUseCase,
-                                           GetShopEtalaseUseCase getShopEtalaseUseCase,
                                            GetShopEtalaseByShopUseCase getShopEtalaseByShopUseCase,
                                            AddWishListUseCase addWishListUseCase,
                                            RemoveWishListUseCase removeWishListUseCase,
-                                           UserSession userSession) {
+                                           UserSessionInterface userSession) {
         this.getShopProductFeaturedWithAttributeUseCase = getShopProductFeaturedWithAttributeUseCase;
         this.productListWithAttributeUseCase = productListWithAttributeUseCase;
-        this.getShopEtalaseUseCase = getShopEtalaseUseCase;
         this.getShopEtalaseByShopUseCase = getShopEtalaseByShopUseCase;
         this.addWishListUseCase = addWishListUseCase;
         this.removeWishListUseCase = removeWishListUseCase;
@@ -266,7 +262,6 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
         super.detachView();
         productListWithAttributeUseCase.unsubscribe();
         getShopProductFeaturedWithAttributeUseCase.unsubscribe();
-        getShopEtalaseUseCase.unsubscribe();
         addWishListUseCase.unsubscribe();
         removeWishListUseCase.unsubscribe();
     }

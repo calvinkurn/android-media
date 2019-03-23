@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.officialstore.fragment.ReactBrandListOsFragment;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.GeneralReactNativeFragment;
@@ -15,13 +16,13 @@ import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
  * Created by yogie putra on 29/03/18.
  */
 
-public class ReactNativeBrandListOsActivity extends ReactFragmentActivity<GeneralReactNativeFragment> {
+public class ReactNativeBrandListOsActivity extends ReactFragmentActivity<ReactBrandListOsFragment> {
 
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
 
     private static final String MP_BRAND_LIST = "mp_brand_list";
     
-    @DeepLink({ApplinkConst.BRAND_LIST, ApplinkConst.BRAND_LIST_WITH_SLASH})
+    @DeepLink({ ApplinkConst.BRAND_LIST, ApplinkConst.BRAND_LIST_WITH_SLASH, ApplinkConst.BRAND_LIST_CATEGORY })
     public static Intent getBrandlistApplinkCallingIntent(Context context, Bundle bundle){
         ReactUtils.startTracing(MP_BRAND_LIST);
         return ReactNativeBrandListOsActivity.createApplinkCallingIntent(context, ReactConst.Screen.BRANDLIST_PAGE, "All Brands", bundle);
@@ -47,8 +48,8 @@ public class ReactNativeBrandListOsActivity extends ReactFragmentActivity<Genera
     }
 
     @Override
-    protected GeneralReactNativeFragment getReactNativeFragment() {
-        return GeneralReactNativeFragment.createInstance(getReactNativeProps());
+    protected ReactBrandListOsFragment getReactNativeFragment() {
+        return ReactBrandListOsFragment.createInstance(getReactNativeProps());
     }
 
     @Override

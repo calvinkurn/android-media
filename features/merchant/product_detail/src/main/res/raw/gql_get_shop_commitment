@@ -1,0 +1,13 @@
+query getShopCommitment($shopID: String!, $price: Int){
+       shopCommitment(shopID: $shopID, itemPrice: $price) {
+           result{
+              isNowActive
+              staticMessages{
+                  pdpMessage
+              }
+           }
+           error{
+              message
+           }
+       }
+   }

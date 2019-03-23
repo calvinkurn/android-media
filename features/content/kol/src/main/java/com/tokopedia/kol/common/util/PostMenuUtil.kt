@@ -10,11 +10,13 @@ import java.util.*
  * @author by milhamj on 13/11/18.
  */
 fun createBottomMenu(context: Context,
-                     model: BaseKolViewModel,
+                     isDeletable: Boolean,
+                     isReportable: Boolean,
+                     isEditable: Boolean,
                      listener: PostMenuListener?): Menus {
     val menus = Menus(context)
     val menuList = ArrayList<Menus.ItemMenus>()
-    if (model.isDeletable) {
+    if (isDeletable) {
         menuList.add(
                 Menus.ItemMenus(
                         context.getString(R.string.kol_delete_post),
@@ -22,10 +24,18 @@ fun createBottomMenu(context: Context,
                 )
         )
     }
-    if (model.isReportable) {
+    if (isReportable) {
         menuList.add(
                 Menus.ItemMenus(
                         context.getString(R.string.kol_report),
+                        -1
+                )
+        )
+    }
+    if (isEditable) {
+        menuList.add(
+                Menus.ItemMenus(
+                        context.getString(R.string.kol_edit_post),
                         -1
                 )
         )
@@ -37,14 +47,27 @@ fun createBottomMenu(context: Context,
         when (itemMenus.title) {
             context.getString(R.string.kol_delete_post) -> listener?.onDeleteClicked()
             context.getString(R.string.kol_report) -> listener?.onReportClick()
+            context.getString(R.string.kol_edit_post) -> listener?.onEditClick()
         }
         menus.dismiss()
     }
     return menus
 }
 
+fun createBottomMenu(context: Context,
+                     model: BaseKolViewModel,
+                     listener: PostMenuListener?): Menus {
+    return createBottomMenu(
+            context,
+            model.isDeletable,
+            model.isReportable,
+            model.isEditable, listener)
+}
+
 interface PostMenuListener {
     fun onDeleteClicked()
 
     fun onReportClick()
+
+    fun onEditClick()
 }

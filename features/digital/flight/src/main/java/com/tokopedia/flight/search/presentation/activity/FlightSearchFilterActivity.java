@@ -106,7 +106,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
                 .build()
                 .inject(this);
         flightFilterPresenter.attachView(this);
-        flightFilterPresenter.getFilterStatisticData();
+        flightFilterPresenter.getFilterStatisticData(isReturning);
 
     }
 
@@ -279,6 +279,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     public void onFilterModelChanged(FlightFilterModel flightFilterModel) {
         this.flightFilterModel = flightFilterModel;
         flightFilterPresenter.getFlightCount(isReturning, true, flightFilterModel);
+
     }
 
     @Override

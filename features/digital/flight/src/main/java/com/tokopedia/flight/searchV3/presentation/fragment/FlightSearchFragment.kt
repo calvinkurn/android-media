@@ -125,8 +125,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     override fun onResume() {
         super.onResume()
-        flightSearchPresenter.initialize()
-
         flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, true)
     }
 

@@ -19,6 +19,8 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterNormal
@@ -275,9 +277,10 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onEmptyTalk(productTalkViewModel: ProductTalkViewModel) {
         setupViewModel(productTalkViewModel)
-
         setHasOptionsMenu(false)
         adapter.showEmpty(presenter.isMyShop(shopId))
+        stopTrace()
+
     }
 
     override fun setCanLoad() {
@@ -286,11 +289,9 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onSuccessResetTalk(productTalkViewModel: ProductTalkViewModel) {
         setupViewModel(productTalkViewModel)
-
-
         adapter.setList(productTalkViewModel.listThread, ProductTalkTitleViewModel(productImage,
                 productName, productPrice))
-
+        stopTrace()
     }
 
     private fun setupViewModel(productTalkViewModel: ProductTalkViewModel) {
@@ -553,9 +554,16 @@ class ProductTalkFragment : BaseDaggerFragment(),
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
         activity?.applicationContext?.run {
             analytics.trackClickProductFromAttachment()
-            val intent: Intent = (this as TalkRouter).getProductPageIntent(this, attachProduct
-                    .productId.toString())
+            val intent: Intent? = getProductIntent(attachProduct.productId.toString())
             this@ProductTalkFragment.startActivity(intent)
+        }
+    }
+
+    private fun getProductIntent(productId: String): Intent? {
+        return if (context != null) {
+            RouteManager.getIntent(context!!,ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+        } else {
+            null
         }
     }
 

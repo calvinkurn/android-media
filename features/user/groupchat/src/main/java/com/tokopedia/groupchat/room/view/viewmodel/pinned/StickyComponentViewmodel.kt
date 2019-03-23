@@ -13,7 +13,8 @@ data class StickyComponentViewModel (val componentId : String = "",
                                      val title: String = "",
                                      val subtitle: String = "",
                                      val redirectUrl : String = "",
-                                     val stickyTime : Int = 0) : Visitable<Any>, Parcelable {
+                                     val stickyTime : Int = 0,
+                                     val relatedButton : Int = 0) : Visitable<Any>, Parcelable {
 
     constructor(parcel: Parcel) : this(
             parcel.readString(),
@@ -22,6 +23,7 @@ data class StickyComponentViewModel (val componentId : String = "",
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
+            parcel.readInt(),
             parcel.readInt()) {
     }
 
@@ -33,6 +35,7 @@ data class StickyComponentViewModel (val componentId : String = "",
         parcel.writeString(subtitle)
         parcel.writeString(redirectUrl)
         parcel.writeInt(stickyTime)
+        parcel.writeInt(relatedButton)
     }
 
     override fun describeContents(): Int {
