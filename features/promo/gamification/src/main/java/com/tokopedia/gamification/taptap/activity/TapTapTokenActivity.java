@@ -77,10 +77,8 @@ public class TapTapTokenActivity extends BaseSimpleActivity {
     private void onBackPressedRoot() {
         if (isTaskRoot()) {
             ((GamificationRouter) getApplication()).goToHome(this);
-            finish();
-        } else {
-            super.onBackPressed();
         }
+        super.onBackPressed();
     }
 
     @Override

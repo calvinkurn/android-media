@@ -102,10 +102,10 @@
                 android:layout_marginEnd="@dimen/dp_16">
 
                 <ImageView
-                    android:id="@+id/image_remaining_token"
-                    android:layout_width="@dimen/dp_18"
-                    android:layout_height="@dimen/dp_18"
-                    android:layout_margin="@dimen/dp_8"
+                    android:id="@+id/image_share"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/dp_8"
                     app:srcCompat="@drawable/ic_share_white" />
 
             </FrameLayout>

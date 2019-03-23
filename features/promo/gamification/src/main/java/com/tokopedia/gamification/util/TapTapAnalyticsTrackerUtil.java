@@ -41,6 +41,7 @@ public class TapTapAnalyticsTrackerUtil {
 
     public interface LabelKeys{
         String PRESS_BACK_BUTTON ="back button";
+        String PRESS_SHARE_BUTTON="share button";
     }
 
     public static void sendScreenEvent(Activity context, String screenName) {

@@ -365,14 +365,12 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             hideFLoatingEgg();
         } else {
             showFloatingEgg();
-//            trackingEggImpression(String.valueOf(tokenData.getFloating().getTokenId()));
         }
 
         vgFloatingEgg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ApplinkUtil.navigateToAssociatedPage(getActivity(), appLink, pageUrl, CrackTokenActivity.class);
-//                trackingEggClick(String.valueOf(tokenData.getFloating().getTokenId()));
             }
         });
 
@@ -542,32 +540,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     @Override
     protected String getScreenName() {
         return null;
-    }
-
-    private void trackingEggImpression(String idToken) {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
-            ((AbstractionRouter) getActivity().getApplication())
-                    .getAnalyticTracker()
-                    .sendEventTracking(
-                            GamificationEventTracking.Event.VIEW_LUCKY_EGG,
-                            GamificationEventTracking.Category.CLICK_LUCKY_EGG,
-                            GamificationEventTracking.Action.IMPRESSION_LUCKY_EGG,
-                            idToken
-                    );
-        }
-    }
-
-    private void trackingEggClick(String idToken) {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
-            ((AbstractionRouter) getActivity().getApplication())
-                    .getAnalyticTracker()
-                    .sendEventTracking(
-                            GamificationEventTracking.Event.CLICK_LUCKY_EGG,
-                            GamificationEventTracking.Category.CLICK_LUCKY_EGG,
-                            GamificationEventTracking.Action.CLICK_LUCKY_EGG,
-                            idToken
-                    );
-        }
     }
 
     public void setOnDragListener(OnDragListener onDragListener) {

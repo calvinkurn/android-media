@@ -5,6 +5,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -83,7 +84,7 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                initImageBound(rootView);
+                initRewardBound(rootView);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 } else {
@@ -94,7 +95,7 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
         });
     }
 
-    private void initImageBound(View rootView) {
+    private void initRewardBound(View rootView) {
         int rootHeight = rootView.getHeight();
         int imageMarginBottom = rootView.getHeight() - TokenMarginUtilTapTap.getEggMarginBottom(rootHeight) + getContext().getResources().getDimensionPixelOffset(R.dimen.dp_32);
         RelativeLayout.LayoutParams tvFullLp = (RelativeLayout.LayoutParams) listCrackResultText.getLayoutParams();
@@ -245,6 +246,7 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
             textView.setGravity(Gravity.CENTER);
             textView.setTypeface(textView.getTypeface(), Typeface.BOLD);
             textView.setText(rewardText.getText());
+            textView.setMaxWidth((int) (getScreenWidth()/2.3f));
             textView.setLayoutParams(layoutParams);
             if (HexValidator.validate(rewardText.getColor())) {
                 textView.setTextColor(Color.parseColor(rewardText.getColor()));
@@ -274,15 +276,8 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
         listCrackResultText.setVisibility(View.INVISIBLE);
     }
 
-    public boolean isShowReward() {
-        return imageViewCrackResult.isShown() && !isShowCrackError();
-    }
-
-    /**
-     * to check is the error is actually generated custom error crack or actual crack result from server.
-     */
-    private boolean isShowCrackError() {
-        return crackResult != null && crackResult instanceof GeneralErrorCrackResult;
+    public int getScreenWidth() {
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
 
 }

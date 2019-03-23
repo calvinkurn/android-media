@@ -109,4 +109,9 @@ public class TapTapSummaryDialogFragment extends DialogFragment implements Gamif
             interactionListener.onPlayWithPointsClickedOnSummaryPage();
 
     }
+
+    @Override
+    public void dismissDialog() {
+        dismiss();
+    }
 }

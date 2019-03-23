@@ -2,7 +2,6 @@ package com.tokopedia.gamification.taptap.compoundview;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +10,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
@@ -22,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
@@ -50,6 +49,8 @@ public class WidgetSummaryTapTap extends FrameLayout {
     public interface SummaryPageActionListener {
 
         void playWithPoints();
+
+        void dismissDialog();
     }
 
     public WidgetSummaryTapTap(@NonNull Context context) {
@@ -158,9 +159,15 @@ public class WidgetSummaryTapTap extends FrameLayout {
                 if (TapTapConstants.ButtonType.PLAY_WITH_POINTS.equalsIgnoreCase(rewardButton.getType())) {
                     interactionListener.playWithPoints();
                 } else {
-                    ApplinkUtil.navigateToAssociatedPage(getContext(), rewardButton.getApplink(),
-                            rewardButton.getUrl(),
-                            TapTapTokenActivity.class);
+                    interactionListener.dismissDialog();
+                    if (rewardButton.getApplink().contains("tokopedia://tokopoints")) {
+                        getContext().startActivity(((GamificationRouter) getContext().getApplicationContext()).getTokoPointsIntent(getContext()));
+                    } else {
+                        ApplinkUtil.navigateToAssociatedPage(getContext(), rewardButton.getApplink(),
+                                rewardButton.getUrl(),
+                                TapTapTokenActivity.class);
+                    }
+
                 }
                 TapTapAnalyticsTrackerUtil.sendEvent(getContext(),
                         TapTapAnalyticsTrackerUtil.EventKeys.CLICK_GAME,

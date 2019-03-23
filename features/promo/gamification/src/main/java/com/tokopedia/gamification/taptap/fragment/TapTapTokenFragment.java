@@ -102,12 +102,12 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     private PerformanceMonitoring fpmRender;
     private PerformanceMonitoring fpmCrack;
     private View rootContainer;
-    private UserSessionInterface userSession;
 
     @Inject
     GamificationDatabaseWrapper gamificationDatabaseWrapper;
     private TapTapSummaryDialogFragment summaryPageDialogFragment;
     private boolean isExitButtonClickedOnDialog = false;
+    private UserSessionInterface userSession;
 
     public static Fragment newInstance() {
         return new TapTapTokenFragment();
@@ -142,10 +142,13 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
         toolbarTitle.setText(getString(R.string.tap_tap_title));
         imageShareVia = toolbar.findViewById(R.id.image_share);
-        userSession = new UserSession(getContext());
         setUpToolBar();
-        imageShareVia.setOnClickListener(view -> {
-            openShareActivity();
+        userSession = new UserSession(getContext());
+        imageShareVia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startShareActivity();
+            }
         });
         widgetCrackResult.setListener(new WidgetCrackResultTapTap.WidgetCrackResultListener() {
             @Override
@@ -164,7 +167,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         return rootView;
     }
 
-    private void openShareActivity() {
+    private void startShareActivity() {
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
         String shareBody = String.format(getString(R.string.share_branch_link_body), userSession.getName());
@@ -172,6 +175,11 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
         sharingIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share_branch_link_msg_title));
         startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_via_label)));
+        TapTapAnalyticsTrackerUtil.sendEvent(getContext(),
+                TapTapAnalyticsTrackerUtil.EventKeys.CLICK_GAME,
+                TapTapAnalyticsTrackerUtil.CategoryKeys.CATEGORY_TAP_TAP,
+                TapTapAnalyticsTrackerUtil.ActionKeys.TAP_EGG_CLICK,
+                TapTapAnalyticsTrackerUtil.LabelKeys.PRESS_SHARE_BUTTON);
     }
 
     private void setUpToolBar() {
@@ -206,7 +214,6 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         super.onDestroy();
         crackTokenPresenter.detachView();
     }
-
 
     @Override
     public void onPause() {
@@ -254,7 +261,6 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
                 @Override
                 public void onClick() {
                     fpmCrack = PerformanceMonitoring.start(FPM_CRACKING);
-//                    stopTimer();
                     hideInfoTitle();
                     vibrate();
                     TokensUser tokenUser = tokenData.getTokensUser();
