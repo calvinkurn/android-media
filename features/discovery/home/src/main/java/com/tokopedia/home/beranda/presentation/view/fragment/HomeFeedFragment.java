@@ -298,9 +298,9 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
             p.setName(model.getProductName());
             p.setPriceFormat(model.getPrice());
             new ImpresionTask().execute(model.getTrackerImageUrl());
-            TopAdsGtmTracker.getInstance().addRecomendationProductViewImpressions(p,
-                    model.getCategoryBreadcrumbs(), tabName.toLowerCase(),
-                    model.getRecommendationType(), model.getPosition());
+//            TopAdsGtmTracker.getInstance().addRecomendationProductViewImpressions(p,
+//                    model.getCategoryBreadcrumbs(), tabName.toLowerCase(),
+//                    model.getRecommendationType(), model.getPosition());
         } else {
             hitHomeFeedImpressionTracker(model);
         }
