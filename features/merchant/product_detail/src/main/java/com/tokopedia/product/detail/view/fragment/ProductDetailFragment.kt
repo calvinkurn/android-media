@@ -1016,7 +1016,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         otherProductView.renderData(productInfoP2.productOthers)
         partialVariantAndRateEstView.renderPurchaseProtectionData(productInfoP2.productPurchaseProtectionInfo)
-
         productInfo?.run {
             productDetailTracking.sendScreen(basic.shopID.toString(),
                 shopInfo?.goldOS?.shopTypeString ?:"", productId ?: "")
