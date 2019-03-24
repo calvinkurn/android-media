@@ -146,7 +146,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
             if (sectionContent.getLayoutCatalogAttr() != null
                     && sectionContent.getLayoutCatalogAttr().getCatalogList() != null
-            &&  !sectionContent.getLayoutCatalogAttr().getCatalogList().isEmpty()) {
+                    && !sectionContent.getLayoutCatalogAttr().getCatalogList().isEmpty()) {
                 container.addView(getCatalogCarousel(sectionContent));
                 continue;
             }
@@ -213,8 +213,9 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
         if (content.getLayoutCatalogAttr().getCatalogList() != null) {
             RecyclerView rvCarousel = view.findViewById(R.id.rv_carousel);
+            rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(R.dimen.dp_4)));
             rvCarousel.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
-            CatalogListAdapter adapter = new CatalogListAdapter(mPresenter, content.getLayoutCatalogAttr().getCatalogList(), false);
+            CatalogListCarouselAdapter adapter = new CatalogListCarouselAdapter(mPresenter, content.getLayoutCatalogAttr().getCatalogList(), false);
             rvCarousel.setAdapter(adapter);
         }
 
@@ -248,7 +249,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             ImageView imgBanner = view.findViewById(R.id.img_banner);
             ImageList data = content.getLayoutBannerAttr().getImageList().get(0);
             ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageURLMobile());
-            imgBanner.setOnClickListener(v -> mPresenter.navigateToWebView(data.getRedirectURL()));
+            imgBanner.setOnClickListener(v -> handledClick(data.getRedirectAppLink(), data.getRedirectURL()));
         }
 
         return view;
@@ -280,7 +281,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             ImageView imgBanner = view.findViewById(R.id.img_banner);
             ImageList data = content.getLayoutBannerAttr().getImageList().get(0);
             ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageURLMobile());
-            imgBanner.setOnClickListener(v -> mPresenter.navigateToWebView(data.getRedirectURL()));
+            imgBanner.setOnClickListener(v -> handledClick(data.getRedirectAppLink(), data.getRedirectURL()));
         }
 
         return view;
@@ -312,7 +313,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             ImageView imgBanner = view.findViewById(R.id.img_banner);
             ImageList data = content.getLayoutBannerAttr().getImageList().get(0);
             ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageURLMobile());
-            imgBanner.setOnClickListener(v -> mPresenter.navigateToWebView(data.getRedirectURL()));
+            imgBanner.setOnClickListener(v -> handledClick(data.getRedirectAppLink(), data.getRedirectURL()));
         }
 
         return view;
@@ -344,23 +345,29 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
             if (content.getLayoutBannerAttr().getImageList().size() > 0) {
                 data = content.getLayoutBannerAttr().getImageList().get(0);
+                final String appLink = data.getRedirectAppLink();
+                final String webLink = data.getRedirectURL();
                 imgCol = view.findViewById(R.id.iv_col_1);
                 ImageHandler.loadImageFitCenter(imgCol.getContext(), imgCol, data.getImageURLMobile());
-                imgCol.setOnClickListener(v -> handledClick("", ""));
+                imgCol.setOnClickListener(v -> handledClick(appLink, webLink));
             }
 
             if (content.getLayoutBannerAttr().getImageList().size() > 1) {
                 data = content.getLayoutBannerAttr().getImageList().get(1);
+                final String appLink = data.getRedirectAppLink();
+                final String webLink = data.getRedirectURL();
                 imgCol = view.findViewById(R.id.iv_col_2);
                 ImageHandler.loadImageFitCenter(imgCol.getContext(), imgCol, data.getImageURLMobile());
-                imgCol.setOnClickListener(v -> handledClick("", ""));
+                imgCol.setOnClickListener(v -> handledClick(appLink, webLink));
             }
 
             if (content.getLayoutBannerAttr().getImageList().size() > 2) {
                 data = content.getLayoutBannerAttr().getImageList().get(2);
+                final String appLink = data.getRedirectAppLink();
+                final String webLink = data.getRedirectURL();
                 imgCol = view.findViewById(R.id.iv_col_3);
                 ImageHandler.loadImageFitCenter(imgCol.getContext(), imgCol, data.getImageURLMobile());
-                imgCol.setOnClickListener(v -> handledClick("", ""));
+                imgCol.setOnClickListener(v -> handledClick(appLink, webLink));
             }
 
         }
@@ -394,16 +401,20 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
             if (content.getLayoutBannerAttr().getImageList().size() > 0) {
                 data = content.getLayoutBannerAttr().getImageList().get(0);
+                final String appLink = data.getRedirectAppLink();
+                final String webLink = data.getRedirectURL();
                 imgCol = view.findViewById(R.id.iv_col_1);
                 ImageHandler.loadImageFitCenter(imgCol.getContext(), imgCol, data.getImageURLMobile());
-                imgCol.setOnClickListener(v -> handledClick("", ""));
+                imgCol.setOnClickListener(v -> handledClick(appLink, webLink));
             }
 
             if (content.getLayoutBannerAttr().getImageList().size() > 1) {
                 data = content.getLayoutBannerAttr().getImageList().get(1);
+                final String appLink = data.getRedirectAppLink();
+                final String webLink = data.getRedirectURL();
                 imgCol = view.findViewById(R.id.iv_col_2);
                 ImageHandler.loadImageFitCenter(imgCol.getContext(), imgCol, data.getImageURLMobile());
-                imgCol.setOnClickListener(v -> handledClick("", ""));
+                imgCol.setOnClickListener(v -> handledClick(appLink, webLink));
             }
         }
 
@@ -436,16 +447,20 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
             if (content.getLayoutBannerAttr().getImageList().size() > 0) {
                 data = content.getLayoutBannerAttr().getImageList().get(0);
+                final String appLink = data.getRedirectAppLink();
+                final String webLink = data.getRedirectURL();
                 imgCol = view.findViewById(R.id.iv_col_1);
                 ImageHandler.loadImageFitCenter(imgCol.getContext(), imgCol, data.getImageURLMobile());
-                imgCol.setOnClickListener(v -> handledClick("", ""));
+                imgCol.setOnClickListener(v -> handledClick(appLink, webLink));
             }
 
             if (content.getLayoutBannerAttr().getImageList().size() > 1) {
                 data = content.getLayoutBannerAttr().getImageList().get(1);
                 imgCol = view.findViewById(R.id.iv_col_2);
+                final String appLink = data.getRedirectAppLink();
+                final String webLink = data.getRedirectURL();
                 ImageHandler.loadImageFitCenter(imgCol.getContext(), imgCol, data.getImageURLMobile());
-                imgCol.setOnClickListener(v -> handledClick("", ""));
+                imgCol.setOnClickListener(v -> handledClick(appLink, webLink));
             }
         }
 
@@ -475,6 +490,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
         if (content.getLayoutBannerAttr().getImageList() != null) {
             RecyclerView rvCarousel = view.findViewById(R.id.rv_carousel);
+            rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(R.dimen.dp_4)));
             rvCarousel.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
             rvCarousel.setAdapter(new SectionCarouselAdapter(content.getLayoutBannerAttr().getImageList(), CommonConstant.BannerType.CAROUSEL_1_1));
         }
@@ -504,6 +520,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
         if (content.getLayoutBannerAttr().getImageList() != null) {
             RecyclerView rvCarousel = view.findViewById(R.id.rv_carousel);
+            rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(R.dimen.dp_4)));
             rvCarousel.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
             rvCarousel.setAdapter(new SectionCarouselAdapter(content.getLayoutBannerAttr().getImageList(), CommonConstant.BannerType.CAROUSEL_2_1));
         }
@@ -533,6 +550,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
         if (content.getLayoutBannerAttr().getImageList() != null) {
             RecyclerView rvCarousel = view.findViewById(R.id.rv_carousel);
+            rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(R.dimen.dp_4)));
             rvCarousel.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
             rvCarousel.setAdapter(new SectionCarouselAdapter(content.getLayoutBannerAttr().getImageList(), CommonConstant.BannerType.CAROUSEL_3_1));
         }

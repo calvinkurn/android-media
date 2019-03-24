@@ -5,9 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:padding="@dimen/dp_16">
+    android:paddingTop="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_16">
 
     <TextView
+        android:layout_marginLeft="@dimen/dp_16"
         android:id="@+id/text_title"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -22,6 +24,7 @@
         tools:text="Huge News!" />
 
     <TextView
+        android:layout_marginRight="@dimen/dp_16"
         android:id="@+id/text_see_all"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -36,6 +39,7 @@
         app:layout_constraintWidth_default="wrap" />
 
     <TextView
+        android:layout_marginLeft="@dimen/dp_16"
         android:id="@+id/text_sub_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -51,6 +55,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_carousel"
         android:layout_width="0dp"
+        android:scrollbars="horizontal"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         app:layout_constraintEnd_toEndOf="parent"
