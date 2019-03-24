@@ -1,9 +1,12 @@
 package com.tokopedia.tokopoints.view.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -19,8 +22,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -46,27 +52,17 @@ import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
 import com.tokopedia.tokopoints.view.activity.TokoPointsHomeActivity;
-import com.tokopedia.tokopoints.view.adapter.DynamicLinkAdapter;
 import com.tokopedia.tokopoints.view.adapter.ExploreSectionPagerAdapter;
-import com.tokopedia.tokopoints.view.adapter.HomepagePagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter;
 import com.tokopedia.tokopoints.view.adapter.TickerPagerAdapter;
-import com.tokopedia.tokopoints.view.contract.HomepageContract;
 import com.tokopedia.tokopoints.view.contract.TokoPointsHomeContract;
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
-import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.model.LobDetails;
 import com.tokopedia.tokopoints.view.model.LuckyEggEntity;
-import com.tokopedia.tokopoints.view.model.TickerContainer;
 import com.tokopedia.tokopoints.view.model.TokoPointEntity;
-import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
-import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity;
-import com.tokopedia.tokopoints.view.model.TokoPointStatusTierEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointSumCoupon;
-import com.tokopedia.tokopoints.view.model.TokopointsDynamicLinkEntity;
 import com.tokopedia.tokopoints.view.model.section.SectionContent;
-import com.tokopedia.tokopoints.view.presenter.HomepagePresenter;
 import com.tokopedia.tokopoints.view.presenter.TokoPointsHomePresenterNew;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
@@ -74,7 +70,6 @@ import com.tokopedia.tokopoints.view.util.TabUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -112,6 +107,11 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     private Toolbar toolbar;
     private CollapsingToolbarLayout collapsingToolbarLayout;
 
+    private CoordinatorLayout coordinatorLayout;
+
+    private View statusBarBgView;
+
+
     public static TokoPointsHomeFragmentNew newInstance() {
         return new TokoPointsHomeFragmentNew();
     }
@@ -128,9 +128,10 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         initInjector();
         View view = inflater.inflate(R.layout.tp_fragment_homepage_new, container, false);
 
-        getActivity().getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
+        coordinatorLayout = view.findViewById(R.id.container);
+        hideStatusBar();
+
+
         toolbar = view.findViewById(R.id.toolbar);
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
@@ -141,10 +142,67 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
 
         initViews(view);
 
-        //appBarHeader.addOnOffsetChangedListener(offsetChangedListenerBottomView);
-        //appBarHeader.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation);
+        appBarHeader.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                handleAppBarOffsetChange(verticalOffset);
+            }
+        });
+
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) toolbar.getLayoutParams();
+        layoutParams.topMargin = getStatusBarHeight(getActivity());
+        toolbar.setLayoutParams(layoutParams);
+
         return view;
     }
+
+    public static int getStatusBarHeight(Context context) {
+        int height = 0;
+        int resId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resId > 0) {
+            height = context.getResources().getDimensionPixelSize(resId);
+        }
+        return height;
+    }
+
+    private void hideStatusBar() {
+        coordinatorLayout.setFitsSystemWindows(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            coordinatorLayout.requestApplyInsets();
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int flags = coordinatorLayout.getSystemUiVisibility();
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            coordinatorLayout.setSystemUiVisibility(flags);
+            getActivity().getWindow().setStatusBarColor(Color.WHITE);
+        }
+
+        if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
+            setWindowFlag(getActivity(), WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true);
+        }
+
+        if (Build.VERSION.SDK_INT >= 19) {
+            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        }
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            setWindowFlag(getActivity(), WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
+            getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
+    }
+
+    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
+        Window win = activity.getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        if (on) {
+            winParams.flags |= bits;
+        } else {
+            winParams.flags &= ~bits;
+        }
+        win.setAttributes(winParams);
+    }
+
 
     AppBarLayout.OnOffsetChangedListener offsetChangedListenerBottomView = new AppBarLayout.OnOffsetChangedListener() {
         @Override
@@ -157,6 +215,45 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
             }
         }
     };
+
+    boolean isDarkToolbar;
+
+    private void handleAppBarOffsetChange(int offset) {
+
+        int positiveOffset = offset * -1;
+
+        int searchBarTransitionRange =
+                getResources().getDimensionPixelSize(R.dimen.tp_home_top_bg_height) - toolbar.getHeight() - getStatusBarHeight(getActivity());
+        float offsetAlpha =
+                (255f / searchBarTransitionRange) * (searchBarTransitionRange - positiveOffset);
+        if (offsetAlpha < 0) {
+            offsetAlpha = 0;
+        }
+
+        if (offsetAlpha >= 255) {
+            offsetAlpha = 255;
+        }
+
+        float alpha = offsetAlpha / 255 - 1;
+        if (alpha < 0)
+            alpha = alpha * -1;
+        statusBarBgView.setAlpha(alpha);
+        if (alpha > 0.5)
+            toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back_grey));
+        else
+            toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
+        toolbar.setBackgroundColor(
+                adjustAlpha(getActivity().getResources().getColor(R.color.white), alpha));
+    }
+
+    @ColorInt
+    public static int adjustAlpha(@ColorInt int color, float factor) {
+        int alpha = Math.round(Color.alpha(color) * factor);
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+        return Color.argb(alpha, red, green, blue);
+    }
 
     AppBarLayout.OnOffsetChangedListener offsetChangedListenerAppBarElevation = new AppBarLayout.OnOffsetChangedListener() {
         @Override
@@ -318,6 +415,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         containerEgg = view.findViewById(R.id.container_fab_egg_token);
         mRvDynamicLinks = view.findViewById(R.id.rv_dynamic_link);
         dynamicLinksContainer = view.findViewById(R.id.container_dynamic_links);
+        statusBarBgView = view.findViewById(R.id.status_bar_bg);
     }
 
     private void initListener() {
