@@ -37,6 +37,16 @@ public class NetworkErrorHelper {
             imageError.setImageResource(errorImage);
             TextView textError = retryLoad.findViewById(R.id.text_error);
             textError.setText(errorText);
+            if(showHomeButton){
+                homeButton.setVisibility(View.VISIBLE);
+            }else{
+                homeButton.setVisibility(View.GONE);
+            }
+            if(showRetryButton){
+                retryButon.setVisibility(View.VISIBLE);
+            }else{
+                retryButon.setVisibility(View.GONE);
+            }
             if (listener != null) {
                 retryButon.setOnClickListener(new View.OnClickListener() {
 

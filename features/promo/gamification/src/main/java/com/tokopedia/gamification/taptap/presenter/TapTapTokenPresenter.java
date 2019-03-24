@@ -114,7 +114,7 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
                     if (crackResult.isCrackTokenSuccess() || crackResult.isTokenHasBeenCracked()) {
                         getView().onSuccessCrackToken(crackResult);
                     } else if (crackResult.isCrackTokenExpired()) {
-                        showErrorView(R.drawable.gf_ic_toped_sorry, getView().getResources().getString(R.string.error_campaign_expired), true);
+                        showErrorView(R.drawable.gf_ic_toped_sorry, getView().getResources().getString(R.string.error_campaign_expired), false);
                     } else if (crackResult.getResultStatus() != null
                             && crackResult.getResultStatus().getMessage() != null
                             && crackResult.getResultStatus().getMessage().size() != 0
