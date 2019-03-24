@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 public class TradeInParams implements Parcelable {
+    public static final String TRADE_IN_PARAMS = TradeInParams.class.getSimpleName();
     public static final String PARAM_NEW_PRICE = "NEW PRICE";
     public static final String PARAM_DEVICE_ID = "DEVICE ID";
     public static final String PARAM_USER_ID = "USER ID";

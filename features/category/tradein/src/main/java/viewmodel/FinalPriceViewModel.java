@@ -29,26 +29,29 @@ import rx.Subscriber;
 
 public class FinalPriceViewModel extends ViewModel implements LifecycleObserver {
     private MutableLiveData<DeviceDataResponse> deviceDiagData;
-    private MutableLiveData<KYCDetails> kycDetailsData;
     private WeakReference<FragmentActivity> activityWeakReference;
+    private TradeInParams tradeInParams;
 
     public FinalPriceViewModel(FragmentActivity activity) {
         activityWeakReference = new WeakReference<>(activity);
         deviceDiagData = new MutableLiveData<>();
-        kycDetailsData = new MutableLiveData<>();
     }
 
     public MutableLiveData<DeviceDataResponse> getDeviceDiagData() {
         return deviceDiagData;
     }
 
+    public TradeInParams getTradeInParams(){
+        return tradeInParams;
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     void getDiagnosticData() {
         Intent inIntent = activityWeakReference.get().getIntent();
-        Bundle tradeIn = inIntent.getExtras();
-        int productid = tradeIn.getInt(TradeInParams.PARAM_PRODUCT_ID, 0);
-        String deviceid = tradeIn.getString(TradeInParams.PARAM_DEVICE_ID);
-        int newprice = tradeIn.getInt(TradeInParams.PARAM_NEW_PRICE, 0);
+        tradeInParams = inIntent.getParcelableExtra(TradeInParams.class.getSimpleName());
+        int productid = tradeInParams.getProductId();
+        String deviceid = tradeInParams.getDeviceId();
+        int newprice = tradeInParams.getNewPrice();
         DeviceDiagParams params = new DeviceDiagParams();
         params.setProductId(productid);
         params.setDeviceId(deviceid);
@@ -60,7 +63,7 @@ public class FinalPriceViewModel extends ViewModel implements LifecycleObserver 
         gqlDeviceDiagInput.addRequest(new
                 GraphqlRequest(GraphqlHelper.loadRawString(activityWeakReference.get().getResources(),
                 R.raw.gql_get_device_diag), DeviceDiagGQL.class, variables1,false));
-        if (tradeIn.getBoolean(TradeInParams.PARAM_USE_KYC)) {
+        if (tradeInParams.isUseKyc() == 1) {
             Map<String, Object> variables2 = new HashMap<>();
             variables2.put("projectID", 4);
             gqlDeviceDiagInput.addRequest(new

@@ -48,7 +48,7 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
     private MutableLiveData<JSONObject> priceFailData;
 
     private WeakReference<FragmentActivity> activityWeakReference;
-    private Bundle inData;
+    private TradeInParams inData;
     private Laku6TradeIn laku6TradeIn;
     public static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 123;
 
@@ -73,7 +73,7 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
                 deviceAttr.setStorage(diagnostics.getStorage());
                 deviceDiagInput.setDeviceAttr(deviceAttr);
                 deviceDiagInput.setDeviceId(diagnostics.getImei());
-                inData.putString(TradeInParams.PARAM_DEVICE_ID, diagnostics.getImei());
+                inData.setDeviceId(diagnostics.getImei());
                 deviceDiagInput.setDeviceReview(diagnostics.getReviewDetails());
                 deviceDiagInput.setNewPrice(activityWeakReference.get().getIntent().getIntExtra(TradeInParams.PARAM_NEW_PRICE, 0));
                 deviceDiagInput.setOldPrice(diagnostics.getTradeInPrice());
@@ -99,13 +99,13 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
                         if (graphqlResponse != null) {
                             if (graphqlResponse.getData(DeviceDiagInputResponse.class) != null) {
                                 Intent finalPriceIntent = new Intent(activityWeakReference.get(), FinalPriceActivity.class);
-                                finalPriceIntent.putExtras(inData);
+                                finalPriceIntent.putExtra(TradeInParams.class.getSimpleName(),inData);
                                 activityWeakReference.get().startActivityForResult(finalPriceIntent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE);
                             } else {
                                 List<GraphqlError> errors = graphqlResponse.getError(DeviceDiagInputResponse.class);
                                 if (errors.get(0).getMessage().contains("duplicate key value")) {
                                     Intent finalPriceIntent = new Intent(activityWeakReference.get(), FinalPriceActivity.class);
-                                    finalPriceIntent.putExtras(inData);
+                                    finalPriceIntent.putExtra(TradeInParams.class.getSimpleName(),inData);
                                     activityWeakReference.get().startActivityForResult(finalPriceIntent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE);
                                 }
                             }
@@ -150,7 +150,7 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
         laku6TradeIn = Laku6TradeIn.getInstance(activityWeakReference.get(), "tokopediaSandbox",
                 Constants.APPID, Constants.APIKEY, Constants.LAKU6_BASEURL);
         laku6TradeIn.setCampaignTradeInId("tokopediaSandbox");
-        inData = activityWeakReference.get().getIntent().getExtras();
+        inData = activityWeakReference.get().getIntent().getParcelableExtra(TradeInParams.class.getSimpleName());
         requestPermission();
     }
 

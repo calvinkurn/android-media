@@ -22,6 +22,7 @@ interface NormalCheckoutRouter {
 
     fun addToCartProduct(addToCartRequest: AddToCartRequest, isOneClickShipment: Boolean): Observable<AddToCartResult>
     fun getCheckoutIntent(context: Context, shipmentFormRequest: ShipmentFormRequest): Intent
+    fun getCheckoutIntent(context: Context, deviceid: String): Intent
     fun getCartIntent(context: Context): Intent
 
 }

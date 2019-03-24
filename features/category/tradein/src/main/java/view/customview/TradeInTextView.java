@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.tokopedia.tradein.R;
 
 import viewmodel.ITradeInParamReceiver;
-
 import viewmodel.TradeInResponseObserver;
 import viewmodel.TradeInTextViewModel;
 import viewmodel.TradeInVMFactory;
@@ -35,11 +34,13 @@ public class TradeInTextView extends ConstraintLayout {
     };
 
     public TradeInTextView(Context context) {
-        this(context, null);
+        super(context);
+        initView();
     }
 
     public TradeInTextView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        super(context, attrs);
+        initView();
     }
 
     public TradeInTextView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -48,39 +49,41 @@ public class TradeInTextView extends ConstraintLayout {
     }
 
     private void initView() {
-        viewModel = ViewModelProviders.of((FragmentActivity) getContext(), TradeInVMFactory.getInstance((FragmentActivity) getContext())).get(TradeInTextViewModel.class);
-        viewModel.getResponseData().observe((FragmentActivity) getContext(), new TradeInResponseObserver(this));
         inflate(getContext(), R.layout.trade_in_textview, this);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-            this.setBackgroundResource(R.drawable.bg_rect_white);
-            this.setElevation(TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    getResources().getDimension(R.dimen.dp_1),
-                    getResources().getDisplayMetrics()
-            ));
-        } else
-            this.setBackgroundResource(R.drawable.bg_rect_white_shadow);
-        thisInstance = this;
-        this.setOnClickListener(clickListener);
-        this.setAlpha(0);
-        titleTextView = this.findViewById(R.id.tv_tambah_title);
-        priceTextView = this.findViewById(R.id.tv_text_price);
-        titleTextView.setAlpha(0);
-        priceTextView.setAlpha(0);
+        if (!isInEditMode()) {
+            viewModel = ViewModelProviders.of((FragmentActivity) getContext(), TradeInVMFactory.getInstance((FragmentActivity) getContext())).get(TradeInTextViewModel.class);
+            viewModel.getResponseData().observe((FragmentActivity) getContext(), new TradeInResponseObserver(this));
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                this.setBackgroundResource(R.drawable.bg_rect_white);
+                this.setElevation(TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        getResources().getDimension(R.dimen.dp_1),
+                        getResources().getDisplayMetrics()
+                ));
+            } else
+                this.setBackgroundResource(R.drawable.bg_rect_white_shadow);
+            thisInstance = this;
+            this.setOnClickListener(clickListener);
+            this.setAlpha(0);
+            titleTextView = this.findViewById(R.id.tv_tambah_title);
+            priceTextView = this.findViewById(R.id.tv_text_price);
+            titleTextView.setAlpha(0);
+            priceTextView.setAlpha(0);
 
-        getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
+            getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
 
-                getViewTreeObserver().removeOnPreDrawListener(this);
+                    getViewTreeObserver().removeOnPreDrawListener(this);
 
-                ViewCompat.animate(thisInstance).alpha(1).setDuration(500);
-                ViewCompat.animate(titleTextView).alpha(1).setStartDelay(120).setDuration(500);
-                ViewCompat.animate(priceTextView).alpha(1).setStartDelay(240).setDuration(500);
+                    ViewCompat.animate(thisInstance).alpha(1).setDuration(500);
+                    ViewCompat.animate(titleTextView).alpha(1).setStartDelay(120).setDuration(500);
+                    ViewCompat.animate(priceTextView).alpha(1).setStartDelay(240).setDuration(500);
 
-                return false;
-            }
-        });
+                    return false;
+                }
+            });
+        }
     }
 
     public ITradeInParamReceiver getTradeInReceiver() {

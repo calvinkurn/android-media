@@ -61,16 +61,7 @@ class ProductModalActivity : BaseSimpleActivity(), IAccessRequestListener {
 
     override fun clickAccept() {
         val intent = TradeInHomeActivity.getIntent(this)
-        val tradeInData = Bundle()
-
-        tradeInData.putInt(TradeInParams.PARAM_NEW_PRICE, tradeInParams!!.newPrice)
-        tradeInData.putString(TradeInParams.PARAM_DEVICE_ID, tradeInParams!!.deviceId)
-        tradeInData.putInt(TradeInParams.PARAM_USER_ID, tradeInParams!!.userId)
-        tradeInData.putInt(TradeInParams.PARAM_PRODUCT_ID, tradeInParams!!.productId)
-        tradeInData.putString(TradeInParams.PARAM_NEW_DEVICE_NAME, tradeInParams!!.productName)
-        tradeInData.putBoolean(TradeInParams.PARAM_USE_KYC, tradeInParams!!.isUseKyc == 1)
-
-        intent.putExtras(tradeInData)
+        intent.putExtra(TradeInParams.TRADE_IN_PARAMS,tradeInParams)
         startActivityForResult(intent, TradeInHomeActivity.TRADEIN_HOME_REQUEST)
     }
 

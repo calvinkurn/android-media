@@ -330,16 +330,8 @@ class ProductModalFragment : BaseDaggerFragment() {
 
     private fun goToHargaFinal() {
         val intent = FinalPriceActivity.getHargaFinalIntent(context)
-        val tradeInData = Bundle()
 
-        tradeInData.putInt(TradeInParams.PARAM_NEW_PRICE, tradeInParams!!.newPrice)
-        tradeInData.putString(TradeInParams.PARAM_DEVICE_ID, tradeInParams!!.deviceId)
-        tradeInData.putInt(TradeInParams.PARAM_USER_ID, tradeInParams!!.userId)
-        tradeInData.putInt(TradeInParams.PARAM_PRODUCT_ID, tradeInParams!!.productId)
-        tradeInData.putString(TradeInParams.PARAM_NEW_DEVICE_NAME, tradeInParams!!.productName)
-        tradeInData.putBoolean(TradeInParams.PARAM_USE_KYC, tradeInParams!!.isUseKyc == 1)
-
-        intent.putExtras(tradeInData)
+        intent.putExtra(TradeInParams.TRADE_IN_PARAMS,tradeInParams)
         startActivityForResult(intent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE)
     }
 

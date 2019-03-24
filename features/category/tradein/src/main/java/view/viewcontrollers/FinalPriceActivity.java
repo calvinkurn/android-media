@@ -137,10 +137,10 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
     }
 
     private void renderDetails(DeviceDataResponse deviceDataResponse) {
-        Bundle tradeInData = getIntent().getExtras();
+        TradeInParams tradeInData = viewModel.getTradeInParams();
         if (tradeInData != null) {
-            mTvModelNew.setText(tradeInData.getString(TradeInParams.PARAM_NEW_DEVICE_NAME, ""));
-            mTvPriceNew.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInData.getInt(TradeInParams.PARAM_NEW_PRICE), true));
+            mTvModelNew.setText(tradeInData.getProductName());
+            mTvPriceNew.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInData.getNewPrice(), true));
         }
         mTvModelName.setText(deviceDataResponse.getDeviceAttr().getModel());
         mTvPriceExchange.setText(String.valueOf(deviceDataResponse.getOldPrice()));
@@ -195,16 +195,9 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
     }
 
     private void goToCheckout() {
-//        TradeInRouter router = (TradeInRouter) getApplication();
         String deviceid = getDeviceId();
         setResult(Activity.RESULT_OK, new Intent(Constants.ACTION_GO_TO_SHIPMENT).putExtra(TradeInParams.PARAM_DEVICE_ID, deviceid));
         finish();
-//        Intent checkoutIntent;
-//        if (deviceid != null) {
-//            checkoutIntent = router.getCheckoutIntent(this, deviceid);
-//            startActivity(checkoutIntent);
-//        } else
-//            throw new RuntimeException("Device ID null");
     }
 
     private void setbuttonCheckout() {

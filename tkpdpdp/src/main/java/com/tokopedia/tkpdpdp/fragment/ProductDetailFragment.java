@@ -229,6 +229,7 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 import view.customview.TradeInTextView;
+import viewmodel.TradeInBroadcastReceiver;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -365,7 +366,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private ReportProductDialogFragment fragment;
     private Bundle recentBundle;
     private com.tokopedia.abstraction.common.utils.LocalCacheHandler localCacheHandler;
-    private ElligibleBroadcastReceiver receiver;
+    private TradeInBroadcastReceiver receiver;
     private PerformanceMonitoring performanceMonitoring;
 
     private ProductPass productPass;
@@ -467,7 +468,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         localCacheHandler = new com.tokopedia.abstraction.common.utils.LocalCacheHandler(MainApplication.getAppContext(), PRODUCT_DETAIL);
         localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED, Boolean.FALSE);
         localCacheHandler.applyEditor();
-        receiver = new ElligibleBroadcastReceiver();
+        receiver = new TradeInBroadcastReceiver();
     }
 
     private void initInjector() {
@@ -2895,6 +2896,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             }
         });
         IntentFilter intentFilter = new IntentFilter(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE);
+        receiver.setBroadcastListener(() -> tvTradeInPromoView.setVisibility(View.VISIBLE));
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, intentFilter);
         tradeInTextView.getTradeInReceiver().checkTradeIn(tradeInParams, false);
     }
@@ -2962,13 +2964,5 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public String getDeviceId() {
         com.tokopedia.tkpdpdp.ProductDetailRouter productDetailRouter = (com.tokopedia.tkpdpdp.ProductDetailRouter) getActivity().getApplication();
         return productDetailRouter.getDeviceId(getContext());
-    }
-
-    public class ElligibleBroadcastReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            tvTradeInPromoView.setVisibility(View.VISIBLE);
-        }
     }
 }
