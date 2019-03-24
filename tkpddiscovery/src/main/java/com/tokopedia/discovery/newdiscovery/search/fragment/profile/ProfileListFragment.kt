@@ -76,8 +76,8 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
             loadDataFromSavedState(savedInstanceState)
-        } else {
-            loadDataFromSavedState(arguments)
+        } else if (arguments != null) {
+            loadDataFromSavedState(arguments!!)
         }
     }
 
@@ -216,7 +216,7 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     private fun loadDataFromArguments() {
-        query = arguments!!.getString(EXTRA_QUERY)?:""
+        query = arguments!!.getString(EXTRA_QUERY) ?: ""
     }
 
     private fun loadDataFromSavedState(savedInstanceState: Bundle) {
