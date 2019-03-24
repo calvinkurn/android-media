@@ -34,7 +34,6 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     private TextView mTvInitialPrice;
     private TextView mTvGoToProductDetails;
     private TradeInHomeViewModel tradeInHomeViewModel;
-    private int newPrice;
 
     public static final int TRADEIN_HOME_REQUEST = 22345;
 
@@ -45,7 +44,6 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
 
     @Override
     void initView() {
-        newPrice = getIntent().getIntExtra("NEW PRICE", 0);
         mTvPriceElligible = findViewById(R.id.tv_price_elligible);
         mButtonRemove = findViewById(R.id.button_remove);
         mTvModelName = findViewById(R.id.tv_model_name);
@@ -83,7 +81,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                     });
                     int maxPrice = jsonObject.getInt("max_price");
                     int minPrice = jsonObject.getInt("min_price");
-                    if (minPrice > newPrice) {
+                    if (minPrice > tradeInHomeViewModel.getTradeInParams().getNewPrice()) {
                         String notElligible = getString(R.string.not_elligible_price_high);
                         SpannableString spannableString = new SpannableString(notElligible);
                         ClickableSpan clickableSpan = new ClickableSpan() {

@@ -38,6 +38,7 @@ import model.DeviceDiagInput;
 import model.DeviceDiagInputResponse;
 import model.DeviceDiagnostics;
 import model.TradeInParams;
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;
 import tradein_common.Constants;
 import view.viewcontrollers.FinalPriceActivity;
@@ -198,5 +199,9 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
 
     public void getMaxPrice() {
         laku6TradeIn.getMinMaxPrice(this);
+    }
+
+    public TradeInParams getTradeInParams(){
+        return inData;
     }
 }
