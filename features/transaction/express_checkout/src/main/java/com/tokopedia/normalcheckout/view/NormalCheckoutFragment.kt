@@ -191,7 +191,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
     }
 
-    public fun goToHargaFinal() {
+    private fun goToHargaFinal() {
         val intent = FinalPriceActivity.getHargaFinalIntent(context)
 
         tradeInParams!!.setPrice(selectedProductInfo!!.basic.price.toInt())
@@ -202,7 +202,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         startActivityForResult(intent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE)
     }
 
-    public fun goToTradeInHome() {
+    fun goToTradeInHome() {
         val intent = TradeInHomeActivity.getIntent(context)
 
         tradeInParams!!.setPrice(selectedProductInfo!!.basic.price.toInt())
