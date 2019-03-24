@@ -152,7 +152,7 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
             stringBuilder.append("•").append(review).append("\n");
         }
         mTvDeviceReview.setText(stringBuilder.toString());
-        mTvPriceExchange.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(deviceDataResponse.getOldPrice(), true));
+        mTvPriceExchange.setText(String.format("- %1$s",CurrencyFormatUtil.convertPriceValueToIdrFormat(deviceDataResponse.getOldPrice(), true)));
         mTvFinalAmount.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(deviceDataResponse.getRemainingPrice(), true));
 
         if (tradeInData != null) {
