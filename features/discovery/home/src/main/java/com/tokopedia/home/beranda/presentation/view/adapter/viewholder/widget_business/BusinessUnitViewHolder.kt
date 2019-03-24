@@ -19,7 +19,7 @@ class BusinessUnitViewHolder(
     private lateinit var adapter: DigitalsHomePagerAdapter
 
     override fun bind(element: BusinessUnitViewModel) {
-        adapter = DigitalsHomePagerAdapter(fm, TabBusinessFragment())
+        adapter = DigitalsHomePagerAdapter(fm, TabBusinessFragment.newInstance(element.position))
         itemView.viewPager.adapter = adapter
         itemView.viewPager.offscreenPageLimit = 1
         itemView.viewPager.currentItem = 0

@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.TabLayout
+import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.home.R
+import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.widget_business.TabBusinessViewPagerAdapter
@@ -28,9 +30,22 @@ class TabBusinessFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: TabBusinessViewModel
     lateinit var adapter: TabBusinessViewPagerAdapter
+    private var positionWidget: Int = 0
 
     override fun getScreenName(): String {
         return TabBusinessFragment::class.java.simpleName
+    }
+
+    companion object {
+        const val ITEM_POSITION = "ITEM_POSITION"
+
+        fun newInstance(position: Int) : Fragment {
+            val fragment = TabBusinessFragment()
+            val bundle = Bundle()
+            bundle.putInt(ITEM_POSITION, position)
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 
     override fun initInjector() {
@@ -42,6 +57,9 @@ class TabBusinessFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments.let {
+            positionWidget = it?.getInt(ITEM_POSITION)!!
+        }
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             viewModel = viewModelProvider.get(TabBusinessViewModel::class.java)
@@ -106,7 +124,7 @@ class TabBusinessFragment : BaseDaggerFragment() {
         addChildTabLayout(homeWidget.tabBusinessList)
         tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
 
-        adapter = TabBusinessViewPagerAdapter(childFragmentManager, homeWidget.tabBusinessList)
+        adapter = TabBusinessViewPagerAdapter(childFragmentManager, homeWidget.tabBusinessList, positionWidget)
         viewPager.adapter = adapter
         viewPager.offscreenPageLimit = homeWidget.tabBusinessList.size
         viewPager.setCanScrollHorizontal(false)
@@ -135,6 +153,7 @@ class TabBusinessFragment : BaseDaggerFragment() {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 viewPager.setCurrentItem(tab.position, false)
                 adapter.notifyDataSetChanged()
+                HomePageTracking.eventClickTabHomeWidget(activity, tab.text.toString().toLowerCase())
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}

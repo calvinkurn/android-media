@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.presentation.view.fragment.BusinessUnitItemView
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import kotlinx.android.synthetic.main.layout_template_footer_business.view.*
 import kotlinx.android.synthetic.main.layout_template_icon_business_widget.view.*
 import kotlinx.android.synthetic.main.layout_template_small_business.view.*
@@ -27,6 +29,17 @@ open class SizeSmallBusinessViewHolder (
         renderTitle(element)
         renderSubtitle(element)
         renderFooter(element)
+        addImpressionListener(element)
+    }
+
+    open fun addImpressionListener(element: HomeWidget.ContentItemTab?) {
+        itemView.icon.addOnImpressionListener(element!!.impressHolder,
+                object: ViewHintListener {
+                    override fun onViewHint() {
+                        listener.onImpressed(element, adapterPosition)
+                    }
+                }
+        )
     }
 
     open fun getProductName(): TextView {

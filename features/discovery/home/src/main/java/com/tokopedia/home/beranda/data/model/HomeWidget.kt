@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.widget_business.BusinessWidgetTypeFactory
-import com.tokopedia.home.beranda.presentation.view.viewmodel.TemplateBusinessWidget
+import com.tokopedia.kotlin.model.ImpressHolder
 
 class HomeWidget(
         @SerializedName("widget_tab")
@@ -114,7 +114,7 @@ class HomeWidget(
             val templateId: Int
     ): Parcelable, Visitable<BusinessWidgetTypeFactory> {
 
-        var templateType: TemplateBusinessWidget = TemplateBusinessWidget.None
+        var impressHolder: ImpressHolder = ImpressHolder()
 
         override fun type(typeFactory: BusinessWidgetTypeFactory?): Int {
             return typeFactory!!.type(this)
@@ -136,7 +136,9 @@ class HomeWidget(
                 parcel.readString() ?: "",
                 parcel.readString() ?: "",
                 parcel.readInt()
-        )
+        ) {
+            this.impressHolder = parcel.readParcelable(ImpressHolder::class.java.classLoader) ?: ImpressHolder()
+        }
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeInt(id)
@@ -154,6 +156,7 @@ class HomeWidget(
             parcel.writeString(originalPrice)
             parcel.writeString(pricePrefix)
             parcel.writeInt(templateId)
+            parcel.writeParcelable(impressHolder, flags)
         }
 
         override fun describeContents(): Int {

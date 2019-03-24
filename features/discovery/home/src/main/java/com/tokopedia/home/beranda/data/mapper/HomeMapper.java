@@ -148,8 +148,10 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                             case DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT:
                                 list.add(mappingSpotlight(homeData.getSpotlight()));
                                 break;
-                            case channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET) :
-                                list.add(new BusinessUnitViewModel(context.getString(R.string.digital_widget_title)));
+                            case DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET :
+                                list.add(
+                                        new BusinessUnitViewModel(context.getString(R.string.digital_widget_title), position)
+                                );
                                 break;
                             case DynamicHomeChannel.Channels.LAYOUT_3_IMAGE:
                             case DynamicHomeChannel.Channels.LAYOUT_ORGANIC:

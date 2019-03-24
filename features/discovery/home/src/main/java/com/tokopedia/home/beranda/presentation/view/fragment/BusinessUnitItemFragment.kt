@@ -15,11 +15,13 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.home.IHomeRouter
 import com.tokopedia.home.R
+import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.widget_business.BusinessWidgetTypeFactory
 import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.layout_recyclerview_business_widget.*
 import javax.inject.Inject
 
@@ -31,14 +33,18 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
     lateinit var viewModel: ItemTabBusinessViewModel
 
     private lateinit var itemTab: HomeWidget.TabItem
+    private lateinit var trackingQueue: TrackingQueue
+    private var positionWidget: Int = 0
 
     companion object {
         const val ITEM_EXTRAS = "ITEM_EXTRAS"
+        const val ITEM_POSITION = "ITEM_POSITION"
 
-        fun newInstance(item : HomeWidget.TabItem) : Fragment {
+        fun newInstance(item : HomeWidget.TabItem, position: Int) : Fragment {
             val fragment = BusinessUnitItemFragment()
             val bundle = Bundle()
             bundle.putParcelable(ITEM_EXTRAS, item)
+            bundle.putInt(ITEM_POSITION, position)
             fragment.arguments = bundle
             return fragment
         }
@@ -46,8 +52,12 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activity.let {
+            trackingQueue = TrackingQueue(it!!)
+        }
         arguments.let {
             itemTab = it?.getParcelable(ITEM_EXTRAS)!!
+            positionWidget = it.getInt(ITEM_POSITION)
         }
     }
 
@@ -56,6 +66,11 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
             GraphqlClient.init(it)
         }
         super.onStart()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        trackingQueue.sendAll()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -89,9 +104,17 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
         return BusinessWidgetTypeFactory(this)
     }
 
-    override fun onItemClicked(t: HomeWidget.ContentItemTab?) {
-        (activity?.applicationContext as IHomeRouter)
-                .goToApplinkActivity(activity, t?.applink ?: t?.url)
+    override fun onItemClicked(element: HomeWidget.ContentItemTab) {
+        (activity?.applicationContext as IHomeRouter).goToApplinkActivity(activity, element.applink)
+        HomePageTracking.eventEnhancedClickHomeWidget(
+                activity,
+                element.id.toString(),
+                String.format("/ - p%d - bu widget - %s", positionWidget.toString(), element.name.toLowerCase()),
+                element.name,
+                element.imageUrl,
+                adapter.data.indexOf(element).toString(),
+                ""
+        )
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -146,10 +169,22 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
         onGetListErrorWithEmptyData(throwable)
     }
 
+    override fun onImpressed(element: HomeWidget.ContentItemTab, position: Int) {
+        HomePageTracking.eventEnhancedImpressionHomeWidget(
+                trackingQueue,
+                element.id.toString(),
+                String.format("/ - p%d - bu widget - %s", positionWidget.toString(), element.name.toLowerCase()),
+                element.name,
+                element.imageUrl,
+                position.toString(),
+                ""
+        )
+    }
 }
 
 interface BusinessUnitItemView {
     fun onReloadButtonClick()
     fun onSuccessGetData(data: HomeWidget)
     fun onErrorGetData(throwable: Throwable)
+    fun onImpressed(element: HomeWidget.ContentItemTab, position: Int)
 }

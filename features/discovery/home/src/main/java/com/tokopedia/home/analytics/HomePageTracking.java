@@ -2,6 +2,9 @@ package com.tokopedia.home.analytics;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -11,10 +14,13 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by Akmal on 2/6/18.
@@ -744,6 +750,88 @@ public class HomePageTracking {
                     CATEGORY_HOME_PAGE,
                     String.format("%s %s %s - %s", CLICK, ON, LABEL_TOKOPOINTS, NON_LOGIN),
                     ""
+            );
+        }
+    }
+
+    public static void eventEnhancedImpressionHomeWidget(
+            @Nullable TrackingQueue trackingQueue,
+            @NonNull String id,
+            @NonNull String name,
+            @NonNull String alias,
+            @NonNull String creativeUrl,
+            @NonNull String position,
+            @NonNull String promoCode
+    ) {
+        if (trackingQueue == null) {
+            return;
+        }
+        Map<String, Object> data = DataLayer.mapOf(
+                EVENT, PROMO_VIEW,
+                EVENT_CATEGORY, EVENT_CATEGORY_TICKER_HOMEPAGE,
+                EVENT_ACTION, "impression on bu widget",
+                EVENT_LABEL, "",
+                ECOMMERCE, DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "id", id,
+                                                "name", name,
+                                                "creative", alias,
+                                                "creative_url", creativeUrl,
+                                                "position", position,
+                                                "promo_code", !TextUtils.isEmpty(promoCode) ? promoCode : "NoPromoCode"
+                                        )
+                                )
+                        )
+                )
+        );
+        trackingQueue.putEETracking((HashMap<String, Object>) data);
+    }
+
+    public static void eventEnhancedClickHomeWidget(
+            @Nullable Context context,
+            @NonNull String id,
+            @NonNull String name,
+            @NonNull String alias,
+            @NonNull String creativeUrl,
+            @NonNull String position,
+            @NonNull String promoCode
+    ) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            Map<String, Object> data = DataLayer.mapOf(
+                    "event", "promoClick",
+                    "eventCategory", "homepage",
+                    "eventAction", "click on bu widget",
+                    "eventLabel", name,
+                    "ecommerce", DataLayer.mapOf(
+                            "promoClick", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "id", id,
+                                                    "name", name,
+                                                    "creative", alias,
+                                                    "creative_url", creativeUrl,
+                                                    "position", position,
+                                                    "promo_code", !TextUtils.isEmpty(promoCode) ? promoCode : "NoPromoCode"
+                                            )
+                                    )
+                            )
+                    )
+            );
+            tracker.sendEnhancedEcommerce(data);
+        }
+    }
+
+    public static void eventClickTabHomeWidget(Context context, String headerName) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendEventTracking(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    "click on bu widget tab",
+                    headerName
             );
         }
     }

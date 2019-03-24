@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.layout_template_mid_business.view.*
 
 class SizeMiddleBusinessViewHolder (
         itemView: View?,
-        private val listener: BusinessUnitItemView
+        listener: BusinessUnitItemView
 ) : SizeSmallBusinessViewHolder(itemView, listener) {
 
     companion object {

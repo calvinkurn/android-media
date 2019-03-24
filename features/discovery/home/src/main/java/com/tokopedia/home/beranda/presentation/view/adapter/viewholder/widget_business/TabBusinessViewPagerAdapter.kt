@@ -8,13 +8,14 @@ import com.tokopedia.home.beranda.presentation.view.fragment.BusinessUnitItemFra
 
 class TabBusinessViewPagerAdapter(
         fm: FragmentManager?,
-        private val list: List<HomeWidget.TabItem>
+        private val list: List<HomeWidget.TabItem>,
+        private val positionWidget : Int
 ): FragmentStatePagerAdapter(fm){
 
     private var currentPosition = -1
 
     override fun getItem(position: Int): Fragment {
-        return BusinessUnitItemFragment.newInstance(list[position])
+        return BusinessUnitItemFragment.newInstance(list[position], positionWidget)
     }
 
     override fun getCount(): Int {
