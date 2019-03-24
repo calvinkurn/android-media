@@ -13,5 +13,7 @@ public interface GamificationConstants {
         int INDEX_TOKEN_CRACKED = 9;
         int INDEX_TOKEN_LEFT = 10;
         int INDEX_TOKEN_RIGHT = 11;
+        int IMAGE_ARRAY_SIZE_NORMAL= 12;
+        int IMAGE_ARRAY_SIZE_EMPTY= 1;
     }
 }

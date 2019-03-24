@@ -223,15 +223,17 @@ public class WidgetSummaryTapTap extends FrameLayout {
 
                 ImageHandler.loadImage(getContext(), imageReward, crackResultEntity.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
                 ArrayList<String> rewardString = null;
-                if (crackResultEntity.getBenefits() != null) {
+                if (crackResultEntity.getBenefits() != null &&
+                        crackResultEntity.getBenefits().size() != 0) {
                     rewardString = new ArrayList<>();
                     for (CrackBenefitEntity crackBenefitEntity : crackResultEntity.getBenefits()) {
                         rewardString.add(crackBenefitEntity.getText());
                     }
-                }
-
-                if (rewardString != null)
+                    rewardText.setVisibility(VISIBLE);
                     rewardText.setText(TextUtils.join("\n", rewardString));
+                } else {
+                    rewardText.setVisibility(GONE);
+                }
             }
         }
     }

@@ -46,12 +46,16 @@ public class FloatingEggPresenter extends BaseDaggerPresenter<FloatingEggContrac
 
             @Override
             public void onError(Throwable e) {
+                if(isViewNotAttached())
+                    return;
                 getView().onErrorGetToken(e);
 
             }
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
+                if(isViewNotAttached())
+                    return;
                 FloatingButtonResponseEntity responseTokenTokopointEntity = graphqlResponse.getData(FloatingButtonResponseEntity.class);
                 if (responseTokenTokopointEntity != null && responseTokenTokopointEntity.getGamiFloatingButtonEntity() != null)
                     getView().onSuccessGetToken(responseTokenTokopointEntity.getGamiFloatingButtonEntity());
@@ -67,7 +71,7 @@ public class FloatingEggPresenter extends BaseDaggerPresenter<FloatingEggContrac
 
     @Override
     public void detachView() {
-        super.detachView();
         getTokenTokopointsUseCase.unsubscribe();
+        super.detachView();
     }
 }

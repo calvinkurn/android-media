@@ -310,13 +310,15 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
 
             @Override
             public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    if (fromSummaryPage)
-                        getView().showErrorSnackBarOnSummaryPage();
-                    else
-                        getView().showErrorSnackBar();
-                    getView().hideLoading();
+                if (isViewNotAttached()) {
+                    return;
                 }
+                if (fromSummaryPage)
+                    getView().showErrorSnackBarOnSummaryPage();
+                else
+                    getView().showErrorSnackBar();
+                getView().hideLoading();
+
             }
 
             @Override

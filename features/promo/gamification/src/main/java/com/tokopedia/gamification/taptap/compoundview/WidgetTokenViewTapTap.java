@@ -244,7 +244,7 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
 
 
         int lightImageWidth = (int) (RATIO_LIGHT_WIDTH * imageWidth);
-        int lightImageHeight = (int) (TAP_BACKGROUND_IMAGE_HEIGHT_SCALE*lightImageWidth);
+        int lightImageHeight = (int) (TAP_BACKGROUND_IMAGE_HEIGHT_SCALE * lightImageWidth);
         int marginTopLightRight = imageMarginBottom - (int) (0.80 * imageHeight) - lightImageHeight / 2;
         int marginLeftLightRight = (int) (0.5 * (rootWidth + (int) (0.70 * imageWidth) - lightImageWidth));
         FrameLayout.LayoutParams ivLightRightLp = (FrameLayout.LayoutParams) widgetTapCounter.getLayoutParams();
@@ -262,7 +262,10 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
 
     public void setToken(TokenAsset tokenAsset, TokensUser tokenUser) {
         List<String> imageUrls = tokenAsset.getImageV2URLs();
-        this.tokenUserId=tokenUser.getTokenUserID();
+        if (imageUrls == null || imageUrls.size() < GamificationConstants.EggImageUrlIndex.IMAGE_ARRAY_SIZE_NORMAL) {
+            return;
+        }
+        this.tokenUserId = tokenUser.getTokenUserID();
         String full = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_FULL);
         String cracked = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_CRACKED);
         String imageLeftUrl = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_LEFT);
@@ -293,6 +296,20 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
         reset(tokenUser);
     }
 
+    public void setEmptyToken(TokenAsset tokenAsset, TokensUser tokenUser) {
+        List<String> imageUrls = tokenAsset.getImageV2URLs();
+        if (imageUrls == null || imageUrls.size() < GamificationConstants.EggImageUrlIndex.IMAGE_ARRAY_SIZE_EMPTY) {
+            return;
+        }
+        this.tokenUserId = tokenUser.getTokenUserID();
+        String empty = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_EMPTY);
+        StringSignature stringSignature = new StringSignature(String.valueOf(tokenAsset.getVersion()));
+        ImageHandler.loadImageWithSignature(imageViewFull, empty, stringSignature);
+        reset(tokenUser);
+        this.setVisibility(View.VISIBLE);
+
+    }
+
     public void shakeEggOnTap() {
         imageViewFull.setPivotY(Y_PIVOT_PERCENT * imageViewFull.getHeight());
         PropertyValuesHolder pvhShake =
@@ -304,16 +321,7 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
 
     }
 
-    public void setEmptyToken(TokenAsset tokenAsset, TokensUser tokenUser) {
-        List<String> imageUrls = tokenAsset.getImageV2URLs();
-        this.tokenUserId=tokenUser.getTokenUserID();
-        String empty = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_EMPTY);
-        StringSignature stringSignature = new StringSignature(String.valueOf(tokenAsset.getVersion()));
-        ImageHandler.loadImageWithSignature(imageViewFull, empty, stringSignature);
-        reset(tokenUser);
-        this.setVisibility(View.VISIBLE);
 
-    }
 
     public void hide() {
         this.setVisibility(View.INVISIBLE);
@@ -721,7 +729,7 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
         }
     };
 
-    public void resetForUnlimitedCrack(TokensUser tokensUser){
+    public void resetForUnlimitedCrack(TokensUser tokensUser) {
         reset(tokensUser);
     }
 
