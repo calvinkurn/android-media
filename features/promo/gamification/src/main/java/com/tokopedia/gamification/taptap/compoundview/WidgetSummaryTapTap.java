@@ -16,7 +16,6 @@ import android.view.animation.LayoutAnimationController;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -127,20 +126,20 @@ public class WidgetSummaryTapTap extends FrameLayout {
                 btnTop.setVisibility(GONE);
                 btnBottomLeft.setVisibility(GONE);
                 btnBottomRight.setVisibility(VISIBLE);
-                setActionButton(rewardButtons.get(0), btnTop);
+                setRewardButton(rewardButtons.get(0), btnTop);
             } else if (rewardButtons.size() == 2) {
                 btnBottomLeft.setVisibility(GONE);
                 btnTop.setVisibility(VISIBLE);
                 btnBottomRight.setVisibility(VISIBLE);
-                setActionButton(rewardButtons.get(0), btnTop);
-                setActionButton(rewardButtons.get(1), btnBottomRight);
+                setRewardButton(rewardButtons.get(0), btnTop);
+                setRewardButton(rewardButtons.get(1), btnBottomRight);
             } else {
                 btnBottomLeft.setVisibility(VISIBLE);
                 btnTop.setVisibility(VISIBLE);
                 btnBottomRight.setVisibility(VISIBLE);
-                setActionButton(rewardButtons.get(0), btnTop);
-                setActionButton(rewardButtons.get(1), btnBottomLeft);
-                setActionButton(rewardButtons.get(2), btnBottomRight);
+                setRewardButton(rewardButtons.get(0), btnTop);
+                setRewardButton(rewardButtons.get(1), btnBottomLeft);
+                setRewardButton(rewardButtons.get(2), btnBottomRight);
             }
         } else {
             btnTop.setVisibility(GONE);
@@ -149,31 +148,35 @@ public class WidgetSummaryTapTap extends FrameLayout {
         }
     }
 
-    private void setActionButton(RewardButton rewardButton, Button btnAction) {
+    private void setRewardButton(RewardButton rewardButton, Button btnAction) {
         btnAction.setText(rewardButton.getText());
         btnAction.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TapTapConstants.ButtonType.PLAY_WITH_POINTS.equalsIgnoreCase(rewardButton.getType())) {
-                    interactionListener.playWithPoints();
-                } else {
-                    interactionListener.dismissDialog();
-                    if (rewardButton.getApplink().contains("tokopedia://tokopoints")) {
-                        getContext().startActivity(((GamificationRouter) getContext().getApplicationContext()).getTokoPointsIntent(getContext()));
-                    } else {
-                        ApplinkUtil.navigateToAssociatedPage(getContext(), rewardButton.getApplink(),
-                                rewardButton.getUrl(),
-                                TapTapTokenActivity.class);
-                    }
-
-                }
-                TapTapAnalyticsTrackerUtil.sendEvent(getContext(),
-                        TapTapAnalyticsTrackerUtil.EventKeys.CLICK_GAME,
-                        TapTapAnalyticsTrackerUtil.CategoryKeys.CATEGORY_TAP_TAP,
-                        TapTapAnalyticsTrackerUtil.ActionKeys.REWARD_SUMMARY_CLICK,
-                        rewardButton.getText());
+                onRewardButtonClick(rewardButton);
             }
         });
+    }
+
+    private void onRewardButtonClick(RewardButton rewardButton) {
+        if (TapTapConstants.ButtonType.PLAY_WITH_POINTS.equalsIgnoreCase(rewardButton.getType())) {
+            interactionListener.playWithPoints();
+        } else {
+            interactionListener.dismissDialog();
+            if (rewardButton.getApplink().contains("tokopedia://tokopoints")) {
+                getContext().startActivity(((GamificationRouter) getContext().getApplicationContext()).getTokoPointsIntent(getContext()));
+            } else {
+                ApplinkUtil.navigateToAssociatedPage(getContext(), rewardButton.getApplink(),
+                        rewardButton.getUrl(),
+                        TapTapTokenActivity.class);
+            }
+
+        }
+        TapTapAnalyticsTrackerUtil.sendEvent(getContext(),
+                TapTapAnalyticsTrackerUtil.EventKeys.CLICK_GAME,
+                TapTapAnalyticsTrackerUtil.CategoryKeys.CATEGORY_TAP_TAP,
+                TapTapAnalyticsTrackerUtil.ActionKeys.REWARD_SUMMARY_CLICK,
+                rewardButton.getText());
     }
 
     class RewardsAdapter extends RecyclerView.Adapter<RewardsAdapter.RewardsHolder> {
