@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.layout_template_large_business.view.*
 
 class SizeLargeBusinessViewHolder (
         itemView: View?,
-        private val listener: BusinessUnitItemView
+        listener: BusinessUnitItemView
 ) : SizeSmallBusinessViewHolder(itemView, listener) {
 
     companion object {
@@ -62,14 +62,14 @@ class SizeLargeBusinessViewHolder (
             itemView.desc1st.visibility = View.GONE
         } else {
             itemView.desc1st.visibility = View.VISIBLE
-            itemView.desc1st.text = MethodChecker.fromHtml(element?.title1st)
+            itemView.desc1st.text = MethodChecker.fromHtml(element?.desc1st)
         }
 
         if (element?.desc2nd.isNullOrEmpty()) {
             itemView.desc2nd.visibility = View.GONE
         } else {
             itemView.desc2nd.visibility = View.VISIBLE
-            itemView.desc2nd.text = MethodChecker.fromHtml(element?.title2nd)
+            itemView.desc2nd.text = MethodChecker.fromHtml(element?.desc2nd)
         }
 
         if (element?.title1st.isNullOrEmpty()
