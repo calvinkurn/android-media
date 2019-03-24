@@ -50,20 +50,16 @@ import static android.view.Gravity.CENTER_HORIZONTAL;
 public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView.OnTapClickListener {
 
     public static final float Y_PIVOT_PERCENT = 0.9f;
-    public static final int CRACK_STEP1_SHAKE_DURATION = 150;
     public static final int CRACK_STEP1_DURATION = 100;
     public static final int CRACK_STEP1_DEGREE = 3;
     public static final int CRACK_STEP2_DEGREE = 3;
     public static final int CRACK_STEP2_DURATION = 100;
-    public static final int CRACK_STEP2_SHAKE_DURATION = 120;
     public static final int CRACK_STEP2_START_DELAY = 30;
     public static final int CRACK_STEP3_START_DELAY = 50;
     public static final int CRACK_STEP3_DURATION = 100;
-    public static final int CRACK_STEP3_SHAKE_DURATION = 150;
     public static final int STEP2_END_MASKED_PERCENT = 30;
     public static final int STEP1_END_MASKED_PERCENT = 70;
     public static final double RATIO_LIGHT_WIDTH = 0.3;
-    public static final int CRACK_STEP3_DEGREE = 4;
     private static final long CRACK_BOUNCE_DURATION = 100;
     private static final long CRACK_BOUNCE_BACK_DURATION = 100;
     private static final long GLOW_IN_OUT_DURATION = 1000;
@@ -149,18 +145,7 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
         imageViewFull.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isTokenClicked && tapCount == 1) {
-                    clearTokenAnimationAndCrack();
-                    widgetTapCounter.onTap();
-                    isTokenClicked = true;
-                    sendEggClickEvent();
-                } else if (tapCount > 1) {
-                    playTapSound();
-                    tapCount--;
-                    shakeEggOnTap();
-                    widgetTapCounter.onTap();
-                }
-
+                onFullEggClick();
             }
         });
 
@@ -179,6 +164,20 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
             }
         });
 
+    }
+
+    private void onFullEggClick() {
+        if (!isTokenClicked && tapCount == 1) {
+            clearTokenAnimationAndCrack();
+            widgetTapCounter.onTap();
+            isTokenClicked = true;
+            sendEggClickEvent();
+        } else if (tapCount > 1) {
+            playTapSound();
+            tapCount--;
+            shakeEggOnTap();
+            widgetTapCounter.onTap();
+        }
     }
 
     private void sendEggClickEvent() {
@@ -531,17 +530,6 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
 
             crackingAnimationSet3.playTogether(maskCrackAnimator);
             crackingAnimationSet3.setStartDelay(CRACK_STEP3_START_DELAY);
-        }
-    }
-
-    public void stopShaking() {
-        imageViewFull.setRotation(0);
-        imageViewCracked.setRotation(0);
-        if (initialGlowAnimatorSet != null) {
-            initialGlowAnimatorSet.cancel();
-        }
-        if (crackingAnimationSet != null) {
-            crackingAnimationSet.cancel();
         }
     }
 

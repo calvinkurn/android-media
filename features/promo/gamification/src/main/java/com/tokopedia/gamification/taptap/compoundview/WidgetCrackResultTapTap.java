@@ -53,7 +53,6 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
     private ImageView imageViewCrackResult;
 
     private LinearLayout listCrackResultText;
-    private CrackResultEntity crackResult;
 
     private WidgetCrackResultListener listener;
     private AnimatorSet rewardTranslateAnimatorSet;
@@ -105,7 +104,6 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
     }
 
     public void showCrackResult(CrackResultEntity crackResult) {
-        this.crackResult = crackResult;
         showListCrackResultText(crackResult.getBenefits());
         showCrackResultImageAnimation(crackResult);
         TapTapAnalyticsTrackerUtil.sendEvent(getContext(),
@@ -186,8 +184,6 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
             animatorSetTranslate2.playTogether(translate2, fadeOut);
 
 
-
-
             //Set Reward Text Translate Animation
             ObjectAnimator translateRewardsText = ObjectAnimator.ofPropertyValuesHolder(listCrackResultText, pvhTranslateImageResult);
 
@@ -224,7 +220,8 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
         @Override
         public void onAnimationEnd(Animator animation) {
             clearCrackResult();
-            listener.onCrackResultCleared();
+            if (listener != null)
+                listener.onCrackResultCleared();
         }
 
         @Override
@@ -246,7 +243,7 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
             textView.setGravity(Gravity.CENTER);
             textView.setTypeface(textView.getTypeface(), Typeface.BOLD);
             textView.setText(rewardText.getText());
-            textView.setMaxWidth((int) (getScreenWidth()/2.3f));
+            textView.setMaxWidth((int) (getScreenWidth() / 2.3f));
             textView.setLayoutParams(layoutParams);
             if (HexValidator.validate(rewardText.getColor())) {
                 textView.setTextColor(Color.parseColor(rewardText.getColor()));

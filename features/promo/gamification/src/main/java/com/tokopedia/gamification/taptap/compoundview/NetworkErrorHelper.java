@@ -22,7 +22,7 @@ public class NetworkErrorHelper {
 
     }
 
-    public static void showEmptyState(Context context, final View rootview, int errorImage, String errorText, final ErrorButtonsListener listener) {
+    public static void showEmptyState(Context context, final View rootview, int errorImage, String errorText, boolean showRetryButton, boolean showHomeButton, final ErrorButtonsListener listener) {
         try {
             rootview.findViewById(R.id.main_retry).setVisibility(View.VISIBLE);
         } catch (Exception e) {

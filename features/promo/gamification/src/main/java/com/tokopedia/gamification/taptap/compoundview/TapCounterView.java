@@ -134,9 +134,4 @@ public class TapCounterView extends FrameLayout {
     public interface OnTapClickListener{
         void onTapCountEnds();
     }
-
-
 }
-
-
-

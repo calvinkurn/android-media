@@ -96,9 +96,9 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
                 }
                 if (e instanceof UnknownHostException) {
                     showErrorView(R.drawable.gf_internet_not_connected_error
-                            , getView().getResources().getString(R.string.internet_not_connected_error_occured));
+                            , getView().getResources().getString(R.string.internet_not_connected_error_occured), true);
                 } else {
-                    showErrorView(R.drawable.gf_ic_toped_sorry, getView().getResources().getString(R.string.error_server_full));
+                    showErrorView(R.drawable.gf_server_full_error, getView().getResources().getString(R.string.error_server_full), true);
                 }
 
             }
@@ -114,28 +114,30 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
                     if (crackResult.isCrackTokenSuccess() || crackResult.isTokenHasBeenCracked()) {
                         getView().onSuccessCrackToken(crackResult);
                     } else if (crackResult.isCrackTokenExpired()) {
-                        showErrorView(R.drawable.image_error_crack_result_expired, getView().getResources().getString(R.string.expired_reward_title));
+                        showErrorView(R.drawable.gf_ic_toped_sorry, getView().getResources().getString(R.string.error_campaign_expired), true);
                     } else if (crackResult.getResultStatus() != null
                             && crackResult.getResultStatus().getMessage() != null
                             && crackResult.getResultStatus().getMessage().size() != 0
                             && crackResult.isCrackButtonErrorTapTap()) {
                         getView().showErrorSnackBar(TextUtils.join(",", crackResult.getResultStatus().getMessage()));
                     } else {
-                        showErrorView(R.drawable.gf_ic_toped_sorry, getView().getResources().getString(R.string.server_error_occured));
+                        showErrorView(R.drawable.gf_server_full_error, getView().getResources().getString(R.string.error_server_full), true);
                         getView().onFinishCrackToken();
                     }
                 } else {
-                    showErrorView(R.drawable.gf_ic_toped_sorry, getView().getResources().getString(R.string.server_error_occured));
+                    showErrorView(R.drawable.gf_server_full_error, getView().getResources().getString(R.string.error_server_full), true);
                     getView().onFinishCrackToken();
                 }
             }
 
-            private void showErrorView(int errorImage, String string) {
-                NetworkErrorHelper.showEmptyState(getView().getContext()
-                        , getView().getRootView()
-                        , errorImage
-                        , string
-                        , new NetworkErrorHelper.ErrorButtonsListener() {
+            private void showErrorView(int errorImage, String string, boolean showRetryButton) {
+                NetworkErrorHelper.showEmptyState(getView().getContext(),
+                        getView().getRootView(),
+                        errorImage,
+                        string,
+                        showRetryButton,
+                        true,
+                        new NetworkErrorHelper.ErrorButtonsListener() {
                             @Override
                             public void onRetryClicked(String buttonText) {
                                 crackToken(tokenUserId, campaignId);
@@ -197,7 +199,7 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
                     showErrorView(R.drawable.gf_internet_not_connected_error
                             , getView().getResources().getString(R.string.internet_not_connected_error_occured));
                 } else {
-                    showErrorView(R.drawable.gf_ic_toped_sorry
+                    showErrorView(R.drawable.gf_server_full_error
                             , getView().getResources().getString(R.string.error_server_full));
 
                 }
@@ -216,11 +218,13 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
             }
 
             private void showErrorView(int errorImage, String string) {
-                NetworkErrorHelper.showEmptyState(getView().getContext()
-                        , getView().getRootView()
-                        , errorImage
-                        , string
-                        , new NetworkErrorHelper.ErrorButtonsListener() {
+                NetworkErrorHelper.showEmptyState(getView().getContext(),
+                        getView().getRootView(),
+                        errorImage,
+                        string,
+                        true,
+                        true,
+                        new NetworkErrorHelper.ErrorButtonsListener() {
                             @Override
                             public void onRetryClicked(String buttonText) {
                                 getGetTokenTokopoints(showLoading, isRefetchEgg);

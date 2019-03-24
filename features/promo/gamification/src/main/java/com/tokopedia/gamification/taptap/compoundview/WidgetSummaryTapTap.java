@@ -41,7 +41,6 @@ public class WidgetSummaryTapTap extends FrameLayout {
     private RecyclerView rvRewards;
     private RewardsAdapter rewardsAdapter;
     private SummaryPageActionListener interactionListener;
-    private RelativeLayout rlChildSummary;
     private View errorView;
     private TextView tvErrorMessage;
     private TextView tvBtnErrorOk;
@@ -75,7 +74,6 @@ public class WidgetSummaryTapTap extends FrameLayout {
         btnTop = view.findViewById(R.id.btn_top);
         btnBottomLeft = view.findViewById(R.id.btn_bottom_left);
         btnBottomRight = view.findViewById(R.id.btn_bottom_right);
-        rlChildSummary = view.findViewById(R.id.rl_child_summary);
         errorView = view.findViewById(R.id.error_view);
         tvErrorMessage = view.findViewById(R.id.tv_msg);
         tvBtnErrorOk = view.findViewById(R.id.snack_ok);

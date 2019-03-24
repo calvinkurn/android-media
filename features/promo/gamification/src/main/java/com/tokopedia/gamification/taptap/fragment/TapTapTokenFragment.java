@@ -34,7 +34,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -153,18 +152,21 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         widgetCrackResult.setListener(new WidgetCrackResultTapTap.WidgetCrackResultListener() {
             @Override
             public void onCrackResultCleared() {
-                if (tokenData != null
-                        && tokenData.getTokensUser() != null
-                        && TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
-                    widgetTokenView.startRotateBackAnimation();
-                } else {
-                    crackTokenPresenter.getGetTokenTokopoints(false, true);
-                }
-
+                renderViewOnCrackResultCleared();
             }
         });
 
         return rootView;
+    }
+
+    private void renderViewOnCrackResultCleared() {
+        if (tokenData != null
+                && tokenData.getTokensUser() != null
+                && TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
+            widgetTokenView.startRotateBackAnimation();
+        } else {
+            crackTokenPresenter.getGetTokenTokopoints(false, true);
+        }
     }
 
     private void startShareActivity() {
@@ -325,22 +327,26 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         actionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TapTapConstants.ButtonType.PLAY_WITH_POINTS.equalsIgnoreCase(actionButton.getType())) {
-                    crackTokenPresenter.playWithPoints(true);
-                } else {
-                    ApplinkUtil.navigateToAssociatedPage(getActivity(), actionButton.getApplink(),
-                            actionButton.getUrl(),
-                            TapTapTokenActivity.class);
-                }
-                if (TapTapConstants.TokenState.STATE_LOBBY.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
-                    sendActionButtonEvent(TapTapAnalyticsTrackerUtil.ActionKeys.TAP_EGG_CLICK, actionButton.getText());
-                }
-                if (TapTapConstants.TokenState.STATE_EMPTY.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
-                    sendActionButtonEvent(TapTapAnalyticsTrackerUtil.ActionKeys.EMPTY_STATE_CLICK, actionButton.getText());
-                }
+                handleActionButtonClick(actionButton);
 
             }
         });
+    }
+
+    private void handleActionButtonClick(ActionButton actionButton) {
+        if (TapTapConstants.ButtonType.PLAY_WITH_POINTS.equalsIgnoreCase(actionButton.getType())) {
+            crackTokenPresenter.playWithPoints(true);
+        } else {
+            ApplinkUtil.navigateToAssociatedPage(getActivity(), actionButton.getApplink(),
+                    actionButton.getUrl(),
+                    TapTapTokenActivity.class);
+        }
+        if (TapTapConstants.TokenState.STATE_LOBBY.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
+            sendActionButtonEvent(TapTapAnalyticsTrackerUtil.ActionKeys.TAP_EGG_CLICK, actionButton.getText());
+        }
+        if (TapTapConstants.TokenState.STATE_EMPTY.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
+            sendActionButtonEvent(TapTapAnalyticsTrackerUtil.ActionKeys.EMPTY_STATE_CLICK, actionButton.getText());
+        }
     }
 
 

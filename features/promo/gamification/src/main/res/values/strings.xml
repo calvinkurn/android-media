@@ -34,5 +34,6 @@
     <string name="share_branch_link_body">Ayo main Tap Tap Mantap bareng %s &amp; raih hadiah menariknya! https://tokopedia.link/tap-tap-egg</string>
     <string name="share_branch_link_msg_title">Main Tap Tap &amp; Raih Berbagai Hadiah Menarik</string>
     <string name="share_via_label">Share via</string>
+    <string name="error_campaign_expired">Maaf Toppers, sesi bermain kamu telah habis. Silakan datang lagi lain waktu ya.</string>
 
 </resources>
