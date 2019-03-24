@@ -48,7 +48,10 @@ class FilterAdapter(private val filterClickedListener: OnFilterClickedListener,
             }
             allFilterList[holder.adapterPosition].isSelected = !isSelected
             notifyItemChanged(holder.adapterPosition)
-            filterClickedListener.onItemClicked(getOnlySelectedFilter())
+            filterClickedListener.onItemClicked(
+                    getOnlySelectedFilter(),
+                    allFilterList[holder.adapterPosition]
+            )
         }
     }
 
@@ -125,7 +128,7 @@ class FilterAdapter(private val filterClickedListener: OnFilterClickedListener,
     }
 
     interface OnFilterClickedListener {
-        fun onItemClicked(filters: List<FilterViewModel>)
+        fun onItemClicked(filters: List<FilterViewModel>, filter: FilterViewModel)
     }
 
     class Holder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
