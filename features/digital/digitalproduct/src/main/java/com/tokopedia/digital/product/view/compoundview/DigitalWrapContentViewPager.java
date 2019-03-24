@@ -12,6 +12,7 @@ import android.view.View;
  */
 public class DigitalWrapContentViewPager extends ViewPager {
     private View currentView;
+    private boolean canScrollHorizontal = true;
 
     public DigitalWrapContentViewPager(Context context) {
         super(context);
@@ -56,5 +57,14 @@ public class DigitalWrapContentViewPager extends ViewPager {
         } else {
             return super.onInterceptTouchEvent(ev);
         }
+    }
+
+    @Override
+    public boolean canScrollHorizontally(int direction) {
+        return canScrollHorizontal && super.canScrollHorizontally(direction);
+    }
+
+    public void setCanScrollHorizontal(boolean canScrollHorizontal) {
+        this.canScrollHorizontal = canScrollHorizontal;
     }
 }

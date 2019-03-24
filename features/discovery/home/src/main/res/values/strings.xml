@@ -51,4 +51,9 @@
     <string name="home_feed_retry_button">Coba Lagi</string>
 
     <string name="ticker_details_text">Info Lengkap</string>
+    <string name="message_retry_general_bu_widget">Klik ikon di samping buat coba lagi</string>
+    <string name="konten_gagal_ditampilkan">Isinya gagal ditampilkan</string>
+    <string name="message_empty_business_widget">Bagian ini belum ada isinya</string>
+    <string name="message_business_widget_empty_2">Geser ke sebelah dulu</string>
+    <string name="widget_gagal_ditampilkan">Widget gagal ditampilkan</string>
 </resources>

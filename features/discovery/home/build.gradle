@@ -118,6 +118,9 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 }
 
 apply from: '../../../publish_local.gradle'
