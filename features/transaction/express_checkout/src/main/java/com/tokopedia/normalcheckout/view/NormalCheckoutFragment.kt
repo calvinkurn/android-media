@@ -87,7 +87,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     lateinit var productId: String
     var notes: String? = null
     var quantity: Int = 0
-    var tempQuantity = quantity;
+    var tempQuantity = quantity
+    var isTradeIn = 0
     var selectedVariantId: String? = null
     var placeholderProductImage: String? = null
     @ProductAction
@@ -529,6 +530,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun doBuyOrPreorder() {
         tempQuantity = quantity
+        isTradeIn = 0
         addToCart(true, onFinish = { message: String?, cartId: String? ->
             onFinishAddToCart(message)
             selectedProductInfo?.run {
@@ -550,6 +552,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun onGotoTradeinShipment(deviceid: String) {
         tempQuantity = 1
+        isTradeIn = 1
         addToCart(true, onFinish = { message: String?, cartId: String? ->
             onFinishAddToCart(message)
             selectedProductInfo?.run {
@@ -571,6 +574,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun addToCart() {
         tempQuantity = quantity
+        isTradeIn = 0
         addToCart(false, onFinish = { message: String?, cartId: String? ->
             onFinishAddToCart(message)
             selectedProductInfo?.run {
@@ -604,6 +608,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             })
             .notes(notes)
             .quantity(tempQuantity)
+            .isTradein(isTradeIn)
             .shopId(shopId?.toInt() ?: 0)
             .trackerAttribution(trackerAttribution)
             .trackerListName(trackerListName)
