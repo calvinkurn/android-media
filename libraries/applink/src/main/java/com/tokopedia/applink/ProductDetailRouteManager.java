@@ -34,8 +34,8 @@ public class ProductDetailRouteManager {
 
     public static boolean isGoToOldProductDetail(Context context) {
         //TODO for next release
-//        return getRemoteConfig(context).getBoolean(RemoteConfigKey.MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL);
-        return false;
+        return getRemoteConfig(context).getBoolean(RemoteConfigKey.MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL);
+//        return false;
     }
 
     public static Intent getProductIntent(Context context, String productApplink) {
