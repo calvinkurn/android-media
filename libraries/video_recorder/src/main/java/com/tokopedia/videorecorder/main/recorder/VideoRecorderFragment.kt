@@ -92,9 +92,9 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        exceptionHandler {
-            cameraView.destroy()
-        }
+//        exceptionHandler {
+//            cameraView.destroy()
+//        }
     }
 
     private fun cameraListener(): CameraListener {

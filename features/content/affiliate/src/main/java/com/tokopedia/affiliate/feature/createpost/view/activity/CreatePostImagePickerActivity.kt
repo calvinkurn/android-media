@@ -50,7 +50,7 @@ class CreatePostImagePickerActivity : ImagePickerActivity() {
         if (isImageExist) {
             val dialog = Dialog(this, Dialog.Type.PROMINANCE)
             dialog.setTitle(getString(R.string.af_title_update_post))
-            dialog.setDesc(getString(R.string.af_message_update_post))
+            dialog.setDesc(getString(R.string.af_message_update_post, "foto"))
             dialog.setBtnCancel(getString(R.string.cancel))
             dialog.setBtnOk(getString(R.string.af_continue))
             dialog.setOnOkClickListener{
