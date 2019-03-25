@@ -2,6 +2,8 @@ package com.tokopedia.hotel.common.presentation
 
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.view.Menu
+import android.view.MenuItem
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.common.di.component.HotelComponent
@@ -29,10 +31,25 @@ abstract class HotelBaseActivity: BaseSimpleActivity() {
         getHotelComponent().inject(this)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menu?.clear()
+        // waiting for menu list from tribe
+        //        menuInflater.inflate(R.menu.some_menu, menu)
+        updateOptionMenuColorWhite(menu)
+        return shouldShowOptionMenu()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        // waiting for menu list from tribe
+        return super.onOptionsItemSelected(item)
+    }
+
     protected fun getHotelComponent(): HotelComponent {
         if (hotelComponent == null) {
             hotelComponent = HotelComponentInstance.getDigitalBrowseComponent(application)
         }
         return hotelComponent as HotelComponent
     }
+
+    abstract fun shouldShowOptionMenu(): Boolean
 }
