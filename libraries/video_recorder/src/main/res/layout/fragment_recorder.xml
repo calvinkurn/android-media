@@ -76,6 +76,18 @@
             android:clickable="true"
             android:focusable="true">
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/selector_photo_button"
+                android:padding="@dimen/dp_4" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/take_photo_button" />
+
             <ProgressBar
                 android:id="@+id/progress"
                 style="@style/ProgressBar.Tokopedia"
@@ -89,20 +101,6 @@
                 tools:visibility="visible"
                 android:layout_margin="0dp"
                 android:padding="0dp"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/dp_8"
-                android:background="@drawable/selector_photo_button"
-                android:padding="@dimen/dp_4" />
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/dp_8"
-                android:background="@android:color/transparent"
-                app:srcCompat="@drawable/take_photo_button" />
 
         </FrameLayout>
 
@@ -126,6 +124,7 @@
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:theme="@style/progressBarStyle"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_alignParentBottom="true"
         android:layout_height="@dimen/dp_8"/>
 
