@@ -1,6 +1,5 @@
 package com.tokopedia.loyalty.view.fragment;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.IntentService;
 import android.content.ClipData;
@@ -366,8 +365,10 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
     }
 
 
-    public static Fragment newInstance(PromoMenuData promoMenuData, String autoSelectCategoryId) {
-        Fragment fragment = new PromoListFragment();
+    public static Fragment newInstance(OnFragmentInteractionListener promoListActionListener,
+                                       PromoMenuData promoMenuData, String autoSelectCategoryId) {
+        PromoListFragment fragment = new PromoListFragment();
+        fragment.setPromoListActionListener(promoListActionListener);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_EXTRA_PROMO_MENU_DATA, promoMenuData);
         bundle.putString(ARG_EXTRA_AUTO_SELECT_FILTER_CATEGORY_ID, autoSelectCategoryId);
@@ -375,40 +376,13 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
         return fragment;
     }
 
+    private void setPromoListActionListener(OnFragmentInteractionListener promoListActionListener) {
+        this.actionListener = promoListActionListener;
+    }
+
     @Override
     protected String getScreenName() {
         return null;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        try {
-            this.actionListener = (OnFragmentInteractionListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        try {
-            this.actionListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        this.actionListener = null;
     }
 
     @Override

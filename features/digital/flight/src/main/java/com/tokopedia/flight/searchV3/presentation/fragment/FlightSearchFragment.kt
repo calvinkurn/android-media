@@ -125,8 +125,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     override fun onResume() {
         super.onResume()
-        flightSearchPresenter.initialize()
-
         flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, true)
     }
 
@@ -538,6 +536,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         fetchFlightSearchData()
     }
 
+    fun refreshData() {
+        flightSearchPresenter.initialize(true)
+        resetDateAndReload()
+    }
+
     private fun getNoFlightRouteDataViewModel(message: String): Visitable<FlightSearchAdapterTypeFactory> {
         val emptyResultViewModel = EmptyResultViewModel()
         emptyResultViewModel.iconRes = R.drawable.ic_flight_empty_state
@@ -711,6 +714,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         flightSearchPresenter.resetCounterCall()
 
         searchFlightData()
+        flightSearchPresenter.fetchCombineData(flightSearchPassData)
     }
 
     private fun onResetFilterClicked() {

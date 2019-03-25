@@ -87,5 +87,7 @@ interface TopChatContract {
                                    onError: (Throwable) -> Unit,
                                    onSuccessGetShopFollowingStatus: (Boolean) -> Unit)
 
+        fun copyVoucherCode(fromUid: String?, replyId: String, blastId: String, attachmentId: String, replyTime: String?)
+
     }
 }

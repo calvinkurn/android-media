@@ -266,6 +266,9 @@ searchProduct(params: $params) {
         }
         applinks
       }
+      template {
+        is_ad
+      }
     }
    headlineAds: displayAdsV3(displayParams: $headline_params) {
         status {
