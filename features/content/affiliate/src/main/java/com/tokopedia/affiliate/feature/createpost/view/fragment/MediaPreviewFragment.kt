@@ -91,9 +91,11 @@ class MediaPreviewFragment : BaseDaggerFragment() {
 
         if (viewModel.completeImageList.first().type == MediaType.VIDEO) {
             btnPlay.visibility = View.VISIBLE
+            imageAdapter.setList(imageList, PostImageAdapter.VIDEO)
+        } else {
+            imageAdapter.setList(imageList)
         }
 
-        imageAdapter.setList(imageList)
         mediaViewPager.adapter = imageAdapter
         mediaViewPager.offscreenPageLimit = imageAdapter.count
         tabLayout.setupWithViewPager(mediaViewPager)

@@ -74,6 +74,10 @@ class PostImageAdapter(var clickListener: ImageClickListener?) : PagerAdapter() 
 
     fun setList(imageList: ArrayList<String>, mediaType: String) {
         this.mediaType = mediaType
+        setList(imageList)
+    }
+
+    fun setList(imageList: ArrayList<String>) {
         this.imageList.clear()
         this.imageList.addAll(imageList)
         notifyDataSetChanged()
