@@ -97,7 +97,7 @@ public class CodAnalytics extends LogisticAnalytics {
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_BAYAR_DI_TEMPAT,
-                EventLabel.NOT_SUCCESS_INELIGIBLE
+                ConstantLogisticAnalytics.EventLabel.NOT_SUCCESS_INELIGIBLE
         );
     }
 
@@ -106,7 +106,7 @@ public class CodAnalytics extends LogisticAnalytics {
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_BAYAR_DI_TEMPAT,
-                EventLabel.NOT_SUCCESS_INCOMPLETE
+                ConstantLogisticAnalytics.EventLabel.NOT_SUCCESS_INCOMPLETE
         );
     }
 
@@ -115,7 +115,7 @@ public class CodAnalytics extends LogisticAnalytics {
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_BAYAR_DI_TEMPAT,
-                EventLabel.SUCCESS_ELIGIBLE
+                ConstantLogisticAnalytics.EventLabel.SUCCESS_ELIGIBLE
         );
     }
 
