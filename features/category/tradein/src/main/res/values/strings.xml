@@ -10,7 +10,7 @@
     <string name="text_check_functionality">Mulai Cek Fungsi</string>
     <string name="noclick">Action-No-Click</string>
     <string name="tukar_tambah_sekarang_juga">Tukar tambah sekarang juga!</string>
-    <string name="text_permission_description">Dengan klik <b>setuju</b>, kamu memberikan izin untuk :\n• Model perangkat dan IME.
+    <string name="text_permission_description">Dengan klik <b>setuju</b>, kamu memberikan izin untuk :\n• Model perangkat dan IMEI.
         \n• Menyalakan WiFi
         \n• Akses accelero meter</string>
     <string name="tradein_tnc">1. Tukar Tambah adalah fitur yang memungkinkan pembeli melakukan pembelian handphone baru dengan cara menukar handphone lama miliknya. Fitur ini bisa diakses dari situs resmi atau aplikasi Tokopedia.
@@ -38,6 +38,7 @@
     <string name="total_price">Total Harga Barang</string>
     <string name="buy_now">Beli Sekarang</string>
     <string name="do_ktp">Lanjut Foto KTP</string>
+    <string name="available_at">Khusus Jabodetabek</string>
     <string name="harga_tnc_kyc"><![CDATA[Dengan lanjut foto KTP, Kamu menyetujui Syarat & Ketentuan tukar tambah Tokopedia.]]></string>
     <string name="harga_tnc"><![CDATA[Dengan klik beli sekarang, Kamu menyetujui Syarat & Ketentuan tukar tambah Tokopedia.]]></string>
 </resources>

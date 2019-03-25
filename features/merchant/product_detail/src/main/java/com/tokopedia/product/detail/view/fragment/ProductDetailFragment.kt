@@ -307,8 +307,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener {
-            if (tv_trade_in_promo != null)
+            if (tv_trade_in_promo != null) {
                 tv_trade_in_promo.visible()
+                tv_available_at?.visible()
+            }
         }
         LocalBroadcastManager.getInstance(context!!).registerReceiver(tradeInBroadcastReceiver, IntentFilter(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE))
 
