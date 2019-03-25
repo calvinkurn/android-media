@@ -172,7 +172,7 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
             filterBtn.hide(false)
             resetCursor()
             adapter.clearAllElements()
-            presenter.fetchDataWithoutCache()
+            presenter.fetchData()
         }
         filterBtn.hide(false)
         filterBtn.setButton1OnClickListener {
@@ -214,7 +214,7 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
                                 .updateFilterId(NotifFilterViewModel.FILTER_ALL_ID)
                     }
                     setMenuSelected(itemMenus.title)
-                    presenter.fetchDataWithoutCache()
+                    presenter.fetchData()
                     menus.dismiss()
                 }
 

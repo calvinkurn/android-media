@@ -33,7 +33,7 @@ class NotifCenterPresenter @Inject constructor(private val notifCenterUseCase: N
 
     override fun fetchDataWithoutCache() {
         view.showLoading()
-        notifCenterUseCase.executeNoCache(
+        notifCenterUseCase.execute(
                 NotifCenterUseCase.getRequestParams(filterId, lastNotifId),
                 NotifCenterSubscriber(view, dateUtil)
         )

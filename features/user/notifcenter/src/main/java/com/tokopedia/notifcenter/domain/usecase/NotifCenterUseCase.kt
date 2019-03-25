@@ -24,22 +24,8 @@ class NotifCenterUseCase @Inject constructor(@ApplicationContext val context: Co
                                              val graphqlUseCase: GraphqlUseCase) {
 
     fun execute(variables: HashMap<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
-        val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+        val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
                 .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.`val`())
-                .setSessionIncluded(true)
-                .build()
-        val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_notif_center)
-        val graphqlRequest = GraphqlRequest(query, NotifCenterPojo::class.java, variables, false)
-
-        graphqlUseCase.setCacheStrategy(graphqlCacheStrategy)
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.execute(subscriber)
-    }
-
-    fun executeNoCache(variables: HashMap<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
-        val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
-                .setExpiryTime(MINUTE_5)
                 .setSessionIncluded(true)
                 .build()
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_notif_center)
