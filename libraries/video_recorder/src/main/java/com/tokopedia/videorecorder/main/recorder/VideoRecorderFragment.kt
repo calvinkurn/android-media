@@ -56,8 +56,8 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        cameraVideoView.mode = Mode.VIDEO
-        cameraVideoView.addCameraListener(cameraListener())
+        cameraView.mode = Mode.VIDEO
+        cameraView.addCameraListener(cameraListener())
 
         //set max progress value
         progressBar.max = DURATION_MAX
@@ -80,21 +80,21 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
     override fun onResume() {
         super.onResume()
         exceptionHandler {
-            cameraVideoView.open()
+            cameraView.open()
         }
     }
 
     override fun onPause() {
         super.onPause()
         exceptionHandler {
-            cameraVideoView.close()
+            cameraView.close()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         exceptionHandler {
-            cameraVideoView.destroy()
+            cameraView.destroy()
         }
     }
 
@@ -118,22 +118,22 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
         var countDownMills = DURATION_MAX.toLong()
         txtDuration.text = getString(R.string.vidpick_duration_default)
 
-        if (cameraVideoView.isTakingVideo) {
+        if (cameraView.isTakingVideo) {
             vwRecord.hide()
             btnFlip.show()
-            cameraVideoView.stopVideo()
+            cameraView.stopVideo()
             timer.cancel()
         } else {
             btnFlip.hide()
             vwRecord.show()
             val file = FileUtils.videoPath(FileUtils.RESULT_DIR)
-            cameraVideoView.takeVideoSnapshot(file, DURATION_MAX)
+            cameraView.takeVideoSnapshot(file, DURATION_MAX)
             //progress and duration countdown
             timer = Timer()
             timer.schedule(object : TimerTask() {
                 override fun run() {
-                    if (cameraVideoView != null) {
-                        if (cameraVideoView.isTakingVideo) {
+                    if (cameraView != null) {
+                        if (cameraView.isTakingVideo) {
                             activity?.runOnUiThread {
                                 val minutes = TimeUnit.MILLISECONDS.toMinutes(countDownMills)
                                 val seconds = TimeUnit.MILLISECONDS.toSeconds(countDownMills) - TimeUnit.MINUTES.toSeconds(minutes)
@@ -149,9 +149,9 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
     }
 
     private fun initCameraFlash() {
-        if (cameraVideoView == null || cameraVideoView.cameraOptions == null) return
+        if (cameraView == null || cameraView.cameraOptions == null) return
 
-        val supportedFlashes = cameraVideoView.cameraOptions!!.supportedFlash
+        val supportedFlashes = cameraView.cameraOptions!!.supportedFlash
         for (flash: Flash in supportedFlashes) {
             if (flash != Flash.TORCH) {
                 flashList.add(flash)
@@ -172,13 +172,13 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
             flash = flashList[flashIndex]
         }
 
-        cameraVideoView.set(flash)
+        cameraView.set(flash)
         setUIFlashCamera(flash.ordinal)
     }
 
     private fun cameraSwitchFacing() {
-        if (cameraVideoView.isTakingVideo) return
-        cameraVideoView.toggleFacing()
+        if (cameraView.isTakingVideo) return
+        cameraView.toggleFacing()
     }
 
     private fun setUIFlashCamera(flashEnum: Int) {

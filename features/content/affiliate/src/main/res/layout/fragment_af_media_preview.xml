@@ -27,13 +27,13 @@
 
             <ImageButton
                 android:id="@+id/btnPlay"
-                android:layout_width="@dimen/dp_48"
-                android:layout_height="@dimen/dp_48"
+                android:layout_width="@dimen/dp_56"
+                android:layout_height="@dimen/dp_56"
                 android:layout_centerInParent="true"
                 android:layout_margin="@dimen/dp_8"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="@dimen/dp_8"
-                app:srcCompat="@drawable/ic_video_play_button" />
+                android:src="@drawable/ic_video_play_button" />
 
 
         </RelativeLayout>
