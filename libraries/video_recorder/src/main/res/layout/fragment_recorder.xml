@@ -34,8 +34,8 @@
 
             <View
                 android:id="@+id/vwRecord"
-                android:layout_width="@dimen/dp_12"
-                android:layout_height="@dimen/dp_12"
+                android:layout_width="@dimen/dp_10"
+                android:layout_height="@dimen/dp_10"
                 android:visibility="gone"
                 tools:visibility="visible"
                 android:background="@drawable/ic_record"/>
@@ -76,15 +76,31 @@
             android:clickable="true"
             android:focusable="true">
 
+            <ProgressBar
+                android:id="@+id/progress"
+                style="@style/ProgressBar.Tokopedia"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:progressDrawable="@drawable/circular_progress_bar_green"
+                android:max="100"
+                android:progress="0"
+                android:rotation="-90"
+                tools:progress="55"
+                tools:visibility="visible"
+                android:layout_margin="0dp"
+                android:padding="0dp"/>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_margin="@dimen/dp_8"
                 android:background="@drawable/selector_photo_button"
                 android:padding="@dimen/dp_4" />
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_margin="@dimen/dp_8"
                 android:background="@android:color/transparent"
                 app:srcCompat="@drawable/take_photo_button" />
 

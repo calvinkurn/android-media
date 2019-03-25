@@ -91,6 +91,7 @@ class MediaPreviewFragment : BaseDaggerFragment() {
 
         if (viewModel.completeImageList.first().type == MediaType.VIDEO) {
             btnPlay.visibility = View.VISIBLE
+            tabLayout.visibility = View.GONE
             imageAdapter.setList(imageList, PostImageAdapter.VIDEO)
         } else {
             imageAdapter.setList(imageList)

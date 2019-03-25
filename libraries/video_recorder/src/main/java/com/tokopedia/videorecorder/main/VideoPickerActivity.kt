@@ -236,6 +236,7 @@ open class VideoPickerActivity: BaseSimpleActivity(),
     override fun onVideoTaken(filePath: String) {
         if (filePath.isNotEmpty()) {
             val uriFile = Uri.parse(filePath)
+            isVideoSourcePicker = false
             videoPath = filePath
             onPreviewVideoVisible()
             videoPreview.setVideoURI(uriFile)

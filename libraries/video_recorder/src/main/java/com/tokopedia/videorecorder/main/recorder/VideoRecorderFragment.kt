@@ -61,7 +61,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
         cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER)
 
         //set max progress value
-        progressBar.max = DURATION_MAX
+        progress.max = DURATION_MAX
 
         //flip button
         btnFlip.setOnClickListener { cameraSwitchFacing() }
@@ -115,7 +115,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
 
     private fun recording() {
         //set default value
-        progressBar.progress = 0
+        progress.progress = 0
         var countDownMills = DURATION_MAX.toLong()
         txtDuration.text = getString(R.string.vidpick_duration_default)
 
@@ -139,7 +139,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
                                 val minutes = TimeUnit.MILLISECONDS.toMinutes(countDownMills)
                                 val seconds = TimeUnit.MILLISECONDS.toSeconds(countDownMills) - TimeUnit.MINUTES.toSeconds(minutes)
                                 txtDuration.text = getString(R.string.vidpick_duration_format, formatter(minutes), formatter(seconds))
-                                progressBar.progress += 1000
+                                progress.progress += 1000
                                 countDownMills -= 1000
                             }
                         }
