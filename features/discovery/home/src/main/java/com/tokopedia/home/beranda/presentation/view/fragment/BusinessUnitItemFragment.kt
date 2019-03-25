@@ -113,7 +113,7 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
         HomePageTracking.eventEnhancedClickHomeWidget(
                 activity,
                 element.id.toString(),
-                String.format("/ - p%d - bu widget - %s", positionWidget.toString(), nameTab.toLowerCase()),
+                String.format("/ - p%s - bu widget - %s", positionWidget.toString(), nameTab.toLowerCase()),
                 element.name,
                 element.imageUrl,
                 adapter.data.indexOf(element).toString(),
@@ -177,7 +177,7 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
         HomePageTracking.eventEnhancedImpressionHomeWidget(
                 trackingQueue,
                 element.id.toString(),
-                String.format("/ - p%d - bu widget - %s", positionWidget.toString(), nameTab.toLowerCase()),
+                String.format("/ - p%s - bu widget - %s", positionWidget.toString(), nameTab.toLowerCase()),
                 element.name,
                 element.imageUrl,
                 position.toString(),
