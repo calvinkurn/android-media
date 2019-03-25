@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -21,6 +22,7 @@ import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.fragment.HomepageFragment;
+import com.tokopedia.tokopoints.view.fragment.TokoPointsHomeFragmentNew;
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
@@ -36,13 +38,15 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
     protected void onCreate(Bundle savedInstanceState) {
         mUserSession = new UserSession(getApplicationContext());
         super.onCreate(savedInstanceState);
+        toolbar.setVisibility(View.GONE);
         updateTitle(getString(R.string.tp_title_tokopoints));
     }
 
     @Override
     protected Fragment getNewFragment() {
+        //TODO firebase configuration to on-off new design
         if (mUserSession.isLoggedIn()) {
-            return HomepageFragment.newInstance();
+            return TokoPointsHomeFragmentNew.newInstance();
         } else {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
             return null;

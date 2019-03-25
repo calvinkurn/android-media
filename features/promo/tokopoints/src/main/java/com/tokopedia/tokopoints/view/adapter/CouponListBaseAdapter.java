@@ -43,6 +43,7 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
     private CatalogPurchaseRedemptionPresenter mPresenter;
     private Context mContext;
     private int mCategoryId = 0;
+    private boolean mIsStackingEnabled;
 
     public class ViewHolder extends BaseAdapter.BaseVH {
         TextView label, value, tvMinTxnValue, tvMinTxnLabel;
@@ -159,11 +160,16 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
         variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID_COUPON, mCategoryId);
         variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, 0);
 
-        GraphqlRequest graphqlRequestMain = new GraphqlRequest(GraphqlHelper.loadRawString(mContext.getResources(), R.raw.tp_gql_coupon_listing),
-                TokoPointPromosEntity.class,
-                variablesMain, false);
-        graphqlUseCase.addRequest(graphqlRequestMain);
+        String query;
 
+        if (mIsStackingEnabled) {
+            query = GraphqlHelper.loadRawString(mContext.getResources(), R.raw.tp_gql_coupon_listing_stack);
+        } else {
+            query = GraphqlHelper.loadRawString(mContext.getResources(), R.raw.tp_gql_coupon_listing);
+        }
+
+        GraphqlRequest graphqlRequestMain = new GraphqlRequest(query, TokoPointPromosEntity.class, variablesMain, false);
+        graphqlUseCase.addRequest(graphqlRequestMain);
 
         graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
@@ -228,7 +234,7 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
             bundle.putString(CommonConstant.EXTRA_COUPON_CODE, item.getCode());
             holder.imgBanner.getContext().startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
 
-            sendClickEvent(holder.imgBanner.getContext(),item ,holder.getAdapterPosition());
+            sendClickEvent(holder.imgBanner.getContext(), item, holder.getAdapterPosition());
         });
 
 
@@ -249,7 +255,7 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
                         int seconds = (int) (l / 1000) % 60;
                         int minutes = (int) ((l / (1000 * 60)) % 60);
                         int hours = (int) ((l / (1000 * 60 * 60)) % 24);
-                        holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds))  ;
+                        holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
                         holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.medium_green));
                         holder.progressTimer.setProgress((int) l / 1000);
                         holder.value.setPadding(holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),

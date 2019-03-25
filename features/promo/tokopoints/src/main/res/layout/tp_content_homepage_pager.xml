@@ -7,12 +7,13 @@
 
     <com.tokopedia.design.component.Tabs
         android:id="@+id/tab_layout_promos"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tabIndicatorColor="@color/tkpd_main_green"
-        app:tabMode="scrollable"
+        app:tabMode="fixed"
+        app:tabGravity="fill"
         app:tabSelectedTextColor="@color/tkpd_main_green"
         app:tabTextAppearance="@style/TokoPointsTabs"
         app:tabTextColor="@color/black_38">
@@ -20,12 +21,12 @@
         <android.support.design.widget.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/tp_label_exchange_points" />
+            android:text="Explore" />
 
         <android.support.design.widget.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/tp_label_my_coupon" />
+            android:text="Kupon Saya" />
 
     </com.tokopedia.design.component.Tabs>
 
@@ -33,9 +34,9 @@
         android:id="@+id/text_count"
         android:layout_width="25dp"
         android:layout_height="25dp"
+        android:layout_marginTop="@dimen/tp_margin_xsmall"
         android:layout_marginEnd="@dimen/tp_margin_medium"
         android:layout_marginRight="@dimen/tp_margin_medium"
-        android:layout_marginTop="@dimen/tp_margin_xsmall"
         android:background="@drawable/circle_green"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
