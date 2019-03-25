@@ -30,13 +30,32 @@ public class ShipmentDataConverter {
     public RecipientAddressModel getRecipientAddressModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
         if (cartShipmentAddressFormData.getGroupAddress() != null && cartShipmentAddressFormData.getGroupAddress().size() > 0) {
             UserAddress userAddress = cartShipmentAddressFormData.getGroupAddress().get(0).getUserAddress();
-            return createRecipientAddressModel(userAddress);
+            boolean isTradeIn = false;
+            if (cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop() != null &&
+                    cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop().size() > 0) {
+                for (GroupShop groupShop : cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop()) {
+                    if (groupShop.getProducts() != null && groupShop.getProducts().size() > 0) {
+                        boolean foundData = false;
+                        for (Product product : groupShop.getProducts()) {
+                            if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
+                                isTradeIn = true;
+                                foundData = true;
+                                break;
+                            }
+                        }
+                        if (foundData) break;
+                    }
+                }
+            }
+            return createRecipientAddressModel(userAddress, isTradeIn);
         }
         return null;
     }
 
     public RecipientAddressModel getRecipientAddressModel(UserAddress userAddress) {
-        return createRecipientAddressModel(userAddress);
+        // Trade in is only available on OCS.
+        // OCS is not available to send to multiple address
+        return createRecipientAddressModel(userAddress, false);
     }
 
     public ShipmentDonationModel getShipmentDonationModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
@@ -48,7 +67,7 @@ public class ShipmentDataConverter {
     }
 
     @NonNull
-    private RecipientAddressModel createRecipientAddressModel(UserAddress userAddress) {
+    private RecipientAddressModel createRecipientAddressModel(UserAddress userAddress, boolean isTradeIn) {
         RecipientAddressModel recipientAddress = new RecipientAddressModel();
 
         recipientAddress.setId(String.valueOf(userAddress.getAddressId()));
@@ -73,6 +92,7 @@ public class ShipmentDataConverter {
 
         recipientAddress.setSelected(userAddress.getStatus() == PRIME_ADDRESS);
         recipientAddress.setCornerId(String.valueOf(userAddress.getCornerId()));
+        recipientAddress.setTradeIn(isTradeIn);
 
         return recipientAddress;
     }
@@ -207,6 +227,12 @@ public class ShipmentDataConverter {
         cartItemModel.setError(product.isError());
         cartItemModel.setErrorMessage(product.getErrorMessage());
         cartItemModel.setErrorMessageDescription(product.getErrorMessageDescription());
+
+        if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
+            cartItemModel.setValidTradeIn(true);
+            cartItemModel.setOldDevicePrice(product.getTradeInInfo().getOldDevicePrice());
+            cartItemModel.setNewDevicePrice(product.getTradeInInfo().getNewDevicePrice());
+        }
 
         if (product.getPurchaseProtectionPlanData() != null) {
             PurchaseProtectionPlanData ppp = product.getPurchaseProtectionPlanData();
