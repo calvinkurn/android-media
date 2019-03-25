@@ -8,7 +8,7 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingFirstCodeMapper
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplacePresenter
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListPresenter
 import dagger.Module
@@ -31,7 +31,7 @@ class PromoCheckoutListModule {
 
     @PromoCheckoutListScope
     @Provides
-    fun provideMarketplacePresenter(@PromoCheckoutQualifier checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase, checkPromoStackingCodeMapper: CheckPromoStackingFirstCodeMapper) : PromoCheckoutListMarketplacePresenter {
+    fun provideMarketplacePresenter(@PromoCheckoutQualifier checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase, checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper) : PromoCheckoutListMarketplacePresenter {
         return PromoCheckoutListMarketplacePresenter(checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper)
     }
 

@@ -161,7 +161,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
 
                     @Override
                     public void onResetPromoDiscount() {
-                        actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData(), getAdapterPosition(), false);
+                        actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode(), getAdapterPosition(), false);
                     }
 
                     @Override
@@ -171,7 +171,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
 
                     @Override
                     public void onDisablePromoDiscount() {
-                        actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData(), getAdapterPosition(), true);
+                        actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode(), getAdapterPosition(), true);
                     }
                 });
             }

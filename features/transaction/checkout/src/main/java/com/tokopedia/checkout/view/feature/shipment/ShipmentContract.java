@@ -129,6 +129,10 @@ public interface ShipmentContract {
         void showToastFailedTickerPromo(String text);
 
         void stopTrace();
+
+        void onSuccessClearPromoStack(int shopIndex);
+
+        void onFailedClearPromoStack(boolean ignoreAPIResponse, int shopIndex);
     }
 
     interface AnalyticsActionListener {
@@ -289,6 +293,8 @@ public interface ShipmentContract {
         void editAddressPinpoint(String latitude, String longitude, ShipmentCartItemModel shipmentCartItemModel, LocationPass locationPass);
 
         void cancelAutoApplyCoupon(String variant);
+
+        void cancelAutoApplyPromoStack(int shopIndex, String promoCode, boolean ignoreAPIResponse);
 
         void changeShippingAddress(RecipientAddressModel recipientAddressModel, boolean isOneClickShipment);
 

@@ -10,20 +10,22 @@ data class ClashingInfoDetailUiModel(
         var clashMessage: String = "",
         var clashReason: String = "",
         var isClashedPromos: Boolean = false,
-        var option: List<VoucherOrdersItemUiModel> = emptyList()
+        var options: ArrayList<ClashingVoucherOptionUiModel> = ArrayList()
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),
             parcel.readByte() != 0.toByte(),
-            parcel.createTypedArrayList(VoucherOrdersItemUiModel)) {
-    }
+            arrayListOf<ClashingVoucherOptionUiModel>().apply {
+                parcel.readList(this, ClashingVoucherOptionUiModel::class.java.classLoader)
+            }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(clashMessage)
         parcel.writeString(clashReason)
         parcel.writeByte(if (isClashedPromos) 1 else 0)
-        parcel.writeTypedList(option)
+        parcel.writeList(options)
     }
 
     override fun describeContents(): Int {

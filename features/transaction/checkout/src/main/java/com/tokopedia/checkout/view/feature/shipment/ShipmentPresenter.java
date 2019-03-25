@@ -33,7 +33,9 @@ import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormOneClickShipe
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
+import com.tokopedia.checkout.view.feature.cartlist.subscriber.ClearCacheAutoApplySubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.CheckPromoCodeFromSelectedCourierSubscriber;
+import com.tokopedia.checkout.view.feature.shipment.subscriber.ClearShipmentCacheAutoApplySubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetRatesSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddressFormPrepareCheckoutSubscriber;
@@ -51,7 +53,8 @@ import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase;
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingFinalCodeMapper;
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
@@ -125,7 +128,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     // private final CheckPromoCodeFinalUseCase checkPromoCodeFinalUseCase;
     private final CheckPromoStackingCodeFinalUseCase checkPromoStackingCodeFinalUseCase;
-    private final CheckPromoStackingFinalCodeMapper checkPromoStackingFinalCodeMapper;
+    private final CheckPromoStackingCodeMapper checkPromoStackingCodeMapper;
     private final CheckoutUseCase checkoutUseCase;
     private final CompositeSubscription compositeSubscription;
     private final GetThanksToppayUseCase getThanksToppayUseCase;
@@ -140,6 +143,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final GetCourierRecommendationUseCase getCourierRecommendationUseCase;
     private final ShippingCourierConverter shippingCourierConverter;
     private final CodCheckoutUseCase codCheckoutUseCase;
+    private final ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
     private final UserSessionInterface userSessionInterface;
     private final IVoucherCouponMapper voucherCouponMapper;
 
@@ -166,7 +170,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Inject
     public ShipmentPresenter(CheckPromoStackingCodeFinalUseCase checkPromoStackingCodeFinalUseCase,
-                             CheckPromoStackingFinalCodeMapper checkPromoStackingFinalCodeMapper,
+                             CheckPromoStackingCodeMapper checkPromoStackingCodeMapper,
                              CompositeSubscription compositeSubscription,
                              CheckoutUseCase checkoutUseCase,
                              GetThanksToppayUseCase getThanksToppayUseCase,
@@ -180,6 +184,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              GetRatesUseCase getRatesUseCase,
                              GetCourierRecommendationUseCase getCourierRecommendationUseCase,
                              CodCheckoutUseCase codCheckoutUseCase,
+                             ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
                              ShippingCourierConverter shippingCourierConverter,
                              ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener,
                              IVoucherCouponMapper voucherCouponMapper,
@@ -187,7 +192,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection,
                              CodAnalytics codAnalytics) {
         this.checkPromoStackingCodeFinalUseCase = checkPromoStackingCodeFinalUseCase;
-        this.checkPromoStackingFinalCodeMapper = checkPromoStackingFinalCodeMapper;
+        this.checkPromoStackingCodeMapper = checkPromoStackingCodeMapper;
         this.compositeSubscription = compositeSubscription;
         this.checkoutUseCase = checkoutUseCase;
         this.getThanksToppayUseCase = getThanksToppayUseCase;
@@ -200,6 +205,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.saveShipmentStateUseCase = saveShipmentStateUseCase;
         this.getRatesUseCase = getRatesUseCase;
         this.getCourierRecommendationUseCase = getCourierRecommendationUseCase;
+        this.clearCacheAutoApplyStackUseCase = clearCacheAutoApplyStackUseCase;
         this.shippingCourierConverter = shippingCourierConverter;
         this.voucherCouponMapper = voucherCouponMapper;
         this.analyticsActionListener = shipmentAnalyticsActionListener;
@@ -696,7 +702,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                     @Override
                     public void onNext(GraphqlResponse graphqlResponse) {
-                        ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingFinalCodeMapper.call(graphqlResponse);
+                        checkPromoStackingCodeMapper.setFinal(true);
+                        ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
                         // Todo : hapus jika response status tidak string kosong lagi!
                         // if (!responseGetPromoStack.getStatus().equalsIgnoreCase("OK") || TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
                         if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
@@ -1213,6 +1220,17 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         requestParams.putAllString(params);
 
         return requestParams;
+    }
+
+    @Override
+    public void cancelAutoApplyPromoStack(int shopIndex, String promoCode, boolean ignoreAPIResponse) {
+        if (!TextUtils.isEmpty(promoCode)) {
+            if (!ignoreAPIResponse) {
+                getView().showLoading();
+            }
+            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCode);
+            clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearShipmentCacheAutoApplySubscriber(getView(), this, shopIndex, ignoreAPIResponse));
+        }
     }
 
     @Override

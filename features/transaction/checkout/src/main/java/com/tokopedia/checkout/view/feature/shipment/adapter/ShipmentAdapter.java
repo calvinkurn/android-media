@@ -17,6 +17,7 @@ import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData
 import com.tokopedia.checkout.view.common.viewholder.CartPromoSuggestionViewHolder;
 import com.tokopedia.checkout.view.common.viewholder.CartVoucherPromoViewHolder;
 import com.tokopedia.checkout.view.common.viewholder.ShipmentSellerCashbackViewHolder;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentFragment;
 import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
@@ -708,6 +709,19 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(position);
     }
 
+    public void updateItemPromoStackVoucher(PromoStackingData promoStackingData) {
+        for (int i = 0; i < shipmentDataList.size(); i++) {
+            Object object = shipmentDataList.get(i);
+            if (object instanceof PromoStackingData) {
+                shipmentDataList.set(i, promoStackingData);
+                notifyItemChanged(i);
+            } else if (object instanceof CartPromoSuggestion) {
+                ((CartPromoSuggestion) object).setVisible(false);
+                notifyItemChanged(i);
+            }
+        }
+    }
+
     public void updatePromoStack(DataUiModel dataUiModel) {
         if (shipmentCostModel != null) {
             if (promoGlobalStackData != null) {
@@ -1013,5 +1027,12 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public List<ShipmentCartItemModel> getShipmentCartItemModelList() {
         return shipmentCartItemModelList;
+    }
+
+    public ShipmentCartItemModel getShipmentCartItemModelDataByIndex(int index) {
+        if (shipmentCartItemModelList.get(index) != null) {
+            return shipmentCartItemModelList.get(index);
+        }
+        return null;
     }
 }

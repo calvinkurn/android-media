@@ -4,21 +4,22 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.FragmentManager
+import android.support.design.widget.CoordinatorLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.design.base.BaseToaster
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
@@ -26,8 +27,11 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherViewUsed
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
+import com.tokopedia.merchantvoucher.FileUtils
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam
-import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
+import com.tokopedia.promocheckout.common.domain.model.promostacking.response.ResponseGetPromoStackFirst
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.shop.common.di.ShopCommonModule
 import javax.inject.Inject
@@ -44,10 +48,16 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     private lateinit var rvVoucherList: RecyclerView
     private lateinit var buttonUse: TextView
     private lateinit var textInputCoupon: EditText
+    private lateinit var layoutMerchantVoucher: CoordinatorLayout
+    private lateinit var merchantVoucherContainer: LinearLayout
+    private lateinit var errorContainer: LinearLayout
+    private lateinit var pbLoading: ProgressBar
 
     private var checkPromoFirstStepParam: CheckPromoFirstStepParam? = null
     private var shopId: Int = 0
     private var cartString: String = ""
+
+    var bottomsheetView: View? = null
 
     @Inject
     lateinit var presenter: MerchantVoucherListBottomsheetPresenter
@@ -55,7 +65,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     lateinit var actionListener: ActionListener
 
     interface ActionListener {
-        fun onClashCheckPromoFirstStep()
+        fun onClashCheckPromo(clashingInfoDetailUiModel: ClashingInfoDetailUiModel)
         fun onSuccessCheckPromoFirstStep(promoData: ResponseGetPromoStackUiModel)
         fun onErrorCheckPromoFirstStep(message: String)
     }
@@ -80,6 +90,8 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     }
 
     override fun initView(view: View) {
+        bottomsheetView = view
+
         getArgumentsValue()
 
         merchantVoucherListBottomSheetAdapter = MerchantVoucherListBottomSheetAdapter(this)
@@ -91,9 +103,13 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         progressDialog = ProgressDialog(activity)
         progressDialog?.setMessage(getString(R.string.title_loading))
 
+        layoutMerchantVoucher = view.findViewById(R.id.layout_merchant_voucher)
         rvVoucherList = view.findViewById(R.id.rvVoucherList)
         buttonUse = view.findViewById(R.id.buttonUse)
         textInputCoupon = view.findViewById(R.id.textInputCoupon)
+        merchantVoucherContainer = view.findViewById(R.id.merchant_voucher_container)
+        errorContainer = view.findViewById(R.id.error_container)
+        pbLoading = view.findViewById(R.id.pb_loading)
 
         loadData()
 
@@ -109,6 +125,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     }
 
     fun loadData() {
+        showProgressLoading()
         presenter.clearCache()
         presenter.getVoucherList(shopId.toString(), 0)
     }
@@ -121,7 +138,11 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         return getString(R.string.merchant_bottomsheet_title)
     }
 
-    override fun showProgressLoading() {
+    override fun showLoadingDialog() {
+        if (context != null) {
+            val inputMethodManager = context!!.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.windowToken, 0);
+        }
         if (progressDialog == null) {
             progressDialog = ProgressDialog(activity)
             progressDialog?.setCancelable(false)
@@ -133,10 +154,22 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         progressDialog?.show()
     }
 
-    override fun hideProgressLoading() {
+    override fun hideLoadingDialog() {
         if (progressDialog != null) {
             progressDialog!!.dismiss()
         }
+    }
+
+    override fun showProgressLoading() {
+        merchantVoucherContainer.visibility = View.GONE
+        errorContainer.visibility = View.GONE
+        pbLoading.visibility = View.VISIBLE
+    }
+
+    override fun hideProgressLoading() {
+        errorContainer.visibility = View.GONE
+        pbLoading.visibility = View.GONE
+        merchantVoucherContainer.visibility = View.VISIBLE
     }
 
     override fun isOwner(): Boolean {
@@ -192,12 +225,25 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     }
 
     override fun onErrorGetMerchantVoucherList(e: Throwable) {
-        dismiss()
+        var message = ErrorHandler.getErrorMessage(context, e)
+        if (TextUtils.isEmpty(message)) {
+            message = "Terjadi kesalahan. Ulangi beberapa saat lagi"
+        }
+        NetworkErrorHelper.showEmptyState(activity, errorContainer, message
+        ) {
+            errorContainer.visibility = View.GONE
+            loadData()
+        }
+
     }
 
     override fun onErrorCheckPromoFirstStep(message: String) {
-        dismiss()
-        actionListener.onErrorCheckPromoFirstStep(message)
+//        var messageInfo = message
+//        if (TextUtils.isEmpty(messageInfo)) {
+//            messageInfo = "Terjadi kesalahan. Ulangi beberapa saat lagi."
+//        }
+//        ToasterError.make(layoutMerchantVoucher, messageInfo, ToasterError.LENGTH_SHORT).show()
+        showClashingDummy()
     }
 
     override fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackUiModel) {
@@ -207,8 +253,16 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
 
     override fun onClashCheckPromoFirstStep() {
         // Close merchant voucher bottomsheet, show clash bottomsheet
-        dismiss()
-        actionListener.onClashCheckPromoFirstStep()
+//        dismiss()
+        showClashingDummy()
+    }
+
+    private fun showClashingDummy() {
+        val mapper = CheckPromoStackingCodeMapper()
+        val gson = Gson()
+        var responseGetPromoStackFirst = gson.fromJson(FileUtils().readRawTextFile(activity, R.raw.dummy_clashing_response), ResponseGetPromoStackFirst::class.java)
+        val uiData = mapper.callDummy(responseGetPromoStackFirst)
+        actionListener.onClashCheckPromo(uiData.data.clashings)
     }
 
 }

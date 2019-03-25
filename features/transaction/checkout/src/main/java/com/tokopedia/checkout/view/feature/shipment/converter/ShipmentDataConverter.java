@@ -98,9 +98,13 @@ public class ShipmentDataConverter {
                             .get(addressIndex).getUserAddress().getAddressId());
 
 
-                    for (VoucherOrdersItemData voucherOrdersItemData : cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders()) {
-                        if (groupShop.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
-                            shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(voucherOrdersItemData));
+                    if (cartShipmentAddressFormData.getAutoApplyStackData() != null) {
+                        if (cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders() != null) {
+                            for (VoucherOrdersItemData voucherOrdersItemData : cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders()) {
+                                if (groupShop.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
+                                    shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(voucherOrdersItemData));
+                                }
+                            }
                         }
                     }
 
@@ -121,9 +125,13 @@ public class ShipmentDataConverter {
                 shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
                         .get(0).getUserAddress().getAddressId());
 
-                for (VoucherOrdersItemData voucherOrdersItemData : cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders()) {
-                    if (groupShop.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
-                        shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(voucherOrdersItemData));
+                if (cartShipmentAddressFormData.getAutoApplyStackData() != null) {
+                    if (cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders() != null) {
+                        for (VoucherOrdersItemData voucherOrdersItemData : cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders()) {
+                            if (groupShop.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
+                                shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(voucherOrdersItemData));
+                            }
+                        }
                     }
                 }
 
@@ -185,7 +193,9 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setProductIsPreorder(fobject.isPreOrder() == 1);
 
         // set promo merchant
-        shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(groupShop.getShop().getVoucherOrdersItemData()));
+        if (groupShop.getShop().getVoucherOrdersItemData() != null) {
+            shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(groupShop.getShop().getVoucherOrdersItemData()));
+        }
 
         shipmentCartItemModel.setShipmentCartData(new RatesDataConverter()
                 .getShipmentCartData(userAddress, groupShop, shipmentCartItemModel, keroToken, keroUnixTime));

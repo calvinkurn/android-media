@@ -9,31 +9,31 @@ import com.google.gson.annotations.SerializedName
 data class VoucherOrdersItem(
 
 	@field:SerializedName("cart_id")
-	val cartId: Int? = null,
+	val cartId: Int? = 0,
 
 	@field:SerializedName("code")
-	val code: String? = null,
+	val code: String? = "",
 
 	@field:SerializedName("unique_id")
-	val uniqueId: String? = null,
+	val uniqueId: String? = "",
 
 	@field:SerializedName("cashback_wallet_amount")
-	val cashbackWalletAmount: Int? = null,
+	val cashbackWalletAmount: Int? = 0,
 
 	@field:SerializedName("success")
-	val success: Boolean? = null,
+	val success: Boolean? = false,
 
 	@field:SerializedName("discount_amount")
-	val discountAmount: Int? = null,
+	val discountAmount: Int? = 0,
 
 	@field:SerializedName("invoice_description")
-	val invoiceDescription: String? = null,
+	val invoiceDescription: String? = "",
 
 	@field:SerializedName("type")
-	val type: String? = null,
+	val type: String? = "",
 
 	@field:SerializedName("message")
-	val message: Message? = null
+	val message: Message? = Message()
 ) : Parcelable {
 	constructor(parcel: Parcel) : this(
 			parcel.readValue(Int::class.java.classLoader) as? Int,

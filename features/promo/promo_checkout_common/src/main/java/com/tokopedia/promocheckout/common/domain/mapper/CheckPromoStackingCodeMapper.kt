@@ -2,19 +2,64 @@ package com.tokopedia.promocheckout.common.domain.mapper
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.domain.model.promostacking.response.*
+import com.tokopedia.promocheckout.common.domain.model.promostacking.response.ClashingInfoDetail
 import com.tokopedia.promocheckout.common.view.uimodel.*
 import rx.functions.Func1
 import javax.inject.Inject
 
-class CheckPromoStackingFirstCodeMapper @Inject constructor() : Func1<GraphqlResponse, ResponseGetPromoStackUiModel> {
+open class CheckPromoStackingCodeMapper @Inject constructor() : Func1<GraphqlResponse, ResponseGetPromoStackUiModel> {
     private val STATUS_OK = "OK"
     private val STATUS_ERROR = "ERROR"
+
+    var isFinal: Boolean = false
+        set(value) {
+            field = value
+        }
 
     override fun call(t: GraphqlResponse?): ResponseGetPromoStackUiModel {
         var status = ""
         var data = DataUiModel()
-        val response = t?.getData<ResponseGetPromoStackFirst?>(ResponseGetPromoStackFirst::class.java)
-        response?.let { responseGetPromoStackFirst ->
+        var responseFirst : ResponseGetPromoStackFirst?
+        var responseFinal : ResponseGetPromoStackFinal?
+
+        if (isFinal) {
+            responseFinal = t?.getData(ResponseGetPromoStackFinal::class.java)
+            responseFinal.let { responseGetPromoStackFinal ->
+                responseGetPromoStackFinal?.getPromoStackUse.let {
+                    // TODO : buka kondisi status, krn dummy statusnya string kosong
+                    /*status = it?.status ?: STATUS_ERROR
+                    when (it?.status) {
+                        STATUS_OK -> {*/
+                            data = mapData(it?.data)
+                       /* }
+                    }*/
+                }
+            }
+        } else {
+            responseFirst = t?.getData(ResponseGetPromoStackFirst::class.java)
+            responseFirst.let { responseGetPromoStackFirst ->
+                responseGetPromoStackFirst?.getPromoStackFirst.let {
+                    // TODO : buka kondisi status, krn dummy statusnya string kosong
+                    /*status = it?.status ?: STATUS_ERROR
+                    when (it?.status) {
+                        STATUS_OK -> {*/
+                            data = mapData(it?.data)
+                        /*}
+                    }*/
+                }
+            }
+        }
+
+        return ResponseGetPromoStackUiModel(
+                status,
+                data
+        )
+    }
+
+    fun callDummy(response: ResponseGetPromoStackFirst): ResponseGetPromoStackUiModel {
+        var status = ""
+        var data = DataUiModel()
+        response.let { responseGetPromoStackFirst ->
             responseGetPromoStackFirst.getPromoStackFirst.let {
                 status = it?.status ?: STATUS_ERROR
                 when (it?.status) {
@@ -131,6 +176,7 @@ class CheckPromoStackingFirstCodeMapper @Inject constructor() : Func1<GraphqlRes
         return voucherOrdersItemUiModel
     }
 
+    // TODO : balikin "grey" to state untuk data real
     private fun mapMessage(message: Message?): MessageUiModel {
         var messageUiModel = MessageUiModel()
         message?.color?.let { color ->
@@ -138,7 +184,7 @@ class CheckPromoStackingFirstCodeMapper @Inject constructor() : Func1<GraphqlRes
                 message.text?.let { text ->
                     messageUiModel = MessageUiModel(
                             color = color,
-                            state = state,
+                            state = "grey",
                             text = text
                     )
                 }
@@ -151,33 +197,59 @@ class CheckPromoStackingFirstCodeMapper @Inject constructor() : Func1<GraphqlRes
         var benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel()
         benefit.finalBenefitText?.let { text ->
             benefit.finalBenefitAmount?.let { amount ->
-                benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(
-                        finalBenefitText = text,
-                        finalBenefitAmount = amount
-                )
+                benefit.summaries?.let { listSummariesItem ->
+                    benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(
+                            finalBenefitText = text,
+                            finalBenefitAmount = amount,
+                            summaries = listSummariesItem.map {
+                                mapSummariesBenefit(it)
+                            }
+
+                    )
+                }
             }
         }
 
         return benefitSummaryInfoUiModel
     }
 
+    private fun mapSummariesBenefit(summaries: SummariesItem?): SummariesUiModel {
+        var summariesUiModel = SummariesUiModel()
+        summaries?.description?.let { desc ->
+            summaries.type?.let { type ->
+                summaries.amountStr?.let { amountStr ->
+                    summaries.amount?.let { amount ->
+                        summariesUiModel = SummariesUiModel(
+                                description = desc,
+                                type = type,
+                                amountStr = amountStr,
+                                amount = amount
+                        )
+                    }
+                }
+            }
+        }
+
+        return summariesUiModel
+    }
+
     private fun mapClashing(clash: ClashingInfoDetail): ClashingInfoDetailUiModel {
-        val listOptions = ArrayList<VoucherOrdersItemUiModel>()
+        val listOptions = ArrayList<ClashingVoucherOptionUiModel>()
         var clashingInfoDetailUiModel = ClashingInfoDetailUiModel()
         clash.isClashedPromos?.let { isClashed ->
             clash.clashMessage?.let { clashMessage ->
                 clash.clashReason?.let { clashReason ->
-                    clash.option.let { options ->
-                        options?.forEach {
+                    clash.options?.let { options ->
+                        options.forEach {
                             if (it != null) {
-                                mapVoucherOrders(it)
+                                listOptions.add(mapClashingVoucherOption(it))
                             }
                         }
                         clashingInfoDetailUiModel = ClashingInfoDetailUiModel(
                                 isClashedPromos = isClashed,
                                 clashMessage = clashMessage,
                                 clashReason = clashReason,
-                                option = listOptions
+                                options = listOptions
                         )
                     }
                 }
@@ -185,5 +257,32 @@ class CheckPromoStackingFirstCodeMapper @Inject constructor() : Func1<GraphqlRes
         }
 
         return clashingInfoDetailUiModel
+    }
+
+    fun mapClashingVoucherOption(clashingVoucherOption: ClashingVoucherOption): ClashingVoucherOptionUiModel {
+        var clashingVoucherOptionUiModel = ClashingVoucherOptionUiModel()
+        val clashingVoucherOrderUiModelList = ArrayList<ClashingVoucherOrderUiModel>()
+        for (clashingVoucherOrder: ClashingVoucherOrder in clashingVoucherOption.voucherOrders) {
+            val clashingVoucherOrderUiModel = mapClashingVoucherOrder(clashingVoucherOrder)
+            clashingVoucherOrderUiModelList.add(clashingVoucherOrderUiModel)
+        }
+        clashingVoucherOptionUiModel.voucherOrders = clashingVoucherOrderUiModelList
+
+        return clashingVoucherOptionUiModel
+    }
+
+    fun mapClashingVoucherOrder(clashingVoucherOrder: ClashingVoucherOrder): ClashingVoucherOrderUiModel {
+        var clashingVoucherOrderUiModel = ClashingVoucherOrderUiModel()
+        clashingVoucherOrder.let {
+            clashingVoucherOrderUiModel = ClashingVoucherOrderUiModel(
+                    clashingVoucherOrder.code,
+                    clashingVoucherOrder.uniqueId,
+                    clashingVoucherOrder.cartId,
+                    clashingVoucherOrder.promoName,
+                    clashingVoucherOrder.potentialBenefit
+            )
+        }
+
+        return clashingVoucherOrderUiModel
     }
 }

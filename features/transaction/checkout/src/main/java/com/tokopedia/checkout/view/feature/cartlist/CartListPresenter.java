@@ -39,7 +39,7 @@ import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingFirstCodeMapper;
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -117,7 +117,7 @@ public class CartListPresenter implements ICartListPresenter {
     private final RemoveWishListUseCase removeWishListUseCase;
     private final UpdateAndReloadCartUseCase updateAndReloadCartUseCase;
     private final CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase;
-    private final CheckPromoStackingFirstCodeMapper checkPromoStackingCodeMapper;
+    private final CheckPromoStackingCodeMapper checkPromoStackingCodeMapper;
     private final TopAdsGqlUseCase topAdsUseCase;
     private final ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
     private final UserSessionInterface userSessionInterface;
@@ -166,7 +166,7 @@ public class CartListPresenter implements ICartListPresenter {
                              UpdateCartUseCase updateCartUseCase,
                              ResetCartGetCartListUseCase resetCartGetCartListUseCase,
                              CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase,
-                             CheckPromoStackingFirstCodeMapper checkPromoStackingCodeMapper,
+                             CheckPromoStackingCodeMapper checkPromoStackingCodeMapper,
                              CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                              CompositeSubscription compositeSubscription,
                              CartApiRequestParamGenerator cartApiRequestParamGenerator,
@@ -795,7 +795,7 @@ public class CartListPresenter implements ICartListPresenter {
                             @Override
                             public void onError(Throwable e) {
                                 e.printStackTrace();
-                                view.hideProgressLoading();
+                                view.hideLoadingDialog();
                                 if (e instanceof UnknownHostException) {
                                     view.renderErrorCheckPromoCodeFromSuggestedPromo(
                                             ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
@@ -823,7 +823,7 @@ public class CartListPresenter implements ICartListPresenter {
 
                             @Override
                             public void onNext(GraphqlResponse graphqlResponse) {
-                                view.hideProgressLoading();
+                                view.hideLoadingDialog();
                                 System.out.println("++ graphqlResponse = "+graphqlResponse.toString());
                                 // view.renderCheckPromoStackingCodeFromSuggestedPromoSuccess(responseFirstStep);
                             }

@@ -25,7 +25,7 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingFirstCodeMapper;
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.user.session.UserSession;
@@ -92,7 +92,7 @@ public class CartListModule {
                                                  UpdateCartUseCase updateCartUseCase,
                                                  ResetCartGetCartListUseCase resetCartGetCartListUseCase,
                                                  CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase,
-                                                 CheckPromoStackingFirstCodeMapper checkPromoStackingCodeMapper,
+                                                 CheckPromoStackingCodeMapper checkPromoStackingCodeMapper,
                                                  CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                                                  CompositeSubscription compositeSubscription,
                                                  CartApiRequestParamGenerator cartApiRequestParamGenerator,

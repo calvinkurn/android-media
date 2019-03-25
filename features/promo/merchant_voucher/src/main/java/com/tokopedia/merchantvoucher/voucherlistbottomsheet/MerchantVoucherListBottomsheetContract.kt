@@ -25,6 +25,10 @@ interface MerchantVoucherListBottomsheetContract {
 
         fun onClashCheckPromoFirstStep()
 
+        fun showLoadingDialog()
+
+        fun hideLoadingDialog()
+
         fun showProgressLoading()
 
         fun hideProgressLoading()

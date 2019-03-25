@@ -28,7 +28,7 @@ public interface CartAdapterActionListener {
 
     void onCartPromoCancelVoucherPromoGlobalClicked(PromoStackingData cartPromoGlobal, int position);
 
-    void onCancelVoucherMerchantClicked(VoucherOrdersItemData voucherOrdersItemData, int position, boolean ignoreAPIResponse);
+    void onCancelVoucherMerchantClicked(String promoMerchantCode, int position, boolean ignoreAPIResponse);
 
     // void onCartPromoTrackingImpression(PromoData cartPromo, int position);
 

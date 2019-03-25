@@ -53,6 +53,7 @@ import com.tokopedia.checkout.view.di.component.DaggerCartListComponent;
 import com.tokopedia.checkout.view.di.module.CartListModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity;
+import com.tokopedia.checkout.view.feature.bottomsheetpromostacking.ClashBottomSheetFragment;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
@@ -75,6 +76,7 @@ import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
@@ -109,7 +111,8 @@ import javax.inject.Inject;
 public class CartFragment extends BaseCheckoutFragment implements CartAdapter.ActionListener,
         CartItemAdapter.ActionListener, ICartListView, TopAdsItemClickListener,
         RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, WishListActionListener,
-        ToolbarRemoveView.OnToolbarRemoveAllCartListener, MerchantVoucherListBottomSheetFragment.ActionListener {
+        ToolbarRemoveView.OnToolbarRemoveAllCartListener, MerchantVoucherListBottomSheetFragment.ActionListener,
+        ClashBottomSheetFragment.ActionListener {
 
     private static final String EXTRA_PRODUCT_ITEM = "EXTRA_PRODUCT_ITEM";
 
@@ -607,16 +610,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                     shopGroupDataList.get(shopPosition).getCartString(),
                     checkPromoFirstStepParam
             );
-
-            // test clash bottomsheet
-            /*ClashBottomSheetFragment bottomSheet = ClashBottomSheetFragment.newInstance();
-            bottomSheet.show(getFragmentManager(), null);*/
-
-            // test totalbenefit bottomsheet
-            /*TotalBenefitBottomSheetFragment bottomSheet = TotalBenefitBottomSheetFragment.newInstance();
-            bottomSheet.show(getFragmentManager(), null);*/
         }
-        // dPresenter.processCheckPromoStackingCode();
     }
 
     @NonNull
@@ -667,8 +661,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onCancelVoucherMerchantClicked(VoucherOrdersItemData voucherOrdersItemData, int shopIndex, boolean ignoreAPIResponse) {
-        dPresenter.processCancelAutoApplyPromoStack(shopIndex, voucherOrdersItemData.getCode(), ignoreAPIResponse);
+    public void onCancelVoucherMerchantClicked(String promoMerchantCode, int shopIndex, boolean ignoreAPIResponse) {
+        dPresenter.processCancelAutoApplyPromoStack(shopIndex, promoMerchantCode, ignoreAPIResponse);
     }
 
     /*@Override
@@ -1876,8 +1870,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onClashCheckPromoFirstStep() {
-        // Todo : Show clash bottomsheet
+    public void onClashCheckPromo(@NonNull ClashingInfoDetailUiModel clashingInfoDetailUiModel) {
+        ClashBottomSheetFragment clashBottomSheetFragment = ClashBottomSheetFragment.newInstance();
+        clashBottomSheetFragment.setData(clashingInfoDetailUiModel);
+        clashBottomSheetFragment.setActionListener(this);
+        clashBottomSheetFragment.show(getFragmentManager(), "");
     }
 
     @Override
@@ -1887,31 +1884,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         }
         if (getView() != null) {
             ToasterError.make(getView(), message, ToasterError.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onSuccessClearPromoStack(int shopIndex) {
-        if (shopIndex != -1) {
-            CartShopHolderData cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(shopIndex);
-            if (cartShopHolderData != null) {
-                cartShopHolderData.getShopGroupData().setVoucherOrdersItemData(null);
-                cartAdapter.notifyItemChanged(shopIndex);
-            }
-        } else {
-            PromoStackingData promoStackingData = cartAdapter.getPromoStackingGlobaldata();
-            promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
-            promoStackingData.setAmount(0);
-            promoStackingData.setPromoCode("");
-            promoStackingData.setDescription("");
-            cartAdapter.updateItemPromoStackVoucher(promoStackingData);
-        }
-    }
-
-    @Override
-    public void onFailedClearPromoStack(boolean ignoreAPIResponse, int shopIndex) {
-        if (!ignoreAPIResponse) {
-            ToasterError.make(getView(), "Terjadi kesalahan. Ulangi beberapa saat lagi", ToasterError.LENGTH_SHORT).show();
         }
     }
 
@@ -1964,5 +1936,30 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         }
 
         cartAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onSuccessClearPromoStack(int shopIndex) {
+        if (shopIndex != -1) {
+            CartShopHolderData cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(shopIndex);
+            if (cartShopHolderData != null) {
+                cartShopHolderData.getShopGroupData().setVoucherOrdersItemData(null);
+                cartAdapter.notifyItemChanged(shopIndex);
+            }
+        } else {
+            PromoStackingData promoStackingData = cartAdapter.getPromoStackingGlobaldata();
+            promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
+            promoStackingData.setAmount(0);
+            promoStackingData.setPromoCode("");
+            promoStackingData.setDescription("");
+            cartAdapter.updateItemPromoStackVoucher(promoStackingData);
+        }
+    }
+
+    @Override
+    public void onFailedClearPromoStack(boolean ignoreAPIResponse, int shopIndex) {
+        if (!ignoreAPIResponse) {
+            ToasterError.make(getView(), "Terjadi kesalahan. Ulangi beberapa saat lagi", ToasterError.LENGTH_SHORT).show();
+        }
     }
 }
