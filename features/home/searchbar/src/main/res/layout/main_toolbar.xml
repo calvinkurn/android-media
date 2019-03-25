@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/ic_search_bar"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/et_search"
                 android:layout_marginLeft="@dimen/margin_16"
                 android:layout_marginStart="@dimen/margin_16"
