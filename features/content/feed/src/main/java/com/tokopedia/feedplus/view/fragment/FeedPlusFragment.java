@@ -1929,6 +1929,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onPostTagItemClick(int positionInFeed, @NotNull String redirectUrl) {
+        onGoToLink(redirectUrl);
+    }
+
+    @Override
     public void onImageClick(int positionInFeed, int contentPosition,
                              @NotNull String redirectLink) {
         onGoToLink(redirectLink);
