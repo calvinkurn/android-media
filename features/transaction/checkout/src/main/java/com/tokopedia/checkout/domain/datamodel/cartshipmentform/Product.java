@@ -50,6 +50,7 @@ public class Product implements Parcelable {
     private int productCatalogId;
     private PurchaseProtectionPlanData purchaseProtectionPlanData;
     private String productPreOrderInfo;
+    private TradeInInfo tradeInInfo;
 
     private AnalyticsProductCheckoutData analyticsProductCheckoutData;
 
@@ -349,6 +350,14 @@ public class Product implements Parcelable {
         return purchaseProtectionPlanData;
     }
 
+    public TradeInInfo getTradeInInfo() {
+        return tradeInInfo;
+    }
+
+    public void setTradeInInfo(TradeInInfo tradeInInfo) {
+        this.tradeInInfo = tradeInInfo;
+    }
+
     public Product() {
     }
 
@@ -396,6 +405,7 @@ public class Product implements Parcelable {
         dest.writeParcelable(this.purchaseProtectionPlanData, flags);
         dest.writeString(this.productPreOrderInfo);
         dest.writeParcelable(this.analyticsProductCheckoutData, flags);
+        dest.writeParcelable(this.tradeInInfo, flags);
     }
 
     protected Product(Parcel in) {
@@ -436,6 +446,7 @@ public class Product implements Parcelable {
         this.purchaseProtectionPlanData = in.readParcelable(PurchaseProtectionPlanData.class.getClassLoader());
         this.productPreOrderInfo = in.readString();
         this.analyticsProductCheckoutData = in.readParcelable(AnalyticsProductCheckoutData.class.getClassLoader());
+        this.tradeInInfo = in.readParcelable(TradeInInfo.class.getClassLoader());
     }
 
     public static final Creator<Product> CREATOR = new Creator<Product>() {

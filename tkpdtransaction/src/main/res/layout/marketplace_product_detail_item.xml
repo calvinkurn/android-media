@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
     android:layout_marginTop="@dimen/dp_4"
+    android:layout_marginRight="@dimen/dp_16"
     android:layout_marginBottom="@dimen/dp_4"
     android:elevation="@dimen/dp_3"
     app:cardCornerRadius="@dimen/dp_4">
@@ -16,29 +16,51 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_10">
 
+        <TextView
+            android:id="@+id/label_trade_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="@drawable/tradein_blue_rounded_label"
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_2"
+            android:paddingRight="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_2"
+            android:text="Tukar Tambah"
+            android:textColor="@color/tradein_blue_text_bom"
+            android:textSize="@dimen/sp_10"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
         <ImageView
             android:id="@+id/img_product"
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_48"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_8"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/label_trade_in"
+            app:layout_goneMarginTop="@dimen/dp_10"
+            tools:src="@drawable/info_icon" />
 
         <TextView
             android:id="@+id/txt_product_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_10"
-            android:textSize="@dimen/sp_14"
-            android:maxLines="@integer/int_3"
-            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
             android:ellipsize="end"
+            android:maxLines="@integer/int_3"
             android:textColor="@color/light_primary"
-            app:layout_constraintLeft_toRightOf="@id/img_product"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            android:textSize="@dimen/sp_14"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/img_product"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/img_product"
             tools:text="Fujifilm Instax Square SQ6 Instant Film Camera (Stone Grey Color) Polaroid" />
 
         <TextView
@@ -46,8 +68,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:textSize="@dimen/sp_11"
             android:textColor="@color/font_black_secondary_54"
+            android:textSize="@dimen/sp_11"
             app:layout_constraintLeft_toLeftOf="@id/txt_product_name"
             app:layout_constraintTop_toBottomOf="@id/txt_product_name"
             tools:text="2 Barang(20kg)" />
@@ -92,8 +114,8 @@
             android:layout_margin="10dp"
             android:layout_marginLeft="10dp"
             android:text="Total Harga:"
-            android:textSize="@dimen/sp_12"
             android:textColor="@color/font_black_secondary_54"
+            android:textSize="@dimen/sp_12"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider" />
 
@@ -120,13 +142,13 @@
             android:background="@color/deep_orange_500"
             android:gravity="center"
             android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
             android:paddingTop="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_16"
             android:paddingBottom="@dimen/dp_8"
             android:visibility="gone"
-            tools:visibility="visible"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider"
-            tools:text="Beli Lagi" />
+            tools:text="Beli Lagi"
+            tools:visibility="visible" />
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

@@ -34,7 +34,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -791,10 +790,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     }
 
     @Override
-    public void setItems(List<Items> items) {
+    public void setItems(List<Items> items, boolean isTradeIn) {
         productInformationTitle.setVisibility(View.VISIBLE);
         itemsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter));
+        itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter, isTradeIn));
     }
 
     @Override

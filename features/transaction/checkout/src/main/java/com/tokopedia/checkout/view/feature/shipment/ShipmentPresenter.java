@@ -47,6 +47,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.logisticanalytics.CodAnalytics;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
@@ -150,6 +151,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private EgoldAttributeModel egoldAttributeModel;
     private ShipmentDonationModel shipmentDonationModel;
     private CodModel codData;
+    private Token token;
 
     private List<DataCheckoutRequest> dataCheckoutRequestList;
     private List<CheckPromoCodeCartShipmentRequest.Data> promoCodeCartShipmentRequestDataList;
@@ -331,8 +333,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment, @Nullable String cornerId) {
-        if (isFromMultipleAddress) {
+    public void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment, boolean isTradeIn,
+                                               @Nullable String cornerId, String deviceId) {
+        if (isReloadData) {
             getView().showLoading();
         } else {
             getView().showInitialLoading();
@@ -342,26 +345,31 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (cornerId != null) paramGetShipmentForm.put("corner_id", cornerId);
 
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
-                getGeneratedAuthParamNetwork(paramGetShipmentForm));
+        Map<String, String> params = getGeneratedAuthParamNetwork(paramGetShipmentForm);
 
         if (isOneClickShipment) {
+            if (isTradeIn) {
+                params.put(GetShipmentAddressFormOneClickShipementUseCase.PARAM_IS_TRADEIN, String.valueOf(isTradeIn));
+                params.put(GetShipmentAddressFormOneClickShipementUseCase.PARAM_DEVICE_ID, deviceId);
+            }
+            requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
             compositeSubscription.add(
                     getShipmentAddressFormOneClickShipementUseCase.createObservable(requestParams)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
                             .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
-                                    isFromMultipleAddress, true))
+                                    isReloadData, true))
             );
         } else {
+            requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
             compositeSubscription.add(
                     getShipmentAddressFormUseCase.createObservable(requestParams)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
                             .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
-                                    isFromMultipleAddress, false))
+                                    isReloadData, false))
             );
         }
     }
@@ -403,6 +411,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         setEgoldAttributeModel(cartShipmentAddressFormData.getEgoldAttributes());
+
+        token = new Token();
+        token.setUt(cartShipmentAddressFormData.getKeroUnixTime());
+        token.setDistrictRecommendation(cartShipmentAddressFormData.getKeroDiscomToken());
     }
 
     private boolean checkHaveSameCurrentCodAddress(String cornerId) {
@@ -417,8 +429,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                              RecipientAddressModel oldRecipientAddressModel,
                                                              ArrayList<ShipmentCartItemModel> oldShipmentCartItemModels,
                                                              ShipmentCostModel oldShipmentCostModel,
-                                                             ShipmentDonationModel oldShipmentDonationModel,
-                                                             boolean isOneClickShipment) {
+                                                             ShipmentDonationModel oldShipmentDonationModel) {
         getView().showLoading();
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");
@@ -427,27 +438,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
                 getGeneratedAuthParamNetwork(paramGetShipmentForm));
 
-        if (isOneClickShipment) {
-            compositeSubscription.add(
-                    getShipmentAddressFormOneClickShipementUseCase.createObservable(requestParams)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .unsubscribeOn(Schedulers.io())
-                            .subscribe(new GetShipmentAddressFormReloadFromMultipleAddressSubscriber(
-                                    this, getView(), oldRecipientAddressModel, oldShipmentCartItemModels)
-                            )
-            );
-        } else {
-            compositeSubscription.add(
-                    getShipmentAddressFormUseCase.createObservable(requestParams)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .unsubscribeOn(Schedulers.io())
-                            .subscribe(new GetShipmentAddressFormReloadFromMultipleAddressSubscriber(
-                                    this, getView(), oldRecipientAddressModel, oldShipmentCartItemModels)
-                            )
-            );
-        }
+        compositeSubscription.add(
+                getShipmentAddressFormUseCase.createObservable(requestParams)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.io())
+                        .subscribe(new GetShipmentAddressFormReloadFromMultipleAddressSubscriber(
+                                this, getView(), oldRecipientAddressModel, oldShipmentCartItemModels)
+                        )
+        );
     }
 
     public boolean checkAddressHasChanged(RecipientAddressModel oldModel, RecipientAddressModel newModel) {
@@ -499,16 +498,20 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment) {
+    public void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment, boolean isTradeIn, String deviceId) {
         getView().showLoading();
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");
 
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
-                getGeneratedAuthParamNetwork(paramGetShipmentForm));
+        Map<String, String> params = getGeneratedAuthParamNetwork(paramGetShipmentForm);
 
         if (isOneClickShipment) {
+            if (isTradeIn) {
+                params.put(GetShipmentAddressFormOneClickShipementUseCase.PARAM_IS_TRADEIN, String.valueOf(isTradeIn));
+                params.put(GetShipmentAddressFormOneClickShipementUseCase.PARAM_DEVICE_ID, deviceId);
+            }
+            requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
             compositeSubscription.add(
                     getShipmentAddressFormOneClickShipementUseCase.createObservable(requestParams)
                             .subscribeOn(Schedulers.io())
@@ -519,6 +522,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             );
         } else {
+            requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
             compositeSubscription.add(
                     getShipmentAddressFormUseCase.createObservable(requestParams)
                             .subscribeOn(Schedulers.io())
@@ -533,10 +537,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Deprecated
     @Override
-    public void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment, @Nullable String cornerId) {
+    public void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn,
+                                                    @Nullable String cornerId, String deviceId) {
         boolean isNeedToRemoveErrorProduct = removeErrorShopProduct();
         if (partialCheckout || isNeedToRemoveErrorProduct) {
-            processCheckout(voucherCode, isOneClickShipment);
+            processCheckout(voucherCode, isOneClickShipment, isTradeIn, deviceId);
         } else {
             getView().showLoading();
             TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
@@ -544,10 +549,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             if (cornerId != null) paramGetShipmentForm.put("corner_id", cornerId);
 
             RequestParams requestParams = RequestParams.create();
-            requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
-                    getGeneratedAuthParamNetwork(paramGetShipmentForm));
+            Map<String, String> params = getGeneratedAuthParamNetwork(paramGetShipmentForm);
 
             if (isOneClickShipment) {
+                if (isTradeIn) {
+                    params.put(GetShipmentAddressFormOneClickShipementUseCase.PARAM_IS_TRADEIN, String.valueOf(isTradeIn));
+                    params.put(GetShipmentAddressFormOneClickShipementUseCase.PARAM_DEVICE_ID, deviceId);
+                }
+                requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
                 compositeSubscription.add(
                         getShipmentAddressFormOneClickShipementUseCase.createObservable(requestParams)
                                 .subscribeOn(Schedulers.io())
@@ -559,6 +568,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 )
                 );
             } else {
+                requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
                 compositeSubscription.add(
                         getShipmentAddressFormUseCase.createObservable(requestParams)
                                 .subscribeOn(Schedulers.io())
@@ -584,7 +594,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processCheckout(String voucherCode, boolean isOneClickShipment) {
+    public void processCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn, String deviceId) {
         removeErrorShopProduct();
         CheckoutRequest checkoutRequest = generateCheckoutRequest(
                 !TextUtils.isEmpty(voucherCode) ?
@@ -595,6 +605,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (checkoutRequest != null) {
             getView().showLoading();
             RequestParams requestParams = RequestParams.create();
+            if (isTradeIn) {
+                Map<String, String> params = new HashMap<>();
+                params.put(CheckoutUseCase.PARAM_IS_TRADEIN, String.valueOf(isTradeIn));
+                params.put(CheckoutUseCase.PARAM_DEVICE_ID, deviceId);
+                requestParams.putObject(CheckoutUseCase.PARAM_TRADE_IN_DATA, params);
+            }
             requestParams.putObject(CheckoutUseCase.PARAM_CARTS, checkoutRequest);
             requestParams.putBoolean(CheckoutUseCase.PARAM_ONE_CLICK_SHIPMENT, isOneClickShipment);
             compositeSubscription.add(
@@ -602,7 +618,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
-                            .subscribe(getSubscriberCheckoutCart(checkoutRequest, isOneClickShipment))
+                            .subscribe(getSubscriberCheckoutCart(checkoutRequest, isOneClickShipment, isTradeIn, deviceId))
             );
         } else {
             getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
@@ -759,7 +775,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @NonNull
     private Subscriber<CheckoutData> getSubscriberCheckoutCart(CheckoutRequest checkoutRequest,
-                                                               boolean isOneClickShipment) {
+                                                               boolean isOneClickShipment,
+                                                               boolean isTradeIn, String deviceId) {
         return new Subscriber<CheckoutData>() {
             @Override
             public void onCompleted() {
@@ -771,7 +788,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 e.printStackTrace();
                 analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed();
                 getView().showToastError(e.getMessage());
-                processReloadCheckoutPageBecauseOfError(isOneClickShipment);
+                processReloadCheckoutPageBecauseOfError(isOneClickShipment, isTradeIn, deviceId);
             }
 
             @Override
@@ -1411,6 +1428,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setIsBlackbox(shipmentDetailData.getIsBlackbox());
         shippingParam.setAddressId(shipmentDetailData.getAddressId());
         shippingParam.setIsPreorder(shipmentDetailData.getPreorder());
+        shippingParam.setTradein(shipmentDetailData.isTradein());
         return shippingParam;
     }
 
@@ -1458,7 +1476,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void proceedCodCheckout(String voucherCode, boolean isOneClickShipment) {
+    public void proceedCodCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn, String deviceId) {
         CheckoutRequest checkoutRequest = generateCheckoutRequest(
                 !TextUtils.isEmpty(voucherCode) ?
                         voucherCode : "",
@@ -1477,7 +1495,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             public void onError(Throwable e) {
                 CommonUtils.dumper(e);
                 mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
-                processReloadCheckoutPageBecauseOfError(isOneClickShipment);
+                processReloadCheckoutPageBecauseOfError(isOneClickShipment, isTradeIn, deviceId);
             }
 
             @Override
@@ -1486,7 +1504,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 CodResponse response = graphqlResponse.getData(CodResponse.class);
                 if (getView() == null || !response.getValidateCheckoutCod().getHeader().getErrorCode().equals("200")) {
                     mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
-                    processReloadCheckoutPageBecauseOfError(isOneClickShipment);
+                    processReloadCheckoutPageBecauseOfError(isOneClickShipment, isTradeIn, deviceId);
                     getView().showToastError("");
                 } else if (response.getValidateCheckoutCod().getData() != null &&
                         response.getValidateCheckoutCod().getData().getData() != null) {
@@ -1504,5 +1522,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }
             }
         });
+    }
+
+    @Override
+    public Token getKeroToken() {
+        return token;
     }
 }

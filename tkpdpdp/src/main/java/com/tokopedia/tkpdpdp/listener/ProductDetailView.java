@@ -33,6 +33,8 @@ import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestPar
 import java.util.ArrayList;
 import java.util.List;
 
+import model.TradeInParams;
+
 /**
  * @author ANGGA on 11/2/2015.
  */
@@ -40,6 +42,7 @@ public interface ProductDetailView extends ViewListener {
 
     String SOURCE_BUTTON_BUY_PDP = "BUTTON_BUY_PDP";
     String SOURCE_BUTTON_CART_PDP = "BUTTON_CART_PDP";
+    String SOURCE_BUTTON_TRADEIN= "BUTTON_TRADE_IN";
     String SOURCE_BUTTON_BUY_VARIANT = "BUTTON_BUY_VARIANT";
     String SOURCE_BUTTON_CART_VARIANT = "SOURCE_BUTTON_CART_VARIANT";
     String SOURCE_BUTTON_CHAT_PDP = "SOURCE_BUTTON_CHAT_PDP";
@@ -381,7 +384,11 @@ public interface ProductDetailView extends ViewListener {
 
     void onMostHelpfulImageClicked(List<ReviewImageAttachment> data, int position);
 
+    void checkTradeIn(TradeInParams tradeInParams);
+
     void navigateToOneClickShipment();
 
     void navigateToExpressCheckout();
+
+    String getDeviceId();
 }

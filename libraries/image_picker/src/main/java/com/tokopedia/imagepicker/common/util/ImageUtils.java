@@ -491,6 +491,29 @@ public class ImageUtils {
         }
     }
 
+    public static File resizeBitmapToFile(String imagePath, int maxWidth, int maxHeight, boolean needCheckRotate,
+                                      @DirectoryDef String resultDirectory) {
+        Bitmap bitmapToEdit = ImageUtils.getBitmapFromPath(imagePath, maxWidth, maxHeight, needCheckRotate);
+
+        boolean isPng = ImageUtils.isPng(imagePath);
+
+        Bitmap outputBitmap;
+        try {
+            outputBitmap = Bitmap.createBitmap(bitmapToEdit.getWidth(), bitmapToEdit.getHeight(), bitmapToEdit.getConfig());
+            Canvas canvas = new Canvas(outputBitmap);
+            canvas.drawBitmap(bitmapToEdit, 0, 0, null);
+            File file = ImageUtils.writeImageToTkpdPath(resultDirectory,
+                    outputBitmap, isPng);
+            bitmapToEdit.recycle();
+            outputBitmap.recycle();
+
+            System.gc();
+            return file;
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+
     /**
      * Get a file path from a Uri. This will get the the path for Storage Access
      * Framework Documents, as well as the _data field for the MediaStore and

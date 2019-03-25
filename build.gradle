@@ -55,6 +55,10 @@ allprojects {
         jcenter()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://www.jitpack.io" }
+        maven {
+            url "https://jitpack.io"
+            credentials { username "${authToken}" }
+        }
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'https://dl.bintray.com/guardian/android' }
         maven { url 'https://mymavenrepo.com/repo/e01iL1W9Gdxw73PGI9LA' }

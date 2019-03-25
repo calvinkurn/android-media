@@ -27,6 +27,8 @@ public class AddToCartRequest {
     @SerializedName("tracker_list_name")
     @Expose
     private String trackerListName;
+    @SerializedName("is_trade_in")
+    private int isTradeIn;
 
 
     private AddToCartRequest(Builder builder) {
@@ -86,6 +88,14 @@ public class AddToCartRequest {
         this.trackerListName = trackerListName;
     }
 
+    public int getIsTradeIn() {
+        return isTradeIn;
+    }
+
+    public void setIsTradeIn(int isTradeIn) {
+        this.isTradeIn = isTradeIn;
+    }
+
     public static final class Builder {
         private int productId;
         private int quantity;
@@ -93,6 +103,7 @@ public class AddToCartRequest {
         private int shopId;
         private String trackerAttribution;
         private String trackerListName;
+        private int istradein;
 
         public Builder() {
         }
@@ -126,6 +137,12 @@ public class AddToCartRequest {
             trackerListName = val;
             return this;
         }
+
+        public Builder isTradein(int val) {
+            istradein = val;
+            return this;
+        }
+
 
         public AddToCartRequest build() {
             return new AddToCartRequest(this);

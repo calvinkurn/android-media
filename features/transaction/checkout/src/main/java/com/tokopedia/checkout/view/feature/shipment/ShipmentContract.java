@@ -12,6 +12,7 @@ import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
@@ -208,21 +209,22 @@ public interface ShipmentContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment, String cornerId);
+        void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment, boolean isTradeIn,
+                                            String cornerId, String deviceId);
 
         void processReloadCheckoutPageFromMultipleAddress(PromoData promoData,
                                                           CartPromoSuggestion cartPromoSuggestion,
                                                           RecipientAddressModel recipientAddressModel,
                                                           ArrayList<ShipmentCartItemModel> shipmentCartItemModels,
                                                           ShipmentCostModel shipmentCostModel,
-                                                          ShipmentDonationModel shipmentDonationModel,
-                                                          boolean isOneClickShipment);
+                                                          ShipmentDonationModel shipmentDonationModel);
 
-        void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment);
+        void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment, boolean isTradeIn, String deviceId);
 
-        void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment, @Nullable String cornerId);
+        void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn,
+                                                 @Nullable String cornerId, String deviceId);
 
-        void processCheckout(String voucherCode, boolean isOneClickShipment);
+        void processCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn, String deviceId);
 
         void processVerifyPayment(String transactionId);
 
@@ -303,8 +305,9 @@ public interface ShipmentContract {
 
         CodModel getCodData();
 
-        void proceedCodCheckout(String voucherCode, boolean isOneClickShipment);
+        void proceedCodCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn, String deviceId);
 
+        Token getKeroToken();
     }
 
 }

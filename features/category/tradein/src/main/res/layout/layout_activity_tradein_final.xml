@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/dp_4"
+        android:theme="@style/Toolbar.White"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:subtitleTextAppearance="@style/SubTitleTextAppearance"
+        app:titleTextAppearance="@style/TitleTextAppearance" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
+        android:gravity="center"
+        android:text="@string/price_elligible"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_valid_till"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginRight="@dimen/dp_16"
+        android:gravity="center"
+        android:text="@string/price_valid_until"
+        android:textColor="@color/tradein_black"
+        android:textSize="@dimen/sp_16"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        tools:visibility="visible" />
+
+    <View
+        android:id="@+id/carc_background_white"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@drawable/bg_rect_white"
+        android:elevation="@dimen/dp_4"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/space"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_valid_till"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_model"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:elevation="@dimen/dp_4"
+        android:text="@string/text_model"
+        android:textColor="@color/black_70"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="@id/carc_background_white"
+        app:layout_constraintTop_toTopOf="@id/carc_background_white"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_model_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_2"
+        android:layout_marginLeft="@dimen/dp_2"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:elevation="@dimen/dp_4"
+        android:textColor="@color/black_70"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toRightOf="@id/tv_model"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_model"
+        tools:text="Samsung Note 9"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:elevation="@dimen/dp_4"
+        android:text="@string/text_final_price"
+        android:textColor="@color/black_70"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tv_model"
+        app:layout_constraintTop_toBottomOf="@id/tv_model"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_price_total"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_2"
+        android:layout_marginRight="@dimen/dp_16"
+        android:elevation="@dimen/dp_4"
+        android:textColor="@color/black_70"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toRightOf="@id/tv_price"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_price"
+        tools:text="Rp 3.650.000"
+        tools:visibility="visible" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_device_review"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_16"
+        android:elevation="@dimen/dp_4"
+        android:textColor="@color/tradein_black"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="@id/tv_model"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_price"
+        tools:text="	•	Body Belakang : Mulus
+	•	Body Depan : Mulus
+	•	Tampilan Depan : Dead Pixel Besar (Tompel), Kerusakan jelas pada layar
+	•	Fisik Layar : Didalam layar display
+	•	Tes Fungsional : Berhasil"
+        tools:visibility="visible" />
+
+    <View
+        android:id="@+id/divider1"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/divider_color"
+        android:elevation="@dimen/dp_4"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="@id/tv_model"
+        app:layout_constraintRight_toRightOf="@id/carc_background_white"
+        app:layout_constraintTop_toBottomOf="@id/tv_device_review"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_model_new"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:elevation="@dimen/dp_4"
+        android:textColor="@color/black_70"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="@id/tv_model"
+        app:layout_constraintRight_toLeftOf="@id/tv_price_new"
+        app:layout_constraintTop_toBottomOf="@id/divider1"
+        tools:text="iPhone Xs 256GB Garansi Resmi - Space Gray"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_price_new"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_16"
+        android:elevation="@dimen/dp_4"
+        android:textColor="@color/black_70"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toRightOf="@id/tv_model_new"
+        app:layout_constraintRight_toRightOf="@id/carc_background_white"
+        app:layout_constraintTop_toTopOf="@id/tv_model_new"
+        app:layout_constraintWidth_default="wrap"
+        tools:text="Rp 22.650.000"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_exchange"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:elevation="@dimen/dp_4"
+        android:text="@string/tukar_tambah"
+        android:textColor="@color/black_70"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="@id/tv_model"
+        app:layout_constraintRight_toLeftOf="@id/tv_price_exchange"
+        app:layout_constraintTop_toBottomOf="@id/tv_model_new"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_price_exchange"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:elevation="@dimen/dp_4"
+        android:textColor="@color/black_70"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toRightOf="@id/tv_exchange"
+        app:layout_constraintRight_toRightOf="@id/carc_background_white"
+        app:layout_constraintTop_toTopOf="@id/tv_exchange"
+        app:layout_constraintWidth_default="wrap"
+        tools:text="-Rp 22.650.000"
+        tools:visibility="visible" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/divider_color"
+        android:elevation="@dimen/dp_4"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="@id/tv_model"
+        app:layout_constraintRight_toRightOf="@id/carc_background_white"
+        app:layout_constraintTop_toBottomOf="@id/tv_exchange"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_final_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:elevation="@dimen/dp_4"
+        android:text="@string/total_price"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_16"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="@id/tv_model"
+        app:layout_constraintRight_toLeftOf="@id/tv_final_amount"
+        app:layout_constraintTop_toBottomOf="@id/divider2"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_final_amount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:elevation="@dimen/dp_4"
+        android:textColor="@color/deep_orange_500"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toRightOf="@id/tv_final_price"
+        app:layout_constraintRight_toRightOf="@id/carc_background_white"
+        app:layout_constraintTop_toTopOf="@id/tv_final_price"
+        app:layout_constraintWidth_default="wrap"
+        tools:text="Rp 22.650.000"
+        tools:visibility="visible" />
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_16"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="@id/tv_model"
+        app:layout_constraintRight_toRightOf="@id/carc_background_white"
+        app:layout_constraintTop_toBottomOf="@id/tv_final_price"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_button_pay_or_ktp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
+        android:background="@drawable/bg_tradein_button_orange"
+        android:gravity="center"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
+        android:text="@string/buy_now"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_tnc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
+        android:gravity="center"
+        android:text="@string/harga_tnc_kyc"
+        android:textColor="@color/black_70"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/tv_button_pay_or_ktp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:visibility="visible" />
+
+
+</android.support.constraint.ConstraintLayout>

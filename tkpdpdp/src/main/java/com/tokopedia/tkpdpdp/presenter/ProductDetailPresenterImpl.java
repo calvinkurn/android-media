@@ -51,6 +51,7 @@ import com.tokopedia.core.product.interactor.RetrofitInteractor.DiscussionListen
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
+import com.tokopedia.core.product.model.productdetail.ProductBreadcrumb;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ShopShipment;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
@@ -77,8 +78,8 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
-import com.tokopedia.tkpdpdp.BuildConfig;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
+import com.tokopedia.tkpdpdp.BuildConfig;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
@@ -106,6 +107,7 @@ import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.transactiondata.entity.response.expresscheckout.profile.ProfileListGqlResponse;
 import com.tokopedia.transactiondata.usecase.GetProfileListUseCase;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -123,6 +125,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import model.TradeInParams;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -163,6 +166,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     private RetrofitInteractor retrofitInteractor;
     private CacheInteractor cacheInteractor;
     private TopAdsSourceTaggingLocal topAdsSourceTaggingLocal;
+    private TradeInParams tradeInParams;
     private int counter = 0;
     LocalCacheHandler cacheHandler;
     DateFormat df;
@@ -209,6 +213,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         getImageReviewUseCase.execute(requestParams,
                 new ImageReviewSubscriber(viewListener));
     }
+
 
     @Override
     public void initRetrofitInteractor() {
@@ -273,6 +278,54 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         boolean isOneClickShipment = skipToCart && !data.isBigPromo();
         routeToNewCheckout(context, data, subscriber, isOneClickShipment);
         UnifyTracking.eventPDPCart(context);
+    }
+
+    @Override
+    public void processToShippingTradeIn(Activity context, Intent shippingIntent, ProductCartPass data) {
+        sendAppsFlyerCheckout(viewListener.getActivityContext(), data);
+        if (context.getApplication() instanceof PdpRouter) {
+            viewListener.showProgressLoading();
+            ((PdpRouter) context.getApplication()).addToCartProduct(
+                    new AddToCartRequest.Builder()
+                            .productId(Integer.parseInt(data.getProductId()))
+                            .notes(data.getNotes())
+                            .quantity(data.getOrderQuantity())
+                            .trackerAttribution(data.getTrackerAttribution())
+                            .trackerListName(data.getListName())
+                            .shopId(Integer.parseInt(data.getShopId()))
+                            .isTradein(1)
+                            .build(), true
+            ).subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<AddToCartResult>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onNext(AddToCartResult addToCartResult) {
+                            NullCheckerKt.isContainNull(addToCartResult, s -> {
+                                ContainNullException exception = new ContainNullException("Found " + s + " on " + ProductDetailPresenterImpl.class.getSimpleName());
+                                if (!BuildConfig.DEBUG) {
+                                    Crashlytics.logException(exception);
+                                }
+                                throw exception;
+                            });
+
+                            viewListener.hideProgressLoading();
+                            if (addToCartResult.isSuccess()) {
+                                viewListener.navigateToActivityRequest(shippingIntent, 629);
+                            }
+                        }
+                    });
+        }
     }
 
     private Subscriber getCartSubscriber(String sourceAtc) {
@@ -560,6 +613,29 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.onProductDetailLoaded(productDetailData, mappingToViewData(productDetailData));
                             viewListener.hideProgressLoading();
                             viewListener.refreshMenu();
+                            int productid = 0;
+                            for (ProductBreadcrumb breadcrumb : productDetailData.getBreadcrumb()) {
+                                if (breadcrumb.getDepartmentName().equals(TradeInParams.HANDFONE))
+                                    productid = Integer.parseInt(breadcrumb.getDepartmentId());
+                            }
+                            if (productid == TradeInParams.HANDFONE_ID) {
+                                UserSession userSession = new UserSession(viewListener.getActivityContext());
+                                TradeInParams tradeInParams = new TradeInParams();
+                                tradeInParams.setCategoryId(Integer.parseInt(productDetailData.getBreadcrumb().get(0).getDepartmentId()));
+                                tradeInParams.setDeviceId(viewListener.getDeviceId());
+                                tradeInParams.setUserId(Integer.parseInt(userSession.getUserId()));
+                                tradeInParams.setPrice(productDetailData.getInfo().getProductPriceUnformatted());
+                                tradeInParams.setProductId(productDetailData.getInfo().getProductId());
+                                tradeInParams.setShopId(Integer.parseInt(productDetailData.getShopInfo().getShopId()));
+                                tradeInParams.setProductName(productDetailData.getInfo().getProductName());
+                                String preorderstatus = productDetailData.getPreOrder().getPreorderStatus();
+                                if (preorderstatus != null && !preorderstatus.isEmpty())
+                                    tradeInParams.setPreorder(Integer.parseInt(preorderstatus) == 1);
+                                else
+                                    tradeInParams.setPreorder(false);
+                                tradeInParams.setOnCampaign(productDetailData.getCampaign().getActive());
+                                viewListener.checkTradeIn(tradeInParams);
+                            }
 
                             checkWishlistCount(String.valueOf(productDetailData.getInfo().getProductId()));
 
@@ -1147,6 +1223,30 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         cacheInteractor.storeProductDetailCache(data.getInfo().getProductId().toString(), data);
 
                         viewListener.onProductDetailLoaded(data, mappingToViewData(data));
+                        int productid = 0;
+                        for (ProductBreadcrumb breadcrumb : data.getBreadcrumb()) {
+                            if (breadcrumb.getDepartmentName().equals(TradeInParams.HANDFONE))
+                                productid = Integer.parseInt(breadcrumb.getDepartmentId());
+                        }
+                        if (productid == TradeInParams.HANDFONE_ID) {
+                            TradeInParams tradeInParams = new TradeInParams();
+                            UserSession userSession = new UserSession(viewListener.getActivityContext());
+                            tradeInParams.setCategoryId(Integer.parseInt(data.getBreadcrumb().get(0).getDepartmentId()));
+                            tradeInParams.setDeviceId(viewListener.getDeviceId());
+                            tradeInParams.setUserId(Integer.parseInt(userSession.getUserId()));
+                            tradeInParams.setPrice(data.getInfo().getProductPriceUnformatted());
+                            tradeInParams.setProductId(data.getInfo().getProductId());
+                            tradeInParams.setShopId(Integer.parseInt(data.getShopInfo().getShopId()));
+                            tradeInParams.setProductName(data.getInfo().getProductName());
+                            String preorderstatus = data.getPreOrder().getPreorderStatus();
+                            if (preorderstatus != null && !preorderstatus.isEmpty())
+                                tradeInParams.setPreorder(Integer.parseInt(data.getPreOrder().getPreorderStatus()) == 1);
+                            else
+                                tradeInParams.setPreorder(false);
+                            tradeInParams.setOnCampaign(data.getCampaign().getActive());
+
+                            viewListener.checkTradeIn(tradeInParams);
+                        }
 
                         checkWishlistCount(String.valueOf(data.getInfo().getProductId()));
 

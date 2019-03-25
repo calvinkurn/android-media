@@ -26,13 +26,15 @@ import java.util.List;
 public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Items> itemsList;
     private Context context;
-    OrderListDetailPresenter presenter;
+    private OrderListDetailPresenter presenter;
+    private boolean isOrderTradeIn;
     public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
 
-    public ProductItemAdapter(Context context, List<Items> itemsList, OrderListDetailPresenter presenter) {
+    public ProductItemAdapter(Context context, List<Items> itemsList, OrderListDetailPresenter presenter, boolean isTradeIn) {
         this.context = context;
         this.itemsList = itemsList;
         this.presenter = presenter;
+        this.isOrderTradeIn = isTradeIn;
     }
 
     @NonNull
@@ -65,9 +67,10 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         private TextView quantity;
         private TextView productPrice;
         private TextView productDescription, totalPrice, buyBtn;
+        private TextView labelTradeIn;
 
 
-        public ItemViewHolder(View itemView) {
+        ItemViewHolder(View itemView) {
             super(itemView);
             productImage = itemView.findViewById(R.id.img_product);
             productName = itemView.findViewById(R.id.txt_product_name);
@@ -76,9 +79,16 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             productDescription = itemView.findViewById(R.id.txt_description);
             totalPrice = itemView.findViewById(R.id.txt_total_price);
             buyBtn = itemView.findViewById(R.id.btn_buy);
+            labelTradeIn = itemView.findViewById(R.id.label_trade_in);
         }
 
         void bindData(final Items items) {
+            if (isOrderTradeIn) {
+                labelTradeIn.setVisibility(View.VISIBLE);
+            } else {
+                if (labelTradeIn.getVisibility() != View.GONE)
+                    labelTradeIn.setVisibility(View.GONE);
+            }
             if (items != null) {
                 if (!TextUtils.isEmpty(items.getImageUrl())) {
                     ImageHandler.loadImage(context, productImage, items.getImageUrl(), R.color.grey_1100, R.color.grey_1100);

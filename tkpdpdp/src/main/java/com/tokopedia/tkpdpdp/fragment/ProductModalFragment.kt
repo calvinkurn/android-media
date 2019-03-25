@@ -1,11 +1,15 @@
 package com.tokopedia.tkpdpdp.fragment
 
 import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Paint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.LocalBroadcastManager
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -22,8 +26,13 @@ import kotlinx.android.synthetic.main.fragment_product_modal.*
 import kotlinx.android.synthetic.main.layout_variant_activity_section_notes.*
 import kotlinx.android.synthetic.main.layout_variant_activity_section_quantity.*
 import kotlinx.android.synthetic.main.variant_title_item.*
+import model.TradeInParams
+import view.viewcontrollers.FinalPriceActivity
+import view.viewcontrollers.TradeInHomeActivity
+
 
 class ProductModalFragment : BaseDaggerFragment() {
+
 
     companion object {
 
@@ -34,20 +43,26 @@ class ProductModalFragment : BaseDaggerFragment() {
         private const val ARGS_SELECTED_QUANTITY = "ARGS_SELECTED_QUANTITY"
         private const val ARGS_SELECTED_REMARK_NOTES = "ARGS_SELECTED_REMARK_NOTES"
         private const val ARGS_STATE_FORM_PRODUCT_MODAL = "ARGS_STATE_FORM_PRODUCT_MODAL"
+        private const val ARGS_TRADEIN_PARAMS = "ARGS_TRADE_IN_PARAMS"
+        private const val ARGS_IS_FROM_TRADEIN = "ARGS_FROM_TRADE_IN"
 
         fun newInstance(variant: ProductVariant?,
                         detailData: ProductDetailData?,
+                        tradeInParams: TradeInParams?,
                         quantity: Int,
                         remarkNotes: String,
-                        stateProductModal: Int
+                        stateProductModal: Int,
+                        isFromTradeIn: Boolean
         ): Fragment {
             val fragment = ProductModalFragment()
             val bundle = Bundle()
             bundle.putParcelable(ARGS_PRODUCT_VARIANT, variant)
             bundle.putParcelable(ARGS_PRODUCT_DETAIL, detailData)
+            bundle.putParcelable(ARGS_TRADEIN_PARAMS, tradeInParams)
             bundle.putInt(ARGS_SELECTED_QUANTITY, quantity)
             bundle.putString(ARGS_SELECTED_REMARK_NOTES, remarkNotes)
             bundle.putInt(ARGS_STATE_FORM_PRODUCT_MODAL, stateProductModal)
+            bundle.putBoolean(ARGS_IS_FROM_TRADEIN, isFromTradeIn)
             fragment.arguments = bundle
             return fragment
         }
@@ -61,17 +76,22 @@ class ProductModalFragment : BaseDaggerFragment() {
         return null
     }
 
+
     private var productVariant: ProductVariant? = null
     private var productData: ProductDetailData? = null
+    private var tradeInParams: TradeInParams? = null
     private var selectedQuantity: Int? = 0
     private var stateProductModal: Int? = 0
     private var selectedRemarkNotes: String? = ""
+    private var isFromTradeIn: Boolean? = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         productVariant = arguments?.getParcelable(ARGS_PRODUCT_VARIANT)
         productData = arguments?.getParcelable(ARGS_PRODUCT_DETAIL)
+        tradeInParams = arguments?.getParcelable(ARGS_TRADEIN_PARAMS)
+        isFromTradeIn = arguments?.getBoolean(ARGS_IS_FROM_TRADEIN)
+        super.onCreate(savedInstanceState)
         selectedQuantity = arguments?.getInt(ARGS_SELECTED_QUANTITY)
         selectedRemarkNotes = arguments?.getString(ARGS_SELECTED_REMARK_NOTES)
         stateProductModal = arguments?.getInt(ARGS_STATE_FORM_PRODUCT_MODAL)
@@ -137,6 +157,8 @@ class ProductModalFragment : BaseDaggerFragment() {
                 resources.getString(R.string.title_buy_now)
             }
             STATE_BUTTON_CART -> resources.getString(R.string.title_add_to_cart)
+            STATE_BUTTON_TRADEIN ->
+                resources.getString(R.string.title_trade_in)
             else -> if (isPreOrder()) {
                 resources.getString(R.string.title_pre_order)
             } else {
@@ -144,6 +166,7 @@ class ProductModalFragment : BaseDaggerFragment() {
             }
         }
     }
+
     private fun renderButtonNonVariant() {
         if (productData?.shopInfo?.shopStatus == 1) {
             activity?.let {
@@ -155,7 +178,15 @@ class ProductModalFragment : BaseDaggerFragment() {
 
             new_button_save.isClickable = true
             new_button_save.setOnClickListener {
-                if (stateProductModal == STATE_BUTTON_CART) onButtonCartClick() else onButtonBuyClick()
+                if (stateProductModal == STATE_BUTTON_CART)
+                    onButtonCartClick()
+                else if (stateProductModal == STATE_BUTTON_TRADEIN) {
+                    if (tradeInParams != null && tradeInParams!!.usedPrice > 0)
+                        goToHargaFinal()
+                    else
+                        tv_trade_in.performClick()
+                } else
+                    onButtonBuyClick()
             }
             action_button_cart.setOnClickListener {
                 onButtonCartClick()
@@ -207,6 +238,15 @@ class ProductModalFragment : BaseDaggerFragment() {
         activity?.overridePendingTransition(0, R.anim.push_down)
     }
 
+    private fun onGotoTradeinShipment(deviceid: String) {
+        val intent = generateExtraSelectedIntent()
+        intent.putExtra(ARGS_STATE_RESULT_PDP_MODAL, SELECTED_VARIANT_RESULT_TRADEIN)
+        intent.putExtra(TradeInParams.PARAM_DEVICE_ID, deviceid)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
+        activity?.overridePendingTransition(0, R.anim.push_down)
+    }
+
     private fun renderButtonVariant() {
 
     }
@@ -229,32 +269,45 @@ class ProductModalFragment : BaseDaggerFragment() {
             }
         }
 
+        if (stateProductModal == STATE_BUTTON_TRADEIN) {
+            tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, true)
+        } else {
+            if (tradeInParams != null && tradeInParams!!.isEligible != 0) {
+                tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
+                if (tradeInParams!!.usedPrice > 0) {
+                    tv_trade_in.setOnClickListener { goToHargaFinal() }
+                }
+            }
+        }
         number_picker_quantitiy_product.setInitialState(
                 Integer.parseInt(productData?.info?.productMinOrder),
                 DEFAULT_MAXIMUM_STOCK_PICKER,
                 selectedQuantity!!
-                )
+        )
+        if (stateProductModal == STATE_BUTTON_TRADEIN) {
+            view_qty_product.visibility = View.GONE
+        } else {
+            number_picker_quantitiy_product.setOnPickerActionListener { num ->
+                selectedQuantity = num
+                text_product_price.text = generateTextCartPrice()
 
-        number_picker_quantitiy_product.setOnPickerActionListener { num ->
-            selectedQuantity = num
-            text_product_price.text = generateTextCartPrice()
-
-            if (num < number_picker_quantitiy_product.getMinValue()) {
-                activity?.let {
-                    new_button_save.background = ContextCompat.getDrawable(it, R.drawable.button_save_grey)
+                if (num < number_picker_quantitiy_product.getMinValue()) {
+                    activity?.let {
+                        new_button_save.background = ContextCompat.getDrawable(it, R.drawable.button_save_grey)
+                    }
+                    new_button_save.isClickable = false;
+                } else {
+                    activity?.let {
+                        new_button_save.background = ContextCompat.getDrawable(it, R.drawable.orange_button_rounded)
+                    }
+                    new_button_save.isClickable = true;
                 }
-                new_button_save.isClickable = false;
-            } else {
-                activity?.let {
-                    new_button_save.background = ContextCompat.getDrawable(it, R.drawable.orange_button_rounded)
-                }
-                new_button_save.isClickable = true;
             }
         }
 
         if (isCampaign()) {
             text_original_price.text = productData?.campaign?.originalPriceFmt
-            text_original_price.paintFlags = text_original_price.paintFlags ; Paint.STRIKE_THRU_TEXT_FLAG
+            text_original_price.paintFlags = text_original_price.paintFlags; Paint.STRIKE_THRU_TEXT_FLAG
             text_discount.text = String.format(
                     getString(R.string.label_discount_percentage),
                     productData?.campaign?.discountedPercentage
@@ -266,6 +319,13 @@ class ProductModalFragment : BaseDaggerFragment() {
             text_discount.visibility = View.GONE
             text_original_price.visibility = View.GONE
         }
+    }
+
+    private fun goToHargaFinal() {
+        val intent = FinalPriceActivity.getHargaFinalIntent(context)
+
+        intent.putExtra(TradeInParams.TRADE_IN_PARAMS,tradeInParams)
+        startActivityForResult(intent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -289,4 +349,17 @@ class ProductModalFragment : BaseDaggerFragment() {
         activity?.overridePendingTransition(0, R.anim.push_down)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == FinalPriceActivity.FINAL_PRICE_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                onGotoTradeinShipment(data!!.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
+            }
+        } else if (requestCode == TradeInHomeActivity.TRADEIN_HOME_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
+                onGotoTradeinShipment(data!!.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
+            }
+        }
+    }
 }

@@ -8,13 +8,15 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
 import com.tokopedia.normalcheckout.constant.ProductAction
+import model.TradeInParams
+import view.viewcontrollers.TradeInHomeActivity
+import viewmodel.IAccessRequestListener
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-open class NormalCheckoutActivity : BaseSimpleActivity() {
-
+open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener {
     companion object {
         const val EXTRA_SHOP_ID = "shop_id"
         const val EXTRA_PRODUCT_ID = "product_id"
@@ -25,8 +27,11 @@ open class NormalCheckoutActivity : BaseSimpleActivity() {
         const val EXTRA_ACTION = "action"
         const val EXTRA_SHOP_TYPE = "shop_type"
         const val EXTRA_SHOP_NAME = "shop_name"
+        const val EXTRA_TRADE_IN_PARAMS = "trade_in_params"
         private const val TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val TRACKER_LIST_NAME = "tracker_list_name"
+        private var tradeInParams: TradeInParams? = null
+        private lateinit var normalCheckoutFragment : NormalCheckoutFragment
 
         /**
          * shopID: mandatory
@@ -41,8 +46,8 @@ open class NormalCheckoutActivity : BaseSimpleActivity() {
                       placeholderProductImage: String? = "",
                       trackerAttribution: String? = "",
                       trackerListName: String? = "",
-                      shopType:String? = "",
-                      shopName:String? = ""): Intent {
+                      shopType: String? = "",
+                      shopName: String? = ""): Intent {
             return Intent(context, NormalCheckoutActivity::class.java).apply {
                 putExtra(EXTRA_SHOP_ID, shopId)
                 putExtra(EXTRA_PRODUCT_ID, productId)
@@ -67,8 +72,9 @@ open class NormalCheckoutActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
         val bundle = intent.extras
+        tradeInParams = intent.getParcelableExtra(EXTRA_TRADE_IN_PARAMS)
         bundle?.run {
-            return NormalCheckoutFragment.createInstance(getString(EXTRA_SHOP_ID),
+            normalCheckoutFragment = NormalCheckoutFragment.createInstance(getString(EXTRA_SHOP_ID),
                 getString(EXTRA_PRODUCT_ID),
                 getString(EXTRA_NOTES),
                 getInt(EXTRA_QUANTITY),
@@ -78,7 +84,9 @@ open class NormalCheckoutActivity : BaseSimpleActivity() {
                 getString(TRACKER_ATTRIBUTION),
                 getString(TRACKER_LIST_NAME),
                 getString(EXTRA_SHOP_TYPE),
-                getString(EXTRA_SHOP_NAME))
+                getString(EXTRA_SHOP_NAME),
+                tradeInParams)
+            return normalCheckoutFragment
         }
         return Fragment()
     }
@@ -89,4 +97,13 @@ open class NormalCheckoutActivity : BaseSimpleActivity() {
         }
         overridePendingTransition(0, R.anim.push_down)
     }
+
+    override fun clickAccept() {
+        normalCheckoutFragment.goToTradeInHome()
+    }
+
+    override fun clickDeny() {
+
+    }
+
 }

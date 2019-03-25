@@ -18,6 +18,8 @@ public class OrderDetails {
     @SerializedName("conditionalInfo")
     @Expose
     private ConditionalInfo conditionalInfo;
+    @SerializedName("flag")
+    private Flags flags;
     @SerializedName("title")
     @Expose
     private List<Title> title;
@@ -158,6 +160,14 @@ public class OrderDetails {
 
     public ShopInfo getShopInfo() {
         return shopInfo;
+    }
+
+    public Flags getFlags() {
+        return flags;
+    }
+
+    public void setFlags(Flags flags) {
+        this.flags = flags;
     }
 
     @Override

@@ -24,7 +24,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.listener.StepperListener;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.useridentification.KycUrl;
 import com.tokopedia.user_identification_common.KycCommonUrl;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.analytics.UserIdentificationAnalytics;
@@ -53,6 +52,8 @@ import static com.tokopedia.useridentification.view.fragment.UserIdentificationC
 public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         implements UserIdentificationUploadImage.View, UserIdentificationFormActivity.Listener {
 
+    public static final String PARAM_PROJECTID = "TRADEIN_PROJECT";
+
     private ImageView imageKtp;
     private ImageView imageFace;
     private TextView buttonKtp;
@@ -65,13 +66,14 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     private StepperListener stepperListener;
     private UserIdentificationAnalytics analytics;
 
+    private static int projectId;
+
     @Inject
     UserIdentificationUploadImage.Presenter presenter;
 
-    public static Fragment createInstance() {
+    public static Fragment createInstance(int projectid) {
         UserIdentificationFormFinalFragment fragment = new UserIdentificationFormFinalFragment();
-        Bundle bundle = new Bundle();
-        fragment.setArguments(bundle);
+        projectId = projectid;
         return fragment;
     }
 
@@ -83,7 +85,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         }
         if (getArguments() != null && savedInstanceState == null) {
             stepperModel = getArguments().getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
-        } else if (savedInstanceState != null){
+        } else if (savedInstanceState != null) {
             stepperModel = savedInstanceState.getParcelable(BaseUserIdentificationStepperFragment
                     .EXTRA_KYC_STEPPER_MODEL);
         }
@@ -106,6 +108,8 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         View view = inflater.inflate(R.layout.fragment_user_identification_final, container, false);
         initView(view);
         setContentView();
+        if (projectId == 4) //TradeIn project Id
+            uploadButton.setText(R.string.upload_button_tradein);
         return view;
     }
 
@@ -168,7 +172,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
 
     private void uploadImage() {
         showLoading();
-        presenter.uploadImage(stepperModel);
+        presenter.uploadImage(stepperModel, projectId);
     }
 
     private void setImageKtp(String imagePath) {
