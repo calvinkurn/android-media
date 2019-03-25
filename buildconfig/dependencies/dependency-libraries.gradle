@@ -70,7 +70,7 @@ ext {
             useCase           : ":libraries:use_case",
             userSession       : ":libraries:user_session",
             videoRecorder     : ":libraries:video_recorder",
-            videouploader     : ":libraries:videouploader",
+            videoUploader     : ":libraries:videouploader",
             webview           : ":libraries:webview",
             websocket         : ":libraries:websocket",
             williamchart      : ":libraries:williamchart",
