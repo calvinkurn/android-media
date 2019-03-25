@@ -1323,8 +1323,7 @@ public abstract class SellerRouterApplication extends MainApplication
             SaldoDetailsInternalRouter.startSaldoDepositIntent(context);
         } else {
 
-            goToWebview(context, ApplinkConst.WebViewUrl.SALDO_DETAIL);
-//            context.startActivity(getWebviewActivityWithIntent(context, ApplinkConst.WebViewUrl.SALDO_DETAIL));
+            context.startActivity(getWebviewActivityWithIntent(context, ApplinkConst.WebViewUrl.SALDO_DETAIL));
             /*RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
                     ApplinkConst.WebViewUrl.SALDO_DETAIL));*/
         }
