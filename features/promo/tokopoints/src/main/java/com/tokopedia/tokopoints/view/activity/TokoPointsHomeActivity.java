@@ -44,9 +44,14 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
 
     @Override
     protected Fragment getNewFragment() {
-        //TODO firebase configuration to on-off new design
         if (mUserSession.isLoggedIn()) {
-            return TokoPointsHomeFragmentNew.newInstance();
+            if (getApplicationContext() instanceof TokopointRouter
+                    && ((TokopointRouter) getApplicationContext())
+                    .getBooleanRemoteConfig(CommonConstant.TOKOPOINTS_NEW_HOME, false)) {
+                return TokoPointsHomeFragmentNew.newInstance();
+            } else {
+                return HomepageFragment.newInstance();
+            }
         } else {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
             return null;
