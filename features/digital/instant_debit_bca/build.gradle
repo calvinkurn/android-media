@@ -20,7 +20,6 @@ buildscript {
 }
 
 dependencies {
-//    implementation (name: 'BCAXCOWidget', ext: 'aar')
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.applink)
