@@ -244,7 +244,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             Toast.makeText(it, R.string.text_full_affiliate_title, Toast.LENGTH_LONG)
                     .show()
             it.finish()
-            affiliateAnalytics.onJatahRekomendasiHabisPdp()
+            affiliateAnalytics.onJatahRekomendasiHabisDialogShow()
         }
     }
 
@@ -306,7 +306,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             val numberOfProducts = if (isTypeAffiliate()) viewModel.adIdList.size else
                 viewModel.productIdList.size
             if (numberOfProducts < viewModel.maxProduct) {
-                relatedAddBtn.setOnClickListener { onRelatedAddProductClick() }
+                relatedAddBtn.setOnClickListener {
+                    onRelatedAddProductClick()
+                    affiliateAnalytics.onTambahTagButtonClicked()
+                }
                 relatedAddBtn.setTextColor(MethodChecker.getColor(it, R.color.medium_green))
             } else {
                 relatedAddBtn.setOnClickListener { }
@@ -347,10 +350,15 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         doneBtn.setOnClickListener {
             affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList.firstOrNull())
             saveDraftAndSubmit()
+            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList)
         }
         addImageBtn.setOnClickListener {
             affiliateAnalytics.onTambahGambarButtonClicked(viewModel.productIdList.firstOrNull())
             goToImagePicker()
+            affiliateAnalytics.onTambahGambarButtonClicked()
+        }
+        addVideoBtn.setOnClickListener {
+            affiliateAnalytics.onTambahVideoButtonClicked()
         }
         caption.afterTextChanged {
             viewModel.caption = it
@@ -394,7 +402,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun goToImagePicker() {
-        affiliateAnalytics.onTambahGambarButtonClicked(viewModel.productIdList.firstOrNull())
         activity?.let {
             startActivityForResult(
                     CreatePostImagePickerActivity.getInstance(
@@ -456,8 +463,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun saveDraftAndSubmit() {
-        affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList.firstOrNull())
-
         if (isFormInvalid()) {
             return
         }
@@ -502,7 +507,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 goToMediaPreview()
             }
         } else {
-            thumbnail.loadDrawable(R.drawable.ic_system_action_addimage_grayscale_62)
+            thumbnail.loadImageDrawable(R.drawable.ic_system_action_addimage_grayscale_62)
             edit.hide()
             thumbnail.setOnClickListener { }
             carouselIcon.setOnClickListener { }

@@ -1,66 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:id="@+id/main_view"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_margin="@dimen/dp_8">
-
-    <com.tokopedia.design.image.SquareImageView
-        android:id="@+id/iv_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="@dimen/dp_50"
-        android:scaleType="centerCrop"
-        tools:background="@drawable/ic_byme"
-        android:layout_alignParentTop="true"/>
-
-    <RelativeLayout
-        android:layout_alignParentRight="true"
-        android:id="@+id/iv_byme"
-        android:background="@drawable/bg_byme"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32">
-        <View
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:background="@color/white" />
-
-        <ImageView
-            android:layout_width="@dimen/dp_25"
-            android:layout_height="@dimen/dp_25"
-            android:layout_gravity="center"
-            android:layout_centerInParent="true"
-            android:src="@drawable/ic_byme"/>
-
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_below="@id/iv_image"
-        android:textSize="@dimen/sp_14"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/font_black_primary_70"
-        android:maxLines="2"
-        android:gravity="top|left"
-        android:ellipsize="end"
-        android:textStyle="bold"
-        android:layout_marginTop="@dimen/dp_8"
-        tools:text="default affiliate title default affiliate title default affiliate title default affiliate title default affiliate title default affiliate title default affiliate title "/>
-
-    <TextView
-        android:id="@+id/tv_commission"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_title"
-        android:textSize="@dimen/sp_14"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/color_ongoing_text"
-        tools:text="default affiliate title"/>
-
-</RelativeLayout>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <com.tokopedia.affiliate.common.widget.ExploreCardView
+        android:id="@+id/card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</FrameLayout>

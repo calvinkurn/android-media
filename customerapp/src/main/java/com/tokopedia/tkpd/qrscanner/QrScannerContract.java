@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.ovo.model.BarcodeResponseData;
 import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.usecase.RequestParams;
@@ -38,6 +39,10 @@ public interface QrScannerContract {
         Observable<BalanceTokoCash> getBalanceTokoCash();
 
         void navigateToNominalActivityPage(String qrcode, InfoQrTokoCash infoQrTokoCash);
+
+        void goToPaymentPage(String imeiNumber, BarcodeResponseData barcodeData);
+
+        boolean getRemoteConfigForOvoPay();
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -21,6 +21,7 @@ import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.subscriber.GetFeedTabsSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.PendingCashbackHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokocashHomeSubscriber;
@@ -118,6 +119,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             updateHomeData();
         }
         getTokocashBalance();
+        getTokopoint();
     }
 
     @Override
@@ -326,6 +328,10 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     }
 
     public HeaderViewModel getHeaderViewModel() {
+        if (headerViewModel == null) {
+            headerViewModel = new HeaderViewModel();
+        }
+        headerViewModel.setUserLogin(userSession.isLoggedIn());
         return headerViewModel;
     }
 
@@ -377,8 +383,12 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         @Override
         public void onNext(List<Visitable> visitables) {
             if (homePresenter != null && homePresenter.isViewAttached()) {
-                if (homePresenter.isLogin() && homePresenter.getHeaderViewModel() != null) {
-                    visitables.add(0, homePresenter.getHeaderViewModel());
+                if (homePresenter.getHeaderViewModel() != null && visitables.size() > 1) {
+                    if (visitables.get(1) instanceof TickerViewModel) {
+                        visitables.add(2, homePresenter.getHeaderViewModel());
+                    } else {
+                        visitables.add(1, homePresenter.getHeaderViewModel());
+                    }
                 }
                 homePresenter.getView().setItems(visitables);
                 if (visitables.size() > 0) {

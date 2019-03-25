@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">product_detail_common</string>
+    <string name="product_status_active">Aktif</string>
+    <string name="product_status_deleted">Dihapus</string>
+    <string name="product_status_warehouse">Digudangkan</string>
+    <string name="product_status_pending">Dibatalkan</string>
+    <string name="product_status_hidden">Disembunyikan</string>
+    <string name="product_status_banned">Di-Ban</string>
+</resources>

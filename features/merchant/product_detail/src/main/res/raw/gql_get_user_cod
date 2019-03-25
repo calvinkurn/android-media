@@ -1,0 +1,9 @@
+query getUserCODStatus($isPDP: Boolean!){
+    cod_validation(isPDP: $isPDP){
+        data{
+            is_cod
+            error
+            success
+        }
+    }
+}

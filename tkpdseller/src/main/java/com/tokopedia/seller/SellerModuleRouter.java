@@ -21,8 +21,6 @@ public interface SellerModuleRouter {
 
     ProductComponent getProductComponent();
 
-    void goToProductDetail(Context context, String productUrl);
-
     Observable<GMFeaturedProductDomainModel> getFeaturedProduct();
 
     void goToGMSubscribe(Activity activity);

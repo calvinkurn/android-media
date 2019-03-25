@@ -21,4 +21,5 @@ public interface GamificationRouter {
 
     Intent getLoginIntent();
 
+    Intent getTokoPointsIntent(Context context);
 }

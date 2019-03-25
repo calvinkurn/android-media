@@ -286,10 +286,6 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
                 }
             }
 
-            @Override
-            public String getString(int resId) {
-                return adsView.getString(resId);
-            }
         };
     }
 }

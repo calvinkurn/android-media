@@ -3,7 +3,7 @@ package com.tokopedia.expresscheckout.router
 import android.app.Activity
 import android.content.Intent
 import android.widget.Toast
-import com.tokopedia.transaction.common.data.expresscheckout.AtcRequestParam
+import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 
 /**
  * Created by Irfan Khoirul on 04/02/19.

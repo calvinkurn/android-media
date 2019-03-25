@@ -11,9 +11,7 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef;
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
-import com.tokopedia.topads.sdk.domain.model.Product;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,11 +66,12 @@ public class ProductPageTracking {
 
     public static final String USER_ID = "user_id";
 
+    private static final String SCREEN_BY_ME = "/product-detail-byme-socialcommerce";
     public static final String EVENT_CLICK_AFFILIATE = "clickAffiliate";
-    public static final String PRODUCT_DETAIL_PAGE_BY_ME = "product detail page tokopedia by.me";
-    public static final String ACTION_CLICK_TAMBAH_BY_ME = "click tambah ke by.me";
+    public static final String PRODUCT_DETAIL_PAGE_BY_ME = "product detail by.me socialcommerce";
+    public static final String ACTION_CLICK_TAMBAH_BY_ME = "click to kurasi";
     public static final String EMPTY_LABEL = "";
-    public static final String ACTION_CLICK_WISHLIST = "click wishlist";
+    public static final String ACTION_CLICK_WISHLIST = "click to wishlist";
     public static final String EVENT_ACTION_CLICK_REVIEW_ON_BUYERS_IMAGE = "click - review gallery on foto dari pembeli";
     public static final String EVENT_LABEL_CLICK_REVIEW_ON_BUYERS_IMAGE = "product_id: %s - review_id : %s";
     public static final String EVENT_ACTION_CLICK_REVIEW_ON_SEE_ALL_IMAGE = "click - lihat semua review gallery";
@@ -419,6 +418,7 @@ public class ProductPageTracking {
             return;
         }
         Map<String,Object> eventTracking = new HashMap<>();
+        eventTracking.put("screenName", SCREEN_BY_ME);
         eventTracking.put("event", EVENT_CLICK_AFFILIATE);
         eventTracking.put("eventCategory", PRODUCT_DETAIL_PAGE_BY_ME);
         eventTracking.put("eventAction", ACTION_CLICK_TAMBAH_BY_ME);
@@ -436,6 +436,7 @@ public class ProductPageTracking {
             return;
         }
         Map<String,Object> eventTracking = new HashMap<>();
+        eventTracking.put("screenName", SCREEN_BY_ME);
         eventTracking.put("event", EVENT_CLICK_AFFILIATE);
         eventTracking.put("eventCategory", PRODUCT_DETAIL_PAGE_BY_ME);
         eventTracking.put("eventAction", ACTION_CLICK_WISHLIST);

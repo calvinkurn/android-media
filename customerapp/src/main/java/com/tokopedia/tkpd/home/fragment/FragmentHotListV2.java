@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.home.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +19,9 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -33,11 +37,9 @@ import com.tokopedia.core.home.presenter.HotList;
 import com.tokopedia.core.home.presenter.HotListImpl;
 import com.tokopedia.core.home.presenter.HotListView;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.tkpd.home.adapter.HotListAdapter;
 
@@ -45,8 +47,6 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 import com.tokopedia.tkpd.R;
@@ -54,7 +54,7 @@ import com.tokopedia.tkpd.R;
 /**
  * Created by m.normansyah on 28/10/2015.
  * FragmentHotList is very suck class
- *
+ * <p>
  * 1. swipe to refresh : display page one
  * 2. load more : display next page
  * 3. enable retry policy
@@ -62,7 +62,7 @@ import com.tokopedia.tkpd.R;
  */
 public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView {
     public static final String FRAGMENT_TAG = "FragmentHotListV2";
-    
+
     private HotListAdapter adapter;
     private HotList hotList;
     RecyclerView recyclerView;
@@ -126,9 +126,9 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
         super.onResume();
         Log.d(TAG, FragmentHotListV2.class.getSimpleName() + " screen Rotation " + (isLandscape() ? "LANDSCAPE" : "PORTRAIT"));
         if (hotList != null) {
-            if(hotList.isAfterRotate()) {
+            if (hotList.isAfterRotate()) {
                 hotList.initDataAfterRotate();
-            }else {
+            } else {
                 hotList.initData();
             }
         }
@@ -140,12 +140,12 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int itemPosition = 0;
-                if(isLandscape() && layoutManager instanceof GridLayoutManager){
+                if (isLandscape() && layoutManager instanceof GridLayoutManager) {
                     itemPosition = ((GridLayoutManager) layoutManager).findLastVisibleItemPosition();
-                }else{
+                } else {
                     itemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
                 }
-                if (!isSwipeShow() && isLoadMoreShow()  && itemPosition == layoutManager.getItemCount() - 1) {//
+                if (!isSwipeShow() && isLoadMoreShow() && itemPosition == layoutManager.getItemCount() - 1) {//
                     hotList.loadMore();
                 }
             }
@@ -163,17 +163,17 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
 
     @Override
     public void initHolder() {
-        
+
     }
 
     @Override
     public void initLinLayManager() {
         // , LinearLayoutManager.VERTICAL, false
-        if(!isLandscape())
+        if (!isLandscape())
             layoutManager = new LinearLayoutManager(getActivity());
         else {
             layoutManager = new GridLayoutManager(getActivity(), COLUMN_SIZE);
-            ((GridLayoutManager)layoutManager).setSpanSizeLookup(onSpanSizeLookup());
+            ((GridLayoutManager) layoutManager).setSpanSizeLookup(onSpanSizeLookup());
         }
     }
 
@@ -224,7 +224,7 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
     }
 
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (isVisibleToUser && isAdded() && getActivity() !=null) {
+        if (isVisibleToUser && isAdded() && getActivity() != null) {
             hotList.sendAppsFlyerData(getActivity());
             ScreenTracking.screen(MainApplication.getAppContext(), getScreenName());
             TrackingUtils.sendMoEngageOpenHotListEvent(getActivity());
@@ -251,7 +251,7 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
 
     @Override
     public boolean isSwipeShow() {
-        if(swipeToRefresh != null)
+        if (swipeToRefresh != null)
             return swipeToRefresh.isRefreshing();
         else
             return false;
@@ -277,12 +277,12 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
     @Override
     public boolean isLoadMoreShow() {
 
-        if(isLandscape() && layoutManager instanceof GridLayoutManager){
+        if (isLandscape() && layoutManager instanceof GridLayoutManager) {
             GridLayoutManager temp = (GridLayoutManager) layoutManager;
-            return adapter.getItemViewType(temp.findLastCompletelyVisibleItemPosition())== TkpdState.RecyclerView.VIEW_LOADING;
-        }else{
+            return adapter.getItemViewType(temp.findLastCompletelyVisibleItemPosition()) == TkpdState.RecyclerView.VIEW_LOADING;
+        } else {
             LinearLayoutManager temp = (LinearLayoutManager) layoutManager;
-            return adapter.getItemViewType(temp.findLastCompletelyVisibleItemPosition())== TkpdState.RecyclerView.VIEW_LOADING;
+            return adapter.getItemViewType(temp.findLastCompletelyVisibleItemPosition()) == TkpdState.RecyclerView.VIEW_LOADING;
         }
     }
 
@@ -320,15 +320,18 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
     @Override
     public void openCategory(String categoryUrl) {
         URLParser urlParser = new URLParser(categoryUrl);
-        if (urlParser.getParamKeyValueMap().size()>0) {
+        if (urlParser.getParamKeyValueMap().size() > 0) {
             CategoryActivity.moveTo(
                     getActivity(),
-                   categoryUrl
+                    categoryUrl
             );
         } else {
-            getActivity().startActivity(
-                    BrowseProductRouter.getIntermediaryIntent(getActivity(), urlParser.getDepIDfromURI(getActivity()))
-            );
+            Context context = getActivity();
+            if (context != null) {
+                RouteManager.route(context,ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
+                                urlParser.getDepIDfromURI(context));
+            }
+
         }
     }
 
@@ -361,7 +364,7 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
 
     @Override
     public boolean isLandscape() {
-        return getScreenRotation()==LANDSCAPE;
+        return getScreenRotation() == LANDSCAPE;
     }
 
     @Override
@@ -381,21 +384,21 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
 
     @Override
     public void ariseRetry(int type, Object... data) {
-        if(type== DownloadService.HOTLIST && hotList!= null){
+        if (type == DownloadService.HOTLIST && hotList != null) {
             hotList.ariseRetry();
         }
     }
 
     @Override
     public void onMessageError(int type, Object... data) {
-        String text = (String)data[0];
+        String text = (String) data[0];
         Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
         setPullEnabled(true);// enable pull to refresh
     }
 
     @Override
     public void onNetworkError(int type, Object... data) {
-        String text = (String)data[0];
+        String text = (String) data[0];
         Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
         setPullEnabled(true);// enable pull to refresh
     }
@@ -406,8 +409,8 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
         boolean hasNext = data.getBoolean(DownloadService.HOTLIST_HAS_NEXT);
         int nextPage = data.getInt(DownloadService.HOTLIST_NEXT_PAGE);
 
-        if(hotList!=null)
-                hotList.setData(items, hasNext, nextPage);
+        if (hotList != null)
+            hotList.setData(items, hasNext, nextPage);
     }
 
     @Override

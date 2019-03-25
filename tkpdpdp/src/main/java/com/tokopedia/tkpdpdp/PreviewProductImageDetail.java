@@ -55,7 +55,12 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+/**
+ * Use image_preview library instead.
+ * Use ImagePreviewActivity
+ */
 @RuntimePermissions
+@Deprecated
 public class PreviewProductImageDetail extends TActivity {
 
     public static final String FILELOC = "fileloc";

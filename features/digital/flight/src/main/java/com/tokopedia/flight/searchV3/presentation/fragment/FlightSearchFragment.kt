@@ -125,8 +125,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     override fun onResume() {
         super.onResume()
-        flightSearchPresenter.initialize()
-
         flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, true)
     }
 
@@ -536,6 +534,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     fun searchFlightData() {
         fetchFlightSearchData()
+    }
+
+    fun refreshData() {
+        flightSearchPresenter.initialize(true)
+        resetDateAndReload()
     }
 
     private fun getNoFlightRouteDataViewModel(message: String): Visitable<FlightSearchAdapterTypeFactory> {

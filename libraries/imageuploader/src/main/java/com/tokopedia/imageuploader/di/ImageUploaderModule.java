@@ -30,10 +30,11 @@ import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier;
 import com.tokopedia.imageuploader.domain.GenerateHostRepository;
 import com.tokopedia.imageuploader.domain.UploadImageRepository;
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.user.session.UserSession;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 

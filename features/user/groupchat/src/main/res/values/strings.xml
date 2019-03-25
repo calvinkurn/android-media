@@ -88,8 +88,8 @@
 
     <string name="exit_group_chat_title">Title</string>
     <string name="exit_group_chat_body">Body</string>
-    <string name="exit_group_chat_yes">Yes</string>
-    <string name="exit_group_chat_no">No</string>
+    <string name="exit_group_chat_yes">Tetap di PLAY</string>
+    <string name="exit_group_chat_no">Keluar</string>
     <string name="exit_group_chat_ok">Ok</string>
     <string name="connecting">Menghubungkan...</string>
     <string name="retry">Coba Lagi</string>
@@ -110,5 +110,6 @@
     <string name="play_has_end">"%1$s telah berakhir"</string>
     <string name="play_next_event">"Nantikan dan gabung di channel Play selanjutnya"</string>
     <string name="play_start_shopping">"Mulai belanja"</string>
+    <string name="from">oleh</string>
 
 </resources>

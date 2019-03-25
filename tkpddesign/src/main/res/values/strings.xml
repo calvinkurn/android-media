@@ -8,6 +8,8 @@
     <string name="label_save">Simpan</string>
     <string name="label_open">Buka</string>
     <string name="label_close">Tutup</string>
+    <string name="label_cancel">Batal</string>
+    <string name="label_yes">Ya</string>
     <string name="label_login_button">Masuk</string>
 
     <string name="label_browse_file">Browse File</string>

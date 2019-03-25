@@ -34,19 +34,53 @@
             android:maxLines="@integer/int_3"
             tools:text="Hoodie H&amp;M Original Plain shgbks dsjkfg sdkjg ksjdgk kjsdbg jksdgk jksdbngk kjsdgk kasfk Hooded - Hitam Black Hoodie" />
 
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_original_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grey_500"
+            app:fontSize="small"
+            tools:text="Rp 0,00,-"
+            android:layout_below="@+id/tv_product_name"
+            android:layout_alignLeft="@+id/tv_product_name"
+            android:layout_marginTop="@dimen/dp_12"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
         <TextView
             android:id="@+id/tv_product_price"
             style="@style/TextMidMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_product_name"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_below="@+id/tv_original_price"
+            android:layout_alignLeft="@+id/tv_product_name"
+            android:layout_marginTop="@dimen/dp_6"
             android:layout_toEndOf="@+id/img_product"
             android:layout_toRightOf="@+id/img_product"
             android:textColor="@color/orange_red"
             tools:text="Rp 66.000" />
+
+        <TextView
+            android:id="@+id/tv_discount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/dp_3"
+            android:paddingBottom="@dimen/dp_3"
+            android:paddingLeft="@dimen/dp_5"
+            android:paddingRight="@dimen/dp_5"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_10"
+            android:background="@drawable/bg_rounded_corners_red"
+            android:gravity="center"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_12"
+            tools:text="10%OFF"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_toRightOf="@+id/tv_product_price"
+            android:layout_toEndOf="@+id/tv_product_price"
+            android:layout_alignBaseline="@id/tv_product_price"/>
 
     </RelativeLayout>
 

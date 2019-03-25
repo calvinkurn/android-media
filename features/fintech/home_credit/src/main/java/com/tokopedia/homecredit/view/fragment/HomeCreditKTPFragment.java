@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.otaliastudios.cameraview.Facing;
 import com.tokopedia.homecredit.R;
+import com.tokopedia.homecredit.view.Utils;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.homecredit.view.activity.HomeCreditRegisterActivity.HCI_KTP_IMAGE_PATH;
@@ -48,6 +49,9 @@ public class HomeCreditKTPFragment extends HomeCreditBaseCameraFragment {
         continueUpload = view.findViewById(R.id.continue_upload);
         captureImage = view.findViewById(R.id.iv_capture_image);
         reverseCamera = view.findViewById(R.id.iv_reverse_camera);
+        if(!Utils.isFrontCameraAvailable()){
+            reverseCamera.setVisibility(View.GONE);
+        }
         cameraLayout = view.findViewById(R.id.hc_camera_layout);
         cameraView.setFacing(Facing.BACK);
         cameraView.setZoom(0f);

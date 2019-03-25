@@ -21,10 +21,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -61,7 +59,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.UserActionViewMo
 import com.tokopedia.groupchat.chatroom.websocket.WebSocketException;
 import com.tokopedia.groupchat.common.analytics.EEPromotion;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
-import com.tokopedia.groupchat.common.design.CloseableBottomSheetDialog;
+import com.tokopedia.groupchat.common.design.ChannelCloseableBottomSheetDialog;
 import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration;
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration;
 import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
@@ -121,7 +119,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private Handler sprintSaleHandler;
     private Runnable sprintSaleRunnable;
-    private CloseableBottomSheetDialog pinnedMessageDialog;
+    private ChannelCloseableBottomSheetDialog pinnedMessageDialog;
 
     int newMessageCounter;
 
@@ -461,9 +459,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     private void showPinnedMessageBottomSheet(PinnedMessageViewModel pinnedMessage) {
-        pinnedMessageDialog = CloseableBottomSheetDialog.createInstance(getActivity(), () -> {
+        pinnedMessageDialog = ChannelCloseableBottomSheetDialog.createInstance(getActivity(), () -> {
             ((GroupChatContract.View) getActivity()).showOverlayDialogOnScreen();
-        }, new CloseableBottomSheetDialog.BackHardwareClickedListener() {
+        }, new ChannelCloseableBottomSheetDialog.BackHardwareClickedListener() {
             @Override
             public void onBackHardwareClicked() {
 
@@ -500,10 +498,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private View createPinnedMessageView(final PinnedMessageViewModel pinnedMessage) {
         ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity()).getChannelInfoViewModel();
         View view = getLayoutInflater().inflate(R.layout.layout_pinned_message_expanded, null);
-        ImageHandler.loadImageCircle2(getActivity(), (ImageView) view.findViewById(R.id.pinned_message_avatar)
-                , channelInfoViewModel.getAdminPicture(), R.drawable.ic_loading_toped_new);
-        ((TextView) view.findViewById(R.id.chat_header).findViewById(R.id.nickname))
-                .setText(channelInfoViewModel.getAdminName());
         ((TextView) view.findViewById(R.id.message)).setText(pinnedMessage.getMessage());
         ImageHandler.loadImage(getActivity(), view.findViewById(R.id.thumbnail)
                 , pinnedMessage.getThumbnail(), R.drawable.loading_page);

@@ -15,6 +15,8 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -31,6 +33,7 @@ import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
+import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -49,7 +52,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     public static final String IS_SELLER_ENABLED = "is_user_enabled";
     public static final String BUNDLE_PARAM_SELLER_DETAILS = "seller_details";
-
+    public static final String BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS = "merchant_credit_details";
     private final long animation_duration = 300;
 
     public static final String BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT = "seller_total_balance_int";
@@ -92,9 +95,14 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private float buyerSaldoBalance;
     private float totalSaldoBalance;
     private LinearLayout saldoTypeLL;
+    private LinearLayout merchantDetailLL;
 
     private ImageView saldoDepositExpandIV;
+    private ImageView merchantDetailsExpandIV;
     private boolean expandLayout;
+    private boolean expandMerchantDetailLayout = true;
+    private View merchantCreditFrameLayout;
+    private LinearLayout merchantStatusLL;
 
     public SaldoDepositFragment() {
     }
@@ -206,6 +214,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         amountBeingReviewed = view.findViewById(R.id.amount_review);
         checkBalanceStatus = view.findViewById(R.id.check_balance);
         saldoFrameLayout = view.findViewById(R.id.saldo_prioritas_widget);
+        merchantCreditFrameLayout = view.findViewById(R.id.merchant_credit_line_widget);
         tickerMessageRL = view.findViewById(R.id.ticker_message_layout);
         tickeRMessageTV = view.findViewById(R.id.ticker_message_text);
         tickerMessageCloseButton = view.findViewById(R.id.close_ticker_message);
@@ -215,7 +224,10 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         sellerSaldoBalanceRL = view.findViewById(R.id.saldo_seller_balance_rl);
         saldoBalanceSeparator = view.findViewById(R.id.saldo_balance_separator);
         saldoDepositExpandIV = view.findViewById(R.id.saldo_deposit_layout_expand);
+        merchantDetailsExpandIV = view.findViewById(R.id.merchant_detail_layout_expand);
         saldoTypeLL = view.findViewById(R.id.saldo_type_ll);
+        merchantDetailLL = view.findViewById(R.id.merchant_details_ll);
+        merchantStatusLL = view.findViewById(R.id.merchant_status_ll);
         saldoDepositExpandIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_up_grey));
 
         if (expandLayout) {
@@ -223,6 +235,13 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         } else {
             saldoDepositExpandIV.animate().rotation(180).setDuration(animation_duration);
             saldoTypeLL.setVisibility(View.GONE);
+        }
+
+        if (expandMerchantDetailLayout) {
+            merchantDetailLL.setVisibility(View.VISIBLE);
+        } else {
+            merchantDetailsExpandIV.animate().rotation(180).setDuration(animation_duration);
+            merchantDetailLL.setVisibility(View.GONE);
         }
 
         saldoHistoryFragment = (SaldoTransactionHistoryFragment) getChildFragmentManager().findFragmentById(R.id.saldo_history_layout);
@@ -234,13 +253,25 @@ public class SaldoDepositFragment extends BaseDaggerFragment
             if (expandLayout) {
                 saldoDepositExpandIV.animate().rotation(180).setDuration(animation_duration);
                 expandLayout = false;
-                saldoTypeLL.setVisibility(View.GONE);
+                collapse(saldoTypeLL);
             } else {
                 saldoDepositExpandIV.animate().rotation(0).setDuration(animation_duration);
                 expandLayout = true;
-                saldoTypeLL.setVisibility(View.VISIBLE);
+                expand(saldoTypeLL);
             }
 
+        });
+
+        merchantDetailsExpandIV.setOnClickListener(v -> {
+            if (expandMerchantDetailLayout) {
+                merchantDetailsExpandIV.animate().rotation(180).setDuration(animation_duration);
+                expandMerchantDetailLayout = false;
+                collapse(merchantDetailLL);
+            } else {
+                merchantDetailsExpandIV.animate().rotation(0).setDuration(animation_duration);
+                expandMerchantDetailLayout = true;
+                expand(merchantDetailLL);
+            }
         });
 
         drawButton.setOnClickListener(v -> {
@@ -272,6 +303,52 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         tickerMessageCloseButton.setOnClickListener(v -> tickerMessageRL.setVisibility(View.GONE));
     }
 
+    private void expand(final View v) {
+        v.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        final int targetHeight = v.getMeasuredHeight();    // Older versions of android (pre API 21) cancel animations for views with a height of 0.
+        v.getLayoutParams().height = 1;
+        v.setVisibility(View.VISIBLE);
+        Animation a = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                v.getLayoutParams().height = interpolatedTime == 1
+                        ? ViewGroup.LayoutParams.WRAP_CONTENT
+                        : (int) (targetHeight * interpolatedTime);
+                v.requestLayout();
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+        a.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
+        v.startAnimation(a);
+    }
+
+    private void collapse(final View v) {
+        final int initialHeight = v.getMeasuredHeight();
+        Animation a = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                if (interpolatedTime == 1) {
+                    v.setVisibility(View.GONE);
+                } else {
+                    v.getLayoutParams().height = initialHeight - (int) (initialHeight * interpolatedTime);
+                    v.requestLayout();
+                }
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+        a.setDuration((int) (initialHeight / v.getContext().getResources().getDisplayMetrics().density));
+        v.startAnimation(a);
+    }
+
+
     private void showMustVerify() {
         new android.support.v7.app.AlertDialog.Builder(Objects.requireNonNull(getActivity()))
                 .setTitle(getActivity().getString(R.string.sp_alert_not_verified_yet_title))
@@ -292,11 +369,9 @@ public class SaldoDepositFragment extends BaseDaggerFragment
             Intent intent = ((SaldoDetailsRouter) getActivity().getApplication()).getWithdrawIntent(context, isSellerEnabled());
             saldoDetailsPresenter.onDrawClicked(intent);
         }
-
     }
 
     private void showSaldoWarningDialog() {
-
         new android.support.v7.app.AlertDialog.Builder(Objects.requireNonNull(getActivity()))
                 .setTitle(getActivity().getString(R.string.sp_saldo_withdraw_warning_title))
                 .setMessage(getActivity().getString(R.string.sp_saldo_withdraw_warning_desc))
@@ -324,20 +399,36 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         if (getActivity() != null && getActivity().getApplication() instanceof SaldoDetailsRouter) {
 
             if (((SaldoDetailsRouter) getActivity().getApplication())
-                    .isSaldoNativeEnabled()) {
-                saldoDetailsPresenter.getMerchantSaldoDetails();
+                    .isSaldoNativeEnabled() && ((SaldoDetailsRouter) getActivity().getApplication())
+                    .isMerchantCreditLineEnabled()) {
+                saldoDetailsPresenter.getUserFinancialStatus();
             } else {
-                hideSaldoPrioritasFragment();
+
+                if (((SaldoDetailsRouter) getActivity().getApplication())
+                        .isSaldoNativeEnabled()) {
+                    saldoDetailsPresenter.getMerchantSaldoDetails();
+                } else {
+                    hideSaldoPrioritasFragment();
+                }
+
+                if (((SaldoDetailsRouter) getActivity().getApplication())
+                        .isMerchantCreditLineEnabled()) {
+                    saldoDetailsPresenter.getMerchantCreditLineDetails();
+                } else {
+                    hideMerchantCreditLineFragment();
+                }
             }
         } else {
-            hideSaldoPrioritasFragment();
+            hideUserFinancialStatusLayout();
         }
 
     }
 
     @Override
-    public void showSaldoBalanceSeparator() {
-        saldoBalanceSeparator.setVisibility(View.VISIBLE);
+    public void hideUserFinancialStatusLayout() {
+        merchantStatusLL.setVisibility(View.GONE);
+        hideSaldoPrioritasFragment();
+        hideMerchantCreditLineFragment();
     }
 
     private void showBottomSheetInfoDialog(boolean isSellerClicked) {
@@ -389,11 +480,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     @Override
     public float getBuyerSaldoBalance() {
         return buyerSaldoBalance;
-    }
-
-    @Override
-    public float getTotalSaldoBalance() {
-        return totalSaldoBalance;
     }
 
     @Override
@@ -463,6 +549,11 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void hideMerchantCreditLineFragment() {
+        merchantCreditFrameLayout.setVisibility(View.GONE);
+    }
+
+    @Override
     public void showTickerMessage(String withdrawalTicker) {
         tickerMessageRL.setVisibility(View.VISIBLE);
         tickeRMessageTV.setText(withdrawalTicker);
@@ -504,7 +595,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     public void showSaldoPrioritasFragment(GqlDetailsResponse sellerDetails) {
         if (sellerDetails != null &&
                 sellerDetails.isEligible()) {
-
+            merchantStatusLL.setVisibility(View.VISIBLE);
             Bundle bundle = new Bundle();
             bundle.putParcelable(BUNDLE_PARAM_SELLER_DETAILS, sellerDetails);
             getChildFragmentManager()
@@ -514,6 +605,22 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         } else {
             hideSaldoPrioritasFragment();
         }
+    }
+
+    @Override
+    public void showMerchantCreditLineFragment(GqlMerchantCreditResponse response) {
+        if (response != null && response.isEligible()) {
+            merchantStatusLL.setVisibility(View.VISIBLE);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, response);
+            getChildFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.merchant_credit_line_widget, MerchantCreditDetailFragment.newInstance(bundle))
+                    .commit();
+        } else {
+            hideMerchantCreditLineFragment();
+        }
+
     }
 
     @Override

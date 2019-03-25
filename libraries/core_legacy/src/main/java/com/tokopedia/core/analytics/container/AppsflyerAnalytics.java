@@ -1,7 +1,6 @@
 package com.tokopedia.core.analytics.container;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -24,12 +23,6 @@ import com.tokopedia.track.interfaces.ContextAnalytics;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 public class AppsflyerAnalytics extends ContextAnalytics {
     private static final String TAG = AppsflyerAnalytics.class.getSimpleName();
@@ -116,6 +109,11 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     }
 
     @Override
+    public void sendGeneralEvent(String event, String category, String action, String label) {
+        // no op, only for GTM
+    }
+
+    @Override
     public void sendEnhanceECommerceEvent(Map<String, Object> value) {
         // no op, only for GTM
     }
@@ -148,8 +146,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         AppsFlyerLib.getInstance().startTracking(getContext(), key);
     }
 
-    public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
-        CommonUtils.dumper(TAG + " Appsflyer send " + eventName + " " + eventValue);
+    public void sendEvent(String eventName, Map<String, Object> eventValue) {
         AppsFlyerLib.getInstance().trackEvent(getContext(), eventName, eventValue);
     }
 

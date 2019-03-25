@@ -6,7 +6,7 @@ android {
     defaultConfig {
         println "vectorDrawableConfig"
         println vectorDrawable
-        vectorDrawables.useSupportLibrary = vectorDrawable
+        vectorDrawables.useSupportLibrary=vectorDrawable.toBoolean()
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

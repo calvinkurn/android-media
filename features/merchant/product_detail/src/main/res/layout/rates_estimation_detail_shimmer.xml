@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingEnd="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_24"
+        android:orientation="horizontal">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="@dimen/dp_120"
+            android:layout_height="@dimen/dp_8"
+            app:corners="8" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="@dimen/dp_120"
+            android:layout_height="@dimen/dp_8"
+            android:layout_gravity="end"
+            app:corners="8" />
+    </FrameLayout>
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_24"
+        app:width_weight="0.6"
+        app:corners="8"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_32"
+        android:layout_marginEnd="@dimen/dp_32"
+        android:lineSpacingExtra="6sp"
+        app:width_weight="0.5"
+        app:corners="8"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_32"
+        android:layout_marginEnd="@dimen/dp_32"
+        android:lineSpacingExtra="6sp"
+        app:width_weight="0.5"
+        app:corners="8"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_72"
+        android:background="@color/grey_200"
+        android:layout_marginTop="@dimen/dp_32"
+        android:padding="@dimen/dp_16"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@drawable/bg_list_separator"
+        android:showDividers="middle"
+        android:orientation="vertical">
+
+        <include layout="@layout/item_rates_estimation_service_shimmer"/>
+
+        <include layout="@layout/item_rates_estimation_service_shimmer"/>
+
+        <include layout="@layout/item_rates_estimation_service_shimmer"/>
+
+        <include layout="@layout/item_rates_estimation_service_shimmer"/>
+
+    </LinearLayout>
+
+</LinearLayout>

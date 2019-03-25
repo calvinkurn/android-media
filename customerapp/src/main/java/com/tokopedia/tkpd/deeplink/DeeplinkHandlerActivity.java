@@ -74,6 +74,8 @@ import com.tokopedia.interestpick.applink.InterestPickApplinkModule;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModuleLoader;
 import com.tokopedia.kol.applink.KolApplinkModule;
 import com.tokopedia.kol.applink.KolApplinkModuleLoader;
+import com.tokopedia.kyc.deeplink.OvoUpgradeDeeplinkModule;
+import com.tokopedia.kyc.deeplink.OvoUpgradeDeeplinkModuleLoader;
 import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
 import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
@@ -87,12 +89,16 @@ import com.tokopedia.notifcenter.applink.NotifCenterApplinkModule;
 import com.tokopedia.notifcenter.applink.NotifCenterApplinkModuleLoader;
 import com.tokopedia.officialstore.applink.OfficialStoreApplinkModule;
 import com.tokopedia.officialstore.applink.OfficialStoreApplinkModuleLoader;
+import com.tokopedia.ovo.OvoPayWithQrApplinkModule;
+import com.tokopedia.ovo.OvoPayWithQrApplinkModuleLoader;
 import com.tokopedia.payment.setting.applink.PaymentSettingApplinkModule;
 import com.tokopedia.payment.setting.applink.PaymentSettingApplinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
 import com.tokopedia.pms.howtopay.HowtopayApplinkModule;
 import com.tokopedia.pms.howtopay.HowtopayApplinkModuleLoader;
+import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
+import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModule;
 import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModuleLoader;
 import com.tokopedia.product.manage.list.applink.ProductManageApplinkModule;
@@ -150,7 +156,7 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         SellerApplinkModule.class,
         TransactionApplinkModule.class,
         DigitalApplinkModule.class,
-        PdpApplinkModule.class,
+        ProductDetailApplinkModule.class,
         HomeApplinkModule.class,
         DiscoveryApplinkModule.class,
         SessionApplinkModule.class,
@@ -161,6 +167,7 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         ReputationApplinkModule.class,
         TokoCashApplinkModule.class,
         EventsDeepLinkModule.class,
+        OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
         DealsDeepLinkModule.class,
         ShopAppLinkModule.class,
@@ -196,7 +203,9 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         SaldoDetailsAppLinkModule.class,
         ChatbotApplinkModule.class,
         HomeCreditAppLinkModule.class,
-        OfficialStoreApplinkModule.class
+        OfficialStoreApplinkModule.class,
+        OvoPayWithQrApplinkModule.class,
+        PdpApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
@@ -212,10 +221,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new InboxDeeplinkModuleLoader(),
                     new ReferralDeeplinkModuleLoader(),
                     new ShopOpenApplinkModuleLoader(),
+                    new OvoUpgradeDeeplinkModuleLoader(),
                     new SellerApplinkModuleLoader(),
                     new TransactionApplinkModuleLoader(),
                     new DigitalApplinkModuleLoader(),
-                    new PdpApplinkModuleLoader(),
+                    new ProductDetailApplinkModuleLoader(),
                     new HomeApplinkModuleLoader(),
                     new DiscoveryApplinkModuleLoader(),
                     new SessionApplinkModuleLoader(),
@@ -261,7 +271,9 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new SaldoDetailsAppLinkModuleLoader(),
                     new ChatbotApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
-                    new OfficialStoreApplinkModuleLoader()
+                    new OfficialStoreApplinkModuleLoader(),
+                    new OvoPayWithQrApplinkModuleLoader(),
+                    new PdpApplinkModuleLoader()
             );
         }
 

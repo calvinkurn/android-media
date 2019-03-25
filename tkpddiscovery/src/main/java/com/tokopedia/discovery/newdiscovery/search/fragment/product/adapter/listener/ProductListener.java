@@ -23,4 +23,6 @@ public interface ProductListener extends EmptyStateListener {
     void onRelatedSearchClicked(String keyword);
 
     void onQuickFilterSelected(Option option);
+
+    void onProductImpressed(ProductItem item, int adapterPosition);
 }
