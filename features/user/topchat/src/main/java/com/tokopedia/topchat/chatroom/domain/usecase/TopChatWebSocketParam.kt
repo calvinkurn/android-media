@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
 import com.tokopedia.chat_common.data.WebsocketEvent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.common.InboxChatConstant.UPLOADING
 
 /**
@@ -60,6 +61,23 @@ object TopChatWebSocketParam {
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE)
         val data = JsonObject()
         data.addProperty("msg_id", thisMessageId.toIntOrZero())
+        json.add("data", data)
+        return json.toString()
+    }
+
+    fun generateParamCopyVoucherCode(thisMessageId: String, replyId: String, blastId: String, attachmentId: String, replyTime: String?, fromUid: String?): String {
+        val json = JsonObject()
+        json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_COPY_VOUCHER_CODE)
+        val data = JsonObject()
+        data.addProperty("type", 1)
+        val markReadBlast = JsonObject()
+        markReadBlast.addProperty("msg_id", thisMessageId.toLongOrZero())
+        markReadBlast.addProperty("reply_id", replyId.toLongOrZero())
+        markReadBlast.addProperty("blast_id", blastId.toLongOrZero())
+        markReadBlast.addProperty("attachment_id", attachmentId.toLongOrZero())
+        markReadBlast.addProperty("user_id", fromUid.toLongOrZero())
+        markReadBlast.addProperty("reply_time_nano", replyTime.toLongOrZero())
+        data.add("mark_read_blast", markReadBlast)
         json.add("data", data)
         return json.toString()
     }

@@ -12,19 +12,24 @@ import java.util.Map;
 public class AutoCompleteTracking {
 
 
-    public static final String CLICK_TOP_NAV = "clickTopNav";
-    public static final String TOP_NAV = "top nav";
+    public static final String EVENT = "event";
+    public static final String EVENT_CLICK_TOP_NAV = "clickTopNav";
+    public static final String EVENT_CATEGORY = "eventCategory";
+    public static final String EVENT_ACTION = "eventAction";
+    public static final String EVENT_LABEL = "eventLabel";
+    public static final String EVENT_CLICK_SEARCH = "clickSearch";
+    public static final String EVENT_CLICK_SEARCH_RESULT = "clickSearchResult";
+
+    public static final String EVENTCATEGORY_TOP_NAV = "top nav";
+
     public static final String CLICK_POPULAR_SEARCH = "click - popular search";
     public static final String CLICK_RECENT_SEARCH = "click - recent search";
     public static final String CLICK_DIGITAL_PRODUCT_SUGGESTION = "click - digital product suggestion";
     public static final String CLICK_CATEGORY_SUGGESTION = "click - category suggestion";
     public static final String CLICK_SEARCH = "click - search";
-    public static final String EVENT_CLICK_SEARCH = "clickSearch";
-    public static final String EVENT_CLICK_SEARCH_RESULT = "clickSearchResult";
-    public static final String EVENT = "event";
-    public static final String EVENT_CATEGORY = "eventCategory";
-    public static final String EVENT_ACTION = "eventAction";
-    public static final String EVENT_LABEL = "eventLabel";
+    public static final String CLICK_PROFILE_SUGGESTION = "click - profile autocomplete on suggestion list";
+    public static final String CLICK_TOP_PROFILE_SUGGESTION = "click - profile autocomplete on top suggestion";
+
     public static final String ECOMMERCE = "ecommerce";
     public static final String PRODUCT_CLICK = "productClick";
     public static final String CLICK_RECENT_VIEW_PRODUCT = "click - recent view product";
@@ -46,51 +51,52 @@ public class AutoCompleteTracking {
     public static final String ACTION_CLICK_HOTLIST_SUGGESTION = "click - hotlist suggestion";
 
     public static void eventClickPopularSearch(Context context, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_CLICK_SEARCH,
-                TOP_NAV,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_CLICK_SEARCH,
+                EVENTCATEGORY_TOP_NAV,
                 CLICK_POPULAR_SEARCH,
                 label
-        ));
+        );
     }
 
     public static void eventClickRecentSearch(Context context, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH,
-                TOP_NAV,
+                EVENTCATEGORY_TOP_NAV,
                 CLICK_RECENT_SEARCH,
                 label
-        ));
+        );
     }
 
     public static void eventClickAutoCompleteSearch(Context context, String label, String tabName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH_RESULT,
-                TOP_NAV,
+                EVENTCATEGORY_TOP_NAV,
                 String.format("click - product autocomplete - tab: %s", tabName),
                 label
-        ));
+        );
     }
 
     public static void eventClickShopSearch(Context context,
                                             String label,
                                             String tabName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH_RESULT,
-                TOP_NAV,
+                EVENTCATEGORY_TOP_NAV,
                 String.format("click - shop autocomplete - tab: %s", tabName),
                 label
-        ));
+        );
     }
 
     public static void eventClickInCategory(Context context,
                                             String label,
                                             String tabName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH_RESULT,
-                TOP_NAV,
+                EVENTCATEGORY_TOP_NAV,
                 String.format("click - category autocomplete - tab: %s", tabName),
                 label
-        ));
+        );
     }
 
     public static void eventClickInHotlist(Context context,
@@ -99,9 +105,9 @@ public class AutoCompleteTracking {
                                            String id,
                                            int position,
                                            String applink) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                CLICK_TOP_NAV,
-                TOP_NAV,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_CLICK_TOP_NAV,
+                EVENTCATEGORY_TOP_NAV,
                 ACTION_CLICK_HOTLIST_SUGGESTION,
                 String.format(
                         LABEL_HOTLIST_CLICK,
@@ -111,43 +117,62 @@ public class AutoCompleteTracking {
                         String.valueOf(position),
                         applink
                 )
-        ));
+        );
     }
 
     public static void eventClickCategory(Context context,
                                           String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH_RESULT,
-                TOP_NAV,
+                EVENTCATEGORY_TOP_NAV,
                 CLICK_CATEGORY_SUGGESTION,
                 label
-        ));
+        );
     }
 
     public static void eventClickDigital(Context context, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH_RESULT,
-                TOP_NAV,
+                EVENTCATEGORY_TOP_NAV,
                 CLICK_DIGITAL_PRODUCT_SUGGESTION,
                 label
-        ));
+        );
+    }
+
+    public static void eventClickProfile(Context context, String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_CLICK_TOP_NAV,
+                EVENTCATEGORY_TOP_NAV,
+                CLICK_PROFILE_SUGGESTION,
+                label
+        );
+    }
+
+    public static void eventClickTopProfile(Context context, String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_CLICK_TOP_NAV,
+                EVENTCATEGORY_TOP_NAV,
+                CLICK_TOP_PROFILE_SUGGESTION,
+                label
+        );
     }
 
     public static void eventClickSubmit(Context context, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH,
-                TOP_NAV,
+                EVENTCATEGORY_TOP_NAV,
                 CLICK_SEARCH,
                 label
-        ));
+        );
     }
 
     public static void eventClickRecentView(Context context,
                                             String position,
                                             BaseItemAutoCompleteSearch data) {
         Map<String, Object> productData = convertSearchItemToProductData(data, position);
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(DataLayer.mapOf(EVENT, PRODUCT_CLICK,
-                        EVENT_CATEGORY, TOP_NAV,
+        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+                DataLayer.mapOf(EVENT, PRODUCT_CLICK,
+                        EVENT_CATEGORY, EVENTCATEGORY_TOP_NAV,
                         EVENT_ACTION, CLICK_RECENT_VIEW_PRODUCT,
                         EVENT_LABEL, String.
                                 format(LABEL_RECENT_VIEW_CLICK,

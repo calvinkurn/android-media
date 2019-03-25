@@ -35,6 +35,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation rootProject.ext.playServicesDependencies.analytics
 
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 

@@ -13,13 +13,13 @@ class NotifCenterAnalytics @Inject constructor() {
     val EVENT_CLICK_NOTIF_CENTER = "clickNotifCenter"
     val CATEGORY_NOTIF_CENTER = "notif center"
 
-    fun trackClickList() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+    fun trackClickList(notifId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 EVENT_CLICK_NOTIF_CENTER,
                 CATEGORY_NOTIF_CENTER,
                 "click on notif list",
-                ""
-        ))
+                notifId
+        )
     }
 
     fun trackClickFilter(filterName: String) {

@@ -96,6 +96,15 @@ public class MoengageAnalytics extends ContextAnalytics {
         // no op, only for GTM
     }
 
+    @Override
+    public void sendEvent(String eventName, Map<String, Object> eventValue) {
+        PayloadBuilder builder = new PayloadBuilder();
+        for (Map.Entry<String, Object> entry : eventValue.entrySet()) {
+            builder.putAttrString(entry.getKey(), entry.getValue().toString());
+        }
+        sendTrackEvent(builder.build(), eventName);
+    }
+
     public void isExistingUser(final boolean bol) {
         CommonUtils.dumper("MoEngage check is existing user " + bol);
         MoEHelper.getInstance(getContext()).setExistingUser(bol);

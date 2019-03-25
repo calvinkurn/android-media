@@ -76,6 +76,36 @@ public class FeedAnalytics {
         this.userSession = userSession;
     }
 
+    //#FEED015
+    public void trackClickCreatePost(String userId) {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_FEED,
+                CATEGORY_FEED,
+                "click buat post",
+                userId
+        );
+    }
+
+    //#FEED016
+    public void trackClickCreatePostAsShop(String shopId) {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_FEED,
+                CATEGORY_FEED,
+                "click post sebagai - shop",
+                shopId
+        );
+    }
+
+    //#FEED016
+    public void trackClickCreatePostAsUser(String userId) {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_FEED,
+                CATEGORY_FEED,
+                "click post sebagai - user",
+                userId
+        );
+    }
+
     public interface Element {
         String AVATAR = "avatar";
         String IMAGE = "image";

@@ -145,6 +145,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         }
     }
 
+    @Override
     public void onViewRecycled() {
         baseKolView.onViewRecycled();
     }

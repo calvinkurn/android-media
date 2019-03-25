@@ -100,40 +100,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/label_weight"/>
 
     <com.tokopedia.design.component.TextViewCompat
-        android:id="@+id/label_success_rate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/label_success_transaction"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        app:fontSize="small"
-        app:textViewTheme="lightDisabled"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_weight"/>
-
-    <com.tokopedia.design.component.TextViewCompat
-        android:id="@+id/txt_success_rate"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_16"
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:gravity="end"
-        tools:text="250 gr"
-        app:fontSize="small"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/label_success_rate"
-        app:layout_constraintStart_toEndOf="@+id/label_success_rate"
-        app:layout_constraintTop_toTopOf="@+id/label_success_rate"
-        app:layout_constraintBottom_toBottomOf="@+id/label_success_rate"/>
-
-    <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/label_product_condition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -145,7 +111,7 @@
         app:textViewTheme="lightDisabled"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_success_rate"/>
+        app:layout_constraintTop_toBottomOf="@+id/label_weight"/>
 
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/txt_product_condition"

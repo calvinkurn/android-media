@@ -63,4 +63,6 @@ public interface IHomeRouter {
     String getExtraBroadcastReceiverWallet();
 
     Intent getIntentCreateShop(Context context);
+
+    Intent gotoQrScannerPage(boolean needResult);
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.core.analytics.container;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -173,8 +172,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         AppsFlyerLib.getInstance().startTracking(getContext(), key);
     }
 
-    public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
-        CommonUtils.dumper(TAG + " Appsflyer send " + eventName + " " + eventValue);
+    public void sendEvent(String eventName, Map<String, Object> eventValue) {
         AppsFlyerLib.getInstance().trackEvent(getContext(), eventName, eventValue);
     }
 

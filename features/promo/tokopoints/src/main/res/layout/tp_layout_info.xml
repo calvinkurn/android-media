@@ -4,13 +4,13 @@
     android:layout_height="match_parent"
     android:padding="@dimen/tp_padding_small">
 
-    <View
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/tp_tnc_height"
-        android:visibility="invisible" />
+        android:layout_height="match_parent">
 
-    <WebView
-        android:id="@+id/text_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        <WebView
+            android:id="@+id/text_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </ScrollView>
 </FrameLayout>

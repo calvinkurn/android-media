@@ -65,7 +65,6 @@ public class RemoteConfigKey {
     public static final String PINJAMAN_MODAL_AKUN_PAGE_POSITION_TOP = "app_widget_pinjamin_show_on_top";
 
     public static final String APP_ENABLE_ACCOUNT_AFFILIATE = "app_enable_account_affiliate";
-    public static final String AFFILIATE_EXPLORE_ENABLE_FILTER = "affiliate_explore_enable_filter";
     public static final String AFFILIATE_PROFILE_SHARE_ALL = "android_customer_enable_profile_share_allow_all";
     public static final String AFFILIATE_PROFILE_SHARE_RULES = "android_customer_enable_profile_share_rules";
 
@@ -85,4 +84,19 @@ public class RemoteConfigKey {
     public static final String APP_ENABLE_SALDO_SPLIT = "app_enable_saldo_split";
 
     public static final String MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL = "main_app_disable_new_product_detail";
+    public static final String APP_ENABLE_MERCHANT_CREDIT_LINE = "app_enable_merchant_credit_line";
+
+    public static final String NONB1_TTL = "nonb_1_ttl";
+    public static final String NONB1_DESC = "nonb_1_dsc";
+    public static final String NONB2_TTL = "nonb_2_ttl";
+    public static final String NONB2_DESC = "nonb_2_dsc";
+    public static final String NONB3_TTL = "nonb_3_ttl";
+    public static final String NONB3_DESC = "nonb_3_dsc";
+    public static final String NONB4_TTL = "nonb_4_ttl";
+    public static final String NONB4_DESC = "nonb_4_dsc";
+    public static final String NONB5_TTL = "nonb_5_ttl";
+    public static final String NONB5_DESC = "nonb_5_dsc";
+    public static final String OVO_ENABLE_FLAG = "app_enable_ovo_pay_by_qr";
+    public static final String OVO_QR_MIN_AMOUNT = "app_ovo_min_balance";
+    public static final String OVO_QR_MAX_AMOUNT = "app_ovo_max_balance";
 }

@@ -22,7 +22,6 @@ import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.gamification.GamificationComponentInstance;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkUtil;
@@ -33,6 +32,7 @@ import com.tokopedia.gamification.cracktoken.presenter.CrackEmptyTokenPresenter;
 import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
 import com.tokopedia.gamification.data.entity.TokenDataEntity;
 import com.tokopedia.gamification.di.GamificationComponent;
+import com.tokopedia.gamification.di.GamificationComponentInstance;
 
 import javax.inject.Inject;
 

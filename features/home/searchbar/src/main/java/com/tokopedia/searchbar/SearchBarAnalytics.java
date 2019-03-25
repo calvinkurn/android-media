@@ -39,7 +39,7 @@ public class SearchBarAnalytics {
     public void eventTrackingNotification(String screenName) {
         TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
                 getDataEvent(screenName,
-                        SearchBarConstant.CLICK_HOME_PAGE,
+                        SearchBarConstant.CLICK_TOP_NAV,
                         SearchBarConstant.TOP_NAV,
                         String.format("%s %s", SearchBarConstant.CLICK,
                                 SearchBarConstant.NOTIFICATION)));
