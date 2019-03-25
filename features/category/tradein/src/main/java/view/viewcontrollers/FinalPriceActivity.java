@@ -84,6 +84,7 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         viewArrayList.add(findViewById(R.id.tv_model));
         viewArrayList.add(findViewById(R.id.tv_exchange));
         viewArrayList.add(findViewById(R.id.tv_final_price));
+        viewArrayList.add(findViewById(R.id.tv_price));
         viewArrayList.add(findViewById(R.id.tv_title));
         viewArrayList.add(findViewById(R.id.divider1));
         viewArrayList.add(findViewById(R.id.divider2));
