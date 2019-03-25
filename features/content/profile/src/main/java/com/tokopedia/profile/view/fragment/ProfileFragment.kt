@@ -1353,18 +1353,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 .make(view,
                         getString(R.string.profile_feed_content_reported),
                         BaseToaster.LENGTH_LONG)
-                .setAction(R.string.label_close) { v -> }
+                .setAction(R.string.label_close) { }
                 .show()
     }
 
     private fun onErrorReportContent(errorMsg: String?) {
         ToasterError
                 .make(view, errorMsg, BaseToaster.LENGTH_LONG)
-                .setAction(R.string.label_close) { v -> }
+                .setAction(R.string.label_close) { }
                 .show()
     }
 
-    fun onGoToLink(link: String) {
+    private fun onGoToLink(link: String) {
         activity?.let {
             if (!TextUtils.isEmpty(link)) {
                 profileRouter.openRedirectUrl(it, link)
