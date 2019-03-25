@@ -69,7 +69,6 @@ allprojects {
         flatDir {
             dirs '../aars'
             dirs project(rootProject.ext.libraries.inappupdate).file('libs')
-//            dirs project(rootProject.ext.features.instantDebitBca).file('libs')
         }
         maven { url 'https://hansel.io/maven' }
     }
