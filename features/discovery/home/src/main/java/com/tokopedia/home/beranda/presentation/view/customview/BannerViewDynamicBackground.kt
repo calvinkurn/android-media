@@ -16,6 +16,7 @@ import android.widget.ImageView
 import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.banner.Banner
 import com.tokopedia.design.banner.BannerPagerAdapter
 import com.tokopedia.design.banner.BannerView
 import com.tokopedia.home.R
@@ -30,7 +31,7 @@ class BannerViewDynamicBackground : BannerView {
 
     private lateinit var imgBannerBackground: ImageView
 
-    private lateinit var cardBannerView: CardBannerView
+    private lateinit var cardBannerView: Banner
 
     private var currentBitmapDrawable: BitmapDrawable? = null
 
