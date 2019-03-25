@@ -2,6 +2,7 @@ package com.tokopedia.core.analytics.container;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -95,10 +96,24 @@ public class GTMAnalytics extends ContextAnalytics {
             PendingResult<ContainerHolder> pResult = tagManager.loadContainerPreferFresh(bundle.getString(AppEventTracking.GTM.GTM_ID),
                     bundle.getInt(AppEventTracking.GTM.GTM_RESOURCE));
 
-            pResult.setResultCallback(ContainerHolderSingleton::setContainerHolder, 2, TimeUnit.SECONDS);
+            pResult.setResultCallback(cHolder -> {
+                ContainerHolderSingleton.setContainerHolder(cHolder);
+                if (isAllowRefreshDefault(cHolder)) {
+                    Log.i("GTM TKPD", "Refreshed Container ");
+                    cHolder.refresh();
+                }
+            }, 2, TimeUnit.SECONDS);
         } catch (Exception e) {
             eventError(getContext().getClass().toString(), e.toString());
         }
+    }
+
+    private Boolean isAllowRefreshDefault(ContainerHolder containerHolder) {
+        long lastRefresh = 0;
+        if (containerHolder.getContainer() != null) {
+            lastRefresh = containerHolder.getContainer().getLastRefreshTime();
+        }
+        return System.currentTimeMillis() - lastRefresh > EXPIRE_CONTAINER_TIME_DEFAULT;
     }
 
     public void eventError(String screenName, String errorDesc) {
