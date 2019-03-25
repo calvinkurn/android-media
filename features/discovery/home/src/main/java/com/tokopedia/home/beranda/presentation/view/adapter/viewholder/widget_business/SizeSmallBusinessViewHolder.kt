@@ -125,7 +125,9 @@ open class SizeSmallBusinessViewHolder (
     }
 
     open fun hasPrice(element: HomeWidget.ContentItemTab?): Boolean {
-        return !(element?.price.isNullOrEmpty() || element?.pricePrefix.isNullOrEmpty() || element?.originalPrice.isNullOrEmpty())
+        return element?.price.isNullOrEmpty().not()
+                || element?.pricePrefix.isNullOrEmpty().not()
+                || element?.originalPrice.isNullOrEmpty().not()
     }
 
     open fun renderPrice(element: HomeWidget.ContentItemTab?) {
