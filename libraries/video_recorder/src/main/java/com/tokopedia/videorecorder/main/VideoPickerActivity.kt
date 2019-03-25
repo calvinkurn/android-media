@@ -162,7 +162,7 @@ open class VideoPickerActivity: BaseSimpleActivity(),
     }
 
     protected open fun onVideoDoneClicked() {
-        if (isVideoSourcePicker && videoPreview.duration > VIDEO_MAX_DURATION_MS) {
+        if (!isVideoSourcePicker && videoPreview.duration > VIDEO_MAX_DURATION_MS) {
             //prepared
             val resultFile = FileUtils.videoPath(FileUtils.RESULT_DIR).absolutePath
             val trimQuery = VideoUtils.ffmegCommand(videoPath, resultFile)
