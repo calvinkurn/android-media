@@ -381,6 +381,11 @@ public class ExploreFragment
                                        RecyclerView.State state) {
                 super.getItemOffsets(outRect, view, parent, state);
                 int position = parent.getChildAdapterPosition(view);
+
+                if (position == 0) {
+                    outRect.top = (int) getResources().getDimension(R.dimen.dp_16);
+                }
+
                 Visitable visitable = adapter.getData().get(position);
                 if (visitable instanceof ExploreProductViewModel
                         && view.getLayoutParams() instanceof GridLayoutManager.LayoutParams) {
