@@ -47,7 +47,12 @@ class TabBusinessViewModel @Inject constructor(
             if (data.getError(HomeWidget.Data::class.java) == null ||
                     data.getError(HomeWidget.Data::class.java).isEmpty()) {
                 if (data.getData<HomeWidget.Data>(HomeWidget.Data::class.java) != null) {
-                    homeWidget.value = Success(data.getData<HomeWidget.Data>(HomeWidget.Data::class.java).homeWidget)
+                    val temp = data.getData<HomeWidget.Data>(HomeWidget.Data::class.java).homeWidget
+                    if (temp.tabBusinessList.isEmpty().not()) {
+                        homeWidget.value = Success(temp)
+                    } else {
+                        homeWidget.value = Fail(ResponseErrorException("empty"))
+                    }
                 } else {
                     homeWidget.value = Fail(ResponseErrorException("local handling error"))
                 }
