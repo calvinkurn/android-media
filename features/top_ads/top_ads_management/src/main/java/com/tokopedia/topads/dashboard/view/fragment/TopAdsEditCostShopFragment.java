@@ -9,6 +9,7 @@ import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
+import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;
 import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailShopViewModel;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailEditShopPresenter;
@@ -54,7 +55,7 @@ public class TopAdsEditCostShopFragment extends TopAdsEditCostFragment<TopAdsDet
     }
 
     @Override
-    protected void setSuggestionBidText(@Nullable GetSuggestionResponse data) {
+    protected void setSuggestionBidText(@Nullable MinimumBidDomain.TopadsBidInfo.Data data) {
         // Do nothing
     }
 
@@ -70,6 +71,16 @@ public class TopAdsEditCostShopFragment extends TopAdsEditCostFragment<TopAdsDet
 
     @Override
     public void onSuggestionError(@Nullable Throwable t) {
+
+    }
+
+    @Override
+    public void onBidInfoSuccess(MinimumBidDomain.TopadsBidInfo bidInfo) {
+
+    }
+
+    @Override
+    public void onBidInfoError(@Nullable Throwable t) {
 
     }
 }

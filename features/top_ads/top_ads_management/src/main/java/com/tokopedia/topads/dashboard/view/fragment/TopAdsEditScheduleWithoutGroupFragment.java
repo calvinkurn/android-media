@@ -14,6 +14,7 @@ import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
+import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailProductViewModel;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailEditProductPresenter;
@@ -73,6 +74,16 @@ public class TopAdsEditScheduleWithoutGroupFragment extends TopAdsNewScheduleFra
     @Override
     public void onSuggestionError(@Nullable Throwable t) {
         /* just deal with abstraction */
+    }
+
+    @Override
+    public void onBidInfoSuccess(MinimumBidDomain.TopadsBidInfo bidInfo) {
+
+    }
+
+    @Override
+    public void onBidInfoError(@Nullable Throwable t) {
+
     }
 
     @Override
