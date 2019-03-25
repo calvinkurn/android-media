@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.MediaModel
+import com.tokopedia.affiliate.feature.createpost.view.viewmodel.MediaType
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.*
@@ -73,7 +74,13 @@ class CreatePostImagePickerActivity : ImagePickerActivity() {
 
         fun getInstance(context: Context, selectedImageList: ArrayList<MediaModel>,
                         maxImage: Int, showWarningDialog: Boolean): Intent {
-            val imagePathList = ArrayList(selectedImageList.map { it.path })
+
+            val imagePathList = ArrayList(
+                    selectedImageList
+                    .filter { it.type == MediaType.IMAGE }
+                    .toList()
+                    .map { it.path })
+
             val builder = ImagePickerBuilder(
                     context.getString(R.string.title_af_image_picker),
                     intArrayOf(TYPE_GALLERY, TYPE_CAMERA),
