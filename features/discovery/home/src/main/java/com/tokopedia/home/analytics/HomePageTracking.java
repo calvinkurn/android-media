@@ -681,9 +681,9 @@ public class HomePageTracking {
     }
 
     public static void eventClickTickerHomePage(Context context, String tickerTitle) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(
                     EVENT_CLICK_TICKER,
                     EVENT_CATEGORY_TICKER_HOMEPAGE,
                     EVENT_ACTION_CLICK_TICKER,
@@ -693,9 +693,9 @@ public class HomePageTracking {
     }
 
     public static void eventClickOnCloseTickerHomePage(Context context, String tickerTitle) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(
                     EVENT_CLICK_TICKER,
                     EVENT_CATEGORY_TICKER_HOMEPAGE,
                     EVENT_ACTION_CLICK_ON_CLOSE_TICKER,
@@ -705,9 +705,9 @@ public class HomePageTracking {
     }
 
     public static void eventOvo(Context context) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     String.format("%s %s %s", CLICK, ON, OVO),
@@ -717,9 +717,9 @@ public class HomePageTracking {
     }
 
     public static void eventQrCode(Context context) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     String.format("%s %s %s", CLICK, ON, QR_CODE),
@@ -729,9 +729,9 @@ public class HomePageTracking {
     }
 
     public static void eventTokopointNonLogin(Context context) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     String.format("%s %s %s - %s", CLICK, ON, LABEL_TOKOPOINTS, NON_LOGIN),
