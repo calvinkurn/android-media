@@ -20,7 +20,7 @@ import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_AD
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_MANAGE_ADDRESS;
-import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_MANAGE_ADDRESS_EMPTY_DEFAULT_ADDRESS;
+import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_MANAGE_ADDRESS_EMPTY_DEFAULT_ADDRESS;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.IS_DISTRICT_RECOMMENDATION;
@@ -101,7 +101,7 @@ public class AddAddressActivity extends BaseSimpleActivity {
                                                                                             @Nullable Token token) {
         return createInstance(
                 activity, null, token, false,
-                false, INSTANCE_TYPE_EDIT_ADDRESS_FROM_MANAGE_ADDRESS_EMPTY_DEFAULT_ADDRESS);
+                false, INSTANCE_TYPE_ADD_ADDRESS_FROM_MANAGE_ADDRESS_EMPTY_DEFAULT_ADDRESS);
     }
 
     private static Intent createInstance(
