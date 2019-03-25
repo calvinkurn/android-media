@@ -27,7 +27,7 @@ import javax.crypto.spec.SecretKeySpec;
  */
 @Deprecated
 public class AuthUtil {
-    private static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
+    public static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
     private static final String CONTENT_TYPE_JSON = "application/json";
     private static final String MAC_ALGORITHM = "HmacSHA1";
     private static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ";
