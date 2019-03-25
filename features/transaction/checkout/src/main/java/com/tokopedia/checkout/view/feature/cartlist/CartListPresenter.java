@@ -1270,12 +1270,14 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processCancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList) {
+        view.showProgressLoading();
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), oldPromoList);
         clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearCacheAutoApplyAfterClashSubscriber(view, this, newPromoList));
     }
 
     @Override
     public void processApplyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList) {
+        view.showProgressLoading();
         CheckPromoFirstStepParam checkPromoFirstStepParam = view.generateCheckPromoFirstStepParam();
         checkPromoFirstStepParam.setCodes(new ArrayList<>());
         if (checkPromoFirstStepParam.getOrders() != null) {

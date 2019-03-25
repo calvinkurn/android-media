@@ -62,21 +62,6 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
         adapter.notifyDataSetChanged()
 
         setButtonSubmitVisibility()
-        btSubmit.setOnClickListener {
-            for (index in adapter.data.indices) {
-                if (index == 0 && adapter.data[index].isSelected) {
-                    val oldPromoList = ArrayList<String>()
-                    adapter.data[index + 1].voucherOrders.forEach { voucherOrder ->
-                        oldPromoList.add(voucherOrder.code)
-                    }
-                    val newPromoList = ArrayList<String>()
-                    adapter.data[index].voucherOrders.forEach { voucherOrder ->
-                        newPromoList.add(voucherOrder.code)
-                    }
-                    actionListener.onSubmitNewPromoAfterClash(oldPromoList, adapter.data[index].voucherOrders)
-                }
-            }
-        }
     }
 
     private fun setButtonSubmitVisibility() {
@@ -89,6 +74,26 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
         }
 
         btSubmit.isEnabled = isDataSelected
+        if (btSubmit.isEnabled) {
+            btSubmit.setOnClickListener {
+                for (index in adapter.data.indices) {
+                    if (index == 0 && adapter.data[index].isSelected) {
+                        val oldPromoList = ArrayList<String>()
+                        adapter.data[index + 1].voucherOrders.forEach { voucherOrder ->
+                            oldPromoList.add(voucherOrder.code)
+                        }
+                        val newPromoList = ArrayList<String>()
+                        adapter.data[index].voucherOrders.forEach { voucherOrder ->
+                            newPromoList.add(voucherOrder.code)
+                        }
+                        dismiss()
+                        actionListener.onSubmitNewPromoAfterClash(oldPromoList, adapter.data[index].voucherOrders)
+                    } else {
+                        dismiss()
+                    }
+                }
+            }
+        }
     }
 
     override fun getLayoutResourceId(): Int {
