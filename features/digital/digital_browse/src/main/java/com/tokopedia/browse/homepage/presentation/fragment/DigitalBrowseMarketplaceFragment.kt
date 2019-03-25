@@ -16,16 +16,13 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.browse.R
 import com.tokopedia.browse.common.DigitalBrowseRouter
-import com.tokopedia.browse.common.data.DigitalBrowsePopularAnalyticsModel
 import com.tokopedia.browse.common.util.DigitalBrowseAnalytics
 import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent
 import com.tokopedia.browse.homepage.presentation.adapter.DigitalBrowseMarketplaceAdapter
 import com.tokopedia.browse.homepage.presentation.adapter.DigitalBrowseMarketplaceAdapterTypeFactory
 import com.tokopedia.browse.homepage.presentation.adapter.viewholder.DigitalBrowseCategoryViewHolder
-import com.tokopedia.browse.homepage.presentation.adapter.viewholder.DigitalBrowsePopularViewHolder
 import com.tokopedia.browse.homepage.presentation.contract.DigitalBrowseMarketplaceContract
 import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseMarketplaceViewModel
-import com.tokopedia.browse.homepage.presentation.model.DigitalBrowsePopularBrandsViewModel
 import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseRowViewModel
 import com.tokopedia.browse.homepage.presentation.presenter.DigitalBrowseMarketplacePresenter
 import com.tokopedia.design.component.TextViewCompat
@@ -37,14 +34,11 @@ import javax.inject.Inject
  */
 
 class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMarketplaceContract.View,
-        DigitalBrowseCategoryViewHolder.CategoryListener, DigitalBrowsePopularViewHolder.PopularBrandListener {
+        DigitalBrowseCategoryViewHolder.CategoryListener {
 
     @Inject lateinit var presenter: DigitalBrowseMarketplacePresenter
     @Inject lateinit var digitalBrowseAnalytics: DigitalBrowseAnalytics
 
-    private lateinit var containerPopularBrand: LinearLayout
-    private lateinit var tvAllPopularBrand: TextViewCompat
-    private lateinit var rvPopularBrand: RecyclerView
     private lateinit var rvCategory: RecyclerView
 
     private lateinit var categoryAdapter: DigitalBrowseMarketplaceAdapter
@@ -58,15 +52,7 @@ class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMark
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_browse_marketplace, container, false)
 
-        containerPopularBrand = view.findViewById(R.id.container_popular_title)
-        tvAllPopularBrand = view.findViewById(R.id.tv_all_popular)
-        rvPopularBrand = view.findViewById(R.id.rv_popular_brand)
         rvCategory = view.findViewById(R.id.rv_category)
-
-        tvAllPopularBrand.setOnClickListener {
-            digitalBrowseAnalytics.eventClickViewAllOnBelanjaPage()
-            RouteManager.route(context, OFFICIAL_STORES)
-        }
 
         return view
     }
@@ -78,13 +64,11 @@ class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMark
         presenter.onInit()
 
         initializeCategoryView()
-        initializePopularView()
 
         digitalBrowseMarketplaceViewModel = savedInstanceState?.getParcelable(KEY_MARKETPLACE_DATA)
 
         if (digitalBrowseMarketplaceViewModel != null) {
             renderCategory(digitalBrowseMarketplaceViewModel!!.rowViewModelList)
-            renderPopularBrands(digitalBrowseMarketplaceViewModel!!.popularBrandsList)
         }
     }
 
@@ -106,7 +90,6 @@ class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMark
         this.digitalBrowseMarketplaceViewModel = marketplaceData
 
         renderCategory(marketplaceData.rowViewModelList)
-        renderPopularBrands(marketplaceData.popularBrandsList)
     }
 
     override fun showGetDataError(e: Throwable) {
@@ -119,16 +102,8 @@ class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMark
         }
     }
 
-    override fun sendPopularImpressionAnalytics(analyticsModelList: List<DigitalBrowsePopularAnalyticsModel>) {
-        digitalBrowseAnalytics.eventPromoImpressionPopularBrand(analyticsModelList)
-    }
-
     private fun initializeCategoryView() {
-        tvAllPopularBrand.visibility = View.GONE
-        containerPopularBrand.visibility = View.GONE
-        rvPopularBrand.visibility = View.GONE
-
-        val digitalBrowseMarketplaceAdapterTypeFactory = DigitalBrowseMarketplaceAdapterTypeFactory(this, this)
+        val digitalBrowseMarketplaceAdapterTypeFactory = DigitalBrowseMarketplaceAdapterTypeFactory(this)
         categoryAdapter = DigitalBrowseMarketplaceAdapter(digitalBrowseMarketplaceAdapterTypeFactory, ArrayList())
         popularAdapter = DigitalBrowseMarketplaceAdapter(digitalBrowseMarketplaceAdapterTypeFactory, ArrayList())
 
@@ -150,52 +125,10 @@ class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMark
         categoryAdapter.showLoading()
     }
 
-    private fun initializePopularView() {
-        hidePopularBrand()
-        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-
-        rvPopularBrand.layoutManager = layoutManager
-        rvPopularBrand.setHasFixedSize(false)
-        rvPopularBrand.adapter = popularAdapter
-    }
-
     private fun renderCategory(digitalBrowseRowViewModels: List<DigitalBrowseRowViewModel>?) {
         categoryAdapter.hideLoading()
         categoryAdapter.clearAllElements()
         categoryAdapter.addElement(digitalBrowseRowViewModels)
-    }
-
-    private fun renderPopularBrands(digitalBrowsePopularBrandsViewModels: List<DigitalBrowsePopularBrandsViewModel>?) {
-        showPopularBrand()
-
-        popularAdapter.clearAllElements()
-        popularAdapter.addElement(digitalBrowsePopularBrandsViewModels)
-    }
-
-    private fun showPopularBrand() {
-        containerPopularBrand.visibility = View.VISIBLE
-        tvAllPopularBrand.visibility = View.VISIBLE
-        rvPopularBrand.visibility = View.VISIBLE
-    }
-
-    private fun hidePopularBrand() {
-        containerPopularBrand.visibility = View.GONE
-        tvAllPopularBrand.visibility = View.GONE
-        rvPopularBrand.visibility = View.GONE
-    }
-
-    override fun onPopularItemClicked(viewModel: DigitalBrowsePopularBrandsViewModel, position: Int) {
-        digitalBrowseAnalytics.eventPromoClickPopularBrand(
-                presenter.getPopularAnalyticsModel(viewModel, position))
-
-        if (viewModel.url != null && RouteManager.isSupportApplink(context, viewModel.url)) {
-            RouteManager.route(context, viewModel.url)
-        } else {
-            if (activity!!.application is DigitalBrowseRouter) {
-                (activity!!.application as DigitalBrowseRouter)
-                        .goToWebview(activity!!, viewModel.url!!)
-            }
-        }
     }
 
     override fun onCategoryItemClicked(viewModel: DigitalBrowseRowViewModel, itemPosition: Int) {
@@ -226,7 +159,6 @@ class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMark
     companion object {
 
         private val COLUMN_NUMBER = 4
-        private val OFFICIAL_STORES = "tokopedia://official-stores"
         private val KEY_MARKETPLACE_DATA = "KEY_MARKETPLACE_DATA"
 
 
