@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Hotel</string>
+
+    <string name="hotel_homepage_bottom_menu_transaction_list">Daftar Transaksi</string>
+    <string name="hotel_homepage_bottom_menu_promo">Promo</string>
+    <string name="hotel_homepage_bottom_menu_help">Bantuan</string>
 </resources>
