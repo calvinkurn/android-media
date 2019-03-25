@@ -112,9 +112,7 @@ class HomeWidget(
             @SerializedName("template_id")
             @Expose
             val templateId: Int
-    ): Parcelable, Visitable<BusinessWidgetTypeFactory> {
-
-        var impressHolder: ImpressHolder = ImpressHolder()
+    ): ImpressHolder(), Visitable<BusinessWidgetTypeFactory> {
 
         override fun type(typeFactory: BusinessWidgetTypeFactory?): Int {
             return typeFactory!!.type(this)
@@ -136,9 +134,7 @@ class HomeWidget(
                 parcel.readString() ?: "",
                 parcel.readString() ?: "",
                 parcel.readInt()
-        ) {
-            this.impressHolder = parcel.readParcelable(ImpressHolder::class.java.classLoader) ?: ImpressHolder()
-        }
+        )
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeInt(id)
@@ -156,7 +152,6 @@ class HomeWidget(
             parcel.writeString(originalPrice)
             parcel.writeString(pricePrefix)
             parcel.writeInt(templateId)
-            parcel.writeParcelable(impressHolder, flags)
         }
 
         override fun describeContents(): Int {

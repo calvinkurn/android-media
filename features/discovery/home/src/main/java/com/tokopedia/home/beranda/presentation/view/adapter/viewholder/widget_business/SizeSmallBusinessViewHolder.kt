@@ -23,7 +23,7 @@ open class SizeSmallBusinessViewHolder (
         private val listener: BusinessUnitItemView
 ) : AbstractViewHolder<HomeWidget.ContentItemTab>(itemView) {
 
-    override fun bind(element: HomeWidget.ContentItemTab?) {
+    override fun bind(element: HomeWidget.ContentItemTab) {
         renderImage(element)
         renderProduct(element)
         renderTitle(element)
@@ -32,8 +32,8 @@ open class SizeSmallBusinessViewHolder (
         addImpressionListener(element)
     }
 
-    open fun addImpressionListener(element: HomeWidget.ContentItemTab?) {
-        itemView.icon.addOnImpressionListener(element!!.impressHolder,
+    open fun addImpressionListener(element: HomeWidget.ContentItemTab) {
+        itemView.icon.addOnImpressionListener(element,
                 object: ViewHintListener {
                     override fun onViewHint() {
                         listener.onImpressed(element, adapterPosition)
