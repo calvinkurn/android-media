@@ -10,7 +10,7 @@
             <enum name="heading_6" value="6" />
             <enum name="body_1" value="7" />
             <enum name="body_2" value="8" />
-            <enum name="caption" value="9" />
+            <enum name="body_3" value="9" />
             <enum name="small" value="10" />
         </attr>
         <attr name="typographyWeight" format="enum">

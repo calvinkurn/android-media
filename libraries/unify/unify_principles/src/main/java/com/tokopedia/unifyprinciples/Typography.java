@@ -20,8 +20,8 @@ public class Typography extends AppCompatTextView {
 
     private static final int BODY_1 = 7;
     private static final int BODY_2 = 8;
+    private static final int BODY_3 = 9;
 
-    private static final int CAPTION = 9;
     private static final int SMALL = 10;
 
     private static final int REGULER = 1;
@@ -58,8 +58,8 @@ public class Typography extends AppCompatTextView {
     }
 
     private void configFontSize(TypedArray attributeArray) {
-        int fontType = attributeArray.getInteger(R.styleable.Typography_typografiType, 0);
-        int weightType = attributeArray.getInteger(R.styleable.Typography_weightType, REGULER);
+        int fontType = attributeArray.getInteger(R.styleable.Typography_typographyType, 0);
+        int weightType = attributeArray.getInteger(R.styleable.Typography_typographyWeight, REGULER);
 
         switch (fontType) {
             case HEADING_1 :
@@ -68,27 +68,27 @@ public class Typography extends AppCompatTextView {
                 this.setTypeface(nunitoSans);
                 break;
             case HEADING_2 :
-                this.setTextSize(COMPLEX_UNIT_SP, 24);
+                this.setTextSize(COMPLEX_UNIT_SP, 20);
                 this.setMinimumHeight(30);
                 this.setTypeface(nunitoSans);
                 break;
             case HEADING_3 :
-                this.setTextSize(COMPLEX_UNIT_SP, 20);
+                this.setTextSize(COMPLEX_UNIT_SP, 18);
                 this.setMinimumHeight(26);
                 this.setTypeface(nunitoSans);
                 break;
             case HEADING_4 :
-                this.setTextSize(COMPLEX_UNIT_SP, 18);
+                this.setTextSize(COMPLEX_UNIT_SP, 16);
                 this.setMinimumHeight(24);
                 this.setTypeface(nunitoSans);
                 break;
             case HEADING_5 :
-                this.setTextSize(COMPLEX_UNIT_SP, 16);
+                this.setTextSize(COMPLEX_UNIT_SP, 14);
                 this.setMinimumHeight(22);
                 this.setTypeface(nunitoSans);
                 break;
             case HEADING_6 :
-                this.setTextSize(COMPLEX_UNIT_SP, 14);
+                this.setTextSize(COMPLEX_UNIT_SP, 12);
                 this.setMinimumHeight(20);
                 this.setTypeface(nunitoSans);
                 break;
@@ -102,7 +102,7 @@ public class Typography extends AppCompatTextView {
                 this.setMinimumHeight(20);
                 configFontWeight(weightType);
                 break;
-            case CAPTION :
+            case BODY_3 :
                 this.setTextSize(COMPLEX_UNIT_SP, 12);
                 this.setMinimumHeight(18);
                 configFontWeight(weightType);
@@ -116,7 +116,7 @@ public class Typography extends AppCompatTextView {
     }
 
     private void configLineHeight(TypedArray attributeArray) {
-        int fontType = attributeArray.getInteger(R.styleable.Typography_typografiType, 0);
+        int fontType = attributeArray.getInteger(R.styleable.Typography_typographyType, 0);
 
         switch (fontType) {
             case HEADING_1 :
@@ -134,7 +134,7 @@ public class Typography extends AppCompatTextView {
             case BODY_2 :
                 this.setLineSpacing((float)-3,(float)1.429);
                 break;
-            case CAPTION :
+            case BODY_3 :
                 this.setLineSpacing((float)-5,(float)1.5);
                 break;
             case SMALL :
@@ -154,7 +154,7 @@ public class Typography extends AppCompatTextView {
     }
 
     private void configLetterSpacing(TypedArray attributeArray) {
-        int fontType = attributeArray.getInteger(R.styleable.Typography_typografiType, 0);
+        int fontType = attributeArray.getInteger(R.styleable.Typography_typographyType, 0);
         float kerningValueNewVer = 0;
         float kerningValueOldVer = 0;
 
@@ -171,6 +171,5 @@ public class Typography extends AppCompatTextView {
         } else {
             this.setTextScaleX(kerningValueOldVer);
         }
-
     }
 }
