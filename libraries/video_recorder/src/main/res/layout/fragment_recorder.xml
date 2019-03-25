@@ -26,7 +26,7 @@
         android:layout_margin="@dimen/dp_16">
 
         <LinearLayout
-            android:layout_above="@+id/btnRecord"
+            android:layout_above="@+id/containerRecord"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -67,40 +67,48 @@
             tools:visibility="visible" />
 
         <FrameLayout
-            android:id="@+id/btnRecord"
-            android:layout_width="@dimen/dp_56"
-            android:layout_height="@dimen/dp_56"
+            android:id="@+id/containerRecord"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:clickable="true"
-            android:focusable="true">
+            android:layout_marginBottom="@dimen/dp_16">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/selector_photo_button"
-                android:padding="@dimen/dp_4" />
+            <FrameLayout
+                android:id="@+id/btnRecord"
+                android:layout_width="@dimen/dp_56"
+                android:layout_height="@dimen/dp_56"
+                android:clickable="true"
+                android:layout_gravity="center"
+                android:focusable="true">
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                app:srcCompat="@drawable/take_photo_button" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/selector_photo_button"
+                    android:padding="@dimen/dp_4" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/take_photo_button" />
+
+            </FrameLayout>
 
             <ProgressBar
                 android:id="@+id/progress"
                 style="@style/ProgressBar.Tokopedia"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="@dimen/dp_72"
+                android:layout_height="@dimen/dp_72"
                 android:progressDrawable="@drawable/circular_progress_bar_green"
                 android:max="100"
+                android:layout_gravity="center"
                 android:progress="0"
                 android:rotation="-90"
                 tools:progress="55"
-                tools:visibility="visible"
-                android:layout_margin="0dp"
-                android:padding="0dp"/>
+                android:visibility="gone"
+                tools:visibility="visible"/>
 
         </FrameLayout>
 
@@ -118,14 +126,5 @@
             app:srcCompat="@drawable/ic_flip_camera" />
 
     </RelativeLayout>
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:theme="@style/progressBarStyle"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_alignParentBottom="true"
-        android:layout_height="@dimen/dp_8"/>
 
 </RelativeLayout>

@@ -25,6 +25,7 @@ import com.tokopedia.videorecorder.main.adapter.ViewPagerAdapter
 import com.tokopedia.videorecorder.main.recorder.VideoRecorderFragment
 import com.tokopedia.videorecorder.utils.*
 import kotlinx.android.synthetic.main.activity_video_picker.*
+import kotlinx.android.synthetic.main.fragment_recorder.*
 import java.io.File
 import java.util.ArrayList
 
@@ -116,7 +117,6 @@ open class VideoPickerActivity: BaseSimpleActivity(),
         adapter = ViewPagerAdapter(supportFragmentManager)
         adapter = viewPagerAdapter()
         vpVideoPicker.adapter = adapter
-        vpVideoPicker.currentItem = 0
         vpVideoPicker.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
@@ -147,6 +147,8 @@ open class VideoPickerActivity: BaseSimpleActivity(),
 
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
+        //select first tab for startup
+        tabPicker.getTabAt(0)?.select()
     }
 
     @SuppressLint("MissingPermission")

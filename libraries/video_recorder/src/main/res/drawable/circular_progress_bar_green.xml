@@ -2,7 +2,6 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/bg_circular_progress">
         <shape
-            android:innerRadius="@dimen/dp_16"
             android:shape="ring"
             android:thickness="@dimen/dp_3"
             android:useLevel="false">
@@ -13,7 +12,6 @@
 
     <item android:id="@+id/circular_progress">
         <shape
-            android:innerRadius="@dimen/dp_16"
             android:shape="ring"
             android:thickness="@dimen/dp_3"
             android:useLevel="true">
