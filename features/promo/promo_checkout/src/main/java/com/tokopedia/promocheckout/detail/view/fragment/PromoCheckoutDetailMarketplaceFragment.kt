@@ -55,7 +55,7 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
 
     override fun onClickUse() {
         // promoCheckoutDetailPresenter.validatePromoUse(codeCoupon, isOneClickShipment,  resources)
-        promoCheckoutDetailPresenter.validatePromoStackingUse(checkPromoFirstStepParam)
+        promoCheckoutDetailPresenter.validatePromoStackingUse(codeCoupon, checkPromoFirstStepParam)
     }
 
     override fun onClickCancel() {

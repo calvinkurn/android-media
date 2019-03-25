@@ -54,12 +54,11 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
             val orders = checkPromoFirstStepParam.orders;
             if (orders != null) {
                 for (order in orders) {
+                    val codes = ArrayList<String>()
                     if (order.uniqueId == currentCartString) {
-                        val codes = ArrayList<String>()
                         codes.add(promoMerchantCode)
-                        order.codes = codes
-                        break
                     }
+                    order.codes = codes
                 }
             }
 
