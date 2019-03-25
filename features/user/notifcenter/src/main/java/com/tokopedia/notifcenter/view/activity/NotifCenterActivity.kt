@@ -2,7 +2,9 @@ package com.tokopedia.notifcenter.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
@@ -14,6 +16,7 @@ import com.tokopedia.notifcenter.view.fragment.NotifCenterFragment
 class NotifCenterActivity : BaseSimpleActivity() {
 
     companion object {
+        val NOTIF_ID = "notif_id"
         fun createIntent(context: Context) = Intent(context, NotifCenterActivity::class.java)
     }
 
@@ -25,9 +28,15 @@ class NotifCenterActivity : BaseSimpleActivity() {
         @DeepLink(ApplinkConst.BUYER_INFO_WITH_ID)
         @JvmStatic
         fun createIntentDetail(context: Context, extras: Bundle): Intent {
-            return Companion.createIntent(context)
+            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+            val notifId = extras.getString(NOTIF_ID, "")
+            val intent = Intent(context, NotifCenterActivity::class.java)
+            intent.putExtra(NOTIF_ID, notifId)
+            return intent
         }
     }
 
-    override fun getNewFragment() = NotifCenterFragment.createInstance()
+    override fun getNewFragment(): Fragment{
+        return NotifCenterFragment.createInstance(intent?.extras)
+    }
 }
