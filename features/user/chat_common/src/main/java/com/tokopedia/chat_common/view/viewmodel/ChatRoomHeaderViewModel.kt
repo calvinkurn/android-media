@@ -58,6 +58,7 @@ data class ChatRoomHeaderViewModel(
         const val ROLE_USER: String = "user"
         const val ROLE_SHOP: String = "shop"
         const val ROLE_OFFICIAL: String = "administrator"
+        const val TAG_OFFICIAL: String = "Official"
 
     }
 

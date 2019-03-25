@@ -23,6 +23,7 @@
         android:layout_alignEnd="@+id/user_avatar"
         android:layout_alignRight="@+id/user_avatar"
         app:srcCompat="@drawable/status_indicator_offline"
+        android:visibility="gone"
         tools:visibility="visible"/>
 
     <ImageButton

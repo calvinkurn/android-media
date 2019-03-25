@@ -32,13 +32,16 @@ public class SearchTracking {
     public static final String ECOMMERCE = "ecommerce";
     public static final String EVENT_EMPTY = "";
     public static final String EVENT_CATEGORY_SEARCH_RESULT_PROFILE = "search result profile";
+    public static final String EVENT_CATEGORY_EMPTY_SEARCH = "empty search";
     public static final String EVENT_ACTION_CLICK_PROFILE_RESULT = "click - profile result";
     public static final String PROMO_CLICK = "promoClick";
     public static final String PROMOTIONS = "promotions";
     public static final String VALUE_FOLLOW = "follow";
     public static final String VALUE_UNFOLLOW = "unfollow";
     public static final String EVENT_CLICK_SEARCH_RESULT = "clickSearchResult";
+    public static final String EVENT_VIEW_TOP_NAV = "viewTopNav";
     public static final String EVENT_ACTION_CLICK_FOLLOW_ACTION_PROFILE = "click - %s profile";
+    public static final String EVENT_ACTION_CLICK_NEW_SEARCH = "click - lakukan pencarian baru";
     public static final String EVENT_LABEL_CLICK_FOLLOW_ACTION_PROFILE = "keyword: %s - profile: %s - profile id: %s - po: %s";
     public static final String PROMO_VIEW = "promoView";
     public static final String EVENT_ACTION_IMPRESSION_PROFILE = "impression - profile";
@@ -444,10 +447,10 @@ public class SearchTracking {
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
 
         tracker.sendEventTracking(
-                AppEventTracking.Event.NO_RESULT,
+                EVENT_VIEW_TOP_NAV,
                 AppEventTracking.Category.EVENT_TOP_NAV,
                 AppEventTracking.Action.NO_SEARCH_RESULT,
-                "keyword: " + keyword + " - tab: " + screenName + " - param: " + generateFilterEventLabel(selectedFilter)
+                String.format("keyword: %s - tab: %s - param: %s", keyword, screenName, generateFilterEventLabel(selectedFilter))
         );
     }
 
@@ -544,6 +547,20 @@ public class SearchTracking {
                                 )
                         )
                 )
+        );
+    }
+
+    public static void eventUserClickNewSearchOnEmptySearch(Context context, String screenName) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEventTracking(
+                EVENT_CLICK_SEARCH_RESULT,
+                EVENT_CATEGORY_EMPTY_SEARCH,
+                EVENT_ACTION_CLICK_NEW_SEARCH,
+                String.format("tab: %s", screenName)
         );
     }
 }

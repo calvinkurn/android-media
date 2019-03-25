@@ -69,6 +69,15 @@ public class MoengageAnalytics extends ContextAnalytics {
         // no op, only for GTM
     }
 
+    @Override
+    public void sendEvent(String eventName, Map<String, Object> eventValue) {
+        PayloadBuilder builder = new PayloadBuilder();
+        for (Map.Entry<String, Object> entry : eventValue.entrySet()) {
+            builder.putAttrString(entry.getKey(), entry.getValue().toString());
+        }
+        sendMoengageEvent(builder.build(), eventName);
+    }
+
     public void isExistingUser(final boolean bol) {
         CommonUtils.dumper("MoEngage check is existing user " + bol);
         MoEHelper.getInstance(getContext()).setExistingUser(bol);
@@ -103,7 +112,7 @@ public class MoengageAnalytics extends ContextAnalytics {
     public void sendRegistrationStartEvent(String medium) {
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrString(AppEventTracking.MOENGAGE.MEDIUM, medium);
-        sendEvent(
+        sendMoengageEvent(
                 new PayloadBuilder()
                         .putAttrString(AppEventTracking.MOENGAGE.MEDIUM, medium)
                         .build()
@@ -113,7 +122,7 @@ public class MoengageAnalytics extends ContextAnalytics {
 
     public void sendRegisterEvent(String fullName, String mobileNo) {
         CommonUtils.dumper("MoEngage check user " + fullName);
-        sendEvent(
+        sendMoengageEvent(
                 new PayloadBuilder()
                         .putAttrString(AppEventTracking.MOENGAGE.NAME, fullName)
                         .putAttrString(AppEventTracking.MOENGAGE.MOBILE_NUM, mobileNo)
@@ -177,7 +186,7 @@ public class MoengageAnalytics extends ContextAnalytics {
         MoEHelper.getInstance(getContext()).setUserAttribute("push_preference", status);
     }
 
-    public void sendEvent(JSONObject data, final String eventName) {
+    public void sendMoengageEvent(JSONObject data, final String eventName) {
         MoEHelper.getInstance(getContext()).trackEvent(eventName, data);
     }
 

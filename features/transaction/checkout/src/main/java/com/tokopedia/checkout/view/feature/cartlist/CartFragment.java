@@ -6,6 +6,7 @@ import android.app.IntentService;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -328,8 +330,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         } else {
             toolbar = toolbarRemoveView();
             // add padding programmatically
-            int padding = (int) (24*getResources().getDisplayMetrics().density + 0.5f);
-            view.setPadding(0,padding,0,0);
+            view.setPadding(0,DisplayMetricUtils.getStatusBarHeight(getContext()),0,0);
         }
         appbar.addView(toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(appbar);

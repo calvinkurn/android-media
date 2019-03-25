@@ -24,7 +24,7 @@ public class Utils {
     private Context mContext;
     private Locale mLocale;
 
-    public String UPLOAD_URL = "http://u12.tokopedia.net";
+    public String UPLOAD_URL = "https://u12.tokopedia.net";
     public String CLOSED = "closed";
     public String OPEN = "open";
     public String SOLVED = "solved";

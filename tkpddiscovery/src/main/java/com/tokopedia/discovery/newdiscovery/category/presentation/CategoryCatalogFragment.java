@@ -64,6 +64,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
         CatalogFragmentContract.View, CatalogListener, TopAdsItemClickListener,
         TopAdsListener, SearchSectionGeneralAdapter.OnItemChangeView {
 
+    public static final String SCREEN_SEARCH_PAGE_CATALOG_TAB = "Search result - Catalog tab";
     public static final String SOURCE = BrowseApi.DEFAULT_VALUE_SOURCE_CATALOG;
 
     private static final String EXTRA_DEPARTMENT_ID = "EXTRA_DEPARTMENT_ID";
@@ -136,7 +137,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
 
     @Override
     public String getScreenNameId() {
-        return AppScreen.SCREEN_SEARCH_PAGE_CATALOG_TAB;
+        return SCREEN_SEARCH_PAGE_CATALOG_TAB;
     }
 
     @Override
@@ -272,6 +273,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
 
     @Override
     public void onEmptyButtonClicked() {
+        SearchTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
         showSearchInputView();
     }
 

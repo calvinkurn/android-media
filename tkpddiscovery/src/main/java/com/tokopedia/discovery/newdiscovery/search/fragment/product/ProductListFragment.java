@@ -50,6 +50,8 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Pr
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
 import com.tokopedia.discovery.similarsearch.SimilarSearchManager;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -82,6 +84,7 @@ public class ProductListFragment extends SearchSectionFragment
         implements SearchSectionGeneralAdapter.OnItemChangeView, ProductListFragmentView,
         ProductListener, WishListActionListener {
 
+    public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     public static final int REQUEST_CODE_LOGIN = 561;
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
     private static final int REQUEST_ACTIVITY_SORT_PRODUCT = 1233;
@@ -415,7 +418,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public String getScreenNameId() {
-        return AppScreen.SCREEN_SEARCH_PAGE_PRODUCT_TAB;
+        return SCREEN_SEARCH_PAGE_PRODUCT_TAB;
     }
 
     @Override
@@ -650,6 +653,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onEmptyButtonClicked() {
+        SearchTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
         showSearchInputView();
     }
 
