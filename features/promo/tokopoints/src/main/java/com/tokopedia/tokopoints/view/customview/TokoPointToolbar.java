@@ -45,6 +45,7 @@ public class TokoPointToolbar extends Toolbar {
         ivLeaderBoard = findViewById(R.id.tv_tpToolbar_leaderboard);
         ivMyCoupon = findViewById(R.id.iv_tpToolbar_coupon);
         switchToTransparentMode();
+        setCouponCount(0);
     }
 
     enum ToolbarState {
@@ -57,9 +58,9 @@ public class TokoPointToolbar extends Toolbar {
         } else {
             tvCouponCount.setVisibility(VISIBLE);
             if (couponCount > 99) {
-                tvCouponCount.setText(String.format("%s", tvCouponCount));
+                tvCouponCount.setText(mContext.getString(R.string.moreCouponCount));
             } else {
-                tvCouponCount.setText("99+");
+                tvCouponCount.setText(String.format("%s", tvCouponCount));
             }
         }
     }
