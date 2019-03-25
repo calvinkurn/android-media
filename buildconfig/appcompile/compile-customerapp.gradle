@@ -27,6 +27,7 @@ include "features:digital:train"
 //include "features:digital:train_no_op"
 include "features:digital:common_travel"
 include "features:digital:common_digital"
+include "features:digital:hotel"
 
 include "features:discovery:category_common"
 include 'features:discovery:productcard'

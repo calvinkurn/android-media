@@ -23,6 +23,7 @@ ext {
     tkpdGoldMerchantVersion = '2.22'
     tkpdGroupchatVersion = '2.22'
     tkpdHomeVersion = '2.22'
+    tkpdHotelVersion = '2.22'
     tkpdInboxVersion = '2.22'
     tkpdInterestPickVersion = '2.22'
     tkpdKolCommonVersion = '2.22'
@@ -124,6 +125,7 @@ ext {
             goldMerchantSubscribe   : "com.tokopedia.gm:gold_merchant-subscribe:${tkpdGoldMerchantVersion}",
             groupchat               : "com.tokopedia.groupchat:groupchat:${tkpdGroupchatVersion}",
             home                    : "com.tokopedia.home:home:${tkpdHomeVersion}",
+            hotel                   : "com.tokopedia.hotel:hotel:${tkpdHotelVersion}",
             inbox                   : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
             kol                     : "com.tokopedia.kol:kol:${tkpdKolVersion}",
             kolCommon               : "com.tokopedia.kolcommon:kolCommon:${tkpdKolCommonVersion}",
@@ -199,7 +201,7 @@ ext {
 //            flight                          : ":features:digital:flight_no_op",
             train                         : ":features:digital:train",
 //            train                         : ":features:digital:train_no_op",
-
+            hotel                       : ":features:digital:hotel",
             categoryCommon              : ":features:discovery:category_common",
             flashsaleManagement         : ":features:discovery:flashsale_management",
 //            flashsaleManagement         : ":features:discovery:flashsale_management_no_op",
