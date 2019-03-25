@@ -10,6 +10,7 @@ import android.webkit.WebView;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.utils.URLGenerator;
+import com.tokopedia.user.session.UserSession;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -62,7 +63,11 @@ public class TkpdWebView extends WebView {
                     Uri.parse(url).getPath(),
                     getQuery(Uri.parse(url).getQuery()),
                     "GET",
-                    AuthUtil.KEY.KEY_WSV4, userId));
+                    AuthUtil.KEY.KEY_WSV4,
+                    AuthUtil.CONTENT_TYPE,
+                    userId,
+                    new UserSession(getContext()))
+            );
         }
     }
 
