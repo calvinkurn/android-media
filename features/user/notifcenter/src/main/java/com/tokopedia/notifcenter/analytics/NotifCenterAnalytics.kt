@@ -10,12 +10,12 @@ class NotifCenterAnalytics @Inject constructor(private val analyticTracker: Anal
     val EVENT_CLICK_NOTIF_CENTER = "clickNotifCenter"
     val CATEGORY_NOTIF_CENTER = "notif center"
 
-    fun trackClickList() {
+    fun trackClickList(notifId: String) {
         analyticTracker.sendEventTracking(
                 EVENT_CLICK_NOTIF_CENTER,
                 CATEGORY_NOTIF_CENTER,
                 "click on notif list",
-                ""
+                notifId
         )
     }
 
