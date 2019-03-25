@@ -17,7 +17,13 @@ class PostImageAdapter(var clickListener: ImageClickListener?) : PagerAdapter() 
 
     constructor() : this(null)
 
+    companion object {
+        const val IMAGE = "image"
+        const val VIDEO = "video"
+    }
+
     val imageList: ArrayList<String> = ArrayList()
+    private var mediaType: String = PostImageAdapter.IMAGE
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean = view == `object`
 
@@ -49,6 +55,12 @@ class PostImageAdapter(var clickListener: ImageClickListener?) : PagerAdapter() 
                     }
                 }
         )
+
+        //set centerCrop if a media type is video
+        if (mediaType == PostImageAdapter.VIDEO) {
+            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+        }
+
         ImageHandler.loadImageRounded2(imageView.context, imageView, imageUrl)
         container.addView(view)
         return view
@@ -60,7 +72,8 @@ class PostImageAdapter(var clickListener: ImageClickListener?) : PagerAdapter() 
 
     override fun getItemPosition(`object`: Any) = PagerAdapter.POSITION_NONE
 
-    fun setList(imageList: ArrayList<String>) {
+    fun setList(imageList: ArrayList<String>, mediaType: String) {
+        this.mediaType = mediaType
         this.imageList.clear()
         this.imageList.addAll(imageList)
         notifyDataSetChanged()
