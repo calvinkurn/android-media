@@ -4,11 +4,15 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.view.MenuItem
+import android.view.ViewGroup
+import android.widget.TextView
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg
 import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler
@@ -125,6 +129,25 @@ open class VideoPickerActivity: BaseSimpleActivity(),
 
     private fun setupTabLayout() {
         tabPicker.setupWithViewPager(vpVideoPicker)
+        tabPicker.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                // there is no way to change style to BOLD in XML and programmatically. we use this trick.
+                exceptionHandler {
+                    val textView = ((tabPicker.getChildAt(0) as ViewGroup).getChildAt(tab.position) as ViewGroup).getChildAt(1) as TextView
+                    textView.setTypeface(textView.typeface, Typeface.BOLD)
+                }
+
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                exceptionHandler {
+                    val textView = ((tabPicker.getChildAt(0) as ViewGroup).getChildAt(tab.position) as ViewGroup).getChildAt(1) as TextView
+                    textView.typeface = Typeface.create(textView.typeface, Typeface.NORMAL)
+                }
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {}
+        })
     }
 
     @SuppressLint("MissingPermission")
