@@ -391,9 +391,9 @@ public class ExploreFragment
                         && view.getLayoutParams() instanceof GridLayoutManager.LayoutParams) {
                     int spanIndex = ((GridLayoutManager.LayoutParams) view.getLayoutParams()).getSpanIndex();
                     if (spanIndex == 0) {
-                        outRect.left = (int) getResources().getDimension(R.dimen.dp_4);
+                        outRect.left = (int) getResources().getDimension(R.dimen.dp_12);
                     } else {
-                        outRect.right = (int) getResources().getDimension(R.dimen.dp_4);
+                        outRect.right = (int) getResources().getDimension(R.dimen.dp_12);
                     }
                 }
             }
