@@ -62,6 +62,6 @@ public class ConsumerAppBaseUrl {
     public static final String TRANSACTION_BASE_DOMAIN = "https://ws.tokopedia.com/";
     public static final String CAMPAIGN_MANAGEMENT_DOMAIN = "https://imt.tokopedia.com/";
     public static final String CM_TOKEN_UPDATE = "https://imt.tokopedia.com/api/v1/user/add";
-    public static final String LAKU6_BASE_URL = "http://www.laku6.com";
+    public static final String LAKU6_BASE_URL = "https://www.laku6.com";
 
 }

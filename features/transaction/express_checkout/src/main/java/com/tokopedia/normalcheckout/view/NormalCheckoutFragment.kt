@@ -196,9 +196,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     private fun goToHargaFinal() {
         val intent = FinalPriceActivity.getHargaFinalIntent(context)
 
-        tradeInParams!!.setPrice(selectedProductInfo!!.basic.price.toInt())
-        tradeInParams!!.productId = selectedProductInfo!!.basic.id
-        tradeInParams!!.productName = selectedProductInfo!!.basic.name
+        if (tradeInParams != null && selectedProductInfo != null) {
+            tradeInParams!!.setPrice(selectedProductInfo!!.basic.price.toInt())
+            tradeInParams!!.productId = selectedProductInfo!!.basic.id
+            tradeInParams!!.productName = selectedProductInfo!!.basic.name
+        }
 
         intent.putExtra(TradeInParams.TRADE_IN_PARAMS, tradeInParams)
         startActivityForResult(intent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE)
@@ -207,9 +209,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     fun goToTradeInHome() {
         val intent = TradeInHomeActivity.getIntent(context)
 
-        tradeInParams!!.setPrice(selectedProductInfo!!.basic.price.toInt())
-        tradeInParams!!.productId = selectedProductInfo!!.basic.id
-        tradeInParams!!.productName = selectedProductInfo!!.basic.name
+        if (tradeInParams != null && selectedProductInfo != null) {
+            tradeInParams!!.setPrice(selectedProductInfo!!.basic.price.toInt())
+            tradeInParams!!.productId = selectedProductInfo!!.basic.id
+            tradeInParams!!.productName = selectedProductInfo!!.basic.name
+        }
 
         intent.putExtra(TradeInParams.TRADE_IN_PARAMS, tradeInParams)
         startActivityForResult(intent, TradeInHomeActivity.TRADEIN_HOME_REQUEST)
@@ -220,11 +224,13 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
         if (requestCode == FinalPriceActivity.FINAL_PRICE_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                onGotoTradeinShipment(data!!.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
+                if (data != null)
+                    onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
             }
         } else if (requestCode == TradeInHomeActivity.TRADEIN_HOME_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
-                onGotoTradeinShipment(data!!.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
+                if (data != null)
+                    onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
             }
         }
     }

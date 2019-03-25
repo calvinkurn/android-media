@@ -9,9 +9,9 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name="view.viewcontrollers.TradeInHomeActivity"
-            android:label="Tukar Tambah" />
+            android:label="@string/tukar_tambah" />
         <activity
             android:name="view.viewcontrollers.FinalPriceActivity"
-            android:label="Harga Final" />
+            android:label="@string/harga_final" />
     </application>
 </manifest>

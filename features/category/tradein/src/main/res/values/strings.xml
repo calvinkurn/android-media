@@ -36,6 +36,7 @@
     <string name="text_model">HP Kamu:  </string>
     <string name="text_final_price">Harga Jual:  </string>
     <string name="tukar_tambah">Tukar Tambah</string>
+    <string name="harga_final">Harga Final</string>
     <string name="total_price">Total Harga Barang</string>
     <string name="buy_now">Beli Sekarang</string>
     <string name="do_ktp">Lanjut Foto KTP</string>

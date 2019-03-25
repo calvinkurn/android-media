@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 public class KYCDetails {
 
     @SerializedName("Message")
-    private List<Object> message = null;
+    private List<Object> message;
     @SerializedName("Detail")
     private Detail detail;
 

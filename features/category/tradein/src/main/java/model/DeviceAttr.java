@@ -12,7 +12,7 @@ public class DeviceAttr {
     private Integer modelId;
     @SerializedName("Imei")
     @Expose
-    private List<String> imei = null;
+    private List<String> imei;
     @SerializedName("Model")
     @Expose
     private String model;

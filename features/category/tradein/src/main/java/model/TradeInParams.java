@@ -13,6 +13,8 @@ public class TradeInParams implements Parcelable {
     public static final String PARAM_PRODUCT_ID = "PRODUCT ID";
     public static final String PARAM_NEW_DEVICE_NAME = "NEW DEVICE NAME";
     public static final String PARAM_USE_KYC = "USE KYC";
+    public static final int HANDFONE_ID = 24;
+    public static final String HANDFONE = "Handphone";
     @SerializedName("ProductId")
     private int productId;
     @SerializedName("ShopId")

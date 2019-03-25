@@ -97,13 +97,6 @@ class ProductModalFragment : BaseDaggerFragment() {
         stateProductModal = arguments?.getInt(ARGS_STATE_FORM_PRODUCT_MODAL)
     }
 
-    override fun onStart() {
-        super.onStart()
-        val tradeInOpenCartReceiver = TradeInOpenCartReceiver()
-        val intentFilter = IntentFilter("ACTION_GO_TO_SHIPMENT")
-        LocalBroadcastManager.getInstance(context!!).registerReceiver(tradeInOpenCartReceiver, intentFilter)
-    }
-
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?
@@ -354,14 +347,6 @@ class ProductModalFragment : BaseDaggerFragment() {
         activity?.setResult(Activity.RESULT_CANCELED, intent)
         activity?.finish()
         activity?.overridePendingTransition(0, R.anim.push_down)
-    }
-
-    inner class TradeInOpenCartReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context?, inIntent: Intent?) {
-            if (inIntent!!.action!!.equals("ACTION_GO_TO_SHIPMENT")) {
-                onGotoTradeinShipment(inIntent!!.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
-            }
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

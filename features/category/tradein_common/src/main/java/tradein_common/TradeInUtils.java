@@ -1,5 +1,6 @@
 package tradein_common;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
@@ -16,7 +17,7 @@ public class TradeInUtils {
     public static String getDeviceId(Context context) {
         try {
             TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
-            if (!(ActivityCompat.checkSelfPermission(context, "android.permission.READ_PHONE_STATE") == 0)) {
+            if (!(ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == 0)) {
                 Bundle tradeInData = ((Activity) context).getIntent().getExtras();
                 if (tradeInData != null) {
                     String did = tradeInData.getString("DEVICE ID");

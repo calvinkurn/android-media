@@ -615,10 +615,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.refreshMenu();
                             int productid = 0;
                             for (ProductBreadcrumb breadcrumb : productDetailData.getBreadcrumb()) {
-                                if (breadcrumb.getDepartmentName().equals("Handphone"))
+                                if (breadcrumb.getDepartmentName().equals(TradeInParams.HANDFONE))
                                     productid = Integer.parseInt(breadcrumb.getDepartmentId());
                             }
-                            if (productid == 24) {
+                            if (productid == TradeInParams.HANDFONE_ID) {
                                 UserSession userSession = new UserSession(viewListener.getActivityContext());
                                 TradeInParams tradeInParams = new TradeInParams();
                                 tradeInParams.setCategoryId(Integer.parseInt(productDetailData.getBreadcrumb().get(0).getDepartmentId()));
@@ -1225,10 +1225,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.onProductDetailLoaded(data, mappingToViewData(data));
                         int productid = 0;
                         for (ProductBreadcrumb breadcrumb : data.getBreadcrumb()) {
-                            if (breadcrumb.getDepartmentName().equals("Handphone"))
+                            if (breadcrumb.getDepartmentName().equals(TradeInParams.HANDFONE))
                                 productid = Integer.parseInt(breadcrumb.getDepartmentId());
                         }
-                        if (productid == 24) {
+                        if (productid == TradeInParams.HANDFONE_ID) {
                             TradeInParams tradeInParams = new TradeInParams();
                             UserSession userSession = new UserSession(viewListener.getActivityContext());
                             tradeInParams.setCategoryId(Integer.parseInt(data.getBreadcrumb().get(0).getDepartmentId()));
