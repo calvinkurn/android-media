@@ -30,7 +30,7 @@ public class SimpleWebViewWithFilePickerActivity extends TkpdCoreWebViewActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_webview_container);
+//        inflateView(R.layout.activity_webview_container);
         String url = getIntent().getExtras().getString(EXTRA_URL);
         fragment = SimpleWebViewWithFilePickerFragment.createInstance(url);
         if (savedInstanceState == null) {
