@@ -9,10 +9,12 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.ovo.R;
 
 import static com.tokopedia.ovo.Constants.OVO_THANKS_TRANSACTION_URL;
-import static com.tokopedia.ovo.Constants.OVO_THANKS_URL;
+import static com.tokopedia.ovo.view.PaymentQRSummaryFragment.LOCAL_CACHE_ID;
 
 public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements TransactionResultListener {
     public static final int SUCCESS = 0;
@@ -20,9 +22,12 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
     public static final String TRANSFER_ID = "transfer_id";
     public static final String TRANSACTION_ID = "transaction_id";
     private static final String CODE = "code";
+    public static final String CACHE_ID = "cache_id";
+    private int transferId;
+    private int transactionId;
 
-    @DeepLink({OVO_THANKS_TRANSACTION_URL, OVO_THANKS_URL})
-    public static Intent getContactUsIntent(Context context, Bundle bundle) {
+    @DeepLink(OVO_THANKS_TRANSACTION_URL)
+    public static Intent getOvoPayQrIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, QrOvoPayTxDetailActivity.class)
                 .setData(uri.build())
@@ -31,17 +36,37 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        LocalCacheHandler localCache = new LocalCacheHandler(getApplicationContext(), LOCAL_CACHE_ID);
+        String saveInstanceCacheId = localCache.getString(CACHE_ID);
+        SaveInstanceCacheManager saveInstanceCacheManager = new SaveInstanceCacheManager(
+                getApplicationContext(), savedInstanceState);
+        if (savedInstanceState == null)
+            saveInstanceCacheManager = new SaveInstanceCacheManager(getApplicationContext(), saveInstanceCacheId);
+        String txnId = saveInstanceCacheManager.get(TRANSACTION_ID, String.class);
+        String tfId = saveInstanceCacheManager.get(TRANSFER_ID, String.class);
+        if (txnId != null)
+            transactionId = Integer.parseInt(txnId);
+        else if(getIntent().getStringExtra(TRANSACTION_ID) != null){
+            transactionId = Integer.parseInt(getIntent().getStringExtra(TRANSACTION_ID));
+        }
+        if (getIntent().getStringExtra(TRANSFER_ID) != null) {
+            transferId = Integer.parseInt(getIntent().getStringExtra(TRANSFER_ID));
+        } else {
+            if (tfId != null)
+                transferId = Integer.parseInt(tfId);
+        }
+
         super.onCreate(savedInstanceState);
         getSupportActionBar().setHomeButtonEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
-
+        toolbar.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_16), 0, 0, 0);
     }
 
     public static Intent createInstance(Context context, int transferId, int transactionId, int code) {
         Intent intent = new Intent(context, QrOvoPayTxDetailActivity.class);
-        intent.putExtra(TRANSFER_ID, transferId);
-        intent.putExtra(TRANSACTION_ID, transactionId);
+        intent.putExtra(TRANSFER_ID, String.valueOf(transferId));
+        intent.putExtra(TRANSACTION_ID, String.valueOf(transactionId));
         intent.putExtra(CODE, code);
         return intent;
     }
@@ -49,32 +74,24 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
 
     @Override
     protected Fragment getNewFragment() {
-        if (getIntent().getIntExtra(CODE, -1) == SUCCESS) {
+        if (getIntent().getIntExtra(CODE, SUCCESS) == SUCCESS) {
             updateTitle(getString(R.string.oqr_success_transaction));
-            return QrTxSuccessDetailFragment.createInstance(
-                    getIntent().getIntExtra(TRANSFER_ID, -1),
-                    getIntent().getIntExtra(TRANSACTION_ID, -1));
+            return QrTxSuccessDetailFragment.createInstance(transferId, transactionId);
         } else {
             updateTitle(getString(R.string.oqr_fail_transaction));
-            return QrPayTxFailFragment.createInstance(
-                    getIntent().getIntExtra(TRANSFER_ID, -1),
-                    getIntent().getIntExtra(TRANSACTION_ID, -1));
+            return QrPayTxFailFragment.createInstance(transferId, transactionId);
         }
     }
 
     public void goToFailFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.parent_view, QrPayTxFailFragment.createInstance(
-                getIntent().getIntExtra(TRANSFER_ID, -1),
-                getIntent().getIntExtra(TRANSACTION_ID, -1)));
+        transaction.add(R.id.parent_view, QrPayTxFailFragment.createInstance(transferId, transactionId));
         transaction.commit();
     }
 
     public void goToSuccessFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.parent_view, QrTxSuccessDetailFragment.createInstance(
-                getIntent().getIntExtra(TRANSFER_ID, -1),
-                getIntent().getIntExtra(TRANSACTION_ID, -1)));
+        transaction.add(R.id.parent_view, QrTxSuccessDetailFragment.createInstance(transferId, transactionId));
         transaction.commit();
     }
 }

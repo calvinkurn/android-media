@@ -69,12 +69,6 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                 list.add(mappingTicker(homeData.getTicker().getTickers()));
             }
 
-//            if (homeData.getDynamicHomeIcon() != null
-//                    && homeData.getDynamicHomeIcon().getUseCaseIcon() != null
-//                    && !homeData.getDynamicHomeIcon().getUseCaseIcon().isEmpty()) {
-//                list.add(mappingUseCaseIcon(homeData.getDynamicHomeIcon().getUseCaseIcon()));
-//            }
-
             if (homeData.getDynamicHomeIcon() != null
                     && homeData.getDynamicHomeIcon().getDynamicIcon() != null
                     && !homeData.getDynamicHomeIcon().getDynamicIcon().isEmpty()) {
@@ -143,23 +137,28 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                             }
                         }
 
-                        if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)) {
-                            list.add(new DigitalsViewModel(context.getString(R.string.digital_widget_title), 0));
-                        } else if(channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_TOPADS)) {
-                            list.add(mappingDynamicTopAds(channel));
-                        } else if(channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT)) {
-                            list.add(mappingSpotlight(homeData.getSpotlight()));
-                        } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_3_IMAGE)
-                                || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_ORGANIC)
-                                || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_HERO)
-                                || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_6_IMAGE)
-                                || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE)
-                                || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)
-                                || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL)
-                                || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO)) {
-                            list.add(mappingDynamicChannel(channel));
-                            HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
-                                    list.size(),channel);
+                        switch (channel.getLayout()) {
+                            case DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET:
+                                list.add(new DigitalsViewModel(context.getString(R.string.digital_widget_title), 0));
+                                break;
+                            case DynamicHomeChannel.Channels.LAYOUT_TOPADS:
+                                list.add(mappingDynamicTopAds(channel));
+                                break;
+                            case DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT:
+                                list.add(mappingSpotlight(homeData.getSpotlight()));
+                                break;
+                            case DynamicHomeChannel.Channels.LAYOUT_3_IMAGE:
+                            case DynamicHomeChannel.Channels.LAYOUT_ORGANIC:
+                            case DynamicHomeChannel.Channels.LAYOUT_HERO:
+                            case DynamicHomeChannel.Channels.LAYOUT_6_IMAGE:
+                            case DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE:
+                            case DynamicHomeChannel.Channels.LAYOUT_SPRINT:
+                            case DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL:
+                            case DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO:
+                                list.add(mappingDynamicChannel(channel));
+                                HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
+                                        list.size(),channel);
+                                break;
                         }
                     }
                 }

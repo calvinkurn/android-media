@@ -295,6 +295,7 @@ public class DynamicHomeChannel {
                                     "id", grid.getId(),
                                     "name", "/ - p2 - sprint sale banner",
                                     "creative", grid.getName(),
+                                    "creative_url", grid.getImageUrl(),
                                     "position", String.valueOf(i + 1)
                                     )
                     );
@@ -314,6 +315,7 @@ public class DynamicHomeChannel {
                                     "id", grid.getId(),
                                     "name", getPromoName(),
                                     "creative", grid.getAttribution(),
+                                    "creative_url", grid.getImageUrl(),
                                     "position", String.valueOf(i + 1)
                             )
                     );
@@ -329,6 +331,7 @@ public class DynamicHomeChannel {
                         "id", getHero()[0].getId(),
                         "name", getPromoName(),
                         "creative", getPromoName(),
+                        "creative_url", getHero()[0].getImageUrl(),
                         "position", String.valueOf(1)
                 ));
             }
@@ -341,6 +344,7 @@ public class DynamicHomeChannel {
                                     "id", grid.getId(),
                                     "name", getPromoName(),
                                     "creative", getPromoName(),
+                                    "creative_url", grid.getImageUrl(),
                                     "position", String.valueOf(i + 2)
                             )
                     );

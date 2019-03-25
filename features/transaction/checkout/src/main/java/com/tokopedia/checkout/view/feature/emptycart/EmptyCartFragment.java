@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -529,23 +530,18 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     private void setupToolbar(View view) {
         Toolbar appbar = view.findViewById(R.id.toolbar);
-        View statusBarBackground = view.findViewById(R.id.status_bar_bg);
-
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            statusBarBackground.setVisibility(View.VISIBLE);
-        } else {
-            statusBarBackground.setVisibility(View.INVISIBLE);
-        }
-
         appBarLayout = view.findViewById(R.id.app_bar_layout);
         if (isToolbarWithBackButton) {
             toolbar = toolbarRemoveWithBackView();
         } else {
             toolbar = toolbarRemoveView();
-                
-            // add padding programmatically
-            int padding = (int) (24*getResources().getDisplayMetrics().density + 0.5f);
-            view.setPadding(0,padding,0,0);
+            if (getContext() != null) {
+                view.setPadding(0, DisplayMetricUtils.getStatusBarHeight(getContext()), 0, 0);
+            } else {
+                // add padding programmatically
+                int padding = (int) (24*getResources().getDisplayMetrics().density + 0.5f);
+                view.setPadding(0,padding,0,0);
+            }
         }
         appbar.addView(toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(appbar);

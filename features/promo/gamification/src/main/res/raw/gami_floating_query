@@ -1,0 +1,21 @@
+{
+  gamiFloating {
+    resultStatus {
+      code
+      message
+      reason
+    }
+    sumToken
+    sumTokenStr
+    cta {
+      url
+      appLink
+     }
+    timeRemainingSeconds
+    isShowTime
+    timerFontColor
+    timerBGColor
+    unixTimestamp
+    imgURL
+  }
+}

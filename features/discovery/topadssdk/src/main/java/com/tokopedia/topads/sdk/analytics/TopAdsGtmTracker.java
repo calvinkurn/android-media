@@ -144,7 +144,7 @@ public class TopAdsGtmTracker {
                     "eventLabel", tabName,
                     "ecommerce", DataLayer.mapOf(
                             "click", DataLayer.mapOf("actionField",
-                                    DataLayer.mapOf("list", "/ - p2 - "+tabName+" - rekomendasi untuk anda - "+recomType+" - product topads"),
+                                    DataLayer.mapOf("list", "/ - p2"+(isLogin?" - ":" - non login - ")+tabName+" - rekomendasi untuk anda - "+recomType+" - product topads"),
                                     "product", DataLayer.listOf(DataLayer.mapOf(
                                             "name", product.getName(),
                                             "id", product.getId(),
@@ -152,7 +152,7 @@ public class TopAdsGtmTracker {
                                             "brand", "none/other",
                                             "category", categoryBreadcrumbs,
                                             "varian", "none/other",
-                                            "position", position + 1))))
+                                            "position", position))))
             );
             tracker.sendEnhancedEcommerce(map);
         }
@@ -177,15 +177,15 @@ public class TopAdsGtmTracker {
 
     public void  addRecomendationProductViewImpressions(Product product, String categoryBreadcrumbs,
                                                         String tabName, String recomendationType,
-                                                        int position) {
+                                                        boolean isLogin, int position) {
         this.dataLayerList.add(DataLayer.mapOf("name", product.getName(),
                 "id", product.getId(),
                 "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                 "brand", "none/other",
                 "varian", "none/other",
                 "category", categoryBreadcrumbs,
-                "list", "/ - p2 - "+tabName+" rekomendasi untuk anda "+recomendationType+" - product topads",
-                "position", position + 1));
+                "list", "/ - p2"+(isLogin?" - ":" - non login - ")+tabName+" - rekomendasi untuk anda - "+recomendationType+" - product topads",
+                "position", position));
     }
 
     public void  addInboxProductViewImpressions(Product product, int position) {
@@ -195,7 +195,7 @@ public class TopAdsGtmTracker {
                 "brand", "none/other",
                 "varian", "none/other",
                 "category", product.getCategory().getId(),
-                "list", "/inbox - topads rekomendasi untuk anda",
+                "list", "/inbox - topads - rekomendasi untuk anda",
                 "position", position + 1));
     }
 
@@ -274,7 +274,7 @@ public class TopAdsGtmTracker {
                     "eventAction", "click - product - topads",
                     "eventLabel", keyword,
                     "ecommerce", DataLayer.mapOf(
-                            "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/searchproduct - topads  productlist"),
+                            "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/searchproduct - topads productlist"),
                                     "product", DataLayer.listOf(DataLayer.mapOf(
                                             "name", product.getName(),
                                             "id", product.getId(),
