@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.domain.pojo.UploadIdentificationPojo;
 
@@ -25,6 +26,8 @@ public class UploadIdentificationUseCase {
 
     private static final String KYC_TYPE = "kycType";
     private static final String PIC_OBJ_KYC = "picObjKYC";
+    private static final String FILE_NAME = "fileName";
+    public static final String PROJECT_ID = "projectID";
     private static final String KYC_NUMBER = "kyc_number";
     private static final String RELATION_ID = "relation_id";
     private static final String AUTO_VERIFY = "auto_verify";
@@ -51,17 +54,22 @@ public class UploadIdentificationUseCase {
         graphqlUseCase.addRequest(graphqlRequest);
         return graphqlUseCase.createObservable(params);
     }
+
     /**
-     *
-     * @param kycType from TYPE_KTP OR TYPE_SELFIE
+     * @param kycType   from TYPE_KTP OR TYPE_SELFIE
      * @param picObjKyc from uploadapp
      * @return request params
      */
     public static RequestParams getRequestParam(int kycType,
-                                                      String picObjKyc) {
+                                                String picObjKyc, String fileName, int projectId) {
         RequestParams param = RequestParams.create();
         param.putInt(KYC_TYPE, kycType);
         param.putString(PIC_OBJ_KYC, picObjKyc);
+        param.putString(FILE_NAME, fileName);
+        if (projectId > 0)
+            param.putInt(PROJECT_ID, projectId);
+        else
+            param.putInt(PROJECT_ID, KYCConstant.KYC_PROJECT_ID);
         return param;
     }
 

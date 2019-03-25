@@ -1,0 +1,114 @@
+{
+  tokopointsHomepage {
+    sectionContent {
+      layoutType
+      sectionTitle
+      sectionSubTitle
+      countdownAttr {
+        showTimer
+        activeCountDown
+        expiredCountDown
+      }
+      cta {
+        icon
+        text
+        url
+        appLink
+        type
+      }
+      layoutCategoryAttr {
+        categoryTokopointsList {
+          id
+          iconImageURL
+          text
+          url
+          appLink
+          isNewCategory
+        }
+      }
+      layoutCouponAttr {
+        couponList {
+          id
+          promoID
+          code
+          imageURL
+          imageURLMobile
+          redirectURL
+          redirectAppLink
+          usage {
+            activeCountdown
+            expiredCountdown
+            text
+            usageStr
+          }
+          minimumUsage
+          minimumUsageLabel
+        }
+      }
+      layoutBannerAttr {
+        bannerType
+        imageList {
+          imageURL
+          imageURLMobile
+          redirectURL
+          redirectAppLink
+          title
+          subTitle
+          inBannerTitle
+          inBannerSubTitle
+        }
+      }
+      layoutCatalogAttr {
+        catalogList {
+          id
+          promoID
+          expired
+          points
+          title
+          subtitle
+          expiredLabel
+          expiredStr
+          isDisabled
+          disableErrorMessage
+          thumbnailURL
+          thumbnailURLMobile
+          imageURL
+          imageUrlMobile
+          slug
+          baseCode
+          pointsStr
+          isGift
+          upperTextDesc
+          isDisabledButton
+          catalogType
+          pointsSlash
+          pointsSlashStr
+          discountPercentage
+          discountPercentageStr
+          isShowTukarButton
+          quotaPercentage
+        }
+      }
+      layoutTickerAttr {
+        tickerList {
+          id
+          type
+          metadata {
+            image {
+              url
+            }
+            text {
+              content
+              color
+              format
+            }
+            link {
+              url
+              applink
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -41,6 +41,7 @@ import com.tokopedia.normalcheckout.adapter.NormalCheckoutAdapterTypeFactory
 import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
 import com.tokopedia.normalcheckout.constant.ATC_ONLY
 import com.tokopedia.normalcheckout.constant.ProductAction
+import com.tokopedia.normalcheckout.constant.TRADEIN_BUY
 import com.tokopedia.normalcheckout.di.DaggerNormalCheckoutComponent
 import com.tokopedia.normalcheckout.model.ProductInfoAndVariant
 import com.tokopedia.normalcheckout.presenter.NormalCheckoutViewModel
@@ -53,13 +54,17 @@ import com.tokopedia.product.detail.common.data.model.variant.Child
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
+import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_normal_checkout.*
+import model.TradeInParams
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import view.viewcontrollers.FinalPriceActivity
+import view.viewcontrollers.TradeInHomeActivity
 import javax.inject.Inject
 
 class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
@@ -83,6 +88,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     lateinit var productId: String
     var notes: String? = null
     var quantity: Int = 0
+    var tempQuantity = quantity
+    var isTradeIn = 0
     var selectedVariantId: String? = null
     var placeholderProductImage: String? = null
     @ProductAction
@@ -95,6 +102,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     var trackerListName: String? = null
     var shopType: String? = null
     var shopName: String? = null
+    private var tradeInParams: TradeInParams? = null
 
     companion object {
         const val EXTRA_SHOP_ID = "shop_id"
@@ -106,6 +114,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val EXTRA_PRODUCT_IMAGE = "product_image"
         const val EXTRA_SHOP_TYPE = "shop_type"
         const val EXTRA_SHOP_NAME = "shop_name"
+        const val EXTRA_TRADE_IN_PARAMS = "trade_in_params"
         private const val TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val TRACKER_LIST_NAME = "tracker_list_name"
 
@@ -124,7 +133,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                            trackerAttribution: String? = "",
                            trackerListName: String? = "",
                            shopType: String? = "",
-                           shopName: String? = ""): NormalCheckoutFragment {
+                           shopName: String? = "",
+                           tradeInParams: TradeInParams?): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
                     putString(EXTRA_SHOP_ID, shopId)
@@ -138,6 +148,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     putString(TRACKER_LIST_NAME, trackerListName ?: "")
                     putString(EXTRA_SHOP_TYPE, shopType ?: "")
                     putString(EXTRA_SHOP_NAME, shopName ?: "")
+                    putParcelable(EXTRA_TRADE_IN_PARAMS, tradeInParams)
                 }
             }
 
@@ -166,12 +177,63 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     private fun onSuccessGetProductInfo(productInfoAndVariant: ProductInfoAndVariant) {
+        if (action == TRADEIN_BUY) {
+            tv_trade_in.gone()
+        } else {
+            if (tradeInParams != null && tradeInParams!!.isEligible == 1) {
+                tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
+                if (tradeInParams!!.usedPrice > 0)
+                    tv_trade_in.setOnClickListener { goToHargaFinal() }
+            }
+        }
         originalProduct = productInfoAndVariant
         if (selectedVariantId.isNullOrEmpty()) {
             selectedVariantId = productInfoAndVariant.productVariant.defaultChildString
         }
         originalProduct?.run {
             onProductChange(this, selectedVariantId)
+        }
+    }
+
+    private fun goToHargaFinal() {
+        val intent = FinalPriceActivity.getHargaFinalIntent(context)
+
+        if (tradeInParams != null && selectedProductInfo != null) {
+            tradeInParams!!.setPrice(selectedProductInfo!!.basic.price.toInt())
+            tradeInParams!!.productId = selectedProductInfo!!.basic.id
+            tradeInParams!!.productName = selectedProductInfo!!.basic.name
+        }
+
+        intent.putExtra(TradeInParams.TRADE_IN_PARAMS, tradeInParams)
+        startActivityForResult(intent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE)
+    }
+
+    fun goToTradeInHome() {
+        val intent = TradeInHomeActivity.getIntent(context)
+
+        if (tradeInParams != null && selectedProductInfo != null) {
+            tradeInParams!!.setPrice(selectedProductInfo!!.basic.price.toInt())
+            tradeInParams!!.productId = selectedProductInfo!!.basic.id
+            tradeInParams!!.productName = selectedProductInfo!!.basic.name
+        }
+
+        intent.putExtra(TradeInParams.TRADE_IN_PARAMS, tradeInParams)
+        startActivityForResult(intent, TradeInHomeActivity.TRADEIN_HOME_REQUEST)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == FinalPriceActivity.FINAL_PRICE_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null)
+                    onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
+            }
+        } else if (requestCode == TradeInHomeActivity.TRADEIN_HOME_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null)
+                    onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
+            }
         }
     }
 
@@ -262,6 +324,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             }
             button_buy_partial.text = if (action == ATC_ONLY) {
                 getString(R.string.add_to_cart)
+            } else if (action == TRADEIN_BUY) {
+                getString(R.string.tukar_tambah)
             } else if (productInfo.isPreorderActive) {
                 getString(R.string.label_button_preorder)
             } else {
@@ -358,6 +422,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             trackerListName = argument.getString(TRACKER_LIST_NAME)
             shopType = argument.getString(EXTRA_SHOP_TYPE)
             shopName = argument.getString(EXTRA_SHOP_NAME)
+            tradeInParams = argument.getParcelable(EXTRA_TRADE_IN_PARAMS)
         }
         if (savedInstanceState == null) {
             if (argument != null) {
@@ -400,6 +465,13 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             }
             if (action == ATC_ONLY) {
                 addToCart()
+            } else if (action == TRADEIN_BUY) {
+                if (tradeInParams != null) {
+                    if (tradeInParams!!.usedPrice > 0)
+                        goToHargaFinal()
+                    else
+                        tv_trade_in.performClick()
+                }
             } else {
                 doBuyOrPreorder()
             }
@@ -476,6 +548,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     private fun doBuyOrPreorder() {
+        tempQuantity = quantity
+        isTradeIn = 0
         addToCart(true, onFinish = { message: String?, cartId: String? ->
             onFinishAddToCart(message)
             selectedProductInfo?.run {
@@ -487,7 +561,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     trackerAttribution, trackerListName)
             }
             activity?.run {
-                val intent = router.getCheckoutIntent(this)
+                val intent = router.getCheckoutIntent(this, ShipmentFormRequest.BundleBuilder().build())
                 startActivity(intent)
             }
         }, onRetryWhenError = {
@@ -495,7 +569,31 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         })
     }
 
+    private fun onGotoTradeinShipment(deviceid: String) {
+        tempQuantity = 1
+        isTradeIn = 1
+        addToCart(true, onFinish = { message: String?, cartId: String? ->
+            onFinishAddToCart(message)
+            selectedProductInfo?.run {
+                normalCheckoutTracking.eventClickBuyInVariant(
+                        originalProduct,
+                        selectedVariantId ?: "",
+                        this, quantity,
+                        shopId, shopType, shopName, cartId,
+                        trackerAttribution, trackerListName)
+            }
+            activity?.run {
+                val intent = router.getCheckoutIntent(this, deviceid)
+                startActivity(intent)
+            }
+        }, onRetryWhenError = {
+            onGotoTradeinShipment(deviceid)
+        })
+    }
+
     private fun addToCart() {
+        tempQuantity = quantity
+        isTradeIn = 0
         addToCart(false, onFinish = { message: String?, cartId: String? ->
             onFinishAddToCart(message)
             selectedProductInfo?.run {
@@ -529,7 +627,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 productId.toInt()
             })
             .notes(notes)
-            .quantity(quantity)
+            .quantity(tempQuantity)
+            .isTradein(isTradeIn)
             .shopId(shopId?.toInt() ?: 0)
             .trackerAttribution(trackerAttribution)
             .trackerListName(trackerListName)
