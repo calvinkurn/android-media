@@ -1,8 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="shadow_color_1">#00CCCCCC</color>
-    <color name="shadow_color_2">#10CCCCCC</color>
-    <color name="shadow_color_3">#15CCCCCC</color>
-    <color name="shadow_color_4">#20CCCCCC</color>
-    <color name="shadow_color_5">#25CCCCCC</color>
 </resources>

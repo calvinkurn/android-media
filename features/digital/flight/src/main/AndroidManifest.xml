@@ -61,6 +61,11 @@
             android:label="@string/flight_booking_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
+
+        <activity android:name=".bookingV2.presentation.activity.FlightBookingActivity"
+            android:label="@string/flight_booking_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
         <activity
             android:name=".booking.view.activity.FlightBookingAmenityActivity"
             android:label="@string/flight_booking_luggage_toolbar_title"

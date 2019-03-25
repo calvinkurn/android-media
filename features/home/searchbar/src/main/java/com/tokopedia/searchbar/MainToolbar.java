@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -21,18 +22,16 @@ import com.tokopedia.user.session.UserSessionInterface;
  */
 public class MainToolbar extends Toolbar {
 
-    private final static String TAG_INBOX = "inbox";
-
-    private ImageButton btnNotification;
-    private ImageButton btnInbox;
-    private ImageButton btnWishlist;
+    protected ImageView btnNotification;
+    protected ImageView btnWishlist;
+    protected ImageView btnInbox;
     private BadgeView badgeViewInbox;
     private BadgeView badgeViewNotification;
 
-    private SearchBarAnalytics searchBarAnalytics;
-    private UserSessionInterface userSession;
+    protected SearchBarAnalytics searchBarAnalytics;
+    protected UserSessionInterface userSession;
 
-    private String screenName = "";
+    protected String screenName = "";
 
     public MainToolbar(Context context) {
         super(context);
@@ -71,12 +70,12 @@ public class MainToolbar extends Toolbar {
         }
     }
 
-    private void init(Context context, @Nullable AttributeSet attrs) {
+    protected void init(Context context, @Nullable AttributeSet attrs) {
 
         userSession = new UserSession(context);
         searchBarAnalytics = new SearchBarAnalytics(this.getContext());
 
-        inflate(context, R.layout.main_toolbar, this);
+        inflateResource(context);
         ImageButton btnQrCode = findViewById(R.id.btn_qrcode);
         btnNotification = findViewById(R.id.btn_notification);
         btnInbox = findViewById(R.id.btn_inbox);
@@ -98,11 +97,13 @@ public class MainToolbar extends Toolbar {
             editTextSearch.setTextSize(18);
         }
 
-        btnQrCode.setOnClickListener(v -> {
-            searchBarAnalytics.eventTrackingSqanQr();
-            getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                    .gotoQrScannerPage(false));
-        });
+        if (btnQrCode != null) {
+            btnQrCode.setOnClickListener(v -> {
+                searchBarAnalytics.eventTrackingSqanQr();
+                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
+                        .gotoQrScannerPage(false));
+            });
+        }
 
         btnWishlist.setOnClickListener(v -> {
             if (userSession.isLoggedIn()) {
@@ -110,6 +111,7 @@ public class MainToolbar extends Toolbar {
                 getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
                         .gotoWishlistPage(getContext()));
             } else {
+                searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName);
                 RouteManager.route(context, ApplinkConst.LOGIN);
             }
         });
@@ -120,6 +122,7 @@ public class MainToolbar extends Toolbar {
                 getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
                         .gotoInboxMainPage(getContext()));
             } else {
+                searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName);
                 RouteManager.route(context, ApplinkConst.LOGIN);
             }
         });
@@ -140,11 +143,15 @@ public class MainToolbar extends Toolbar {
         });
     }
 
-    public ImageButton getBtnNotification() {
+    public void inflateResource(Context context) {
+        inflate(context, R.layout.main_toolbar, this);
+    }
+
+    public ImageView getBtnNotification() {
         return btnNotification;
     }
 
-    public ImageButton getBtnWishlist() {
+    public ImageView getBtnWishlist() {
         return btnWishlist;
     }
 }

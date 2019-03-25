@@ -277,9 +277,10 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onEmptyTalk(productTalkViewModel: ProductTalkViewModel) {
         setupViewModel(productTalkViewModel)
-
         setHasOptionsMenu(false)
         adapter.showEmpty(presenter.isMyShop(shopId))
+        stopTrace()
+
     }
 
     override fun setCanLoad() {
@@ -288,11 +289,9 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onSuccessResetTalk(productTalkViewModel: ProductTalkViewModel) {
         setupViewModel(productTalkViewModel)
-
-
         adapter.setList(productTalkViewModel.listThread, ProductTalkTitleViewModel(productImage,
                 productName, productPrice))
-
+        stopTrace()
     }
 
     private fun setupViewModel(productTalkViewModel: ProductTalkViewModel) {

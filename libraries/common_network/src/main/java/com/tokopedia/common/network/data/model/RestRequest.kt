@@ -137,7 +137,7 @@ class RestRequest private constructor(builder: Builder) {
             return this
         }
 
-        fun setQueryParams(queryParams: Map<String, Any>): Builder {
+        fun setQueryParams(queryParams: Map<String, Any>?): Builder {
             this._queryParams = queryParams
             return this
         }

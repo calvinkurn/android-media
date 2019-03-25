@@ -16,6 +16,12 @@
             android:theme="@style/Theme.Green"
             android:launchMode="singleTask"/>
 
+        <activity android:name=".taptap.activity.TapTapTokenActivity"
+            android:label="@string/title_activity_gamification"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Green"
+            android:launchMode="singleTask"/>
+
     </application>
 
 </manifest>

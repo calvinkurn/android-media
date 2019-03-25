@@ -226,6 +226,7 @@ object ModelMapper {
             } else {
                 ""
             }
+        typeVariantViewModel.variantIdentifier = variantModel.identifier ?: ""
         return typeVariantViewModel
     }
 

@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.di
 
+import android.content.ComponentCallbacks
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -159,4 +160,11 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.QUERY_USER_COD_STATUS)
     fun provideUserCodStatus(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_user_cod)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_PRODUCT_PP)
+    fun provideProductPurchaseProtection(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_product_pp)
 }

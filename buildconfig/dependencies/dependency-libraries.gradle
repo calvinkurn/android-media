@@ -81,6 +81,8 @@ ext {
             graphView         :":libraries:graph_view",
             iris              : ":libraries:iris",
 //            iris              : ":libraries:iris_no_op",
-            banner            : ":libraries:banner"
+            banner            : ":libraries:banner",
+            collapsingTabLayout: ":libraries:collapsing_tab_layout",
+            cpm              : ":libraries:cpm"
     ]
 }

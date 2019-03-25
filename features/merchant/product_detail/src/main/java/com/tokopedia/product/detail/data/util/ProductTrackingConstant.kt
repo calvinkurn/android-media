@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.data.util
 
 object ProductTrackingConstant {
     object Category {
-        const val PDP = "Product Detail Page"
+        const val PDP = "product petail page"
         const val PRODUCT_PAGE = "Product Page"
     }
 
@@ -22,33 +22,27 @@ object ProductTrackingConstant {
     }
 
     object PDP {
-        const val EVENT = "clickPDP"
-    }
-
-    object Wishlist{
-        const val EVENT = "clickWishlist"
-        const val CATEGORY = "Wishlist"
-        const val LABEL = "Add To Wishlist"
+        const val EVENT_CLICK_PDP = "clickPDP"
     }
 
     object Affiliate {
-        const val EVENT = "clickAffiliate"
+        const val CLICK_AFFILIATE = "clickAffiliate"
         const val CATEGORY = "product detail page tokopedia by.me"
         const val ACTION = "click tambah ke by.me"
+        const val ACTION_CLICK_WISHLIST = "click wishlist"
     }
 
     object ProductTalk {
-        const val EVENT_LABEL = "TalkOld"
+        const val TALK = "Talk"
     }
 
     object ProductReview {
-        const val EVENT_LABEL = "review"
+        const val REVIEW = "review"
     }
 
     object ImageReview {
         const val ACTION_SEE_ITEM = "click - review gallery on foto dari pembeli"
         const val ACTION_SEE_ALL = "click - lihat semua review gallery"
-        const val ACTION_MOST_HELPFULL = "click - review gallery on most helpful review"
     }
 
     object MerchantVoucher {

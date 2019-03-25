@@ -22,6 +22,8 @@ public interface CommonConstant {
     int MY_COUPON_TAB = 1;
     int PIN_COUNT = 4;
     String TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S = "tokopoints_catalog_status_auto_refresh_s";
+    String TOKOPOINTS_NEW_HOME = "tokopoints_homepage_new_ui";
+    String TOKOPOINTS_NEW_COUPON_LISTING = "tokopoints_coupon_stack_new_ui";
     String EXTRA_COUPON_COUNT = "extra_coupon_count";
     String EXTRA_COUPON_CODE = "coupon_code";
     String EXTRA_CATALOG_CODE = "catalog_code";

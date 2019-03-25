@@ -9,4 +9,5 @@ import com.tokopedia.abstraction.constant.TkpdAppLink;
 public class ApplinkConstant extends TkpdAppLink{
 
     public static final String GAMIFICATION = "tokopedia://gamification";
+    public static final String GAMIFICATION2 = "tokopedia://gamification2";
 }
