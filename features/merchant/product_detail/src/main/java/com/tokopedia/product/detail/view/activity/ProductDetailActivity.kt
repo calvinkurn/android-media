@@ -86,7 +86,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     }
 
     override fun getScreenName(): String {
-        return ProductDetailTracking.PRODUCT_DETAIL_SCREEN_NAME
+        return "" // need only on success load data? (it needs custom dimension)
     }
 
     override fun getNewFragment(): Fragment = ProductDetailFragment

@@ -35,6 +35,7 @@ public class ExploreParams {
     public void setPullToRefreshData() {
         isCanLoadMore = true;
         cursor = "";
+        setFilters(new ArrayList<>());
     }
 
     public void setSearchParam(String keyword) {

@@ -7,6 +7,7 @@ import com.tokopedia.product.detail.common.data.model.product.Rating
 import com.tokopedia.product.detail.common.data.model.product.WishlistCount
 import com.tokopedia.product.detail.data.model.installment.InstallmentBank
 import com.tokopedia.product.detail.data.model.review.Review
+import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.shop.ShopBadge
 import com.tokopedia.product.detail.data.model.shop.ShopCommitment
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
@@ -26,5 +27,6 @@ data class ProductInfoP2(
         var latestTalk: Talk = Talk(),
         var productOthers: List<ProductOther> = listOf(),
         var shopCod: Boolean = false,
-        var nearestWarehouse: MultiOriginWarehouse = MultiOriginWarehouse()
+        var nearestWarehouse: MultiOriginWarehouse = MultiOriginWarehouse(),
+        var productPurchaseProtectionInfo: ProductPurchaseProtectionInfo = ProductPurchaseProtectionInfo()
         )

@@ -26,6 +26,7 @@ import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -568,14 +569,17 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     context.startActivity(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                             String.valueOf(response.getData().getBasic().getId())));
                 } catch (Exception e) {
-                    prepareOpenWebView(uriData);
+                    Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(context, uriData.toString());
+                    context.startActivity(intent);
                 }
                 context.finish();
             }
             return null;
         }, throwable -> {
             viewListener.finishLoading();
-            viewListener.networkError(uriData);
+            Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(context, uriData.toString());
+            context.startActivity(intent);
+            context.finish();
             return null;
         });
     }

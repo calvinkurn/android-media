@@ -1476,7 +1476,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             @Override
             public void onError(Throwable e) {
                 CommonUtils.dumper(e);
-                mTrackerCod.eventClickBayarDiTempatShipmentFailed(false);
+                mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
                 processReloadCheckoutPageBecauseOfError(isOneClickShipment);
             }
 
@@ -1485,7 +1485,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getView().hideLoading();
                 CodResponse response = graphqlResponse.getData(CodResponse.class);
                 if (getView() == null || !response.getValidateCheckoutCod().getHeader().getErrorCode().equals("200")) {
-                    mTrackerCod.eventClickBayarDiTempatShipmentFailed(false);
+                    mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
                     processReloadCheckoutPageBecauseOfError(isOneClickShipment);
                     getView().showToastError("");
                 } else if (response.getValidateCheckoutCod().getData() != null &&
@@ -1494,10 +1494,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     if (TextUtils.isEmpty(data.getErrorMessage())
                             && data.getPriceSummary() != null && data.getPriceSummary().size() > 0) {
                         // validation succeeded, go to cod confirmation page
+                        mTrackerCod.eventClickBayarDiTempatShipmentSuccessEligible();
                         getView().navigateToCodConfirmationPage(data, checkoutRequest);
                     } else {
                         // show bottomsheet error indicating cod ineligibility
-                        mTrackerCod.eventClickBayarDiTempatShipmentFailed(true);
+                        mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIneligible();
                         getView().showBottomSheetError(data.getErrorMessage());
                     }
                 }

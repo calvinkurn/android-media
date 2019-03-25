@@ -14,4 +14,8 @@
     <color name="tkpd_dark_gray">#999999</color>
     <color name="orange_red">#ff5722</color>
     <color name="countdown_background">#ff3b30</color>
+    <color name="home_ticker_background">#fffae6</color>
+    <color name="home_ticker_text_color">#ae31353b</color>
+    <color name="home_ticker_info_lengkap_color">#03ac0e</color>
+    <color name="home_banner_lihat_semua_color">#03ac0e</color>
 </resources>

@@ -1,5 +1,8 @@
 package com.tokopedia.gamification.data.entity;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Ignore;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -8,118 +11,132 @@ import com.google.gson.annotations.SerializedName;
 
 public class CrackBenefitEntity {
 
+    public CrackBenefitEntity() {
+    }
+
+    @ColumnInfo(name = "color")
     @SerializedName("color")
-    private String color;
+    public String color;
 
+    @Ignore
+    @ColumnInfo(name = "size")
     @SerializedName("size")
-    private String size;
+    public String size;
 
+    @Ignore
     @SerializedName("templateText")
-    private String templateText;
+    public String templateText;
 
+    @Ignore
     @SerializedName("benefitType")
-    private String benefitType;
+    public String benefitType;
 
+    @Ignore
     @SerializedName("valueAfter")
-    private int valueAfter;
+    public int valueAfter;
 
+    @Ignore
     @SerializedName("multiplier")
-    private String multiplier;
+    public String multiplier;
 
+    @ColumnInfo(name = "text")
     @SerializedName("text")
-    private String text;
+    public String text;
 
+    @Ignore
     @SerializedName("valueBefore")
-    private int valueBefore;
+    public int valueBefore;
 
+    @Ignore
     @SerializedName("tierInformation")
-    private String tierInformation;
+    public String tierInformation;
 
+    @Ignore
     @SerializedName("animationType")
-    private String animationType;
+    public String animationType;
 
-    public void setColor(String color){
+    public void setColor(String color) {
         this.color = color;
     }
 
-    public String getColor(){
+    public String getColor() {
         return color;
     }
 
-    public void setSize(String size){
+    public void setSize(String size) {
         this.size = size;
     }
 
-    public String getSize(){
+    public String getSize() {
         return size;
     }
 
-    public void setTemplateText(String templateText){
+    public void setTemplateText(String templateText) {
         this.templateText = templateText;
     }
 
-    public String getTemplateText(){
+    public String getTemplateText() {
         return templateText;
     }
 
-    public void setBenefitType(String benefitType){
+    public void setBenefitType(String benefitType) {
         this.benefitType = benefitType;
     }
 
-    public String getBenefitType(){
+    public String getBenefitType() {
         return benefitType;
     }
 
-    public void setValueAfter(int valueAfter){
+    public void setValueAfter(int valueAfter) {
         this.valueAfter = valueAfter;
     }
 
-    public int getValueAfter(){
+    public int getValueAfter() {
         return valueAfter;
     }
 
-    public void setMultiplier(String multiplier){
+    public void setMultiplier(String multiplier) {
         this.multiplier = multiplier;
     }
 
-    public String getMultiplier(){
+    public String getMultiplier() {
         return multiplier;
     }
 
-    public void setText(String text){
+    public void setText(String text) {
         this.text = text;
     }
 
-    public String getText(){
+    public String getText() {
         return text;
     }
 
-    public void setValueBefore(int valueBefore){
+    public void setValueBefore(int valueBefore) {
         this.valueBefore = valueBefore;
     }
 
-    public int getValueBefore(){
+    public int getValueBefore() {
         return valueBefore;
     }
 
-    public void setTierInformation(String tierInformation){
+    public void setTierInformation(String tierInformation) {
         this.tierInformation = tierInformation;
     }
 
-    public String getTierInformation(){
+    public String getTierInformation() {
         return tierInformation;
     }
 
-    public void setAnimationType(String animationType){
+    public void setAnimationType(String animationType) {
         this.animationType = animationType;
     }
 
-    public String getAnimationType(){
+    public String getAnimationType() {
         return animationType;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return
                 "CrackBenefitEntity{" +
                         "color = '" + color + '\'' +

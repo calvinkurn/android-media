@@ -516,6 +516,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         val selectedVariant = selectedVariantId
         val selectedWarehouseId: Int = viewModel.selectedwarehouse?.warehouseInfo?.id?.toInt() ?: 0
         showLoadingDialog()
+        //initiate checkout
+        normalCheckoutTracking.eventAppsFlyerInitiateCheckout(productId,
+            selectedProductInfo?.basic?.price.toString(),
+            quantity,
+            selectedProductInfo?.basic?.name ?: "",
+            selectedProductInfo?.category?.name ?: "")
         router.addToCartProduct(AddToCartRequest.Builder()
             .productId(if (selectedVariant != null && selectedVariant.toInt() > 0) {
                 selectedVariant.toInt()
@@ -537,7 +543,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     hideLoadingDialog()
                     addToCartResult?.run {
                         if (isSuccess) {
-                            normalCheckoutTracking.eventAppsFlyer(productId,
+                            //success checkout
+                            normalCheckoutTracking.eventAppsFlyerAddToCart(productId,
                                 selectedProductInfo?.basic?.price.toString(),
                                 quantity,
                                 selectedProductInfo?.basic?.name ?: "",

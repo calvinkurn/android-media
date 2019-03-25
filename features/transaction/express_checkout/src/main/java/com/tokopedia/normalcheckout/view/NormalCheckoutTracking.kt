@@ -133,10 +133,32 @@ class NormalCheckoutTracking {
             color)
     }
 
-    fun eventAppsFlyer(productId: String, priceItem: String,
-                       quantity: Int,
-                       productName: String,
-                       category: String) {
+    ////////////////////////////////////////////////////////////
+    // APSSFLYER
+    ////////////////////////////////////////////////////////////
+
+    fun eventAppsFlyerInitiateCheckout(productId: String,
+                                       priceItem: String,
+                                quantity: Int,
+                                productName: String,
+                                category: String) {
+        TrackApp.getInstance()?.appsFlyer?.sendEvent(
+            AFInAppEventType.INITIATED_CHECKOUT,
+            mutableMapOf<String, Any>(
+                AFInAppEventParameterName.CONTENT_ID to productId,
+                AFInAppEventParameterName.CONTENT_TYPE to "product",
+                AFInAppEventParameterName.DESCRIPTION to productName,
+                AFInAppEventParameterName.CURRENCY to "IDR",
+                AFInAppEventParameterName.QUANTITY to quantity,
+                AFInAppEventParameterName.PRICE to priceItem,
+                "category" to category
+            ))
+    }
+
+    fun eventAppsFlyerAddToCart(productId: String, priceItem: String,
+                                quantity: Int,
+                                productName: String,
+                                category: String) {
         TrackApp.getInstance()?.appsFlyer?.sendEvent(
             AFInAppEventType.ADD_TO_CART,
             mutableMapOf<String, Any>(

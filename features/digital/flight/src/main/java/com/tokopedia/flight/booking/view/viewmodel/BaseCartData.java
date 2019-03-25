@@ -86,4 +86,5 @@ public class BaseCartData implements Cloneable {
     public void setId(String id) {
         this.id = id;
     }
+
 }

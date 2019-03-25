@@ -205,11 +205,6 @@ public class GTMAnalytics extends ContextAnalytics {
         //no op, only for appsfyler and moengage
     }
 
-    @Override
-    public String getId() {
-        return getAfUniqueId(context);
-    }
-
     public void eventAuthenticate() {
         eventAuthenticate(null);
     }

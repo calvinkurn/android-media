@@ -18,7 +18,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.webview.R;
+import com.tokopedia.applink.RouteManager;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -121,7 +121,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     protected int getLayout(){
-        return R.layout.fragment_general_web_view;
+        return R.layout.fragment_general_web_view_lib;
     }
 
     @Override
@@ -188,6 +188,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     protected boolean shouldOverrideUrlLoading(WebView webView, String url) {
+        if (RouteManager.isSupportApplink(getActivity(), url)) {
+            RouteManager.route(getActivity(), url);
+            return true;
+        }
         return false;
     }
 

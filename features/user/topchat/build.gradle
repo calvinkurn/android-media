@@ -53,6 +53,7 @@ dependencies {
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.merchantVoucher)
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'

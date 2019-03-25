@@ -33,7 +33,7 @@ interface RestApi {
 
     @Multipart
     @POST
-    fun postMultipart(@Url url: String, @PartMap partMap: Map<String, RequestBody>, @QueryMap(encoded = true) queries: Map<String, String>, @HeaderMap headers: Map<String, String>): Observable<Response<String>>
+    fun postMultipart(@Url url: String, @PartMap partMap: Map<String, @JvmSuppressWildcards RequestBody>, @QueryMap(encoded = true) queries: Map<String, String>, @HeaderMap headers: Map<String, String>): Observable<Response<String>>
 
     @FormUrlEncoded
     @POST

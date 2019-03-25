@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.tkpdpdp.R;
@@ -16,6 +17,8 @@ public class ButtonAffiliate extends BaseCustomView {
 
     private View buttonAffiliate;
     private View loadingAffiliate;
+    private TextView getCommission;
+    private TextView commission;
     private ProductDetailView listener;
 
     public ButtonAffiliate(@NonNull Context context) {
@@ -37,6 +40,8 @@ public class ButtonAffiliate extends BaseCustomView {
         View view = inflate(getContext(), R.layout.layout_button_affiliate_large, this);
         buttonAffiliate = view.findViewById(R.id.buttonAffiliate);
         loadingAffiliate = view.findViewById(R.id.loadingAffiliate);
+        getCommission = view.findViewById(R.id.getCommission);
+        commission = view.findViewById(R.id.commission);
     }
 
     public void setListener(ProductDetailView listener) {
@@ -44,12 +49,16 @@ public class ButtonAffiliate extends BaseCustomView {
     }
 
     public void renderView(AffiliateInfoViewModel affiliate) {
+        if (affiliate == null) {
+            setVisibility(GONE);
+            return;
+        }
+
         setVisibility(VISIBLE);
-        loadingAffiliate.setVisibility(affiliate != null ? GONE : VISIBLE);
-        buttonAffiliate.setOnClickListener(view -> {
-            if (affiliate != null) {
-                listener.onByMeClicked(affiliate, false);
-            }
-        });
+        loadingAffiliate.setVisibility(GONE);
+        getCommission.setVisibility(VISIBLE);
+        commission.setVisibility(VISIBLE);
+        commission.setText(affiliate.getCommissionValueDisplay());
+        buttonAffiliate.setOnClickListener(view -> listener.onByMeClicked(affiliate, false));
     }
 }

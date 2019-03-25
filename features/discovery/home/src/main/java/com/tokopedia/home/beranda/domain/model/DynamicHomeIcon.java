@@ -1,9 +1,12 @@
 package com.tokopedia.home.beranda.domain.model;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by henrypriyono on 30/01/18.
@@ -157,5 +160,42 @@ public class DynamicHomeIcon {
         public void setUrl(String url) {
             this.url = url;
         }
+    }
+
+    public Map<String, Object> getEnhanceImpressionDynamicIconHomePage() {
+        List<Object> list = convertEnhanceDynamicIcon();
+        return DataLayer.mapOf(
+                "event", "promoView",
+                "eventCategory", "homepage",
+                "eventAction", "impression on dynamic icon",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        list.toArray(new Object[list.size()])
+                                )
+                        )
+                )
+        );
+    }
+
+    private List<Object> convertEnhanceDynamicIcon() {
+        List<Object> list = new ArrayList<>();
+
+        if (dynamicIcon != null) {
+            for (int i = 0; i < dynamicIcon.size(); i++) {
+                DynamicIcon item = dynamicIcon.get(i);
+                list.add(
+                        DataLayer.mapOf(
+                                "id", item.getId(),
+                                "name", "/ - dynamic icon",
+                                "creative", item.getName(),
+                                "creative_url", item.getImageUrl(),
+                                "position", String.valueOf(i + 1)
+                        )
+                );
+            }
+        }
+        return list;
     }
 }
