@@ -78,7 +78,7 @@ public class ShipmentMapper implements IShipmentMapper {
             autoApplyData.setIsCoupon(shipmentAddressFormDataResponse.getAutoapplyV2().getIsCoupon());
             autoApplyData.setMessageSuccess(shipmentAddressFormDataResponse.getAutoapplyV2().getMessage().getText());
             int promoId = 0;
-            if(!TextUtils.isEmpty(shipmentAddressFormDataResponse.getAutoapplyV2().getPromoCodeId())){
+            if (!TextUtils.isEmpty(shipmentAddressFormDataResponse.getAutoapplyV2().getPromoCodeId())) {
                 Integer.valueOf(shipmentAddressFormDataResponse.getAutoapplyV2().getPromoCodeId());
             }
             autoApplyData.setPromoId(promoId);
@@ -232,10 +232,9 @@ public class ShipmentMapper implements IShipmentMapper {
                             shopResult.setCityId(groupShop.getShop().getCityId());
                             shopResult.setCityName(groupShop.getShop().getCityName());
 
-                            if (shipmentAddressFormDataResponse.getAutoapplyStack() != null) {
-                                if (shipmentAddressFormDataResponse.getAutoapplyStack().getVoucherOrders() != null) {
-                                    for (VoucherOrdersItem voucherOrdersItem : shipmentAddressFormDataResponse.getAutoapplyStack().getVoucherOrders()) {
-                                        // if (voucherOrdersItem.getUniqueId().equals(groupShop.getCartString())) {
+                            if (shipmentAddressFormDataResponse.getAutoapplyStack().getVoucherOrders() != null) {
+                                for (VoucherOrdersItem voucherOrdersItem : shipmentAddressFormDataResponse.getAutoapplyStack().getVoucherOrders()) {
+                                    if (voucherOrdersItem.getUniqueId().equals(groupShop.getCartString())) {
                                         VoucherOrdersItemData voucherOrdersItemData = new VoucherOrdersItemData();
                                         voucherOrdersItemData.setCode(voucherOrdersItem.getCode());
                                         voucherOrdersItemData.setSuccess(voucherOrdersItem.isSuccess());
@@ -251,7 +250,6 @@ public class ShipmentMapper implements IShipmentMapper {
                                         voucherOrdersItemData.setMessageData(convertToMessageData(voucherOrdersItem.getMessage()));
                                         voucherOrdersItemData.setTitleDescription(voucherOrdersItem.getTitleDescription());
                                         shopResult.setVoucherOrdersItemData(voucherOrdersItemData);
-                                        // }
                                     }
                                 }
                             }

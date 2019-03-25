@@ -244,6 +244,8 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
             messageInfo = "Terjadi kesalahan. Ulangi beberapa saat lagi."
         }
         ToasterError.make(layoutMerchantVoucher, messageInfo, ToasterError.LENGTH_SHORT).show()
+
+//        dismiss()
 //        showClashingDummy()
     }
 
@@ -257,13 +259,13 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     override fun onClashCheckPromoFirstStep() {
         // Close merchant voucher bottomsheet, show clash bottomsheet
         dismiss()
-//        showClashingDummy()
+        showClashingDummy()
     }
 
     private fun showClashingDummy() {
         val mapper = CheckPromoStackingCodeMapper()
         val gson = Gson()
-        var responseGetPromoStackFirst = gson.fromJson(FileUtils().readRawTextFile(activity, R.raw.dummy_clashing_response), ResponseGetPromoStackFirst::class.java)
+        val responseGetPromoStackFirst = gson.fromJson(FileUtils().readRawTextFile(activity, R.raw.dummy_clashing_response), ResponseGetPromoStackFirst::class.java)
         val uiData = mapper.callDummy(responseGetPromoStackFirst)
         actionListener.onClashCheckPromo(uiData.data.clashings)
     }
