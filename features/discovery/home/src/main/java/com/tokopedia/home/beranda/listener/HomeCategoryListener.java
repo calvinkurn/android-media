@@ -28,7 +28,7 @@ public interface HomeCategoryListener {
 
     void actionInfoPendingCashBackTokocash(CashBackData cashBackData, String appLinkActionButton);
 
-    void actionTokoPointClicked(String tokoPointUrl, String pageTitle);
+    void actionTokoPointClicked(String appLink, String tokoPointUrl, String pageTitle);
 
     void showNetworkError(String message);
 
@@ -46,10 +46,6 @@ public interface HomeCategoryListener {
 
     void onPromoAllClick();
 
-    void onServerTimeReceived(long serverTimeUnix);
-
-    long getServerTimeOffset();
-
     boolean isHomeFragment();
 
     void onPromoDragStart();
@@ -57,4 +53,12 @@ public interface HomeCategoryListener {
     void onPromoDragEnd();
 
     void setActivityStateListener(ActivityStateListener activityStateListener);
+
+    void onDynamicIconScrollStart();
+
+    void onDynamicIconScrollEnd();
+
+    void onSpotlightItemClicked(String actionLink);
+
+    void onTokopointCheckNowClicked(String applink);
 }

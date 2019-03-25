@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.text.TextUtils
@@ -37,6 +38,9 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
+import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
@@ -64,7 +68,8 @@ import javax.inject.Inject
 
 class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         , TypingListener, SendButtonListener, ImagePickerListener, ChatTemplateListener,
-        HeaderMenuListener, DualAnnouncementListener, SecurityInfoListener {
+        HeaderMenuListener, DualAnnouncementListener, SecurityInfoListener,
+        TopChatVoucherListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -386,6 +391,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 this,
                 this,
                 this,
+                this,
                 this))
     }
 
@@ -690,6 +696,27 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
+    override fun onVoucherCopyClicked(voucherCode: String, messageId: String, replyId: String, blastId: String, attachmentId: String, replyTime: String?, fromUid: String?) {
+        analytics.eventVoucherCopyClicked(voucherCode)
+        presenter.copyVoucherCode(fromUid, replyId, blastId, attachmentId, replyTime)
+        activity?.run{
+            val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(com.tokopedia.merchantvoucher.R.string.title_voucher_code_copied),
+                    Snackbar.LENGTH_LONG)
+            snackbar.setAction(activity!!.getString(com.tokopedia.merchantvoucher.R.string.close), { snackbar.dismiss() })
+            snackbar.setActionTextColor(Color.WHITE)
+            snackbar.show()
+        }
+    }
+
+    override fun onVoucherClicked(data: MerchantVoucherViewModel) {
+        analytics.eventVoucherThumbnailClicked()
+        activity?.let {
+            val intent = MerchantVoucherDetailActivity.createIntent(it, data.voucherId,
+                    data, shopId.toString())
+            startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_MERCHANT_DETAIL)
+        }
+    }
+
     override fun onGoToSecurityInfo(url: String) {
         if (url.isNotEmpty()) {
             onGoToWebView(url, "")
@@ -714,7 +741,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             it.setResult(RESULT_OK, intent)
             it.finish()
         }
-
     }
 
     override fun onDestroy() {

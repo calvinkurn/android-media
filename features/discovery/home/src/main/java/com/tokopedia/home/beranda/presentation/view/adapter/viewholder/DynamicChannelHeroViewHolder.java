@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
@@ -52,10 +53,10 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
     }
 
     private void findViews(View itemView) {
-        channelTitle = (TextView) itemView.findViewById(R.id.channel_title);
+        channelTitle = itemView.findViewById(R.id.channel_title);
         channelTitleContainer = itemView.findViewById(R.id.channel_title_container);
-        channelHeroImage = (ImageView) itemView.findViewById(R.id.channel_hero_image);
-        seeAllButton = (TextView) itemView.findViewById(R.id.see_all_button);
+        channelHeroImage = itemView.findViewById(R.id.channel_hero_image);
+        seeAllButton = itemView.findViewById(R.id.see_all_button);
         recyclerView = itemView.findViewById(R.id.recycleList);
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
                 GridLayoutManager.VERTICAL, false));
@@ -70,6 +71,8 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
             String titleText = element.getChannel().getHeader().getName();
             if (!TextUtils.isEmpty(titleText)) {
                 channelTitleContainer.setVisibility(View.VISIBLE);
+                Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
+                channelTitle.setTypeface(typeface);
                 channelTitle.setText(titleText);
             } else {
                 channelTitleContainer.setVisibility(View.GONE);

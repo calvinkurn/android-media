@@ -184,7 +184,7 @@ public interface FeedPlus {
 
         int getAdapterListSize();
 
-        void onWhitelistClicked(String url);
+        void onWhitelistClicked();
 
         void onSuccessToggleFavoriteShop(int rowNumber, int adapterPosition);
 
@@ -223,5 +223,7 @@ public interface FeedPlus {
         void toggleFavoriteShop(int rowNumber, String shopId);
 
         void toggleFavoriteShop(int rowNumber, int adapterPosition, String shopId);
+
+        void trackAffiliate(String url);
     }
 }

@@ -4,10 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -18,7 +16,7 @@ import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
+import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterNoLayoutActivity;
@@ -45,6 +43,11 @@ import com.tokopedia.tkpdpdp.listener.ProductInfoView;
 import com.tokopedia.tkpdpdp.presenter.ProductInfoPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductInfoPresenterImpl;
 
+/**
+ * Use ProductDetailActivity. This will deleted.
+ *
+ */
+@Deprecated
 public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductInfoPresenter> implements
         DeepLinkWebViewHandleListener,
         ProductInfoView,
@@ -68,7 +71,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
 
     }
 
-    @DeepLink(ApplinkConst.AFFILIATE_PRODUCT)
+    @Deprecated
     public static Intent getAffiliateIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         extras.putBoolean(KEY_FROM_EXPLORE_AFFILIATE, true);
@@ -77,6 +80,8 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
                 .putExtras(extras);
     }
 
+    //Deprecated
+    //@DeepLink(Constants.Applinks.PRODUCT_INFO)
     /**
      * To add lazy load, make sure to add PDP query parameter from {@link ApplinkConst.Query}
      *
@@ -84,7 +89,6 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
      * @param extras
      * @return
      */
-    @DeepLink(Constants.Applinks.PRODUCT_INFO)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
 
@@ -195,8 +199,8 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     private boolean share() {
 
         Bundle bundle = this.bundleData;
-        boolean isAddingProduct = bundle.getBoolean(ProductInfoActivity.IS_ADDING_PRODUCT);
-        LinkerData shareData = bundle.getParcelable(ProductInfoActivity.SHARE_DATA);
+        boolean isAddingProduct = bundle.getBoolean(IS_ADDING_PRODUCT);
+        LinkerData shareData = bundle.getParcelable(SHARE_DATA);
 
         if (isAddingProduct) {
             ShareBottomSheet share = ShareBottomSheet.newInstance(shareData, true);

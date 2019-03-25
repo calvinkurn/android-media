@@ -3,7 +3,6 @@ package com.tokopedia.design.banner;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
@@ -159,7 +158,7 @@ public class BannerView extends BaseCustomView {
         indicatorItems.clear();
         bannerIndicator.removeAllViews();
 
-        bannerPagerAdapter = getBannerPagerAdapter();
+        BannerPagerAdapter bannerPagerAdapter = getBannerAdapter();
         bannerRecyclerView.setHasFixedSize(true);
         indicatorItems.clear();
         bannerIndicator.removeAllViews();
@@ -201,7 +200,7 @@ public class BannerView extends BaseCustomView {
                     if (onPromoDragListener != null) {
                         onPromoDragListener.onPromoDragStart();
                     }
-                } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                } else if (newState == RecyclerView.SCROLL_STATE_IDLE && !isAutoScrollOnProgress()) {
                     if (onPromoDragListener != null) {
                         onPromoDragListener.onPromoDragEnd();
                     }
@@ -236,6 +235,10 @@ public class BannerView extends BaseCustomView {
         }
     }
 
+    protected BannerPagerAdapter getBannerAdapter() {
+        return new BannerPagerAdapter(promoImageUrls, onPromoClickListener);
+    }
+
     public void setPagerAdapter(BannerPagerAdapter bannerPagerAdapter) {
         bannerRecyclerView.setAdapter(bannerPagerAdapter);
     }
@@ -266,7 +269,7 @@ public class BannerView extends BaseCustomView {
     }
 
     public void startAutoScrollBanner() {
-        if (bannerHandler != null && runnableScrollBanner != null) {
+        if (bannerHandler != null && runnableScrollBanner != null && !isAutoScrollOnProgress()) {
             setAutoScrollOnProgress(true);
             bannerHandler.postDelayed(runnableScrollBanner, SLIDE_DELAY);
         }

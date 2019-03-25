@@ -12,6 +12,7 @@ public class TopAdsParams {
     public static final String KEY_USER_ID = "user_id";
     public static final String KEY_DEVICE = "device";
     public static final String KEY_ITEM = "item";
+    public static final String KEY_WITH_TEMPLATE = "with_template";
     public static final String KEY_XPARAMS = "xparams";
     public static final String KEY_PARAMS = "params";
     public static final String KEY_SRC = "src";

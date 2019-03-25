@@ -51,6 +51,7 @@ ext {
             config            : ":libraries:global_config",
             graphql           : ":libraries:graphql",
             imagePicker       : ":libraries:image_picker",
+            imagePreview      : ":libraries:image_preview",
             imageuploader     : ":libraries:imageuploader",
             inappupdate       : ":libraries:inappupdate",
             kotlinExtensions  : ":libraries:kotlin_extensions",
@@ -81,6 +82,7 @@ ext {
             iris              : ":libraries:iris",
 //            iris              : ":libraries:iris_no_op",
             banner            : ":libraries:banner",
-            collapsingTabLayout: ":libraries:collapsing_tab_layout"
+            collapsingTabLayout: ":libraries:collapsing_tab_layout",
+            cpm              : ":libraries:cpm"
     ]
 }

@@ -48,7 +48,7 @@ class RelatedProductAdapter(val listener: RelatedProductListener? = null, val ty
         val element = list[position]
 
         if (element.id == EMPTY_ITEM_ID) {
-            holder.itemView.thumbnail.loadDrawable(R.drawable.ic_system_action_addimage_grayscale_62)
+            holder.itemView.thumbnail.loadImageDrawable(R.drawable.ic_system_action_addimage_grayscale_62)
             holder.itemView.delete.hide()
             holder.itemView.separatorBottom.hide()
             holder.itemView.separatorBottomEmpty.show()

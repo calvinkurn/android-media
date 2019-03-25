@@ -46,7 +46,8 @@ public class GetKolPostDetailUseCase {
         String query = GraphqlHelper.loadRawString(context.getResources(),
                 R.raw.query_get_kol_comment);
 
-        GraphqlRequest request = new GraphqlRequest(query, GetKolCommentData.class, variables);
+        GraphqlRequest request = new GraphqlRequest(query, GetKolCommentData.class, variables,
+                false);
 
         graphqlUseCase.addRequest(request);
         graphqlUseCase.execute(subscriber);
