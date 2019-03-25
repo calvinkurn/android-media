@@ -78,7 +78,7 @@ public class FeedAnalytics {
 
     //#FEED015
     public void trackClickCreatePost(String userId) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_FEED,
                 CATEGORY_FEED,
                 "click buat post",
@@ -88,7 +88,7 @@ public class FeedAnalytics {
 
     //#FEED016
     public void trackClickCreatePostAsShop(String shopId) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_FEED,
                 CATEGORY_FEED,
                 "click post sebagai - shop",
@@ -98,7 +98,7 @@ public class FeedAnalytics {
 
     //#FEED016
     public void trackClickCreatePostAsUser(String userId) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_FEED,
                 CATEGORY_FEED,
                 "click post sebagai - user",
