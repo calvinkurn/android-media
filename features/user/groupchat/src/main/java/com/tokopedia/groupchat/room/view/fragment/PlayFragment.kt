@@ -616,6 +616,14 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
+    override fun onFloatingIconClicked(it: DynamicButtonsViewModel.Button, applink: String) {
+        when (it.contentType) {
+            DynamicButtonsViewModel.TYPE_REDIRECT_EXTERNAL -> openRedirectUrl(applink)
+            DynamicButtonsViewModel.TYPE_OVERLAY_CTA -> viewState.onShowOverlayCTAFromDynamicButton(it)
+            DynamicButtonsViewModel.TYPE_OVERLAY_WEBVIEW -> viewState.onShowOverlayWebviewFromDynamicButton(it)
+        }
+    }
+
     override fun onPause() {
         super.onPause()
         timeStampAfterPause = System.currentTimeMillis()

@@ -275,9 +275,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         presenter.attachView(this);
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
-        if(getContext() != null) {
-            view.setPadding(0, DisplayMetricUtils.getStatusBarHeight(getContext()), 0, 0);
-        }
         return view;
     }
 

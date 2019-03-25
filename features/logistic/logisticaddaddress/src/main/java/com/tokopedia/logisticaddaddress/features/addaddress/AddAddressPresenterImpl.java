@@ -32,10 +32,9 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
     private static final String PARAM_RECEIVER_PHONE = "receiver_phone";
     private static final String PARAM_LATITUDE = "latitude";
     private static final String PARAM_LONGITUDE = "longitude";
-    private static final String PARAM_PASSWORD = "user_password";
 
     private AddAddressContract.View mView;
-    private final AddressRepository networkInteractor;
+    private AddressRepository networkInteractor;
     private UserSessionInterface userSession;
 
     @Inject
@@ -62,9 +61,9 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                 userSession.getUserId(), userSession.getDeviceId(), getParam()
         );
         if (mView.isEdit()) {
-            networkInteractor.editAddress(mView.context(), param, getListener(true));
+            networkInteractor.editAddress(param, getListener(true));
         } else {
-            networkInteractor.addAddress(mView.context(), param, getListener(false));
+            networkInteractor.addAddress(param, getListener(false));
         }
     }
 
@@ -139,8 +138,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
         Destination address = mView.getAddress();
 
         if (mView.isEdit()) {
-            String password = mView.getPassword();
-            params = getParamEditAddress(address, password);
+            params = getParamEditAddress(address);
         } else {
             params = getParamAddAddress(address);
         }
@@ -165,22 +163,9 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
         return param;
     }
 
-    private TKPDMapParam<String, String> getParamEditAddress(Destination address, String password) {
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+    private TKPDMapParam<String, String> getParamEditAddress(Destination address) {
+        TKPDMapParam<String, String> param = getParamAddAddress(address);
         param.put(PARAM_ADDRESS_ID, (address.getAddressId() != null) ? address.getAddressId() : "");
-        param.put(PARAM_ADDRESS, (address.getAddressStreet() != null) ? address.getAddressStreet() : "");
-        param.put(PARAM_ADDRESS_TYPE, (address.getAddressName() != null) ? address.getAddressName() : "");
-        param.put(PARAM_CITY, (address.getCityId() != null) ? address.getCityId() : "");
-        param.put(PARAM_DISTRICT, (address.getDistrictId() != null) ? address.getDistrictId() : "");
-        param.put(PARAM_PROVINCE, (address.getProvinceId() != null) ? address.getProvinceId() : "");
-        param.put(PARAM_POSTAL_CODE, (address.getPostalCode() != null) ? address.getPostalCode() : "");
-        param.put(PARAM_RECEIVER_NAME, (address.getReceiverName() != null) ? address.getReceiverName() : "");
-        param.put(PARAM_RECEIVER_PHONE, (address.getReceiverPhone() != null) ? address.getReceiverPhone() : "");
-        if (address.getLatitude() != null && address.getLongitude() != null) {
-            param.put(PARAM_LATITUDE, String.valueOf(address.getLatitude()));
-            param.put(PARAM_LONGITUDE, String.valueOf(address.getLongitude()));
-        }
-        param.put(PARAM_PASSWORD, password);
         return param;
     }
 
