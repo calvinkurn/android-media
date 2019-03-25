@@ -51,8 +51,8 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:layout_gravity="start|bottom"
-            android:gravity="start|bottom" />
+            android:layout_gravity="start|center_vertical"
+            android:gravity="start|center_vertical" />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_previous"
