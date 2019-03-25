@@ -15,7 +15,11 @@ class TabBusinessViewPagerAdapter(
     private var currentPosition = -1
 
     override fun getItem(position: Int): Fragment {
-        return BusinessUnitItemFragment.newInstance(list[position], positionWidget)
+        return BusinessUnitItemFragment.newInstance(
+                list[position],
+                positionWidget,
+                list[position].name
+        )
     }
 
     override fun getCount(): Int {

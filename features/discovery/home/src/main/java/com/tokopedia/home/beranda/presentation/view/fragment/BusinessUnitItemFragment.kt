@@ -35,16 +35,19 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
     private lateinit var itemTab: HomeWidget.TabItem
     private lateinit var trackingQueue: TrackingQueue
     private var positionWidget: Int = 0
+    private var nameTab: String = ""
 
     companion object {
         const val ITEM_EXTRAS = "ITEM_EXTRAS"
         const val ITEM_POSITION = "ITEM_POSITION"
+        const val ITEM_NAME = "ITEM_NAME"
 
-        fun newInstance(item : HomeWidget.TabItem, position: Int) : Fragment {
+        fun newInstance(item: HomeWidget.TabItem, position: Int, name: String) : Fragment {
             val fragment = BusinessUnitItemFragment()
             val bundle = Bundle()
             bundle.putParcelable(ITEM_EXTRAS, item)
             bundle.putInt(ITEM_POSITION, position)
+            bundle.putString(ITEM_NAME, name)
             fragment.arguments = bundle
             return fragment
         }
@@ -57,6 +60,7 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
         }
         arguments.let {
             itemTab = it?.getParcelable(ITEM_EXTRAS)!!
+            nameTab = it?.getString(ITEM_NAME)!!
             positionWidget = it.getInt(ITEM_POSITION)
         }
     }
@@ -109,7 +113,7 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
         HomePageTracking.eventEnhancedClickHomeWidget(
                 activity,
                 element.id.toString(),
-                String.format("/ - p%d - bu widget - %s", positionWidget.toString(), element.name.toLowerCase()),
+                String.format("/ - p%d - bu widget - %s", positionWidget.toString(), nameTab.toLowerCase()),
                 element.name,
                 element.imageUrl,
                 adapter.data.indexOf(element).toString(),
@@ -173,7 +177,7 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
         HomePageTracking.eventEnhancedImpressionHomeWidget(
                 trackingQueue,
                 element.id.toString(),
-                String.format("/ - p%d - bu widget - %s", positionWidget.toString(), element.name.toLowerCase()),
+                String.format("/ - p%d - bu widget - %s", positionWidget.toString(), nameTab.toLowerCase()),
                 element.name,
                 element.imageUrl,
                 position.toString(),
