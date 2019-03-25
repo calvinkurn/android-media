@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
@@ -61,11 +62,14 @@ public class SectionCarouselAdapter extends RecyclerView.Adapter<SectionCarousel
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView ivCol;
+        private TextView bnrTitle, bnrSubTitle;
         public boolean isVisited = false;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ivCol = itemView.findViewById(R.id.iv_col_1);
+            bnrTitle = itemView.findViewById(R.id.text_title_banner);
+            bnrSubTitle = itemView.findViewById(R.id.text_sub_title_banner);
         }
 
         public void bindData(ImageList item) {
@@ -76,6 +80,9 @@ public class SectionCarouselAdapter extends RecyclerView.Adapter<SectionCarousel
             if (URLUtil.isValidUrl(item.getImageURLMobile())) {
                 ImageHandler.loadImageFitCenter(context, ivCol, item.getImageURLMobile());
             }
+
+            bnrTitle.setText(item.getInBannerTitle());
+            bnrSubTitle.setText(item.getInBannerSubTitle());
 
             itemView.setOnClickListener(view -> {
                 handledClick(item.getRedirectAppLink(), item.getRedirectURL());

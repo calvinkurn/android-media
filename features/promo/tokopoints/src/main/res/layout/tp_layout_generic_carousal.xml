@@ -9,10 +9,11 @@
     android:paddingBottom="@dimen/dp_16">
 
     <TextView
-        android:layout_marginLeft="@dimen/dp_16"
         android:id="@+id/text_title"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
         android:lineSpacingExtra="6sp"
         android:textColor="#f531353b"
         android:textSize="16sp"
@@ -24,10 +25,11 @@
         tools:text="Huge News!" />
 
     <TextView
-        android:layout_marginRight="@dimen/dp_16"
         android:id="@+id/text_see_all"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:text="Lihat Semua"
         android:textColor="#f531353b"
         android:textSize="16sp"
@@ -39,7 +41,6 @@
         app:layout_constraintWidth_default="wrap" />
 
     <TextView
-        android:layout_marginLeft="@dimen/dp_16"
         android:id="@+id/text_sub_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,21 +48,45 @@
         android:lineSpacingExtra="6sp"
         android:textColor="#8f000000"
         android:textSize="12sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/text_title"
+        app:layout_constraintStart_toStartOf="@+id/text_title"
         app:layout_constraintTop_toBottomOf="@+id/text_title"
         tools:text="Cari tahu sekarang juga" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_carousel"
         android:layout_width="0dp"
-        android:scrollbars="horizontal"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
+        android:scrollbars="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_sub_title" />
+
+    <TextView
+        android:id="@+id/text_title_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:textColor="#f531353b"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintLeft_toLeftOf="@+id/text_title"
+        app:layout_constraintStart_toStartOf="@+id/text_title"
+        app:layout_constraintTop_toBottomOf="@+id/rv_carousel"
+        tools:text="Title in banner" />
+
+    <TextView
+        android:id="@+id/text_sub_title_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_2"
+        android:textColor="#8f000000"
+        android:textSize="@dimen/dp_10"
+        app:layout_constraintLeft_toLeftOf="@+id/text_title"
+        app:layout_constraintStart_toStartOf="@+id/text_title"
+        app:layout_constraintTop_toBottomOf="@+id/text_title_bottom"
+        tools:text="Subtitle in banner gkkj" />
 
 </android.support.constraint.ConstraintLayout>

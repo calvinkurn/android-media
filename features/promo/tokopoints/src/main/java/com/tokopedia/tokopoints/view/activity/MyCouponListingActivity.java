@@ -19,7 +19,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Tabs;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.adapter.CouponFilterPagerAdapter;

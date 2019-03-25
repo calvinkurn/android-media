@@ -278,7 +278,8 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_MEM_BOTTOM,
                     "");
-        } else if (source.getId() == R.id.text_my_points_value_bottom) {
+        } else if (source.getId() == R.id.text_my_points_value_bottom
+                || source.getId() == R.id.view_point) {
             ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.HISTORY, getString(R.string.tp_history));
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
@@ -286,7 +287,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_POINT_SAYA,
                     "");
-        } else if (source.getId() == R.id.text_loyalty_value) {
+        } else if (source.getId() == R.id.view_loyalty) {
             ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.HISTORY, getString(R.string.tp_history));
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
@@ -329,6 +330,8 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         getView().findViewById(R.id.img_egg).setOnClickListener(this);
         getView().findViewById(R.id.text_membership_value).setOnClickListener(this);
         getView().findViewById(R.id.text_failed_action).setOnClickListener(this);
+        getView().findViewById(R.id.view_point).setOnClickListener(this);
+        getView().findViewById(R.id.view_loyalty).setOnClickListener(this);
         bottomViewMembership.setOnClickListener(this);
         mTextPointsBottom.setOnClickListener(this);
     }
