@@ -1322,7 +1322,8 @@ public abstract class SellerRouterApplication extends MainApplication
         if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false)) {
             SaldoDetailsInternalRouter.startSaldoDepositIntent(context);
         } else {
-            context.startActivity(getWebviewActivityWithIntent(context, ApplinkConst.WebViewUrl.SALDO_DETAIL));
+            context.startActivity(getWebviewActivityWithIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                    ApplinkConst.WebViewUrl.SALDO_DETAIL)));
             /*RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
                     ApplinkConst.WebViewUrl.SALDO_DETAIL));*/
         }
