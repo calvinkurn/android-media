@@ -25,7 +25,10 @@ data class CheckPromoFirstStepParam(
         var orders: ArrayList<Order>? = null,
 
         @SerializedName("is_trade_in")
-        var isTradeIn: Int? = 0
+        var isTradeIn: Int? = 0,
+
+        @SerializedName("state")
+        var state: String = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             arrayListOf<String>().apply {
@@ -37,7 +40,8 @@ data class CheckPromoFirstStepParam(
             arrayListOf<Order>().apply {
                 parcel.readList(this, Order::class.java.classLoader)
             },
-            parcel.readValue(Int::class.java.classLoader) as? Int
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readString()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -47,6 +51,7 @@ data class CheckPromoFirstStepParam(
         parcel.writeValue(isSuggested)
         parcel.writeList(orders)
         parcel.writeValue(skipApply)
+        parcel.writeString(state)
     }
 
     override fun describeContents(): Int {
@@ -54,6 +59,9 @@ data class CheckPromoFirstStepParam(
     }
 
     companion object CREATOR : Parcelable.Creator<CheckPromoFirstStepParam> {
+        val STATE_CART = "cart"
+        val STATE_CHECKOUT = "checkout"
+
         override fun createFromParcel(parcel: Parcel): CheckPromoFirstStepParam {
             return CheckPromoFirstStepParam(parcel)
         }

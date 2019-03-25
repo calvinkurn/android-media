@@ -650,6 +650,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             orders.add(order);
         }
         CheckPromoFirstStepParam checkPromoFirstStepParam = new CheckPromoFirstStepParam();
+        checkPromoFirstStepParam.setState(CheckPromoFirstStepParam.CREATOR.getSTATE_CART());
         checkPromoFirstStepParam.setCartType(MerchantVoucherListBottomsheetParamData.Companion.getEXTRA_CHECKOUT_TYPE_DEFAULT_VALUE());
         if (promoStackingGlobalData != null) {
             ArrayList<String> globalPromoCodes = new ArrayList<>();
