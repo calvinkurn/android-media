@@ -116,7 +116,7 @@ open class VideoPickerActivity: BaseSimpleActivity(),
         adapter = ViewPagerAdapter(supportFragmentManager)
         adapter = viewPagerAdapter()
         vpVideoPicker.adapter = adapter
-
+        vpVideoPicker.currentItem = 0
         vpVideoPicker.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
@@ -132,13 +132,12 @@ open class VideoPickerActivity: BaseSimpleActivity(),
         tabPicker.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 // there is no way to change style to BOLD in XML and programmatically. we use this trick.
+                // source: henry (imagepicker)
                 exceptionHandler {
                     val textView = ((tabPicker.getChildAt(0) as ViewGroup).getChildAt(tab.position) as ViewGroup).getChildAt(1) as TextView
                     textView.setTypeface(textView.typeface, Typeface.BOLD)
                 }
-
             }
-
             override fun onTabUnselected(tab: TabLayout.Tab) {
                 exceptionHandler {
                     val textView = ((tabPicker.getChildAt(0) as ViewGroup).getChildAt(tab.position) as ViewGroup).getChildAt(1) as TextView
