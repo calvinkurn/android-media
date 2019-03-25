@@ -10,6 +10,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
+import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 
 /**
@@ -46,9 +47,10 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     }
 
     // Used for One Click Shipment
-    public static Intent createInstance(Context context) {
+    public static Intent createInstance(Context context, ShipmentFormRequest shipmentFormRequest) {
         Intent intent = new Intent(context, ShipmentActivity.class);
-        intent.putExtra(ShipmentActivity.EXTRA_IS_ONE_CLICK_SHIPMENT, true);
+        intent.putExtra(EXTRA_IS_ONE_CLICK_SHIPMENT, true);
+        intent.putExtras(shipmentFormRequest.getBundle());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         return intent;
@@ -102,7 +104,8 @@ public class ShipmentActivity extends BaseCheckoutActivity {
         shipmentFragment = ShipmentFragment.newInstance(
                 getIntent().getStringExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB),
                 getIntent().getBooleanExtra(EXTRA_AUTO_APPLY_PROMO_CODE_APPLIED, false),
-                getIntent().getBooleanExtra(EXTRA_IS_ONE_CLICK_SHIPMENT, false)
+                getIntent().getBooleanExtra(EXTRA_IS_ONE_CLICK_SHIPMENT, false),
+                getIntent().getExtras()
         );
 
         return shipmentFragment;
@@ -118,5 +121,4 @@ public class ShipmentActivity extends BaseCheckoutActivity {
             super.onBackPressed();
         }
     }
-
 }
