@@ -48,7 +48,7 @@ public class TokoPointAuthInterceptor extends TkpdAuthInterceptor {
             String path, String strParam, String method, String authKey, String contentTypeHeader
     ) {
         return AuthUtil.generateHeadersWithPath(
-                path, strParam, method, authKey, contentTypeHeader, userSession.getUserId()
+                path, strParam, method, authKey, contentTypeHeader, userSession.getUserId(), userSession
         );
     }
 }
