@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -56,6 +55,7 @@ import com.tokopedia.tokopoints.view.adapter.ExploreSectionPagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter;
 import com.tokopedia.tokopoints.view.adapter.TickerPagerAdapter;
 import com.tokopedia.tokopoints.view.contract.TokoPointsHomeContract;
+import com.tokopedia.tokopoints.view.customview.TokoPointToolbar;
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.LobDetails;
@@ -110,6 +110,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     private CoordinatorLayout coordinatorLayout;
 
     private View statusBarBgView;
+    private TokoPointToolbar tokoPointToolbar;
 
 
     public static TokoPointsHomeFragmentNew newInstance() {
@@ -127,32 +128,21 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         initInjector();
         View view = inflater.inflate(R.layout.tp_fragment_homepage_new, container, false);
-
-        coordinatorLayout = view.findViewById(R.id.container);
+        initViews(view);
         hideStatusBar();
-
-
-        toolbar = view.findViewById(R.id.toolbar);
-        ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
-
+        ((BaseSimpleActivity) getActivity()).setSupportActionBar(tokoPointToolbar);
         collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
         collapsingToolbarLayout.setTitle(" ");
-
-        initViews(view);
-
         appBarHeader.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 handleAppBarOffsetChange(verticalOffset);
             }
         });
-
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) toolbar.getLayoutParams();
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) tokoPointToolbar.getLayoutParams();
         layoutParams.topMargin = getStatusBarHeight(getActivity());
-        toolbar.setLayoutParams(layoutParams);
-
+        tokoPointToolbar.setLayoutParams(layoutParams);
         return view;
     }
 
@@ -216,16 +206,12 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         }
     };
 
-    boolean isDarkToolbar;
-
     private void handleAppBarOffsetChange(int offset) {
-
         int positiveOffset = offset * -1;
-
-        int searchBarTransitionRange =
-                getResources().getDimensionPixelSize(R.dimen.tp_home_top_bg_height) - toolbar.getHeight() - getStatusBarHeight(getActivity());
+        int toolbarTransitionRange = getResources().getDimensionPixelSize(R.dimen.tp_home_top_bg_height)
+                - tokoPointToolbar.getHeight() - getStatusBarHeight(getActivity());
         float offsetAlpha =
-                (255f / searchBarTransitionRange) * (searchBarTransitionRange - positiveOffset);
+                (255f / toolbarTransitionRange) * (toolbarTransitionRange - positiveOffset);
         if (offsetAlpha < 0) {
             offsetAlpha = 0;
         }
@@ -235,24 +221,15 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         }
 
         float alpha = offsetAlpha / 255 - 1;
+
         if (alpha < 0)
             alpha = alpha * -1;
         statusBarBgView.setAlpha(alpha);
         if (alpha > 0.5)
-            toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back_grey));
+            tokoPointToolbar.switchToDarkMode();
         else
-            toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
-        toolbar.setBackgroundColor(
-                adjustAlpha(getActivity().getResources().getColor(R.color.white), alpha));
-    }
-
-    @ColorInt
-    public static int adjustAlpha(@ColorInt int color, float factor) {
-        int alpha = Math.round(Color.alpha(color) * factor);
-        int red = Color.red(color);
-        int green = Color.green(color);
-        int blue = Color.blue(color);
-        return Color.argb(alpha, red, green, blue);
+            tokoPointToolbar.switchToTransparentMode();
+        tokoPointToolbar.applyAlphaToToolbarBackground(alpha);
     }
 
     AppBarLayout.OnOffsetChangedListener offsetChangedListenerAppBarElevation = new AppBarLayout.OnOffsetChangedListener() {
@@ -398,6 +375,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     }
 
     private void initViews(@NonNull View view) {
+        coordinatorLayout = view.findViewById(R.id.container);
         mContainerMain = view.findViewById(R.id.container_main);
         mTextMembershipValue = view.findViewById(R.id.text_membership_value);
         mTextMembershipLabel = view.findViewById(R.id.text_membership_label);
@@ -417,6 +395,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         mRvDynamicLinks = view.findViewById(R.id.rv_dynamic_link);
         dynamicLinksContainer = view.findViewById(R.id.container_dynamic_links);
         statusBarBgView = view.findViewById(R.id.status_bar_bg);
+        tokoPointToolbar = view.findViewById(R.id.toolbar_tokopoint);
     }
 
     private void initListener() {
@@ -841,8 +820,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
 
     @Override
     public void renderToolbarWithHeader(TokoPointEntity data) {
-        //todo lalit
-
         if (data == null) {
             return; //TODO any error page? Ask from gulfikar
         }
