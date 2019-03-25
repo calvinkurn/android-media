@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.BottomSheets
+import com.tokopedia.design.component.ToasterError
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
@@ -238,25 +239,25 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     }
 
     override fun onErrorCheckPromoFirstStep(message: String) {
-//        var messageInfo = message
-//        if (TextUtils.isEmpty(messageInfo)) {
-//            messageInfo = "Terjadi kesalahan. Ulangi beberapa saat lagi."
-//        }
-//        ToasterError.make(layoutMerchantVoucher, messageInfo, ToasterError.LENGTH_SHORT).show()
-        showClashingDummy()
+        var messageInfo = message
+        if (TextUtils.isEmpty(messageInfo)) {
+            messageInfo = "Terjadi kesalahan. Ulangi beberapa saat lagi."
+        }
+        ToasterError.make(layoutMerchantVoucher, messageInfo, ToasterError.LENGTH_SHORT).show()
+//        showClashingDummy()
     }
 
     override fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackFirstUiModel) {
         // Close merchant voucher bottomsheet, navigate to cart fragment to update view
-//        dismiss()
-//        actionListener.onSuccessCheckPromoFirstStep(model)
-        showClashingDummy()
+        dismiss()
+        actionListener.onSuccessCheckPromoFirstStep(model)
+//        showClashingDummy()
     }
 
     override fun onClashCheckPromoFirstStep() {
         // Close merchant voucher bottomsheet, show clash bottomsheet
-//        dismiss()
-        showClashingDummy()
+        dismiss()
+//        showClashingDummy()
     }
 
     private fun showClashingDummy() {
