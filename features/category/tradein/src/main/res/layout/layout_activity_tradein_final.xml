@@ -31,7 +31,7 @@
         android:visibility="invisible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
         tools:visibility="visible" />
 
     <TextView
@@ -48,7 +48,7 @@
         android:visibility="invisible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title"
         tools:visibility="visible" />
 
     <View
@@ -61,10 +61,10 @@
         android:background="@drawable/bg_rect_white"
         android:elevation="@dimen/dp_4"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@id/space"
+        app:layout_constraintBottom_toBottomOf="@+id/space"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_valid_till"
+        app:layout_constraintTop_toBottomOf="@+id/tv_valid_till"
         tools:visibility="visible" />
 
     <TextView
@@ -79,8 +79,8 @@
         android:textSize="@dimen/sp_12"
         android:textColor="@color/black_70"
         android:visibility="invisible"
-        app:layout_constraintLeft_toLeftOf="@id/carc_background_white"
-        app:layout_constraintTop_toTopOf="@id/carc_background_white"
+        app:layout_constraintLeft_toLeftOf="@+id/carc_background_white"
+        app:layout_constraintTop_toTopOf="@+id/carc_background_white"
         tools:visibility="visible" />
 
     <TextView
@@ -96,9 +96,9 @@
         android:textColor="@color/black_70"
         android:textStyle="bold"
         android:visibility="invisible"
-        app:layout_constraintLeft_toRightOf="@id/tv_model"
+        app:layout_constraintLeft_toRightOf="@+id/tv_model"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_model"
+        app:layout_constraintTop_toTopOf="@+id/tv_model"
         tools:text="Samsung Note 9"
         tools:visibility="visible" />
 
@@ -114,7 +114,7 @@
         android:visibility="invisible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tv_model"
-        app:layout_constraintTop_toBottomOf="@id/tv_model"
+        app:layout_constraintTop_toBottomOf="@+id/tv_model"
         tools:visibility="visible" />
 
     <TextView
@@ -128,9 +128,9 @@
         android:textStyle="bold"
         android:textSize="@dimen/sp_12"
         android:visibility="invisible"
-        app:layout_constraintLeft_toRightOf="@id/tv_price"
+        app:layout_constraintLeft_toRightOf="@+id/tv_price"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_price"
+        app:layout_constraintTop_toTopOf="@+id/tv_price"
         tools:text="Rp 3.650.000"
         tools:visibility="visible" />
 
@@ -152,10 +152,10 @@
         android:elevation="@dimen/dp_4"
         android:textColor="@color/tradein_black"
         android:visibility="invisible"
-        app:layout_constraintLeft_toLeftOf="@id/tv_model"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_model"
         app:layout_constraintRight_toRightOf="parent"
         android:textSize="@dimen/sp_12"
-        app:layout_constraintTop_toBottomOf="@id/tv_price"
+        app:layout_constraintTop_toBottomOf="@+id/tv_price"
         tools:text="	•	Body Belakang : Mulus
 	•	Body Depan : Mulus
 	•	Tampilan Depan : Dead Pixel Besar (Tompel), Kerusakan jelas pada layar
@@ -171,9 +171,9 @@
         android:background="@color/divider_color"
         android:elevation="@dimen/dp_4"
         android:visibility="invisible"
-        app:layout_constraintLeft_toLeftOf="@id/tv_model"
-        app:layout_constraintRight_toRightOf="@id/carc_background_white"
-        app:layout_constraintTop_toBottomOf="@id/tv_device_review"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_model"
+        app:layout_constraintRight_toRightOf="@+id/carc_background_white"
+        app:layout_constraintTop_toBottomOf="@+id/tv_device_review"
         tools:visibility="visible" />
 
     <TextView
@@ -185,9 +185,9 @@
         android:textColor="@color/black_70"
         android:visibility="invisible"
         android:textSize="@dimen/sp_12"
-        app:layout_constraintLeft_toLeftOf="@id/tv_model"
-        app:layout_constraintRight_toLeftOf="@id/tv_price_new"
-        app:layout_constraintTop_toBottomOf="@id/divider1"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_model"
+        app:layout_constraintRight_toLeftOf="@+id/tv_price_new"
+        app:layout_constraintTop_toBottomOf="@+id/divider1"
         tools:text="iPhone Xs 256GB Garansi Resmi - Space Gray"
         tools:visibility="visible" />
 
@@ -201,9 +201,9 @@
         android:textStyle="bold"
         android:textSize="@dimen/sp_12"
         android:visibility="invisible"
-        app:layout_constraintLeft_toRightOf="@id/tv_model_new"
-        app:layout_constraintRight_toRightOf="@id/carc_background_white"
-        app:layout_constraintTop_toTopOf="@id/tv_model_new"
+        app:layout_constraintLeft_toRightOf="@+id/tv_model_new"
+        app:layout_constraintRight_toRightOf="@+id/carc_background_white"
+        app:layout_constraintTop_toTopOf="@+id/tv_model_new"
         app:layout_constraintWidth_default="wrap"
         tools:text="Rp 22.650.000"
         tools:visibility="visible" />
@@ -218,9 +218,9 @@
         android:text="@string/tukar_tambah"
         android:textColor="@color/black_70"
         android:visibility="invisible"
-        app:layout_constraintLeft_toLeftOf="@id/tv_model"
-        app:layout_constraintRight_toLeftOf="@id/tv_price_exchange"
-        app:layout_constraintTop_toBottomOf="@id/tv_model_new"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_model"
+        app:layout_constraintRight_toLeftOf="@+id/tv_price_exchange"
+        app:layout_constraintTop_toBottomOf="@+id/tv_model_new"
         tools:visibility="visible" />
 
     <TextView
@@ -234,9 +234,9 @@
         android:textStyle="bold"
         android:textSize="@dimen/sp_12"
         android:visibility="invisible"
-        app:layout_constraintLeft_toRightOf="@id/tv_exchange"
-        app:layout_constraintRight_toRightOf="@id/carc_background_white"
-        app:layout_constraintTop_toTopOf="@id/tv_exchange"
+        app:layout_constraintLeft_toRightOf="@+id/tv_exchange"
+        app:layout_constraintRight_toRightOf="@+id/carc_background_white"
+        app:layout_constraintTop_toTopOf="@+id/tv_exchange"
         app:layout_constraintWidth_default="wrap"
         tools:text="-Rp 22.650.000"
         tools:visibility="visible" />
@@ -249,9 +249,9 @@
         android:background="@color/divider_color"
         android:elevation="@dimen/dp_4"
         android:visibility="invisible"
-        app:layout_constraintLeft_toLeftOf="@id/tv_model"
-        app:layout_constraintRight_toRightOf="@id/carc_background_white"
-        app:layout_constraintTop_toBottomOf="@id/tv_exchange"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_model"
+        app:layout_constraintRight_toRightOf="@+id/carc_background_white"
+        app:layout_constraintTop_toBottomOf="@+id/tv_exchange"
         tools:visibility="visible" />
 
     <TextView
@@ -263,9 +263,9 @@
         android:text="@string/total_price"
         android:textColor="@color/black_70"
         android:visibility="invisible"
-        app:layout_constraintLeft_toLeftOf="@id/tv_model"
-        app:layout_constraintRight_toLeftOf="@id/tv_final_amount"
-        app:layout_constraintTop_toBottomOf="@id/divider2"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_model"
+        app:layout_constraintRight_toLeftOf="@+id/tv_final_amount"
+        app:layout_constraintTop_toBottomOf="@+id/divider2"
         tools:visibility="visible" />
 
     <TextView
@@ -278,9 +278,9 @@
         android:textColor="@color/deep_orange_500"
         android:textStyle="bold"
         android:visibility="invisible"
-        app:layout_constraintLeft_toRightOf="@id/tv_final_price"
-        app:layout_constraintRight_toRightOf="@id/carc_background_white"
-        app:layout_constraintTop_toTopOf="@id/tv_final_price"
+        app:layout_constraintLeft_toRightOf="@+id/tv_final_price"
+        app:layout_constraintRight_toRightOf="@+id/carc_background_white"
+        app:layout_constraintTop_toTopOf="@+id/tv_final_price"
         app:layout_constraintWidth_default="wrap"
         tools:text="Rp 22.650.000"
         tools:visibility="visible" />
@@ -290,9 +290,9 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_16"
         android:visibility="invisible"
-        app:layout_constraintLeft_toLeftOf="@id/tv_model"
-        app:layout_constraintRight_toRightOf="@id/carc_background_white"
-        app:layout_constraintTop_toBottomOf="@id/tv_final_price"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_model"
+        app:layout_constraintRight_toRightOf="@+id/carc_background_white"
+        app:layout_constraintTop_toBottomOf="@+id/tv_final_price"
         tools:visibility="visible" />
 
     <TextView
@@ -324,7 +324,7 @@
         android:textColor="@color/black_70"
         android:visibility="invisible"
         android:textSize="@dimen/sp_12"
-        app:layout_constraintBottom_toTopOf="@id/tv_button_pay_or_ktp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_button_pay_or_ktp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         tools:visibility="visible" />
