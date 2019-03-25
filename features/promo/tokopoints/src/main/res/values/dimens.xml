@@ -38,4 +38,6 @@
     <dimen name="tp_height_bottom_membership_view">52dp</dimen>
     <dimen name="tp_tnc_height">800dp</dimen>
 
+    <dimen name="tp_home_top_bg_height">192dp</dimen>
+
 </resources>

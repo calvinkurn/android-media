@@ -56,10 +56,7 @@ import com.tokopedia.groupchat.room.view.fragment.PlayWebviewDialogFragment
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 import rx.Observable
@@ -943,12 +940,12 @@ open class PlayViewStateImpl(
                 if(!userSession.isLoggedIn) {
                     listener.onLoginClicked(it.channelId)
                 } else {
-                    var applink = RouteManager.routeWithAttribution(view.context, floatingButton.contentLinkUrl, GroupChatAnalytics.generateTrackerAttribution(
+                    val applink = RouteManager.routeWithAttribution(view.context, floatingButton.contentLinkUrl, GroupChatAnalytics.generateTrackerAttribution(
                             GroupChatAnalytics.ATTRIBUTE_PROMINENT_BUTTON,
                             it.channelUrl,
                             it.title
                     ))
-                    listener.openRedirectUrl(applink)
+                    listener.onFloatingIconClicked(floatingButton, applink)
                 }
             }
         }

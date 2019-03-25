@@ -14,10 +14,12 @@
         <item name="android:textAllCaps">false</item>
         <item name="android:background">@drawable/border_bottom_no_rounded</item>
     </style>
+
     <style name="MyRadioButtonStyle" parent="Theme.AppCompat.Light">
         <item name="colorControlNormal">@color/grey_400</item>
         <item name="colorControlActivated">@color/tkpd_main_green</item>
     </style>
+
     <style name="ToolbarExpandedTitle3">
         <item name="android:textSize">@dimen/sp_20</item>
         <item name="android:shadowColor">#ffffff</item>

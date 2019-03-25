@@ -29,7 +29,8 @@ public class XUserIdInterceptor extends TkpdAuthInterceptor {
     ) {
         return AuthUtil.generateHeadersWithXUserId(
                 path, strParam, method, authKey, contentTypeHeader,
-                userSession.getUserId(), userSession.getDeviceId()
+                userSession.getUserId(), userSession.getDeviceId(),
+                userSession
         );
     }
 }

@@ -36,6 +36,7 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
@@ -772,6 +773,64 @@ public class ImageHandler {
                         }
                     });
         }
+    }
+
+    public static void loadImageBlurWithViewTarget(final Context context,
+                                     String imageUrl,
+                                     SimpleTarget<Bitmap> simpleTarget) {
+        if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .asBitmap()
+                    .centerCrop()
+                    .into(simpleTarget);
+        }
+
+        if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .asBitmap()
+                    .dontAnimate()
+                    .transform(blurTransformation(context))
+                    .centerCrop()
+                    .into(simpleTarget);
+        }
+    }
+
+    private static BitmapTransformation blurTransformation(Context context) {
+        return new BitmapTransformation(context) {
+            @Override
+            protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
+                return blurStrong(context, toTransform);
+            }
+
+            @Override
+            public String getId() {
+                return getClass().getName();
+            }
+        };
+    }
+
+    public static Bitmap blurStrong(Context context, Bitmap image) {
+        final float BITMAP_SCALE = 0.04f;
+        final float BLUR_RADIUS = 7.5f;
+
+        int width = Math.round(image.getWidth() * BITMAP_SCALE);
+        int height = Math.round(image.getHeight() * BITMAP_SCALE);
+
+        Bitmap inputBitmap = Bitmap.createScaledBitmap(image, width, height, false);
+        Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap);
+
+        RenderScript rs = RenderScript.create(context);
+        ScriptIntrinsicBlur theIntrinsic = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+        Allocation tmpIn = Allocation.createFromBitmap(rs, inputBitmap);
+        Allocation tmpOut = Allocation.createFromBitmap(rs, outputBitmap);
+        theIntrinsic.setRadius(BLUR_RADIUS);
+        theIntrinsic.setInput(tmpIn);
+        theIntrinsic.forEach(tmpOut);
+        tmpOut.copyTo(outputBitmap);
+
+        return outputBitmap;
     }
 
     public static Bitmap blur(Context context, Bitmap image) {

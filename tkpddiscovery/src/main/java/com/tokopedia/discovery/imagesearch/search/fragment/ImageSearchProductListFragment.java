@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -57,6 +56,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
@@ -77,6 +77,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         SearchSectionGeneralAdapter.OnItemChangeView, ImageProductListFragmentView,
         ProductListener, WishListActionListener, TopAdsItemClickListener, TopAdsListener {
 
+    public static final String SCREEN_IMAGE_SEARCH_TAB = "Image Search result - Image tab";
     public static final int REQUEST_CODE_LOGIN = 561;
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
 
@@ -103,7 +104,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     private static final int MAXIMUM_PRODUCT_COUNT_FOR_ONE_EVENT = 12;
 
     public int spanCount;
-
+    private TrackingQueue trackingQueue;
     private static final String ARG_VIEW_MODEL = "ARG_VIEW_MODEL";
 
 
@@ -125,6 +126,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
             loadDataFromArguments();
         }
         gcmHandler = new GCMHandler(getContext());
+        trackingQueue = new TrackingQueue(getContext());
     }
 
     private void loadDataFromSavedState(Bundle savedInstanceState) {
@@ -156,7 +158,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     public String getScreenNameId() {
-        return AppScreen.SCREEN_IMAGE_SEARCH_TAB;
+        return SCREEN_IMAGE_SEARCH_TAB;
     }
 
     protected void reloadData() {
@@ -252,7 +254,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         topAdsRecyclerAdapter.setAdsImpressionListener(new TopAdsItemImpressionListener() {
             @Override
             public void onImpressionProductAdsItem(int position, Product product) {
-                TopAdsGtmTracker.eventSearchResultProductView(getContext(), getQueryKey(), product, position);
+                TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, position);
             }
         });
     }
@@ -427,6 +429,13 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        TopAdsGtmTracker.getInstance().eventSearchResultProductView(trackingQueue, getQueryKey());
+        trackingQueue.sendAll();
+    }
+
+    @Override
     public void disableWishlistButton(String productId) {
         adapter.setWishlistButtonEnabled(productId, false);
     }
@@ -529,6 +538,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public void onEmptyButtonClicked() {
+        SearchTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
         showSearchInputView();
     }
 
@@ -598,6 +608,11 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         intent.putExtra(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
         sendItemClickTrackingEvent(item);
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+    }
+
+    @Override
+    public void onProductImpressed(ProductItem item, int adapterPosition) {
+
     }
 
     public void onLongClick(ProductItem item, int adapterPosition) {

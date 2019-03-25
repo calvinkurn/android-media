@@ -16,7 +16,7 @@
     <string name="detail_address">Detail Address</string>
     <string name="tentukan_lokasi_google_map_anda">Tentukan lokasi Google Map Anda</string>
     <string name="kata_kunci_pencarian">Kata Kunci Pencarian</string>
-    <string name="title_delivery_location_pickup">Lokasi Pengiriman (Opsional)</string>
+    <string name="title_delivery_location_pickup">Lokasi Pickup (Opsional)</string>
     <string name="hint_type_postal_code">Silakan ketik kode pos Anda jika tidak tercantum di sini</string>
     <string name="choose_this_location">Pilih lokasi ini</string>
     <string name="error_min_phone_numer">Nomor telepon minimal 6 angka</string>

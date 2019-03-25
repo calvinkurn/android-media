@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.view.fragment;
 
 import android.os.Bundle;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -33,6 +34,7 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     private MainToolbar mainToolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private View statusBarBackground;
 
     private FeedPlusFragment feedPlusFragment;
     private ContentExploreFragment contentExploreFragment;
@@ -50,6 +52,7 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_feed_plus_container, container, false);
+        statusBarBackground = view.findViewById(R.id.status_bar_bg);
         mainToolbar = view.findViewById(R.id.toolbar);
         tabLayout = view.findViewById(R.id.tab_layout);
         viewPager = view.findViewById(R.id.view_pager);
@@ -88,6 +91,12 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     }
     
     private void initView() {
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            statusBarBackground.setVisibility(View.VISIBLE);
+        } else {
+            statusBarBackground.setVisibility(View.INVISIBLE);
+        }
+
         setAdapter();
         if (hasCategoryIdParam()) {
             goToExplore();

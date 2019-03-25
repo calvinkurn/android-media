@@ -1,6 +1,8 @@
 package com.tokopedia.kotlin.extensions.view
 
 import android.content.Context
+import android.content.res.Resources
+import android.graphics.Rect
 import android.os.Build
 import android.support.annotation.DimenRes
 import android.support.annotation.StringRes
@@ -13,10 +15,12 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.view.ViewGroup
 import android.widget.TextView
+import android.view.*
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
  * @author by milhamj on 30/11/18.
@@ -107,6 +111,30 @@ fun View.hideLoading() {
     }
 }
 
+fun View.showLoadingTransparent() {
+    try {
+        this.findViewById<View>(R.id.loadingTransparentView)!!.show()
+    } catch (e: NullPointerException) {
+        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+        )
+        params.gravity = Gravity.CENTER
+        params.weight = 1.0f
+        inflater.inflate(R.layout.partial_loading_transparent_layout, this as ViewGroup)
+    }
+}
+
+fun View.hideLoadingTransparent() {
+    try {
+        this.findViewById<View>(R.id.loadingTransparentView)!!.hide()
+    } catch (e: NullPointerException) {
+        e.debugTrace()
+    }
+}
+
+
 fun View.showErrorToaster(errorMessage: String) {
     this.showErrorToaster(errorMessage, null as String?) { }
 }
@@ -165,4 +193,23 @@ fun View.setMargin(left: Int, top: Int, right: Int, bottom: Int) {
 
 fun View.getDimens(@DimenRes id: Int): Int {
     return this.context.resources.getDimension(id).toInt()
+}
+
+fun View.addOnImpressionListener(holder: ImpressHolder?, listener: ViewHintListener) {
+    if (!holder!!.isInvoke) {
+        viewTreeObserver.addOnScrollChangedListener(
+                object : ViewTreeObserver.OnScrollChangedListener {
+                    override fun onScrollChanged() {
+                        if (!holder.isInvoke && listener != null) {
+                            listener.onViewHint()
+                            holder.invoke()
+                        }
+                        viewTreeObserver.removeOnScrollChangedListener(this)
+                    }
+                })
+    }
+}
+
+interface ViewHintListener {
+    fun onViewHint()
 }
