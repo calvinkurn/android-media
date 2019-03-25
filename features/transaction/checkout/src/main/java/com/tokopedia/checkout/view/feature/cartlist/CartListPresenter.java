@@ -1250,7 +1250,9 @@ public class CartListPresenter implements ICartListPresenter {
             if (!ignoreAPIResponse) {
                 view.showProgressLoading();
             }
-            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCode);
+            ArrayList<String> promoCodes = new ArrayList<>();
+            promoCodes.add(promoCode);
+            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodes);
             clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearCacheAutoApplySubscriber(view, this, shopIndex, ignoreAPIResponse));
         }
     }

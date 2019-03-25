@@ -1,6 +1,7 @@
 package com.tokopedia.promocheckout.common.domain
 
 import android.content.Context
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -30,10 +31,11 @@ class ClearCacheAutoApplyStackUseCase @Inject constructor(@ApplicationContext va
         val PARAM_PLACEHOLDER_PROMO_CODE = "#promoCode"
     }
 
-    fun setParams(serviceId: String, promoCode: String) {
+    fun setParams(serviceId: String, promoCodeList: ArrayList<String>) {
         queryString = GraphqlHelper.loadRawString(context.resources, R.raw.clear_cache_auto_apply_stack)
         queryString = queryString.replace(PARAM_PLACEHOLDER_SERVICE_ID, serviceId)
-        queryString = queryString.replace(PARAM_PLACEHOLDER_PROMO_CODE, promoCode)
+
+        queryString = queryString.replace(PARAM_PLACEHOLDER_PROMO_CODE, Gson().toJson(promoCodeList))
     }
 
     override fun execute(requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {
