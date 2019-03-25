@@ -11,8 +11,9 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.joinToStringWithLast
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.shop.ShopCommitment
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
+import com.tokopedia.product.detail.data.model.shop.ShopCommitment
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.SummaryText
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.view.*
 
@@ -35,13 +36,13 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
                 label_variant.setOnClickListener { onVariantClickedListener?.invoke() }
                 label_choose_variant.setOnClickListener { onVariantClickedListener?.invoke() }
                 val chooseString =
-                    if (selectedOptionString.isEmpty()) {
-                        "${view.context.getString(R.string.choose)} " +
-                            productVariant.variant.map { it.name }.joinToStringWithLast(separator = ", ",
-                                lastSeparator = " ${view.context.getString(R.string.and)} ")
-                    } else {
-                        selectedOptionString
-                    }
+                        if (selectedOptionString.isEmpty()) {
+                            "${view.context.getString(R.string.choose)} " +
+                                    productVariant.variant.map { it.name }.joinToStringWithLast(separator = ", ",
+                                            lastSeparator = " ${view.context.getString(R.string.and)} ")
+                        } else {
+                            selectedOptionString
+                        }
                 label_choose_variant.text = chooseString
                 visible()
             } else {
@@ -53,10 +54,10 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
 
     }
 
-    fun renderRateEstimation(summarize: SummaryText, shopLocation: String, onRateEstimationClicked: (()-> Unit)? = null) {
+    fun renderRateEstimation(summarize: SummaryText, shopLocation: String, onRateEstimationClicked: (() -> Unit)? = null) {
         if (summarize.destination.isBlank()) return
 
-        with(view){
+        with(view) {
             txt_rate_estimation_start.text = summarize.minPrice
             txt_rate_estimation_start.visible()
             icon_shop_location.visible()
@@ -100,6 +101,32 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
                 icon_priority_order.gone()
                 txt_priority_order_title.gone()
                 txt_priority_order_message.gone()
+            }
+        }
+    }
+
+    fun renderPurchaseProtectionData(productInfo: ProductPurchaseProtectionInfo) {
+        with(view) {
+            if (productInfo.ppItemDetailPage?.isProtectionAvailable!!) {
+
+                if (txt_courier_dest.isVisible || txt_shop_location.isVisible) {
+                    purchase_protection_divider.visible()
+                } else {
+                    purchase_protection_divider.gone()
+                }
+                icon_purchase_protection.visible()
+                txt_purchase_protection_title.visible()
+                txt_purchase_protection_message.visible()
+                base_variant.visible()
+
+                txt_purchase_protection_title.text = productInfo.ppItemDetailPage!!.titlePDP
+                txt_purchase_protection_message.text = productInfo.ppItemDetailPage!!.subTitlePDP
+            } else {
+                base_variant.gone()
+                purchase_protection_divider.gone()
+                icon_purchase_protection.gone()
+                txt_purchase_protection_title.gone()
+                txt_purchase_protection_message.gone()
             }
         }
     }

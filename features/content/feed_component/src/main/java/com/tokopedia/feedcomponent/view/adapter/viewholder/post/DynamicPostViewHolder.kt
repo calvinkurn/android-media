@@ -2,6 +2,9 @@ package com.tokopedia.feedcomponent.view.adapter.viewholder.post
 
 import android.os.Handler
 import android.support.annotation.LayoutRes
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
 import android.view.animation.AlphaAnimation
@@ -18,6 +21,7 @@ import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateHeade
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateTitle
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.post.PostPagerAdapter
+import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
@@ -27,6 +31,8 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_dynamic_post.view.*
+import kotlinx.android.synthetic.main.item_posttag.view.*
+import kotlinx.android.synthetic.main.partial_card_title.view.*
 
 /**
  * @author by milhamj on 28/11/18.
@@ -65,7 +71,8 @@ class DynamicPostViewHolder(v: View,
         bindHeader(element.id, element.header, element.template.cardpost.header)
         bindCaption(element.caption, element.template.cardpost.body)
         bindContentList(element.id, element.contentList, element.template.cardpost.body)
-        bindFooter(element.id, element.footer, element.template.cardpost.footer)
+        bindPostTag(element.postTag, element.template.cardpost.body)
+        bindFooter(element.id, element.footer, element.template.cardpost.footer, element.template.cardpost.body)
     }
 
     override fun bind(element: DynamicPostViewModel?, payloads: MutableList<Any>) {
@@ -181,7 +188,10 @@ class DynamicPostViewHolder(v: View,
 
     private fun bindCaption(caption: Caption, template: TemplateBody) {
         itemView.caption.shouldShowWithAction(template.caption) {
-            if (caption.text.length > MAX_CHAR) {
+            if (caption.text.isEmpty()) {
+                itemView.caption.visibility = View.GONE
+            } else if (caption.text.length > MAX_CHAR) {
+                itemView.caption.visibility = View.VISIBLE
                 val captionText = caption.text.substring(0, CAPTION_END)
                         .replace(NEWLINE, "<br />")
                         .plus("... ")
@@ -219,10 +229,10 @@ class DynamicPostViewHolder(v: View,
         }
     }
 
-    private fun bindFooter(id: Int, footer: Footer, template: TemplateFooter) {
+    private fun bindFooter(id: Int, footer: Footer, template: TemplateFooter, templateBody: TemplateBody) {
         itemView.footer.shouldShowWithAction(shouldShowFooter(template)) {
             itemView.footerBackground.visibility = View.GONE
-            if (template.ctaLink && !TextUtils.isEmpty(footer.buttonCta.text)) {
+            if (template.ctaLink && !TextUtils.isEmpty(footer.buttonCta.text) && !templateBody.postTag) {
                 itemView.layoutFooterAction.show()
                 itemView.footerAction.text = footer.buttonCta.text
                 itemView.footerAction.setOnClickListener { listener.onFooterActionClick(adapterPosition, footer.buttonCta.appLink) }
@@ -320,6 +330,26 @@ class DynamicPostViewHolder(v: View,
                 else comment.fmt
     }
 
+    private fun bindPostTag(postTag: PostTag, template: TemplateBody) {
+        itemView.layoutPostTag.shouldShowWithAction(shouldShowPostTag(postTag, template)) {
+            if (postTag.text.isNotEmpty()) {
+                itemView.cardTitlePostTag.text = postTag.text
+                itemView.cardTitlePostTag.visibility = View.VISIBLE
+            }
+            val layoutManager: RecyclerView.LayoutManager = when(postTag.totalItems) {
+                1 -> LinearLayoutManager(itemView.context)
+                else -> GridLayoutManager(itemView.context, 3)
+            }
+            itemView.rvPosttag.layoutManager = layoutManager
+            itemView.rvPosttag.adapter = PostTagAdapter(postTag.items, listener, adapterPosition)
+            itemView.rvPosttag.adapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun shouldShowPostTag(postTag: PostTag, template: TemplateBody): Boolean {
+        return template.postTag || postTag.totalItems != 0 || postTag.items.size != 0
+    }
+
     interface DynamicPostListener {
         fun onAvatarClick(positionInFeed: Int, redirectUrl: String)
 
@@ -336,5 +366,7 @@ class DynamicPostViewHolder(v: View,
         fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, iamgeUrl: String)
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
+
+        fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String)
     }
 }

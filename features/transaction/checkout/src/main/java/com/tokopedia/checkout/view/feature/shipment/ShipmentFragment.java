@@ -1435,6 +1435,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         } else if (shipmentData != null && !result) {
             sendAnalyticsDropshipperNotComplete();
+            if (requestCode == REQUEST_CODE_COD) {
+                mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
+            }
             if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
                 rvShipment.smoothScrollToPosition(errorPosition);
             }
@@ -1444,6 +1447,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentAdapter.notifyItemChanged(errorPosition);
         } else if (shipmentData == null) {
             sendAnalyticsCourierNotComplete();
+            if (requestCode == REQUEST_CODE_COD) {
+                mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
+            }
             if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
                 rvShipment.smoothScrollToPosition(errorPosition);
             }

@@ -95,6 +95,7 @@
     <string name="and">dan</string>
     <string name="button_affiliate">Kurasi Produk Ini</string>
     <string name="priority_order_label">Order Prioritas</string>
+    <string name="purchase_protection_label">Proteksi Gadget</string>
     <string name="title_cod">Bayar di Tempat</string>
     <string name="cod_content">Bayar ke kurir saat pesanan diterima. Tersedia di beberapa kota tertentu</string>
     <string name="installment_template">Bunga %1$s%% mulai dari %2$s</string>
