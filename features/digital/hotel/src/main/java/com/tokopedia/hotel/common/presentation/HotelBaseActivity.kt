@@ -7,6 +7,7 @@ import android.view.MenuItem
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.design.component.Menus
 import com.tokopedia.hotel.HotelComponentInstance
+import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.di.component.HotelComponent
 
 /**
@@ -75,7 +76,7 @@ abstract class HotelBaseActivity: BaseSimpleActivity() {
             menus.dismiss()
         }
 
-        menus.setActionText(resources.getString(R.string.train_homepage_bottom_menu_action_text))
+        menus.setActionText(resources.getString(R.string.hotel_homepage_bottom_menu_action_text))
 
         menus.show()
     }
