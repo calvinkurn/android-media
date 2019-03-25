@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.customview;
+package com.tokopedia.collapsing.tab.layout;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,7 +10,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.tokopedia.home.R;
+import com.tokopedia.collapsing.tab.layout.R;
 
 public class ExpandingLineView extends View {
 
