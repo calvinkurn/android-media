@@ -13,17 +13,15 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.core.discovery.model.Option
-import com.tokopedia.core.analytics.AppScreen
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener
 import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener
-import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.EmptySearchProfileModel
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.adapter.ProfileListTypeFactoryImpl
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.listener.FollowActionListener
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.listener.ProfileListListener
+import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.EmptySearchProfileModel
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.ProfileListViewModel
-
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.ProfileViewModel
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.TotalSearchCountViewModel
 import com.tokopedia.profile.di.DaggerProfileListComponent
