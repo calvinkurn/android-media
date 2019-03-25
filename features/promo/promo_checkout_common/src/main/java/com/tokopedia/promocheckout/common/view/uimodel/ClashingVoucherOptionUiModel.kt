@@ -8,16 +8,19 @@ import android.os.Parcelable
  */
 
 data class ClashingVoucherOptionUiModel(
-        var voucherOrders: ArrayList<ClashingVoucherOrderUiModel> = ArrayList()
+        var voucherOrders: ArrayList<ClashingVoucherOrderUiModel> = ArrayList(),
+        var isSelected: Boolean = false
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             arrayListOf<ClashingVoucherOrderUiModel>().apply {
                 parcel.readList(this, ClashingVoucherOrderUiModel::class.java.classLoader)
-            }
+            },
+            parcel.readByte() != 0.toByte()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeList(voucherOrders)
+        parcel.writeByte(if (isSelected) 1 else 0)
     }
 
     override fun describeContents(): Int {

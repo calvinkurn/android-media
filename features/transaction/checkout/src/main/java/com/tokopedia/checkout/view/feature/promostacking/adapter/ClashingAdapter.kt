@@ -14,6 +14,15 @@ import javax.inject.Inject
 class ClashingAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var data = ArrayList<ClashingVoucherOptionUiModel>()
+    private lateinit var listener: ActionListener
+
+    interface ActionListener {
+        fun onVoucherItemSelected(index: Int, isSelected: Boolean)
+    }
+
+    fun setListener(listener: ActionListener) {
+        this.listener = listener
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -30,7 +39,7 @@ class ClashingAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ClashingViewHolder) {
-            holder.bind(data[position])
+            holder.bind(data[position], listener)
         }
     }
 

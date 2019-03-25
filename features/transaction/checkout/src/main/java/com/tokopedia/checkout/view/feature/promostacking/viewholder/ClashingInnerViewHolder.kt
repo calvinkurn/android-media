@@ -24,7 +24,7 @@ class ClashingInnerViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
                 itemView.holder_item_cart_divider.visibility = View.VISIBLE
             }
 
-            itemView.tv_shop_name.text = element.shopName
+            itemView.tv_shop_name.text = String.format(itemView.context.getString(R.string.checkout_module_label_clasing_benefit_shop_name), element.shopName)
             itemView.tv_cashback_detail.text = element.promoName
         }
     }

@@ -14,7 +14,7 @@
         android:layout_marginTop="@dimen/dp_20">
 
         <RadioButton
-            android:id="@+id/rb_option_clash2"
+            android:id="@+id/rb_option_clash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
@@ -30,7 +30,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/rb_option_clash2"
+            android:layout_toRightOf="@id/rb_option_clash"
             android:orientation="vertical">
 
             <TextView

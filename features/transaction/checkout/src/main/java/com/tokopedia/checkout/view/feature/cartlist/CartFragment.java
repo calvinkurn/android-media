@@ -77,6 +77,7 @@ import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackFirstUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
@@ -94,6 +95,8 @@ import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -600,7 +603,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void onVoucherMerchantPromoClicked(int shopPosition) {
         List<ShopGroupData> shopGroupDataList = cartListData.getShopGroupDataList();
         PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobaldata();
-        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam(shopGroupDataList, promoStackingGlobalData);
+        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
 
         if (getFragmentManager() != null) {
             showMerchantVoucherListBottomsheet(
@@ -620,8 +623,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         // dPresenter.processCheckPromoStackingCode();
     }
 
-    @NonNull
-    private CheckPromoFirstStepParam generateCheckPromoFirstStepParam(List<ShopGroupData> shopGroupDataList, PromoStackingData promoStackingGlobalData) {
+    @Override
+    public CheckPromoFirstStepParam generateCheckPromoFirstStepParam() {
+        List<ShopGroupData> shopGroupDataList = cartListData.getShopGroupDataList();
+        PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobaldata();
         ArrayList<Order> orders = new ArrayList<>();
         for (ShopGroupData shopGroupData : shopGroupDataList) {
             Order order = new Order();
@@ -1425,9 +1430,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                     .build());
         }
 
-        List<ShopGroupData> shopGroupDataList = cartListData.getShopGroupDataList();
-        PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobaldata();
-        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam(shopGroupDataList, promoStackingGlobalData);
+        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
 
         startActivityForResult(
                 checkoutModuleRouter
@@ -1441,9 +1444,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void goToDetail(PromoData promoData) {
-        List<ShopGroupData> shopGroupDataList = cartListData.getShopGroupDataList();
-        PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobaldata();
-        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam(shopGroupDataList, promoStackingGlobalData);
+        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
 
         if (promoData.getTypePromo() == PromoData.CREATOR.getTYPE_COUPON()) {
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutDetailIntentWithCode(promoData.getPromoCodeSafe(),
@@ -1456,9 +1457,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void goToDetailPromoStacking(PromoStackingData promoStackingData) {
-        List<ShopGroupData> shopGroupDataList = cartListData.getShopGroupDataList();
-        PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobaldata();
-        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam(shopGroupDataList, promoStackingGlobalData);
+        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
 
         if (promoStackingData.getTypePromo() == PromoData.CREATOR.getTYPE_COUPON()) {
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutDetailIntentWithCode(promoStackingData.getPromoCodeSafe(),
@@ -1954,10 +1953,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onFailedClearPromoStack(boolean ignoreAPIResponse, int shopIndex) {
+    public void onFailedClearPromoStack(boolean ignoreAPIResponse) {
         if (!ignoreAPIResponse) {
             ToasterError.make(getView(), "Terjadi kesalahan. Ulangi beberapa saat lagi", ToasterError.LENGTH_SHORT).show();
         }
     }
 
+    @Override
+    public void onSubmitNewPromoAfterClash(@NotNull ArrayList<String> oldPromoList, @NotNull ArrayList<ClashingVoucherOrderUiModel> newPromoList) {
+        dPresenter.processCancelAutoApplyPromoStackAfterClash(oldPromoList, newPromoList);
+    }
 }

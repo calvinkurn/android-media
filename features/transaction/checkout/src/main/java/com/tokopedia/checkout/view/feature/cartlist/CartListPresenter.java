@@ -28,6 +28,8 @@ import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
+import com.tokopedia.checkout.view.feature.cartlist.subscriber.CheckPromoFirstStepAfterClashUseCase;
+import com.tokopedia.checkout.view.feature.cartlist.subscriber.ClearCacheAutoApplyAfterClashSubscriber;
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.ClearCacheAutoApplySubscriber;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
@@ -40,12 +42,15 @@ import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData;
 import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam;
+import com.tokopedia.promocheckout.common.data.entity.request.Order;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
@@ -214,6 +219,12 @@ public class CartListPresenter implements ICartListPresenter {
         }
         if (removeWishListUseCase != null) {
             removeWishListUseCase.unsubscribe();
+        }
+        if (clearCacheAutoApplyStackUseCase != null) {
+            clearCacheAutoApplyStackUseCase.unsubscribe();
+        }
+        if (checkPromoStackingCodeUseCase != null) {
+            checkPromoStackingCodeUseCase.unsubscribe();
         }
     }
 
@@ -1254,6 +1265,45 @@ public class CartListPresenter implements ICartListPresenter {
             promoCodes.add(promoCode);
             clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodes);
             clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearCacheAutoApplySubscriber(view, this, shopIndex, ignoreAPIResponse));
+        }
+    }
+
+    @Override
+    public void processCancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList) {
+        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), oldPromoList);
+        clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearCacheAutoApplyAfterClashSubscriber(view, this, newPromoList));
+    }
+
+    @Override
+    public void processApplyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList) {
+        CheckPromoFirstStepParam checkPromoFirstStepParam = view.generateCheckPromoFirstStepParam();
+        checkPromoFirstStepParam.setCodes(new ArrayList<>());
+        if (checkPromoFirstStepParam.getOrders() != null) {
+            for (Order order : checkPromoFirstStepParam.getOrders()) {
+                order.setCodes(new ArrayList<>());
+            }
+        }
+
+        for (ClashingVoucherOrderUiModel model : newPromoList) {
+            if (TextUtils.isEmpty(model.getUniqueId())) {
+                ArrayList<String> codes = new ArrayList<>();
+                codes.add(model.getCode());
+                checkPromoFirstStepParam.setCodes(codes);
+            } else {
+                if (checkPromoFirstStepParam.getOrders() != null) {
+                    for (Order order : checkPromoFirstStepParam.getOrders()) {
+                        if (model.getUniqueId().equals(order.getUniqueId())) {
+                            ArrayList<String> codes = new ArrayList<>();
+                            codes.add(model.getCode());
+                            order.setCodes(codes);
+                            break;
+                        }
+                    }
+                }
+            }
+            checkPromoStackingCodeUseCase.setParams(checkPromoFirstStepParam);
+            checkPromoStackingCodeUseCase.execute(RequestParams.create(),
+                    new CheckPromoFirstStepAfterClashUseCase(view, this, newPromoList.size(), newPromoList.indexOf(model)));
         }
     }
 
