@@ -62,11 +62,11 @@ import com.tokopedia.normalcheckout.view.NormalCheckoutActivity
 import com.tokopedia.normalcheckout.view.NormalCheckoutFragment
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.Category
-import com.tokopedia.product.detail.common.data.model.ProductInfo
-import com.tokopedia.product.detail.common.data.model.ProductParams
-import com.tokopedia.product.detail.common.data.model.Wholesale
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
+import com.tokopedia.product.detail.common.data.model.product.Category
+import com.tokopedia.product.detail.common.data.model.product.ProductInfo
+import com.tokopedia.product.detail.common.data.model.product.ProductParams
+import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.ProductInfoP1
@@ -128,9 +128,9 @@ import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
 import model.TradeInParams
-import view.customview.TradeInTextView
 import viewmodel.TradeInBroadcastReceiver
 import javax.inject.Inject
+import view.customview.TradeInTextView
 
 class ProductDetailFragment : BaseDaggerFragment() {
     private var productId: String? = null
