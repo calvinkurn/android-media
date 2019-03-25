@@ -15,7 +15,7 @@
         app:cameraPlaySounds="true"
         app:cameraGrid="off"
         app:cameraFlash="off"
-        app:cameraAudio="off"
+        app:cameraAudio="on"
         app:cameraHdr="off"
         app:cameraFacing="back"
         app:cameraGestureTap="focusWithMarker"/>
@@ -44,7 +44,7 @@
                 android:id="@+id/txtDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_18"
+                android:textSize="@dimen/sp_16"
                 android:textStyle="bold"
                 android:layout_margin="6dp"
                 android:textColor="@android:color/white"
@@ -107,6 +107,7 @@
 
     <ProgressBar
         android:id="@+id/progressBar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:theme="@style/progressBarStyle"
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"

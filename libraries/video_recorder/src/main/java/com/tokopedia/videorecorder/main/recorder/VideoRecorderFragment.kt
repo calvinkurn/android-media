@@ -58,6 +58,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
 
         cameraView.mode = Mode.VIDEO
         cameraView.addCameraListener(cameraListener())
+        cameraView.open()
 
         //set max progress value
         progressBar.max = DURATION_MAX
@@ -92,9 +93,9 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-//        exceptionHandler {
-//            cameraView.destroy()
-//        }
+        exceptionHandler {
+            cameraView.destroy()
+        }
     }
 
     private fun cameraListener(): CameraListener {
