@@ -58,6 +58,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
 
         cameraView.mode = Mode.VIDEO
         cameraView.addCameraListener(cameraListener())
+        cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER)
 
         //set max progress value
         progressBar.max = DURATION_MAX

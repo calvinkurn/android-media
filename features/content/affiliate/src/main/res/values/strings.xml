@@ -88,6 +88,8 @@
     <string name="af_delete_warning_desc">Kalau dihapus, post kamu diganti dengan foto barang yang dipilih.</string>
     <string name="af_title_update_post">Update Post</string>
     <string name="af_message_update_post">Media sebelumnya akan diganti dengan %1$s yang dipilih</string>
+    <string name="af_title_photo">foto</string>
+    <string name="af_title_video">video</string>
 
     <!--EDUCATION-->
     <string name="af_skip">Lewatkan</string>

@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/btnPlay"
                 android:layout_width="@dimen/dp_56"
                 android:layout_height="@dimen/dp_56"
@@ -33,9 +33,7 @@
                 android:layout_margin="@dimen/dp_16"
                 android:visibility="gone"
                 tools:visibility="visible"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_video_play_button" />
-
 
         </RelativeLayout>
 
