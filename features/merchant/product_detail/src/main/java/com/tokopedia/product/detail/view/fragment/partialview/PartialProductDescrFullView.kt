@@ -33,6 +33,7 @@ class PartialProductDescrFullView private constructor(private val view: View,
                                                       private val activity: Activity? = null){
 
     var shopInfo: ShopInfo? = null
+    var productInfo: ProductInfo? = null
 
     companion object {
         private const val MAX_CHAR = 300
@@ -49,18 +50,20 @@ class PartialProductDescrFullView private constructor(private val view: View,
 
     fun renderData(data: ProductInfo){
         with(view){
-            if (data.videos.isNotEmpty()) {
-                youtube_scroll.adapter = YoutubeThumbnailAdapter(data.videos.toMutableList()){
-                    _, index -> gotoVideoPlayer(data.videos, index)
+            productInfo = data
+            if (productInfo?.videos?.isNotEmpty() == true) {
+                view.youtube_scroll.visible()
+                view.youtube_scroll.adapter = YoutubeThumbnailAdapter(productInfo?.videos?.toMutableList()
+                    ?: mutableListOf()) { _, index ->
+                    productInfo?.videos?.run { gotoVideoPlayer(this, index) }
                 }
-                youtube_scroll.visibility = View.VISIBLE
+                view.youtube_scroll.adapter.notifyDataSetChanged()
             } else {
-                youtube_scroll.visibility = View.GONE
+                view.youtube_scroll.gone()
             }
 
             txt_weight.text = context.getString(R.string.template_weight, data.basic.weight.numberFormatted(),
                     if (data.basic.weightUnit.toLowerCase() == KG) LABEL_KG else LABEL_GRAM )
-            txt_success_rate.text = String.format("%s%%", data.txStats.successRate.numberFormatted())
 
             label_asuransi.visible()
             txt_asuransi.visible()

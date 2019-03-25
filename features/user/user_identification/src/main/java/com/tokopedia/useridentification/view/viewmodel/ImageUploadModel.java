@@ -11,6 +11,7 @@ public class ImageUploadModel implements Parcelable {
     private int kycType;
     private String picObjKyc;
     private String filePath;
+    private String fileName;
     private int isSuccess;
     private String error;
 
@@ -59,6 +60,14 @@ public class ImageUploadModel implements Parcelable {
         this.error = error;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
 
     @Override
     public int describeContents() {
@@ -70,6 +79,7 @@ public class ImageUploadModel implements Parcelable {
         dest.writeInt(this.kycType);
         dest.writeString(this.picObjKyc);
         dest.writeString(this.filePath);
+        dest.writeString(this.fileName);
         dest.writeInt(this.isSuccess);
         dest.writeString(this.error);
     }
@@ -78,6 +88,7 @@ public class ImageUploadModel implements Parcelable {
         this.kycType = in.readInt();
         this.picObjKyc = in.readString();
         this.filePath = in.readString();
+        this.fileName = in.readString();
         this.isSuccess = in.readInt();
         this.error = in.readString();
     }

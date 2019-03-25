@@ -22,5 +22,7 @@
     <dimen name="text_size_reward_medium">30sp</dimen>
     <dimen name="text_size_reward_small">24sp</dimen>
     <dimen name="text_size_reward_label">16sp</dimen>
+    <dimen name="translate_image_distance">-80dp</dimen>
+    <dimen name="translate_image_again_distance">-160dp</dimen>
 
 </resources>

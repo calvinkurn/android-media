@@ -47,6 +47,8 @@ dependencies {
     implementation project(rootProject.ext.features.expressCheckoutCommon)
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.referral)
+    implementation project(rootProject.ext.features.tradeIn)
 
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.multiDex

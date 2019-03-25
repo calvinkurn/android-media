@@ -1,5 +1,6 @@
 package com.tokopedia.home.account.presentation.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -53,7 +54,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     private AppBarLayout appBarLayout;
     private AccountHomePagerAdapter adapter;
     private BadgeView badgeView;
-    private Toolbar toolbar;
     private ImageButton menuNotification;
     private int counterNumber = 0;
 
@@ -146,6 +146,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
 
     private void setToolbar(View view) {
         Toolbar toolbar = view.findViewById(R.id.toolbar);
+        View statusBarBackground = view.findViewById(R.id.status_bar_bg);
         TextView title = toolbar.findViewById(R.id.toolbar_title);
         title.setText(getString(R.string.title_account));
         menuNotification = toolbar.findViewById(R.id.action_notification);
@@ -161,6 +162,13 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         if (getActivity() instanceof AppCompatActivity) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         }
+
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            statusBarBackground.setVisibility(View.VISIBLE);
+        } else {
+            statusBarBackground.setVisibility(View.INVISIBLE);
+        }
+
         setHasOptionsMenu(true);
     }
 

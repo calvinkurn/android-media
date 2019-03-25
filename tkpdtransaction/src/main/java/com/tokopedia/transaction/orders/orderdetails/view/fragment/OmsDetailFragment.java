@@ -353,7 +353,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
-    public void setItems(List<Items> items) {
+    public void setItems(List<Items> items,boolean isTradeIn) {
         List<Items> itemsList = new ArrayList<>();
         for (Items item : items) {
             if (!CATEGORY_GIFT_CARD.equalsIgnoreCase(item.getCategory())) {

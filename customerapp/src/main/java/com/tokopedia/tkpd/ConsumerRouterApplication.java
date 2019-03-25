@@ -417,6 +417,7 @@ import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokopoints.TokopointRouter;
+import com.tokopedia.tokopoints.view.activity.TokoPointsHomeActivity;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.dashboard.TopAdsDashboardRouter;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
@@ -436,8 +437,11 @@ import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
 import com.tokopedia.transaction.common.TransactionRouter;
+import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
+import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
+import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.others.CreditCardFingerPrintUseCase;
@@ -455,6 +459,7 @@ import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActiv
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 
@@ -478,6 +483,9 @@ import permissions.dispatcher.PermissionRequest;
 import retrofit2.Converter;
 import rx.Observable;
 import rx.functions.Func1;
+import tradein_common.TradeInUtils;
+import tradein_common.router.TradeInRouter;
+
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
@@ -580,6 +588,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OvoPayWithQrRouter,
         KYCRouter,
         NormalCheckoutRouter,
+        TradeInRouter,
         com.tokopedia.product.detail.ProductDetailRouter{
 
 
@@ -1019,10 +1028,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Observable<PendingCashback> getPendingCashbackUseCase() {
-        SessionHandler sessionHandler = new SessionHandler(this);
-        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-        requestParams.putString("msisdn", sessionHandler.getPhoneNumber());
-        return tokoCashComponent.getPendingCasbackUseCase().createObservable(requestParams);
+        return tokoCashComponent.getPendingCasbackUseCase().createObservable(null);
     }
 
     @Override
@@ -1757,6 +1763,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getTokoPointsIntent(Context context) {
+        return new Intent(context, TokoPointsHomeActivity.class);
+    }
+
+    @Override
     public SnapHelper getSnapHelper() {
         return new StartSnapHelper();
     }
@@ -2073,8 +2084,25 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @NonNull
     @Override
-    public Intent getCheckoutIntent(@NonNull Context context) {
-        return ShipmentActivity.createInstance(context);
+    public Intent getCheckoutIntent(@NonNull Context context, ShipmentFormRequest shipmentFormRequest) {
+        return ShipmentActivity.createInstance(context, shipmentFormRequest);
+    }
+
+    @NonNull
+    @Override
+    public Intent getCheckoutIntent(@NonNull Context context, String deviceid) {
+        ShipmentFormRequest shipmentFormRequest = new ShipmentFormRequest.BundleBuilder()
+                .deviceId(deviceid)
+                .build();
+        return ShipmentActivity.createInstance(context, shipmentFormRequest);
+    }
+
+    @NonNull
+    @Override
+    public Intent getKYCIntent(Context context, int projectId) {
+        Intent intent = UserIdentificationFormActivity.getIntent(this);
+        intent.putExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, projectId);
+        return intent;
     }
 
     @Override
@@ -2752,7 +2780,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean isSaldoNativeEnabled() {
-        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
+        return remoteConfig.getBoolean(RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
+                true);
+    }
+
+    @Override
+    public boolean isMerchantCreditLineEnabled() {
+        return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_MERCHANT_CREDIT_LINE,
                 true);
     }
 
@@ -3416,6 +3450,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
         mIris.setUserId(userId);
         mIris.setDeviceId(userSession.getDeviceId());
+    }
+
+    @Override
+    public String getDeviceId(Context context) {
+        return TradeInUtils.getDeviceId(context);
     }
 
     @Override
