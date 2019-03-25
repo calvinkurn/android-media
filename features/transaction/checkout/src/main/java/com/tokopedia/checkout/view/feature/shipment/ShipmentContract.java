@@ -16,6 +16,7 @@ import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstSte
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
@@ -132,7 +133,9 @@ public interface ShipmentContract {
 
         void onSuccessClearPromoStack(int shopIndex);
 
-        void onFailedClearPromoStack(boolean ignoreAPIResponse, int shopIndex);
+        void onFailedClearPromoStack(boolean ignoreAPIResponse);
+
+        CheckPromoFirstStepParam generateCheckPromoFirstStepParam();
     }
 
     interface AnalyticsActionListener {
@@ -296,6 +299,11 @@ public interface ShipmentContract {
 
         void cancelAutoApplyPromoStack(int shopIndex, String promoCode, boolean ignoreAPIResponse);
 
+        void cancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList, boolean isFromMultipleAddress, boolean isOneClickShipment, String cornerId);
+
+        void applyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList,
+                                       boolean isFromMultipleAddress, boolean isOneClickShipment, String cornerId);
+
         void changeShippingAddress(RecipientAddressModel recipientAddressModel, boolean isOneClickShipment);
 
         void setShipmentDonationModel(ShipmentDonationModel shipmentDonationModel);
@@ -318,6 +326,8 @@ public interface ShipmentContract {
         CodModel getCodData();
 
         void proceedCodCheckout(String voucherCode, boolean isOneClickShipment);
+
+
 
     }
 

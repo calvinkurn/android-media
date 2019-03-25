@@ -36,6 +36,7 @@ import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConver
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataRequestConverter;
 import com.tokopedia.logisticanalytics.CodAnalytics;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase;
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase;
@@ -181,6 +182,7 @@ public class ShipmentModule {
     @Provides
     @ShipmentScope
     ShipmentContract.Presenter provideShipmentPresenter(@PromoCheckoutQualifier CheckPromoStackingCodeFinalUseCase checkPromoStackingCodeFinalUseCase,
+                                                        CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase,
                                                         CheckPromoStackingCodeMapper checkPromoStackingCodeMapper,
                                                         CompositeSubscription compositeSubscription,
                                                         CheckoutUseCase checkoutUseCase,
@@ -201,8 +203,8 @@ public class ShipmentModule {
                                                         IVoucherCouponMapper voucherCouponMapper,
                                                         CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection,
                                                         CodAnalytics codAnalytics) {return new ShipmentPresenter(checkPromoStackingCodeFinalUseCase,
-            checkPromoStackingCodeMapper, compositeSubscription, checkoutUseCase,
-            getThanksToppayUseCase, getShipmentAddressFormUseCase,
+            checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+            checkoutUseCase, getThanksToppayUseCase, getShipmentAddressFormUseCase,
             getShipmentAddressFormOneClickShipementUseCase, checkPromoCodeCartListUseCase,
                 editAddressUseCase, cancelAutoApplyCouponUseCase, changeShippingAddressUseCase,
                 saveShipmentStateUseCase, getRatesUseCase, getCourierRecommendationUseCase,

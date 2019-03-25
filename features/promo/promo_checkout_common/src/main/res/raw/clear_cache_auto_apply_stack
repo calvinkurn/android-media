@@ -1,7 +1,7 @@
 mutation {
  clearCacheAutoApplyStack(
     serviceID: "#serviceId",
-    promoCode: ["#promoCode"]) {
+    promoCode: #promoCode) {
         Success
  }
 }

@@ -271,5 +271,9 @@
     <string name="totalbenefit_bottomsheet_info">Cashback akan ditambahkan ke OVO Points setelah kamu terima barang</string>
 
     <string name="variant_merchant_voucher">merchant_voucher</string>
+    <string name="checkout_module_promo_clashing_promo_potential">Nilai Potensi Promo %s</string>
+    <string name="checkout_module_title_promo_clashing_newly_selected">Voucher Baru Dipilih</string>
+    <string name="checkout_module_title_promo_clashing_previously_selected">Voucher Sebelumnya</string>
+    <string name="checkout_module_label_clasing_benefit_shop_name">Dari toko %s</string>
 
 </resources>

@@ -33,8 +33,10 @@ import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormOneClickShipe
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
-import com.tokopedia.checkout.view.feature.cartlist.subscriber.ClearCacheAutoApplySubscriber;
+import com.tokopedia.checkout.view.feature.cartlist.subscriber.ClearCacheAutoApplyAfterClashSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.CheckPromoCodeFromSelectedCourierSubscriber;
+import com.tokopedia.checkout.view.feature.shipment.subscriber.CheckShipmentPromoFirstStepAfterClashSubscriber;
+import com.tokopedia.checkout.view.feature.shipment.subscriber.ClearShipmentCacheAutoApplyAfterClashSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.ClearShipmentCacheAutoApplySubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetRatesSubscriber;
@@ -52,11 +54,14 @@ import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam;
+import com.tokopedia.promocheckout.common.data.entity.request.Order;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase;
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.shipping_recommendation.domain.ShippingParam;
@@ -128,6 +133,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     // private final CheckPromoCodeFinalUseCase checkPromoCodeFinalUseCase;
     private final CheckPromoStackingCodeFinalUseCase checkPromoStackingCodeFinalUseCase;
+    private final CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase;
     private final CheckPromoStackingCodeMapper checkPromoStackingCodeMapper;
     private final CheckoutUseCase checkoutUseCase;
     private final CompositeSubscription compositeSubscription;
@@ -170,6 +176,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Inject
     public ShipmentPresenter(CheckPromoStackingCodeFinalUseCase checkPromoStackingCodeFinalUseCase,
+                             CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase,
                              CheckPromoStackingCodeMapper checkPromoStackingCodeMapper,
                              CompositeSubscription compositeSubscription,
                              CheckoutUseCase checkoutUseCase,
@@ -192,6 +199,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection,
                              CodAnalytics codAnalytics) {
         this.checkPromoStackingCodeFinalUseCase = checkPromoStackingCodeFinalUseCase;
+        this.checkPromoStackingCodeUseCase = checkPromoStackingCodeUseCase;
         this.checkPromoStackingCodeMapper = checkPromoStackingCodeMapper;
         this.compositeSubscription = compositeSubscription;
         this.checkoutUseCase = checkoutUseCase;
@@ -1228,8 +1236,56 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             if (!ignoreAPIResponse) {
                 getView().showLoading();
             }
-            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCode);
+            ArrayList<String> listPromoCode = new ArrayList<>();
+            listPromoCode.add(promoCode);
+            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), listPromoCode);
             clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearShipmentCacheAutoApplySubscriber(getView(), this, shopIndex, ignoreAPIResponse));
+        }
+    }
+
+    @Override
+    public void cancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList,
+                                                    ArrayList<ClashingVoucherOrderUiModel> newPromoList, boolean isFromMultipleAddress, boolean isOneClickShipment, String cornerId) {
+        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), oldPromoList);
+        clearCacheAutoApplyStackUseCase.execute(RequestParams.create(),
+                new ClearShipmentCacheAutoApplyAfterClashSubscriber(getView(), this,
+                        newPromoList, isFromMultipleAddress, isOneClickShipment, cornerId));
+    }
+
+    @Override
+    public void applyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList,
+                                          boolean isFromMultipleAddress, boolean isOneClickShipment, String cornerId) {
+        CheckPromoFirstStepParam checkPromoFirstStepParam = getView().generateCheckPromoFirstStepParam();
+        checkPromoFirstStepParam.setCodes(new ArrayList<>());
+        if (checkPromoFirstStepParam.getOrders() != null) {
+            for (Order order : checkPromoFirstStepParam.getOrders()) {
+                order.setCodes(new ArrayList<>());
+            }
+        }
+
+        for (ClashingVoucherOrderUiModel model : newPromoList) {
+            if (TextUtils.isEmpty(model.getUniqueId())) {
+                ArrayList<String> codes = new ArrayList<>();
+                codes.add(model.getCode());
+                checkPromoFirstStepParam.setCodes(codes);
+            } else {
+                if (checkPromoFirstStepParam.getOrders() != null) {
+                    for (Order order : checkPromoFirstStepParam.getOrders()) {
+                        if (model.getUniqueId().equals(order.getUniqueId())) {
+                            ArrayList<String> codes = new ArrayList<>();
+                            codes.add(model.getCode());
+                            order.setCodes(codes);
+                            break;
+                        }
+                    }
+                }
+            }
+            checkPromoStackingCodeUseCase.setParams(checkPromoFirstStepParam);
+            checkPromoStackingCodeUseCase.execute(RequestParams.create(),
+                    new CheckShipmentPromoFirstStepAfterClashSubscriber(getView(),
+                            this, newPromoList.size(),
+                            isFromMultipleAddress, isOneClickShipment, cornerId,
+                            newPromoList.indexOf(model)));
         }
     }
 
@@ -1288,6 +1344,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         })
         );
     }
+
+
 
     @Override
     public void changeShippingAddress(final RecipientAddressModel recipientAddressModel,

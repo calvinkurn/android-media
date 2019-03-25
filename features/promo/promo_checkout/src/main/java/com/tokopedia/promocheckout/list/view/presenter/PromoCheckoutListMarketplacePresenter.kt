@@ -12,7 +12,7 @@ import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckou
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 
-class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingUseCase: CheckPromoStackingCodeUseCase, val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper) : BaseDaggerPresenter<PromoCheckoutListMarketplaceContract.View>(), PromoCheckoutListMarketplaceContract.Presenter {
+class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase, val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper) : BaseDaggerPresenter<PromoCheckoutListMarketplaceContract.View>(), PromoCheckoutListMarketplaceContract.Presenter {
 
     override fun checkPromoStackingCode(promoCode: String, oneClickShipment: Boolean, checkPromoFirstStepParam: CheckPromoFirstStepParam?) {
         if (checkPromoFirstStepParam == null) return
@@ -20,11 +20,20 @@ class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingUseCas
         if (TextUtils.isEmpty(promoCode)) {
             view.onErrorEmptyPromoCode()
             return
+        } else {
+            // Clear all merchant promo
+            checkPromoFirstStepParam.orders?.forEach { order ->
+                order.codes = ArrayList()
+            }
+            // Set promo global
+            val codes = ArrayList<String>()
+            codes.add(promoCode)
+            checkPromoFirstStepParam.codes = codes
         }
         view.showProgressLoading()
 
-        checkPromoStackingUseCase.setParams(checkPromoFirstStepParam)
-        checkPromoStackingUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
+        checkPromoStackingCodeUseCase.setParams(checkPromoFirstStepParam)
+        checkPromoStackingCodeUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onNext(t: GraphqlResponse?) {
                 view.hideProgressLoading()
 
@@ -74,7 +83,7 @@ class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingUseCas
 
     override fun detachView() {
         // checkPromoCodeUseCase.unsubscribe()
-        checkPromoStackingUseCase.unsubscribe()
+        checkPromoStackingCodeUseCase.unsubscribe()
         super.detachView()
     }
 }

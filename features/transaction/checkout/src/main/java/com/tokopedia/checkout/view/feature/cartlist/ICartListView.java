@@ -10,6 +10,7 @@ import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.promostacking.ResponseFirstStep;
 import com.tokopedia.checkout.view.common.base.IBaseView;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
+import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 
@@ -131,5 +132,7 @@ public interface ICartListView extends IBaseView {
 
     void onSuccessClearPromoStack(int shopIndex);
 
-    void onFailedClearPromoStack(boolean ignoreAPIResponse, int shopIndex);
+    void onFailedClearPromoStack(boolean ignoreAPIResponse);
+
+    CheckPromoFirstStepParam generateCheckPromoFirstStepParam();
 }

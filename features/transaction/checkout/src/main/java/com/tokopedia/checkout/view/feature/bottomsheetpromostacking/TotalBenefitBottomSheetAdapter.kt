@@ -28,10 +28,6 @@ class TotalBenefitBottomSheetAdapter : RecyclerView.Adapter<TotalBenefitBottomSh
         this.benefitList = benefitList
     }
 
-    fun setString(stringTest: String) {
-        this.stringTest = stringTest
-    }
-
     override fun getItemCount(): Int {
         return benefitList.size
     }

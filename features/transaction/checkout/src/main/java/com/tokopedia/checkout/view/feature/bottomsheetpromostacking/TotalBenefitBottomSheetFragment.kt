@@ -55,7 +55,6 @@ open class TotalBenefitBottomSheetFragment : BottomSheetDialogFragment() {
         textViewTitle.text = mTitle
 
         benefitAdapter.setList(benefitUiModel.summaries)
-        benefitAdapter.setString("TEST WOY")
         rv_total_benefit.layoutManager = LinearLayoutManager(activity)
         rv_total_benefit.adapter = benefitAdapter
 

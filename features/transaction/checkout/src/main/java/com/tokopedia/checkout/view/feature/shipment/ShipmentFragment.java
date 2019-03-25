@@ -83,6 +83,7 @@ import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
@@ -166,6 +167,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private PerformanceMonitoring shipmentTracePerformance;
     private boolean isShipmentTraceStopped;
+    private String cornerId;
 
     @Inject
     ShipmentAdapter shipmentAdapter;
@@ -1083,9 +1085,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickSelectCourier();
     }
 
+    public String getCornerId() {
+        return cornerId;
+    }
+
+    public void setCornerId(String cornerId) {
+        this.cornerId = cornerId;
+    }
+
     @Override
     public void renderChangeAddressSuccess(RecipientAddressModel selectedAddress) {
         if (shipmentAdapter.hasAppliedPromoCode()) {
+            setCornerId(selectedAddress.getCornerId());
             shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment(), selectedAddress.getCornerId());
         }
         if (!TextUtils.isEmpty(selectedAddress.getCornerId()) && shipmentPresenter.getCodData() != null) {
@@ -2229,7 +2240,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @NonNull
-    private CheckPromoFirstStepParam generateCheckPromoFirstStepParam() {
+    public CheckPromoFirstStepParam generateCheckPromoFirstStepParam() {
         CheckPromoFirstStepParam checkPromoFirstStepParam = new CheckPromoFirstStepParam();
         ArrayList<Order> orders = new ArrayList<>();
         List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentAdapter.getShipmentCartItemModelList();
@@ -2302,7 +2313,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onFailedClearPromoStack(boolean ignoreAPIResponse, int shopIndex) {
+    public void onFailedClearPromoStack(boolean ignoreAPIResponse) {
         if (!ignoreAPIResponse) {
             ToasterError.make(getView(), "Terjadi kesalahan. Ulangi beberapa saat lagi", ToasterError.LENGTH_SHORT).show();
         }
@@ -2352,12 +2363,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onErrorCheckPromoFirstStep(@NotNull String message) {
-        if (TextUtils.isEmpty(message)) {
-            message = "Terjadi kesalahan. Ulangi beberapa saat lagi.";
-        }
-        if (getView() != null) {
-            ToasterError.make(getView(), message, ToasterError.LENGTH_SHORT).show();
-        }
+    public void onSubmitNewPromoAfterClash(@NotNull ArrayList<String> oldPromoList,
+                                           @NotNull ArrayList<ClashingVoucherOrderUiModel> newPromoList
+    ) {
+        shipmentPresenter.cancelAutoApplyPromoStackAfterClash(oldPromoList, newPromoList,
+                true, isOneClickShipment(), getCornerId());
     }
 }

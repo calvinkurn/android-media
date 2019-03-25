@@ -4,16 +4,16 @@ import com.tokopedia.checkout.view.feature.cartlist.ICartListPresenter
 import com.tokopedia.checkout.view.feature.cartlist.ICartListView
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel
 import rx.Subscriber
 
 /**
- * Created by Irfan Khoirul on 21/03/19.
+ * Created by Irfan Khoirul on 25/03/19.
  */
 
-class ClearCacheAutoApplySubscriber(val view: ICartListView?,
-                                    val presenter: ICartListPresenter,
-                                    val shopIndex: Int,
-                                    val ignoreAPIResponse: Boolean) : Subscriber<GraphqlResponse>() {
+class ClearCacheAutoApplyAfterClashSubscriber(val view: ICartListView?,
+                                              val presenter: ICartListPresenter,
+                                              val newPromoList: ArrayList<ClashingVoucherOrderUiModel>) : Subscriber<GraphqlResponse>() {
 
     override fun onCompleted() {
 
@@ -22,24 +22,16 @@ class ClearCacheAutoApplySubscriber(val view: ICartListView?,
     override fun onError(e: Throwable) {
         e.printStackTrace()
         view?.hideProgressLoading()
-        if (!ignoreAPIResponse) {
-            view?.onFailedClearPromoStack(ignoreAPIResponse)
-        }
+        view?.onFailedClearPromoStack(false)
     }
 
     override fun onNext(response: GraphqlResponse) {
         view?.hideProgressLoading()
         val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
-        if (ignoreAPIResponse) {
-            if (responseData.success) {
-                view?.onSuccessClearPromoStack(shopIndex)
-            }
+        if (responseData.success) {
+            presenter.processApplyPromoStackAfterClash(newPromoList)
         } else {
-            if (responseData.success) {
-                view?.onSuccessClearPromoStack(shopIndex)
-            } else {
-                view?.onFailedClearPromoStack(ignoreAPIResponse)
-            }
+            view?.onFailedClearPromoStack(false)
         }
     }
 

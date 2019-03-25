@@ -77,6 +77,7 @@ import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
@@ -602,7 +603,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void onVoucherMerchantPromoClicked(int shopPosition) {
         List<ShopGroupData> shopGroupDataList = cartListData.getShopGroupDataList();
         PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobaldata();
-        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam(shopGroupDataList, promoStackingGlobalData);
+        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
 
         if (getFragmentManager() != null) {
             showMerchantVoucherListBottomsheet(
@@ -613,8 +614,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         }
     }
 
-    @NonNull
-    private CheckPromoFirstStepParam generateCheckPromoFirstStepParam(List<ShopGroupData> shopGroupDataList, PromoStackingData promoStackingGlobalData) {
+    @Override
+    public CheckPromoFirstStepParam generateCheckPromoFirstStepParam() {
+        List<ShopGroupData> shopGroupDataList = cartListData.getShopGroupDataList();
+        PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobaldata();
         ArrayList<Order> orders = new ArrayList<>();
         for (ShopGroupData shopGroupData : shopGroupDataList) {
             Order order = new Order();
@@ -1418,9 +1421,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                     .build());
         }
 
-        List<ShopGroupData> shopGroupDataList = cartListData.getShopGroupDataList();
-        PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobaldata();
-        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam(shopGroupDataList, promoStackingGlobalData);
+        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
 
         startActivityForResult(
                 checkoutModuleRouter
@@ -1434,9 +1435,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void goToDetail(PromoData promoData) {
-        List<ShopGroupData> shopGroupDataList = cartListData.getShopGroupDataList();
-        PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobaldata();
-        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam(shopGroupDataList, promoStackingGlobalData);
+        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
 
         if (promoData.getTypePromo() == PromoData.CREATOR.getTYPE_COUPON()) {
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutDetailIntentWithCode(promoData.getPromoCodeSafe(),
@@ -1449,9 +1448,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void goToDetailPromoStacking(PromoStackingData promoStackingData) {
-        List<ShopGroupData> shopGroupDataList = cartListData.getShopGroupDataList();
-        PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobaldata();
-        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam(shopGroupDataList, promoStackingGlobalData);
+        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
 
         if (promoStackingData.getTypePromo() == PromoData.CREATOR.getTYPE_COUPON()) {
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutDetailIntentWithCode(promoStackingData.getPromoCodeSafe(),
@@ -1878,38 +1875,28 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onErrorCheckPromoFirstStep(@NonNull String message) {
-        if (TextUtils.isEmpty(message)) {
-            message = "Terjadi kesalahan. Ulangi beberapa saat lagi.";
-        }
-        if (getView() != null) {
-            ToasterError.make(getView(), message, ToasterError.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onSuccessCheckPromoFirstStep(@NotNull ResponseGetPromoStackUiModel promoData) {
+    public void onSuccessCheckPromoFirstStep(@NonNull ResponseGetPromoStackUiModel responseGetPromoStackUiModel) {
         // Update global promo state
         PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobaldata();
         int typePromo;
-        if (promoData.getData().isCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON()) {
+        if (responseGetPromoStackUiModel.getData().isCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON()) {
             typePromo = PromoStackingData.CREATOR.getTYPE_COUPON();
         } else {
             typePromo = PromoStackingData.CREATOR.getTYPE_VOUCHER();
         }
         promoStackingGlobalData.setTypePromo(typePromo);
-        promoStackingGlobalData.setPromoCode(promoData.getData().getCodes().get(0));
-        promoStackingGlobalData.setDescription(promoData.getData().getMessage().getText());
-        promoStackingGlobalData.setTitle(promoData.getData().getTitleDescription());
-        promoStackingGlobalData.setAmount(promoData.getData().getCashbackWalletAmount());
-        promoStackingGlobalData.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(promoData.getData().getMessage().getState()));
+        promoStackingGlobalData.setPromoCode(responseGetPromoStackUiModel.getData().getCodes().get(0));
+        promoStackingGlobalData.setDescription(responseGetPromoStackUiModel.getData().getMessage().getText());
+        promoStackingGlobalData.setTitle(responseGetPromoStackUiModel.getData().getTitleDescription());
+        promoStackingGlobalData.setAmount(responseGetPromoStackUiModel.getData().getCashbackWalletAmount());
+        promoStackingGlobalData.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStackUiModel.getData().getMessage().getState()));
         promoStackingGlobalData.setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
 
         // Update merchant voucher state
         List<CartShopHolderData> cartShopHolderDataList = cartAdapter.getAllShopGroupDataList();
         if (cartShopHolderDataList != null) {
             for (CartShopHolderData cartShopHolderData : cartShopHolderDataList) {
-                for (VoucherOrdersItemUiModel voucherOrdersItemUiModel : promoData.getData().getVoucherOrders()) {
+                for (VoucherOrdersItemUiModel voucherOrdersItemUiModel : responseGetPromoStackUiModel.getData().getVoucherOrders()) {
                     if (voucherOrdersItemUiModel.getUniqueId().equals(cartShopHolderData.getShopGroupData().getCartString())) {
                         VoucherOrdersItemData voucherOrdersItemData = cartShopHolderData.getShopGroupData().getVoucherOrdersItemData();
                         voucherOrdersItemData.setCode(voucherOrdersItemUiModel.getCode());
@@ -1957,9 +1944,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onFailedClearPromoStack(boolean ignoreAPIResponse, int shopIndex) {
+    public void onFailedClearPromoStack(boolean ignoreAPIResponse) {
         if (!ignoreAPIResponse) {
             ToasterError.make(getView(), "Terjadi kesalahan. Ulangi beberapa saat lagi", ToasterError.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onSubmitNewPromoAfterClash(@NotNull ArrayList<String> oldPromoList, @NotNull ArrayList<ClashingVoucherOrderUiModel> newPromoList) {
+        dPresenter.processCancelAutoApplyPromoStackAfterClash(oldPromoList, newPromoList);
     }
 }

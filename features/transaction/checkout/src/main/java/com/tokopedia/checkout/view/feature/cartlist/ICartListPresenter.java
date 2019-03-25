@@ -5,9 +5,11 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +47,10 @@ public interface ICartListPresenter {
     void processCancelAutoApply();
 
     void processCancelAutoApplyPromoStack(int shopIndex, String promoCode, boolean ignoreAPIResponse);
+
+    void processCancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList);
+
+    void processApplyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList);
 
     Map<String, Object> generateCartDataAnalytics(CartItemData removedCartItem, String enhancedECommerceAction);
 

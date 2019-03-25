@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/dp_24"
     android:background="@color/white">
 
     <android.support.design.widget.AppBarLayout
@@ -33,6 +32,7 @@
                 android:layout_marginLeft="@dimen/dp_20"
                 android:layout_marginEnd="@dimen/dp_20"
                 android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_12"
                 app:cardCornerRadius="@dimen/dp_8"
                 app:cardElevation="@dimen/dp_3"
                 tools:visibility="visible">
@@ -74,28 +74,19 @@
                 android:layout_gravity="bottom"
                 android:background="@drawable/bottom_sheet_shadow" />
 
-            <LinearLayout
+            <com.tokopedia.design.component.ButtonCompat
+                android:id="@+id/bt_submit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/dp_8"
-                android:paddingBottom="@dimen/dp_8">
-
-                <TextView
-                    android:id="@+id/tv_submit"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_44"
-                    android:layout_below="@+id/rv_clashing_option"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:background="@drawable/green_button_rounded_unify"
-                    android:foreground="?selectableItemBackground"
-                    android:gravity="center"
-                    android:paddingLeft="@dimen/dp_27"
-                    android:paddingRight="@dimen/dp_27"
-                    android:text="@string/clash_bottomsheet_submit"
-                    android:textColor="@color/white" />
-
-            </LinearLayout>
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_12"
+                android:text="@string/clash_bottomsheet_submit"
+                android:foreground="?selectableItemBackground"
+                android:textAllCaps="false"
+                app:buttonCompatSize="big"
+                app:buttonCompatType="primary" />
 
         </LinearLayout>
 
