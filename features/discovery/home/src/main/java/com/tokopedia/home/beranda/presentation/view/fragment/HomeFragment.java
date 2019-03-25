@@ -34,6 +34,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -69,7 +70,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeR
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
-import com.tokopedia.home.beranda.presentation.view.customview.CollapsingTabLayout;
+import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.home.constant.BerandaUrl;
@@ -274,6 +275,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         presenter.attachView(this);
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
+        if(getContext() != null) {
+            view.setPadding(0, DisplayMetricUtils.getStatusBarHeight(getContext()), 0, 0);
+        }
         return view;
     }
 
@@ -283,6 +287,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         fragmentRootView = view;
         initResources();
         disableExpandFeedSection();
+
     }
 
     private void initResources() {

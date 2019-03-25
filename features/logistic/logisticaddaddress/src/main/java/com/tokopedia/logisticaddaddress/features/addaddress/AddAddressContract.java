@@ -11,8 +11,6 @@ public interface AddAddressContract {
 
     interface View {
 
-        Context context();
-
         boolean isEdit();
 
         boolean isDistrictRecommendation();
@@ -24,8 +22,6 @@ public interface AddAddressContract {
         void finishActivity();
 
         void showErrorSnackbar(String errorMessage);
-
-        String getPassword();
 
         boolean isValidAddress();
 

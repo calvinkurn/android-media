@@ -81,7 +81,8 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:background="@color/white"
             android:orientation="vertical">
-            <com.tokopedia.home.beranda.presentation.view.customview.CollapsingTabLayout
+
+            <com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
                 android:id="@+id/tab_layout_home_feeds"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/tab_home_feed_max_height"

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <FrameLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <ViewFlipper
+            android:id="@+id/container_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:measureAllChildren="false">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/tp_margin_large" />
+
+            <android.support.design.widget.CoordinatorLayout
+                android:id="@+id/col_header"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <android.support.design.widget.AppBarLayout
+                    android:id="@+id/app_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:elevation="0dp"
+                    android:theme="@style/AppTheme.AppBarOverlay"
+                    app:elevation="0dp">
+
+                    <android.support.design.widget.CollapsingToolbarLayout
+                        android:id="@+id/collapsing_toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:contentScrim="?attr/colorPrimary"
+                        app:expandedTitleGravity="left|bottom"
+                        app:expandedTitleMarginBottom="@dimen/dp_8"
+                        app:expandedTitleMarginStart="@dimen/dp_16"
+                        app:expandedTitleTextAppearance="@style/ToolbarExpandedTitle3"
+                        app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/img_bg_header"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/tp_home_top_bg_height"
+                                android:layout_alignParentTop="true"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/temp" />
+
+
+                            <ImageView
+                                android:id="@+id/img_egg"
+                                android:layout_width="@dimen/dp_48"
+                                android:layout_height="@dimen/dp_48"
+                                android:layout_marginStart="@dimen/tp_margin_medium"
+                                android:layout_marginLeft="@dimen/tp_margin_medium"
+                                android:layout_marginTop="80dp"
+                                android:contentDescription="@string/tp_label_see_loyalty" />
+
+                            <TextView
+                                android:id="@+id/text_membership_label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignTop="@id/img_egg"
+                                android:layout_marginStart="@dimen/tp_margin_regular"
+                                android:layout_marginLeft="@dimen/tp_margin_regular"
+                                android:layout_toEndOf="@id/img_egg"
+                                android:layout_toRightOf="@id/img_egg"
+                                android:fontFamily="sans-serif-medium"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/tp_text_size_medium"
+                                android:textStyle="bold"
+                                tools:text="Gulfikar Rinjani" />
+
+                            <TextView
+                                android:id="@+id/text_membership_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/text_membership_label"
+                                android:layout_marginStart="@dimen/tp_margin_regular"
+                                android:layout_marginLeft="@dimen/tp_margin_regular"
+                                android:layout_marginTop="@dimen/dp_3"
+                                android:layout_marginBottom="@dimen/dp_4"
+                                android:layout_toEndOf="@id/img_egg"
+                                android:layout_toRightOf="@id/img_egg"
+                                android:drawableRight="@drawable/ic_arrow_right_grey"
+                                android:drawablePadding="@dimen/dp_9"
+                                android:drawableTint="@color/white"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:paddingEnd="@dimen/tp_padding_regular"
+                                android:paddingRight="@dimen/tp_padding_regular"
+                                android:textColor="@color/colorGray"
+                                android:textSize="@dimen/tp_text_size_xsmall"
+                                android:textStyle="bold"
+                                tools:text="Classic Member" />
+
+                            <android.support.v7.widget.CardView
+                                android:id="@+id/card_point"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/text_membership_value"
+                                android:layout_margin="@dimen/dp_16"
+                                app:cardCornerRadius="8dp"
+                                app:cardUseCompatPadding="true">
+
+                                <include layout="@layout/tp_home_point" />
+
+
+                            </android.support.v7.widget.CardView>
+
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/card_point"
+                                android:orientation="vertical">
+
+                                <include layout="@layout/tp_layout_section_category_parent" />
+
+                                <include layout="@layout/tp_layout_ticker" />
+                            </LinearLayout>
+                        </RelativeLayout>
+
+                        <include layout="@layout/tp_toolbar" />
+
+                        <View
+                            android:id="@+id/status_bar_bg"
+                            android:layout_width="match_parent"
+                            android:layout_height="25dp"
+                            android:alpha="0"
+                            android:background="@color/green_600"
+                            android:visibility="visible"
+                            app:layout_anchor="@id/list"
+                            app:layout_collapseMode="pin" />
+
+                    </android.support.design.widget.CollapsingToolbarLayout>
+
+
+                    <include layout="@layout/tp_content_homepage_pager" />
+
+                </android.support.design.widget.AppBarLayout>
+
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/view_pager_promos"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+                <LinearLayout
+                    android:id="@+id/container_fab_egg_token"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginBottom="@dimen/dp_24"
+                    android:background="@color/transparent"
+                    android:visibility="gone"
+                    app:layout_behavior="com.tokopedia.tokopoints.view.util.QuickReturnFloaterBehavior">
+
+                    <include layout="@layout/tp_layout_floating_token" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/bottom_view_membership"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_gravity="bottom"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <include layout="@layout/tp_bottomview_membership" />
+                </LinearLayout>
+
+
+            </android.support.design.widget.CoordinatorLayout>
+
+            <include
+                layout="@layout/layout_tp_network_error_large"
+                android:visibility="invisible" />
+
+        </ViewFlipper>
+    </FrameLayout>
+</android.support.design.widget.CoordinatorLayout>

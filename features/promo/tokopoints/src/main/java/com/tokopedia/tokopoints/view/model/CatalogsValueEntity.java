@@ -134,6 +134,17 @@ public class CatalogsValueEntity implements Serializable {
     @SerializedName("isShowTukarButton")
     private boolean isShowTukarButton;
 
+    @SerializedName("quotaPercentage")
+    private Integer quotaPercentage;
+
+    public Integer getQuotaPercentage() {
+        return quotaPercentage;
+    }
+
+    public void setQuotaPercentage(Integer quotaPercentage) {
+        this.quotaPercentage = quotaPercentage;
+    }
+
     public boolean isShowTukarButton() {
         return isShowTukarButton;
     }
@@ -424,6 +435,8 @@ public class CatalogsValueEntity implements Serializable {
                 ", overview='" + overview + '\'' +
                 ", tnc='" + tnc + '\'' +
                 ", cta='" + cta + '\'' +
+                ", isShowTukarButton=" + isShowTukarButton +
+                ", quotaPercentage=" + quotaPercentage +
                 '}';
     }
 }

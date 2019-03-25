@@ -1,0 +1,111 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_48"
+    android:background="@color/white">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/img_points_stack"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginLeft="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_6"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_tp_point_stack_new" />
+
+    <TextView
+        android:id="@+id/text_my_points_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/tp_margin_small"
+        android:layout_marginLeft="@dimen/tp_margin_small"
+        android:layout_marginTop="@dimen/dp_10"
+        android:ellipsize="end"
+        android:lines="1"
+        android:text="@string/tp_label_see_point"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/tp_text_size_xxsmall"
+        app:layout_constraintLeft_toRightOf="@+id/img_points_stack"
+        app:layout_constraintStart_toEndOf="@+id/img_points_stack"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Points" />
+
+    <TextView
+        android:id="@+id/text_my_points_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/tp_margin_small"
+        android:layout_marginLeft="@dimen/tp_margin_small"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:textColor="@color/medium_green"
+        android:textSize="@dimen/tp_text_size_small"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/img_points_stack"
+        app:layout_constraintStart_toEndOf="@+id/img_points_stack"
+        app:layout_constraintTop_toBottomOf="@+id/text_my_points_label"
+        tools:text="100.087" />
+
+    <View
+        android:id="@+id/line_separator_points_vertical"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/white_two"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/img_loyalty_stack"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginStart="@dimen/tp_margin_medium"
+        android:layout_marginLeft="@dimen/tp_margin_medium"
+        android:layout_marginTop="@dimen/dp_6"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/line_separator_points_vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_tp_loyalty_stack_new" />
+
+    <TextView
+        android:id="@+id/text_loyalty_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/tp_margin_small"
+        android:layout_marginLeft="@dimen/tp_margin_small"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginRight="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/dp_1"
+        android:ellipsize="end"
+        android:lines="1"
+        android:text="@string/tp_label_see_loyalty"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/tp_text_size_xxsmall"
+        app:layout_constraintStart_toEndOf="@+id/img_loyalty_stack"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_loyalty_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/tp_margin_small"
+        android:layout_marginLeft="@dimen/tp_margin_small"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:textColor="@color/medium_green"
+        android:textSize="@dimen/tp_text_size_regular"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/img_loyalty_stack"
+        app:layout_constraintTop_toBottomOf="@+id/text_loyalty_label"
+        tools:text="20.099" />
+
+</android.support.constraint.ConstraintLayout>

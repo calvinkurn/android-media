@@ -111,7 +111,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     public String getString(String key, String defaultValue) {
         if (isDebug()) {
             String cacheValue = sharedPrefs.getString(key, defaultValue);
-            if (!cacheValue.equalsIgnoreCase(defaultValue) && !cacheValue.isEmpty()) {
+            if (!cacheValue.isEmpty() && !cacheValue.equalsIgnoreCase(defaultValue)) {
                 return cacheValue;
             }
         }

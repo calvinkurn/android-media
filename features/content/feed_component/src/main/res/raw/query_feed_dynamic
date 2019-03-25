@@ -1,5 +1,5 @@
-query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: String, $sourceID: String, $detailID: String) {
-  feedv2(limit: $limit, cursor: $cursor, userID: $userID, source: $source, sourceID: $sourceID, limitDetail: $limit, detailID: $detailID) {
+query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: String, $sourceID: String) {
+  feedv2(limit: $limit, cursor: $cursor, userID: $userID, source: $source, sourceID: $sourceID, limitDetail: $limit) {
     data {
       id
       createTime
@@ -154,6 +154,9 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
                 type
                 source
               }
+              videos {
+                url
+              }
             }
 						postTag {
               id
@@ -175,11 +178,25 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
                 percentage
                 isSelected
                 position
+                isWishlisted
+                rating
                 tracking {
                   clickURL
                   viewURL
                   type
                   source
+                }
+                tags {
+                  linkType
+                  text
+                  textColor {
+                    hex
+                    opacity
+                  }
+                  bgColor {
+                    hex
+                    opacity
+                  }
                 }
               }
               isVoted
@@ -406,6 +423,7 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
             }
             body {
               media
+              postTag
               caption
               mediaGridButton
             }

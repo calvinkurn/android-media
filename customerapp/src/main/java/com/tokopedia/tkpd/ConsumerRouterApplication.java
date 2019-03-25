@@ -417,6 +417,7 @@ import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokopoints.TokopointRouter;
+import com.tokopedia.tokopoints.view.activity.TokoPointsHomeActivity;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.dashboard.TopAdsDashboardRouter;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
@@ -1197,6 +1198,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public long getMinAmountFromRemoteConfig() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
+        return remoteConfig.getLong(RemoteConfigKey.OVO_QR_MIN_AMOUNT, 1000);
+    }
+
+    @Override
+    public long getMaxAmountFromRemoteConfig() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
+        return remoteConfig.getLong(RemoteConfigKey.OVO_QR_MAX_AMOUNT, 10000000);
+    }
+
+    @Override
     public Intent getContactUsIntent(Activity activity, FlightContactUsPassData passData) {
         return ContactUsCreateTicketActivity.getCallingIntent(
                 activity,
@@ -1739,6 +1752,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getLoginIntent() {
         Intent intent = LoginActivity.getCallingIntent(this);
         return intent;
+    }
+
+    @Override
+    public Intent getTokoPointsIntent(Context context) {
+        return new Intent(context, TokoPointsHomeActivity.class);
     }
 
     @Override

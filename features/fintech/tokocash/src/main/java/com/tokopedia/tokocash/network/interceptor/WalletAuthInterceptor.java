@@ -41,7 +41,7 @@ public class WalletAuthInterceptor extends TkpdAuthInterceptor {
         if (isUserInactiveTokoCash()) {
             Map<String, String> headerMap = AuthUtil.generateHeadersWithXUserIdXMsisdn(path, method,
                     WalletUrl.KeyHmac.HMAC_PENDING_CASHBACK, contentTypeHeader,
-                    walletUserSession.getPhoneNumber(), userSession.getUserId());
+                    walletUserSession.getPhoneNumber(), userSession.getUserId(), userSession);
             return headerMap;
         } else {
             Map<String, String> header = new HashMap<>();
