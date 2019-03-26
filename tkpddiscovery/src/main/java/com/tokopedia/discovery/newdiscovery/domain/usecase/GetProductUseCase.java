@@ -82,7 +82,7 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
 
         RequestParams requestParams = RequestParams.create();
 
-        requestParams.putAll(searchParameter.getSearchParameterHashMap());
+        requestParams.putAll(searchParameter.getSearchParameterMap());
         putRequestParamsOtherParameters(requestParams, searchParameter, forceSearch);
 
         return requestParams;

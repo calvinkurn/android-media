@@ -25,17 +25,17 @@ class FilterControllerTest {
 
     private val filterController = FilterController()
 
-    private val officialOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.OFFICIAL, TRUE_VALUE, SearchApiConst.OFFICIAL))
+    private val officialOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.OFFICIAL, TRUE_VALUE, SearchApiConst.OFFICIAL))
 
-    private val jabodetabekOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, JABODETABEK_VALUE, "Jabodetabek"))
-    private val jakartaOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, JAKARTA_VALUE, "Jakarta"))
-    private val jakartaBaratOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, JAKARTA_BARAT_VALUE, "Jakarta Barat"))
-    private val tangerangOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, TANGERANG_VALUE, "Tangerang"))
-    private val bandungOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, BANDUNG_VALUE, "Bandung"))
-    private val handphoneOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, HANDPHONE_VALUE, "Handphone"))
-    private val tvOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, TV_VALUE, "TV"))
-    private val minPriceOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.PMIN, "", "Harga Minimum"))
-    private val maxPriceOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.PMAX, "", "Harga Maximum"))
+    private val jabodetabekOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, JABODETABEK_VALUE, "Jabodetabek"))
+    private val jakartaOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, JAKARTA_VALUE, "Jakarta"))
+    private val jakartaBaratOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, JAKARTA_BARAT_VALUE, "Jakarta Barat"))
+    private val tangerangOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, TANGERANG_VALUE, "Tangerang"))
+    private val bandungOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, BANDUNG_VALUE, "Bandung"))
+    private val handphoneOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, HANDPHONE_VALUE, "Handphone"))
+    private val tvOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, TV_VALUE, "TV"))
+    private val minPriceOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.PMIN, "", "Harga Minimum"))
+    private val maxPriceOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.PMAX, "", "Harga Maximum"))
 
     private val tokoOptions = mutableListOf<Option>()
     private val locationOptions = mutableListOf<Option>()
@@ -146,7 +146,7 @@ class FilterControllerTest {
     }
 
     private fun createPriceOptionWithValue(priceOption: Option, priceOptionValue: Int) : Option {
-        val createdPriceOption = OptionHelper.createOptionFromUniqueId(priceOption.uniqueId)
+        val createdPriceOption = OptionHelper.generateOptionFromUniqueId(priceOption.uniqueId)
         createdPriceOption.value = priceOptionValue.toString()
 
         return priceOption
@@ -196,15 +196,15 @@ class FilterControllerTest {
     private fun createMultipleOptionsWithInputState() : List<Option> {
         val optionList = mutableListOf<Option>()
 
-        val jabodetabekOptionSelected = OptionHelper.createOptionFromUniqueId(jabodetabekOption.uniqueId)
+        val jabodetabekOptionSelected = OptionHelper.generateOptionFromUniqueId(jabodetabekOption.uniqueId)
         jabodetabekOptionSelected.inputState = TRUE_VALUE
         optionList.add(jabodetabekOptionSelected)
 
-        val jakartaOptionSelected = OptionHelper.createOptionFromUniqueId(jakartaOption.uniqueId)
+        val jakartaOptionSelected = OptionHelper.generateOptionFromUniqueId(jakartaOption.uniqueId)
         jakartaOptionSelected.inputState = TRUE_VALUE
         optionList.add(jakartaOptionSelected)
 
-        val jakartaBaratOptionUnSelected = OptionHelper.createOptionFromUniqueId(jakartaBaratOption.uniqueId)
+        val jakartaBaratOptionUnSelected = OptionHelper.generateOptionFromUniqueId(jakartaBaratOption.uniqueId)
         jakartaBaratOptionUnSelected.inputState = "Some random string should NOT make this option selected"
         optionList.add(jakartaBaratOptionUnSelected)
 

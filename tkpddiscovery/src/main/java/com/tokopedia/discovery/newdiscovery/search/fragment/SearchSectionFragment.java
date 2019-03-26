@@ -71,6 +71,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     private static final String EXTRA_SHOW_BOTTOM_BAR = "EXTRA_SHOW_BOTTOM_BAR";
     private static final String EXTRA_IS_GETTING_DYNNAMIC_FILTER = "EXTRA_IS_GETTING_DYNNAMIC_FILTER";
     private static final String EXTRA_FLAG_FILTER_HELPER = "EXTRA_FLAG_FILTER_HELPER";
+    private static final String EXTRA_EMPTY_SEARCH_FILTER_CONTROLLER = "EXTRA_EMPTY_SEARCH_FILTER_CONTROLLER";
     private static final String DEFAULT_GRID = "default";
     private static final String INSTAGRAM_GRID = "instagram grid";
     private static final String LIST_GRID = "list";
@@ -302,8 +303,9 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 reloadData();
             } else if (requestCode == getFilterRequestCode()) {
                 Map<String, String> filterParameter = getFilterParameterFromIntent(data);
+                Map<String, String> activeFilterParameter = getActiveFilterParameterFromIntent(data);
 
-                SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), filterParameter);
+                SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), activeFilterParameter);
 
                 applyFilterToSearchParameter(filterParameter);
                 clearDataFilterSort();
@@ -314,6 +316,18 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     private Map<String, String> getFilterParameterFromIntent(Intent data) {
         Map<?, ?> filterParameterMapIntent = (Map<?, ?>)data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_FILTER_PARAMETER);
+
+        Map<String, String> filterParameter = new HashMap<>(filterParameterMapIntent.size());
+
+        for(Map.Entry<?, ?> entry: filterParameterMapIntent.entrySet()) {
+            filterParameter.put(entry.getKey().toString(), entry.getValue().toString());
+        }
+
+        return filterParameter;
+    }
+
+    private Map<String, String> getActiveFilterParameterFromIntent(Intent data) {
+        Map<?, ?> filterParameterMapIntent = (Map<?, ?>)data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS);
 
         Map<String, String> filterParameter = new HashMap<>(filterParameterMapIntent.size());
 
@@ -505,6 +519,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         outState.putBoolean(EXTRA_SHOW_BOTTOM_BAR, showBottomBar);
         outState.putBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER, isGettingDynamicFilter);
         outState.putParcelable(EXTRA_FLAG_FILTER_HELPER, getFlagFilterHelper());
+        outState.putParcelable(EXTRA_EMPTY_SEARCH_FILTER_CONTROLLER, emptySearchFilterController);
     }
 
     public abstract void reloadData();
@@ -543,6 +558,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);
         isGettingDynamicFilter = savedInstanceState.getBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER);
         setFlagFilterHelper((FilterFlagSelectedModel) savedInstanceState.getParcelable(EXTRA_FLAG_FILTER_HELPER));
+        emptySearchFilterController = savedInstanceState.getParcelable(EXTRA_EMPTY_SEARCH_FILTER_CONTROLLER);
     }
 
     @Override
@@ -572,23 +588,25 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     protected void removeSelectedFilter(String uniqueId) {
+        Option option = OptionHelper.generateOptionFromUniqueId(uniqueId);
 
         String optionKey = OptionHelper.parseKeyFromUniqueId(uniqueId);
         String optionValue = OptionHelper.parseValueFromUniqueId(uniqueId);
 
         if (Option.KEY_CATEGORY.equals(optionKey)) {
-            getFlagFilterHelper().setCategoryId("");
-            getFlagFilterHelper().setSelectedCategoryName("");
-            getFlagFilterHelper().setSelectedCategoryRootId("");
+            emptySearchFilterController.setFilter(option, false, true);
+
             getSelectedFilter().remove(Option.KEY_CATEGORY);
         } else if (Option.KEY_PRICE_MIN.equals(optionKey) ||
                 Option.KEY_PRICE_MAX.equals(optionKey)) {
-            getFlagFilterHelper().getSavedTextInput().remove(Option.KEY_PRICE_MIN);
-            getFlagFilterHelper().getSavedTextInput().remove(Option.KEY_PRICE_MAX);
+
+            emptySearchFilterController.setFilter(generatePriceOption(Option.KEY_PRICE_MIN), false, true);
+            emptySearchFilterController.setFilter(generatePriceOption(Option.KEY_PRICE_MIN), false, true);
+
             getSelectedFilter().remove(Option.KEY_PRICE_MIN);
             getSelectedFilter().remove(Option.KEY_PRICE_MAX);
         } else {
-            getFlagFilterHelper().getSavedCheckedState().remove(uniqueId);
+            emptySearchFilterController.setFilter(option, false);
 
             String mapValue = getSelectedFilter().get(optionKey);
             mapValue = removeValue(mapValue, optionValue);
@@ -600,8 +618,15 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             }
         }
 
+        applyFilterToSearchParameter(emptySearchFilterController.getFilterParameter());
         clearDataFilterSort();
         reloadData();
+    }
+
+    private Option generatePriceOption(String priceOptionKey) {
+        Option option = new Option();
+        option.setKey(priceOptionKey);
+        return option;
     }
 
     protected String removeValue(String mapValue, String removedValue) {
@@ -643,20 +668,20 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             }
         }
 
-        addGenericFilterOptionIfExists(hasActivePriceFilter, activeFilterOptionList);
+        addGenericFilterOptionIfPriceFilterActive(hasActivePriceFilter, activeFilterOptionList);
     }
 
     private boolean isPriceOption(Option option) {
         return option.getKey().equals(SearchApiConst.PMIN) || option.getKey().equals(SearchApiConst.PMAX);
     }
 
-    private void addGenericFilterOptionIfExists(boolean hasActivePriceFilter, List<Option> activeFilterOptionList) {
+    private void addGenericFilterOptionIfPriceFilterActive(boolean hasActivePriceFilter, List<Option> activeFilterOptionList) {
         if(hasActivePriceFilter) {
-            activeFilterOptionList.add(generatePriceOption());
+            activeFilterOptionList.add(generateGenericPriceOptionForEmptyState());
         }
     }
 
-    private Option generatePriceOption() {
+    private Option generateGenericPriceOptionForEmptyState() {
         Option option = new Option();
         option.setName(getResources().getString(R.string.empty_state_selected_filter_price_name));
         option.setKey(Option.KEY_PRICE_MIN);

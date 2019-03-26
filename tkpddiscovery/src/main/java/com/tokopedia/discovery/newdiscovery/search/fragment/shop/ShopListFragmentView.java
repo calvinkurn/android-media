@@ -18,6 +18,5 @@ public interface ShopListFragmentView extends SearchSectionFragmentView {
     void enableFavoriteButton(int adapterPosition);
     String getQueryKey();
     void backToTop();
-    void setSearchParameter(SearchParameter searchParameter);
     SearchParameter getSearchParameter();
 }

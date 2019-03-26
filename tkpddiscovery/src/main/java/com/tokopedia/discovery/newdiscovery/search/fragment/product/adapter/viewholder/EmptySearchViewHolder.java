@@ -217,8 +217,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     private void bindRecylerView() {
         List<Option> selectedFilterFromEmptyStateListener = emptyStateListener.getSelectedFilterAsOptionList();
 
-        if(selectedFilterFromEmptyStateListener != null
-            && !selectedFilterFromEmptyStateListener.isEmpty()) {
+        if(selectedFilterFromEmptyStateListener != null && !selectedFilterFromEmptyStateListener.isEmpty()) {
             populateSelectedFilterToRecylerView(selectedFilterFromEmptyStateListener);
         } else if (boundedEmptySearchModel.getFilterFlagSelectedModel() != null) {
             populateSelectedFilterToRecylerView(convertToOptionList(boundedEmptySearchModel.getFilterFlagSelectedModel()));
@@ -230,6 +229,50 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     private void populateSelectedFilterToRecylerView(List<Option> selectedFilterOptionList) {
         selectedFilterRecyclerView.setVisibility(View.VISIBLE);
         selectedFilterAdapter.setOptionList(selectedFilterOptionList);
+    }
+
+    private List<Option> convertToOptionList(FilterFlagSelectedModel filterFlagSelectedModel) {
+        List<Option> optionList = new ArrayList<>();
+        if (filterFlagSelectedModel.getSavedTextInput() != null) {
+            if (!TextUtils.isEmpty(filterFlagSelectedModel.getSavedTextInput().get(Option.KEY_PRICE_MIN))
+                    || !TextUtils.isEmpty(filterFlagSelectedModel.getSavedTextInput().get(Option.KEY_PRICE_MAX))) {
+                optionList.add(generatePriceOption());
+            }
+        }
+
+        if (!TextUtils.isEmpty(filterFlagSelectedModel.getCategoryId())) {
+            optionList.add(generateCategoryOption(filterFlagSelectedModel));
+        }
+
+        if (filterFlagSelectedModel.getSavedCheckedState() != null) {
+            optionList.addAll(generateCheckedOptionList(filterFlagSelectedModel.getSavedCheckedState()));
+        }
+
+        return optionList;
+    }
+
+    private Option generatePriceOption() {
+        Option option = new Option();
+        option.setName(context.getResources().getString(R.string.empty_state_selected_filter_price_name));
+        option.setKey(Option.KEY_PRICE_MIN);
+        option.setValue("0");
+        return option;
+    }
+
+    private Option generateCategoryOption(FilterFlagSelectedModel filterFlagSelectedModel) {
+        Option option = new Option();
+        option.setName(filterFlagSelectedModel.getSelectedCategoryName());
+        option.setKey(Option.KEY_CATEGORY);
+        option.setValue(filterFlagSelectedModel.getCategoryId());
+        return option;
+    }
+
+    private List<Option> generateCheckedOptionList(HashMap<String, Boolean> savedCheckedState) {
+        List<Option> optionList = new ArrayList<>();
+        for (HashMap.Entry<String, Boolean> entry : savedCheckedState.entrySet()) {
+            optionList.add(OptionHelper.generateOptionFromUniqueId(entry.getKey()));
+        }
+        return optionList;
     }
 
     private void loadBannerAdsIfNotNull() {
@@ -246,58 +289,6 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
         SpannableStringBuilder str = new SpannableStringBuilder(text);
         str.setSpan(new StyleSpan(Typeface.BOLD), firstQuotePos, lastQuotePos + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return str;
-    }
-
-    private List<Option> convertToOptionList(FilterFlagSelectedModel filterFlagSelectedModel) {
-        List<Option> optionList = new ArrayList<>();
-        if (filterFlagSelectedModel.getSavedTextInput() != null) {
-            if (!TextUtils.isEmpty(filterFlagSelectedModel.getSavedTextInput().get(Option.KEY_PRICE_MIN))
-                || !TextUtils.isEmpty(filterFlagSelectedModel.getSavedTextInput().get(Option.KEY_PRICE_MAX))) {
-                optionList.add(generatePriceOption());
-            }
-        }
-
-        if (!TextUtils.isEmpty(filterFlagSelectedModel.getCategoryId())) {
-            optionList.add(generateCategoryOption(filterFlagSelectedModel));
-        }
-
-        if (filterFlagSelectedModel.getSavedCheckedState() != null) {
-            optionList.addAll(generateCheckedOptionList(filterFlagSelectedModel.getSavedCheckedState()));
-        }
-
-        return optionList;
-    }
-
-    private List<Option> generateCheckedOptionList(HashMap<String, Boolean> savedCheckedState) {
-        List<Option> optionList = new ArrayList<>();
-        for (HashMap.Entry<String, Boolean> entry : savedCheckedState.entrySet()) {
-            optionList.add(generateOptionFromUniqueId(entry.getKey()));
-        }
-        return optionList;
-    }
-
-    private Option generateOptionFromUniqueId(String uniqueId) {
-        Option option = new Option();
-        option.setName(OptionHelper.parseNameFromUniqueId(uniqueId));
-        option.setKey(OptionHelper.parseKeyFromUniqueId(uniqueId));
-        option.setValue(OptionHelper.parseValueFromUniqueId(uniqueId));
-        return option;
-    }
-
-    private Option generateCategoryOption(FilterFlagSelectedModel filterFlagSelectedModel) {
-        Option option = new Option();
-        option.setName(filterFlagSelectedModel.getSelectedCategoryName());
-        option.setKey(Option.KEY_CATEGORY);
-        option.setValue(filterFlagSelectedModel.getCategoryId());
-        return option;
-    }
-
-    private Option generatePriceOption() {
-        Option option = new Option();
-        option.setName(context.getResources().getString(R.string.empty_state_selected_filter_price_name));
-        option.setKey(Option.KEY_PRICE_MIN);
-        option.setValue("0");
-        return option;
     }
 
     private static class SelectedFilterAdapter extends RecyclerView.Adapter<SelectedFilterItemViewHolder> {
@@ -346,7 +337,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
 
         public void bind(final Option option) {
             filterText.setText(option.getName());
-            deleteButton.setOnClickListener(view -> clickListener.onSelectedFilterRemoved(option));
+            deleteButton.setOnClickListener(view -> clickListener.onSelectedFilterRemoved(option.getUniqueId()));
         }
     }
 }

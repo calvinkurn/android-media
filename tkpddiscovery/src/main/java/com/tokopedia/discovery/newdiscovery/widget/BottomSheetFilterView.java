@@ -113,10 +113,6 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         filterController = savedInstanceState.getParcelable(FILTER_CONTROLLER);
     }
 
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(FILTER_CONTROLLER, filterController);
-    }
-
     public void setFilterResultCount(String formattedResultCount) {
         buttonFinish.setText(String.format(getContext().getString(R.string.bottom_sheet_filter_finish_button_template_text), formattedResultCount));
         loadingView.setVisibility(View.GONE);
@@ -130,9 +126,84 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         }
     }
 
+    @Override
+    public void onExpandableItemClicked(Filter filter) {
+        selectedExpandableItemPosition = filterMainAdapter.getItemPosition(filter);
+        if (filter.isCategoryFilter()) {
+            launchFilterCategoryPage(filter);
+        } else {
+            enrichWithInputState(filter);
+            callback.launchFilterDetailPage(filter);
+        }
+    }
+
+    private void enrichWithInputState(Filter filter) {
+        for (Option option : filter.getOptions()) {
+            option.setInputState(
+                    String.valueOf(filterController.getFilterViewState(option.getUniqueId()))
+            );
+        }
+    }
+
+    @Override
+    public Boolean loadLastCheckedState(Option option) {
+        return filterController.getFilterViewState(option);
+    }
+
+    @Override
+    public void saveCheckedState(Option option, Boolean isChecked) {
+        saveCheckedState(option, isChecked, "");
+    }
+
+    public void saveCheckedState(Option option, Boolean isChecked, String filterTitle) {
+        SearchTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, isChecked);
+        filterController.setFilter(option, isChecked);
+        updateResetButtonVisibility();
+        applyFilter();
+    }
+
     public void updateResetButtonVisibility() {
         if (buttonReset != null) {
             buttonReset.setVisibility(filterController.isFilterActive() ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    @Override
+    public void removeSavedTextInput(String uniqueId) {
+        SearchTracking.eventSearchResultFilterJourney(getContext(), uniqueId, "", false, false);
+        filterController.setFilter(OptionHelper.generateOptionFromUniqueId(uniqueId), false, true);
+        updateResetButtonVisibility();
+    }
+
+    @Override
+    public void saveTextInput(String key, String textInput) {
+        Option textInputOption = OptionHelper.generateOptionFromUniqueId(key);
+        textInputOption.setValue(textInput);
+
+        filterController.setFilter(textInputOption, true, true);
+        SearchTracking.eventSearchResultFilterJourney(getContext(), key, textInput, false, true);
+        updateResetButtonVisibility();
+    }
+
+    @Override
+    public List<Option> getSelectedOptions(Filter filter) {
+        return filterController.getSelectedAndPopularOptions(filter);
+    }
+
+    @Override
+    public void removeSelectedOption(Option option) {
+        removeSelectedOption(option, "");
+    }
+
+    @Override
+    public void removeSelectedOption(Option option, String filterTitle) {
+        if (KEY_CATEGORY.equals(option.getKey())) {
+            SearchTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, false);
+            filterController.setFilter(option, false, true);
+            updateResetButtonVisibility();
+            applyFilter();
+        } else {
+            saveCheckedState(option, false, filterTitle);
         }
     }
 
@@ -206,6 +277,36 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         buttonReset.setOnClickListener(v -> resetAllFilter());
     }
 
+    @Override
+    public void onPriceSliderRelease(int minValue, int maxValue) {
+        if (filterController.isSliderValueHasChanged(minValue, maxValue)) {
+            applyFilter();
+        }
+    }
+
+    @Override
+    public void onPriceSliderPressed(int minValue, int maxValue) {
+        filterController.saveSliderValueStates(minValue, maxValue);
+    }
+
+    @Override
+    public void onPriceEditedFromTextInput(int minValue, int maxValue) {
+        applyFilter();
+    }
+
+    @Override
+    public boolean isSelectedCategory(Option option) {
+        return filterController.getFilterViewState(option);
+    }
+
+    @Override
+    public void selectCategory(Option option, String filterTitle) {
+        SearchTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, true);
+        filterController.setFilter(option, true, true);
+        updateResetButtonVisibility();
+        applyFilter();
+    }
+
     public boolean isBottomSheetShown() {
         return bottomSheetBehavior != null
                 && bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN;
@@ -226,31 +327,12 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         callback.onApplyFilter(filterController.getFilterParameter());
     }
 
-    @Override
-    public void onExpandableItemClicked(Filter filter) {
-        selectedExpandableItemPosition = filterMainAdapter.getItemPosition(filter);
-        if (filter.isCategoryFilter()) {
-            launchFilterCategoryPage(filter);
-        } else {
-            enrichWithInputState(filter);
-            callback.launchFilterDetailPage(filter);
-        }
-    }
-
     private void launchFilterCategoryPage(Filter filter) {
         String categoryId = filterController.getFilterValue(SearchApiConst.SC);
         Category selectedCategory = FilterHelper.getSelectedCategoryDetails(filter, categoryId);
         String selectedCategoryRootId = selectedCategory != null ? selectedCategory.getCategoryRootId() : "";
 
         callback.launchFilterCategoryPage(filter, selectedCategoryRootId, categoryId);
-    }
-
-    private void enrichWithInputState(Filter filter) {
-        for (Option option : filter.getOptions()) {
-            option.setInputState(
-                    String.valueOf(filterController.getFilterViewState(option.getUniqueId()))
-            );
-        }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -338,6 +420,10 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         });
     }
 
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(FILTER_CONTROLLER, filterController);
+    }
+
     @Override
     public String getFilterValue(String key) {
         return filterController.getFilterValue(key);
@@ -346,92 +432,6 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     @Override
     public boolean getFilterViewState(String uniqueId) {
         return filterController.getFilterViewState(uniqueId);
-    }
-
-    @Override
-    public List<Option> getSelectedOptions(Filter filter) {
-        return filterController.getSelectedAndPopularOptions(filter);
-    }
-
-    @Override
-    public void removeSelectedOption(Option option) {
-        removeSelectedOption(option, "");
-    }
-
-    @Override
-    public void removeSelectedOption(Option option, String filterTitle) {
-        if (KEY_CATEGORY.equals(option.getKey())) {
-            SearchTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, false);
-            filterController.setFilter(option, false, true);
-            updateResetButtonVisibility();
-            applyFilter();
-        } else {
-            saveCheckedState(option, false, filterTitle);
-        }
-    }
-
-    @Override
-    public void saveCheckedState(Option option, Boolean isChecked) {
-        saveCheckedState(option, isChecked, "");
-    }
-
-    public void saveCheckedState(Option option, Boolean isChecked, String filterTitle) {
-        SearchTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, isChecked);
-        filterController.setFilter(option, isChecked);
-        updateResetButtonVisibility();
-        applyFilter();
-    }
-
-    @Override
-    public void removeSavedTextInput(String uniqueId) {
-        SearchTracking.eventSearchResultFilterJourney(getContext(), uniqueId, "", false, false);
-        filterController.setFilter(OptionHelper.createOptionFromUniqueId(uniqueId), false, true);
-        updateResetButtonVisibility();
-    }
-
-    @Override
-    public void saveTextInput(String key, String textInput) {
-        Option textInputOption = OptionHelper.createOptionFromUniqueId(key);
-        textInputOption.setValue(textInput);
-
-        filterController.setFilter(textInputOption, true, true);
-        SearchTracking.eventSearchResultFilterJourney(getContext(), key, textInput, false, true);
-        updateResetButtonVisibility();
-    }
-
-    @Override
-    public Boolean loadLastCheckedState(Option option) {
-        return filterController.getFilterViewState(option);
-    }
-
-    @Override
-    public void onPriceSliderRelease(int minValue, int maxValue) {
-        if (filterController.isSliderValueHasChanged(minValue, maxValue)) {
-            applyFilter();
-        }
-    }
-
-    @Override
-    public void onPriceSliderPressed(int minValue, int maxValue) {
-        filterController.saveSliderValueStates(minValue, maxValue);
-    }
-
-    @Override
-    public void onPriceEditedFromTextInput(int minValue, int maxValue) {
-        applyFilter();
-    }
-
-    @Override
-    public boolean isSelectedCategory(Option option) {
-        return filterController.getFilterViewState(option);
-    }
-
-    @Override
-    public void selectCategory(Option option, String filterTitle) {
-        SearchTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, true);
-        filterController.setFilter(option, true, true);
-        updateResetButtonVisibility();
-        applyFilter();
     }
 
     public interface Callback {

@@ -64,11 +64,11 @@ public class SearchParameter implements Parcelable {
         this.departmentId = departmentId;
     }
 
-    public boolean getIsOfficial() {
+    public boolean isOfficial() {
         return isOfficial;
     }
 
-    public void setIsOfficial(boolean official) {
+    public void setOfficial(boolean official) {
         isOfficial = official;
     }
 

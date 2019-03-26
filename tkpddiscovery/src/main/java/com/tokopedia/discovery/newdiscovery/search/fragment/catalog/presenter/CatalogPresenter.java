@@ -114,7 +114,7 @@ public class CatalogPresenter extends SearchSectionFragmentPresenterImpl<Catalog
 
     private RequestParams generateParamLoadMoreBrowseCatalog() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(getView().getSearchParameter().getSearchParameterHashMap());
+        requestParams.putAll(getView().getSearchParameter().getSearchParameterMap());
         requestParams.putString(SearchApiConst.Q, getView().getQueryKey());
 
         setRequestParamsDefaultValues(requestParams);
@@ -125,7 +125,7 @@ public class CatalogPresenter extends SearchSectionFragmentPresenterImpl<Catalog
 
     private RequestParams generateParamInitBrowseCatalog(String departmentId) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(getView().getSearchParameter().getSearchParameterHashMap());
+        requestParams.putAll(getView().getSearchParameter().getSearchParameterMap());
         requestParams.putString(SearchApiConst.SC, departmentId);
 
         setRequestParamsDefaultValues(requestParams);
@@ -136,7 +136,7 @@ public class CatalogPresenter extends SearchSectionFragmentPresenterImpl<Catalog
 
     private RequestParams generateParamLoadMoreBrowseCatalog(String departmentId) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(getView().getSearchParameter().getSearchParameterHashMap());
+        requestParams.putAll(getView().getSearchParameter().getSearchParameterMap());
         requestParams.putString(SearchApiConst.SC, departmentId);
 
         setRequestParamsDefaultValues(requestParams);

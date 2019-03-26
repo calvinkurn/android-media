@@ -43,6 +43,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.list
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
@@ -70,6 +71,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -238,7 +240,7 @@ public class ProductListFragment extends SearchSectionFragment
         List<Visitable> list = new ArrayList<>();
 
         list.add(initHeaderViewModel());
-        list.addAll(ProductListPresenterImpl.enrich(productViewModel));
+        list.addAll(ProductViewModelHelper.convertToListOfVisitable(productViewModel));
 
         if (productViewModel.getRelatedSearchModel() != null) {
             list.add(productViewModel.getRelatedSearchModel());
@@ -593,13 +595,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public boolean isQuickFilterSelected(Option option) {
-        return option.isCategoryOption() ?
-                getFilterViewStateForCategory(option) :
-                quickFilterController.getFilterViewState(option.getUniqueId());
-    }
-
-    private boolean getFilterViewStateForCategory(Option option) {
-        return quickFilterController.getFilterValue(option.getKey()).equals(option.getValue());
+        return quickFilterController.getFilterViewState(option.getUniqueId());
     }
 
     @Override

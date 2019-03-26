@@ -12,7 +12,6 @@ import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.color.ColorSampleView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.view.BottomSheetDynamicFilterView;
-import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +20,11 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
         RecyclerView.Adapter<BottomSheetExpandableItemSelectedListAdapter.ViewHolder> {
 
     private List<Option> selectedOptionsList = new ArrayList<>();
+    private BottomSheetDynamicFilterView filterView;
     private String filterTitle;
-    private final BottomSheetDynamicFilterView dynamicFilterView;
 
-    public BottomSheetExpandableItemSelectedListAdapter(final BottomSheetDynamicFilterView dynamicFilterView,
-                                                        String filterTitle) {
-        this.dynamicFilterView = dynamicFilterView;
+    public BottomSheetExpandableItemSelectedListAdapter(BottomSheetDynamicFilterView filterView, String filterTitle) {
+        this.filterView = filterView;
         this.filterTitle = filterTitle;
     }
 
@@ -34,7 +32,7 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater
                 .from(parent.getContext()).inflate(R.layout.bottom_sheet_selected_filter_item, parent, false);
-        return new ViewHolder(view, this, dynamicFilterView, filterTitle);
+        return new ViewHolder(view, filterView, this, filterTitle);
     }
 
     @Override
@@ -56,21 +54,21 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
         private TextView itemText;
         private ColorSampleView colorIcon;
         private View itemContainer;
+        private BottomSheetDynamicFilterView filterView;
         private BottomSheetExpandableItemSelectedListAdapter adapter;
         private String filterTitle;
         private View ratingIcon;
-        private final BottomSheetDynamicFilterView dynamicFilterView;
 
         public ViewHolder(View itemView,
+                          BottomSheetDynamicFilterView filterView,
                           BottomSheetExpandableItemSelectedListAdapter adapter,
-                          final BottomSheetDynamicFilterView dynamicFilterView,
                           String filterTitle) {
             super(itemView);
 
             initViewHolderViews(itemView);
 
             this.adapter = adapter;
-            this.dynamicFilterView = dynamicFilterView;
+            this.filterView = filterView;
             this.filterTitle = filterTitle;
         }
 
@@ -113,26 +111,26 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
         }
 
         private void bindCategoryOption(final Option option) {
-            final boolean isOptionSelected = dynamicFilterView.isSelectedCategory(option);
+            final boolean isOptionSelected = filterView.isSelectedCategory(option);
             setItemContainerBackgroundResource(isOptionSelected);
 
             itemContainer.setOnClickListener(view -> {
                 if (isOptionSelected) {
-                    dynamicFilterView.removeSelectedOption(option, filterTitle);
+                    filterView.removeSelectedOption(option, filterTitle);
                 } else {
-                    dynamicFilterView.selectCategory(option, filterTitle);
+                    filterView.selectCategory(option, filterTitle);
                 }
                 adapter.notifyDataSetChanged();
             });
         }
 
         private void bindGeneralOption(final Option option, final int position) {
-            final boolean isOptionSelected = dynamicFilterView.getFilterViewState(option.getUniqueId());
+            final boolean isOptionSelected = filterView.getFilterViewState(option.getUniqueId());
             setItemContainerBackgroundResource(isOptionSelected);
 
             itemContainer.setOnClickListener(view -> {
                 boolean newCheckedState = !isOptionSelected;
-                dynamicFilterView.saveCheckedState(option, newCheckedState, filterTitle);
+                filterView.saveCheckedState(option, newCheckedState, filterTitle);
                 adapter.notifyItemChanged(position);
             });
         }

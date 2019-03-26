@@ -1,7 +1,5 @@
 package com.tokopedia.discovery.newdiscovery.util;
 
-import android.text.TextUtils;
-
 /**
  * Created by hangnadi on 10/3/17.
  */
@@ -52,7 +50,7 @@ public class SearchParameterBuilder {
         searchParameter.setUserID(userID);
         searchParameter.setStartRow(startRow);
         searchParameter.setDepartmentId(departmentId);
-        searchParameter.setIsOfficial(isOfficial);
+        searchParameter.setOfficial(isOfficial);
         return searchParameter;
     }
 

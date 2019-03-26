@@ -222,7 +222,7 @@ public class OptionHelper {
         return option;
     }
 
-    public static Option createOptionFromUniqueId(String uniqueId) {
+    public static Option generateOptionFromUniqueId(String uniqueId) {
         String key = parseKeyFromUniqueId(uniqueId);
         String value = parseValueFromUniqueId(uniqueId);
         String name = parseNameFromUniqueId(uniqueId);

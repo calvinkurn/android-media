@@ -300,12 +300,24 @@ class FilterController() : Parcelable {
         return this.filterParameter
     }
 
+    fun getActiveFilterParameter() : Map<String, String> {
+        val activeFilter = mutableMapOf<String, String>()
+
+        loopOptionsInFilterList { _, option ->
+            if(getFilterViewState(option)) {
+                activeFilter[option.key] = getFilterValue(option.key)
+            }
+        }
+
+        return activeFilter
+    }
+
     fun getActiveFilterOptionList() : List<Option> {
         val activeFilterOptionList = mutableListOf<Option>()
 
         loopOptionsInFilterList { _, option ->
             if(getFilterViewState(option)) {
-                activeFilterOptionList.add(OptionHelper.createOptionFromUniqueId(option.uniqueId))
+                activeFilterOptionList.add(option)
             }
         }
 
@@ -338,14 +350,10 @@ class FilterController() : Parcelable {
 
     private fun saveFilterViewState(uniqueId: String, isFilterApplied: Boolean) {
         if(isFilterApplied) {
-            if(!getFilterViewState(uniqueId)) {
-                filterViewState[uniqueId] = true
-            }
+            filterViewState[uniqueId] = true
         }
         else {
-            if(getFilterViewState(uniqueId)) {
-                filterViewState.remove(uniqueId)
-            }
+            filterViewState.remove(uniqueId)
         }
     }
 

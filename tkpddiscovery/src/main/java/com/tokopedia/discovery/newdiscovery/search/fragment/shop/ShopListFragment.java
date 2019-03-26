@@ -305,19 +305,7 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     protected void onFirstTimeLaunch() {
         super.onFirstTimeLaunch();
-
-        setSelectedFilterIfIsOfficial();
-
         loadShopFirstTime();
-    }
-
-    private void setSelectedFilterIfIsOfficial() {
-        boolean isOfficial = getSearchParameter().getBoolean(SearchApiConst.OFFICIAL);
-        if(isOfficial) {
-            HashMap<String, String> selectedFilterIsOfficial = new HashMap<>();
-            selectedFilterIsOfficial.put(SearchApiConst.OFFICIAL, String.valueOf(isOfficial));
-            setSelectedFilter(selectedFilterIsOfficial);
-        }
     }
 
     @Override
@@ -531,11 +519,6 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void setSearchParameter(SearchParameter searchParameter) {
-        this.searchParameter = searchParameter;
-    }
-
-    @Override
     public SearchParameter getSearchParameter() {
         return this.searchParameter;
     }
@@ -549,23 +532,5 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     protected String getScreenName() {
         return getScreenNameId();
-    }
-
-    @Override
-    protected void openFilterPage() {
-        this.addPreFilter();
-        super.openFilterPage();
-    }
-
-    private void addPreFilter() {
-        if(getFlagFilterHelper() == null) {
-            setFlagFilterHelper(new FilterFlagSelectedModel());
-            getFlagFilterHelper().setSavedCheckedState(new HashMap<String, Boolean>());
-            getFlagFilterHelper().setSavedTextInput(new HashMap<String, String>());
-
-            if (getSearchParameter().getBoolean(SearchApiConst.OFFICIAL)) {
-                FilterHelper.addPreFilteredIsOfficial(getFilters(), getFlagFilterHelper());
-            }
-        }
     }
 }
