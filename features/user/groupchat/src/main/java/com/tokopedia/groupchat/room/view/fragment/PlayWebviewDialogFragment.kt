@@ -289,7 +289,11 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
 
             override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
                 super.onReceivedError(view, request, error)
-                Toast.makeText(view?.context, error.toString(), Toast.LENGTH_LONG).show()
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    Toast.makeText(view?.context,"desc "+ error?.description, Toast.LENGTH_LONG).show()
+                    Toast.makeText(view?.context, "code " + error?.errorCode, Toast.LENGTH_LONG).show()
+                }
                 webview.hide()
                 errorView.show()
 
