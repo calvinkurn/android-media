@@ -334,15 +334,22 @@ class DynamicPostViewHolder(v: View,
         itemView.layoutPostTag.shouldShowWithAction(shouldShowPostTag(postTag, template)) {
             if (postTag.text.isNotEmpty()) {
                 itemView.cardTitlePostTag.text = postTag.text
-                itemView.cardTitlePostTag.visibility = View.VISIBLE
+                itemView.cardTitlePostTag.show()
+            } else{
+                itemView.cardTitlePostTag.hide()
             }
-            val layoutManager: RecyclerView.LayoutManager = when(postTag.totalItems) {
-                1 -> LinearLayoutManager(itemView.context)
-                else -> GridLayoutManager(itemView.context, 3)
+            if (postTag.totalItems > 0) {
+                itemView.rvPosttag.show()
+                val layoutManager: RecyclerView.LayoutManager = when (postTag.totalItems) {
+                    1 -> LinearLayoutManager(itemView.context)
+                    else -> GridLayoutManager(itemView.context, 3)
+                }
+                itemView.rvPosttag.layoutManager = layoutManager
+                itemView.rvPosttag.adapter = PostTagAdapter(postTag.items, listener, adapterPosition)
+                itemView.rvPosttag.adapter.notifyDataSetChanged()
+            } else {
+                itemView.rvPosttag.hide()
             }
-            itemView.rvPosttag.layoutManager = layoutManager
-            itemView.rvPosttag.adapter = PostTagAdapter(postTag.items, listener, adapterPosition)
-            itemView.rvPosttag.adapter.notifyDataSetChanged()
         }
     }
 

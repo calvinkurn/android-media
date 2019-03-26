@@ -9,9 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItemTag
@@ -63,6 +63,7 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
         private lateinit var productPrice: TextView
         private lateinit var productName: TextView
         private lateinit var productTag: TextView
+        private lateinit var productNameSection: LinearLayout
         private lateinit var productTagBackground: RelativeLayout
 
         fun bind(item: PostTagItem, layoutType: String,
@@ -73,7 +74,7 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
             productPrice = itemView.findViewById(R.id.productPrice)
             productTag = itemView.findViewById(R.id.productTag)
             productTagBackground = itemView.findViewById(R.id.productTagBackground)
-            productImage.loadImageRounded(item.thumbnail)
+            productImage.loadImageRounded(item.thumbnail, 8f)
             productPrice.text = item.price
             if (item.tags.isNotEmpty()) {
                 productTagBackground.visibility = View.VISIBLE
@@ -81,14 +82,26 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
             } else {
                 productTagBackground.visibility = View.GONE
             }
-            productLayout.setOnClickListener({
-                listener.onPostTagItemClick(positionInFeed, item.applink)
-            })
+            productLayout.setOnClickListener(
+                getItemClickNavigationListener(listener, positionInFeed, item)
+            )
 
             if (layoutType.equals(TYPE_LIST)) {
+                productNameSection = itemView.findViewById(R.id.productNameSection)
                 productName = itemView.findViewById(R.id.productName)
                 productName.text = item.text
+                productNameSection.setOnClickListener(
+                        getItemClickNavigationListener(listener, positionInFeed, item))
             }
+        }
+
+        private fun getItemClickNavigationListener(listener: DynamicPostViewHolder.DynamicPostListener,
+                                                   positionInFeed: Int,
+                                                   item: PostTagItem)
+                : View.OnClickListener {
+             return View.OnClickListener {
+                 listener.onPostTagItemClick(positionInFeed, item.applink)
+             }
         }
 
         private fun renderTag(textView: TextView, tag: PostTagItemTag) {
@@ -100,7 +113,7 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
         private fun renderDrawable(hex: String, opacity: String): Drawable {
             val drawable = GradientDrawable()
             drawable.shape = GradientDrawable.RECTANGLE
-            drawable.cornerRadii = floatArrayOf(10f, 10f, 10f ,10f ,0f, 0f, 0f, 0f)
+            drawable.cornerRadii = floatArrayOf(30f, 10f, 30f ,30f , 30f, 30f, 30f, 30f)
             drawable.setColor(Color.parseColor(hex))
             drawable.alpha = calculateBackgroundAlpha(opacity)
             return drawable
