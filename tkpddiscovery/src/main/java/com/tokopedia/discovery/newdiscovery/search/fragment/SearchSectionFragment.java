@@ -584,26 +584,25 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         if (Option.KEY_CATEGORY.equals(optionKey)) {
             emptySearchFilterController.setFilter(option, false, true);
 
-            getSelectedFilter().remove(Option.KEY_CATEGORY);
+//            getSelectedFilter().remove(Option.KEY_CATEGORY);
         } else if (Option.KEY_PRICE_MIN.equals(optionKey) ||
                 Option.KEY_PRICE_MAX.equals(optionKey)) {
-
             emptySearchFilterController.setFilter(generatePriceOption(Option.KEY_PRICE_MIN), false, true);
-            emptySearchFilterController.setFilter(generatePriceOption(Option.KEY_PRICE_MIN), false, true);
+            emptySearchFilterController.setFilter(generatePriceOption(Option.KEY_PRICE_MAX), false, true);
 
-            getSelectedFilter().remove(Option.KEY_PRICE_MIN);
-            getSelectedFilter().remove(Option.KEY_PRICE_MAX);
+//            getSelectedFilter().remove(Option.KEY_PRICE_MIN);
+//            getSelectedFilter().remove(Option.KEY_PRICE_MAX);
         } else {
             emptySearchFilterController.setFilter(option, false);
 
-            String mapValue = getSelectedFilter().get(optionKey);
-            mapValue = removeValue(mapValue, optionValue);
-
-            if (!TextUtils.isEmpty(mapValue)) {
-                getSelectedFilter().put(optionKey, mapValue);
-            } else {
-                getSelectedFilter().remove(optionKey);
-            }
+//            String mapValue = getSelectedFilter().get(optionKey);
+//            mapValue = removeValue(mapValue, optionValue);
+//
+//            if (!TextUtils.isEmpty(mapValue)) {
+//                getSelectedFilter().put(optionKey, mapValue);
+//            } else {
+//                getSelectedFilter().remove(optionKey);
+//            }
         }
 
         applyFilterToSearchParameter(emptySearchFilterController.getFilterParameter());

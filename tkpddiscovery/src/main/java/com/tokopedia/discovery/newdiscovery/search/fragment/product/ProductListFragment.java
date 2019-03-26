@@ -635,15 +635,6 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    protected void removeSelectedFilter(String uniqueId) {
-        String optionKey = OptionHelper.parseKeyFromUniqueId(uniqueId);
-
-        searchParameter.remove(optionKey);
-
-        super.removeSelectedFilter(uniqueId);
-    }
-
-    @Override
     public void onEmptyButtonClicked() {
         SearchTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
         showSearchInputView();
