@@ -23,12 +23,14 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
     private SwitchCompat wholesaleToggle;
     private View wholesaleContainer;
     private PriceRangeInputView priceRangeInputView;
+    private final DynamicFilterView dynamicFilterView;
     private Option priceMinOption;
     private Option priceMaxOption;
     private Option priceMinMaxOption;
 
-    public DynamicFilterItemPriceViewHolder(View itemView, final DynamicFilterView filterView) {
-        super(itemView, filterView);
+    public DynamicFilterItemPriceViewHolder(View itemView, final DynamicFilterView dynamicFilterView) {
+        super(itemView);
+        this.dynamicFilterView = dynamicFilterView;
 
         wholesaleTitle = itemView.findViewById(R.id.wholesale_title);
         wholesaleToggle = itemView.findViewById(R.id.wholesale_toggle);
@@ -120,8 +122,6 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
             applyMinValueFilter(minValue, minBound);
 
             applyMaxValueFilter(maxValue, maxBound);
-
-//            dynamicFilterView.updateLastRangeValue(minValue, maxValue);
         };
     }
 

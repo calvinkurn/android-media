@@ -18,12 +18,13 @@ public class DynamicFilterItemToggleViewHolder extends DynamicFilterViewHolder {
 
     private TextView title;
     private SwitchCompat toggle;
+    private final DynamicFilterView dynamicFilterView;
 
-    public DynamicFilterItemToggleViewHolder(View itemView, final DynamicFilterView filterView) {
-        super(itemView, filterView);
-
+    public DynamicFilterItemToggleViewHolder(View itemView, DynamicFilterView dynamicFilterView) {
+        super(itemView);
         title = itemView.findViewById(R.id.title);
         toggle = itemView.findViewById(R.id.toggle);
+        this.dynamicFilterView = dynamicFilterView;
     }
 
     @Override

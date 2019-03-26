@@ -21,9 +21,9 @@ public interface DynamicFilterView {
     List<Option> getSelectedOptions(Filter filter);
     void removeSelectedOption(Option option);
 
-//    void updateLastRangeValue(int minValue, int maxValue);
     void onPriceSliderRelease(int minValue, int maxValue);
     void onPriceSliderPressed(int minValue, int maxValue);
+
     void onPriceEditedFromTextInput(int minValue, int maxValue);
 
     String getFilterValue(String key);

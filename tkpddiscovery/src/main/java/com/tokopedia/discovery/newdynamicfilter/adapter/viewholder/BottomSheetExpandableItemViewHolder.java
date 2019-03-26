@@ -18,9 +18,12 @@ public class BottomSheetExpandableItemViewHolder extends DynamicFilterViewHolder
     private TextView title;
     private View seeAllButton;
     private RecyclerView recyclerView;
+    private BottomSheetExpandableItemSelectedListAdapter adapter;
+    private BottomSheetDynamicFilterView filterView;
 
     public BottomSheetExpandableItemViewHolder(View itemView, BottomSheetDynamicFilterView filterView) {
-        super(itemView, filterView);
+        super(itemView);
+        this.filterView = filterView;
 
         titleContainer = itemView.findViewById(R.id.title_container);
         seeAllButton = itemView.findViewById(R.id.see_all_button);
@@ -30,8 +33,7 @@ public class BottomSheetExpandableItemViewHolder extends DynamicFilterViewHolder
 
     @Override
     public void bind(final Filter filter) {
-        BottomSheetExpandableItemSelectedListAdapter adapter =
-                new BottomSheetExpandableItemSelectedListAdapter(dynamicFilterView, filter.getTitle());
+        adapter = new BottomSheetExpandableItemSelectedListAdapter(filterView, filter.getTitle());
         recyclerView.setLayoutManager(
                 new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
@@ -39,14 +41,14 @@ public class BottomSheetExpandableItemViewHolder extends DynamicFilterViewHolder
         title.setText(filter.getTitle());
 
         if (hasCustomOptions(filter)) {
-            titleContainer.setOnClickListener(view -> dynamicFilterView.onExpandableItemClicked(filter));
+            titleContainer.setOnClickListener(view -> filterView.onExpandableItemClicked(filter));
             seeAllButton.setVisibility(View.VISIBLE);
         } else {
             titleContainer.setOnClickListener(null);
             seeAllButton.setVisibility(View.GONE);
         }
 
-        adapter.setSelectedOptionsList(dynamicFilterView.getSelectedOptions(filter));
+        adapter.setSelectedOptionsList(filterView.getSelectedOptions(filter));
     }
 
     private boolean hasCustomOptions(Filter filter) {

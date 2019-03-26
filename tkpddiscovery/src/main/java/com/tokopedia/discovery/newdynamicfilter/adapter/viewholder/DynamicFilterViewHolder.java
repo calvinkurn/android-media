@@ -15,13 +15,8 @@ import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 public abstract class DynamicFilterViewHolder extends AbstractViewHolder<Filter> {
 
-    final DynamicFilterView dynamicFilterView;
-
-    public DynamicFilterViewHolder(View itemView,
-                                   final DynamicFilterView dynamicFilterView) {
+    public DynamicFilterViewHolder(View itemView) {
         super(itemView);
-
-        this.dynamicFilterView = dynamicFilterView;
     }
 
     void bindSwitch(SwitchCompat switchView,

@@ -17,12 +17,15 @@ import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 public class DynamicFilterExpandableItemViewHolder extends DynamicFilterViewHolder {
 
-    private LinearLayout titleContainer;
-    private TextView title;
-    private RecyclerView recyclerView;
+    LinearLayout titleContainer;
+    TextView title;
+    RecyclerView recyclerView;
+    ExpandableItemSelectedListAdapter adapter;
+    DynamicFilterView filterView;
 
-    public DynamicFilterExpandableItemViewHolder(View itemView, final DynamicFilterView filterView) {
-        super(itemView, filterView);
+    public DynamicFilterExpandableItemViewHolder(View itemView, DynamicFilterView filterView) {
+        super(itemView);
+        this.filterView = filterView;
 
         titleContainer = itemView.findViewById(R.id.title_container);
         title = itemView.findViewById(R.id.expandable_item_title);
@@ -31,14 +34,14 @@ public class DynamicFilterExpandableItemViewHolder extends DynamicFilterViewHold
 
     @Override
     public void bind(final Filter filter) {
-        ExpandableItemSelectedListAdapter adapter = new ExpandableItemSelectedListAdapter(dynamicFilterView);
+        adapter = new ExpandableItemSelectedListAdapter(filterView);
         recyclerView.setLayoutManager(
                 new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
 
         title.setText(filter.getTitle());
-        titleContainer.setOnClickListener(view -> dynamicFilterView.onExpandableItemClicked(filter));
+        titleContainer.setOnClickListener(view -> filterView.onExpandableItemClicked(filter));
 
-        adapter.setSelectedOptionsList(dynamicFilterView.getSelectedOptions(filter));
+        adapter.setSelectedOptionsList(filterView.getSelectedOptions(filter));
     }
 }
