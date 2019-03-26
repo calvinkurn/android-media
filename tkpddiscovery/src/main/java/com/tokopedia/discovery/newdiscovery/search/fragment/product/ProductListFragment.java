@@ -724,10 +724,6 @@ public class ProductListFragment extends SearchSectionFragment
         SearchTracking.eventSearchNoResult(getActivity(), productViewModel.getQuery(), getScreenName(), getSelectedFilter());
     }
 
-    public void initializeEmptySearchFilterController() {
-        emptySearchFilterController.initFilterController(searchParameter.getSearchParameterHashMap(), getFilters());
-    }
-
     @Override
     public void reloadData() {
         if (adapter == null) {

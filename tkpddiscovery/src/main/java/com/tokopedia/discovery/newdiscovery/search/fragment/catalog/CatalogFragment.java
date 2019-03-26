@@ -419,10 +419,6 @@ public class CatalogFragment extends SearchSectionFragment implements
         }
     }
 
-    public void initializeEmptySearchFilterController() {
-        emptySearchFilterController.initFilterController(searchParameter.getSearchParameterHashMap(), getFilters());
-    }
-
     @Override
     public void renderErrorView(String message) {
         if (catalogAdapter.isEmpty()) {

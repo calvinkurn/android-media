@@ -295,10 +295,6 @@ public class ShopListFragment extends SearchSectionFragment
         }
     }
 
-    public void initializeEmptySearchFilterController() {
-        emptySearchFilterController.initFilterController(searchParameter.getSearchParameterHashMap(), getFilters());
-    }
-
     @Override
     public String getScreenNameId() {
         return SCREEN_SEARCH_PAGE_SHOP_TAB;
