@@ -133,10 +133,6 @@ public class DrawerSellerHelper extends DrawerHelper
                 R.drawable.ic_contactus,
                 TkpdState.DrawerPosition.CONTACT_US,
                 true));
-        data.add(new DrawerItem(context.getString(R.string.drawer_title_help),
-                R.drawable.ic_help,
-                TkpdState.DrawerPosition.HELP,
-                true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_logout),
                 R.drawable.ic_menu_logout,
                 TkpdState.DrawerPosition.LOGOUT,
