@@ -14,6 +14,9 @@ import kotlin.collections.HashMap
 class ProfileAnalytics @Inject constructor(private val analyticTracker: AnalyticTracker,
                                            private val userSessionInterface: UserSessionInterface) {
     companion object {
+        internal const val PROMO_VIEW = "promoView"
+        internal const val PROMO_CLICK = "promoClick"
+
         private const val SCREEN_NAME = "screenName"
         private const val EVENT = "event"
         private const val CATEGORY = "eventCategory"
@@ -25,19 +28,17 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
         private const val MULTIPLE = "multiple"
         private const val FORMAT_PROMOTION_NAME = "%s - %s - %s - %s";
 
-        private val EVENT_NAME = "event"
-        private val EVENT_CATEGORY = "eventCategory"
-        private val EVENT_ACTION = "eventAction"
-        private val EVENT_LABEL = "eventLabel"
-        private val EVENT_ECOMMERCE = "ecommerce"
-        internal val PROMO_VIEW = "promoView"
-        internal val PROMO_CLICK = "promoClick"
-        private val KEY_USER_ID = "userId"
-        private val KEY_USER_ID_MOD = "userIdmodulo"
-        private val ACTION_IMPRESSION = "Impression"
-        private val ACTION_VIEW = "View"
-        private val ACTION_CLICK = "Click"
-        private val DASH = " - "
+        private const val EVENT_NAME = "event"
+        private const val EVENT_CATEGORY = "eventCategory"
+        private const val EVENT_ACTION = "eventAction"
+        private const val EVENT_LABEL = "eventLabel"
+        private const val EVENT_ECOMMERCE = "ecommerce"
+        private const val KEY_USER_ID = "userId"
+        private const val KEY_USER_ID_MOD = "userIdmodulo"
+        private const val ACTION_IMPRESSION = "Impression"
+        private const val ACTION_VIEW = "View"
+        private const val ACTION_CLICK = "Click"
+        private const val DASH = " - "
     }
 
     object Screen {
@@ -101,18 +102,18 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
     private fun getDefaultData(screenName: String, event: String, category: String, action: String,
                                label: String): MutableMap<String, Any> {
         val data = HashMap<String, Any>()
-        data.put(SCREEN_NAME, screenName)
-        data.put(EVENT, event)
-        data.put(CATEGORY, category)
-        data.put(ACTION, action)
-        data.put(LABEL, label)
-        data.put(USER_ID, userSessionInterface.userId)
+        data[SCREEN_NAME] = screenName
+        data[EVENT] = event
+        data[CATEGORY] = category
+        data[ACTION] = action
+        data[LABEL] = label
+        data[USER_ID] = userSessionInterface.userId
         return data
     }
 
     private fun setCustomDimensions(data: MutableMap<String, Any>, position: String)
             : MutableMap<String, Any> {
-        data.put(CONTENT_POSITION, position)
+        data[CONTENT_POSITION] = position
         return data
     }
 
@@ -196,18 +197,6 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
                         Event.EVENT_CLICK_SOCIAL_COMMERCE,
                         category,
                         Action.CLICK_SHARE_THIS_POST,
-                        profileId
-                )
-        )
-    }
-
-    fun eventClickSeeDetail(profileId: String) {
-        analyticTracker.sendEventTracking(
-                getDefaultData(
-                        Screen.MY_PROFILE,
-                        Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        Category.MY_PROFILE_SOCIALCOMMERCE,
-                        Action.CLICK_SEE_DETAIL,
                         profileId
                 )
         )
@@ -319,7 +308,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
     fun eventClickBagikanProfile(isOwner: Boolean, profileId: String) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
         val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
-        val name = if (isOwner) Category.MY_PROFILE_PAGE else Category.USER_PROFILE_PAGE
+        if (isOwner) Category.MY_PROFILE_PAGE else Category.USER_PROFILE_PAGE
         analyticTracker.sendEventTracking(
                 getDefaultData(
                         screen,
@@ -392,23 +381,6 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
                         String.format(Label.GO_TO_FEED_FORMAT, name)
                 )
         )
-    }
-
-    fun eventClickTambahGambar(hasMultipleContent: Boolean, activityId: String,
-                               activityType: String) {
-        val action = String.format(
-                Action.CLICK_ADD_IMAGE,
-                singleOrMultiple(hasMultipleContent),
-                activityType
-        )
-        val data = getDefaultData(
-                Screen.MY_PROFILE,
-                Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                Category.MY_PROFILE_SOCIALCOMMERCE,
-                action,
-                activityId
-        )
-        analyticTracker.sendEventTracking(data)
     }
 
     fun eventClickTambahRekomendasi() {
