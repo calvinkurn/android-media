@@ -665,6 +665,8 @@ public class SearchActivity extends DiscoveryActivity
 
     @Override
     public void performNewProductSearch(String query, boolean forceSearch) {
+        searchParameter = new SearchParameter();
+
         setForceSearch(forceSearch);
         setForceSwipeToShop(false);
         setRequestOfficialStoreBanner(true);
