@@ -33,9 +33,14 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.saldodetails.R;
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics;
+import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
+import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.response.model.GqlAnchorListResponse;
 import com.tokopedia.saldodetails.response.model.GqlInfoListResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
+
+import javax.inject.Inject;
 
 import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS;
 
@@ -56,6 +61,9 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
 
     private TextView mclBlockedStatusTV;
 
+    @Inject
+    SaldoDetailsAnalytics saldoDetailsAnalytics;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -64,6 +72,9 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
         Bundle bundle = getArguments();
         merchantCreditDetails = bundle != null ? bundle.getParcelable(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS) : null;
         initViews(view);
+        if (merchantCreditDetails != null) {
+            saldoDetailsAnalytics.eventMCLImpression(String.valueOf(merchantCreditDetails.getStatus()));
+        }
         return view;
     }
 
@@ -138,6 +149,8 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
             }
 
             mclParentCardView.setOnClickListener(v -> {
+
+                saldoDetailsAnalytics.eventMCLCardCLick(String.valueOf(merchantCreditDetails.getStatus()));
                 if (!TextUtils.isEmpty(merchantCreditDetails.getMainRedirectUrl())) {
                     RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
                             merchantCreditDetails.getMainRedirectUrl()));
@@ -232,6 +245,10 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
                 mclActionItemTV.setTextColor(getResources().getColor(R.color.tkpd_main_green));
             }
             mclActionItemTV.setOnClickListener(v -> {
+
+                saldoDetailsAnalytics.eventMCLActionItemClick(mclActionItemTV.getText().toString(),
+                        String.valueOf(merchantCreditDetails.getStatus()));
+
                 if (gqlAnchorListResponse.isShowDialog() &&
                         gqlAnchorListResponse.getDialogInfo() != null) {
 
@@ -268,7 +285,9 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
 
     @Override
     protected void initInjector() {
-
+        SaldoDetailsComponent saldoDetailsComponent =
+                SaldoDetailsComponentInstance.getComponent(getActivity().getApplication());
+        saldoDetailsComponent.inject(this);
     }
 
     @Override
