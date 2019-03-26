@@ -39,6 +39,7 @@ public class Toaster {
     private static Snackbar buildView(View view, CharSequence charSequence, int duration, String type) {
         Snackbar snackbar = Snackbar.make(view, charSequence, duration);
         View snackbarView = snackbar.getView();
+        snackbarView.setPadding(0,0,0,0);
         if (type.equals(RED)) {
             snackbarView.setBackground(ContextCompat.getDrawable(view.getContext(), R.drawable.bg_toaster_red));
         } else if (type.equals(GREEN)) {
