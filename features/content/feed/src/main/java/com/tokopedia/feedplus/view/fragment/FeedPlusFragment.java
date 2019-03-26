@@ -39,8 +39,6 @@ import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
-import com.tokopedia.feedcomponent.data.pojo.track.Tracking;
-import com.tokopedia.feedcomponent.view.activity.VideoPlayerActivity;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
@@ -53,9 +51,6 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopView
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel;
-import com.tokopedia.feedcomponent.view.viewmodel.data.FooterViewModel;
-import com.tokopedia.feedcomponent.view.viewmodel.data.HeaderViewModel;
-import com.tokopedia.feedcomponent.view.viewmodel.data.template.TemplateFooterViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel;
@@ -96,13 +91,13 @@ import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.common.util.PostMenuListener;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
-import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
+import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -1926,16 +1921,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onVideoPlayerClicked(int positionInFeed,
                                      int contentPosition,
-                                     @NotNull String url,
-                                     @NotNull HeaderViewModel header,
-                                     @NotNull FooterViewModel footer,
-                                     @NotNull TemplateFooterViewModel templateFooter) {
-        startActivity(VideoPlayerActivity.Companion.getInstance(
+                                     String id) {
+        startActivity(VideoDetailActivity.Companion.getInstance(
                 getActivity(),
-                url,
-                header,
-                footer,
-                templateFooter));
+                id));
     }
 
     private void goToContentReport(int contentId) {

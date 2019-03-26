@@ -57,6 +57,7 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
         private const val LIMIT_3 = 3
         const val SOURCE_FEEDS = "feeds"
         const val SOURCE_PROFILE = "profile"
+        const val SOURCE_DETAIL = "detail"
 
         @JvmOverloads
         fun createRequestParams(userId: String, cursor: String = "", source: String): RequestParams {

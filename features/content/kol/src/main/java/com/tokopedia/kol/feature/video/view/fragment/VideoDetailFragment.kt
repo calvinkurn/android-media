@@ -1,5 +1,6 @@
-package com.tokopedia.feedcomponent.view.fragment
+package com.tokopedia.kol.feature.video.view.fragment
 
+import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -10,33 +11,42 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.MediaController
 import android.widget.Toast
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Footer
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Header
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
+import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateBody
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.util.TimeConverter
-import com.tokopedia.feedcomponent.view.activity.VideoPlayerActivity
-import com.tokopedia.feedcomponent.view.viewmodel.data.CommentViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.data.FooterViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.data.HeaderViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.data.LikeViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.data.template.TemplateFooterViewModel
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
+import com.tokopedia.kol.R
+import com.tokopedia.kol.common.di.DaggerKolComponent
+import com.tokopedia.kol.feature.post.view.listener.KolPostListener
+import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
+import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.layout_single_video_fragment.*
 
 /**
  * @author by yfsx on 23/03/19.
  */
 
-class SingleVideoPlayerFragment: BaseDaggerFragment(), MediaPlayer.OnPreparedListener {
+class VideoDetailFragment:
+        BaseDaggerFragment(),
+        VideoDetailContract.View,
+        KolPostListener.View.Like,
+        MediaPlayer.OnPreparedListener {
 
+
+    private var id: String = ""
     companion object {
-        fun getInstance(bundle: Bundle): SingleVideoPlayerFragment {
-            val fragment = SingleVideoPlayerFragment()
+        fun getInstance(bundle: Bundle): VideoDetailFragment {
+            val fragment = VideoDetailFragment()
             fragment.arguments = bundle
             return fragment
         }
@@ -51,7 +61,10 @@ class SingleVideoPlayerFragment: BaseDaggerFragment(), MediaPlayer.OnPreparedLis
     }
 
     override fun initInjector() {
-
+        DaggerKolComponent.builder()
+                .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -60,6 +73,7 @@ class SingleVideoPlayerFragment: BaseDaggerFragment(), MediaPlayer.OnPreparedLis
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        id = arguments!!.getString(VideoDetailActivity.PARAM_ID, "")
         initView()
         initViewListener()
     }
@@ -71,19 +85,55 @@ class SingleVideoPlayerFragment: BaseDaggerFragment(), MediaPlayer.OnPreparedLis
         }
     }
 
+    override fun onSuccessFollowKol() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onErrorFollowKol(error: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun getContext(): Context {
+        return activity!!
+    }
+
+    override fun onLikeKolSuccess(rowNumber: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onLikeKolError(message: String?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onErrorGetVideoDetail(error: String) {
+        NetworkErrorHelper.showRedSnackbar(activity!!, error)
+        activity!!.finish()
+    }
+
+    override fun onSuccessGetVideoDetail(visitables: List<Visitable<*>>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun getUserSession(): UserSession = UserSession(context)
+
+    override fun showLoading() {
+
+    }
+
+    override fun hideLoading() {
+
+    }
+
     private fun initView() {
-        initUi()
-        initPlayer()
+//        initUi()
+//        initPlayer()
     }
 
     private fun initUi() {
-        bindHeader(arguments?.getParcelable(VideoPlayerActivity.PARAM_HEADER))
-        bindFooter(arguments?.getParcelable(VideoPlayerActivity.PARAM_FOOTER),
-                arguments?.getParcelable(VideoPlayerActivity.PARAM_TEMPLATE_FOOTER))
+
     }
 
-    private fun initPlayer() {
-        val url = arguments?.getString(VideoPlayerActivity.PARAM_SINGLE_URL)
+    private fun initPlayer(url: String) {
         val mediaController = MediaController(activity!!)
         mediaController.setAnchorView(videoView)
         videoView.setMediaController(mediaController)
@@ -137,8 +187,8 @@ class SingleVideoPlayerFragment: BaseDaggerFragment(), MediaPlayer.OnPreparedLis
         videoView.holder.setFixedSize(videoWidth, videoHeight)
     }
 
-    private fun bindHeader(header: HeaderViewModel?) {
-        header?.let {
+    private fun bindHeader(header: Header) {
+        header.let {
             if (!TextUtils.isEmpty(it.avatar)) {
                 authorImage.loadImageCircle(it.avatar)
             } else {
@@ -162,9 +212,36 @@ class SingleVideoPlayerFragment: BaseDaggerFragment(), MediaPlayer.OnPreparedLis
         }
     }
 
+    private fun bindCaption(captionModel: Caption, template: TemplateBody) {
+        captionModel.let {
+            if (it.text.isEmpty()) {
+                caption.visibility = View.GONE
+            } else if (caption.text.length > DynamicPostViewHolder.MAX_CHAR) {
+                caption.visibility = View.VISIBLE
+                val captionText = caption.text.substring(0, DynamicPostViewHolder.CAPTION_END)
+                        .replace(DynamicPostViewHolder.NEWLINE, "<br />")
+                        .plus("... ")
+                        .plus("<font color='#ffffff'><b>")
+                        .plus(captionModel.buttonName)
+                        .plus("</b></font>")
 
-    private fun bindFooter(footer: FooterViewModel?, template: TemplateFooterViewModel?) {
-        footer?.let {
+                caption.text = MethodChecker.fromHtml(captionText)
+                caption.setOnClickListener {
+                    if (!TextUtils.isEmpty(captionModel.appLink)) {
+//                        listener.onCaptionClick(adapterPosition, caption.appLink)
+                    } else {
+                        caption.text = caption.text
+                    }
+                }
+            } else {
+//                caption.text = caption.text.replace(DynamicPostViewHolder.NEWLINE, " ")
+            }
+        }
+    }
+
+
+    private fun bindFooter(footer: Footer, template: TemplateFooter?) {
+        footer.let {
             if (template!!.like) {
                 likeIcon.show()
                 likeText.show()
@@ -174,7 +251,7 @@ class SingleVideoPlayerFragment: BaseDaggerFragment(), MediaPlayer.OnPreparedLis
                 likeText.hide()
             }
 
-            if (template!!.comment) {
+            if (template.comment) {
                 commentIcon.show()
                 commentText.show()
 //                commentIcon.setOnClickListener { listener.onCommentClick(adapterPosition, id) }
@@ -218,7 +295,7 @@ class SingleVideoPlayerFragment: BaseDaggerFragment(), MediaPlayer.OnPreparedLis
 
     }
 
-    private fun bindLike(like: LikeViewModel) {
+    private fun bindLike(like: Like) {
         when {
             like.isChecked -> {
                 likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_green)
@@ -243,7 +320,7 @@ class SingleVideoPlayerFragment: BaseDaggerFragment(), MediaPlayer.OnPreparedLis
             }
         }
     }
-    private fun bindComment(comment: CommentViewModel) {
+    private fun bindComment(comment: Comment) {
         commentText.text =
                 if (comment.value == 0) getString(R.string.kol_action_comment)
                 else comment.fmt

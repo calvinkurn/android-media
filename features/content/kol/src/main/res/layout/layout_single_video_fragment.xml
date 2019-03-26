@@ -107,6 +107,21 @@
 
     </android.support.constraint.ConstraintLayout>
 
+    <TextView
+        android:id="@+id/caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:lineSpacingExtra="5sp"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_12"
+        android:textStyle="normal"
+        android:layout_marginBottom="@dimen/dp_10"
+        tools:text="Welcoming October, road to hari batik nasional, you can wear batik and be stylish as well hey?" />
+
+
     <com.tokopedia.videoplayer.view.widget.VideoPlayerView
         android:id="@+id/videoView"
         android:layout_width="match_parent"
