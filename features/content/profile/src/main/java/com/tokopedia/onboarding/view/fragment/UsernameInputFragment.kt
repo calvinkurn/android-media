@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.text.watcher.AfterTextWatcher
@@ -129,7 +128,7 @@ class UsernameInputFragment : BottomSheetDialogFragment(), UsernameInputContract
     }
 
     override fun onErrorRegisterUsername(message: String) {
-        NetworkErrorHelper.showRedSnackbar(mainView, message)
+        usernameWrapper.error = message
     }
 
     override fun onErrorInputRegisterUsername(message: String) {
