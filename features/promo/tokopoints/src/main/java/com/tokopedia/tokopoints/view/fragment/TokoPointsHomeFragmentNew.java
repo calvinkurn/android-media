@@ -17,7 +17,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,7 +72,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements TokoPointsHomeContract.View, View.OnClickListener {
+public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements TokoPointsHomeContract.View, View.OnClickListener, TokoPointToolbar.OnTokoPointToolbarClickListener {
 
     private static final String FPM_TOKOPOINT = "ft_tokopoint";
     private static final int CONTAINER_LOADER = 0;
@@ -104,7 +103,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     private onAppBarCollapseListener appBarCollapseListener;
     private ExploreSectionPagerAdapter mExploreSectionPagerAdapter;
     private PerformanceMonitoring performanceMonitoring;
-    private Toolbar toolbar;
     private CollapsingToolbarLayout collapsingToolbarLayout;
 
     private CoordinatorLayout coordinatorLayout;
@@ -134,15 +132,18 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
         collapsingToolbarLayout.setTitle(" ");
-        appBarHeader.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                handleAppBarOffsetChange(verticalOffset);
-            }
-        });
+
+        appBarHeader.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> handleAppBarOffsetChange(verticalOffset));
+
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) tokoPointToolbar.getLayoutParams();
         layoutParams.topMargin = getStatusBarHeight(getActivity());
         tokoPointToolbar.setLayoutParams(layoutParams);
+
+        //todo tokopointToolbar -- set my coupon count
+        tokoPointToolbar.setCouponCount(23);
+        tokoPointToolbar.setTitle("TokoPoints");
+        tokoPointToolbar.setOnTokoPointToolbarClickListener(this);
+
         return view;
     }
 
@@ -1004,4 +1005,13 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         renderSections(sections);
     }
 
+    @Override
+    public void onToolbarLeaderboardClick() {
+        //todo handle TokoPointToolbar click
+    }
+
+    @Override
+    public void onToolbarMyCouponClick() {
+        //todo handle TokoPointToolbar click
+    }
 }
