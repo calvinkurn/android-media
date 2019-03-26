@@ -3,6 +3,7 @@ package com.tokopedia.discovery.autocomplete.usecase;
 import android.text.TextUtils;
 
 import com.tokopedia.discovery.autocomplete.repository.AutoCompleteRepository;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.usecase.RequestParams;
@@ -42,8 +43,10 @@ public class AutoCompleteUseCase extends UseCase<List<SearchData>> {
         return autoCompleteRepository.getSearchData(requestParams.getParameters());
     }
 
-    public static RequestParams getParams(String registrationId, String userId) {
-        return getParams(new HashMap<>(), registrationId, userId);
+    public static RequestParams getParams(String query, String registrationId, String userId) {
+        Map<String, Object> searchParameter = new HashMap<>();
+        searchParameter.put(SearchApiConst.Q, query);
+        return getParams(searchParameter, registrationId, userId);
     }
 
     public static RequestParams getParams(Map<String, Object> searchParameter, String registrationId, String userId) {
