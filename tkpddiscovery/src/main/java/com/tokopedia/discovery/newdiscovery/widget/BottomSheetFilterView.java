@@ -170,8 +170,10 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     @Override
     public void removeSavedTextInput(String uniqueId) {
-        SearchTracking.eventSearchResultFilterJourney(getContext(), uniqueId, "", false, false);
         filterController.setFilter(OptionHelper.generateOptionFromUniqueId(uniqueId), false, true);
+
+        String key = OptionHelper.parseKeyFromUniqueId(uniqueId);
+        SearchTracking.eventSearchResultFilterJourney(getContext(), key, "", false, false);
         updateResetButtonVisibility();
     }
 
