@@ -64,7 +64,9 @@ public class CheckoutUseCase extends UseCase<CheckoutData> {
         param.put(PARAM_ONE_CLICK_SHIPMENT, String.valueOf(requestParams.getBoolean(
                 PARAM_ONE_CLICK_SHIPMENT, false)));
         param.put(PARAM_IS_EXPRESS, String.valueOf(requestParams.getBoolean(PARAM_IS_EXPRESS, false)));
-        param.putAll((Map<String, String>) requestParams.getObject(PARAM_TRADE_IN_DATA));
+        if (requestParams.getObject(PARAM_TRADE_IN_DATA) != null) {
+            param.putAll((Map<String, String>) requestParams.getObject(PARAM_TRADE_IN_DATA));
+        }
         param = createParamFingerprint(param);
         return cartRepository.checkout(param)
                 .map(checkoutMapper::convertCheckoutData);
