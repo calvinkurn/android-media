@@ -135,13 +135,14 @@ public class ProductListFragment extends SearchSectionFragment
 
     private void loadDataFromArguments() {
         if(getArguments() != null) {
+            copySearchParameter(getArguments().getParcelable(EXTRA_SEARCH_PARAMETER));
+
             productViewModel = getArguments().getParcelable(ARG_VIEW_MODEL);
             if (productViewModel != null) {
                 setForceSearch(productViewModel.isForceSearch());
                 renderDynamicFilter(productViewModel.getDynamicFilterModel());
             }
 
-            copySearchParameter(getArguments().getParcelable(EXTRA_SEARCH_PARAMETER));
             initFilterControllerForQuickFilterIfExists();
         }
     }
