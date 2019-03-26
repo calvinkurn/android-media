@@ -720,10 +720,12 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void setEmptyProduct() {
-        emptySearchFilterController.initFilterController(searchParameter.getSearchParameterHashMap(), getFilters());
-
         adapter.showEmptyState(getActivity(), productViewModel.getQuery(), isFilterActive(), getFlagFilterHelper(), getString(R.string.product_tab_title).toLowerCase());
         SearchTracking.eventSearchNoResult(getActivity(), productViewModel.getQuery(), getScreenName(), getSelectedFilter());
+    }
+
+    public void initializeEmptySearchFilterController() {
+        emptySearchFilterController.initFilterController(searchParameter.getSearchParameterHashMap(), getFilters());
     }
 
     @Override

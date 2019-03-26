@@ -414,10 +414,13 @@ public class CatalogFragment extends SearchSectionFragment implements
             catalogAdapter.setElement(visitables);
         } else {
             topAdsRecyclerAdapter.shouldLoadAds(false);
-            emptySearchFilterController.initFilterController(searchParameter.getSearchParameterHashMap(), getFilters());
             catalogAdapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getFlagFilterHelper(), getString(R.string.catalog_tab_title).toLowerCase());
             SearchTracking.eventSearchNoResult(getActivity(), getQueryKey(), getScreenName(), getSelectedFilter());
         }
+    }
+
+    public void initializeEmptySearchFilterController() {
+        emptySearchFilterController.initFilterController(searchParameter.getSearchParameterHashMap(), getFilters());
     }
 
     @Override

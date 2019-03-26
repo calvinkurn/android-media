@@ -290,11 +290,13 @@ public class ShopListFragment extends SearchSectionFragment
         isNextPageAvailable = false;
         adapter.removeLoading();
         if (adapter.isListEmpty()) {
-            emptySearchFilterController.initFilterController(searchParameter.getSearchParameterHashMap(), getFilters());
-
             adapter.showEmptyState(getActivity(), getSearchParameter().getSearchQuery(), isFilterActive(), null, getString(R.string.shop_tab_title).toLowerCase());
             SearchTracking.eventSearchNoResult(getActivity(), getSearchParameter().getSearchQuery(), getScreenName(), getSelectedFilter());
         }
+    }
+
+    public void initializeEmptySearchFilterController() {
+        emptySearchFilterController.initFilterController(searchParameter.getSearchParameterHashMap(), getFilters());
     }
 
     @Override

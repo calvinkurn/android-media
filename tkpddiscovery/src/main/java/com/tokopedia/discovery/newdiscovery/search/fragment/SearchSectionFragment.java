@@ -331,9 +331,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         if (filters == null) {
             return;
         }
-        for (Filter filter : filters) {
-            this.filters.add(filter);
-        }
+
+        this.filters.addAll(filters);
     }
 
     protected ArrayList<Filter> getFilters() {
@@ -463,7 +462,10 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         isGettingDynamicFilter = false;
         setFilterData(pojo.getData().getFilter());
         setSortData(pojo.getData().getSort());
+        initializeEmptySearchFilterController();
     }
+
+    public abstract void initializeEmptySearchFilterController();
 
     @Override
     public void renderFailGetDynamicFilter() {
