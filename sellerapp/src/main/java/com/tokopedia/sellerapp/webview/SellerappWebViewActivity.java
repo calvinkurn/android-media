@@ -22,15 +22,10 @@ public class SellerappWebViewActivity extends BaseSimpleActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected Fragment getNewFragment() {
         if (getIntent() != null && getIntent().getExtras() != null) {
             url = getIntent().getExtras().getString(PARAM_BUNDLE_URL);
         }
-    }
-
-    @Override
-    protected Fragment getNewFragment() {
         return SellerappWebViewFragment.newInstance(url);
     }
 }
