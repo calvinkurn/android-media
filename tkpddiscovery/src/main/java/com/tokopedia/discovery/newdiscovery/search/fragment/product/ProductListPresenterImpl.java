@@ -204,7 +204,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     } else {
                         List<Visitable> list = new ArrayList<>(ProductViewModelHelper.convertToListOfVisitable(productViewModel));
                         getView().removeLoading();
-                        getView().initQuickFilter(productViewModel.getQuickFilterModel().getFilter());
                         getView().setProductList(list);
                         getView().addLoading();
                     }
