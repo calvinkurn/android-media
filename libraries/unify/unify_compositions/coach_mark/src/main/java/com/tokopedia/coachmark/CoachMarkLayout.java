@@ -176,7 +176,7 @@ public class CoachMarkLayout extends FrameLayout {
         textViewDesc.setText(fromHtml(text));
 
         if (prevButton != null) {
-            if (isStart) {
+            if (isStart || isLast) {
                 prevButton.setEnabled(false);
             } else {
                 prevButton.setEnabled(true);
@@ -185,9 +185,10 @@ public class CoachMarkLayout extends FrameLayout {
 
         if (nextButton != null) {
             if (isLast) {
-                nextButton.setEnabled(false);
+                nextButton.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_coachmark_done));
             } else if (currentTutorIndex < tutorsListSize - 1) { // has next
                 nextButton.setEnabled(true);
+                nextButton.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_coachmark_right));
             }
         }
 
