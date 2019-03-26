@@ -1,5 +1,5 @@
 mutation get_upload_video_token(){
-  TopliveVideoToken{
+  vodVideoToken{
     token
   }
 }
