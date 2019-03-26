@@ -10,7 +10,7 @@ import javax.inject.Inject;
 public class WalletAnalytics {
 
     private String GENERIC_EVENT = "clickSaldo";
-    private String HOME_PAGE = "clickHomePage";
+    private String HOME_PAGE = "clickHomepage";
 
     private AnalyticTracker analyticTracker;
 
