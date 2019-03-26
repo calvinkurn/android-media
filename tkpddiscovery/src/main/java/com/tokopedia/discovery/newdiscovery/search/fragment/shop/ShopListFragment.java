@@ -349,8 +349,8 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onSelectedFilterRemoved(Option option) {
-        removeSelectedFilter(option.getUniqueId());
+    public void onSelectedFilterRemoved(String uniqueId) {
+        removeSelectedFilter(uniqueId);
     }
 
     @Override

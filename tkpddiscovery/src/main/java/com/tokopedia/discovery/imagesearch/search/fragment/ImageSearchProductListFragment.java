@@ -660,7 +660,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void onSelectedFilterRemoved(Option option) {
+    public void onSelectedFilterRemoved(String uniqueId) {
 
     }
 

@@ -274,7 +274,7 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
 
     }
 
-    override fun onSelectedFilterRemoved(option: Option) {
+    override fun onSelectedFilterRemoved(uniqueId: String) {
 
     }
 

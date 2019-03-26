@@ -287,8 +287,8 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     @Override
-    public void onSelectedFilterRemoved(Option option) {
-        removeSelectedFilter(option.getUniqueId());
+    public void onSelectedFilterRemoved(String uniqueId) {
+        removeSelectedFilter(uniqueId);
     }
 
     @Override
