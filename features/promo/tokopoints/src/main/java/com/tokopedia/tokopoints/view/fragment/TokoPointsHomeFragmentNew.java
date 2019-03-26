@@ -816,7 +816,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         dynamicLinksContainer.setVisibility(View.VISIBLE);
         GridLayoutManager manager = new GridLayoutManager(getContext(), 5, GridLayoutManager.VERTICAL, false);
         mRvDynamicLinks.setLayoutManager(manager);
-        mRvDynamicLinks.setAdapter(new SectionCategoryAdapter(content.getLayoutCategoryAttr().getCategoryTokopointsList()));
+        mRvDynamicLinks.setAdapter(new SectionCategoryAdapter(getActivityContext(), content.getLayoutCategoryAttr().getCategoryTokopointsList()));
     }
 
     @Override
