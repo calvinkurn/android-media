@@ -111,6 +111,7 @@ open class PlayViewStateImpl(
     private val webviewIcon = view.findViewById<ImageView>(R.id.webview_icon)
     private var errorView: View = view.findViewById(R.id.card_retry)
     private var loadingView: View = view.findViewById(R.id.loading_view)
+    private var videoToggle: View = view.findViewById(R.id.layout_video_toggle)
 
     private lateinit var overlayDialog: CloseableBottomSheetDialog
     private lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
@@ -225,6 +226,21 @@ open class PlayViewStateImpl(
                         userSession.profilePicture,
                         false)
                 sendMessage(pendingChatViewModel)
+            }
+        }
+        videoToggle.setOnClickListener {
+            var toggleTitle = videoToggle.findViewById<TextView>(R.id.video_toggle_title)
+            if(videoContainer.visibility == View.GONE) {
+                toggleTitle.text = getStringResource(R.string.hide_video)
+                videoToggle.background = MethodChecker.getDrawable(view.context, R.drawable.label_hide_video)
+                videoToggle.layoutParams
+                youTubePlayer?.play()
+                videoContainer.visibility = View.VISIBLE
+            } else {
+                toggleTitle.text = getStringResource(R.string.show_video)
+                videoToggle.background = MethodChecker.getDrawable(view.context, R.drawable.label_show_video)
+                youTubePlayer?.pause()
+                videoContainer.visibility = View.GONE
             }
         }
     }
@@ -777,17 +793,17 @@ open class PlayViewStateImpl(
         return GroupChatAnalytics.generateTrackerAttribution(attributeName, viewModel?.channelUrl, viewModel?.title)
     }
 
-    fun autoPlayVideo() {
-        youtubeRunnable.postDelayed({ youTubePlayer?.play() }, PlayFragment.YOUTUBE_DELAY.toLong())
+    override fun autoPlayVideo() {
+        youtubeRunnable?.postDelayed({ youTubePlayer?.play() }, PlayFragment.YOUTUBE_DELAY.toLong())
     }
 
     fun initVideoFragment(fragmentManager: FragmentManager, videoId: String, isVideoLive: Boolean) {
         videoContainer.hide()
         liveIndicator.hide()
+        videoToggle.hide()
         setChatListHasSpaceOnTop(true)
         videoId.let {
             if (it.isEmpty()) return
-
             val videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
             videoFragment.run {
                 videoContainer.show()
@@ -824,6 +840,7 @@ open class PlayViewStateImpl(
                                                 }
 
                                                 override fun onPaused() {
+                                                    videoToggle.show()
                                                     onPauseTime = System.currentTimeMillis() / 1000L
                                                 }
 
