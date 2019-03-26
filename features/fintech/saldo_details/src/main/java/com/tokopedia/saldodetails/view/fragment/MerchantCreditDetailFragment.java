@@ -268,6 +268,7 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
                                     .setState(BottomSheetBehavior.STATE_EXPANDED);
                         }
                     });
+                    closeableBottomSheetDialog.show();
                 } else {
                     RouteManager.route(context, String.format("%s?url=%s",
                             ApplinkConst.WEBVIEW, gqlAnchorListResponse.getLink()));
