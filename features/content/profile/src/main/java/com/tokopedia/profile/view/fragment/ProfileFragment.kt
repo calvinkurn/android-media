@@ -60,7 +60,6 @@ import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.showNormalToaster
-import com.tokopedia.onboarding.view.fragment.UsernameInputFragment
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.analytics.ProfileAnalytics
@@ -654,8 +653,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean) {
-        val onboardingBottomSheet = UsernameInputFragment()
-        onboardingBottomSheet.show(fragmentManager, "TAG")
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id, false, "")
         } else {
