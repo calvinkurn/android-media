@@ -292,10 +292,12 @@ public class CartMapper implements ICartMapper {
         autoApplyData.setState(cartDataListResponse.getAutoapplyV2().getMessage().getState());
         cartListData.setAutoApplyData(autoApplyData);*/
 
+
+        AutoApplyStackData autoApplyStackData = new AutoApplyStackData();
         if (cartDataListResponse.getAutoapplyStack() != null) {
             if (cartDataListResponse.getAutoapplyStack().getVoucherOrders() != null) {
                 if (cartDataListResponse.getAutoapplyStack().getVoucherOrders().size() > 0) {
-                    AutoApplyStackData autoApplyStackData = new AutoApplyStackData();
+                    autoApplyStackData = new AutoApplyStackData();
                     autoApplyStackData.setCode(cartDataListResponse.getAutoapplyStack().getCodes().get(0));
                     autoApplyStackData.setDiscountAmount(cartDataListResponse.getAutoapplyStack().getDiscountAmount());
                     autoApplyStackData.setIsCoupon(cartDataListResponse.getAutoapplyStack().getIsCoupon());
@@ -323,16 +325,10 @@ public class CartMapper implements ICartMapper {
                         voucherOrdersItemDataList.add(voucherOrdersItemData);
                     }
                     autoApplyStackData.setVoucherOrders(voucherOrdersItemDataList);
-                    cartListData.setAutoApplyStackData(autoApplyStackData);
-                } else {
-                    cartListData.setAutoApplyStackData(null);
                 }
-            } else {
-                cartListData.setAutoApplyStackData(null);
             }
-        } else {
-            cartListData.setAutoApplyStackData(null);
         }
+        cartListData.setAutoApplyStackData(autoApplyStackData);
 
         return cartListData;
     }

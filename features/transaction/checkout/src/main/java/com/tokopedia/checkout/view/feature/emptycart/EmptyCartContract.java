@@ -36,9 +36,7 @@ public interface EmptyCartContract {
 
         void renderCancelAutoApplyCouponSuccess();
 
-        void renderEmptyCart(AutoApplyData autoApplyMessage);
-
-        void renderEmptyCartStack(AutoApplyStackData autoApplyStackData);
+        void renderEmptyCart(AutoApplyStackData autoApplyStackData);
 
         void renderHasWishList(boolean hasMoreItem);
 
@@ -72,7 +70,7 @@ public interface EmptyCartContract {
 
         void processGetRecentViewData(int userId);
 
-        void processCancelAutoApply();
+        void processCancelAutoApply(String promoCode);
 
         void setLoadApiStatus(@EmptyCartApi int key, boolean status);
 

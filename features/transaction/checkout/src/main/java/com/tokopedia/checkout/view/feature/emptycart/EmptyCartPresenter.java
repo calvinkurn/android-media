@@ -118,7 +118,8 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
     }
 
     @Override
-    public void processCancelAutoApply() {
+    public void processCancelAutoApply(String promoCode) {
+        // Todo : cancel promo
         Map<String, String> authParam = AuthUtil.generateParamsNetwork(
                 userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>());
 

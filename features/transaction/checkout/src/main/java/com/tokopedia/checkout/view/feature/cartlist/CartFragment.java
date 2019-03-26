@@ -1292,30 +1292,22 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         sendAnalyticsOnDataCartIsEmpty();
         refreshHandler.finishRefresh();
         mIsMenuVisible = false;
-        getActivity().invalidateOptionsMenu();
+        if (getActivity() != null) getActivity().invalidateOptionsMenu();
         checkoutModuleRouter.checkoutModuleRouterResetBadgeCart();
 
         if (emptyCartListener != null) {
-            /*emptyCartListener.onCartEmpty(cartListData.getAutoApplyData().getMessageSuccess(),
-                    cartListData.getAutoApplyData().getState(),
-                    cartListData.getAutoApplyData().getTitleDescription());*/
-
-            if (cartListData.getAutoApplyStackData() != null && cartListData.getAutoApplyStackData().isSuccess()) {
-                emptyCartListener.onCartEmpty(cartListData.getAutoApplyStackData().getMessageSuccess(),
-                        cartListData.getAutoApplyStackData().getState(),
-                        cartListData.getAutoApplyStackData().getTitleDescription());
-            }
+            emptyCartListener.onCartEmpty(
+                    cartListData.getAutoApplyStackData().getMessageSuccess(),
+                    cartListData.getAutoApplyStackData().getState(),
+                    cartListData.getAutoApplyStackData().getTitleDescription(),
+                    cartListData.getAutoApplyData().getCode());
         } else {
             if (getActivity() instanceof EmptyCartListener) {
-                /*((EmptyCartListener) getActivity()).onCartEmpty(cartListData.getAutoApplyData().getMessageSuccess(),
-                        cartListData.getAutoApplyData().getState(),
-                        cartListData.getAutoApplyData().getTitleDescription());*/
-
-                if (cartListData.getAutoApplyStackData() != null && cartListData.getAutoApplyStackData().isSuccess()) {
-                    ((EmptyCartListener) getActivity()).onCartEmpty(cartListData.getAutoApplyStackData().getMessageSuccess(),
-                            cartListData.getAutoApplyStackData().getState(),
-                            cartListData.getAutoApplyStackData().getTitleDescription());
-                }
+                ((EmptyCartListener) getActivity()).onCartEmpty(
+                        cartListData.getAutoApplyStackData().getMessageSuccess(),
+                        cartListData.getAutoApplyStackData().getState(),
+                        cartListData.getAutoApplyStackData().getTitleDescription(),
+                        cartListData.getAutoApplyStackData().getCode());
             }
         }
         showEmptyCartContainer();
