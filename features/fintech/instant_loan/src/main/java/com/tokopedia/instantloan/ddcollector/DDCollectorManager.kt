@@ -28,7 +28,6 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
     private val defaultsComponents: Set<String>
         get() {
             val components = HashSet<String>()
-//            components.add(DDConstants.DDComponents.READ_CONTACTS.`val`())
             components.add(DDConstants.DDComponents.GET_ACCOUNTS.`val`())
             components.add(DDConstants.DDComponents.APP.`val`())
             components.add(DDConstants.DDComponents.BASIC_DEVICE_DATA.`val`())
@@ -102,10 +101,6 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
             if (mComponents.contains(DDConstants.DDComponents.GET_ACCOUNTS.`val`())) {
                 info.add(Account(mContext!!.getSystemService(Context.ACCOUNT_SERVICE) as AccountManager))
             }
-
-            /*if (mComponents.contains(DDConstants.DDComponents.READ_CONTACTS.`val`())) {
-                info.add(Contact(mContext!!.contentResolver))
-            }*/
 
             if (mComponents.contains(DDConstants.DDComponents.BASIC_DEVICE_DATA.`val`())) {
                 info.add(BasicDeviceData(mContext!!, mContext!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager))

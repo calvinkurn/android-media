@@ -136,22 +136,6 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
         data.addProperty(DeviceDataKeys.Common.SMS, messages.toString())
 
         val contacts = JsonArray()
-        /*var contact: JsonObject
-
-        if (map[Contact.DD_CONTACT] != null) {
-            for (entry in map[Contact.DD_CONTACT] as List<HashMap<String, String>>) {
-                if (entry == null) {
-                    continue
-                }
-                contact = JsonObject()
-                contact.addProperty(DeviceDataKeys.Contact.NAME, entry[ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME])
-                contact.addProperty(DeviceDataKeys.Contact.PHONE, entry[ContactsContract.CommonDataKinds.Phone.NUMBER])
-                contact.addProperty(DeviceDataKeys.Contact.TIME, entry[ContactsContract.CommonDataKinds.Phone.CONTACT_STATUS_TIMESTAMP])
-                contact.addProperty(DeviceDataKeys.Contact.TIMES, entry[ContactsContract.CommonDataKinds.Phone.TIMES_CONTACTED])
-                contact.addProperty(DeviceDataKeys.Contact.LAST_TIME, entry[ContactsContract.CommonDataKinds.Phone.LAST_TIME_CONTACTED])
-                contacts.add(contact)
-            }
-        }*/
         data.addProperty(DeviceDataKeys.Common.CONTACT, contacts.toString())
 
         val callLogs = JsonArray()
