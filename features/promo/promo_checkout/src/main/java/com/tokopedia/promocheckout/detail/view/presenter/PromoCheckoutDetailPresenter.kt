@@ -75,6 +75,12 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
         codes.add(promoCode)
         checkPromoFirstStepParam.codes = codes
 
+        if (isFromLoadDetail) {
+            checkPromoFirstStepParam.skipApply = 1
+        } else {
+            checkPromoFirstStepParam.skipApply = 0
+        }
+
         view.showProgressLoading()
         checkPromoStackingCodeUseCase.setParams(checkPromoFirstStepParam)
         checkPromoStackingCodeUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
@@ -87,7 +93,7 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
                             view.onErrorValidatePromo(MessageErrorException(responseGetPromoStack.data.message.text))
                         }
                     } else {
-                        if(!isFromLoadDetail) {
+                        if (!isFromLoadDetail) {
                             view.onSuccessValidatePromoStacking(responseGetPromoStack.data)
                         } else {
                             view.onErroGetDetail(CheckPromoCodeDetailException(responseGetPromoStack.data.message.text))
