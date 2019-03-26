@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.common.adapter;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
@@ -12,7 +13,7 @@ import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemMod
 
 public interface CartAdapterActionListener {
 
-    void onCartPromoSuggestionActionClicked(CartPromoSuggestion cartPromoSuggestion, int position);
+    // void onCartPromoSuggestionActionClicked(CartPromoSuggestion cartPromoSuggestion, int position);
 
     void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion cartPromoSuggestion, int position);
 
@@ -22,7 +23,7 @@ public interface CartAdapterActionListener {
 
     // void onCartPromoUseVoucherMerchantPromoClicked(PromoDataMerchant cartPromoMerchant, int position);
 
-    void onVoucherMerchantPromoClicked(int position);
+    void onVoucherMerchantPromoClicked(Object object);
 
     // void onCartPromoCancelVoucherPromoClicked(PromoData cartPromo, int position);
 

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.checkout.R
+import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import java.util.ArrayList
 
@@ -15,7 +16,6 @@ import java.util.ArrayList
 
 class TotalBenefitBottomSheetAdapter : RecyclerView.Adapter<TotalBenefitBottomSheetAdapter.BenefitViewHolder>() {
     private lateinit var benefitList: List<SummariesUiModel>
-    private lateinit var stringTest: String
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BenefitViewHolder {
         val view = LayoutInflater.from(parent.context)

@@ -58,6 +58,12 @@ open class TotalBenefitBottomSheetFragment : BottomSheetDialogFragment() {
         rv_total_benefit.layoutManager = LinearLayoutManager(activity)
         rv_total_benefit.adapter = benefitAdapter
 
+        val tvTotalLabel: TextView = view.findViewById(R.id.label_total)
+        tvTotalLabel.text = benefitUiModel.finalBenefitText
+
+        val tvTotalAmount: TextView = view.findViewById(R.id.label_total_amount)
+        tvTotalAmount.text = benefitUiModel.finalBenefitAmount
+
         val layoutTitle = view.findViewById<View>(com.tokopedia.design.R.id.layout_title)
         layoutTitle.setOnClickListener {
             dismiss()

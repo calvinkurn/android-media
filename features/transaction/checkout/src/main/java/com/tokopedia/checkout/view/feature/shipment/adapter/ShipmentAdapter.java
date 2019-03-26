@@ -924,7 +924,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return true;
     }
 
-    public boolean hasAppliedPromoCode() {
+    public boolean hasAppliedPromoStackCode() {
         for (Object itemAdapter : shipmentDataList) {
             if (itemAdapter instanceof PromoStackingData) {
                 return ((PromoStackingData) itemAdapter).getState() != TickerPromoStackingCheckoutView.State.EMPTY;

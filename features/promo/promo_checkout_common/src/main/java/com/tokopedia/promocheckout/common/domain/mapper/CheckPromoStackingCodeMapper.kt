@@ -18,6 +18,7 @@ open class CheckPromoStackingCodeMapper @Inject constructor() : Func1<GraphqlRes
 
     override fun call(t: GraphqlResponse?): ResponseGetPromoStackUiModel {
         var status = ""
+        var listMessage = ArrayList<String>()
         var data = DataUiModel()
         var responseFirst : ResponseGetPromoStackFirst?
         var responseFinal : ResponseGetPromoStackFinal?
@@ -26,42 +27,51 @@ open class CheckPromoStackingCodeMapper @Inject constructor() : Func1<GraphqlRes
             responseFinal = t?.getData(ResponseGetPromoStackFinal::class.java)
             responseFinal.let { responseGetPromoStackFinal ->
                 responseGetPromoStackFinal?.getPromoStackUse.let {
-                    // TODO : buka kondisi status, krn dummy statusnya string kosong
-                    /*status = it?.status ?: STATUS_ERROR
+                    status = it?.status ?: STATUS_ERROR
+                    it?.message?.forEach { message ->
+                        listMessage.add(message)
+                    }
                     when (it?.status) {
-                        STATUS_OK -> {*/
-                            data = mapData(it?.data)
-                       /* }
-                    }*/
+                        STATUS_OK -> {
+                            data = mapData(it.data)
+                       }
+                    }
                 }
             }
         } else {
             responseFirst = t?.getData(ResponseGetPromoStackFirst::class.java)
             responseFirst.let { responseGetPromoStackFirst ->
                 responseGetPromoStackFirst?.getPromoStackFirst.let {
-                    // TODO : buka kondisi status, krn dummy statusnya string kosong
-                    /*status = it?.status ?: STATUS_ERROR
+                    status = it?.status ?: STATUS_ERROR
+                    it?.message?.forEach { message ->
+                        listMessage.add(message)
+                    }
                     when (it?.status) {
-                        STATUS_OK -> {*/
-                            data = mapData(it?.data)
-                        /*}
-                    }*/
+                        STATUS_OK -> {
+                            data = mapData(it.data)
+                        }
+                    }
                 }
             }
         }
 
         return ResponseGetPromoStackUiModel(
                 status,
+                listMessage,
                 data
         )
     }
 
     fun callDummy(response: ResponseGetPromoStackFirst): ResponseGetPromoStackUiModel {
         var status = ""
+        var listMessage = ArrayList<String>()
         var data = DataUiModel()
         response.let { responseGetPromoStackFirst ->
             responseGetPromoStackFirst.getPromoStackFirst.let {
                 status = it?.status ?: STATUS_ERROR
+                it?.message?.forEach { message ->
+                    listMessage.add(message)
+                }
                 when (it?.status) {
                     STATUS_OK -> {
                         data = mapData(it.data)
@@ -72,6 +82,7 @@ open class CheckPromoStackingCodeMapper @Inject constructor() : Func1<GraphqlRes
 
         return ResponseGetPromoStackUiModel(
                 status,
+                listMessage,
                 data
         )
     }
@@ -176,7 +187,6 @@ open class CheckPromoStackingCodeMapper @Inject constructor() : Func1<GraphqlRes
         return voucherOrdersItemUiModel
     }
 
-    // TODO : balikin "grey" to state untuk data real
     private fun mapMessage(message: Message?): MessageUiModel {
         var messageUiModel = MessageUiModel()
         message?.color?.let { color ->
@@ -184,7 +194,7 @@ open class CheckPromoStackingCodeMapper @Inject constructor() : Func1<GraphqlRes
                 message.text?.let { text ->
                     messageUiModel = MessageUiModel(
                             color = color,
-                            state = "grey",
+                            state = state,
                             text = text
                     )
                 }

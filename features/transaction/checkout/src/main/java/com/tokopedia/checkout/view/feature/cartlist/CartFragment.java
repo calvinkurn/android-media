@@ -570,10 +570,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     }
 
-    @Override
+    /*@Override
     public void onCartPromoSuggestionActionClicked(CartPromoSuggestion data, int position) {
         dPresenter.processCheckPromoCodeFromSuggestedPromo(data.getPromoCode(), false);
-    }
+    }*/
 
     @Override
     public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion data, int position) {
@@ -600,17 +600,16 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onVoucherMerchantPromoClicked(int shopPosition) {
-        List<ShopGroupData> shopGroupDataList = cartListData.getShopGroupDataList();
-        PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobaldata();
+    public void onVoucherMerchantPromoClicked(Object object) {
         CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
-
-        if (getFragmentManager() != null) {
-            showMerchantVoucherListBottomsheet(
-                    Integer.parseInt(shopGroupDataList.get(shopPosition).getShopId()),
-                    shopGroupDataList.get(shopPosition).getCartString(),
-                    checkPromoFirstStepParam
-            );
+        if (object instanceof ShopGroupData) {
+            if (getFragmentManager() != null) {
+                showMerchantVoucherListBottomsheet(
+                        Integer.parseInt(((ShopGroupData)object).getShopId()),
+                        ((ShopGroupData)object).getCartString(),
+                        checkPromoFirstStepParam
+                );
+            }
         }
     }
 

@@ -156,7 +156,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                 tickerPromoStackingCheckoutView.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
                     @Override
                     public void onClickUsePromo() {
-                        actionListener.onVoucherMerchantPromoClicked(getAdapterPosition());
+                        actionListener.onVoucherMerchantPromoClicked(cartShopHolderData.getShopGroupData());
                     }
 
                     @Override

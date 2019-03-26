@@ -161,6 +161,7 @@
                 android:layout_marginBottom="@dimen/dp_20">
 
                 <TextView
+                    android:id="@+id/label_total"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
@@ -169,6 +170,7 @@
                     android:text="@string/totalbenefit_bottomsheet_all_title"/>
 
                 <TextView
+                    android:id="@+id/label_total_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"

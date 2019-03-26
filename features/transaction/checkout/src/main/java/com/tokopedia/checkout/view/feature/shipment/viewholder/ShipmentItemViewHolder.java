@@ -524,7 +524,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tickerPromoStackingCheckoutView.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
             @Override
             public void onClickUsePromo() {
-                mActionListener.onVoucherMerchantPromoClicked(getAdapterPosition());
+                mActionListener.onVoucherMerchantPromoClicked(shipmentCartItemModel);
             }
 
             @Override

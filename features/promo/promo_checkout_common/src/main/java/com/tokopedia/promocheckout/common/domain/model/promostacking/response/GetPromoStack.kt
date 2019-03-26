@@ -9,6 +9,9 @@ data class GetPromoStack(
 	@field:SerializedName("data")
 	val data: Data? = null,
 
+	@field:SerializedName("message")
+	val message: ArrayList<String>? = null,
+
 	@field:SerializedName("status")
 	val status: String? = null
 )

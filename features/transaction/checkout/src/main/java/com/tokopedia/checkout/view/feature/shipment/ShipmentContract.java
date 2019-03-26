@@ -17,6 +17,7 @@ import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
@@ -79,6 +80,8 @@ public interface ShipmentContract {
         void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
 
         void renderCheckPromoCodeFromCourierSuccess(PromoCodeCartListData promoCodeCartListData, int itemPosition, boolean noToast);
+
+        void renderCheckPromoStackCodeFromCourierSuccess(DataUiModel dataUiModel, int itemPosition, boolean noToast);
 
         void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
 
@@ -247,10 +250,13 @@ public interface ShipmentContract {
 
         void checkPromoShipment(String promoCode, boolean isOneClickShipment, CheckPromoFirstStepParam checkPromoFirstStepParam);
 
-        void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isOneClickShipment);
+        void checkPromoStackShipment(CheckPromoFirstStepParam checkPromoFirstStepParam);
 
-        void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition,
-                                                      boolean noToast, boolean isOneClickShipment);
+        // void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isOneClickShipment);
+
+        // void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast, boolean isOneClickShipment);
+
+        void processCheckPromoStackingCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast);
 
         void processSaveShipmentState(ShipmentCartItemModel shipmentCartItemModel);
 
@@ -326,9 +332,6 @@ public interface ShipmentContract {
         CodModel getCodData();
 
         void proceedCodCheckout(String voucherCode, boolean isOneClickShipment);
-
-
-
     }
 
 }
