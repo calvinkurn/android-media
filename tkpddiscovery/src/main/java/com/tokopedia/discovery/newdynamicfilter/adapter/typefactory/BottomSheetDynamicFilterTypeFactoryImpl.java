@@ -13,9 +13,9 @@ import com.tokopedia.discovery.newdynamicfilter.view.BottomSheetDynamicFilterVie
 
 public class BottomSheetDynamicFilterTypeFactoryImpl implements DynamicFilterTypeFactory {
 
-    private final BottomSheetDynamicFilterView filterView;
+    private BottomSheetDynamicFilterView filterView;
 
-    public BottomSheetDynamicFilterTypeFactoryImpl(final BottomSheetDynamicFilterView filterView) {
+    public BottomSheetDynamicFilterTypeFactoryImpl(BottomSheetDynamicFilterView filterView) {
         this.filterView = filterView;
     }
 
@@ -23,7 +23,8 @@ public class BottomSheetDynamicFilterTypeFactoryImpl implements DynamicFilterTyp
     public int type(Filter filter) {
         if (filter.isSeparator()) {
             return R.layout.dynamic_filter_item_separator;
-        } else if (filter.isPriceFilter()) {
+        }
+        else if (filter.isPriceFilter()) {
             return R.layout.dynamic_filter_item_price;
         } else if (filter.isExpandableFilter()) {
             return R.layout.dynamic_filter_expandable_item;
