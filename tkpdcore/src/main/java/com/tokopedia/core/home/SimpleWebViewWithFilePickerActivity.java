@@ -1,14 +1,14 @@
 package com.tokopedia.core.home;
 
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 
+import com.tokopedia.core2.R;
 import com.tokopedia.core.app.TkpdCoreWebViewActivity;
 import com.tokopedia.core.home.fragment.SimpleWebViewWithFilePickerFragment;
-import com.tokopedia.core2.R;
 
 public class SimpleWebViewWithFilePickerActivity extends TkpdCoreWebViewActivity {
     public static final String EXTRA_URL = "url";
@@ -30,23 +30,21 @@ public class SimpleWebViewWithFilePickerActivity extends TkpdCoreWebViewActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        inflateView(R.layout.activity_webview_container);
+        inflateView(R.layout.activity_webview_container);
         String url = getIntent().getExtras().getString(EXTRA_URL);
         fragment = SimpleWebViewWithFilePickerFragment.createInstance(url);
         if (savedInstanceState == null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.parent_view, fragment);
+            fragmentTransaction.add(R.id.container, fragment);
             fragmentTransaction.commit();
         }
     }
-
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent){
         super.onActivityResult(requestCode, resultCode, intent);
 
     }
-
     @Override
     public void onBackPressed() {
         try {
@@ -59,10 +57,4 @@ public class SimpleWebViewWithFilePickerActivity extends TkpdCoreWebViewActivity
             super.onBackPressed();
         }
     }
-
-    @Override
-    protected int getContentId() {
-        return R.layout.activity_webview_container;
-    }
-
 }
