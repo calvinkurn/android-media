@@ -602,7 +602,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onVoucherMerchantPromoClicked(int shopPosition) {
         List<ShopGroupData> shopGroupDataList = cartListData.getShopGroupDataList();
-        PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobaldata();
         CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
 
         if (getFragmentManager() != null) {

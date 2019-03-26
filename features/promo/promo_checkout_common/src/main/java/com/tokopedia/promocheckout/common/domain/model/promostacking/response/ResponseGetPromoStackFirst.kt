@@ -7,5 +7,5 @@ import com.google.gson.annotations.SerializedName
 data class ResponseGetPromoStackFirst(
 
 	@field:SerializedName("get_promo_stack_first")
-	val getPromoStackFirst: GetPromoStack? = null
+	val getPromoStackFirst: GetPromoStack = GetPromoStack()
 )

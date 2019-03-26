@@ -7,8 +7,8 @@ import com.google.gson.annotations.SerializedName
 data class GetPromoStack(
 
 	@field:SerializedName("data")
-	val data: Data? = null,
+	val data: Data = Data(),
 
 	@field:SerializedName("status")
-	val status: String? = null
+	val status: String = ""
 )

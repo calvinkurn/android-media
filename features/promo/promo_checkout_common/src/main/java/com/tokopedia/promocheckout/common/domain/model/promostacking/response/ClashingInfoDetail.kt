@@ -8,14 +8,14 @@ import com.tokopedia.promocheckout.common.domain.model.promostacking.response.Vo
 data class ClashingInfoDetail(
 
 	@field:SerializedName("is_clashed_promos")
-	val isClashedPromos: Boolean? = false,
+	val isClashedPromos: Boolean = false,
 
 	@field:SerializedName("clash_reason")
-	val clashReason: String? = "",
+	val clashReason: String = "",
 
 	@field:SerializedName("clash_message")
-	val clashMessage: String? = "",
+	val clashMessage: String = "",
 
 	@field:SerializedName("options")
-	val options: ArrayList<ClashingVoucherOption?>? = ArrayList()
+	val options: ArrayList<ClashingVoucherOption> = ArrayList()
 )
