@@ -16,7 +16,7 @@ public class PendingCashback implements Parcelable {
     public PendingCashback() {
     }
 
-    protected PendingCashback(Parcel in) {
+    private PendingCashback(Parcel in) {
         amount = in.readInt();
         amountText = in.readString();
     }

@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -357,18 +356,7 @@ public class DeepLinkChecker {
 
     public static void openProduct(String url, Context context) {
         if (context != null) {
-            Uri uri = Uri.parse(url);
             RouteManager.route(context, url);
-            /*List<String> pathSegmentList = uri.getPathSegments();
-            if (pathSegmentList.size() > 1) {
-                String shopDomain = pathSegmentList.get(pathSegmentList.size() - 2);
-                String productKey = pathSegmentList.get(pathSegmentList.size() - 1);
-                RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
-                        shopDomain, productKey);
-            } else {
-                String productId = uri.getLastPathSegment();
-                RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
-            }*/
         }
     }
 

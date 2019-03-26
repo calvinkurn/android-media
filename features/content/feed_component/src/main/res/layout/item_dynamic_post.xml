@@ -180,6 +180,10 @@
                     app:tabIndicatorHeight="0dp" />
             </RelativeLayout>
 
+            <include
+                android:id="@+id/layoutPostTag"
+                layout="@layout/item_posttag"/>
+
             <LinearLayout
                 android:id="@+id/footer"
                 android:layout_width="match_parent"

@@ -35,8 +35,6 @@ public interface FlightOrderListContract {
 
         Observable<ProfileInfo> getProfileObservable();
 
-        void showLessThan6HoursDialog();
-
         void showNonRefundableCancelDialog(String invoiceId, List<FlightCancellationJourney> item, List<FlightOrderJourney> orderJourneyList);
 
         void showRefundableCancelDialog(String invoiceId, List<FlightCancellationJourney> item, List<FlightOrderJourney> orderJourneyList);
@@ -59,8 +57,6 @@ public interface FlightOrderListContract {
         void onGetProfileData();
 
         void onCancelButtonClicked(FlightOrderSuccessViewModel flightOrderSuccessViewModel);
-
-        void checkIfFlightCancellable(List<FlightOrderJourney> orderJourneyList, String invoiceId, List<FlightCancellationJourney> items);
 
         void onMoreAirlineInfoClicked();
     }

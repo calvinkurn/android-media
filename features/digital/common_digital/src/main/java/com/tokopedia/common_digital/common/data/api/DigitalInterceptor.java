@@ -76,7 +76,7 @@ public class DigitalInterceptor extends com.tokopedia.abstraction.common.network
             String path, String strParam, String method, String authKey, String contentTypeHeader
     ) {
         return AuthUtil.generateHeadersWithXUserId(
-                path, strParam, method, authKey, contentTypeHeader, userSession.getUserId()
+                path, strParam, method, authKey, contentTypeHeader, userSession.getUserId(), userSession
         );
     }
 

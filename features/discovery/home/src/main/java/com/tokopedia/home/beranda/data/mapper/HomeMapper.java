@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.home.analytics.HomePageTracking;
+import com.tokopedia.home.beranda.domain.model.Spotlight;
+import com.tokopedia.home.beranda.domain.model.SpotlightItem;
 import com.tokopedia.home.beranda.domain.model.Ticker;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
@@ -13,13 +15,17 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.beranda.domain.model.HomeData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicIconSectionViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeIconItem;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightItemViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.UseCaseIconSectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsDynamicChannelModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
+import com.tokopedia.home.util.ServerTimeOffsetUtil;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel;
@@ -51,28 +57,26 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
 
             HomeData homeData = response.body().getData();
 
-            if (homeData.getTicker() != null
-                    && homeData.getTicker().getTickers() != null
-                    && !homeData.getTicker().getTickers().isEmpty()) {
-                list.add(mappingTicker(homeData.getTicker().getTickers()));
-            }
-
             if (homeData.getSlides() != null
                     && homeData.getSlides().getSlides() != null
                     && !homeData.getSlides().getSlides().isEmpty()) {
                 list.add(mappingBanner(homeData.getSlides().getSlides()));
             }
 
-            if (homeData.getDynamicHomeIcon() != null
-                    && homeData.getDynamicHomeIcon().getUseCaseIcon() != null
-                    && !homeData.getDynamicHomeIcon().getUseCaseIcon().isEmpty()) {
-                list.add(mappingUseCaseIcon(homeData.getDynamicHomeIcon().getUseCaseIcon()));
+            if (homeData.getTicker() != null
+                    && homeData.getTicker().getTickers() != null
+                    && !homeData.getTicker().getTickers().isEmpty()) {
+                list.add(mappingTicker(homeData.getTicker().getTickers()));
             }
 
             if (homeData.getDynamicHomeIcon() != null
                     && homeData.getDynamicHomeIcon().getDynamicIcon() != null
                     && !homeData.getDynamicHomeIcon().getDynamicIcon().isEmpty()) {
                 list.add(mappingDynamicIcon(homeData.getDynamicHomeIcon().getDynamicIcon()));
+                if(!homeData.isCache()) {
+                    HomePageTracking.eventEnhancedImpressionDynamicIconHomePage(context,
+                            homeData.getDynamicHomeIcon().getEnhanceImpressionDynamicIconHomePage());
+                }
             }
 
             if (homeData.getDynamicHomeChannel() != null
@@ -114,7 +118,17 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                 HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(context,
                                         channel.getEnhanceImpressionDynamicSprintLegoHomePage(position)
                                 );
-                            } else {
+                            } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT)) {
+                                homeData.getSpotlight().setPromoName(String.format("/ - p%s - spotlight banner", String.valueOf(position)));
+                                homeData.getSpotlight().setHomeAttribution(String.format("%s - spotlightBanner - $1 - $2", String.valueOf(position)));
+                                HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(context,
+                                        homeData.getSpotlight().getEnhanceImpressionSpotlightHomePage(position)
+                                );
+                            } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)
+                                    || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_HERO)
+                                    || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_ORGANIC)
+                                    || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_TOPADS)
+                                    || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_3_IMAGE)) {
                                 channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
                                 channel.setHomeAttribution(String.format("%s - curatedListBanner - %s - $1 - $2", String.valueOf(position), channel.getHeader().getName()));
                                 legoAndCuratedAndSprintSaleBannerList.addAll(
@@ -123,14 +137,28 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                             }
                         }
 
-                        if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)) {
-                            list.add(new DigitalsViewModel(context.getString(R.string.digital_widget_title), 0));
-                        } else if(channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_TOPADS)) {
-                            list.add(mappingDynamicTopAds(channel));
-                        } else {
-                            list.add(mappingDynamicChannel(channel));
-                            HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
-                                    list.size(),channel);
+                        switch (channel.getLayout()) {
+                            case DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET:
+                                list.add(new DigitalsViewModel(context.getString(R.string.digital_widget_title), 0));
+                                break;
+                            case DynamicHomeChannel.Channels.LAYOUT_TOPADS:
+                                list.add(mappingDynamicTopAds(channel));
+                                break;
+                            case DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT:
+                                list.add(mappingSpotlight(homeData.getSpotlight()));
+                                break;
+                            case DynamicHomeChannel.Channels.LAYOUT_3_IMAGE:
+                            case DynamicHomeChannel.Channels.LAYOUT_ORGANIC:
+                            case DynamicHomeChannel.Channels.LAYOUT_HERO:
+                            case DynamicHomeChannel.Channels.LAYOUT_6_IMAGE:
+                            case DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE:
+                            case DynamicHomeChannel.Channels.LAYOUT_SPRINT:
+                            case DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL:
+                            case DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO:
+                                list.add(mappingDynamicChannel(channel));
+                                HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
+                                        list.size(),channel);
+                                break;
                         }
                     }
                 }
@@ -187,24 +215,53 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
     }
 
     private Visitable mappingUseCaseIcon(List<DynamicHomeIcon.UseCaseIcon> iconList) {
-        CategorySectionViewModel viewModel = new CategorySectionViewModel();
+        UseCaseIconSectionViewModel viewModel = new UseCaseIconSectionViewModel();
         for (DynamicHomeIcon.UseCaseIcon icon : iconList) {
-            viewModel.addSection(new LayoutSections(LayoutSections.ICON_USE_CASE, icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
+            viewModel.addItem(new HomeIconItem(icon.getId(), icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
         }
         return viewModel;
     }
 
     private Visitable mappingDynamicIcon(List<DynamicHomeIcon.DynamicIcon> iconList) {
-        CategorySectionViewModel viewModel = new CategorySectionViewModel();
+        DynamicIconSectionViewModel viewModelDynamicIcon = new DynamicIconSectionViewModel();
         for (DynamicHomeIcon.DynamicIcon icon : iconList) {
-            viewModel.addSection(new LayoutSections(LayoutSections.ICON_DYNAMIC_CASE, icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
+            viewModelDynamicIcon.addItem(new HomeIconItem(icon.getId(), icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
         }
-        return viewModel;
+        return viewModelDynamicIcon;
     }
 
     private Visitable mappingDynamicChannel(DynamicHomeChannel.Channels channel) {
         DynamicChannelViewModel viewModel = new DynamicChannelViewModel();
         viewModel.setChannel(channel);
+
+        viewModel.setServerTimeOffset(
+                ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(
+                        channel.getHeader().getServerTimeUnix()
+                )
+        );
         return viewModel;
+    }
+
+    private Visitable mappingSpotlight(Spotlight spotlight) {
+        List<SpotlightItemViewModel> spotlightItems = new ArrayList<>();
+
+        for (SpotlightItem spotlightItem : spotlight.getSpotlights()) {
+            spotlightItems.add(new SpotlightItemViewModel(
+                    spotlightItem.getId(),
+                    spotlightItem.getTitle(),
+                    spotlightItem.getDescription(),
+                    spotlightItem.getBackgroundImageUrl(),
+                    spotlightItem.getTagName(),
+                    spotlightItem.getTagNameHexcolor(),
+                    spotlightItem.getTagHexcolor(),
+                    spotlightItem.getCtaText(),
+                    spotlightItem.getCtaTextHexcolor(),
+                    spotlightItem.getUrl(),
+                    spotlightItem.getApplink(),
+                    spotlight.getPromoName()
+                    ));
+        }
+
+        return new SpotlightViewModel(spotlightItems);
     }
 }

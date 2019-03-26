@@ -6,7 +6,7 @@
         <activity
             android:name=".view.activity.TokoPointsHomeActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/TokoPointTransparentStatus" />
         <activity
             android:name=".view.activity.CatalogListingActivity"
             android:screenOrientation="portrait"

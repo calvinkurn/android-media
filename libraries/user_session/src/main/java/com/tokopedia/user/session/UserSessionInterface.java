@@ -49,6 +49,8 @@ public interface UserSessionInterface {
 
     String getGCToken();
 
+    String getShopAvatar();
+
 
         /**
          * SETTER METHOD
@@ -110,5 +112,5 @@ public interface UserSessionInterface {
 
     void setGCToken(String gcToken);
 
-
+    void setShopAvatar(String shopAvatar);
 }

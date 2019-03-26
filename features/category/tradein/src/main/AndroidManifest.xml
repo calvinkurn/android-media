@@ -1,0 +1,17 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.tradein">
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <application
+        android:allowBackup="true"
+        android:label="Tukar Tambah"
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name="view.viewcontrollers.TradeInHomeActivity"
+            android:label="@string/tukar_tambah" />
+        <activity
+            android:name="view.viewcontrollers.FinalPriceActivity"
+            android:label="@string/harga_final" />
+    </application>
+</manifest>

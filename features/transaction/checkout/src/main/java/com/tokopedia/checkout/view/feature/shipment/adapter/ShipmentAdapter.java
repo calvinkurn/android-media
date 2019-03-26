@@ -677,6 +677,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         double totalPrice = 0;
         double additionalFee = 0;
         double totalItemPrice = 0;
+        double tradeInPrice = 0;
         int totalItem = 0;
         double totalPurchaseProtectionPrice = 0;
         int totalPurchaseProtectionItem = 0;
@@ -696,6 +697,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         totalPurchaseProtectionPrice += cartItemModel.getProtectionPrice();
                     }
 
+                    if (cartItemModel.isValidTradeIn()) {
+                        tradeInPrice += cartItemModel.getOldDevicePrice();
+                    }
+
                     totalItemPrice += (cartItemModel.getPrice() * cartItemModel.getQuantity());
                 }
 
@@ -713,7 +718,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
         }
-        totalPrice = totalItemPrice + shippingFee + insuranceFee + totalPurchaseProtectionPrice + additionalFee - shipmentCostModel.getPromoPrice();
+        totalPrice = totalItemPrice + shippingFee + insuranceFee + totalPurchaseProtectionPrice + additionalFee -
+                shipmentCostModel.getPromoPrice() - tradeInPrice;
         shipmentCostModel.setTotalWeight(totalWeight);
         shipmentCostModel.setAdditionalFee(additionalFee);
         shipmentCostModel.setTotalItemPrice(totalItemPrice);
@@ -722,6 +728,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         shipmentCostModel.setInsuranceFee(insuranceFee);
         shipmentCostModel.setTotalPurchaseProtectionItem(totalPurchaseProtectionItem);
         shipmentCostModel.setPurchaseProtectionFee(totalPurchaseProtectionPrice);
+        shipmentCostModel.setTradeInPrice(tradeInPrice);
         if (shipmentDonationModel.isChecked()) {
             shipmentCostModel.setDonation(shipmentDonationModel.getDonation().getNominal());
         } else {

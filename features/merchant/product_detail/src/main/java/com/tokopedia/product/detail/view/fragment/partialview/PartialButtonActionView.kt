@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.PreOrder
+import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 
 class PartialButtonActionView private constructor(private val view: View,
@@ -58,7 +58,7 @@ class PartialButtonActionView private constructor(private val view: View,
         renderButton()
     }
 
-    fun renderButton(){
+    private fun renderButton(){
         if (isWarehouseProduct) {
             showNoStockButton()
         } else if (hasShopAuthority) {

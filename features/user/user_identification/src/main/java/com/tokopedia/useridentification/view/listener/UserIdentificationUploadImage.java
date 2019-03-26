@@ -26,6 +26,6 @@ public interface UserIdentificationUploadImage  {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void uploadImage(UserIdentificationStepperModel model);
+        void uploadImage(UserIdentificationStepperModel model,int projectid);
     }
 }

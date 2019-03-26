@@ -80,24 +80,6 @@ public class AuthUtil {
     public static final String HEADER_HMAC_SIGNATURE_KEY = "TKPDROID AndroidApps:";
     private static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
 
-    public static Map<String, String> generateHeaderCartCheckout(String path,
-                                                                 String strParam,
-                                                                 String method,
-                                                                 String authKey,
-                                                                 String contentTypeHeader) {
-        Map<String, String> finalHeader = getDefaultHeaderMap(
-                path, strParam, method, contentTypeHeader != null ? contentTypeHeader : CONTENT_TYPE,
-                authKey, DATE_FORMAT
-        );
-        UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
-        finalHeader.put("X-APP-VERSION", "\"" + GlobalConfig.VERSION_NAME + "\"");
-        finalHeader.put("Tkpd-UserId", userSession.getUserId());
-        finalHeader.put(HEADER_DEVICE, "android");
-        finalHeader.put("Tkpd-SessionId", GCMHandler.getRegistrationId(CoreNetworkApplication.getAppContext()));
-        return finalHeader;
-    }
-
-
     /**
      * default key is KEY_WSV$
      */
@@ -142,6 +124,9 @@ public class AuthUtil {
         headerMap.put(HEADER_CONTENT_MD5, contentMD5);
         headerMap.put(HEADER_DATE, date);
         headerMap.put(HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
+        headerMap.remove(HEADER_ACCOUNTS_AUTHORIZATION);
+        headerMap.put(HEADER_ACCOUNTS_AUTHORIZATION,String.format("%s %s", "Bearer",
+                userSession.getAccessToken()));
         headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
@@ -174,6 +159,9 @@ public class AuthUtil {
         headerMap.put(HEADER_REQUEST_METHOD, method);
         headerMap.put(HEADER_DATE, date);
         headerMap.put(HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
+        headerMap.remove(HEADER_ACCOUNTS_AUTHORIZATION);
+        headerMap.put(HEADER_ACCOUNTS_AUTHORIZATION,String.format("%s %s", "Bearer",
+                userSession.getAccessToken()));
         headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
@@ -182,13 +170,6 @@ public class AuthUtil {
         headerMap.put(HEADER_X_TKPD_USER_ID, userId);
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
         return headerMap;
-    }
-
-
-    public static Map<String, String> generateHeaders(String path, String strParam, String method, String authKey) {
-        Map<String, String> finalHeader = getDefaultHeaderMap(path, strParam, method, CONTENT_TYPE, authKey, DATE_FORMAT);
-        finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
-        return finalHeader;
     }
 
     public static Map<String, String> generateWebviewHeaders(String path,
@@ -204,9 +185,8 @@ public class AuthUtil {
                 DATE_FORMAT
         );
         UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
-        finalHeader.put(
-                HEADER_ACCOUNTS_AUTHORIZATION,
-                PARAM_BEARER + userSession.getAccessToken()
+        finalHeader.remove(HEADER_ACCOUNTS_AUTHORIZATION);
+        finalHeader.put(HEADER_ACCOUNTS_AUTHORIZATION, PARAM_BEARER + userSession.getAccessToken()
         );
         finalHeader.put(
                 HEADER_TKPD_SESSION_ID,
@@ -241,18 +221,6 @@ public class AuthUtil {
         return finalHeader;
     }
 
-    public static Map<String, String> generateHeadersWithPath(
-            String path, String strParam, String method, String authKey, String contentType
-    ) {
-        Map<String, String> finalHeader = getDefaultHeaderMap(
-                path, strParam, method, contentType != null ? contentType : CONTENT_TYPE,
-                authKey, DATE_FORMAT
-        );
-        finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
-        finalHeader.put(HEADER_X_TKPD_PATH, path);
-        return finalHeader;
-    }
-
     public static Map<String, String> generateHeaders(String path, String method, String authKey) {
         Map<String, String> finalHeader = getDefaultHeaderMap(path, "", method, CONTENT_TYPE_JSON, authKey, DATE_FORMAT);
         UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
@@ -281,6 +249,8 @@ public class AuthUtil {
         headerMap.put(HEADER_CONTENT_MD5, contentMD5);
         headerMap.put(HEADER_DATE, date);
         headerMap.put(HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
+        headerMap.remove(HEADER_ACCOUNTS_AUTHORIZATION);
+        headerMap.put(HEADER_ACCOUNTS_AUTHORIZATION, "Bearer " + userSession.getAccessToken());
         headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
@@ -307,6 +277,8 @@ public class AuthUtil {
         headerMap.put(HEADER_CONTENT_MD5, contentMD5);
         headerMap.put(HEADER_DATE, date);
         headerMap.put(HEADER_AUTHORIZATION, HEADER_HMAC_SIGNATURE_KEY + signature.trim());
+        headerMap.remove(HEADER_ACCOUNTS_AUTHORIZATION);
+        headerMap.put(HEADER_ACCOUNTS_AUTHORIZATION, "Bearer " + userSession.getAccessToken());
         headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
@@ -331,27 +303,6 @@ public class AuthUtil {
         finalHeader.put(HEADER_DATE, date);
 
         return finalHeader;
-    }
-
-    /**
-     * This function generate the HMAC (Authorization value) using the path, message, method, date and authKey
-     *
-     * @param path     api path
-     * @param strParam message
-     * @param method   request method type e.g. POST
-     * @param date     date in format @param authKey
-     * @param authKey  secret key
-     * @return hmac value
-     */
-    public static String generateHmacForContentTypeJson(String path, String strParam, String method, String date, String authKey) {
-        String contentMD5 = generateContentMd5(strParam);
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
-
-        String authString = String.format("%s\n%s\n%s\n%s\n%s", method, contentMD5, CONTENT_TYPE_JSON, date, path);
-        String signature = calculateRFC2104HMAC(authString, authKey);
-
-        return String.format("TKPD Authorization:%s", signature.trim());
     }
 
     public static Map<String, String> generateHeadersAccount(String authKey) {
@@ -535,22 +486,6 @@ public class AuthUtil {
         return params;
     }
 
-    public static RequestParams generateRequestParamsNetwork(Context context) {
-        String deviceId = GCMHandler.getRegistrationId(context);
-        UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
-        String userId = userSession.getUserId();
-        String hash = md5(userId + "~" + deviceId);
-        RequestParams params = RequestParams.create();
-
-        params.putString(PARAM_USER_ID, userId);
-        params.putString(PARAM_DEVICE_ID, deviceId);
-        params.putString(PARAM_HASH, hash);
-        params.putString(PARAM_OS_TYPE, "1");
-        params.putString(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
-
-        return params;
-    }
-
     public static TKPDMapParam<String, Object> generateParamsNetworkObject(Context context,
                                                                            TKPDMapParam<String, Object>
                                                                                    params,
@@ -580,28 +515,6 @@ public class AuthUtil {
             e.printStackTrace();
             return "";
         }
-    }
-
-    public static String calculateHmacSHA1(String authString, String authKey) {
-        try {
-            SecretKeySpec signingKey = new SecretKeySpec(authKey.getBytes(), MAC_ALGORITHM);
-            Mac mac = Mac.getInstance(MAC_ALGORITHM);
-            mac.init(signingKey);
-            return toHexString(mac.doFinal(authString.getBytes()));
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
-    private static String toHexString(byte[] bytes) {
-        Formatter formatter = new Formatter();
-
-        for (byte b : bytes) {
-            formatter.format("%02x", b);
-        }
-
-        return formatter.toString().trim();
     }
 
     private static String generateContentMd5(String s) {
@@ -635,22 +548,5 @@ public class AuthUtil {
             finalKey = finalKey + Character.toString((char) i);
         }
         return finalKey;
-    }
-
-    public static String getHeaderRequestReactNative(Context context) {
-        UserSession session = new UserSession(context);
-        Map<String, String> header = new HashMap<>();
-        header.put(HEADER_TKPD_SESSION_ID, FCMCacheManager.getRegistrationIdWithTemp(context));
-        header.put(HEADER_TKPD_USER_ID, session.isLoggedIn() ? session.getUserId() : "0");
-        header.put(HEADER_ACCOUNTS_AUTHORIZATION, String.format("Bearer %s", session.getAccessToken()));
-        header.put(PARAM_OS_TYPE, "1");
-        header.put(HEADER_DEVICE, String.format("android-%s", GlobalConfig.VERSION_NAME));
-        header.put(HEADER_USER_ID, session.isLoggedIn() ? session.getUserId() : "0");
-        header.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
-        header.put(HEADER_X_TKPD_USER_ID, session.isLoggedIn() ? session.getUserId() : "0");
-        header.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
-        header.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
-        Gson gson = new Gson();
-        return gson.toJson(header);
     }
 }
