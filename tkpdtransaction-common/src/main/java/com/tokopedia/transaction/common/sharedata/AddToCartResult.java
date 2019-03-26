@@ -6,9 +6,9 @@ package com.tokopedia.transaction.common.sharedata;
 
 public class AddToCartResult {
     private boolean success;
-    private String message;
-    private String cartId;
-    private String source;
+    private String message = "";
+    private String cartId = "";
+    private String source = "";
 
     public AddToCartResult() {
     }
