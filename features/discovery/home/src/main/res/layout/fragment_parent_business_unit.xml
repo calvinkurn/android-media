@@ -75,7 +75,7 @@
         android:layout_width="@dimen/dp_288"
         android:layout_height="@dimen/dp_96"
         app:cardCornerRadius="@dimen/dp_8"
-        tools:visibility="gone"
+        tools:visibility="visible"
         android:layout_gravity="center">
 
         <RelativeLayout
@@ -111,40 +111,42 @@
 
             </FrameLayout>
 
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginTop="@dimen/dp_27"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
                 android:layout_toLeftOf="@id/buttonReload"
                 android:layout_toStartOf="@id/buttonReload"
-                android:text="@string/widget_gagal_ditampilkan"
-                android:textStyle="bold"
-                android:lineSpacingExtra="@dimen/sp_6"
-                android:textSize="@dimen/sp_16"
-                android:textColor="#f531353b"
-                tools:text="Widget gagal ditampilkan"
-                />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/subtitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_2"
-                android:layout_marginBottom="@dimen/dp_27"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_toLeftOf="@id/buttonReload"
-                android:layout_toStartOf="@id/buttonReload"
-                android:text="@string/message_retry_general_bu_widget"
-                android:textSize="@dimen/sp_12"
-                android:textColor="#ae31353b"
-                android:lineSpacingExtra="@dimen/sp_6"
-                android:layout_below="@id/title"
-                tools:text="Klik ikon untuk coba lagi"
-                />
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/widget_gagal_ditampilkan"
+                    android:textStyle="bold"
+                    android:lineSpacingExtra="@dimen/sp_6"
+                    android:textSize="@dimen/sp_16"
+                    android:textColor="#f531353b"
+                    />
+
+                <TextView
+                    android:id="@+id/subtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:text="@string/message_retry_general_bu_widget"
+                    android:textSize="@dimen/sp_12"
+                    android:textColor="#ae31353b"
+                    android:lineSpacingExtra="@dimen/sp_6"
+                    />
+
+            </LinearLayout>
 
         </RelativeLayout>
 
