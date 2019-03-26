@@ -16,7 +16,7 @@ public interface DynamicFilterView {
     void saveCheckedState(Option option, Boolean isChecked);
 
     void removeSavedTextInput(String uniqueId);
-    void saveTextInput(String key, String textInput);
+    void saveTextInput(String uniqueId, String textInput);
 
     List<Option> getSelectedOptions(Filter filter);
     void removeSelectedOption(Option option);

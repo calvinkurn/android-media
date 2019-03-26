@@ -443,13 +443,13 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     }
 
     @Override
-    public void saveTextInput(String key, String textInput) {
-        savedTextInput.put(key, textInput);
-
-        Option textInputOption = OptionHelper.generateOptionFromUniqueId(key);
+    public void saveTextInput(String uniqueId, String textInput) {
+        Option textInputOption = OptionHelper.generateOptionFromUniqueId(uniqueId);
         textInputOption.setValue(textInput);
-
         filterController.setFilter(textInputOption, true, true);
+
+        String key = textInputOption.getKey();
+        savedTextInput.put(key, textInput);
     }
 
     @Override
