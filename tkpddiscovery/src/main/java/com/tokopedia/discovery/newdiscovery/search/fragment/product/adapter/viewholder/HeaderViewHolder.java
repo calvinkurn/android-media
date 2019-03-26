@@ -260,13 +260,17 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         public void bind(final Option option) {
             quickFilterText.setText(option.getName());
 
+            setBackgroundResource(option);
+
+            quickFilterText.setOnClickListener(view -> quickFilterListener.onQuickFilterSelected(option));
+        }
+
+        private void setBackgroundResource(Option option) {
             if (quickFilterListener.isQuickFilterSelected(option)) {
                 quickFilterText.setBackgroundResource(R.drawable.quick_filter_item_background_selected);
             } else {
                 quickFilterText.setBackgroundResource(R.drawable.quick_filter_item_background_neutral);
             }
-
-            quickFilterText.setOnClickListener(view -> quickFilterListener.onQuickFilterSelected(option));
         }
     }
 

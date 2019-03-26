@@ -600,15 +600,15 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onQuickFilterSelected(Option option) {
-        boolean isQuickFilterSelected = !Boolean.parseBoolean(option.getInputState());
+        boolean isQuickFilterSelectedReversed = !isQuickFilterSelected(option);
 
-        setFilterToController(option, isQuickFilterSelected);
+        setFilterToController(option, isQuickFilterSelectedReversed);
         applyFilterToSearchParameter(quickFilterController.getFilterParameter());
 
         clearDataFilterSort();
         reloadData();
 
-        UnifyTracking.eventSearchResultQuickFilter(getActivity(),option.getKey(), option.getValue(), isQuickFilterSelected);
+        UnifyTracking.eventSearchResultQuickFilter(getActivity(),option.getKey(), option.getValue(), isQuickFilterSelectedReversed);
     }
 
     private void setFilterToController(Option option, boolean isQuickFilterSelected) {
