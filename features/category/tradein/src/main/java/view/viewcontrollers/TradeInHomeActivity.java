@@ -76,48 +76,18 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                     try {
                         hideProgressBar();
                         mTvGoToProductDetails.setText(getString(R.string.text_check_functionality));
-                        mTvGoToProductDetails.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                tradeInHomeViewModel.startGUITest();
-                            }
-                        });
+                        mTvGoToProductDetails.setOnClickListener(v -> tradeInHomeViewModel.startGUITest());
                         int maxPrice = jsonObject.getInt("max_price");
                         int minPrice = jsonObject.getInt("min_price");
-                        if (minPrice > tradeInHomeViewModel.getTradeInParams().getNewPrice()) {
-                            String notElligible = getString(R.string.not_elligible_price_high);
-                            SpannableString spannableString = new SpannableString(notElligible);
-                            ClickableSpan clickableSpan = new ClickableSpan() {
-                                @Override
-                                public void onClick(View widget) {
-                                    showTnC(R.string.tradein_tnc);
-                                }
-                            };
-                            mTvGoToProductDetails.setText(R.string.go_to_product_details);
-                            mTvGoToProductDetails.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    finish();
-                                }
-                            });
-                            int greenColor = getResources().getColor(R.color.green_nob);
-                            ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
-                            spannableString.setSpan(foregroundColorSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                            spannableString.setSpan(clickableSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                            mTvPriceElligible.setText(spannableString);
-                            mTvPriceElligible.setVisibility(View.VISIBLE);
-                            mButtonRemove.setVisibility(View.VISIBLE);
-                            mButtonRemove.setOnClickListener(view -> {
-                                mTvPriceElligible.setVisibility(View.GONE);
-                                mButtonRemove.setVisibility(View.GONE);
-                            });
-                            mTvPriceElligible.setClickable(true);
-                            mTvPriceElligible.setMovementMethod(LinkMovementMethod.getInstance());
+                        if (!errorPriceNotElligible(minPrice)) {
+                            mTvNotUpto.setVisibility(View.VISIBLE);
+                            mTvInitialPrice.setText(String.format("%1$s - %2$s",
+                                    CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true),
+                                    CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true)));
+                        } else {
+                            mTvNotUpto.setVisibility(View.GONE);
+                            mTvInitialPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true));
                         }
-                        mTvNotUpto.setVisibility(View.VISIBLE);
-                        mTvInitialPrice.setText(String.format("%1$s - %2$s",
-                                CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true),
-                                CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true)));
                         isAlreadySet = true;
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -125,26 +95,35 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                 }
             }
         });
-        tradeInHomeViewModel.getPriceFailData().observe(this, new Observer<JSONObject>() {
-            @Override
-            public void onChanged(JSONObject jsonObject) {
-                hideProgressBar();
-                try {
-                    mTvInitialPrice.setText(jsonObject.getString("message"));
-                    mTvPriceElligible.setText(getString(R.string.not_elligible));
-                    mTvPriceElligible.setVisibility(View.VISIBLE);
-                    mTvGoToProductDetails.setText(R.string.go_to_product_details);
-                    mTvGoToProductDetails.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            finish();
-                        }
-                    });
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
+        tradeInHomeViewModel.getPriceFailData().observe(this, jsonObject -> {
+            hideProgressBar();
+            try {
+                mTvInitialPrice.setText(jsonObject.getString("message"));
+                mTvPriceElligible.setText(getString(R.string.not_elligible));
+                mTvPriceElligible.setVisibility(View.VISIBLE);
+                mTvGoToProductDetails.setText(R.string.go_to_product_details);
+                mTvGoToProductDetails.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        finish();
+                    }
+                });
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+        });
+
+        tradeInHomeViewModel.getInsertResult().observe(this, price -> {
+            try {
+                if (price != null && price > 0) {
+                    errorPriceNotElligible(price);
+                    mTvNotUpto.setVisibility(View.GONE);
+                    mTvInitialPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(price, true));
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
     }
@@ -205,5 +184,35 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
         super.onStop();
         if (isFinishing())
             isAlreadySet = false;
+    }
+
+    private boolean errorPriceNotElligible(int oldMinPrice) {
+        if (oldMinPrice > tradeInHomeViewModel.getTradeInParams().getNewPrice()) {
+            String notElligible = getString(R.string.not_elligible_price_high);
+            SpannableString spannableString = new SpannableString(notElligible);
+            ClickableSpan clickableSpan = new ClickableSpan() {
+                @Override
+                public void onClick(View widget) {
+                    showTnC(R.string.tradein_tnc);
+                }
+            };
+            mTvGoToProductDetails.setText(R.string.go_to_product_details);
+            mTvGoToProductDetails.setOnClickListener(v -> finish());
+            int greenColor = getResources().getColor(R.color.green_nob);
+            ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
+            spannableString.setSpan(foregroundColorSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(clickableSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            mTvPriceElligible.setText(spannableString);
+            mTvPriceElligible.setVisibility(View.VISIBLE);
+            mButtonRemove.setVisibility(View.VISIBLE);
+            mButtonRemove.setOnClickListener(view -> {
+                mTvPriceElligible.setVisibility(View.GONE);
+                mButtonRemove.setVisibility(View.GONE);
+            });
+            mTvPriceElligible.setClickable(true);
+            mTvPriceElligible.setMovementMethod(LinkMovementMethod.getInstance());
+            return true;
+        }
+        return false;
     }
 }

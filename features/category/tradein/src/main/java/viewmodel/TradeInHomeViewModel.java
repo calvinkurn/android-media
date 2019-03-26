@@ -18,7 +18,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.laku6.tradeinsdk.api.Laku6TradeIn;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.graphql.data.model.GraphqlError;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -42,7 +42,7 @@ import tradein_common.Constants;
 import view.viewcontrollers.FinalPriceActivity;
 
 public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver, Laku6TradeIn.TradeInListener {
-    private MutableLiveData<String> eligibileTickerData;
+    private MutableLiveData<Integer> insertResultData;
     private MutableLiveData<JSONObject> minPriceData;
     private MutableLiveData<JSONObject> priceFailData;
 
@@ -97,16 +97,14 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
                     public void onNext(GraphqlResponse graphqlResponse) {
                         if (graphqlResponse != null) {
                             DeviceDiagInputResponse deviceDiagInputResponse = graphqlResponse.getData(DeviceDiagInputResponse.class);
-                            if (deviceDiagInputResponse != null && deviceDiagInputResponse.getDeviceDiagInputRepsponse() != null && deviceDiagInputResponse.getDeviceDiagInputRepsponse().isEligible()) {
-                                Intent finalPriceIntent = new Intent(activityWeakReference.get(), FinalPriceActivity.class);
-                                finalPriceIntent.putExtra(TradeInParams.class.getSimpleName(), inData);
-                                activityWeakReference.get().startActivityForResult(finalPriceIntent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE);
-                            } else {
-                                List<GraphqlError> errors = graphqlResponse.getError(DeviceDiagInputResponse.class);
-                                if (errors.get(0).getMessage().contains("duplicate key value")) {
+                            if (deviceDiagInputResponse != null && deviceDiagInputResponse.getDeviceDiagInputRepsponse() != null) {
+                                if (deviceDiagInputResponse.getDeviceDiagInputRepsponse().isEligible()) {
                                     Intent finalPriceIntent = new Intent(activityWeakReference.get(), FinalPriceActivity.class);
                                     finalPriceIntent.putExtra(TradeInParams.class.getSimpleName(), inData);
                                     activityWeakReference.get().startActivityForResult(finalPriceIntent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE);
+                                } else {
+                                    insertResultData.setValue(diagnostics.getTradeInPrice());
+                                    ToasterError.showClose(activityWeakReference.get(), deviceDiagInputResponse.getDeviceDiagInputRepsponse().getMessage());
                                 }
                             }
                         }
@@ -128,13 +126,13 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
 
     public TradeInHomeViewModel(FragmentActivity activity) {
         activityWeakReference = new WeakReference<>(activity);
-        eligibileTickerData = new MutableLiveData<>();
+        insertResultData = new MutableLiveData<>();
         minPriceData = new MutableLiveData<>();
         priceFailData = new MutableLiveData<>();
     }
 
-    public MutableLiveData<String> getEligibileTickerData() {
-        return eligibileTickerData;
+    public MutableLiveData<Integer> getInsertResult() {
+        return insertResultData;
     }
 
     public MutableLiveData<JSONObject> getMinPriceData() {
