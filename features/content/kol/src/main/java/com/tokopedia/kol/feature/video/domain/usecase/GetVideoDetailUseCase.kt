@@ -19,7 +19,7 @@ class GetVideoDetailUseCase
     :UseCase<DynamicFeedDomainModel>(){
 
     override fun createObservable(requestParams: RequestParams?): Observable<DynamicFeedDomainModel> {
-        getDynamicFeedUseCase.createObservable(requestParams).subscribeOn(Schedulers.io())
+        return getDynamicFeedUseCase.createObservable(requestParams).subscribeOn(Schedulers.io())
     }
 
     companion object {

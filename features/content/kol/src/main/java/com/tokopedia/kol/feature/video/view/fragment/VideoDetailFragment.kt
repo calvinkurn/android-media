@@ -31,6 +31,7 @@ import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.layout_single_video_fragment.*
+import javax.inject.Inject
 
 /**
  * @author by yfsx on 23/03/19.
@@ -42,6 +43,9 @@ class VideoDetailFragment:
         KolPostListener.View.Like,
         MediaPlayer.OnPreparedListener {
 
+
+    @Inject
+    lateinit var presenter: VideoDetailContract.Presenter
 
     private var id: String = ""
     companion object {
@@ -74,6 +78,7 @@ class VideoDetailFragment:
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         id = arguments!!.getString(VideoDetailActivity.PARAM_ID, "")
+        presenter.attachView(this)
         initView()
         initViewListener()
     }
@@ -83,6 +88,11 @@ class VideoDetailFragment:
             resizeVideo(it.getVideoWidth(), it.getVideoHeight())
             it.start()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
     }
 
     override fun onSuccessFollowKol() {
@@ -125,6 +135,12 @@ class VideoDetailFragment:
     }
 
     private fun initView() {
+        val detailId = arguments!!.getString(VideoDetailActivity.PARAM_ID, "")
+        if (detailId.isEmpty() || detailId.equals("0")) {
+            activity!!.finish()
+        } else {
+            presenter.getFeedDetail(detailId)
+        }
 //        initUi()
 //        initPlayer()
     }

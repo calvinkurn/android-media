@@ -12,6 +12,8 @@ import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.common.data.source.KolAuthInterceptor;
 import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kol.common.network.KolUrl;
+import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract;
+import com.tokopedia.kol.feature.video.view.presenter.VideoDetailPresenter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.user.session.UserSession;
@@ -36,6 +38,12 @@ public class KolModule {
     private static final int NET_WRITE_TIMEOUT = 60;
     private static final int NET_CONNECT_TIMEOUT = 60;
     private static final int NET_RETRY = 1;
+
+    @KolScope
+    @Provides
+    VideoDetailContract.Presenter provideVideoDetailPresenter(VideoDetailPresenter presenter) {
+        return presenter;
+    }
 
     @KolScope
     @Provides
