@@ -16,7 +16,7 @@ import com.google.gson.annotations.SerializedName
 }]
  */
 data class GenerateTokenPojo(
-        @SerializedName("TopliveVideoToken")
+        @SerializedName("vodVideoToken")
         @Expose
         val topLiveVideoToken : TopliveVideoToken = TopliveVideoToken()
 )
