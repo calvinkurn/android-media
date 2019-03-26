@@ -7,11 +7,11 @@ import com.google.gson.annotations.SerializedName
 data class BenefitSummaryInfo(
 
 	@field:SerializedName("final_benefit_amount")
-	val finalBenefitAmount: String? = null,
+	val finalBenefitAmount: String = "",
 
 	@field:SerializedName("final_benefit_text")
-	val finalBenefitText: String? = null,
+	val finalBenefitText: String = "",
 
 	@field:SerializedName("summaries")
-	val summaries: List<SummariesItem?>? = null
+	val summaries: List<SummariesItem> = ArrayList()
 )

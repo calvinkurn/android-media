@@ -1666,10 +1666,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCartPromoCancelVoucherPromoGlobalClicked(PromoStackingData cartPromoGlobal, int position) {
-        shipmentPresenter.cancelAutoApplyCoupon("");
+        shipmentPresenter.cancelAutoApplyPromoStack(-1, cartPromoGlobal.getPromoCode(), false);
+        /*shipmentPresenter.cancelAutoApplyCoupon("");
         if (isToogleYearEndPromoOn()) {
             shipmentAdapter.cancelAllCourierPromo();
-        }
+        }*/
     }
 
     @Override
@@ -2330,6 +2331,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else {
             PromoStackingData promoStackingData = shipmentAdapter.getPromoGlobalStackData();
             promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
+            promoStackingData.setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
             promoStackingData.setAmount(0);
             promoStackingData.setPromoCode("");
             promoStackingData.setDescription("");

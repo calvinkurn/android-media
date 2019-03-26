@@ -9,18 +9,18 @@ import com.google.gson.annotations.SerializedName
 data class Message(
 
 	@field:SerializedName("color")
-	val color: String? = "",
+	val color: String = "",
 
 	@field:SerializedName("state")
-	val state: String? = "",
+	val state: String = "",
 
 	@field:SerializedName("text")
-	val text: String? = ""
+	val text: String = ""
 ) : Parcelable {
 	constructor(parcel: Parcel) : this(
-			parcel.readString(),
-			parcel.readString(),
-			parcel.readString())
+			parcel.readString() ?: "",
+			parcel.readString() ?: "",
+			parcel.readString() ?: "")
 
 	override fun writeToParcel(parcel: Parcel, flags: Int) {
 		parcel.writeString(color)

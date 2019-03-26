@@ -235,7 +235,6 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
             errorContainer.visibility = View.GONE
             loadData()
         }
-
     }
 
     override fun onErrorCheckPromoFirstStep(message: String) {
@@ -244,24 +243,19 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
             messageInfo = "Terjadi kesalahan. Ulangi beberapa saat lagi."
         }
         ToasterError.make(layoutMerchantVoucher, messageInfo, ToasterError.LENGTH_SHORT).show()
-
-//        dismiss()
-//        showClashingDummy()
     }
 
     override fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackUiModel) {
-        // Close merchant voucher bottomsheet, navigate to cart fragment to update view
         dismiss()
         actionListener.onSuccessCheckPromoFirstStep(model)
-//        showClashingDummy()
     }
 
-    override fun onClashCheckPromoFirstStep() {
-        // Close merchant voucher bottomsheet, show clash bottomsheet
+    override fun onClashCheckPromoFirstStep(model: ClashingInfoDetailUiModel) {
         dismiss()
-        showClashingDummy()
+        actionListener.onClashCheckPromo(model)
     }
 
+    // Todo : remove this
     private fun showClashingDummy() {
         val mapper = CheckPromoStackingCodeMapper()
         val gson = Gson()
