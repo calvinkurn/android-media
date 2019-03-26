@@ -39,6 +39,9 @@ public class ShopProductCheckoutRequest implements Parcelable {
     @SerializedName("fcancel_partial")
     @Expose
     public int fcancelPartial;
+    @SerializedName("warehouse_id")
+    @Expose
+    public int warehouseId;
 
     public ShopProductCheckoutRequest() {
     }
@@ -52,6 +55,7 @@ public class ShopProductCheckoutRequest implements Parcelable {
         dropshipData = builder.dropshipData;
         productData = builder.productData;
         fcancelPartial = builder.fcancelPartial;
+        warehouseId = builder.warehouseId;
     }
 
     protected ShopProductCheckoutRequest(Parcel in) {
@@ -107,6 +111,7 @@ public class ShopProductCheckoutRequest implements Parcelable {
         private DropshipDataCheckoutRequest dropshipData;
         private List<ProductDataCheckoutRequest> productData;
         private int fcancelPartial;
+        private int warehouseId;
 
         public Builder() {
         }
@@ -148,6 +153,11 @@ public class ShopProductCheckoutRequest implements Parcelable {
 
         public Builder fcancelPartial(int val) {
             fcancelPartial = val;
+            return this;
+        }
+
+        public Builder warehouseId(int id) {
+            warehouseId = id;
             return this;
         }
 

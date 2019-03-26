@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.Video
+import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.data.util.thumbnailUrl
 import kotlinx.android.synthetic.main.item_youtube_thumbnail.view.*
 
