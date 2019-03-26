@@ -102,7 +102,6 @@ public class ExploreFragment
     private static final String PRODUCT_ID_PARAM = "{product_id}";
     private static final String AD_ID_PARAM = "{ad_id}";
     private static final String USER_ID_USER_ID = "{user_id}";
-    private static final String PRODUCT_ID_QUERY_PARAM = "?product_id=";
     private static final String PERFORMANCE_AFFILIATE = "mp_affiliate";
 
     private static final int ITEM_COUNT = 10;
@@ -482,7 +481,7 @@ public class ExploreFragment
         if (isCanDoAction) {
             isCanDoAction = false;
             if (userSession.isLoggedIn()) {
-                presenter.checkIsAffiliate(model.getProductId(), model.getAdId());
+                presenter.checkAffiliateQuota(model.getProductId(), model.getAdId());
             } else {
                 goToLogin();
             }
@@ -761,27 +760,6 @@ public class ExploreFragment
                 getString(R.string.text_empty_product_title),
                 getString(R.string.text_empty_product_desc)
         ));
-    }
-
-    @Override
-    public void onSuccessCheckAffiliate(boolean isAffiliate, String productId, String adId) {
-        if (isAffiliate) {
-            presenter.checkAffiliateQuota(productId, adId);
-        } else {
-            if (getContext() != null) {
-                String onboardingApplink = ApplinkConst.AFFILIATE_ONBOARDING
-                        .concat(PRODUCT_ID_QUERY_PARAM)
-                        .concat(productId);
-                Intent intent = RouteManager.getIntent(getContext(), onboardingApplink);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            }
-        }
-    }
-
-    @Override
-    public void onErrorCheckAffiliate(String error, String productId, String adId) {
-        isCanDoAction = true;
     }
 
     @Override
