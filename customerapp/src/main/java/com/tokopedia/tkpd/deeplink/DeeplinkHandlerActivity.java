@@ -68,6 +68,8 @@ import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
+import com.tokopedia.instantdebitbca.data.view.applink.InstantDebitBcaApplinkModule;
+import com.tokopedia.instantdebitbca.data.view.applink.InstantDebitBcaApplinkModuleLoader;
 import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModule;
 import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModuleLoader;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModule;
@@ -161,6 +163,7 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         FeedDeeplinkModule.class,
         FlightApplinkModule.class,
         TrainApplinkModule.class,
+        InstantDebitBcaApplinkModule.class,
         DigitalBrowseApplinkModule.class,
         ReputationApplinkModule.class,
         TokoCashApplinkModule.class,
@@ -229,6 +232,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new FeedDeeplinkModuleLoader(),
                     new FlightApplinkModuleLoader(),
                     new TrainApplinkModuleLoader(),
+                    new InstantDebitBcaApplinkModuleLoader(),
                     new DigitalBrowseApplinkModuleLoader(),
                     new ReputationApplinkModuleLoader(),
                     new TokoCashApplinkModuleLoader(),
