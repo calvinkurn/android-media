@@ -137,6 +137,14 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         }
     }
 
+    private void launchFilterCategoryPage(Filter filter) {
+        String categoryId = filterController.getFilterValue(SearchApiConst.SC);
+        Category selectedCategory = FilterHelper.getSelectedCategoryDetails(filter, categoryId);
+        String selectedCategoryRootId = selectedCategory != null ? selectedCategory.getCategoryRootId() : "";
+
+        callback.launchFilterCategoryPage(filter, selectedCategoryRootId, categoryId);
+    }
+
     private void enrichWithInputState(Filter filter) {
         for (Option option : filter.getOptions()) {
             option.setInputState(
@@ -328,14 +336,6 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         loadingView.setVisibility(View.VISIBLE);
         buttonFinish.setText("");
         callback.onApplyFilter(filterController.getFilterParameter());
-    }
-
-    private void launchFilterCategoryPage(Filter filter) {
-        String categoryId = filterController.getFilterValue(SearchApiConst.SC);
-        Category selectedCategory = FilterHelper.getSelectedCategoryDetails(filter, categoryId);
-        String selectedCategoryRootId = selectedCategory != null ? selectedCategory.getCategoryRootId() : "";
-
-        callback.launchFilterCategoryPage(filter, selectedCategoryRootId, categoryId);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
