@@ -34,6 +34,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
+                    <ImageView
+                        android:id="@+id/backArraw"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_arrow_back_black"
+                        android:layout_marginRight="@dimen/dp_8"
+                        android:layout_marginTop="@dimen/dp_8"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
                     <TextView
                         android:id="@+id/toolbar_title"
                         android:layout_width="wrap_content"
@@ -42,9 +53,10 @@
                         android:text="Deals di"
                         android:gravity="center"
                         android:textColor="#7031353b"
+                        android:layout_marginLeft="@dimen/dp_8"
                         android:textSize="@dimen/sp_12"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/backArraw"/>
 
                     <TextView
                         android:id="@+id/tv_location_name"
@@ -53,9 +65,9 @@
                         android:textColor="#f531353b"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        android:gravity="center"
-                        android:layout_marginBottom="@dimen/dp_2"
-                        app:layout_constraintStart_toStartOf="parent"
+                        android:gravity="top"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        app:layout_constraintStart_toEndOf="@+id/backArraw"
                         app:layout_constraintTop_toBottomOf="@+id/toolbar_title" />
 
 
@@ -129,7 +141,7 @@
                     android:id="@+id/cl_brands"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_32"
+                    android:layout_marginTop="@dimen/dp_20"
                     android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@+id/category_items">
 
@@ -137,7 +149,7 @@
                         android:id="@+id/tv_popular_brand"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginLeft="@dimen/dp_20"
                         android:text="@string/popular_brand"
                         android:textStyle="bold"
                         android:textSize="@dimen/sp_16"
@@ -150,8 +162,8 @@
                         android:id="@+id/tv_see_all_brands"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="@dimen/dp_16"
-                        android:paddingRight="@dimen/dp_16"
+                        android:paddingLeft="@dimen/dp_12"
+                        android:paddingRight="@dimen/dp_12"
                         android:text="@string/see_all"
                         android:textSize="@dimen/sp_12"
                         android:textColor="#03ac0e"
@@ -164,9 +176,10 @@
                         android:id="@+id/rv_brand_items"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="@dimen/dp_4"
-                        android:paddingRight="@dimen/dp_4"
+                        android:paddingLeft="@dimen/dp_12"
+                        android:paddingRight="@dimen/dp_12"
                         android:layout_marginTop="@dimen/dp_8"
+                        android:clipToPadding="false"
                         android:nestedScrollingEnabled="false"
                         app:layout_constraintTop_toBottomOf="@+id/tv_popular_brand"
                         tools:listitem="@layout/item_brand_short" />
@@ -218,8 +231,8 @@
                         android:layout_marginTop="@dimen/dp_16"
                         android:clipToPadding="false"
                         android:nestedScrollingEnabled="false"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:paddingRight="@dimen/dp_4"
+                        android:paddingLeft="@dimen/dp_12"
+                        android:paddingRight="@dimen/dp_12"
                         app:layout_constraintTop_toBottomOf="@+id/tv_popular" />
                 </android.support.constraint.ConstraintLayout>
 

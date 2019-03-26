@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_32">
+    android:layout_marginTop="@dimen/dp_24">
 
     <TextView
         android:id="@+id/tv_popular"
@@ -39,8 +39,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_4"
+        android:paddingLeft="@dimen/dp_12"
+        android:paddingRight="@dimen/dp_12"
+        android:clipToPadding="false"
         android:nestedScrollingEnabled="false"
         app:layout_constraintTop_toBottomOf="@+id/tv_popular" />
 </android.support.constraint.ConstraintLayout>

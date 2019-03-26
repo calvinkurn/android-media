@@ -72,10 +72,10 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView locationName;
+        private TextView locationName, selectedLocText;
         private ImageView locImage;
         private View itemView;
-        private CardView mainContent;
+        private LinearLayout mainContent;
         private int index;
         private String name;
 
@@ -85,6 +85,7 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
             mainContent = itemView.findViewById(R.id.mainContent);
             locationName = itemView.findViewById(R.id.tv_location_name);
             locImage = itemView.findViewById(R.id.location_img);
+            selectedLocText = itemView.findViewById(R.id.selected_location_name);
 
             ViewGroup.LayoutParams lp = itemView.getLayoutParams();
             if (lp instanceof FlexboxLayoutManager.LayoutParams) {
@@ -105,8 +106,10 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
         public void bindData(Location location) {
             if (location.getName().equalsIgnoreCase(selectedLocation)) {
                 mainContent.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_green_selected_border));
+                selectedLocText.setVisibility(View.VISIBLE);
+            } else {
+                selectedLocText.setVisibility(View.INVISIBLE);
             }
-
             locationName.setText(location.getName());
             ImageHandler.loadImage(context, locImage, location.getImageApp(), R.color.grey_1100, R.color.grey_1100);
             itemView.setOnClickListener(this);
