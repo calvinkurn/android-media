@@ -24,14 +24,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-//import com.otaliastudios.cameraview.CameraListener;
-//import com.otaliastudios.cameraview.CameraOptions;
-//import com.otaliastudios.cameraview.CameraUtils;
-//import com.otaliastudios.cameraview.CameraView;
-//import com.otaliastudios.cameraview.Flash;
-//import com.otaliastudios.cameraview.Size;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.cameraview.BitmapCallback;
 import com.tokopedia.cameraview.CameraListener;
 import com.tokopedia.cameraview.CameraOptions;
 import com.tokopedia.cameraview.CameraUtils;
@@ -48,7 +41,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by hendry on 19/04/18.
@@ -149,7 +141,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
                         supportedFlashList.add(flash);
                     }
                 }
-                if (supportedFlashList != null && supportedFlashList.size() > 0) {
+                if (supportedFlashList.size() > 0) {
                     flashImageButton.setVisibility(View.VISIBLE);
                     setCameraFlash();
                 } else {
