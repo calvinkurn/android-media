@@ -68,7 +68,7 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     @Override
-    public void sendEnhanceECommerceEvent(Map<String, Object> value) {
+    public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
         clearEnhanceEcommerce();
         pushGeneral(value);
     }

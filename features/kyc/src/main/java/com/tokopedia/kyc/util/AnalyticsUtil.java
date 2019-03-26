@@ -3,9 +3,6 @@ package com.tokopedia.kyc.util;
 import android.content.Context;
 
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,6 +53,6 @@ public class AnalyticsUtil {
         eventMap.put(Keys.ENT_ACT, action);
         eventMap.put(Keys.ENT_CAT, category);
         eventMap.put(Keys.ENT_LBL, label);
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(eventMap);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
     }
 }

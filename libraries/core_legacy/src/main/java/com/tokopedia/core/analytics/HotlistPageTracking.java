@@ -19,7 +19,7 @@ import java.util.Map;
 public class HotlistPageTracking extends TrackingUtils {
 
     public static void eventEnhance(Context context, Map<String, Object> dataLayer) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(dataLayer);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(dataLayer);
     }
 
     public static void eventHotlistSort(Context context, String sortValue) {
@@ -67,7 +67,7 @@ public class HotlistPageTracking extends TrackingUtils {
     }
 
     public static void clickTnCButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         "event", "clickHotlist",
                         "eventCategory", "hotlist page",
@@ -78,7 +78,7 @@ public class HotlistPageTracking extends TrackingUtils {
     }
 
     public static void clickCopyButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         "event", "clickHotlist",
                         "eventCategory", "hotlist page",

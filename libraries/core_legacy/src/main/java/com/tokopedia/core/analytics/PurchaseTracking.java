@@ -6,7 +6,6 @@ import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.track.TrackApp;
 
@@ -40,7 +39,7 @@ public class PurchaseTracking extends TrackingUtils {
     public static final String USER_ID = "userId";
 
     public static void marketplace(Context context, Purchase purchase) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
                 AppEventTracking.EVENT_CATEGORY, purchase.getEventCategory(),
                 AppEventTracking.EVENT_ACTION, purchase.getShopType(),
@@ -60,7 +59,7 @@ public class PurchaseTracking extends TrackingUtils {
     }
 
     public static void digital(Context context, Purchase purchase) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
                         AppEventTracking.EVENT_CATEGORY, "digital - thanks",

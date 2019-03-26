@@ -25,11 +25,11 @@ public class HomePageTracking extends TrackingUtils {
     public static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
 
     public static void eventPromoImpression(Context context, Promotion promotion) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(promotion.getImpressionDataLayer());
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(promotion.getImpressionDataLayer());
     }
 
     public static void eventPromoClick(Context context, Promotion promotion) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(promotion.getClickDataLayer());
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(promotion.getClickDataLayer());
     }
 
     public static void eventClickViewAllPromo(Context context) {

@@ -20,8 +20,6 @@ import static com.tokopedia.kol.analytics.KolEventTracking.Category.CONTENT_FEED
 
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * @author by nisie on 10/3/18.
@@ -142,7 +140,7 @@ public class FeedAnalytics {
         mapEvent.put("shopId", "0");
         mapEvent.put("promoId", "0");
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(mapEvent);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(mapEvent);
     }
 
 
@@ -158,7 +156,7 @@ public class FeedAnalytics {
         mapEvent.put("shopId", "0");
         mapEvent.put("promoId", "0");
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(mapEvent);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(mapEvent);
     }
 
     public void eventR3Product(String productId, String label) {
@@ -172,7 +170,7 @@ public class FeedAnalytics {
         mapEvent.put("shopId", "0");
         mapEvent.put("promoId", "0");
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(mapEvent);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(mapEvent);
     }
 
     public void eventOfficialStoreBrandSeeAll(String label) {
@@ -187,7 +185,7 @@ public class FeedAnalytics {
         mapEvent.put("shopId", "0");
         mapEvent.put("promoId", "0");
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(mapEvent);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(mapEvent);
     }
 
     public void eventFeedClick(String label) {
@@ -202,7 +200,7 @@ public class FeedAnalytics {
         mapEvent.put("shopId", "0");
         mapEvent.put("promoId", "0");
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(mapEvent);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(mapEvent);
     }
 
     public void eventFeedView(String label) {
@@ -217,7 +215,7 @@ public class FeedAnalytics {
         mapEvent.put("shopId", "0");
         mapEvent.put("promoId", "0");
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(mapEvent);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(mapEvent);
 
     }
 
@@ -233,7 +231,7 @@ public class FeedAnalytics {
         mapEvent.put("shopId", shopId);
         mapEvent.put("promoId", "0");
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(mapEvent);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(mapEvent);
 
 
     }
@@ -250,7 +248,7 @@ public class FeedAnalytics {
         mapEvent.put("shopId", "0");
         mapEvent.put("promoId", "0");
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(mapEvent);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(mapEvent);
 
     }
 
@@ -266,7 +264,7 @@ public class FeedAnalytics {
         mapEvent.put("shopId", shopId);
         mapEvent.put("promoId", "0");
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(mapEvent);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(mapEvent);
     }
 
     public void trackEventClickProductUploadEnhanced(String name,
@@ -332,7 +330,7 @@ public class FeedAnalytics {
     }
 
     private void eventTrackingEnhanceFeed(Map<String, Object> trackingData) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(trackingData);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(trackingData);
     }
 
     private void eventImpressionFeedProductItem(List<Object> list, String eventLabel) {
@@ -370,7 +368,7 @@ public class FeedAnalytics {
     }
 
     public void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(trackingData);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(trackingData);
     }
 
     public void eventKolRecommendationViewAllClick() {
@@ -466,7 +464,7 @@ public class FeedAnalytics {
                         ""
                 )
         );
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getEventEcommerceView(
                         ACTION_IMPRESSION.toLowerCase() + DASH + templateType + DASH
                                 + activityName + DASH + trackingType,
@@ -496,7 +494,7 @@ public class FeedAnalytics {
                         ""
                 )
         );
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getEventEcommerceClick(
                         ACTION_CLICK.toLowerCase() + DASH + templateType + DASH
                                 + activityName + DASH + trackingType + DASH + element,
@@ -526,7 +524,7 @@ public class FeedAnalytics {
                         ""
                 )
         );
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getEventEcommerceView(
                         ACTION_IMPRESSION.toLowerCase() + DASH + templateType + DASH
                                 + activityName + DASH + trackingType,
@@ -556,7 +554,7 @@ public class FeedAnalytics {
                         ""
                 )
         );
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getEventEcommerceClick(
                         ACTION_CLICK.toLowerCase() + DASH + templateType + DASH
                                 + activityName + DASH + trackingType + DASH + element,
@@ -587,7 +585,7 @@ public class FeedAnalytics {
                         ""
                 )
         );
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getEventEcommerceView(
                         ACTION_IMPRESSION.toLowerCase() + DASH + templateType + DASH
                                 + activityName + DASH + trackingType,
@@ -619,7 +617,7 @@ public class FeedAnalytics {
                         ""
                 )
         );
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getEventEcommerceClick(
                         ACTION_CLICK.toLowerCase() + DASH + templateType + DASH
                                 + activityName + DASH + trackingType + DASH + element,

@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Locale;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import javax.inject.Inject;
 
@@ -64,7 +62,7 @@ public class FlightAnalytics {
                 "promo_id", banner.getId(),
                 "promo_code", banner.getAttributes().getPromoCode().toLowerCase()
         ));
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, PROMO_CLICK_EVENT,
                         EVENT_CATEGORY, GENERIC_CATEGORY,
                         EVENT_ACTION, Action.PROMOTION_CLICK,
@@ -191,7 +189,7 @@ public class FlightAnalytics {
             ));
         }
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, PRODUCT_CLICK_EVENT,
                         EVENT_CATEGORY, GENERIC_CATEGORY,
                         EVENT_ACTION, action,
@@ -404,7 +402,7 @@ public class FlightAnalytics {
     }
 
     private void eventAddToCart(String label, FlightDetailViewModel viewModel, Object actionField, List<Object> products) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, ATC_EVENT,
                         EVENT_CATEGORY, GENERIC_CATEGORY,
                         EVENT_ACTION, Category.ADD_TO_CART,

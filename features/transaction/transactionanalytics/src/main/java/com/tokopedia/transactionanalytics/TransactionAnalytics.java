@@ -1,12 +1,10 @@
 package com.tokopedia.transactionanalytics;
 
 import android.app.Activity;
-import android.util.Log;
 
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.util.Map;
 
@@ -41,6 +39,6 @@ public abstract class TransactionAnalytics {
 
 
     void sendEnhancedEcommerce(Map<String, Object> dataLayer) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(dataLayer);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(dataLayer);
     }
 }

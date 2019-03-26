@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -143,7 +142,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
     }
 
     public static void eventCategoryLifestyleImpression(List<Object> list) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf("event", "promoView",
                         "eventCategory", "category page",
                         "eventAction", "subcategory impression",

@@ -22,7 +22,7 @@ public class WishlistAnalytics {
     private static final String LONG_PRESS_SHORTCUT_WISHLIST = "Share";
 
     public void trackEventAddToCardProductWishlist(Object dataItem) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf("event", "addToCart",
                         "eventCategory", "wishlist page",
                         "eventAction", "click - beli on wishlist",
@@ -39,7 +39,7 @@ public class WishlistAnalytics {
     }
     public void trackEventClickOnProductWishlist(String position,
                                                         Object dataItem) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf("event", "productClick",
                         "eventCategory", "wishlist page",
                         "eventAction", "click product",
@@ -57,7 +57,7 @@ public class WishlistAnalytics {
     }
 
     public void trackEventImpressionOnProductWishlist(List<Object> dataItemList) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf("event", "productView",
                         "eventCategory", "wishlist page",
                         "eventAction", "product impressions",
@@ -125,7 +125,7 @@ public class WishlistAnalytics {
     }
 
     public void eventWishlistShortcut() {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 new EventTracking(
                 AppEventTracking.Event.LONG_CLICK,
                 AppEventTracking.Category.LONG_PRESS,

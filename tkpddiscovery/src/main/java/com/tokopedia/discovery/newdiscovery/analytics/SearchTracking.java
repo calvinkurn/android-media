@@ -64,7 +64,7 @@ public class SearchTracking {
                                                           String eventLabel,
                                                           Map<String, String> selectedFilter,
                                                           Map<String, String> selectedSort) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf("event", "productClick",
                         "eventCategory", "search result",
                         "eventAction", "click - product",
@@ -84,7 +84,7 @@ public class SearchTracking {
     }
 
     public static void trackEventClickImageSearchResultProduct(Context context, Object item, int position) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf("event", "productClick",
                         "eventCategory", "search result",
                         "eventAction", "click - product",
@@ -107,7 +107,7 @@ public class SearchTracking {
     }
 
     public static void eventImpressionSearchResultProduct(Context context, List<Object> list, String eventLabel) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf("event", "productView",
                         "eventCategory", "search result",
                         "eventAction", "impression - product",
@@ -122,7 +122,7 @@ public class SearchTracking {
     }
 
     public static void eventImpressionImageSearchResultProduct(Context context, List<Object> list) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf("event", "productView",
                         "eventCategory", AppEventTracking.Category.IMAGE_SEARCH_RESULT,
                         "eventAction", "impression - product",
@@ -352,13 +352,13 @@ public class SearchTracking {
         eventTracking.put(SearchConstant.EVENT_LABEL, PRODUCT_SEARCH);
         eventTracking.put(USER_ID, userSessionInterface.isLoggedIn() ? userSessionInterface.getUserId() : "0");
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(eventTracking);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventTracking);
     }
 
     public static void eventUserClickProfileResultInTabProfile(Context context,
                                                                List<Object> profileData,
                                                                String keyword) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         EVENT, PROMO_CLICK,
                         EVENT_CATEGORY, EVENT_CATEGORY_SEARCH_RESULT_PROFILE,
@@ -409,7 +409,7 @@ public class SearchTracking {
     public static void eventUserImpressionProfileResultInTabProfile(Context context,
                                                                List<Object> profileData,
                                                                String keyword) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         EVENT, PROMO_VIEW,
                         EVENT_CATEGORY, EVENT_CATEGORY_SEARCH_RESULT_PROFILE,

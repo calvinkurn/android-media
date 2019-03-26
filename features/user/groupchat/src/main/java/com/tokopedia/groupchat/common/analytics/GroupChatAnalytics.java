@@ -20,8 +20,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * @author by StevenFredian on 05/03/18.
@@ -176,7 +174,7 @@ public class GroupChatAnalytics {
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())
         ));
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_PROMO_VIEW,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, String.format("%s%s", EVENT_ACTION_VIEW_COMPONENT, COMPONENT_BANNER),
@@ -209,7 +207,7 @@ public class GroupChatAnalytics {
                         viewModel.getChannelUrl(), viewModel.getTitle())
         ));
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_PROMO_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, EVENT_ACTION_CLICK_COMPONENT + COMPONENT_FLASH_SALE,
@@ -242,7 +240,7 @@ public class GroupChatAnalytics {
                     )));
         }
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_PROMO_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, EVENT_ACTION_CLICK_COMPONENT + COMPONENT_FLASH_SALE,
@@ -279,7 +277,7 @@ public class GroupChatAnalytics {
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())
         ));
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_PROMO_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, String.format("%s%s", EVENT_ACTION_CLICK_COMPONENT, COMPONENT_BANNER),
@@ -328,7 +326,7 @@ public class GroupChatAnalytics {
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())
         ));
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_INTERNAL_PROMOTION,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "view banner push promo",
@@ -358,7 +356,7 @@ public class GroupChatAnalytics {
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())
         ));
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EE_PROMO_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "click on image thumbnail",
@@ -410,7 +408,7 @@ public class GroupChatAnalytics {
                         .ATTRIBUTE_BANNER, channelInfoViewModel.getChannelUrl(), channelInfoViewModel.getTitle())
         ));
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_PROMO_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "click on overlay button",
@@ -462,7 +460,7 @@ public class GroupChatAnalytics {
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())
         ));
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_PROMO_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "click on image overlay",
@@ -506,7 +504,7 @@ public class GroupChatAnalytics {
                         .ATTRIBUTE_STICKY, viewModel.getChannelUrl(), viewModel.getTitle())
         ));
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_VIEW_GROUP_CHAT,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "view on sticky product",
@@ -530,7 +528,7 @@ public class GroupChatAnalytics {
                         .ATTRIBUTE_STICKY, viewModel.getChannelUrl(), viewModel.getTitle())
         ));
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_PRODUCT_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "click on sticky product",
@@ -582,7 +580,7 @@ public class GroupChatAnalytics {
             buttonNames.append(button.getButtonId()).append(",");
         }
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_VIEW_GROUP_CHAT,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "view on dynamic button",
@@ -608,7 +606,7 @@ public class GroupChatAnalytics {
                             .ATTRIBUTE_STICKY, viewModel.getChannelUrl(), viewModel.getTitle())
             ));
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "click on dynamic button",
@@ -672,7 +670,7 @@ public class GroupChatAnalytics {
                                                      String attributeName, String channelUrl,
                                                      String channelName, List<EEPromotion> listPromotion) {
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_PROMO_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, EVENT_ACTION_CLICK_COMPONENT + componentType,
@@ -687,7 +685,7 @@ public class GroupChatAnalytics {
                                                     String attributeName, String channelUrl,
                                                     String channelName, List<EEPromotion> listPromotion) {
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_PROMO_VIEW,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, EVENT_ACTION_VIEW_COMPONENT + componentType,

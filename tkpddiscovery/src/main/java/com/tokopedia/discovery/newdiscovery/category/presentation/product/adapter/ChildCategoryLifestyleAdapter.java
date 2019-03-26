@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
 import com.tokopedia.track.TrackApp;
@@ -73,7 +72,7 @@ public class ChildCategoryLifestyleAdapter extends RecyclerView.Adapter<ChildCat
     }
 
     public static void eventCategoryLifestyleClick(String categoryUrl, List<Object> list) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf("event", "promoClick",
                         "eventCategory", "category page",
                         "eventAction", "click subcategory",

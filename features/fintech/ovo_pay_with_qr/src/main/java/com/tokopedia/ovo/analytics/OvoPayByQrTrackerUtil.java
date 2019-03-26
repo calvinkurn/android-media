@@ -31,6 +31,6 @@ public class OvoPayByQrTrackerUtil {
         String defaultLabel = "";
     }
     public static void sendEvent(Context context, String event, String category, String action, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent((event, category, action, label);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(event, category, action, label);
     }
 }

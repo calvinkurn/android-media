@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Created by meta on 04/08/18.
@@ -29,7 +27,7 @@ public class SearchBarAnalytics {
     }
 
     public void eventTrackingWishlist(String item, String screenName) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getDataEvent(screenName,
                         SearchBarConstant.CLICK_TOP_NAV,
                         SearchBarConstant.TOP_NAV,
@@ -37,7 +35,7 @@ public class SearchBarAnalytics {
     }
 
     public void eventTrackingNotification(String screenName) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getDataEvent(screenName,
                         SearchBarConstant.CLICK_TOP_NAV,
                         SearchBarConstant.TOP_NAV,

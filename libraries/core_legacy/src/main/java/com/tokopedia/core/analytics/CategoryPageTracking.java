@@ -13,7 +13,7 @@ import java.util.Map;
 public class CategoryPageTracking extends TrackingUtils {
 
     public static void eventEnhance(Context context, Map<String, Object> dataLayer) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(dataLayer);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(dataLayer);
     }
 
 }

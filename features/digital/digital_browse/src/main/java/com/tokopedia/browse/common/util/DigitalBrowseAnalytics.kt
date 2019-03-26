@@ -9,8 +9,6 @@ import java.util.*
 import javax.inject.Inject
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * @author by furqan on 30/08/18.
@@ -47,7 +45,7 @@ constructor() {
                 promotions.add(promotion)
             }
 
-            TrackApp.getInstance().gtm.sendEnhanceECommerceEvent(
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                     DataLayer.mapOf(
                             "event", Event.IMPRESSION_PROMO,
                             "eventCategory", GENERIC_CATEGORY,
@@ -72,7 +70,7 @@ constructor() {
             val promotions = ArrayList<Any>()
             promotions.add(promotion)
 
-            TrackApp.getInstance().gtm.sendEnhanceECommerceEvent(
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                     DataLayer.mapOf(
                             "event", Event.CLICK_PROMO,
                             "eventCategory", GENERIC_CATEGORY,

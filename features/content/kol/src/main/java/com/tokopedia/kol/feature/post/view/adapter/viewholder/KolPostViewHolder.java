@@ -350,7 +350,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                             viewListener.getUserSession().getUserId() : "0")
             ));
 
-            TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+            TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                     KolEnhancedTracking.getKolClickTracking(promotionList)
             );
 

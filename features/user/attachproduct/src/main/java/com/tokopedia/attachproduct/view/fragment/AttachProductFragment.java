@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -328,11 +327,11 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     private void trackAction(String source, int productId) {
 
         if(source.equals(AttachProductActivity.SOURCE_TALK)){
-                TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+                TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                         AttachProductAnalytics.getEventCheckProductTalk(productId).getEvent()
                 );
             }else{
-                TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+                TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                         AttachProductAnalytics.getEventCheckProduct().getEvent()
                 );
             }

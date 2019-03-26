@@ -1,12 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber;
 
-import android.content.Context;
-
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.network.MessageErrorException;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
 import com.tokopedia.discovery.newdiscovery.domain.model.BadgeModel;
@@ -220,7 +215,7 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
     }
 
     public static void impressionHotlistPromo(String hotlistName, String promoName, String promoCode) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         "event", "clickHotlist",
                         "eventCategory", "hotlist page",

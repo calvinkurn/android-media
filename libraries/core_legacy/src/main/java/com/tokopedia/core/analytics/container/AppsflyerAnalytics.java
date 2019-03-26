@@ -140,7 +140,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     }
 
     @Override
-    public void sendEnhanceECommerceEvent(Map<String, Object> value) {
+    public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
         // no op, only for GTM
     }
 

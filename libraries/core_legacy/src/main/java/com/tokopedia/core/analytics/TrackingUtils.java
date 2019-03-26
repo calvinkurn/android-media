@@ -9,7 +9,6 @@ import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.track.TrackApp;
 
@@ -17,7 +16,6 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -149,7 +147,7 @@ public class TrackingUtils{
     }
 
     public static void eventTrackingEnhancedEcommerce(Context context, Map<String, Object> trackingData) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(trackingData);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(trackingData);
     }
 
 }

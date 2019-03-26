@@ -120,7 +120,7 @@ public class DealsAnalytics {
         map.put("eventAction", action);
         map.put("eventLabel", label == null ? "" : label.toLowerCase());
         map.put("ecommerce", ecommerce);
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(map);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
     }
 
     public void sendDealImpressionEvent(boolean isHeaderAdded, boolean isBrandHeaderAdded, boolean topDealsLayout, ProductItem productItem, String categoryName, int pageType, int position) {

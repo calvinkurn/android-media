@@ -48,7 +48,7 @@ public class PromoTrackingUtil {
     }
 
     public void eventImpressionPromoList(List<Object> list, String promoName) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         "event", "promoView",
                         "eventCategory", "promo microsite - promo list",
@@ -71,7 +71,7 @@ public class PromoTrackingUtil {
     }
 
     public void eventClickPromoListItem(List<Object> list, String promoName) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         "event", "promoView",
                         "eventCategory", "promo microsite - promo list",

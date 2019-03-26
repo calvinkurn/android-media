@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import javax.inject.Inject;
 
@@ -93,7 +91,7 @@ public class TrainAnalytics {
                 TrainEventTracking.EnhanceEcommerce.LIST, "/kereta-api"
         );
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(TrainEventTracking.EVENT, TrainEventTracking.Event.PRODUCT_VIEW,
                         TrainEventTracking.EVENT_CATEGORY, TrainEventTracking.Category.DIGITAL_TRAIN,
                         TrainEventTracking.EVENT_ACTION, TrainEventTracking.Action.PRODUCT_IMPRESSIONS,
@@ -117,7 +115,7 @@ public class TrainAnalytics {
                 TrainEventTracking.EnhanceEcommerce.LIST, "/kereta-api"
         );
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(TrainEventTracking.EVENT, TrainEventTracking.Event.PRODUCT_CLICK,
                         TrainEventTracking.EVENT_CATEGORY, TrainEventTracking.Category.DIGITAL_TRAIN,
                         TrainEventTracking.EVENT_ACTION, TrainEventTracking.Action.PRODUCT_CLICK,
@@ -175,7 +173,7 @@ public class TrainAnalytics {
         List<Object> dataLayerList = new ArrayList<>();
         dataLayerList.add(productItem);
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(TrainEventTracking.EVENT, TrainEventTracking.Event.VIEW_PRODUCT,
                         TrainEventTracking.EVENT_CATEGORY, TrainEventTracking.Category.DIGITAL_TRAIN,
                         TrainEventTracking.EVENT_ACTION, TrainEventTracking.Action.PRODUCT_DETAIL_IMPRESSIONS,
@@ -200,7 +198,7 @@ public class TrainAnalytics {
         List<Object> dataLayerList = new ArrayList<>();
         dataLayerList.add(departureItem);
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(TrainEventTracking.EVENT, TrainEventTracking.Event.ADD_TO_CART,
                         TrainEventTracking.EVENT_CATEGORY, TrainEventTracking.Category.DIGITAL_TRAIN,
                         TrainEventTracking.EVENT_ACTION, TrainEventTracking.Action.ADD_TO_CART,
@@ -241,7 +239,7 @@ public class TrainAnalytics {
         dataLayerList.add(departureItem);
         dataLayerList.add(returnItem);
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(TrainEventTracking.EVENT, TrainEventTracking.Event.ADD_TO_CART,
                         TrainEventTracking.EVENT_CATEGORY, TrainEventTracking.Category.DIGITAL_TRAIN,
                         TrainEventTracking.EVENT_ACTION, TrainEventTracking.Action.ADD_TO_CART,

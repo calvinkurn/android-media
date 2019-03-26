@@ -5,7 +5,6 @@ import android.content.Context;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
 
 import java.util.Map;
 
@@ -170,7 +169,7 @@ public class AutoCompleteTracking {
                                             String position,
                                             BaseItemAutoCompleteSearch data) {
         Map<String, Object> productData = convertSearchItemToProductData(data, position);
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, PRODUCT_CLICK,
                         EVENT_CATEGORY, EVENTCATEGORY_TOP_NAV,
                         EVENT_ACTION, CLICK_RECENT_VIEW_PRODUCT,

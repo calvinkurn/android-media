@@ -14,9 +14,6 @@ import java.util.List;
 
 import rx.Subscriber;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * @author by milhamj on 26/02/18.
@@ -80,7 +77,7 @@ public class GetKolPostSubscriber extends Subscriber<KolProfileModel> {
                             view.getUserSession().getUserId() : "0")
             ));
 
-            TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(KolEnhancedTracking.getKolImpressionTracking(promotionList));
+            TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(KolEnhancedTracking.getKolImpressionTracking(promotionList));
         }
     }
 }

@@ -119,7 +119,7 @@ public class AnalyticsTrackerUtil {
         map.put(EventKeys.EVENT_ACTION, action);
         map.put(EventKeys.EVENT_LABEL, label);
         map.put(EventKeys.ECOMMERCE, ecommerce);
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(map);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
     }
 
     public interface ScreenKeys {

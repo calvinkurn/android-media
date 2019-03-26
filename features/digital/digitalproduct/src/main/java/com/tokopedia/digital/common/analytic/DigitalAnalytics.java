@@ -40,7 +40,7 @@ public class DigitalAnalytics {
         List<Object> products = new ArrayList<>();
         products.add(constructProductEnhanceEcommerce(cartDigitalInfoData, productName));
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf("event", DigitalEventTracking.Event.ADD_TO_CART,
                         "eventCategory", extraComeFrom == DigitalCheckoutPassData.Companion.getPARAM_WIDGET() ? DigitalEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET :
                                 DigitalEventTracking.Category.DIGITAL_NATIVE,
@@ -58,7 +58,7 @@ public class DigitalAnalytics {
                 )
         );
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         "ecommerce", null,
                         "currentSite", null
@@ -92,7 +92,7 @@ public class DigitalAnalytics {
                 cartDigitalInfoData.getAttributes().getOperatorName().toLowerCase()
         );
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         "event", DigitalEventTracking.Event.CHECKOUT,
                         "eventCategory", DigitalEventTracking.Category.DIGITAL_CHECKOUT,
@@ -113,7 +113,7 @@ public class DigitalAnalytics {
                 )
         );
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         "ecommerce", null,
                         "currentSite", null
@@ -138,7 +138,7 @@ public class DigitalAnalytics {
         }
 
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         "event", DigitalEventTracking.Event.CHECKOUT,
                         "eventCategory", DigitalEventTracking.Category.DIGITAL_CHECKOUT,
@@ -158,7 +158,7 @@ public class DigitalAnalytics {
                 )
         );
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         "ecommerce", null,
                         "currentSite", null
@@ -238,7 +238,7 @@ public class DigitalAnalytics {
         List<Object> products = new ArrayList<>();
         products.add(constructProductEnhanceEcommerce(cartDigitalInfoData, productName));
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         "event", DigitalEventTracking.Event.CHECKOUT,
                         "eventCategory", DigitalEventTracking.Category.DIGITAL_MULTIPLE_CHECKOUT,
@@ -254,7 +254,7 @@ public class DigitalAnalytics {
                 )
         );
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         "ecommerce", null,
                         "currentSite", null

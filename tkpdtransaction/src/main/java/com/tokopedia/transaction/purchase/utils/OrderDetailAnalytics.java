@@ -4,17 +4,13 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.common.data.order.OrderDetailItemData;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.EVENT;
 import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.EVENT_ACTION;
@@ -23,9 +19,6 @@ import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.EVENT
 import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.VALUE_CLICK_ORDER;
 import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.VALUE_SALES_SHIPPING;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Temporary class to provide analytics in tkpdtransaction
@@ -49,7 +42,7 @@ public class OrderDetailAnalytics {
     }
 
     public void sendAnalytics(String event, String category, String action, String label) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(createEventMap(event, category, action, label));
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(createEventMap(event, category, action, label));
     }
 
     public void sendAnalyticsClickShipping(String action, String label) {
@@ -95,7 +88,7 @@ public class OrderDetailAnalytics {
             enhancedECommerceCartMapData.setAction(EnhancedECommerceCartMapData.ADD_ACTION);
         }
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         ConstantTransactionAnalytics.Key.EVENT, ConstantTransactionAnalytics.EventName.ADD_TO_CART,
                         ConstantTransactionAnalytics.Key.EVENT_CATEGORY, "my purchase list detail - mp",

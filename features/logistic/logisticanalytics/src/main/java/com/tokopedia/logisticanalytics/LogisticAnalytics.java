@@ -31,6 +31,6 @@ public abstract class LogisticAnalytics {
 
 
     void sendEnhancedEcommerce(Map<String, Object> dataLayer) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(dataLayer);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(dataLayer);
     }
 }

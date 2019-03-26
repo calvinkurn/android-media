@@ -82,7 +82,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickMerchantVoucherUse(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
-        TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(createEventMVCClick(ProductTrackingConstant.MerchantVoucher.EVENT,
+        TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(createEventMVCClick(ProductTrackingConstant.MerchantVoucher.EVENT,
             ProductTrackingConstant.Category.PDP,
             listOf(ProductTrackingConstant.MerchantVoucher.ACTION,
                 ProductTrackingConstant.Action.CLICK).joinToString(" "),
@@ -97,7 +97,7 @@ class ProductDetailTracking() {
             "use voucher",
             merchantVoucherViewModelList)
         map?.run {
-            TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(this)
+            TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(this)
         }
     }
 
@@ -199,7 +199,7 @@ class ProductDetailTracking() {
     }
 
     fun eventTopAdsClicked(product: Product, position: Int) {
-        TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(
+        TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(KEY_EVENT, ProductTrackingConstant.Action.PRODUCT_CLICK,
                 KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
                 KEY_ACTION, ProductTrackingConstant.Action.TOPADS_CLICK,
@@ -219,7 +219,7 @@ class ProductDetailTracking() {
     }
 
     fun eventTopAdsImpression(position: Int, product: Product) {
-        TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(
+        TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(KEY_EVENT, "productView",
                 KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
                 KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION,
@@ -363,7 +363,7 @@ class ProductDetailTracking() {
     }
 
     fun eventEnhanceEcommerceProductDetail(trackerListName: String?, productInfo: ProductInfo?, shopInfo: ShopInfo?, trackerAttribution: String?) {
-        TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(DataLayer.mapOf(
             "event", "viewProduct",
             "eventCategory", "product page",
             "eventAction", "view product page",

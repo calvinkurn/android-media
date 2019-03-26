@@ -74,7 +74,7 @@ public class GlobalNavAnalytics {
         eventTracking.put(EVENT_ACTION, String.format("%s %s", CLICK, NOTIFICATION));
         eventTracking.put(EVENT_LABEL, "");
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(eventTracking);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventTracking);
     }
 
     public void eventImpressionAppUpdate(boolean isForceUpdate) {

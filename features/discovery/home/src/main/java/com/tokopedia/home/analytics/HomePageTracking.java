@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.home.beranda.data.model.Promotion;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
@@ -17,7 +16,6 @@ import java.util.Map;
 
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
@@ -118,7 +116,7 @@ public class HomePageTracking {
                                             Promotion promotion) {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
-            tracker.sendEnhanceECommerceEvent(promotion.getImpressionDataLayer());
+            tracker.sendEnhanceEcommerceEvent(promotion.getImpressionDataLayer());
         }
     }
 
@@ -151,14 +149,14 @@ public class HomePageTracking {
                     ),
                     "attribution", "1 - sliderBanner"
             );
-            tracker.sendEnhanceECommerceEvent(map);
+            tracker.sendEnhanceEcommerceEvent(map);
         }
     }
 
     public static void eventPromoClick(Context context, Promotion promotion) {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
-            tracker.sendEnhanceECommerceEvent(promotion.getClickDataLayer());
+            tracker.sendEnhanceEcommerceEvent(promotion.getClickDataLayer());
         }
     }
 
@@ -236,7 +234,7 @@ public class HomePageTracking {
                                                              Map<String, Object> data) {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
-            tracker.sendEnhanceECommerceEvent(
+            tracker.sendEnhanceEcommerceEvent(
                     data
             );
         }
@@ -274,14 +272,14 @@ public class HomePageTracking {
 
     public static void eventEnhancedImpressionSprintSaleHomePage(Context context,
                                                                  Map<String, Object> data) {
-        getTracker(context).sendEnhanceECommerceEvent(data);
+        getTracker(context).sendEnhanceEcommerceEvent(data);
     }
 
     public static void eventEnhancedClickSprintSaleProduct(Context context,
                                                            Map<String, Object> data) {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
-            tracker.sendEnhanceECommerceEvent(data);
+            tracker.sendEnhanceEcommerceEvent(data);
         }
     }
 
@@ -289,7 +287,7 @@ public class HomePageTracking {
                                                                      Map<String, Object> data) {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
-            tracker.sendEnhanceECommerceEvent(data);
+            tracker.sendEnhanceEcommerceEvent(data);
         }
     }
 
@@ -297,7 +295,7 @@ public class HomePageTracking {
                                                                   Map<String, Object> data) {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
-            tracker.sendEnhanceECommerceEvent(data);
+            tracker.sendEnhanceEcommerceEvent(data);
         }
     }
 
@@ -305,7 +303,7 @@ public class HomePageTracking {
                                                                 Map<String, Object> data) {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
-            tracker.sendEnhanceECommerceEvent(
+            tracker.sendEnhanceEcommerceEvent(
                     data
             );
         }
@@ -365,7 +363,7 @@ public class HomePageTracking {
                                                                Map<String, Object> data) {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
-            tracker.sendEnhanceECommerceEvent(data);
+            tracker.sendEnhanceEcommerceEvent(data);
         }
     }
 
@@ -373,7 +371,7 @@ public class HomePageTracking {
                                                           Map<String, Object> data) {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
-            tracker.sendEnhanceECommerceEvent(data);
+            tracker.sendEnhanceEcommerceEvent(data);
         }
     }
 
@@ -381,7 +379,7 @@ public class HomePageTracking {
                                                               Map<String, Object> data) {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
-            tracker.sendEnhanceECommerceEvent(data);
+            tracker.sendEnhanceEcommerceEvent(data);
         }
     }
 
@@ -389,7 +387,7 @@ public class HomePageTracking {
                                                          Map<String, Object> data) {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
-            tracker.sendEnhanceECommerceEvent(data);
+            tracker.sendEnhanceEcommerceEvent(data);
         }
     }
 
@@ -509,7 +507,7 @@ public class HomePageTracking {
                 ),
                 "attribution", "2 - homeBanner"
         );
-        tracker.sendEnhanceECommerceEvent(data);
+        tracker.sendEnhanceEcommerceEvent(data);
     }
 
     public static void eventClickOnHomePageRecommendationTab(

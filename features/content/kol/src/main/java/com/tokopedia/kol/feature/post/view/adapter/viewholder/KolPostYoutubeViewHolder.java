@@ -220,7 +220,7 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
                             viewListener.getUserSession().getUserId() : "0")
             ));
 
-            TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+            TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                     KolEnhancedTracking.getKolClickTracking(promotionList)
             );
 
@@ -296,7 +296,7 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
                         viewListener.getUserSession().getUserId() : "0")
         ));
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 KolEnhancedTracking.getKolClickTracking(promotionList)
         );
     }

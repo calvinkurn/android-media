@@ -211,7 +211,7 @@ public class TopChatAnalytics {
 
     public void eventClickProductThumbnailEE(int blastId, String productId, String productName,
                                              int productPrice, String category, String variant) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, Name.EVENT_NAME_PRODUCT_CLICK,
                 EVENT_CATEGORY, Category.CHAT_DETAIL,
                 EVENT_ACTION, Action.CLICK_PRODUCT_IMAGE,
@@ -237,7 +237,7 @@ public class TopChatAnalytics {
 
 
     public void trackProductAttachmentClicked() {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 AttachProductAnalytics.getEventClickChatAttachedProductImage().getEvent()
         );
     }

@@ -84,14 +84,14 @@ public class ShopPageTrackingUser {
         if (eventTracking.containsKey(ECOMMERCE)) {
             trackingQueue.putEETracking((HashMap<String, Object>) eventTracking);
         } else {
-            TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(eventTracking);
+            TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventTracking);
         }
     }
 
     protected void sendEvent(String event, String category, String action, String label,
                              CustomDimensionShopPage customDimensionShopPage) {
         HashMap<String, Object> eventMap = createMap(event, category, action, label, customDimensionShopPage);
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(eventMap);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
     }
 
     public void sendAllTrackingQueue() {

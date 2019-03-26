@@ -1,14 +1,10 @@
 package com.tokopedia.loyalty.view.analytics;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.loyalty.view.data.PromoData;
 
 import java.util.ArrayList;
 import java.util.List;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import javax.inject.Inject;
 
@@ -49,7 +45,7 @@ public class PromoDetailAnalytics implements IPromoDetailAnalytics {
                 "promo_code", promoCode)
         );
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf("event", EVENT_PROMO_VIEW,
                         "eventCategory", EVENT_CATEGORY_PROMO_DETAIL,
                         "eventAction", EVENT_ACTION_IMPRESSION_PROMO,
@@ -68,7 +64,7 @@ public class PromoDetailAnalytics implements IPromoDetailAnalytics {
 
     @Override
     public void userClickCopyIcon(String promoName) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 new EventTracking(
                         EVENT_PROMO_CLICK_MICROSITE,
                         EVENT_CATEGORY_PROMO_LIST,
@@ -92,7 +88,7 @@ public class PromoDetailAnalytics implements IPromoDetailAnalytics {
                 "promo_code", promoCode)
         );
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         "event", EVENT_PROMO_CLICK,
                         "eventCategory", EVENT_CATEGORY_PROMO_DETAIL,
@@ -112,7 +108,7 @@ public class PromoDetailAnalytics implements IPromoDetailAnalytics {
 
     @Override
     public void userSharePromo(String socialMediaName) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 new EventTracking(
                         EVENT_PROMO_CLICK_MICROSITE,
                         EVENT_CATEGORY_PROMO_SHARING,
@@ -124,7 +120,7 @@ public class PromoDetailAnalytics implements IPromoDetailAnalytics {
 
     @Override
     public void userClickTooltip() {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 new EventTracking(
                         EVENT_PROMO_CLICK_MICROSITE,
                         EVENT_CATEGORY_PROMO_TOOLTIP,
@@ -135,7 +131,7 @@ public class PromoDetailAnalytics implements IPromoDetailAnalytics {
 
     @Override
     public void userCloseTooltip() {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 new EventTracking(
                         EVENT_PROMO_CLICK_MICROSITE,
                         EVENT_CATEGORY_PROMO_TOOLTIP,

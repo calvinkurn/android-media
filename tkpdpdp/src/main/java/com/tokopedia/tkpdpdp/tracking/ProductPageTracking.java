@@ -11,7 +11,6 @@ import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
-import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -99,7 +98,7 @@ public class ProductPageTracking {
         if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(maps);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(maps);
     }
 
     public static void eventClickAtcNotLogin(Context context, String productId) {
@@ -160,7 +159,7 @@ public class ProductPageTracking {
                                                   String creative,
                                                   String promoId,
                                                   String promoCode) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf("event", "promoView",
                         "eventCategory", EVENT_CATEGORY_PROMO_PDP,
                         "eventAction", PDP_PROMO_IMPRESSION_EVENT_ACTION,
@@ -187,7 +186,7 @@ public class ProductPageTracking {
                                              String creative,
                                              String promoId,
                                              String promoCode) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf("event", "promoClick",
                         "eventCategory", EVENT_CATEGORY_PROMO_PDP,
                         "eventAction", PDP_PROMO_CLICK_ON_PROMO_SHORT_DESC,
@@ -318,7 +317,7 @@ public class ProductPageTracking {
     }
 
     public static void eventClickMerchantVoucherUse(Context context, MerchantVoucherViewModel viewModel, int positionIndex) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 createMvcClickMap(PROMO_CLICK,
                         PRODUCT_DETAIL_PAGE,
                         joinSpace(PROMO_BANNER, CLICK),
@@ -333,7 +332,7 @@ public class ProductPageTracking {
                 USE_VOUCHER,
                 merchantVoucherViewModelList);
         if (map != null) {
-            TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(map);
+            TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
         }
     }
 
@@ -348,7 +347,7 @@ public class ProductPageTracking {
         eventTracking.put("eventLabel", String.format(LABEL_CLICK_BY_ME, shopId, productId));
         eventTracking.put(USER_ID, userId);
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(eventTracking);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventTracking);
     }
 
     public static void eventClickAffiliate(Context context,
@@ -362,7 +361,7 @@ public class ProductPageTracking {
         eventTracking.put("eventLabel", productId);
         eventTracking.put(USER_ID, userId);
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(eventTracking);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventTracking);
     }
 
     public static void eventClickWishlistOnAffiliate(Context context,
@@ -376,7 +375,7 @@ public class ProductPageTracking {
         eventTracking.put("eventLabel", productId);
         eventTracking.put(USER_ID, userId);
 
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(eventTracking);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventTracking);
     }
 
     public static void eventClickReviewOnBuyersImage(Context context,

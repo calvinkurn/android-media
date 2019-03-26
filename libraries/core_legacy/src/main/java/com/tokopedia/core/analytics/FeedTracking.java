@@ -94,7 +94,7 @@ public class FeedTracking extends TrackingUtils {
     }
 
     private static void eventTrackingEnhanceFeed(Context context, Map<String, Object> trackingData) {
-        TrackApp.getInstance().getGTM().sendEnhanceECommerceEvent(trackingData);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(trackingData);
     }
 
     private static void eventImpressionFeedProductItem(Context context, List<Object> list, String eventLabel) {
