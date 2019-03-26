@@ -136,7 +136,11 @@
                             </LinearLayout>
                         </RelativeLayout>
 
-                        <include layout="@layout/tp_toolbar" />
+                        <com.tokopedia.tokopoints.view.customview.TokoPointToolbar
+                            android:id="@+id/toolbar_tokopoint"
+                            android:layout_width="match_parent"
+                            android:layout_height="?actionBarSize"
+                            app:layout_collapseMode="pin" />
 
                         <View
                             android:id="@+id/status_bar_bg"

@@ -139,6 +139,7 @@ public class ChallengeDetailsPresenter extends BaseDaggerPresenter<View>
             getChallengeDetailsUseCase.execute(getView().getChallengeDetailsParams(), new Subscriber<Map<Type, RestResponse>>() {
                 @Override
                 public void onCompleted() {
+                    if (!isViewAttached()) return;
                     getView().hideProgressBar();
                 }
 

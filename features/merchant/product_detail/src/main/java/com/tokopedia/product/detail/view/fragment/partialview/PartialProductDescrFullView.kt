@@ -17,9 +17,9 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.Category
-import com.tokopedia.product.detail.common.data.model.ProductInfo
-import com.tokopedia.product.detail.common.data.model.Video
+import com.tokopedia.product.detail.common.data.model.product.Category
+import com.tokopedia.product.detail.common.data.model.product.ProductInfo
+import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.common.data.model.constant.ProductConditionTypeDef
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.util.*
