@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.common.data.model
+package com.tokopedia.product.detail.common.data.model.product
 
 import android.content.Context
 import com.google.gson.annotations.Expose
