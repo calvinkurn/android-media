@@ -32,8 +32,12 @@
         android:paddingEnd="@dimen/dp_24"
         android:paddingRight="@dimen/dp_24"
         android:paddingBottom="@dimen/dp_12"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_11"
         android:text="@string/not_elligible_price_high"
         android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
@@ -46,6 +50,7 @@
         android:src="@drawable/ic_action_x"
         android:tint="@color/bg_corner_yellow"
         android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintRight_toRightOf="@+id/tv_price_elligible"
         app:layout_constraintTop_toTopOf="@+id/tv_price_elligible" />
 
@@ -73,7 +78,7 @@
         android:gravity="center_horizontal"
         android:lineSpacingExtra="@dimen/sp_6"
         android:textColor="@color/black_70"
-        android:textSize="@dimen/sp_16"
+        android:textSize="@dimen/sp_18"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -91,7 +96,6 @@
         android:lineSpacingExtra="@dimen/sp_4"
         android:text="@string/header_section_price"
         android:textColor="#8a000000"
-        android:textSize="@dimen/sp_12"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_model_name" />
@@ -104,10 +108,10 @@
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:gravity="center_horizontal"
-        android:lineSpacingExtra="@dimen/sp_6"
+        android:lineSpacingExtra="@dimen/sp_4"
         android:text="@string/model_not_found"
         android:textColor="@color/black_70"
-        android:textSize="@dimen/sp_16"
+        android:textSize="@dimen/sp_18"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -124,11 +128,26 @@
         android:lineSpacingExtra="@dimen/sp_4"
         android:text="@string/depends_on_test"
         android:textColor="#8a000000"
-        android:textSize="@dimen/sp_12"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_initial_price" />
 
+
+    <TextView
+        android:id="@+id/tv_not_upto"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:gravity="center"
+        android:lineHeight="@dimen/sp_20"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:text="@string/text_not_upto_15min"
+        android:textColor="@color/black_54"
+        app:layout_constraintBottom_toTopOf="@id/tv_go_to_product_details"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <TextView
         android:id="@+id/tv_go_to_product_details"
@@ -144,7 +163,6 @@
         android:paddingBottom="@dimen/dp_12"
         android:text="@string/go_to_product_details"
         android:textColor="@color/white"
-        android:textSize="@dimen/sp_16"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
