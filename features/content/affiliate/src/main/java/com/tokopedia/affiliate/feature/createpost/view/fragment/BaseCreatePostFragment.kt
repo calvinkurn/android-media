@@ -348,12 +348,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         relatedProductRv.adapter = adapter
         relatedProductRv.setHasFixedSize(true)
         doneBtn.setOnClickListener {
-            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList.firstOrNull())
             saveDraftAndSubmit()
             affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList)
         }
         addImageBtn.setOnClickListener {
-            affiliateAnalytics.onTambahGambarButtonClicked(viewModel.productIdList.firstOrNull())
             goToImagePicker()
             affiliateAnalytics.onTambahGambarButtonClicked()
         }
