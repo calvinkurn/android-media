@@ -22,10 +22,10 @@ public class ExpandableItemSelectedListAdapter extends
         RecyclerView.Adapter<ExpandableItemSelectedListAdapter.ViewHolder> {
 
     private List<Option> selectedOptionsList = new ArrayList<>();
-    private DynamicFilterView dynamicFilterView;
+    private DynamicFilterView filterView;
 
-    public ExpandableItemSelectedListAdapter(DynamicFilterView dynamicFilterView) {
-        this.dynamicFilterView = dynamicFilterView;
+    public ExpandableItemSelectedListAdapter(DynamicFilterView filterView) {
+        this.filterView = filterView;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class ExpandableItemSelectedListAdapter extends
             }
 
             selectedItem.setOnDeleteListener(() -> {
-                dynamicFilterView.removeSelectedOption(option);
+                filterView.removeSelectedOption(option);
                 selectedOptionsList.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, getItemCount());
