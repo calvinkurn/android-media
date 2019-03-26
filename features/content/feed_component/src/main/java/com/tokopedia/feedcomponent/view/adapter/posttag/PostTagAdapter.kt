@@ -15,7 +15,9 @@ import android.widget.TextView
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItemTag
+import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 
 /**
@@ -101,7 +103,21 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
                 : View.OnClickListener {
              return View.OnClickListener {
                  listener.onPostTagItemClick(positionInFeed, item.applink)
+                 listener.onAffiliateTrackClicked(mappingTracking(item.tracking))
              }
+        }
+
+        private fun mappingTracking(trackListPojo : List<Tracking>): MutableList<TrackingViewModel> {
+            val trackList = ArrayList<TrackingViewModel>()
+            for (trackPojo: Tracking in trackListPojo) {
+                trackList.add(TrackingViewModel(
+                        trackPojo.clickURL,
+                        trackPojo.viewURL,
+                        trackPojo.type,
+                        trackPojo.source
+                ))
+            }
+            return trackList
         }
 
         private fun renderTag(textView: TextView, tag: PostTagItemTag) {
