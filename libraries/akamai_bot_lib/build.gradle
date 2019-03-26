@@ -3,5 +3,5 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    implementation project(rootProject.ext.libraries.config)
 }

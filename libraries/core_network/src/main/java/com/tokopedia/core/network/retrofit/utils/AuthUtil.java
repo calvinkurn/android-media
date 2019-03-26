@@ -25,6 +25,9 @@ import java.util.Map;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import static com.tokopedia.network.utils.AuthUtil.HEADER_USER_AGENT;
+import static com.tokopedia.network.utils.AuthUtil.getUserAgent;
+
 /**
  * @author Angga.Prasetiyo on 25/11/2015.
  * Modified by kulomady add method without params
@@ -136,6 +139,7 @@ public class AuthUtil {
         String signature = calculateRFC2104HMAC(authString, authKey);
 
         Map<String, String> headerMap = new ArrayMap<>();
+        headerMap.put(HEADER_USER_AGENT, getUserAgent());
         headerMap.put(HEADER_CONTENT_TYPE, contentType != null ? contentType : CONTENT_TYPE);
         headerMap.put(HEADER_X_METHOD, method);
         headerMap.put(HEADER_REQUEST_METHOD, method);
@@ -169,6 +173,7 @@ public class AuthUtil {
         String signature = calculateRFC2104HMAC(authString, authKey);
 
         Map<String, String> headerMap = new ArrayMap<>();
+        headerMap.put(HEADER_USER_AGENT, getUserAgent());
         headerMap.put(HEADER_CONTENT_TYPE, contentType != null ? contentType : CONTENT_TYPE);
         headerMap.put(HEADER_X_METHOD, method);
         headerMap.put(HEADER_REQUEST_METHOD, method);
@@ -275,6 +280,7 @@ public class AuthUtil {
         String signature = calculateRFC2104HMAC(authString, authKey);
 
         Map<String, String> headerMap = new ArrayMap<>();
+        headerMap.put(HEADER_USER_AGENT, getUserAgent());
         headerMap.put(HEADER_CONTENT_TYPE, contentType);
         headerMap.put(HEADER_X_METHOD, method);
         headerMap.put(HEADER_REQUEST_METHOD, method);
@@ -301,6 +307,7 @@ public class AuthUtil {
         String signature = calculateRFC2104HMAC(authString, authKey);
 
         Map<String, String> headerMap = new ArrayMap<>();
+        headerMap.put(HEADER_USER_AGENT, getUserAgent());
         headerMap.put(HEADER_CONTENT_TYPE, contentType);
         headerMap.put(HEADER_X_METHOD, method);
         headerMap.put(HEADER_REQUEST_METHOD, method);
