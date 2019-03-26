@@ -313,39 +313,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
     }
 
-    private void updateSearchParameterBeforeSearch(String searchQuery, String categoryId) {
-        setSearchParameterQueryIfNotEmpty(searchQuery);
-        setSearchParameterUniqueId();
-        setSearchParameterUserIdIfLoggedIn();
-        setSearchParameterCategoryIdIfNotEmpty(categoryId);
-    }
-
-    private void setSearchParameterQueryIfNotEmpty(String searchQuery) {
-        if(!TextUtils.isEmpty(searchQuery)) {
-            searchParameter.setSearchQuery(searchQuery);
-        }
-    }
-
-    private void setSearchParameterUniqueId() {
-        String uniqueId = userSession.isLoggedIn() ?
-                            AuthUtil.md5(userSession.getUserId()) :
-                            AuthUtil.md5(gcmHandler.getRegistrationId());
-
-        searchParameter.set(SearchApiConst.UNIQUE_ID, uniqueId);
-    }
-
-    private void setSearchParameterUserIdIfLoggedIn() {
-        if(userSession.isLoggedIn()) {
-            searchParameter.set(SearchApiConst.USER_ID, userSession.getUserId());
-        }
-    }
-
-    private void setSearchParameterCategoryIdIfNotEmpty(String categoryId) {
-        if(!TextUtils.isEmpty(categoryId)) {
-            searchParameter.set(SearchApiConst.SC, categoryId);
-        }
-    }
-
     public void onSuggestionProductClick(SearchParameter searchParameter) {
         SearchParameter copySearchParameter = new SearchParameter(searchParameter);
         this.searchParameter = copySearchParameter;
@@ -361,13 +328,46 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     protected void performRequestProduct(String searchQuery, String categoryId) {
-        updateSearchParameterBeforeSearch(searchQuery, categoryId);
+        updateSearchParameterBeforeSearchIfNotEmpty(searchQuery, categoryId);
 
         searchQuery = this.searchParameter.getSearchQuery();
 
         onSearchingStart(searchQuery);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
         getPresenter().requestProduct(searchParameter, isForceSearch(), isRequestOfficialStoreBanner());
+    }
+
+    private void updateSearchParameterBeforeSearchIfNotEmpty(String searchQuery, String categoryId) {
+        setSearchParameterQueryIfNotEmpty(searchQuery);
+        setSearchParameterUniqueId();
+        setSearchParameterUserIdIfLoggedIn();
+        setSearchParameterCategoryIdIfNotEmpty(categoryId);
+    }
+
+    private void setSearchParameterQueryIfNotEmpty(String searchQuery) {
+        if(!TextUtils.isEmpty(searchQuery)) {
+            searchParameter.setSearchQuery(searchQuery);
+        }
+    }
+
+    private void setSearchParameterUniqueId() {
+        String uniqueId = userSession.isLoggedIn() ?
+                AuthUtil.md5(userSession.getUserId()) :
+                AuthUtil.md5(gcmHandler.getRegistrationId());
+
+        searchParameter.set(SearchApiConst.UNIQUE_ID, uniqueId);
+    }
+
+    private void setSearchParameterUserIdIfLoggedIn() {
+        if(userSession.isLoggedIn()) {
+            searchParameter.set(SearchApiConst.USER_ID, userSession.getUserId());
+        }
+    }
+
+    private void setSearchParameterCategoryIdIfNotEmpty(String categoryId) {
+        if(!TextUtils.isEmpty(categoryId)) {
+            searchParameter.set(SearchApiConst.SC, categoryId);
+        }
     }
 
     public void deleteAllRecentSearch() {
