@@ -17,9 +17,9 @@ import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 public class DynamicFilterTypeFactoryImpl implements DynamicFilterTypeFactory {
 
-    private final DynamicFilterView filterView;
+    private DynamicFilterView filterView;
 
-    public DynamicFilterTypeFactoryImpl(final DynamicFilterView filterView) {
+    public DynamicFilterTypeFactoryImpl(DynamicFilterView filterView) {
         this.filterView = filterView;
     }
 
