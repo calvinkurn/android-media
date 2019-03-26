@@ -52,7 +52,4 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.appCompactV7
 
     implementation project(rootProject.ext.libraries.unifyPrinciples)
-    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
-        exclude group: "com.android.support"
-    }
 }
