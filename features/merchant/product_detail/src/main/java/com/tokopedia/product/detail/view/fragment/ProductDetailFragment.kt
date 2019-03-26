@@ -169,6 +169,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private var shopCod: Boolean = false
     private var shouldShowCod = false
     private lateinit var tradeInParams: TradeInParams
+    private lateinit var tradeInBroadcastReceiver: TradeInBroadcastReceiver
 
     var loadingProgressDialog: ProgressDialog? = null
     val errorBottomsheets: ErrorBottomsheets by lazy {
@@ -307,7 +308,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         initializePartialView(view)
         initView()
 
-        val tradeInBroadcastReceiver = TradeInBroadcastReceiver()
+        tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener { tv_trade_in_promo.visible() }
         LocalBroadcastManager.getInstance(context!!).registerReceiver(tradeInBroadcastReceiver, IntentFilter(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE))
 
