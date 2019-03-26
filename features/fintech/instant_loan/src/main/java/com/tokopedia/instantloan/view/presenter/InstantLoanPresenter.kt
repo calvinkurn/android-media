@@ -1,6 +1,5 @@
 package com.tokopedia.instantloan.view.presenter
 
-import android.provider.ContactsContract
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
@@ -15,7 +14,6 @@ import com.tokopedia.instantloan.ddcollector.PermissionResultCallback
 import com.tokopedia.instantloan.ddcollector.account.Account
 import com.tokopedia.instantloan.ddcollector.app.Application
 import com.tokopedia.instantloan.ddcollector.bdd.BasicDeviceData
-import com.tokopedia.instantloan.ddcollector.contact.Contact
 import com.tokopedia.instantloan.domain.interactor.GetLoanProfileStatusUseCase
 import com.tokopedia.instantloan.domain.interactor.PostPhoneDataUseCase
 import com.tokopedia.instantloan.view.contractor.InstantLoanContractor
@@ -138,7 +136,7 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
         data.addProperty(DeviceDataKeys.Common.SMS, messages.toString())
 
         val contacts = JsonArray()
-        var contact: JsonObject
+        /*var contact: JsonObject
 
         if (map[Contact.DD_CONTACT] != null) {
             for (entry in map[Contact.DD_CONTACT] as List<HashMap<String, String>>) {
@@ -153,7 +151,7 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
                 contact.addProperty(DeviceDataKeys.Contact.LAST_TIME, entry[ContactsContract.CommonDataKinds.Phone.LAST_TIME_CONTACTED])
                 contacts.add(contact)
             }
-        }
+        }*/
         data.addProperty(DeviceDataKeys.Common.CONTACT, contacts.toString())
 
         val callLogs = JsonArray()

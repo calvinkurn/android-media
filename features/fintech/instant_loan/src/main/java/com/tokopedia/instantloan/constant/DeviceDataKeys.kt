@@ -2,7 +2,7 @@ package com.tokopedia.instantloan.constant
 
 object DeviceDataKeys {
 
-    object Sms {
+    /*object Sms {
         val PHONE = "phone"
         val CONTENT = "content"
         val TYPE = "type"
@@ -22,7 +22,7 @@ object DeviceDataKeys {
         val TYPE = "type"
         val DURATION = "duration"
         val TIME = "time"
-    }
+    }*/
 
     object Account {
         val NAME = "name"
