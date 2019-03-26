@@ -463,12 +463,12 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             dealSellingPrice = itemView.findViewById(R.id.tv_sales_price);
             hotDeal = itemView.findViewById(R.id.tv_hot_deal);
             cvBrand = itemView.findViewById(R.id.cv_brand);
-            if (isDealsHomeLayout) {
-                DisplayMetrics displaymetrics = new DisplayMetrics();
-                ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-                int devicewidth = (int) (displaymetrics.widthPixels / 1.2);
-                itemView.getLayoutParams().width = devicewidth;
-            }
+//            if (isDealsHomeLayout) {
+//                DisplayMetrics displaymetrics = new DisplayMetrics();
+//                ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+//                int devicewidth = (int) (displaymetrics.widthPixels / 1.2);
+//                itemView.getLayoutParams().width = devicewidth;
+//            }
         }
 
         void bindData(final ProductItem productItem) {

@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -79,7 +80,7 @@ import javax.inject.Inject;
 
 import static android.app.Activity.RESULT_OK;
 
-public class DealsHomeFragment extends BaseDaggerFragment implements DealsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsCategoryItemAdapter.CategorySelected, DealsLocationAdapter.ActionListener, CloseableBottomSheetDialog.OnCancelListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet {
+public class DealsHomeFragment extends BaseDaggerFragment implements DealsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsCategoryItemAdapter.CategorySelected, DealsLocationAdapter.ActionListener, CloseableBottomSheetDialog.OnCancelListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet, PopupMenu.OnMenuItemClickListener {
 
 
     private Menu mMenu;
@@ -99,7 +100,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private ConstraintLayout clPromos;
     private ConstraintLayout trendingDeals;
     private TextView searchInputView;
-    private ImageView backArrow;
+    private ImageView backArrow, overFlowIcon;
     private AppBarLayout appBarLayout;
     private NestedScrollView nestedScrollView;
     private LinearLayout curatedDealsLayout;
@@ -166,6 +167,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private void setUpVariables(View view) {
         toolbar = view.findViewById(R.id.deals_toolbar);
         backArrow = view.findViewById(R.id.backArraw);
+        overFlowIcon = view.findViewById(R.id.overFlow_icon);
         catItems = view.findViewById(R.id.category_items);
         rvBrandItems = view.findViewById(R.id.rv_brand_items);
         rvTrendingDeals = view.findViewById(R.id.rv_trending_deals);
@@ -237,8 +239,28 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                 }
             }
         });
+        overFlowIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popupMenu = new PopupMenu(getActivity(), v);
+                MenuInflater menuInflater = popupMenu.getMenuInflater();
+                menuInflater.inflate(R.menu.menu_deals_home, popupMenu.getMenu());
+                mMenu = popupMenu.getMenu();
+                for (int i = 0; i < mMenu.size(); i++) {
+                    MenuItem item = popupMenu.getMenu().getItem(i);
+                    SpannableString s = new SpannableString(item.getTitle());
+                    s.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, s.length(), 0);
+                    s.setSpan(new StyleSpan(Typeface.NORMAL), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    item.setTitle(s);
+                }
+                popupMenu.setOnMenuItemClickListener(DealsHomeFragment.this);
+                popupMenu.show();
+            }
+        });
 
     }
+
+
 
     private void setDrawableTint(Drawable img) {
         Drawable wrappedDrawable = DrawableCompat.wrap(img);
@@ -382,6 +404,12 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         }
     }
 
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        int id = item.getItemId();
+        return mPresenter.onOptionMenuClick(id);
+    }
+
     private class CategoryItemComparator implements Comparator<CategoryItem> {
         private Map<Integer, Integer> sortOrder;
 
@@ -464,9 +492,22 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             curatedDealsLayout.setVisibility(View.VISIBLE);
             curatedDealsLayout.removeAllViews();
             noContent.setVisibility(View.GONE);
+            boolean isItemsAvailable = false;
             for (CategoryItem categoryItem : categoryItems) {
-                CuratedDealsView curatedDealsView = new CuratedDealsView(getActivity(), categoryItem, openTrendingDeals, "", mPresenter);
-                curatedDealsLayout.addView(curatedDealsView);
+                if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {
+                    isItemsAvailable = true;
+                    DealsCategoryAdapter.INavigateToActivityRequest listener = new DealsCategoryAdapter.INavigateToActivityRequest() {
+                        @Override
+                        public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
+startActivityForResult(intent, requestCode);
+                        }
+                    };
+                    CuratedDealsView curatedDealsView = new CuratedDealsView(getActivity(), categoryItem, listener, openTrendingDeals,  "", mPresenter);
+                    curatedDealsLayout.addView(curatedDealsView);
+                }
+            }
+            if (!isItemsAvailable) {
+                curatedDealsLayout.setVisibility(View.GONE);
             }
         } else {
             curatedDealsLayout.setVisibility(View.GONE);

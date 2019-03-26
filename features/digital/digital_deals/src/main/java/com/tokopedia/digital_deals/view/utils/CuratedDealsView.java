@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,10 +41,11 @@ public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapt
         initView();
     }
 
-    public CuratedDealsView(Context context, CategoryItem categoryItem, DealsHomeFragment.OpenTrendingDeals openTrendingDeals, String addView, DealsHomePresenter mPresenter) {
+    public CuratedDealsView(Context context, CategoryItem categoryItem, DealsCategoryAdapter.INavigateToActivityRequest listener, DealsHomeFragment.OpenTrendingDeals openTrendingDeals, String addView, DealsHomePresenter mPresenter) {
         super(context);
         this.context = context;
         this.categoryItem = categoryItem;
+        this.listener = listener;
         this.openTrendingDeals = openTrendingDeals;
         this.mPresenter = mPresenter;
         initView();
@@ -89,6 +91,6 @@ public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapt
 
     @Override
     public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
-
+        ((Activity)context).startActivityForResult(intent, requestCode);
     }
 }
