@@ -190,7 +190,7 @@ public class TopChatAnalytics {
 
     //#AV4
     public void eventVoucherCopyClicked(@NotNull String voucherCode) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 Name.CHAT_DETAIL,
                 Category.CHAT_DETAIL,
                 Action.CLICK_COPY_VOUCHER_THUMBNAIL,
@@ -200,7 +200,7 @@ public class TopChatAnalytics {
 
     //#AV5
     public void eventVoucherThumbnailClicked() {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 Name.CHAT_DETAIL,
                 Category.CHAT_DETAIL,
                 Action.CLICK_VOUCHER_THUMBNAIL,
