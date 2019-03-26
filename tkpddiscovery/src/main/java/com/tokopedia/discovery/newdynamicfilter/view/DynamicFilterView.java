@@ -10,30 +10,22 @@ import java.util.List;
  */
 
 public interface DynamicFilterView {
+    void onExpandableItemClicked(Filter filter);
 
-    @Deprecated
     Boolean loadLastCheckedState(Option option);
-    @Deprecated
     void saveCheckedState(Option option, Boolean isChecked);
 
-    @Deprecated
-    void removeSavedTextInput(String key);
-    @Deprecated
+    void removeSavedTextInput(String uniqueId);
     void saveTextInput(String key, String textInput);
 
     List<Option> getSelectedOptions(Filter filter);
     void removeSelectedOption(Option option);
 
-    void onExpandableItemClicked(Filter filter);
-
-    boolean isSliderValueHasChanged(int minValue, int maxValue);
-    void saveSliderValueStates(int minValue, int maxValue);
-
-    void setFilterValue(Option option, String value);
-    void setFilterValueExpandableItem(Option option, boolean value);
+//    void updateLastRangeValue(int minValue, int maxValue);
+    void onPriceSliderRelease(int minValue, int maxValue);
+    void onPriceSliderPressed(int minValue, int maxValue);
+    void onPriceEditedFromTextInput(int minValue, int maxValue);
 
     String getFilterValue(String key);
-    boolean getFlagFilterHelperValue(String key);
-
-    void applyFilter();
+    boolean getFilterViewState(String uniqueId);
 }

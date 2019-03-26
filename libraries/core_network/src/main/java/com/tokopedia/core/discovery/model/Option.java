@@ -32,8 +32,6 @@ public class Option implements Parcelable {
     public static final String RATING_ABOVE_FOUR_NAME = "4 Keatas";
     public static final String RATING_ABOVE_FOUR_VALUE = "4,5";
 
-    public static final String VALUE_SEPARATOR = ",";
-
     @SerializedName("name")
     @Expose
     String name;

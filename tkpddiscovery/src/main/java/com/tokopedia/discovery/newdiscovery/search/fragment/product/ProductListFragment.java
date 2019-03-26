@@ -146,7 +146,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     private void initFilterControllerForQuickFilterIfExists() {
         if(isProductViewModelHasQuickFilter()) {
-            quickFilterController.initFilterController(searchParameter.getSearchParameterHashMap(), productViewModel.getQuickFilterModel().getFilter());
+            initQuickFilter(productViewModel.getQuickFilterModel().getFilter());
         }
     }
 
@@ -595,7 +595,7 @@ public class ProductListFragment extends SearchSectionFragment
     public boolean isQuickFilterSelected(Option option) {
         return option.isCategoryOption() ?
                 getFilterViewStateForCategory(option) :
-                quickFilterController.getFilterViewStateValue(option.getUniqueId());
+                quickFilterController.getFilterViewState(option.getUniqueId());
     }
 
     private boolean getFilterViewStateForCategory(Option option) {
@@ -617,10 +617,9 @@ public class ProductListFragment extends SearchSectionFragment
 
     private void setFilterToController(Option option, boolean isQuickFilterSelected) {
         if (option.isCategoryOption()) {
-            String categoryValue = isQuickFilterSelected ? option.getValue() : "";
-            quickFilterController.setFilterValue(option, categoryValue);
+            quickFilterController.setFilter(option, isQuickFilterSelected, true);
         } else {
-            quickFilterController.setFilterValueExpandableItem(option, isQuickFilterSelected);
+            quickFilterController.setFilter(option, isQuickFilterSelected);
         }
     }
 

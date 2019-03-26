@@ -4,21 +4,36 @@ import com.tokopedia.core.discovery.model.Filter
 import com.tokopedia.core.discovery.model.Option
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper
-import org.junit.Before
 import org.junit.Test
 
 class FilterControllerTest {
 
+    companion object {
+        private const val QUERY_FOR_TEST_SAMSUNG = "samsung"
+
+        private const val TRUE_VALUE = true.toString()
+
+        private const val JABODETABEK_VALUE = "1,2,3,4,5,6,7,8,9"
+        private const val JAKARTA_VALUE = "1,2,3,4,5"
+        private const val JAKARTA_BARAT_VALUE = "1"
+        private const val TANGERANG_VALUE = "8"
+        private const val BANDUNG_VALUE = "10"
+
+        private const val HANDPHONE_VALUE = "1"
+        private const val TV_VALUE = "2"
+    }
+
     private val filterController = FilterController()
 
-    private val officialOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.OFFICIAL, "true", SearchApiConst.OFFICIAL))
-    private val jabodetabekOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, "1,2,3", "Jabodetabek"))
-    private val jakartaOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, "1,2", "Jakarta"))
-    private val jakartaBaratOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, "1", "Jakarta Barat"))
-    private val tangerangOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, "3", "Tangerang"))
-    private val bandungOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, "4", "Bandung"))
-    private val handphoneOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, "1", "Handphone"))
-    private val tvOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, "2", "TV"))
+    private val officialOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.OFFICIAL, TRUE_VALUE, SearchApiConst.OFFICIAL))
+
+    private val jabodetabekOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, JABODETABEK_VALUE, "Jabodetabek"))
+    private val jakartaOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, JAKARTA_VALUE, "Jakarta"))
+    private val jakartaBaratOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, JAKARTA_BARAT_VALUE, "Jakarta Barat"))
+    private val tangerangOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, TANGERANG_VALUE, "Tangerang"))
+    private val bandungOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, BANDUNG_VALUE, "Bandung"))
+    private val handphoneOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, HANDPHONE_VALUE, "Handphone"))
+    private val tvOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, TV_VALUE, "TV"))
     private val minPriceOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.PMIN, "", "Harga Minimum"))
     private val maxPriceOption = OptionHelper.createOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.PMAX, "", "Harga Maximum"))
 
@@ -27,11 +42,43 @@ class FilterControllerTest {
     private val categoryOptions = mutableListOf<Option>()
     private val priceOptions = mutableListOf<Option>()
 
-    @Before
-    fun initFilterController() {
+    @Test
+    fun testInitFilterWithNullsOrEmptyShouldNotCrash() {
+        filterController.initFilterController(null, null)
+        filterController.initFilterController(null, listOf())
+        filterController.initFilterController(mapOf(), null)
+        filterController.initFilterController()
+    }
+
+    @Test
+    fun testSetFilterWithNullOptionShouldNotCrash() {
+        filterController.initFilterController()
+
+        filterController.setFilter(null, true)
+        filterController.setFilter(null)
+        filterController.setFilter(listOf())
+    }
+
+    @Test
+    fun testFilterControllerInitializedProperly() {
+        val filterParameter = createFilterParameter()
+        val filterList = createFilterList()
+
+        filterController.initFilterController(filterParameter, filterList)
+
+        assertFilterViewStateCorrect(tokoOptions)
+        assertFilterViewStateSizeCorrect(tokoOptions.size)
+    }
+
+    private fun createFilterParameter() : Map<String, String> {
         val filterParameter = mutableMapOf<String, String>()
-        filterParameter["q"] = "samsung"
-        filterParameter["official"] = "true"
+        filterParameter[SearchApiConst.Q] = QUERY_FOR_TEST_SAMSUNG
+        filterParameter[SearchApiConst.OFFICIAL] = TRUE_VALUE
+
+        return filterParameter
+    }
+
+    private fun createFilterList() : List<Filter> {
         val filterList = mutableListOf<Filter>()
 
         tokoOptions.add(officialOption)
@@ -53,81 +100,7 @@ class FilterControllerTest {
         priceOptions.add(maxPriceOption)
         filterList.add(createFilterWithOptions(priceOptions))
 
-        filterController.initFilterController(filterParameter, filterList)
-    }
-
-    @Test
-    fun testInitFilter() {
-        assertGetFilterValueExists(tokoOptions)
-        assertGetFilterValueNotExists(locationOptions + categoryOptions + priceOptions)
-    }
-
-    @Test
-    fun testApplyFilterNoCleanUp() {
-        filterController.setFilter(jabodetabekOption, true)
-
-        val expectedOptionsExist = mutableListOf<Option>()
-        expectedOptionsExist.add(jabodetabekOption)
-        expectedOptionsExist.addAll(tokoOptions)
-
-        val expectedOptionsNotExists = mutableListOf<Option>()
-        expectedOptionsNotExists.add(jakartaOption)
-        expectedOptionsNotExists.add(jakartaBaratOption)
-        expectedOptionsNotExists.add(tangerangOption)
-        expectedOptionsNotExists.add(bandungOption)
-        expectedOptionsNotExists.addAll(categoryOptions)
-        expectedOptionsNotExists.addAll(priceOptions)
-
-        assertGetFilterValueExists(expectedOptionsExist)
-        assertGetFilterValueNotExists(expectedOptionsNotExists)
-
-        filterController.setFilter(jakartaOption, true)
-
-        expectedOptionsExist.clear()
-        expectedOptionsExist.add(jabodetabekOption)
-        expectedOptionsExist.add(jakartaOption)
-        expectedOptionsExist.addAll(tokoOptions)
-
-        expectedOptionsNotExists.clear()
-        expectedOptionsNotExists.add(jakartaBaratOption)
-        expectedOptionsNotExists.add(tangerangOption)
-        expectedOptionsNotExists.add(bandungOption)
-        expectedOptionsNotExists.addAll(categoryOptions)
-        expectedOptionsNotExists.addAll(priceOptions)
-
-        assertGetFilterValueExists(expectedOptionsExist)
-        assertGetFilterValueNotExists(expectedOptionsNotExists)
-    }
-
-    @Test
-    fun testApplyFilterWithCleanUp() {
-        filterController.setFilter(handphoneOption, true, isCleanUpExistingFilterWithSameKey = true)
-
-        val expectedOptionsExist = mutableListOf<Option>()
-        expectedOptionsExist.add(handphoneOption)
-        expectedOptionsExist.addAll(tokoOptions)
-
-        val expectedOptionsNotExists = mutableListOf<Option>()
-        expectedOptionsNotExists.add(tvOption)
-        expectedOptionsNotExists.addAll(locationOptions)
-        expectedOptionsNotExists.addAll(priceOptions)
-
-        assertGetFilterValueExists(expectedOptionsExist)
-        assertGetFilterValueNotExists(expectedOptionsNotExists)
-
-        filterController.setFilter(tvOption, true, isCleanUpExistingFilterWithSameKey = true)
-
-        expectedOptionsExist.clear()
-        expectedOptionsExist.add(tvOption)
-        expectedOptionsExist.addAll(tokoOptions)
-
-        expectedOptionsNotExists.clear()
-        expectedOptionsNotExists.add(handphoneOption)
-        expectedOptionsNotExists.addAll(locationOptions)
-        expectedOptionsNotExists.addAll(priceOptions)
-
-        assertGetFilterValueExists(expectedOptionsExist)
-        assertGetFilterValueNotExists(expectedOptionsNotExists)
+        return filterList
     }
 
     private fun createFilterWithOptions(optionList: List<Option>) : Filter {
@@ -136,14 +109,159 @@ class FilterControllerTest {
         return filter
     }
 
-    private fun assertGetFilterValueExists(optionList: List<Option>) {
-        for(option in optionList) {
-            val expectedFilterValue = option.value
-            val actualFilterValue = filterController.getFilterValue(option)
-            assert(isActualContainsExpected(actualFilterValue, expectedFilterValue)) {
-                getAssertFilterValueMessage(option.uniqueId, expectedFilterValue, actualFilterValue)
-            }
+    @Test
+    fun testSetFilterNoCleanUp() {
+        val filterParameter = createFilterParameter()
+        val filterList = createFilterList()
 
+        filterController.initFilterController(filterParameter, filterList)
+        filterController.setFilter(jabodetabekOption, true)
+        filterController.setFilter(jakartaOption, true)
+
+        assertFilterViewStatesAppended()
+    }
+
+    private fun assertFilterViewStatesAppended() {
+        val expectedOptions = mutableListOf<Option>()
+        expectedOptions.add(jabodetabekOption)
+        expectedOptions.add(jakartaOption)
+        expectedOptions.add(officialOption)
+
+        assertFilterViewStateCorrect(expectedOptions)
+        assertFilterViewStateSizeCorrect(expectedOptions.size)
+    }
+
+    @Test
+    fun testSetFilterWithCleanUp() {
+        val filterParameter = createFilterParameter()
+        val filterList = createFilterList()
+
+        filterController.initFilterController(filterParameter, filterList)
+        filterController.setFilter(handphoneOption, true, isCleanUpExistingFilterWithSameKey = true)
+        filterController.setFilter(tvOption, true, isCleanUpExistingFilterWithSameKey = true)
+        filterController.setFilter(createPriceOptionWithValue(minPriceOption, 900), true, isCleanUpExistingFilterWithSameKey = true)
+        filterController.setFilter(createPriceOptionWithValue(minPriceOption, 1000), true, isCleanUpExistingFilterWithSameKey = true)
+
+        assertFilterViewStateReplaced()
+    }
+
+    private fun createPriceOptionWithValue(priceOption: Option, priceOptionValue: Int) : Option {
+        val createdPriceOption = OptionHelper.createOptionFromUniqueId(priceOption.uniqueId)
+        createdPriceOption.value = priceOptionValue.toString()
+
+        return priceOption
+    }
+
+    private fun assertFilterViewStateReplaced() {
+        val expectedOptions = mutableListOf<Option>()
+        expectedOptions.add(tvOption)
+        expectedOptions.add(officialOption)
+        expectedOptions.add(createPriceOptionWithValue(minPriceOption, 1000))
+
+        assertFilterValueCorrect(expectedOptions)
+        assertFilterViewStateCorrect(expectedOptions)
+        assertFilterViewStateSizeCorrect(expectedOptions.size)
+    }
+
+    @Test
+    fun testRemoveFilter() {
+        val filterParameter = createFilterParameter()
+        val filterList = createFilterList()
+
+        filterController.initFilterController(filterParameter, filterList)
+        filterController.setFilter(officialOption, false)
+
+        assertFilterViewStateRemoved()
+    }
+
+    private fun assertFilterViewStateRemoved() {
+        assert(filterController.getFilterValue(SearchApiConst.OFFICIAL) == "")
+        assertFilterViewStateCorrect(listOf())
+        assertFilterViewStateSizeCorrect(0)
+    }
+
+    @Test
+    fun testSetFilterMultipleOptions() {
+        val filterParameter = createFilterParameter()
+        val filterList = createFilterList()
+
+        filterController.initFilterController(filterParameter, filterList)
+
+        val optionsWithInputState = createMultipleOptionsWithInputState()
+        filterController.setFilter(optionsWithInputState)
+
+        assertFilterViewStateMultipleOptions()
+    }
+
+    private fun createMultipleOptionsWithInputState() : List<Option> {
+        val optionList = mutableListOf<Option>()
+
+        val jabodetabekOptionSelected = OptionHelper.createOptionFromUniqueId(jabodetabekOption.uniqueId)
+        jabodetabekOptionSelected.inputState = TRUE_VALUE
+        optionList.add(jabodetabekOptionSelected)
+
+        val jakartaOptionSelected = OptionHelper.createOptionFromUniqueId(jakartaOption.uniqueId)
+        jakartaOptionSelected.inputState = TRUE_VALUE
+        optionList.add(jakartaOptionSelected)
+
+        val jakartaBaratOptionUnSelected = OptionHelper.createOptionFromUniqueId(jakartaBaratOption.uniqueId)
+        jakartaBaratOptionUnSelected.inputState = "Some random string should NOT make this option selected"
+        optionList.add(jakartaBaratOptionUnSelected)
+
+        return optionList
+    }
+
+    private fun assertFilterViewStateMultipleOptions() {
+        val expectedOptions = mutableListOf<Option>()
+        expectedOptions.add(jabodetabekOption)
+        expectedOptions.add(jakartaOption)
+        expectedOptions.add(officialOption)
+
+        assertFilterViewStateCorrect(expectedOptions)
+        assertFilterViewStateSizeCorrect(expectedOptions.size)
+    }
+
+    @Test
+    fun testSetFilterMultipleOptionsShouldReplacePreviouslySelectedOptionWithSameKey() {
+        val filterParameter = createFilterParameter()
+        val filterList = createFilterList()
+
+        filterController.initFilterController(filterParameter, filterList)
+        filterController.setFilter(handphoneOption, true, isCleanUpExistingFilterWithSameKey = true)
+        filterController.setFilter(jakartaBaratOption, true)
+
+        val optionsWithInputState = createMultipleOptionsWithInputState()
+        filterController.setFilter(optionsWithInputState)
+
+        assertSetFilterMultipleOptionsShouldReplacePreviouslySelectedOptionWithSameKey()
+    }
+
+    private fun assertSetFilterMultipleOptionsShouldReplacePreviouslySelectedOptionWithSameKey() {
+        val expectedOptions = mutableListOf<Option>()
+        expectedOptions.add(jabodetabekOption)
+        expectedOptions.add(jakartaOption)
+        expectedOptions.add(officialOption)
+        expectedOptions.add(handphoneOption)
+
+        assertFilterViewStateCorrect(expectedOptions)
+        assertFilterViewStateSizeCorrect(expectedOptions.size)
+    }
+
+    private fun assertFilterValueCorrect(optionList: List<Option>) {
+        for(option in optionList) {
+            val actualFilterValue = filterController.getFilterValue(option.key)
+            assert(actualFilterValue == option.value) {
+                getAssertFilterValueMessage(option.uniqueId, option.value, actualFilterValue)
+            }
+        }
+    }
+
+    private fun getAssertFilterValueMessage(uniqueId: String, expectedValue: String, actualValue: String) : String {
+        return "Testing filter value, option $uniqueId: expected: $expectedValue, actual: $actualValue"
+    }
+
+    private fun assertFilterViewStateCorrect(optionList: List<Option>) {
+        for(option in optionList) {
             val actualFilterViewState = filterController.getFilterViewState(option)
             assert(actualFilterViewState) {
                 getAssertFilterViewStateMessage(option.uniqueId, true, actualFilterViewState)
@@ -151,33 +269,19 @@ class FilterControllerTest {
         }
     }
 
-    private fun assertGetFilterValueNotExists(optionList: List<Option>) {
-        for(option in optionList) {
-            val actualFilterValue = filterController.getFilterValue(option)
-            val notExpectedFilterValue = option.value
-            assert(!isActualContainsExpected(actualFilterValue, notExpectedFilterValue)) {
-                getAssertFilterValueMessage(option.uniqueId, "empty or not $notExpectedFilterValue", actualFilterValue)
-            }
+    private fun getAssertFilterViewStateMessage(uniqueId: String, expectedFilterViewState: Boolean, actualFilterViewState: Boolean) : String {
+        return "Testing filter view state, option $uniqueId: expected: $expectedFilterViewState, actual: $actualFilterViewState"
+    }
 
-            val actualFilterViewState = filterController.getFilterViewState(option)
-            assert(!actualFilterViewState) {
-                getAssertFilterViewStateMessage(option.uniqueId, false, actualFilterViewState)
-            }
+    private fun assertFilterViewStateSizeCorrect(expectedSize: Int) {
+        val actualSize = filterController.getFilterViewStateSize()
+
+        assert(filterController.getFilterViewStateSize() == expectedSize) {
+            getAssertFilterViewStateSizeMessage(expectedSize, actualSize)
         }
     }
 
-    private fun isActualContainsExpected(actualFilterValue: String, expectedFilterValue: String) : Boolean {
-        val actualFilterValueList = actualFilterValue.split(Option.VALUE_SEPARATOR).toList()
-        val expectedFilterValueList = expectedFilterValue.split(Option.VALUE_SEPARATOR).toList()
-
-        return actualFilterValueList.containsAll(expectedFilterValueList)
-    }
-
-    private fun getAssertFilterValueMessage(uniqueId: String, expectedFilterValue: String, actualFilterValue: String) : String {
-        return "Testing filter value option $uniqueId: expected: $expectedFilterValue, actual: $actualFilterValue"
-    }
-
-    private fun getAssertFilterViewStateMessage(uniqueId: String, expectedFilterViewState: Boolean, actualFilterViewState: Boolean) : String {
-        return "Testing filter view state option $uniqueId: expected: $expectedFilterViewState, actual: $actualFilterViewState"
+    private fun getAssertFilterViewStateSizeMessage(expectedFilterViewStateSize: Int, actualFitlerViewStateSize: Int) : String {
+        return "Testing filter view state size, expected: $expectedFilterViewStateSize, actual $actualFitlerViewStateSize"
     }
 }

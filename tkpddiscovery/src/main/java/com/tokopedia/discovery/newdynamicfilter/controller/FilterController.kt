@@ -5,7 +5,6 @@ import android.os.Parcelable
 import android.text.TextUtils
 import com.tokopedia.core.discovery.model.Filter
 import com.tokopedia.core.discovery.model.Option
-import com.tokopedia.core.discovery.model.Option.METRIC_INTERNATIONAL
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper
@@ -16,7 +15,6 @@ class FilterController() : Parcelable {
     private val filterParameter = mutableMapOf<String, String>()
     private val filterViewState = mutableMapOf<String, Boolean>()
     private val filterList = mutableListOf<Filter>()
-    private val activeFilterKeyList = mutableSetOf<String>()
 
     private var pressedSliderMinValueState = -1
     private var pressedSliderMaxValueState = -1
@@ -29,118 +27,43 @@ class FilterController() : Parcelable {
         parcel.readList(filterList, Filter::class.java.classLoader)
         pressedSliderMinValueState = parcel.readInt()
         pressedSliderMaxValueState = parcel.readInt()
-
-        loadActiveFilter()
     }
 
-    fun initFilterController(filterParameter: Map<String, String> = mapOf(),
-                             filterList: List<Filter> = listOf()) {
+    fun initFilterController(filterParameter: Map<String, String>? = mapOf(),
+                             filterList: List<Filter>? = listOf()) {
         resetStatesBeforeLoad()
 
         loadFilterParameter(filterParameter)
         loadFilterList(filterList)
         loadFilterViewState()
-        loadActiveFilter()
     }
 
     private fun resetStatesBeforeLoad() {
         filterParameter.clear()
         filterViewState.clear()
         filterList.clear()
-        activeFilterKeyList.clear()
         pressedSliderMaxValueState = -1
         pressedSliderMaxValueState = -1
     }
 
-    private fun loadFilterParameter(filterParameter: Map<String, String>) {
+    private fun loadFilterParameter(filterParameter: Map<String, String>?) {
+        if(filterParameter == null) return
+
         this.filterParameter.putAll(filterParameter)
         filterParameterRemoveDuplicateValues()
     }
 
     private fun filterParameterRemoveDuplicateValues() {
         for(entrySet in filterParameter.entries) {
-            val valueSet = entrySet.value.split(Option.VALUE_SEPARATOR).toSet()
-            entrySet.setValue(valueSet.joinToString(separator = Option.VALUE_SEPARATOR))
+            val valueSet = entrySet.value.split(OptionHelper.VALUE_SEPARATOR).toSet()
+            entrySet.setValue(valueSet.joinToString(separator = OptionHelper.VALUE_SEPARATOR))
         }
     }
 
-    private fun loadFilterList(filterList: List<Filter>) {
+    private fun loadFilterList(filterList: List<Filter>?) {
+        if(filterList == null) return
+
         this.filterList.addAll(filterList)
-
-        removeFiltersWithEmptyOption()
-        mergeSizeFilterOptionsWithSameValue()
-        removeBrandFilterOptionsWithSameValue()
-    }
-
-    private fun removeFiltersWithEmptyOption() {
-        val iterator = filterList.iterator()
-        while (iterator.hasNext()) {
-            val filter = iterator.next()
-            if (filter.options.isEmpty() && !filter.isSeparator) {
-                iterator.remove()
-            }
-        }
-    }
-
-    private fun mergeSizeFilterOptionsWithSameValue() {
-        val sizeFilter = getSizeFilter() ?: return
-
-        val sizeFilterOptions = sizeFilter.options
-        val iterator = sizeFilterOptions.iterator()
-        val optionMap = mutableMapOf<String, Option>()
-
-        while (iterator.hasNext()) {
-            val option = iterator.next()
-            val existingOption = optionMap[option.value]
-            if (existingOption != null) {
-                existingOption.name = existingOption.name + " / " + getFormattedSizeName(option)
-                iterator.remove()
-            } else {
-                option.name = getFormattedSizeName(option)
-                option.metric = ""
-                optionMap[option.value] = option
-            }
-        }
-    }
-
-    private fun getSizeFilter(): Filter? {
-        for (filter in filterList) {
-            if (filter.isSizeFilter) return filter
-        }
-        return null
-    }
-
-    private fun getFormattedSizeName(option: Option): String {
-        return if (METRIC_INTERNATIONAL == option.metric) {
-            option.name
-        } else {
-            option.name + " " + option.metric
-        }
-    }
-
-    private fun removeBrandFilterOptionsWithSameValue() {
-        val brandFilter = getBrandFilter() ?: return
-
-        val brandFilterOptions = brandFilter.options
-        val iterator = brandFilterOptions.iterator()
-        val optionMap = mutableMapOf<String, Option>()
-
-        while (iterator.hasNext()) {
-            val option = iterator.next()
-            val existingOption = optionMap[option.value]
-            if (existingOption != null) {
-                iterator.remove()
-            } else {
-                optionMap[option.value] = option
-            }
-        }
-    }
-
-    private fun getBrandFilter(): Filter? {
-        for (filter in filterList) {
-            if (filter.isBrandFilter) return filter
-        }
-        return null
     }
 
     private fun loadFilterViewState() {
@@ -156,16 +79,12 @@ class FilterController() : Parcelable {
         }
     }
 
-    private fun canAddToFilterViewState(filter: Filter, option: Option) : Boolean {
-        return filter.isExpandableFilter && !filter.isCategoryFilter && isOptionSelected(option)
-    }
-
     private fun isOptionSelected(option: Option) : Boolean {
         val key = option.key
 
         if(filterParameter.containsKey(key)) {
-            val optionValues = option.value.split(Option.VALUE_SEPARATOR)
-            val filterParameterValues = getFilterValue(key).split(Option.VALUE_SEPARATOR)
+            val optionValues = option.value.split(OptionHelper.VALUE_SEPARATOR)
+            val filterParameterValues = getFilterValue(key).split(OptionHelper.VALUE_SEPARATOR)
 
             return filterParameterValues.containsAll(optionValues)
         }
@@ -202,8 +121,8 @@ class FilterController() : Parcelable {
     }
 
     private fun replaceOrAddOptionWithSameKey(iterator: MutableListIterator<Option>, existingOption: Option, currentOption: Option) : Boolean {
-        val existingOptionValueList = existingOption.value.split(Option.VALUE_SEPARATOR).toList()
-        val currentOptionValueList = currentOption.value.split(Option.VALUE_SEPARATOR).toList()
+        val existingOptionValueList = existingOption.value.split(OptionHelper.VALUE_SEPARATOR).toList()
+        val currentOptionValueList = currentOption.value.split(OptionHelper.VALUE_SEPARATOR).toList()
 
         return when {
             shouldReplaceExistingOptionWithCurrentOption(currentOptionValueList, existingOptionValueList)-> {
@@ -223,14 +142,6 @@ class FilterController() : Parcelable {
         return existingOptionValueList.containsAll(currentOptionValueList)
     }
 
-    private fun loadActiveFilter() {
-        loopOptionsInFilterList { _, option ->
-            if(filterParameter.containsKey(option.key)) {
-                activeFilterKeyList.add(option.key)
-            }
-        }
-    }
-
     private fun loopOptionsInFilterList(action: (filter: Filter, option: Option) -> Unit) {
         for(filter in filterList)
             for(option in filter.options)
@@ -246,93 +157,6 @@ class FilterController() : Parcelable {
         return minValue != pressedSliderMinValueState || maxValue != pressedSliderMaxValueState
     }
 
-    fun setFilterValueFromDetailActivity(optionList: List<Option>) {
-        val tempHashMapFilterParameter = mutableMapOf<String, String>()
-
-        for(option in optionList) {
-            filterParameter.remove(option.key)
-            activeFilterKeyList.remove(option.key)
-
-            val isFilterApplied = isFilterApplied(option.inputState)
-            setOrRemoveFlagFilterHelper(option.uniqueId, isFilterApplied)
-
-            if(isFilterApplied) {
-                insertToTempHashMap(tempHashMapFilterParameter, option)
-            }
-        }
-
-        filterParameter.putAll(tempHashMapFilterParameter)
-        for(entryKey in tempHashMapFilterParameter.keys) {
-            activeFilterKeyList.add(entryKey)
-        }
-    }
-
-    private fun insertToTempHashMap(tempHashMap: MutableMap<String, String>, option: Option) {
-        val currentValueInHashMap = tempHashMap[option.key] ?: ""
-
-        tempHashMap[option.key] =
-            if(!TextUtils.isEmpty(currentValueInHashMap))
-                currentValueInHashMap + Option.VALUE_SEPARATOR + option.value
-            else
-                option.value
-    }
-
-    fun setFilterValueExpandableItem(option: Option, value: Boolean) {
-        setOrRemoveFlagFilterHelper(option.uniqueId, value)
-
-        setFilterValue(option, getNewFilterValue(value, option.key, option.value))
-    }
-
-    private fun setOrRemoveFlagFilterHelper(key: String, value: Boolean) {
-        if(value) filterViewState[key] = true
-        else filterViewState.remove(key)
-    }
-
-    private fun getNewFilterValue(isFilterAdded: Boolean, key: String, value: String) : String {
-        return if(isFilterAdded) {
-            appendFilterValue(key, value)
-        } else {
-            removeFilterValue(key, value)
-        }
-    }
-
-    private fun appendFilterValue(key: String, value: String) : String {
-        val currentValue = getFilterValue(key)
-
-        return if(!TextUtils.isEmpty(currentValue)) {
-            currentValue + Option.VALUE_SEPARATOR + value
-        }
-        else {
-            value
-        }
-    }
-
-    private fun removeFilterValue(key: String, value: String) : String {
-        val currentValueList = getFilterValue(key).split(Option.VALUE_SEPARATOR).toMutableList()
-        val newValueList = value.split(Option.VALUE_SEPARATOR)
-
-        for(newValue in newValueList) {
-            currentValueList.remove(newValue)
-        }
-
-        return currentValueList.joinToString(separator = Option.VALUE_SEPARATOR)
-    }
-
-    fun setFilterValue(option: Option, value: String) {
-        val isFilterApplied = isFilterApplied(value)
-
-        setOrRemoveFilterValue(isFilterApplied, option.key, value)
-    }
-
-    private fun isFilterApplied(value: String) : Boolean {
-        return if(value.toBoolean()) true
-        else isValueNotEmptyAndNotFalse(value)
-    }
-
-    private fun isValueNotEmptyAndNotFalse(value: String) : Boolean {
-        return !TextUtils.isEmpty(value) && value != java.lang.Boolean.FALSE.toString()
-    }
-
     fun resetAllFilters() {
         removeActiveFiltersFromFilterParameter()
 
@@ -342,22 +166,15 @@ class FilterController() : Parcelable {
     }
 
     private fun removeActiveFiltersFromFilterParameter() {
-        val activeFiltersForReset = mutableListOf<String>()
-        activeFiltersForReset.addAll(activeFilterKeyList)
+        val activeFilterKeySet = mutableSetOf<String>()
 
-        for(activeFilterKey in activeFiltersForReset) {
-            setOrRemoveFilterValue(false, activeFilterKey, "")
+        for(filterViewStateKey in filterViewState.keys) {
+            val optionKey = OptionHelper.parseKeyFromUniqueId(filterViewStateKey)
+            activeFilterKeySet.add(optionKey)
         }
-    }
 
-    private fun setOrRemoveFilterValue(isFilterApplied: Boolean, key: String, value: String) {
-        if(isFilterApplied) {
-            filterParameter[key] = value
-            activeFilterKeyList.add(key)
-        }
-        else {
-            filterParameter.remove(key)
-            activeFilterKeyList.remove(key)
+        for(activeFilterKey in activeFilterKeySet) {
+            filterParameter.remove(activeFilterKey)
         }
     }
 
@@ -452,7 +269,7 @@ class FilterController() : Parcelable {
     }
 
     private fun isCustomOptionDisplayed(option: Option) : Boolean {
-        return java.lang.Boolean.TRUE == getFilterViewStateValue(option.uniqueId)
+        return java.lang.Boolean.TRUE == getFilterViewState(option.uniqueId)
     }
 
     private fun isIncludePopularOption(popularOptionList: List<Option>, option: Option) : Boolean {
@@ -460,136 +277,116 @@ class FilterController() : Parcelable {
     }
 
     fun isFilterActive() : Boolean {
-        return activeFilterKeyList.size > 0
+        return filterViewState.isNotEmpty()
     }
 
     fun getFilterValue(key: String): String {
         return filterParameter[key] ?: ""
     }
 
-    fun getFilterViewStateValue(key: String) : Boolean {
-        return filterViewState[key] ?: false
+    fun getFilterViewState(option: Option) : Boolean {
+        return getFilterViewState(option.uniqueId)
+    }
+
+    fun getFilterViewState(uniqueId: String) : Boolean {
+        return filterViewState[uniqueId] ?: false
+    }
+
+    fun getFilterViewStateSize() : Int {
+        return filterViewState.size
     }
 
     fun getFilterParameter() : Map<String, String> {
         return this.filterParameter
     }
 
-    fun getFilterList() : List<Filter> {
-        return filterList
-    }
-
     fun getActiveFilterOptionList() : List<Option> {
         val activeFilterOptionList = mutableListOf<Option>()
 
-        loopOptionsInFilterList { filter, option ->
-            if(activeFilterKeyList.contains(option.key)) {
-                when {
-                    filter.isPriceFilter -> addIntoActiveFilterOptionListFromFilterParameter(activeFilterOptionList, option)
-                    filter.isExpandableFilter -> addintoActiveFilterListExpandableFilter(filter, activeFilterOptionList, option)
-                    else -> addIntoActiveFilterOptionListFromFilterViewState(activeFilterOptionList, option)
-                }
+        loopOptionsInFilterList { _, option ->
+            if(getFilterViewState(option)) {
+                activeFilterOptionList.add(OptionHelper.createOptionFromUniqueId(option.uniqueId))
             }
         }
 
         return activeFilterOptionList
     }
 
-    private fun addintoActiveFilterListExpandableFilter(filter: Filter, activeFilterOptionList: MutableList<Option>, option: Option) {
-        if(filter.isCategoryFilter) {
-            addIntoActiveFilterOptionListFromFilterParameter(activeFilterOptionList, option)
+    @JvmOverloads
+    fun setFilter(option: Option?, isFilterApplied: Boolean, isCleanUpExistingFilterWithSameKey: Boolean = false) {
+        if(option == null) return
+
+        if(isCleanUpExistingFilterWithSameKey) {
+            cleanUpExistingFilterWithSameKey(option.key)
+        }
+
+        saveFilterViewState(option.uniqueId, isFilterApplied)
+
+        populateFilterViewStateToFilterParameter(option.key)
+    }
+
+    private fun cleanUpExistingFilterWithSameKey(newOptionKey: String) {
+        val filterViewStateIterator = filterViewState.entries.iterator()
+        while(filterViewStateIterator.hasNext()) {
+            val entrySet = filterViewStateIterator.next()
+            val existingOptionKey = OptionHelper.parseKeyFromUniqueId(entrySet.key)
+            if(existingOptionKey == newOptionKey) {
+                filterViewStateIterator.remove()
+            }
+        }
+    }
+
+    private fun saveFilterViewState(uniqueId: String, isFilterApplied: Boolean) {
+        if(isFilterApplied) {
+            if(!getFilterViewState(uniqueId)) {
+                filterViewState[uniqueId] = true
+            }
         }
         else {
-            addIntoActiveFilterOptionListFromFilterViewState(activeFilterOptionList, option)
+            if(getFilterViewState(uniqueId)) {
+                filterViewState.remove(uniqueId)
+            }
         }
     }
 
-    private fun addIntoActiveFilterOptionListFromFilterParameter(activeFilterOptionList: MutableList<Option>, option: Option) {
-        if(filterParameter.containsKey(option.key)) {
-            activeFilterOptionList.add(option)
-        }
-    }
+    fun setFilter(optionList: List<Option>?) {
+        if(optionList == null || optionList.isEmpty() ) return
 
-    private fun addIntoActiveFilterOptionListFromFilterViewState(activeFilterOptionList: MutableList<Option>, option: Option) {
-        if(filterViewState.containsKey(option.key)) {
-            activeFilterOptionList.add(option)
-        }
-    }
-
-    // New functionality
-    // TODO:: remove previous functions to set and get filter values / state
-    fun setFilter(optionList: List<Option>) {
-        val tempHashMapFilterParameter = mutableMapOf<String, String>()
+        val updatedOptionsKey = mutableSetOf<String>()
 
         for(option in optionList) {
-            filterParameter.remove(option.key)
+            updatedOptionsKey.add(option.key)
 
-            val isFilterApplied = isFilterApplied(option.inputState)
-
-            if(isFilterApplied) {
-                filterViewState[option.uniqueId] = true
-
-                val currentValueInTempHashMap = tempHashMapFilterParameter[option.key] ?: ""
-                val currentValueInTempHashMapList = currentValueInTempHashMap.split(Option.VALUE_SEPARATOR).toMutableList()
-                currentValueInTempHashMapList.addAll(option.value.split(Option.VALUE_SEPARATOR).toList())
-                currentValueInTempHashMapList.removeAll { it == "" }
-
-                tempHashMapFilterParameter[option.key] = currentValueInTempHashMapList.joinToString(separator = Option.VALUE_SEPARATOR)
-            }
-            else {
-                filterViewState.remove(option.uniqueId)
-            }
+            val isFilterApplied = option.inputState?.toBoolean() ?: false
+            saveFilterViewState(option.uniqueId, isFilterApplied)
         }
 
-        filterParameter.putAll(tempHashMapFilterParameter)
+        populateFilterViewStateToFilterParameter(updatedOptionsKey)
     }
 
-    @JvmOverloads
-    fun setFilter(option: Option, isFilterApplied: Boolean, isCleanUpExistingFilterWithSameKey: Boolean = false) {
-        if(isCleanUpExistingFilterWithSameKey) {
-            filterParameter.remove(option.key)
-
-            val filterViewStateIterator = filterViewState.entries.iterator()
-            while(filterViewStateIterator.hasNext()) {
-                val entrySet = filterViewStateIterator.next()
-                val optionKey = OptionHelper.parseKeyFromUniqueId(entrySet.key)
-                if(optionKey == option.key) {
-                    filterViewStateIterator.remove()
-                }
-            }
-        }
-
-        val existingValue = filterParameter[option.key] ?: ""
-        val existingValueList = existingValue.split(Option.VALUE_SEPARATOR).toMutableList()
-
-        if(isFilterApplied) {
-            if(!getFilterViewState(option)) {
-                existingValueList.addAll(option.value.split(Option.VALUE_SEPARATOR).toList())
-                existingValueList.removeAll { it == "" }
-
-                filterParameter[option.key] =
-                    existingValueList.joinToString(separator = Option.VALUE_SEPARATOR)
-                filterViewState[option.uniqueId] = true
-            }
-        }
-        else {
-            if(getFilterViewState(option)) {
-                val newValueList = option.value.split(Option.VALUE_SEPARATOR).toList()
-                for (newValue in newValueList) {
-                    existingValueList.remove(newValue)
-                }
-
-                filterViewState.remove(option.uniqueId)
-            }
+    private fun populateFilterViewStateToFilterParameter(keyList: Set<String>) {
+        for(key in keyList) {
+            populateFilterViewStateToFilterParameter(key)
         }
     }
 
-    fun getFilterValue(option: Option) : String {
-        return filterParameter[option.key] ?: ""
-    }
+    private fun populateFilterViewStateToFilterParameter(key: String) {
+        val newFilterParameterValueList = mutableSetOf<String>()
 
-    fun getFilterViewState(option: Option) : Boolean {
-        return filterViewState[option.uniqueId] ?: false
+        for(entrySet in filterViewState.entries) {
+            val optionKeyInViewState = OptionHelper.parseKeyFromUniqueId(entrySet.key)
+            if(optionKeyInViewState == key) {
+                val optionValueInViewState = OptionHelper.parseValueFromUniqueId(entrySet.key)
+                newFilterParameterValueList.add(optionValueInViewState)
+            }
+        }
+
+        if(!newFilterParameterValueList.isEmpty()) {
+            filterParameter[key] =
+                newFilterParameterValueList.joinToString(separator = OptionHelper.VALUE_SEPARATOR)
+        } else {
+            filterParameter.remove(key)
+        }
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

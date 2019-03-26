@@ -20,6 +20,8 @@ import java.util.List;
 
 public class OptionHelper {
 
+    public static final String VALUE_SEPARATOR = ",";
+
     public static void saveOptionShownInMainState(Option option,
                                                      HashMap<String, Boolean> shownInMainState) {
 

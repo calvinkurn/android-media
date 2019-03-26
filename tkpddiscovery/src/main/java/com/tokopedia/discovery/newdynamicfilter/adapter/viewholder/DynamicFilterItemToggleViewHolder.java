@@ -38,10 +38,10 @@ public class DynamicFilterItemToggleViewHolder extends DynamicFilterViewHolder {
 
     private void bindSwitchForOption(Option option) {
         CompoundButton.OnCheckedChangeListener onCheckedChangeListener =
-                (buttonView, isChecked) -> setFilterValueExpandableItemAndApply(option, isChecked);
+                (buttonView, isChecked) -> dynamicFilterView.saveCheckedState(option, isChecked);
 
-        boolean filterViewState = filterView.getFlagFilterHelperValue(option.getUniqueId());
-
-        bindSwitch(toggle, filterViewState, onCheckedChangeListener);
+        bindSwitch(toggle,
+                dynamicFilterView.loadLastCheckedState(option),
+                onCheckedChangeListener);
     }
 }

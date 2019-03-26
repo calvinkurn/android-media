@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.color.ColorSampleView;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdynamicfilter.view.BottomSheetDynamicFilterView;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 import java.util.ArrayList;
@@ -21,11 +22,11 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
 
     private List<Option> selectedOptionsList = new ArrayList<>();
     private String filterTitle;
-    private final DynamicFilterView filterView;
+    private final BottomSheetDynamicFilterView dynamicFilterView;
 
-    public BottomSheetExpandableItemSelectedListAdapter(final DynamicFilterView filterView,
+    public BottomSheetExpandableItemSelectedListAdapter(final BottomSheetDynamicFilterView dynamicFilterView,
                                                         String filterTitle) {
-        this.filterView = filterView;
+        this.dynamicFilterView = dynamicFilterView;
         this.filterTitle = filterTitle;
     }
 
@@ -33,7 +34,7 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater
                 .from(parent.getContext()).inflate(R.layout.bottom_sheet_selected_filter_item, parent, false);
-        return new ViewHolder(view, this, filterView, filterTitle);
+        return new ViewHolder(view, this, dynamicFilterView, filterTitle);
     }
 
     @Override
@@ -58,18 +59,18 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
         private BottomSheetExpandableItemSelectedListAdapter adapter;
         private String filterTitle;
         private View ratingIcon;
-        private final DynamicFilterView filterView;
+        private final BottomSheetDynamicFilterView dynamicFilterView;
 
         public ViewHolder(View itemView,
                           BottomSheetExpandableItemSelectedListAdapter adapter,
-                          final DynamicFilterView filterView,
+                          final BottomSheetDynamicFilterView dynamicFilterView,
                           String filterTitle) {
             super(itemView);
 
             initViewHolderViews(itemView);
 
             this.adapter = adapter;
-            this.filterView = filterView;
+            this.dynamicFilterView = dynamicFilterView;
             this.filterTitle = filterTitle;
         }
 
@@ -112,24 +113,26 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
         }
 
         private void bindCategoryOption(final Option option) {
-            final boolean isOptionSelected = filterView.getFilterValue(option.getKey()).equals(option.getValue());
+            final boolean isOptionSelected = dynamicFilterView.isSelectedCategory(option);
             setItemContainerBackgroundResource(isOptionSelected);
 
             itemContainer.setOnClickListener(view -> {
-                boolean newCheckedState = !isOptionSelected;
-                String categoryValue = newCheckedState ? option.getValue() : "";
-                setAndApplyFilter(option, categoryValue);
+                if (isOptionSelected) {
+                    dynamicFilterView.removeSelectedOption(option, filterTitle);
+                } else {
+                    dynamicFilterView.selectCategory(option, filterTitle);
+                }
                 adapter.notifyDataSetChanged();
             });
         }
 
         private void bindGeneralOption(final Option option, final int position) {
-            final boolean isOptionSelected = filterView.getFlagFilterHelperValue(option.getUniqueId());
+            final boolean isOptionSelected = dynamicFilterView.getFilterViewState(option.getUniqueId());
             setItemContainerBackgroundResource(isOptionSelected);
 
             itemContainer.setOnClickListener(view -> {
                 boolean newCheckedState = !isOptionSelected;
-                setAndApplyFlagFilterHelper(option, newCheckedState);
+                dynamicFilterView.saveCheckedState(option, newCheckedState, filterTitle);
                 adapter.notifyItemChanged(position);
             });
         }
@@ -140,16 +143,6 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
             } else {
                 itemContainer.setBackgroundResource(R.drawable.quick_filter_item_background_neutral);
             }
-        }
-
-        private void setAndApplyFilter(Option option, String value) {
-            filterView.setFilterValue(option, value);
-            filterView.applyFilter();
-        }
-
-        private void setAndApplyFlagFilterHelper(Option option, Boolean value) {
-            filterView.setFilterValueExpandableItem(option, value);
-            filterView.applyFilter();
         }
     }
 }

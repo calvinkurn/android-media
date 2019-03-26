@@ -23,6 +23,9 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
     private SwitchCompat wholesaleToggle;
     private View wholesaleContainer;
     private PriceRangeInputView priceRangeInputView;
+    private Option priceMinOption;
+    private Option priceMaxOption;
+    private Option priceMinMaxOption;
 
     public DynamicFilterItemPriceViewHolder(View itemView, final DynamicFilterView filterView) {
         super(itemView, filterView);
@@ -46,21 +49,24 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
         int lastMaxValue = 0;
 
         for (Option option : filter.getOptions()) {
-            String optionValue = filterView.getFilterValue(option.getKey());
+            String optionValue = dynamicFilterView.getFilterValue(option.getKey());
 
             if (Option.KEY_PRICE_MIN_MAX_RANGE.equals(option.getKey())) {
                 minBound = TextUtils.isEmpty(option.getValMin()) ? 0 : Integer.parseInt(option.getValMin());
                 maxBound = TextUtils.isEmpty(option.getValMax()) ? 0 : Integer.parseInt(option.getValMax());
+                priceMinMaxOption = option;
             }
 
             if (Option.KEY_PRICE_MIN.equals(option.getKey())) {
                 minLabel = option.getName();
                 lastMinValue = TextUtils.isEmpty(optionValue) ? 0 : Integer.parseInt(optionValue);
+                priceMinOption = option;
             }
 
             if (Option.KEY_PRICE_MAX.equals(option.getKey())) {
                 maxLabel = option.getName();
                 lastMaxValue = TextUtils.isEmpty(optionValue) ? 0 : Integer.parseInt(optionValue);
+                priceMaxOption = option;
             }
 
             if (Option.KEY_PRICE_WHOLESALE.equals(option.getKey())) {
@@ -90,59 +96,49 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
                 defaultMinValue, defaultMaxValue);
     }
 
-    private RangeInputView.GestureListener getPriceRangeInputViewGestureListener() {
+    private PriceRangeInputView.GestureListener getPriceRangeInputViewGestureListener() {
         return new RangeInputView.GestureListener() {
             @Override
             public void onButtonRelease(int minValue, int maxValue) {
-                if(filterView.isSliderValueHasChanged(minValue, maxValue)) {
-                    filterView.applyFilter();
-                }
+                dynamicFilterView.onPriceSliderRelease(minValue, maxValue);
             }
 
             @Override
             public void onButtonPressed(int minValue, int maxValue) {
-                filterView.saveSliderValueStates(minValue, maxValue);
+                dynamicFilterView.onPriceSliderPressed(minValue, maxValue);
             }
 
             @Override
             public void onValueEditedFromTextInput(int minValue, int maxValue) {
-                filterView.applyFilter();
+                dynamicFilterView.onPriceEditedFromTextInput(minValue, maxValue);
             }
         };
     }
 
-    private RangeInputView.OnValueChangedListener getPriceRangeInputViewOnValueChangeListener() {
-        return (minValue, maxValue, minBound1, maxBound1) -> {
-            String minValueString = minValue == minBound1 ? "" : String.valueOf(minValue);
-            applyMinValueFilter(minValueString);
+    private PriceRangeInputView.OnValueChangedListener getPriceRangeInputViewOnValueChangeListener() {
+        return (minValue, maxValue, minBound, maxBound) -> {
+            applyMinValueFilter(minValue, minBound);
 
-            String maxValueString = maxValue == maxBound1 ? "" : String.valueOf(maxValue);
-            applyMaxValueFilter(maxValueString);
+            applyMaxValueFilter(maxValue, maxBound);
+
+//            dynamicFilterView.updateLastRangeValue(minValue, maxValue);
         };
     }
 
-    private void applyMinValueFilter(String minValueString) {
-        Option priceMinOption = getPriceMinOption();
-        filterView.setFilterValue(priceMinOption, minValueString);
+    private void applyMinValueFilter(int minValue, int minBound) {
+        if (minValue == minBound) {
+            dynamicFilterView.removeSavedTextInput(priceMinOption.getUniqueId());
+        } else {
+            dynamicFilterView.saveTextInput(priceMinOption.getUniqueId(), String.valueOf(minValue));
+        }
     }
 
-    private void applyMaxValueFilter(String maxValueString) {
-        Option priceMaxOption = getPriceMaxOption();
-        filterView.setFilterValue(priceMaxOption, maxValueString);
-    }
-
-    private Option getPriceMinOption() {
-        Option option = new Option();
-        option.setKey(Option.KEY_PRICE_MIN);
-        option.setName(Option.KEY_PRICE_MIN);
-        return option;
-    }
-
-    private Option getPriceMaxOption() {
-        Option option = new Option();
-        option.setKey(Option.KEY_PRICE_MAX);
-        option.setName(Option.KEY_PRICE_MAX);
-        return option;
+    private void applyMaxValueFilter(int maxValue, int maxBound) {
+        if (maxValue == maxBound) {
+            dynamicFilterView.removeSavedTextInput(priceMaxOption.getUniqueId());
+        } else {
+            dynamicFilterView.saveTextInput(priceMaxOption.getUniqueId(), String.valueOf(maxValue));
+        }
     }
 
     private void bindWholesaleOptionItem(final Option option) {
@@ -152,11 +148,10 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
         wholesaleTitle.setOnClickListener(v -> wholesaleToggle.setChecked(!wholesaleToggle.isChecked()));
 
         CompoundButton.OnCheckedChangeListener onCheckedChangeListener =
-                (buttonView, isChecked) -> setFilterValueExpandableItemAndApply(option, isChecked);
+                (buttonView, isChecked) -> dynamicFilterView.saveCheckedState(option, isChecked);
 
-        String filterValueString = filterView.getFilterValue(option.getKey());
-        boolean filterValueBoolean = Boolean.parseBoolean(filterValueString);
-
-        bindSwitch(wholesaleToggle, filterValueBoolean, onCheckedChangeListener);
+        bindSwitch(wholesaleToggle,
+                dynamicFilterView.loadLastCheckedState(option),
+                onCheckedChangeListener);
     }
 }

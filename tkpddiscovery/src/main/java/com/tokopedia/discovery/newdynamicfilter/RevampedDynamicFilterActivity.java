@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -35,7 +34,6 @@ import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,7 +129,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
         buttonReset = findViewById(R.id.top_bar_button_reset);
         buttonReset.setOnClickListener(v -> resetAllFilter());
         buttonApply = findViewById(R.id.button_finish);
-        buttonApply.setOnClickListener(v -> applyFilterFromButton());
+        buttonApply.setOnClickListener(v -> applyFilter());
         mainLayout = findViewById(R.id.main_layout);
         loadingView = findViewById(R.id.loading_view);
     }
@@ -238,8 +236,9 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
 
             @Override
             public void onNext(List<Filter> filterList) {
-                filterController.initFilterController(getSearchParameterFromIntent(), filterList);
-                adapter.setFilterList(filterController.getFilterList());
+                List<Filter> initializedFilterList = FilterHelper.initializeFilterList(filterList);
+                filterController.initFilterController(getSearchParameterFromIntent(), initializedFilterList);
+                adapter.setFilterList(initializedFilterList);
             }
         };
     }
@@ -291,7 +290,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     private void enrichWithInputState(Filter filter) {
         for (Option option : filter.getOptions()) {
             option.setInputState(
-                    String.valueOf(filterController.getFilterViewStateValue(option.getUniqueId()))
+                    String.valueOf(filterController.getFilterViewState(option.getUniqueId()))
             );
         }
     }
@@ -322,7 +321,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
         List<Option> optionList
                 = data.getParcelableArrayListExtra(AbstractDynamicFilterDetailActivity.EXTRA_RESULT);
 
-        filterController.setFilterValueFromDetailActivity(optionList);
+        filterController.setFilter(optionList);
 
         for(Option option : optionList) {
             OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
@@ -351,7 +350,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
                             OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
                         }
 
-                        filterController.setFilterValueFromDetailActivity(optionList);
+                        filterController.setFilter(optionList);
                         adapter.notifyItemChanged(selectedExpandableItemPosition);
                         hideLoading();
                     }
@@ -365,18 +364,14 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
 
         Option categoryOption = OptionHelper.generateOptionFromCategory(selectedCategoryId, selectedCategoryName);
 
-        filterController.setFilterValue(categoryOption, selectedCategoryId);
+        filterController.setFilter(categoryOption, true, true);
     }
 
     private void hideLoading() {
         loadingView.setVisibility(View.GONE);
     }
 
-    @Override
     public void applyFilter() {
-    }
-
-    public void applyFilterFromButton() {
         renderFilterResult();
         finish();
     }
@@ -417,49 +412,36 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
 
     @Override
     public Boolean loadLastCheckedState(Option option) {
-        return savedCheckedState.get(option.getUniqueId());
+        return filterController.getFilterViewState(option);
     }
 
     @Override
     public void saveCheckedState(Option option, Boolean isChecked) {
+        filterController.setFilter(option, isChecked);
         savedCheckedState.put(option.getUniqueId(), isChecked);
     }
 
     @Override
-    public void removeSavedTextInput(String key) {
-        savedTextInput.remove(key);
+    public void removeSavedTextInput(String uniqueId) {
+        filterController.setFilter(OptionHelper.createOptionFromUniqueId(uniqueId), false, true);
+        savedTextInput.remove(uniqueId);
     }
 
     @Override
     public void saveTextInput(String key, String textInput) {
         savedTextInput.put(key, textInput);
-    }
 
-    private boolean isCategorySelected() {
-        return !TextUtils.isEmpty(selectedCategoryRootId) &&
-                !TextUtils.isEmpty(selectedCategoryId) &&
-                !TextUtils.isEmpty(selectedCategoryName);
-    }
+        Option textInputOption = OptionHelper.createOptionFromUniqueId(key);
+        textInputOption.setValue(textInput);
 
-    private Option getSelectedCategoryAsOption() {
-        return OptionHelper.generateOptionFromCategory(selectedCategoryId, selectedCategoryName);
-    }
-
-    private List<Option> getCheckedOptionList(Filter filter) {
-        List<Option> checkedOptions = new ArrayList<>();
-
-        for (Option option : filter.getOptions()) {
-            if (Boolean.TRUE.equals(loadLastCheckedState(option))) {
-                checkedOptions.add(option);
-            }
-        }
-        return checkedOptions;
+        filterController.setFilter(textInputOption, true, true);
     }
 
     @Override
     public void removeSelectedOption(Option option) {
         if (KEY_CATEGORY.equals(option.getKey())) {
             resetSelectedCategory();
+            filterController.setFilter(option, false, true);
         } else {
             saveCheckedState(option, false);
         }
@@ -472,52 +454,18 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     }
 
     @Override
-    public boolean isSliderValueHasChanged(int minValue, int maxValue) {
-        return filterController.isSliderValueHasChanged(minValue, maxValue);
+    public void onPriceSliderRelease(int minValue, int maxValue) {
+
     }
 
     @Override
-    public void saveSliderValueStates(int minValue, int maxValue) {
-        filterController.saveSliderValueStates(minValue, maxValue);
+    public void onPriceSliderPressed(int minValue, int maxValue) {
+
     }
 
     @Override
-    public void setFilterValue(Option option, String value) {
-        filterController.setFilterValue(option, value);
+    public void onPriceEditedFromTextInput(int minValue, int maxValue) {
 
-        handlePriceFilter(option.getKey(), value);
-    }
-
-    private void handlePriceFilter(String key, String value) {
-        if(key.equals(Option.KEY_PRICE_MIN) || key.equals(Option.KEY_PRICE_MAX)) {
-            if(isFilterApplied(value)) {
-                saveTextInput(key, value);
-            }
-            else {
-                removeSavedTextInput(key);
-            }
-        }
-    }
-
-    private boolean isFilterApplied(String value) {
-        if(Boolean.parseBoolean(value)) return true;
-        else return isValueNotEmptyAndNotFalse(value);
-    }
-
-    private boolean isValueNotEmptyAndNotFalse(String value) {
-        return !TextUtils.isEmpty(value) && !value.equals(Boolean.FALSE.toString());
-    }
-
-    @Override
-    public void setFilterValueExpandableItem(Option option, boolean value) {
-        filterController.setFilterValueExpandableItem(option, value);
-
-        if (value) {
-            saveCheckedState(option, value);
-        }
-        else {
-            removeSelectedOption(option);
-        }
     }
 
     @Override
@@ -526,8 +474,8 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     }
 
     @Override
-    public boolean getFlagFilterHelperValue(String key) {
-        return filterController.getFilterViewStateValue(key);
+    public boolean getFilterViewState(String uniqueId) {
+        return filterController.getFilterViewState(uniqueId);
     }
 
     @Override

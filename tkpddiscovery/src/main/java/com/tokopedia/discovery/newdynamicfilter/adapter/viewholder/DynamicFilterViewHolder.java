@@ -15,13 +15,13 @@ import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 public abstract class DynamicFilterViewHolder extends AbstractViewHolder<Filter> {
 
-    final DynamicFilterView filterView;
+    final DynamicFilterView dynamicFilterView;
 
     public DynamicFilterViewHolder(View itemView,
-                                   final DynamicFilterView filterView) {
+                                   final DynamicFilterView dynamicFilterView) {
         super(itemView);
 
-        this.filterView = filterView;
+        this.dynamicFilterView = dynamicFilterView;
     }
 
     void bindSwitch(SwitchCompat switchView,
@@ -37,10 +37,5 @@ public abstract class DynamicFilterViewHolder extends AbstractViewHolder<Filter>
         }
 
         switchView.setOnCheckedChangeListener(onCheckedChangeListener);
-    }
-
-    void setFilterValueExpandableItemAndApply(Option option, boolean value) {
-        filterView.setFilterValueExpandableItem(option, value);
-        filterView.applyFilter();
     }
 }
