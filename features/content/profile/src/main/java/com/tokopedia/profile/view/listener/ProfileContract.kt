@@ -30,6 +30,10 @@ interface ProfileContract {
         fun hideLoadingLayout()
 
         fun hideHeader()
+
+        fun onSuccessShouldChangeUsername(shouldChange: Boolean, link: String)
+
+        fun onErrorShouldChangeUsername(errorMessage: String, link: String)
     }
     interface Presenter : CustomerPresenter<View> {
         var cursor: String
@@ -52,6 +56,6 @@ interface ProfileContract {
 
         fun trackPostClickUrl(url:String)
 
-        fun shouldChangeUsername(userId: Int)
+        fun shouldChangeUsername(userId: Int, link: String)
     }
 }

@@ -57,9 +57,8 @@ import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity.PARAM_POST_ID
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
-import com.tokopedia.kotlin.extensions.view.loadImageCircle
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
-import com.tokopedia.kotlin.extensions.view.showNormalToaster
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.onboarding.view.fragment.UsernameInputFragment
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.analytics.ProfileAnalytics
@@ -128,8 +127,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         private const val PARAM_CATEGORY_ID = "{category_id}"
         private const val YOUTUBE_URL = "{youtube_url}"
         private const val TAB_INSPIRASI = "inspirasi"
-        private const val SOURCE_PROFILE_HEADER = "SOURCE_PROFILE_HEADER"
-        private const val SOURCE_PROFILE_FOOTER = "SOURCE_PROFILE_FOOTER"
         private const val CATEGORY_0 = "0"
         private const val TEXT_PLAIN = "text/plain"
         private const val KOL_COMMENT_CODE = 13
@@ -327,7 +324,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
             successPost -> {
                 when {
-                    isAutomaticOpenShareUser() -> shareLink(element.profileHeaderViewModel.link, SOURCE_PROFILE_FOOTER)
+                    isAutomaticOpenShareUser() -> {
+                        shareLink(element.profileHeaderViewModel.link)
+                        profileAnalytics.eventClickBagikanProfile(isOwner, userId.toString())
+                    }
                     onlyOnePost -> showShowCaseDialog(shareProfile)
                     else -> showAfterPostToaster(affiliatePostQuota?.number != 0)
                 }
@@ -340,6 +340,24 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         app_bar_layout.setExpanded(false)
         app_bar_layout.visibility = View.GONE
         footer.visibility = View.GONE
+    }
+
+    override fun onSuccessShouldChangeUsername(shouldChange: Boolean, link: String) {
+        if (shouldChange) {
+            val usernameInputFragment = UsernameInputFragment()
+            usernameInputFragment.show(
+                    childFragmentManager,
+                    UsernameInputFragment::class.java.simpleName
+            )
+        } else {
+            doShare(link)
+        }
+    }
+
+    override fun onErrorShouldChangeUsername(errorMessage: String, link: String) {
+        view?.showErrorToaster(errorMessage, R.string.title_try_again) {
+            presenter.shouldChangeUsername(userSession.userId.toIntOrZero(), link)
+        }
     }
 
     override fun onSuccessGetProfilePost(visitables: List<Visitable<*>>, lastCursor: String) {
@@ -929,7 +947,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         action = if (!selfProfile) {
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_share_white))
             iv_action.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_share_white))
-            shareLinkClickListener(element.link, SOURCE_PROFILE_HEADER)
+            View.OnClickListener {
+                shareLink(element.link)
+                profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
+
+            }
         } else {
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_af_graph))
             iv_action.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_af_graph))
@@ -1096,7 +1118,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 true
             }
 
-            shareProfile.setOnClickListener(shareLinkClickListener(headerViewModel.link, SOURCE_PROFILE_FOOTER))
+            shareProfile.setOnClickListener {
+                shareLink(headerViewModel.link)
+                profileAnalytics.eventClickBagikanProfile(isOwner, userId.toString())
+            }
             shareProfile.setOnLongClickListener {
                 showToast(getString(R.string.profile_share_this_profile))
                 true
@@ -1150,11 +1175,19 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun shareLinkClickListener(link: String, source: String): View.OnClickListener {
         return View.OnClickListener {
-            shareLink(link, source)
+            shareLink(link)
         }
     }
 
-    private fun shareLink(link: String, source: String) {
+    private fun shareLink(link: String) {
+        if (isOwner) {
+            presenter.shouldChangeUsername(userSession.userId.toIntOrZero(), link)
+        } else {
+            doShare(link)
+        }
+    }
+
+    private fun doShare(link: String) {
         val shareBody = String.format(getString(R.string.profile_share_text), link)
         val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
         sharingIntent.type = TEXT_PLAIN
@@ -1162,12 +1195,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         startActivity(
                 Intent.createChooser(sharingIntent, getString(R.string.profile_share_title))
         )
-        when (source) {
-            SOURCE_PROFILE_FOOTER ->
-                profileAnalytics.eventClickBagikanProfile(isOwner, userId.toString())
-            SOURCE_PROFILE_HEADER ->
-                profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
-        }
     }
 
     private fun getEmptyModel(isShowAffiliateContent: Boolean,

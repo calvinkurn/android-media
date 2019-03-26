@@ -1,6 +1,8 @@
 package com.tokopedia.profile.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
@@ -111,17 +113,25 @@ class ProfilePresenter @Inject constructor(
         )
     }
 
-    override fun shouldChangeUsername(userId: Int) {
+    override fun shouldChangeUsername(userId: Int, link: String) {
         shouldChangeUsernameUseCase.execute(
                 ShouldChangeUsernameUseCase.createRequestParams(userId),
                 object : Subscriber<Boolean>() {
-                    override fun onNext(t: Boolean?) {
+                    override fun onNext(t: Boolean) {
+                        view?.onSuccessShouldChangeUsername(t, link)
                     }
 
                     override fun onCompleted() {
                     }
 
                     override fun onError(e: Throwable?) {
+                        if (GlobalConfig.isAllowDebuggingTools()) {
+                            e?.printStackTrace()
+                        }
+                        view?.onErrorShouldChangeUsername(
+                                ErrorHandler.getErrorMessage(view.context, e),
+                                link
+                        )
                     }
                 }
         )
