@@ -26,11 +26,41 @@ public class TradeInVMFactory extends ViewModelProvider.NewInstanceFactory {
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         //noinspection TryWithIdenticalCatches
         if (TradeInTextViewModel.class.isAssignableFrom(modelClass)) {
-            return (T) new TradeInTextViewModel(activityWeakReference.get());
+            try {
+                return modelClass.getConstructor(FragmentActivity.class).newInstance(activityWeakReference.get());
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
+            } catch (InstantiationException e) {
+                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
+            }
         } else if (TradeInHomeViewModel.class.isAssignableFrom(modelClass)) {
-            return (T) new TradeInHomeViewModel(activityWeakReference.get());
+            try {
+                return modelClass.getConstructor(FragmentActivity.class).newInstance(activityWeakReference.get());
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
+            } catch (InstantiationException e) {
+                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
+            }
         } else if (FinalPriceViewModel.class.isAssignableFrom(modelClass)) {
-            return (T) new FinalPriceViewModel(activityWeakReference.get());
+            try {
+                return modelClass.getConstructor(FragmentActivity.class).newInstance(activityWeakReference.get());
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
+            } catch (InstantiationException e) {
+                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException("Cannot create an instance of " + modelClass, e);
+            }
         }
         return super.create(modelClass);
     }

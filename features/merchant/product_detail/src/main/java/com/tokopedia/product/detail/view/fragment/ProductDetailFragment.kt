@@ -319,6 +319,11 @@ class ProductDetailFragment : BaseDaggerFragment() {
         appbar.addOnOffsetChangedListener { _, verticalOffset -> swipe_refresh_layout.isEnabled = (verticalOffset == 0) }
         swipe_refresh_layout.setOnRefreshListener { loadProductData(true) }
 
+        if (isAffiliate){
+            actionButtonView.gone()
+            base_btn_affiliate.visible()
+        }
+
         merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(object : MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
             override val isOwner: Boolean
                 get() = productInfo?.basic?.shopID?.let { productInfoViewModel.isShopOwner(it) }
@@ -990,7 +995,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     (productInfoViewModel.isShopOwner(data.basic.shopID)
                             || shopInfo.allowManage),
                     data.preorder)
-            actionButtonView.visibility = shopInfo.statusInfo.shopStatus == 1
+            actionButtonView.visibility = !isAffiliate && shopInfo.statusInfo.shopStatus == 1
             headerView.showOfficialStore(shopInfo.goldOS.isOfficial == 1)
             view_picture.renderShopStatus(shopInfo, productInfo?.basic?.status
                     ?: ProductStatusTypeDef.ACTIVE)
