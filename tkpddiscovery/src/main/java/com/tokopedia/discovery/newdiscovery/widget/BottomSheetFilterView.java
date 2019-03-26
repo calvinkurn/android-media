@@ -166,7 +166,6 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     public void saveCheckedState(Option option, Boolean isChecked, String filterTitle) {
         SearchTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, isChecked);
         filterController.setFilter(option, isChecked);
-        updateResetButtonVisibility();
         applyFilter();
     }
 
@@ -211,7 +210,6 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         if (KEY_CATEGORY.equals(option.getKey())) {
             SearchTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, false);
             filterController.setFilter(option, false, true);
-            updateResetButtonVisibility();
             applyFilter();
         } else {
             saveCheckedState(option, false, filterTitle);
@@ -314,7 +312,6 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     public void selectCategory(Option option, String filterTitle) {
         SearchTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, true);
         filterController.setFilter(option, true, true);
-        updateResetButtonVisibility();
         applyFilter();
     }
 
@@ -333,6 +330,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     }
 
     public void applyFilter() {
+        updateResetButtonVisibility();
         loadingView.setVisibility(View.VISIBLE);
         buttonFinish.setText("");
         callback.onApplyFilter(filterController.getFilterParameter());
