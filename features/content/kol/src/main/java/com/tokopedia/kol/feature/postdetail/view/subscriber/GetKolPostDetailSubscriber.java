@@ -65,17 +65,18 @@ public class GetKolPostDetailSubscriber extends Subscriber<GraphqlResponse> {
         }
 
         List<Visitable> list = new ArrayList<>();
-        list.add(convertToKolPostViewModel(postComment.getPostKol()));
+        KolPostViewModel kolPostDetailViewModelList =
+                convertToKolPostViewModel(postComment.getPostKol());
+        list.add(kolPostDetailViewModelList);
+
+        list.add(addSeeAll(postComment.getPostKol()));
 
         List<KolCommentViewModel> kolCommentViewModels
                 = converToKolCommentViewModelList(postComment.getComments());
-        if (postComment.getPostKol().getCommentCount() > GetKolPostDetailUseCase.DEFAULT_LIMIT) {
-            list.add(addSeeAll(postComment.getPostKol()));
-        }
         Collections.reverse(kolCommentViewModels);
         list.addAll(kolCommentViewModels);
 
-        view.onSuccessGetKolPostDetail(list);
+        view.onSuccessGetKolPostDetail(list, kolPostDetailViewModelList);
         view.stopTrace();
     }
 
@@ -196,7 +197,8 @@ public class GetKolPostDetailSubscriber extends Subscriber<GraphqlResponse> {
     private SeeAllCommentsViewModel addSeeAll(PostKol postKol) {
         return new SeeAllCommentsViewModel(
                 postKol.getId(),
-                postKol.getCommentCount()
+                postKol.getCommentCount(),
+                postKol.getCommentCount() > GetKolPostDetailUseCase.DEFAULT_LIMIT
         );
     }
 }

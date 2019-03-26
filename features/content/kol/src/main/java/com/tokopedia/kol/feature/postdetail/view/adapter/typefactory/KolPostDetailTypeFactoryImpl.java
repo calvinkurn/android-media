@@ -10,6 +10,7 @@ import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostDetailViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.EmptyKolPostViewModel;
@@ -88,7 +89,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     public AbstractViewHolder createViewHolder(View view, int viewType) {
         AbstractViewHolder abstractViewHolder;
         if (viewType == KolPostViewHolder.LAYOUT) {
-            abstractViewHolder = new KolPostViewHolder(view,
+            abstractViewHolder = new KolPostDetailViewHolder(view,
                     kolPostListener,
                     KolPostViewHolder.Type.EXPLORE);
         }
