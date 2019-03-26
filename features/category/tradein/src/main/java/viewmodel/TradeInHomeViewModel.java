@@ -96,7 +96,8 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
                     @Override
                     public void onNext(GraphqlResponse graphqlResponse) {
                         if (graphqlResponse != null) {
-                            if (graphqlResponse.getData(DeviceDiagInputResponse.class) != null) {
+                            DeviceDiagInputResponse deviceDiagInputResponse = graphqlResponse.getData(DeviceDiagInputResponse.class);
+                            if (deviceDiagInputResponse != null && deviceDiagInputResponse.getDeviceDiagInputRepsponse() != null && deviceDiagInputResponse.getDeviceDiagInputRepsponse().isEligible()) {
                                 Intent finalPriceIntent = new Intent(activityWeakReference.get(), FinalPriceActivity.class);
                                 finalPriceIntent.putExtra(TradeInParams.class.getSimpleName(), inData);
                                 activityWeakReference.get().startActivityForResult(finalPriceIntent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE);

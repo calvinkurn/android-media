@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">tradein</string>
     <string name="header_section_price">Kisaran harga jual HP Anda</string>
     <string name="not_elligible_price_high">Mohon maaf, harga device Anda lebih tinggi dari device Anda pilih. Baca Selengkapnya</string>
@@ -13,7 +13,7 @@
     <string name="text_permission_description">Dengan klik <b>setuju</b>, kamu memberikan izin untuk :\n• Model perangkat dan IMEI.
         \n• Menyalakan WiFi
         \n• Akses accelero meter</string>
-    <string name="tradein_tnc">1. Tukar Tambah adalah fitur yang memungkinkan pembeli melakukan pembelian handphone baru dengan cara menukar handphone lama miliknya. Fitur ini bisa diakses dari situs resmi atau aplikasi Tokopedia.
+    <string name="tradein_tnc" tools:ignore="TypographyOther">1. Tukar Tambah adalah fitur yang memungkinkan pembeli melakukan pembelian handphone baru dengan cara menukar handphone lama miliknya. Fitur ini bisa diakses dari situs resmi atau aplikasi Tokopedia.
 \n\n2. Tukar Tambah tersedia untuk pembeli yang tinggal di wilayah Jabodetabek
 \n\n3. Pembeli setuju dengan syarat dan ketentuan yang berlaku, termasuk bersedia mencatumkan nomor IMEI handphone lama, menjalankan tes diagnosa untuk mengetahui kondisi handphone lama, juga meng-upload foto diri bersama KTP.
 \n\n4. Pembeli akan mendapat diskon sebesar harga perkiraan dari handphone lama yang ditampilkan di  situs resmi atau aplikasi Tokopedia.
