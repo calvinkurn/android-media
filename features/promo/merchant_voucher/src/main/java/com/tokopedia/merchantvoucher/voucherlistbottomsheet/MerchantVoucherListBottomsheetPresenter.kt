@@ -82,10 +82,14 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                         view.hideLoadingDialog()
                         val responseGetPromoStack = checkPromoStackingCodeMapper.call(response)
                         if (responseGetPromoStack.status != "OK" || responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
-                            var message = responseGetPromoStack.data.message.text
+                            val message = responseGetPromoStack.data.message.text
                             view.onErrorCheckPromoFirstStep(message)
                         } else {
-                            view.onSuccessCheckPromoFirstStep(responseGetPromoStack)
+                            if (responseGetPromoStack.data.clashings.isClashedPromos) {
+                                view.onClashCheckPromoFirstStep(responseGetPromoStack.data.clashings)
+                            } else {
+                                view.onSuccessCheckPromoFirstStep(responseGetPromoStack)
+                            }
                         }
                     }
                 }
