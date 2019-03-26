@@ -21,7 +21,7 @@ class IrisAnalytics(context: Context) : Iris {
     private val session: Session = IrisSession(context)
 
     override fun setService(config: Configuration) {
-        GlobalScope.launchCatchError(block = {
+        GlobalScope.launchCatchError(context = Dispatchers.IO, block = {
             setWorkManager(config)
         }) {
             // no-op
@@ -29,7 +29,7 @@ class IrisAnalytics(context: Context) : Iris {
     }
 
     override fun resetService(config: Configuration) {
-        GlobalScope.launchCatchError(block = {
+        GlobalScope.launchCatchError(context = Dispatchers.IO, block = {
             WorkManager.getInstance().cancelAllWorkByTag(WORKER_SEND_DATA)
             setWorkManager(config)
         }) {
