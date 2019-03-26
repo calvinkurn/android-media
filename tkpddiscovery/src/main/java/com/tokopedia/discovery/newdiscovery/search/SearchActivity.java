@@ -107,6 +107,7 @@ public class SearchActivity extends DiscoveryActivity
     private boolean forceSwipeToShop;
     private BottomSheetFilterView bottomSheetFilterView;
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
+    private boolean isHandlingIntent;
 
     @Inject
     SearchPresenter searchPresenter;
@@ -154,7 +155,7 @@ public class SearchActivity extends DiscoveryActivity
         super.onResume();
         unregisterShake();
 
-        if(!hasSearchData()) {
+        if(!isHandlingIntent && !hasSearchData()) {
             showAutoCompleteOnResume();
         }
     }
@@ -229,6 +230,8 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void handleIntent(Intent intent) {
+        isHandlingIntent = true;
+
         initPresenter();
         initResources();
 
@@ -262,6 +265,7 @@ public class SearchActivity extends DiscoveryActivity
 
     private void handleIntentAutoComplete(SearchParameter searchParameter) {
         searchView.showSearch(true, false, searchParameter);
+        isHandlingIntent = false;
     }
 
     private void handleIntentSearch(Intent intent, SearchParameter searchParameter) {
@@ -291,6 +295,8 @@ public class SearchActivity extends DiscoveryActivity
         loadSection(productViewModel, forceSwipeToShop);
         setToolbarTitle(productViewModel.getQuery());
         bottomSheetFilterView.setFilterResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
+
+        isHandlingIntent = false;
     }
 
     private void handleIntentWithSearchQuery(SearchParameter searchParameter) {
