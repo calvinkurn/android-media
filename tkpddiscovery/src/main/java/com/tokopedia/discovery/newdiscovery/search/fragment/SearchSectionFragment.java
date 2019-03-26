@@ -302,8 +302,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 clearDataFilterSort();
                 reloadData();
             } else if (requestCode == getFilterRequestCode()) {
-                Map<String, String> filterParameter = getFilterParameterFromIntent(data);
-                Map<String, String> activeFilterParameter = getActiveFilterParameterFromIntent(data);
+                Map<String, String> filterParameter = getMapFromIntent(data, RevampedDynamicFilterActivity.EXTRA_FILTER_PARAMETER);
+                Map<String, String> activeFilterParameter = getMapFromIntent(data, RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS);
 
                 SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), activeFilterParameter);
 
@@ -314,20 +314,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         }
     }
 
-    private Map<String, String> getFilterParameterFromIntent(Intent data) {
-        Map<?, ?> filterParameterMapIntent = (Map<?, ?>)data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_FILTER_PARAMETER);
-
-        Map<String, String> filterParameter = new HashMap<>(filterParameterMapIntent.size());
-
-        for(Map.Entry<?, ?> entry: filterParameterMapIntent.entrySet()) {
-            filterParameter.put(entry.getKey().toString(), entry.getValue().toString());
-        }
-
-        return filterParameter;
-    }
-
-    private Map<String, String> getActiveFilterParameterFromIntent(Intent data) {
-        Map<?, ?> filterParameterMapIntent = (Map<?, ?>)data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS);
+    private Map<String, String> getMapFromIntent(Intent data, String extraName) {
+        Map<?, ?> filterParameterMapIntent = (Map<?, ?>)data.getSerializableExtra(extraName);
 
         Map<String, String> filterParameter = new HashMap<>(filterParameterMapIntent.size());
 
