@@ -24,7 +24,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRO
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_KEY
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_DOMAIN
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_ID
-import com.tokopedia.product.detail.common.data.model.*
+import com.tokopedia.product.detail.common.data.model.product.*
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.*
@@ -39,8 +39,11 @@ import com.tokopedia.product.detail.data.model.shop.ShopCommitment
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.product.detail.data.model.talk.TalkList
+import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRICE
 import com.tokopedia.product.detail.data.util.getSuccessData
+import com.tokopedia.product.detail.data.util.origin
 import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
@@ -72,6 +75,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     val productInfoP2resp = MutableLiveData<ProductInfoP2>()
     val productInfoP3resp = MutableLiveData<ProductInfoP3>()
     val productVariantResp = MutableLiveData<Result<ProductVariant>>()
+    var multiOrigin : WarehouseInfo = WarehouseInfo()
     val userId: String
         get() = userSessionInterface.userId
 
@@ -116,12 +120,14 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     productInfoP1.productInfo.category.id,
                     forceRefresh)
             productInfoP2resp.value = productInfoP2
+            multiOrigin = productInfoP2.nearestWarehouse.warehouseInfo
+
             val domain = productParams.shopDomain ?: productInfoP2.shopInfo?.shopCore?.domain
             ?: return@launchCatchError
 
             if (isUserSessionActive())
                 productInfoP3resp.value = getProductInfoP3(productInfoP1.productInfo, domain, forceRefresh,
-                        needRequestCod)
+                        needRequestCod, if (multiOrigin.isFulfillment) multiOrigin.origin else null)
 
             try {
                 val result = variantJob.await()
@@ -229,6 +235,9 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val otherProductRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_OTHER_PRODUCT],
                 ProductOther.Response::class.java, otherProductParams)
 
+        val nearestWarehouseParam = mapOf("productIds" to listOf(productId.toString()))
+        val nearestWarehouseRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_MULTI_ORIGIN],
+                MultiOriginWarehouse.Response::class.java, nearestWarehouseParam)
 
         val shopCodParam = mapOf("shopID" to shopId.toString())
         val shopCodRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_COD_STATUS],
@@ -236,7 +245,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
         val requests = mutableListOf(shopRequest, ratingRequest, wishlistCountRequest, voucherRequest,
                 shopBadgeRequest, shopCommitmentRequest, installmentRequest, imageReviewRequest,
-                helpfulReviewRequest, latestTalkRequest, otherProductRequest, shopCodRequest, productPurchaseProtectionRequest)
+                helpfulReviewRequest, latestTalkRequest, otherProductRequest, shopCodRequest,
+                nearestWarehouseRequest, productPurchaseProtectionRequest)
 
 
         val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
@@ -302,6 +312,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                         .result.shopCodStatus.isCod
             }
 
+            if (gqlResponse.getError(MultiOriginWarehouse.Response::class.java)?.isNotEmpty() != true){
+                gqlResponse.getData<MultiOriginWarehouse.Response>(MultiOriginWarehouse.Response::class.java)
+                        .result.data.firstOrNull()?.let { productInfoP2.nearestWarehouse = it }
+            }
+
             if (gqlResponse.getError(ProductPurchaseProtectionInfo::class.java)?.isNotEmpty() != true) {
                 productInfoP2.productPurchaseProtectionInfo =
                         gqlResponse.getData<ProductPurchaseProtectionInfo>(ProductPurchaseProtectionInfo::class.java)
@@ -334,7 +349,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
 
     private suspend fun getProductInfoP3(productInfo: ProductInfo, shopDomain: String,
-                                         forceRefresh: Boolean, needRequestCod: Boolean)
+                                         forceRefresh: Boolean, needRequestCod: Boolean, origin: String?)
             : ProductInfoP3 = withContext(Dispatchers.IO) {
         val productInfoP3 = ProductInfoP3()
 
@@ -343,7 +358,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 ProductInfo.WishlistStatus::class.java, isWishlistedParams)
 
         val estimationParams = mapOf(PARAM_RATE_EST_WEIGHT to productInfo.basic.weightInKg,
-                PARAM_RATE_EST_SHOP_DOMAIN to shopDomain)
+                PARAM_RATE_EST_SHOP_DOMAIN to shopDomain, "origin" to origin)
         val estimationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_RATE_ESTIMATION],
                 RatesEstimationModel.Response::class.java, estimationParams, false)
 

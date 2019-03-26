@@ -164,6 +164,13 @@ class GqlRawQueryModule {
     @ProductDetailScope
     @Provides
     @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_MULTI_ORIGIN)
+    fun provideMultiOrigin(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_nearest_warehouse)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_PRODUCT_PP)
     fun provideProductPurchaseProtection(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_product_pp)
