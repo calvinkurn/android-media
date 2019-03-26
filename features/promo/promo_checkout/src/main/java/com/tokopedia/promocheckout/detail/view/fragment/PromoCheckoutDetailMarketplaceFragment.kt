@@ -50,12 +50,12 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
 
     override fun loadData() {
         super.loadData()
-        promoCheckoutDetailPresenter.getDetailPromo(codeCoupon, isOneClickShipment)
+        promoCheckoutDetailPresenter.getDetailPromo(codeCoupon, isOneClickShipment, checkPromoFirstStepParam)
     }
 
     override fun onClickUse() {
         // promoCheckoutDetailPresenter.validatePromoUse(codeCoupon, isOneClickShipment,  resources)
-        promoCheckoutDetailPresenter.validatePromoStackingUse(codeCoupon, checkPromoFirstStepParam)
+        promoCheckoutDetailPresenter.validatePromoStackingUse(codeCoupon, checkPromoFirstStepParam, false)
     }
 
     override fun onClickCancel() {
@@ -64,7 +64,7 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
         } else {
             trackingPromoCheckoutUtil.checkoutClickCancelPromoCoupon(codeCoupon)
         }
-        promoCheckoutDetailPresenter.cancelPromo()
+        promoCheckoutDetailPresenter.cancelPromo(codeCoupon)
     }
 
     /*override fun onSuccessValidatePromo(dataVoucher: DataVoucher) {
