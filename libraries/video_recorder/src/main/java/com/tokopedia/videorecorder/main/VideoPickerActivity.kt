@@ -211,7 +211,6 @@ open class VideoPickerActivity: BaseSimpleActivity(),
 
                     override fun onProgress(message: String?) {
                         super.onProgress(message)
-                        //@TODO(showing progress dialog)
                         progressDialog.setMessage(getString(R.string.vidpick_progress_loader))
                         progressDialog.show()
                     }
