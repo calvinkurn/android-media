@@ -1638,4 +1638,11 @@ class ProductDetailFragment : BaseDaggerFragment() {
         outState.putInt(SAVED_QUANTITY, userInputQuantity)
         outState.putString(SAVED_VARIANT, userInputVariant)
     }
+
+    override fun onStop() {
+        super.onStop()
+        context?.let {
+            LocalBroadcastManager.getInstance(it).unregisterReceiver(tradeInBroadcastReceiver)
+        }
+    }
 }
