@@ -1,6 +1,9 @@
 package com.tokopedia.onboarding.view.fragment
 
+import android.app.Dialog
 import android.os.Bundle
+import android.support.design.widget.BottomSheetBehavior
+import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.BottomSheetDialogFragment
 import android.text.Editable
 import android.view.LayoutInflater
@@ -11,7 +14,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.text.watcher.AfterTextWatcher
+import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.onboarding.TERMS_AND_CONDITIONS_URL
 import com.tokopedia.onboarding.di.DaggerOnboardingComponent
 import com.tokopedia.onboarding.view.adapter.SuggestionAdapter
@@ -20,6 +25,8 @@ import com.tokopedia.profile.R
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_af_username_input.*
 import javax.inject.Inject
+
+
 
 /**
  * @author by milhamj on 9/24/18.
@@ -83,17 +90,27 @@ class UsernameInputFragment : BottomSheetDialogFragment(), UsernameInputContract
         presenter.getUsernameSuggestion()
     }
 
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        dialog.setOnShowListener {
+            val d = dialog as BottomSheetDialog
+            val bottomSheet = d.findViewById<View>(android.support.design.R.id.design_bottom_sheet)
+            BottomSheetBehavior.from(bottomSheet!!).setState(BottomSheetBehavior.STATE_EXPANDED)
+        }
+        return dialog
+    }
+
     override fun onDestroy() {
         presenter.detachView()
         super.onDestroy()
     }
 
     override fun showLoading() {
-        loadingView.visibility = View.VISIBLE
+        mainView.showLoading()
     }
 
     override fun hideLoading() {
-        loadingView.visibility = View.GONE
+        mainView.hideLoading()
     }
 
     override fun onSuccessGetUsernameSuggestion(suggestions: List<String>) {

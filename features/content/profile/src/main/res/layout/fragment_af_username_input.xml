@@ -20,7 +20,9 @@
             <View
                 android:id="@+id/spaceTop"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_8" />
+                android:layout_height="@dimen/dp_8"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/avatar"
@@ -42,6 +44,7 @@
                 android:textColor="@color/black_70"
                 android:textSize="@dimen/sp_16"
                 android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/avatar" />
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
@@ -49,8 +52,8 @@
                 style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="-4dp"
                 android:layout_marginStart="-4dp"
+                android:layout_marginLeft="-4dp"
                 android:layout_marginTop="@dimen/dp_16"
                 android:hint="@string/af_type_username"
                 android:textColorHint="@color/black_56"
@@ -75,8 +78,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_2"
-                android:layout_marginRight="@dimen/dp_2"
                 android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_2"
                 android:visibility="gone"
                 app:cardElevation="@dimen/dp_2"
                 app:layout_constraintTop_toBottomOf="@+id/usernameWrapper"
@@ -94,16 +97,28 @@
                     tools:listitem="@layout/item_af_username" />
             </android.support.v7.widget.CardView>
 
+            <View
+                android:id="@+id/spaceButton"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:minHeight="@dimen/dp_128"
+                app:layout_constraintHeight_default="spread"
+                app:layout_constraintBottom_toTopOf="@+id/saveBtn"
+                app:layout_constraintTop_toBottomOf="@+id/suggestionCard" />
+
             <com.tokopedia.design.component.ButtonCompat
                 android:id="@+id/saveBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
                 android:text="@string/af_save"
                 android:textAllCaps="false"
                 app:buttonCompatSize="big"
                 app:buttonCompatType="primary"
-                app:layout_constraintBottom_toTopOf="@+id/agreeTerms" />
+                app:layout_constraintBottom_toTopOf="@+id/agreeTerms"
+                app:layout_constraintTop_toBottomOf="@+id/spaceButton"
+                app:layout_constraintVertical_bias="1" />
 
             <TextView
                 android:id="@+id/agreeTerms"
@@ -131,19 +146,5 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent" />
         </android.support.constraint.ConstraintLayout>
-
-        <FrameLayout
-            android:id="@+id/loadingView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:visibility="visible"
-            tools:visibility="gone">
-
-            <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
-        </FrameLayout>
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>
