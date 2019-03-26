@@ -32,6 +32,10 @@ public interface EmptyCartContract {
 
         void hideLoading();
 
+        void showLoadingDialog();
+
+        void hideLoadingDialog();
+
         void showErrorToast(String message);
 
         void renderCancelAutoApplyCouponSuccess();

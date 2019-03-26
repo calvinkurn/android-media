@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.feature.emptycart;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -103,6 +104,8 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     private RelativeLayout rlLastSeen;
     private TextView tvLastSeenSeeAll;
     private RecyclerView rvLastSeen;
+
+    private ProgressDialog progressDialog;
 
     private boolean isToolbarWithBackButton = true;
     private WishlistAdapter wishlistAdapter;
@@ -212,6 +215,10 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     protected void initView(View view) {
         setupToolbar(view);
         presenter.attachView(this);
+
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.title_loading));
+
         nestedScrollView = view.findViewById(R.id.nested_scroll_view);
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         tickerPromoStackingCheckoutView = view.findViewById(R.id.ticker_promostacking_checkout_view);
@@ -484,8 +491,18 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     }
 
     @Override
+    public void showLoadingDialog() {
+        progressDialog.show();
+    }
+
+    @Override
+    public void hideLoadingDialog() {
+        progressDialog.hide();
+    }
+
+    @Override
     public void showErrorToast(String message) {
-        if (TextUtils.isEmpty(message)) {
+        if (getActivity() != null && TextUtils.isEmpty(message)) {
             message = getActivity().getString(R.string.default_request_error_unknown);
         }
         NetworkErrorHelper.showRedSnackbar(getActivity(), message);
