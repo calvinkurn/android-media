@@ -73,7 +73,7 @@
     <android.support.v7.widget.CardView
         android:id="@+id/errorView"
         android:layout_width="@dimen/dp_288"
-        android:layout_height="@dimen/dp_96"
+        android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/dp_8"
         tools:visibility="visible"
         android:layout_gravity="center">
