@@ -19,12 +19,6 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
-            android:name=".feature.onboarding.view.activity.RecommendProductActivity"
-            android:label="@string/title_af_tokopedia_byme"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
             android:name=".feature.explore.view.activity.ExploreActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

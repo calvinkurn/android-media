@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.affiliate.feature.onboarding.view.listener.RecommendProductContract;
 import com.tokopedia.affiliate.feature.onboarding.view.listener.UsernameInputContract;
-import com.tokopedia.affiliate.feature.onboarding.view.presenter.RecommendProductPresenter;
 import com.tokopedia.affiliate.feature.onboarding.view.presenter.UsernameInputPresenter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -24,13 +22,6 @@ public class OnboardingModule {
     UsernameInputContract.Presenter provideUsernameInputPresenter(
             UsernameInputPresenter usernameInputPresenter) {
         return usernameInputPresenter;
-    }
-
-    @OnboardingScope
-    @Provides
-    RecommendProductContract.Presenter provideRecommendProductPresenter(
-            RecommendProductPresenter recommendProductPresenter) {
-        return recommendProductPresenter;
     }
 
     @OnboardingScope

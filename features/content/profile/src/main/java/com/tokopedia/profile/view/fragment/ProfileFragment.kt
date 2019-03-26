@@ -877,7 +877,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     }
 
-    fun hasFeed(): Boolean {
+    private fun hasFeed(): Boolean {
         return (adapter.list != null
                 && !adapter.list.isEmpty()
                 && adapter.list.size > 1

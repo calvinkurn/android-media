@@ -24,7 +24,6 @@ import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.common.constant.AffiliateConstant;
 import com.tokopedia.affiliate.feature.onboarding.di.DaggerOnboardingComponent;
-import com.tokopedia.affiliate.feature.onboarding.view.activity.RecommendProductActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.UsernameInputActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.adapter.SuggestionAdapter;
 import com.tokopedia.affiliate.feature.onboarding.view.listener.UsernameInputContract;
@@ -175,16 +174,16 @@ public class UsernameInputFragment extends BaseDaggerFragment
             );
             profileIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            Intent recommendIntent = RecommendProductActivity.createIntent(
-                    getActivity(),
-                    productId
-            );
+//            Intent recommendIntent = RecommendProductActivity.createIntent(
+//                    getActivity(),
+//                    productId
+//            );
 
 
             TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
             taskStackBuilder.addNextIntent(homeIntent);
             taskStackBuilder.addNextIntent(profileIntent);
-            taskStackBuilder.addNextIntent(recommendIntent);
+//            taskStackBuilder.addNextIntent(recommendIntent);
             taskStackBuilder.startActivities();
         }
 
