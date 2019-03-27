@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
@@ -113,5 +114,10 @@ public class TapTapSummaryDialogFragment extends DialogFragment implements Gamif
     @Override
     public void dismissDialog() {
         dismiss();
+    }
+
+    @Override
+    public void navigateToActivity(String applink) {
+        RouteManager.route(getActivity(), applink);
     }
 }
