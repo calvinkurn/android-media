@@ -71,7 +71,6 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -605,8 +604,9 @@ public class ProductListFragment extends SearchSectionFragment
     public void onQuickFilterSelected(Option option) {
         boolean isQuickFilterSelectedReversed = !isQuickFilterSelected(option);
 
-        setFilterToController(option, isQuickFilterSelectedReversed);
+        setFilterToQuickFilterController(option, isQuickFilterSelectedReversed);
         applyFilterToSearchParameter(quickFilterController.getFilterParameter());
+        setSelectedFilter(new HashMap<>(quickFilterController.getFilterParameter()));
 
         clearDataFilterSort();
         reloadData();
@@ -614,22 +614,12 @@ public class ProductListFragment extends SearchSectionFragment
         UnifyTracking.eventSearchResultQuickFilter(getActivity(),option.getKey(), option.getValue(), isQuickFilterSelectedReversed);
     }
 
-    private void setFilterToController(Option option, boolean isQuickFilterSelected) {
+    private void setFilterToQuickFilterController(Option option, boolean isQuickFilterSelected) {
         if (option.isCategoryOption()) {
             quickFilterController.setFilter(option, isQuickFilterSelected, true);
         } else {
             quickFilterController.setFilter(option, isQuickFilterSelected);
         }
-    }
-
-    @Override
-    public void setSelectedFilter(HashMap<String, String> selectedFilter) {
-        super.setSelectedFilter(selectedFilter);
-        if (selectedFilter == null) {
-            return;
-        }
-
-        getSearchParameter().getSearchParameterHashMap().putAll(selectedFilter);
     }
 
     @Override

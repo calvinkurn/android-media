@@ -50,6 +50,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -691,6 +692,7 @@ public class SearchActivity extends DiscoveryActivity
                 = (SearchSectionFragment) searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
 
         selectedFragment.applyFilterToSearchParameter(filterParameter);
+        selectedFragment.setSelectedFilter(new HashMap<>(filterParameter));
         selectedFragment.clearDataFilterSort();
         selectedFragment.reloadData();
     }

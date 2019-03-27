@@ -86,7 +86,6 @@ class FilterControllerTest {
 
         locationOptions.add(jabodetabekOption)
         locationOptions.add(jakartaOption)
-        locationOptions.add(jakartaOption)
         locationOptions.add(jakartaBaratOption)
         locationOptions.add(tangerangOption)
         locationOptions.add(bandungOption)
@@ -149,7 +148,7 @@ class FilterControllerTest {
         val createdPriceOption = OptionHelper.generateOptionFromUniqueId(priceOption.uniqueId)
         createdPriceOption.value = priceOptionValue.toString()
 
-        return priceOption
+        return createdPriceOption
     }
 
     private fun assertFilterViewStateReplaced() {
@@ -255,11 +254,13 @@ class FilterControllerTest {
         filterController.initFilterController(filterParameter, filterList)
         filterController.setFilter(createPriceOptionWithValue(minPriceOption, 1000), true, isCleanUpExistingFilterWithSameKey = true)
         filterController.setFilter(jakartaOption, true)
+        filterController.setFilter(handphoneOption, true, isCleanUpExistingFilterWithSameKey = true)
 
         val expectedOptionList = mutableListOf<Option>()
         expectedOptionList.add(officialOption)
         expectedOptionList.add(minPriceOption)
         expectedOptionList.add(jakartaOption)
+        expectedOptionList.add(handphoneOption)
 
         assertActiveFilterOptionList(expectedOptionList)
     }
@@ -272,11 +273,13 @@ class FilterControllerTest {
         filterController.initFilterController(filterParameter, filterList)
         filterController.setFilter(createPriceOptionWithValue(maxPriceOption, 3000000), true, isCleanUpExistingFilterWithSameKey = true)
         filterController.setFilter(jakartaOption, true)
+        filterController.setFilter(handphoneOption, true, isCleanUpExistingFilterWithSameKey = true)
 
         val expectedMap = mutableMapOf<String, String>()
         expectedMap[officialOption.key] = officialOption.value
         expectedMap[maxPriceOption.key] = 3000000.toString()
         expectedMap[jakartaOption.key] = jakartaOption.value
+        expectedMap[handphoneOption.key] = handphoneOption.value
 
         assertActiveFilterMap(expectedMap)
     }
@@ -327,10 +330,10 @@ class FilterControllerTest {
         }
 
         for(actualFilterOption in actualOptionList) {
-            val isExpectedContainsActual = expectedOptionList.filter {
+            val isExpectedContainsActual = expectedOptionList.any {
                 it.key == actualFilterOption.key
                         && it.name == actualFilterOption.name
-            }.isNotEmpty()
+            }
 
             assert(isExpectedContainsActual) {
                 "Testing get active filter option list, option ${actualFilterOption.key} is expected."

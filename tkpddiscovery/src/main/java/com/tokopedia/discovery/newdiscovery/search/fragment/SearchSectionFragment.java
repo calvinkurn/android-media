@@ -71,7 +71,6 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     private static final String EXTRA_SHOW_BOTTOM_BAR = "EXTRA_SHOW_BOTTOM_BAR";
     private static final String EXTRA_IS_GETTING_DYNNAMIC_FILTER = "EXTRA_IS_GETTING_DYNNAMIC_FILTER";
     private static final String EXTRA_FLAG_FILTER_HELPER = "EXTRA_FLAG_FILTER_HELPER";
-    private static final String EXTRA_EMPTY_SEARCH_FILTER_CONTROLLER = "EXTRA_EMPTY_SEARCH_FILTER_CONTROLLER";
     private static final String DEFAULT_GRID = "default";
     private static final String INSTAGRAM_GRID = "instagram grid";
     private static final String LIST_GRID = "list";
@@ -89,14 +88,13 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     private ArrayList<Sort> sort;
     private ArrayList<Filter> filters;
     private HashMap<String, String> selectedSort;
-    private HashMap<String, String> selectedFilter;
     private FilterFlagSelectedModel flagFilterHelper;
     private boolean isGettingDynamicFilter;
     private boolean isUsingBottomSheetFilter;
     protected boolean isListEmpty = false;
 
     protected SearchParameter searchParameter;
-    protected FilterController emptySearchFilterController = new FilterController();
+    protected FilterController filterController = new FilterController();
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -309,6 +307,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), activeFilterParameter);
 
                 applyFilterToSearchParameter(filterParameter);
+                setSelectedFilter(new HashMap<>(filterParameter));
                 clearDataFilterSort();
                 reloadData();
             }
@@ -366,11 +365,11 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     @Override
     public HashMap<String, String> getSelectedFilter() {
-        return selectedFilter;
+        return new HashMap<>(filterController.getActiveFilterParameter());
     }
 
     protected boolean isFilterActive() {
-        return selectedFilter != null && !selectedFilter.isEmpty();
+        return filterController.isFilterActive();
     }
 
     @Override
@@ -380,7 +379,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     @Override
     public void setSelectedFilter(HashMap<String, String> selectedFilter) {
-        this.selectedFilter = selectedFilter;
+        filterController.initFilterController(selectedFilter, getFilters());
     }
 
     public void setFlagFilterHelper(FilterFlagSelectedModel flagFilterHelper) {
@@ -448,10 +447,16 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     @Override
     public void getDynamicFilter() {
-        if (!isFilterDataAvailable() && !isGettingDynamicFilter) {
+        if (canRequestDynamicFilter()) {
             isGettingDynamicFilter = true;
             requestDynamicFilter();
         }
+    }
+
+    private boolean canRequestDynamicFilter() {
+        return !isFilterDataAvailable()
+                && !isGettingDynamicFilter
+                && !isListEmpty;
     }
     
     protected void requestDynamicFilter() {
@@ -463,12 +468,10 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         isGettingDynamicFilter = false;
         setFilterData(pojo.getData().getFilter());
         setSortData(pojo.getData().getSort());
-        initializeEmptySearchFilterController();
-    }
 
-    private void initializeEmptySearchFilterController() {
+        filterController.initFilterController(searchParameter.getSearchParameterHashMap(), getFilters());
+
         if(isListEmpty) {
-            emptySearchFilterController.initFilterController(searchParameter.getSearchParameterHashMap(), getFilters());
             refreshAdapterForEmptySearch();
         }
     }
@@ -510,6 +513,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(EXTRA_SPAN_COUNT, getSpanCount());
+        outState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
         outState.putParcelableArrayList(EXTRA_FILTER, getFilters());
         outState.putParcelableArrayList(EXTRA_SORT, getSort());
         outState.putSerializable(EXTRA_SELECTED_FILTER, getSelectedFilter());
@@ -517,7 +521,6 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         outState.putBoolean(EXTRA_SHOW_BOTTOM_BAR, showBottomBar);
         outState.putBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER, isGettingDynamicFilter);
         outState.putParcelable(EXTRA_FLAG_FILTER_HELPER, getFlagFilterHelper());
-        outState.putParcelable(EXTRA_EMPTY_SEARCH_FILTER_CONTROLLER, emptySearchFilterController);
     }
 
     public abstract void reloadData();
@@ -549,14 +552,14 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         setSpanCount(savedInstanceState.getInt(EXTRA_SPAN_COUNT));
-        setFilterData(savedInstanceState.<Filter>getParcelableArrayList(EXTRA_FILTER));
-        setSortData(savedInstanceState.<Sort>getParcelableArrayList(EXTRA_SORT));
+        copySearchParameter(savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
+        setFilterData(savedInstanceState.getParcelableArrayList(EXTRA_FILTER));
+        setSortData(savedInstanceState.getParcelableArrayList(EXTRA_SORT));
         setSelectedFilter((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_FILTER));
         setSelectedSort((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_SORT));
         showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);
         isGettingDynamicFilter = savedInstanceState.getBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER);
-        setFlagFilterHelper((FilterFlagSelectedModel) savedInstanceState.getParcelable(EXTRA_FLAG_FILTER_HELPER));
-        emptySearchFilterController = savedInstanceState.getParcelable(EXTRA_EMPTY_SEARCH_FILTER_CONTROLLER);
+        setFlagFilterHelper(savedInstanceState.getParcelable(EXTRA_FLAG_FILTER_HELPER));
     }
 
     @Override
@@ -588,36 +591,24 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     protected void removeSelectedFilter(String uniqueId) {
         Option option = OptionHelper.generateOptionFromUniqueId(uniqueId);
 
-        String optionKey = OptionHelper.parseKeyFromUniqueId(uniqueId);
-        String optionValue = OptionHelper.parseValueFromUniqueId(uniqueId);
-
-        if (Option.KEY_CATEGORY.equals(optionKey)) {
-            emptySearchFilterController.setFilter(option, false, true);
-
-//            getSelectedFilter().remove(Option.KEY_CATEGORY);
-        } else if (Option.KEY_PRICE_MIN.equals(optionKey) ||
-                Option.KEY_PRICE_MAX.equals(optionKey)) {
-            emptySearchFilterController.setFilter(generatePriceOption(Option.KEY_PRICE_MIN), false, true);
-            emptySearchFilterController.setFilter(generatePriceOption(Option.KEY_PRICE_MAX), false, true);
-
-//            getSelectedFilter().remove(Option.KEY_PRICE_MIN);
-//            getSelectedFilter().remove(Option.KEY_PRICE_MAX);
-        } else {
-            emptySearchFilterController.setFilter(option, false);
-
-//            String mapValue = getSelectedFilter().get(optionKey);
-//            mapValue = removeValue(mapValue, optionValue);
-//
-//            if (!TextUtils.isEmpty(mapValue)) {
-//                getSelectedFilter().put(optionKey, mapValue);
-//            } else {
-//                getSelectedFilter().remove(optionKey);
-//            }
-        }
-
-        applyFilterToSearchParameter(emptySearchFilterController.getFilterParameter());
+        removeFilterFromFilterController(option);
+        applyFilterToSearchParameter(filterController.getFilterParameter());
         clearDataFilterSort();
         reloadData();
+    }
+
+    public void removeFilterFromFilterController(Option option) {
+        String optionKey = option.getKey();
+
+        if (Option.KEY_CATEGORY.equals(optionKey)) {
+            filterController.setFilter(option, false, true);
+        } else if (Option.KEY_PRICE_MIN.equals(optionKey) ||
+                Option.KEY_PRICE_MAX.equals(optionKey)) {
+            filterController.setFilter(generatePriceOption(Option.KEY_PRICE_MIN), false, true);
+            filterController.setFilter(generatePriceOption(Option.KEY_PRICE_MAX), false, true);
+        } else {
+            filterController.setFilter(option, false);
+        }
     }
 
     private Option generatePriceOption(String priceOptionKey) {
@@ -645,7 +636,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     protected List<Option> getOptionListFromEmptySearchFilterController() {
-        List<Option> activeFilterOptionList = emptySearchFilterController.getActiveFilterOptionList();
+        List<Option> activeFilterOptionList = filterController.getActiveFilterOptionList();
 
         combinePriceFilterIfExists(activeFilterOptionList);
 

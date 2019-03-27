@@ -203,7 +203,6 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     private void saveDataToBundle(Bundle outState) {
-        outState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
         outState.putString(EXTRA_SHARE_URL, getShareUrl());
     }
 
@@ -382,7 +381,7 @@ public class CatalogFragment extends SearchSectionFragment implements
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         catalogAdapter.onRestoreInstanceState(savedInstanceState);
-        loadDataFromBundle(savedInstanceState);
+        setShareUrl(savedInstanceState.getString(EXTRA_SHARE_URL));
     }
 
     @Override
