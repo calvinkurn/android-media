@@ -59,7 +59,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             view = mLayoutInflater.inflate(R.layout.tp_view_section_explore, container, false);
             setUpExploreTab(view);
         } else if (position == TAB_MY_COUPON) {
-            view = mLayoutInflater.inflate(R.layout.tp_layout_promos_list_container, container, false);
+            view = mLayoutInflater.inflate(R.layout.tp_layout_promos_list_container_new, container, false);
             setTabMyCoupon(view);
         }
 
