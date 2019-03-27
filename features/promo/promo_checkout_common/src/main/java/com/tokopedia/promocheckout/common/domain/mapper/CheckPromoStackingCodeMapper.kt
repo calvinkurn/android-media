@@ -185,7 +185,8 @@ open class CheckPromoStackingCodeMapper @Inject constructor() {
                 clashingVoucherOrder.uniqueId,
                 clashingVoucherOrder.cartId,
                 clashingVoucherOrder.promoName,
-                clashingVoucherOrder.potentialBenefit
+                clashingVoucherOrder.potentialBenefit,
+                clashingVoucherOrder.shopName
         )
     }
 }

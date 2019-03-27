@@ -16,12 +16,11 @@ data class ClashingVoucherOrderUiModel(
         var shopName: String = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
             parcel.readInt(),
-            parcel.readString(),
-            parcel.readInt()) {
-    }
+            parcel.readString() ?: "",
+            parcel.readInt())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(code)
