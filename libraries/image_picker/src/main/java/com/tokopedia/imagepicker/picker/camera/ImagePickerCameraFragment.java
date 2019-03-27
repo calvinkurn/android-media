@@ -143,7 +143,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
                 }
                 if (supportedFlashList.size() > 0) {
                     flashImageButton.setVisibility(View.VISIBLE);
-                    setCameraFlash();
+                    //setCameraFlash();
                 } else {
                     flashImageButton.setVisibility(View.GONE);
                 }
