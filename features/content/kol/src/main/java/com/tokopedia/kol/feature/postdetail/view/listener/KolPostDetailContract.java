@@ -22,7 +22,7 @@ public interface KolPostDetailContract {
 
         void dismissLoading();
 
-        void onSuccessGetKolPostDetail(List<Visitable> list, KolPostViewModel postKol);
+        void onSuccessGetKolPostDetail(List<Visitable> list, KolPostViewModel kolPostViewModel);
 
         void onErrorGetKolPostDetail(String message);
 

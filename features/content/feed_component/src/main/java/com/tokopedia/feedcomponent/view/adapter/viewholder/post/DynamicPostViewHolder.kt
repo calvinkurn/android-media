@@ -37,7 +37,7 @@ import kotlinx.android.synthetic.main.partial_card_title.view.*
 /**
  * @author by milhamj on 28/11/18.
  */
-class DynamicPostViewHolder(v: View,
+open class DynamicPostViewHolder(v: View,
                             private val listener: DynamicPostListener,
                             private val cardTitleListener: CardTitleView.CardTitleListener,
                             private val imagePostListener: ImagePostViewHolder.ImagePostListener,

@@ -3,6 +3,7 @@ package com.tokopedia.kol.feature.post.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
 import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kol.feature.post.data.mapper.LikeKolPostMapper;
 import com.tokopedia.kol.feature.post.data.source.LikeKolPostSourceCloud;
@@ -14,8 +15,10 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostShopContract;
 import com.tokopedia.kol.feature.post.view.presenter.KolPostPresenter;
 import com.tokopedia.kol.feature.post.view.presenter.KolPostShopPresenter;
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetKolPostDetailUseCase;
+import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCase;
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.postdetail.view.presenter.KolPostDetailPresenter;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -41,11 +44,14 @@ public class KolProfileModule {
     @KolProfileScope
     @Provides
     KolPostDetailContract.Presenter
-    provideKolPostDetailPresenter(GetKolPostDetailUseCase getKolPostDetailUseCase,
+    provideKolPostDetailPresenter(GetPostDetailUseCase getPostDetailUseCase,
                                   LikeKolPostUseCase likeKolPostUseCase,
-                                  FollowKolPostGqlUseCase followKolPostGqlUseCase) {
-        return new KolPostDetailPresenter(getKolPostDetailUseCase, likeKolPostUseCase,
-                followKolPostGqlUseCase);
+                                  FollowKolPostGqlUseCase followKolPostGqlUseCase,
+                                  UserSessionInterface userSession) {
+        return new KolPostDetailPresenter(getPostDetailUseCase,
+                likeKolPostUseCase,
+                followKolPostGqlUseCase,
+                userSession);
     }
 
     @KolProfileScope

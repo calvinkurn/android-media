@@ -22,6 +22,10 @@ public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolP
     private String info;
     private boolean showTopShadow;
 
+    public KolPostViewModel(int userId, String activityType, String cardType, String title, String name, String avatar, String label, String kolProfileUrl, boolean followed, String review, boolean liked, int totalLike, int totalComment, int page, int contentId, String time, boolean isShowComment, boolean isShowLike, boolean editable, boolean deletable, boolean multipleContent) {
+        super(userId, activityType, cardType, title, name, avatar, label, kolProfileUrl, followed, review, liked, totalLike, totalComment, page, contentId, time, isShowComment, isShowLike, editable, deletable, multipleContent);
+    }
+
     public KolPostViewModel(int userId, String cardType, String title, String name, String avatar,
                             String label, String kolProfileUrl, boolean followed, String review,
                             boolean liked, int totalLike, int totalComment, int page, int kolId,

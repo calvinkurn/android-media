@@ -4,6 +4,17 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
+import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
+import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentTypeFactory;
 import com.tokopedia.kol.feature.comment.view.adapter.viewholder.KolCommentViewHolder;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
@@ -21,28 +32,51 @@ import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.SeeAllCommentsViewHolder;
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.SeeAllCommentsViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * @author by milhamj on 27/07/18.
  */
 
 public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
-        implements KolPostDetailTypeFactory, KolPostTypeFactory, KolCommentTypeFactory {
+        implements KolPostDetailTypeFactory, KolPostTypeFactory, KolCommentTypeFactory, DynamicFeedTypeFactory {
 
+    //OLD
     private final KolPostListener.View.ViewHolder kolPostListener;
     private final KolComment.View.ViewHolder kolCommentListener;
+
+    //NEW
+    private final DynamicPostViewHolder.DynamicPostListener listener;
+    private final CardTitleView.CardTitleListener cardTitleListener;
+    private final ImagePostViewHolder.ImagePostListener imagePostListener;
+    private final YoutubeViewHolder.YoutubePostListener youtubePostListener;
+    private final PollAdapter.PollOptionListener pollOptionListener;
+    private final GridPostAdapter.GridItemListener gridItemListener;
     private final KolComment.View.SeeAll seeAll;
 
     public KolPostDetailTypeFactoryImpl(KolPostListener.View.ViewHolder kolPostListener,
                                         KolComment.View.ViewHolder kolCommentListener,
-                                        KolComment.View.SeeAll seeAll) {
+                                        KolComment.View.SeeAll seeAll,
+                                        DynamicPostViewHolder.DynamicPostListener listener,
+                                        CardTitleView.CardTitleListener cardTitleListener,
+                                        ImagePostViewHolder.ImagePostListener imagePostListener,
+                                        YoutubeViewHolder.YoutubePostListener youtubePostListener,
+                                        PollAdapter.PollOptionListener pollOptionListener,
+                                        GridPostAdapter.GridItemListener gridItemListener) {
         this.kolPostListener = kolPostListener;
         this.kolCommentListener = kolCommentListener;
         this.seeAll = seeAll;
+        this.listener = listener;
+        this.cardTitleListener = cardTitleListener;
+        this.imagePostListener = imagePostListener;
+        this.youtubePostListener = youtubePostListener;
+        this.pollOptionListener = pollOptionListener;
+        this.gridItemListener = gridItemListener;
     }
 
     @Override
-    public int type(KolPostViewModel kolPostViewModel) {
-        return KolPostViewHolder.LAYOUT;
+    public int type(DynamicPostViewModel dynamicPostViewModel) {
+        return DynamicPostViewHolder.Companion.getLAYOUT();
     }
 
     @Override
@@ -74,6 +108,11 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
+    public int type(KolPostViewModel kolPostViewModel) {
+        return KolPostViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(KolPostYoutubeViewModel kolPostYoutubeViewModel) {
         throw new IllegalStateException(this.getClass().getSimpleName() + " doesn't support "
                 + KolPostYoutubeViewModel.class.getSimpleName());
@@ -88,15 +127,17 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     @Override
     public AbstractViewHolder createViewHolder(View view, int viewType) {
         AbstractViewHolder abstractViewHolder;
-        if (viewType == KolPostViewHolder.LAYOUT) {
+        if (viewType == DynamicPostViewHolder.Companion.getLAYOUT()) {
             abstractViewHolder = new KolPostDetailViewHolder(view,
-                    kolPostListener,
-                    KolPostViewHolder.Type.EXPLORE);
-        }
-        else if (viewType == KolCommentViewHolder.LAYOUT)
+                    listener, cardTitleListener, imagePostListener, youtubePostListener,
+                    pollOptionListener, gridItemListener
+            );
+        } else if (viewType == KolCommentViewHolder.LAYOUT)
             abstractViewHolder = new KolCommentViewHolder(view, kolCommentListener);
         else if (viewType == SeeAllCommentsViewHolder.LAYOUT)
             abstractViewHolder = new SeeAllCommentsViewHolder(view, seeAll);
+        else if (viewType == KolPostViewHolder.LAYOUT)
+            abstractViewHolder = new KolPostViewHolder(view, kolPostListener, KolPostViewHolder.Type.EXPLORE);
         else
             abstractViewHolder = super.createViewHolder(view, viewType);
         return abstractViewHolder;
@@ -105,5 +146,20 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     @Override
     public void setType(KolPostViewHolder.Type type) {
 
+    }
+
+    @Override
+    public int type(@NotNull FeedRecommendationViewModel feedRecommendationViewModel) {
+        return 0;
+    }
+
+    @Override
+    public int type(@NotNull BannerViewModel bannerViewModel) {
+        return 0;
+    }
+
+    @Override
+    public int type(@NotNull TopadsShopViewModel topadsShopViewModel) {
+        return 0;
     }
 }

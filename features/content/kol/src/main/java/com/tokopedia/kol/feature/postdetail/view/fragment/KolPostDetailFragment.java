@@ -24,6 +24,13 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterNormal;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
+import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
@@ -33,6 +40,7 @@ import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
+import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
@@ -43,6 +51,8 @@ import com.tokopedia.kol.feature.postdetail.view.adapter.KolPostDetailAdapter;
 import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactoryImpl;
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -55,7 +65,7 @@ import javax.inject.Inject;
 public class KolPostDetailFragment extends BaseDaggerFragment
         implements KolPostDetailContract.View, KolPostListener.View.Like,
         KolPostListener.View.ViewHolder, KolComment.View.ViewHolder, KolComment.View.SeeAll,
-        SwipeRefreshLayout.OnRefreshListener {
+        SwipeRefreshLayout.OnRefreshListener, DynamicPostViewHolder.DynamicPostListener, CardTitleView.CardTitleListener, ImagePostViewHolder.ImagePostListener, YoutubeViewHolder.YoutubePostListener, PollAdapter.PollOptionListener, GridPostAdapter.GridItemListener {
 
     private static final String PERFORMANCE_POST_DETAIL = "mp_explore_detail";
     private static final int OPEN_KOL_COMMENT = 101;
@@ -71,6 +81,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private KolRouter kolRouter;
     private PerformanceMonitoring performanceMonitoring;
 
+    private KolPostViewModel kolPostViewModel;
     private boolean isTraceStopped;
 
     @Inject
@@ -153,7 +164,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
         KolPostTypeFactoryImpl typeFactory = new KolPostTypeFactoryImpl(this);
         typeFactory.setType(KolPostViewHolder.Type.EXPLORE);
-        adapter.setTypeFactory(new KolPostDetailTypeFactoryImpl(this, this, this));
+        adapter.setTypeFactory(new KolPostDetailTypeFactoryImpl(this, this, this,
+                this, this, this, this, this, this));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
@@ -190,33 +202,19 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetKolPostDetail(List<Visitable> list, KolPostViewModel postKol) {
+    public void onSuccessGetKolPostDetail(List<Visitable> list, KolPostViewModel kolPostViewModel) {
         adapter.setList(list);
-        setFooter(postKol);
+        setFooter(kolPostViewModel);
     }
 
     private void setFooter(KolPostViewModel postKol) {
+        this.kolPostViewModel = postKol;
+
         footer.setVisibility(View.VISIBLE);
 
+        setLikeListener(postKol.isLiked());
         setTotalLike(postKol.getTotalLike());
         setTotalComment(postKol.getTotalComment());
-
-        //TODO ANALYTICS
-        if (postKol.isLiked()) {
-            likeCount.setOnClickListener(v -> onUnlikeKolClicked(0, postKol.getContentId(),
-                    postKol.isMultipleContent(),
-                    postKol.getActivityType()));
-            likeButton.setOnClickListener(v -> onUnlikeKolClicked(0, postKol.getContentId(),
-                    postKol.isMultipleContent(),
-                    postKol.getActivityType()));
-        } else {
-            likeCount.setOnClickListener(v -> onLikeKolClicked(0, postKol.getContentId(),
-                    postKol.isMultipleContent(),
-                    postKol.getActivityType()));
-            likeButton.setOnClickListener(v -> onLikeKolClicked(0, postKol.getContentId(),
-                    postKol.isMultipleContent(),
-                    postKol.getActivityType()));
-        }
 
         commentCount.setOnClickListener(v -> onGoToKolComment(0, postKol.getContentId(), false, ""));
         commentButton.setOnClickListener(v -> onGoToKolComment(0, postKol.getContentId(), false, ""));
@@ -261,22 +259,44 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onLikeKolSuccess(int rowNumber) {
-        if (adapter.getList().get(rowNumber) != null
-                && adapter.getList().get(rowNumber) instanceof KolPostViewModel) {
-            KolPostViewModel kolPostViewModel =
-                    ((KolPostViewModel) adapter.getList().get(rowNumber));
-            kolPostViewModel.setLiked(!kolPostViewModel.isLiked());
-
-            if (kolPostViewModel.isLiked()) {
-                setTotalLike(kolPostViewModel.getTotalLike() + 1);
-                ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_green);
-            } else {
-                setTotalLike(kolPostViewModel.getTotalLike() - 1);
-                ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_gray);
+    public void onLikeKolSuccess(int rowNumber, int action) {
+        if (action == LikeKolPostUseCase.ACTION_LIKE) {
+            int totalLike = 0;
+            if (!likeCount.getText().toString().equals(getString(R.string.kol_action_like))) {
+                totalLike = Integer.valueOf(likeCount.getText().toString());
             }
+            setTotalLike(totalLike + 1);
+            ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_green);
+        } else {
+            int totalLike = 1;
+            if (!likeCount.getText().toString().equals(getString(R.string.kol_action_like))) {
+                totalLike = Integer.valueOf(likeCount.getText().toString());
+            }
+            setTotalLike(totalLike - 1);
+            ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_gray);
+        }
 
-            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_LIKE);
+        setLikeListener(action == LikeKolPostUseCase.ACTION_LIKE);
+    }
+
+    private void setLikeListener(boolean isLiked) {
+        //TODO ANALYTICS
+        if (kolPostViewModel != null) {
+            if (isLiked) {
+                likeCount.setOnClickListener(v -> onUnlikeKolClicked(0, kolPostViewModel.getContentId(),
+                        kolPostViewModel.isMultipleContent(),
+                        kolPostViewModel.getActivityType()));
+                likeButton.setOnClickListener(v -> onUnlikeKolClicked(0, kolPostViewModel.getContentId(),
+                        kolPostViewModel.isMultipleContent(),
+                        kolPostViewModel.getActivityType()));
+            } else {
+                likeCount.setOnClickListener(v -> onLikeKolClicked(0, kolPostViewModel.getContentId(),
+                        kolPostViewModel.isMultipleContent(),
+                        kolPostViewModel.getActivityType()));
+                likeButton.setOnClickListener(v -> onLikeKolClicked(0, kolPostViewModel.getContentId(),
+                        kolPostViewModel.isMultipleContent(),
+                        kolPostViewModel.getActivityType()));
+            }
         }
     }
 
@@ -468,5 +488,92 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         return v -> {
             if (getContext() != null) RouteManager.route(getContext(), ApplinkConst.FEED);
         };
+    }
+
+    //NEW
+
+    @Override
+    public void onAvatarClick(int positionInFeed, @NotNull String redirectUrl) {
+
+    }
+
+    @Override
+    public void onHeaderActionClick(int positionInFeed, @NotNull String id, @NotNull String type, boolean isFollow) {
+
+    }
+
+    @Override
+    public void onMenuClick(int positionInFeed, int postId, boolean reportable, boolean deletable, boolean editable) {
+
+    }
+
+    @Override
+    public void onCaptionClick(int positionInFeed, @NotNull String redirectUrl) {
+
+    }
+
+    @Override
+    public void onLikeClick(int positionInFeed, int id, boolean isLiked) {
+
+    }
+
+    @Override
+    public void onCommentClick(int positionInFeed, int id) {
+
+    }
+
+    @Override
+    public void onShareClick(int positionInFeed, int id, @NotNull String title, @NotNull String description, @NotNull String url, @NotNull String iamgeUrl) {
+
+    }
+
+    @Override
+    public void onFooterActionClick(int positionInFeed, @NotNull String redirectUrl) {
+
+    }
+
+    @Override
+    public void onPostTagItemClick(int positionInFeed, @NotNull String redirectUrl) {
+
+    }
+
+    @Override
+    public void onActionPopup() {
+
+    }
+
+    @Override
+    public void onActionRedirect(@NotNull String redirectUrl) {
+
+    }
+
+    @Override
+    public void onTitleCtaClick(@NotNull String redirectUrl) {
+
+    }
+
+    @Override
+    public void onImageClick(int positionInFeed, int contentPosition, @NotNull String redirectLink) {
+
+    }
+
+    @Override
+    public void onAffiliateTrackClicked(@NotNull List<TrackingViewModel> trackList) {
+
+    }
+
+    @Override
+    public void onYoutubeThumbnailClick(int positionInFeed, int contentPosition, @NotNull String youtubeId) {
+
+    }
+
+    @Override
+    public void onPollOptionClick(int positionInFeed, int contentPosition, int option, @NotNull String pollId, @NotNull String optionId, boolean isVoted, @NotNull String redirectLink) {
+
+    }
+
+    @Override
+    public void onGridItemClick(int positionInFeed, int contentPosition, @NotNull String redirectLink) {
+
     }
 }
