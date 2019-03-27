@@ -24,6 +24,7 @@ project.ext {
 }
 
 dependencies {
+    implementation project(":libraries:akamai_bot_lib")
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.design)

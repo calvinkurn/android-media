@@ -46,4 +46,5 @@ include "libraries:graph_view"
 include 'libraries:cpm'
 include "libraries:linker"
 include "libraries:webview"
+include "libraries:akamai_bot_lib"
 include "libraries:collapsing_tab_layout"
