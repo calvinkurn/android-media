@@ -68,7 +68,7 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
 
         initDrawableResources();
 
-        setCouponCount(0);
+        setCouponCount(0, "");
     }
 
     private void initDrawableResources() {
@@ -117,16 +117,12 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
         }
     }
 
-    public void setCouponCount(int couponCount) {
+    public void setCouponCount(int couponCount, String countStr) {
         if (couponCount == 0) {
             tvCouponCount.setVisibility(INVISIBLE);
         } else {
             tvCouponCount.setVisibility(VISIBLE);
-            if (couponCount > 99) {
-                tvCouponCount.setText(mContext.getString(R.string.moreCouponCount));
-            } else {
-                tvCouponCount.setText(String.format("%s", couponCount));
-            }
+            tvCouponCount.setText(countStr);
         }
     }
 

@@ -90,6 +90,7 @@ public interface CommonConstant {
         String MEMBERSHIP = WEB_DOMAIN_MOBILE + "tokopoints/mobile/membership";
         String HISTORY = WEB_DOMAIN_MOBILE + "tokopoints/mobile/history";
         String INFO = WEB_DOMAIN_MOBILE + "tokopoints/info";
+        String LEADERBOARD = WEB_DOMAIN_MOBILE + "tokopoints/leaderboard";
     }
 
     interface SectionLayoutType {
