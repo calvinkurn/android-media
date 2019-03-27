@@ -32,10 +32,6 @@ class MerchantVoucherListBottomSheetAdapter(onMerchantVoucherViewListener: Merch
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        /*for (merchantVoucherViewModel in merchantBottomSheetViewModelList) {
-            (holder as MerchantBottomSheetViewHolder).bind(merchantVoucherViewModel)
-        }*/
-
         (holder as MerchantVoucherListBottomSheetViewHolder).bind(merchantBottomSheetViewModelList[position])
     }
 

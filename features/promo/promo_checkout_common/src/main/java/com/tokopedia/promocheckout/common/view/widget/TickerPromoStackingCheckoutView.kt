@@ -98,10 +98,10 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
     }
 
     fun disableView() {
-        state = State.DISABLED
         resetView()
         setViewEmpty()
         setViewDisabled()
+        state = State.DISABLED
         setActionListener()
     }
 
