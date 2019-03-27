@@ -790,7 +790,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         isFragmentInPauseState = false;
         if (needToShowDialog) {
             needToShowDialog = false;
-            if (summaryPageDialogFragment != null)
+            if (summaryPageDialogFragment != null && getActivity() != null && !getActivity().isFinishing())
                 summaryPageDialogFragment.show(getChildFragmentManager(), "summaryPageDialogFragment");
         }
     }
@@ -808,6 +808,9 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     }
 
     private void showSummaryDialogOnSuccess() {
+        if (getActivity() == null || getActivity().isFinishing()) {
+            return;
+        }
         if (getContext() != null) {
             summaryPageDialogFragment = TapTapSummaryDialogFragment.createDialog();
             summaryPageDialogFragment.setListener(this);
