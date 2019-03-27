@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">logisticaddaddress</string>
     <string name="title_save_address_as">Label Alamat</string>
-    <string name="minimal_karakter">Minimal 20 karakter</string>
+    <string name="minimal_karakter">Minimal 5 karakter</string>
     <string name="address_type_default">Rumah</string>
     <string name="title_update_address">Ubah Alamat</string>
     <string name="title_sort_by">Urutkan</string>
