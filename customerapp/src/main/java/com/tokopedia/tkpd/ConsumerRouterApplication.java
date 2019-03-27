@@ -585,11 +585,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LoginRegisterPhoneRouter,
         ExpressCheckoutRouter,
         ResolutionRouter,
-        OvoPayWithQrRouter,
-        KYCRouter,
         NormalCheckoutRouter,
         TradeInRouter,
-        com.tokopedia.product.detail.ProductDetailRouter{
+        com.tokopedia.product.detail.ProductDetailRouter,
+        OvoPayWithQrRouter,
+        KYCRouter{
 
 
     private final static int IRIS_ROW_LIMIT = 50;

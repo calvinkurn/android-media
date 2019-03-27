@@ -53,8 +53,8 @@
         android:textColor="@color/green_tradein_button"
         android:textSize="@dimen/sp_16"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/button_accept"
-        app:layout_constraintTop_toBottomOf="@id/tv_description_permission" />
+        app:layout_constraintRight_toLeftOf="@+id/button_accept"
+        app:layout_constraintTop_toBottomOf="@+id/tv_description_permission" />
 
     <TextView
         android:id="@+id/button_accept"
@@ -72,9 +72,9 @@
         android:textSize="@dimen/sp_16"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/button_deny"
+        app:layout_constraintLeft_toRightOf="@+id/button_deny"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/button_deny"
+        app:layout_constraintTop_toTopOf="@+id/button_deny"
         app:layout_constraintVertical_bias="0" />
 
 </android.support.constraint.ConstraintLayout>
