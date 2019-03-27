@@ -146,13 +146,15 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         errorImage = view.findViewById(R.id.error_image)
         retryButton = view.findViewById(R.id.retry_button)
         closeButton = view.findViewById(R.id.header)
+        webview = view.findViewById(R.id.webview)
+        loadWebview()
         initWebview(view)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loadWebview()
+
         ImageHandler.LoadImage(errorImage, GroupChatUrl.ERROR_WEBVIEW_IMAGE_URL)
         retryButton.setOnClickListener {
             webview.show()
@@ -178,14 +180,13 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         if(GlobalConfig.isAllowDebuggingTools())
             WebView.setWebContentsDebuggingEnabled(true)
 
-        webview = view.findViewById(R.id.webview)
         progressBar = view.findViewById(R.id.progress_bar)
         progressBar.isIndeterminate = true
         webview.setOnKeyListener(this)
 //        webview.addJavascriptInterface(WebViewResizer(), "WebViewResizer")
         webview.settings.cacheMode = WebSettings.LOAD_NO_CACHE
         webview.settings.domStorageEnabled = true
-//        webview.settings.javaScriptEnabled = true
+        webview.settings.javaScriptEnabled = true
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webview.settings.mediaPlaybackRequiresUserGesture = false
         }
