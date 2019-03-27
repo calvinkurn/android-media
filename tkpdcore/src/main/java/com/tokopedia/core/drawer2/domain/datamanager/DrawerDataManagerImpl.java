@@ -19,6 +19,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.TokoCashUtil;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 import java.io.IOException;
 
@@ -175,8 +176,9 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
 
     private void renderSaldo(UserData response) {
         if (response.getSaldo() != null) {
-            String depositFormat = response.getSaldo().getDepositFmt();
-            if (depositFormat != null && !depositFormat.equalsIgnoreCase("ERROR FAIL")) {
+            long balance = response.getSaldo().getDeposit();
+            String depositFormat = CurrencyFormatUtil.convertPriceValueToIdrFormat(balance, false);
+            if (!TextUtils.isEmpty(depositFormat) && !depositFormat.equalsIgnoreCase("ERROR FAIL")) {
                 DrawerDeposit drawerDeposit = new DrawerDeposit();
                 drawerDeposit.setDeposit(depositFormat);
                 viewListener.onGetDeposit(drawerDeposit);
