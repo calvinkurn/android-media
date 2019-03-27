@@ -40,7 +40,7 @@ public class ApplinkUtil {
                 .isSupportedDelegateDeepLink(applink)) {
             RouteManager.route(activity, applink);
         } else if (!TextUtils.isEmpty(url) && URLUtil.isNetworkUrl(url)) {
-            String defaultTitle = activity.getResources().getString(R.string.toko_points_title);
+            String defaultTitle = activity.getResources().getString(R.string.tap_tap_title);
             Intent intent = ((GamificationRouter) activity.getApplicationContext())
                     .getWebviewActivityWithIntent(activity, url, defaultTitle);
             activity.startActivity(intent);
