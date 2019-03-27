@@ -1,6 +1,7 @@
 package com.tokopedia.instantdebitbca.data.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import com.bca.xco.widget.XCOEnum;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.instantdebitbca.R;
 import com.tokopedia.instantdebitbca.data.di.InstantDebitBcaComponent;
@@ -36,9 +38,13 @@ public class InstantDebitBcaFragment extends BaseDaggerFragment implements BCAXC
 
     private RelativeLayout layoutWidget;
     private BCARegistrasiXCOWidget widgetBca;
+    private String applinkUrl;
 
-    public static Fragment newInstance(Context context) {
+    public static Fragment newInstance(Context context, String callbackUrl) {
         InstantDebitBcaFragment fragment = new InstantDebitBcaFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("CALLBACK_URL", callbackUrl);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -54,6 +60,7 @@ public class InstantDebitBcaFragment extends BaseDaggerFragment implements BCAXC
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        applinkUrl = getArguments().getString("CALLBACK_URL");
         widgetBca = new BCARegistrasiXCOWidget(getActivity(), XCOEnum.ENVIRONMENT.DEV);
         widgetBca.setListener(this);
         layoutWidget.addView(widgetBca);
@@ -86,7 +93,11 @@ public class InstantDebitBcaFragment extends BaseDaggerFragment implements BCAXC
 
     @Override
     public void onBCASuccess(String s, String s1, String s2, String s3) {
-
+        if (RouteManager.isSupportApplink(getActivity(), applinkUrl)) {
+            Intent intentRegisteredApplink = RouteManager.getIntent(getActivity(), applinkUrl);
+            startActivity(intentRegisteredApplink);
+            getActivity().finish();
+        }
     }
 
     @Override

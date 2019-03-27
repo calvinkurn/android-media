@@ -15,22 +15,22 @@ import com.tokopedia.instantdebitbca.data.view.utils.ApplinkConstant;
  */
 public class InstantDebitBcaActivity extends BaseSimpleActivity {
 
-
     @SuppressWarnings("unused")
     @DeepLink({ApplinkConstant.INSTANT_DEBIT_BCA_APPLINK})
     public static Intent intentForTaskStackBuilderMethods(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        Intent intent = new Intent(context, InstantDebitBcaActivity.class);
-        return intent.setData(uri.build()).putExtras(extras);
+        String callbackUrl = extras.getString("callbackUrl");
+        return InstantDebitBcaActivity.newInstance(context, callbackUrl);
     }
 
-    public static Intent newInstance(Context context) {
+    public static Intent newInstance(Context context, String callbackUrl) {
         Intent intent = new Intent(context, InstantDebitBcaActivity.class);
+        intent.putExtra("CALLBACK_URL", callbackUrl);
         return intent;
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return InstantDebitBcaFragment.newInstance(getApplicationContext());
+        return InstantDebitBcaFragment.newInstance(getApplicationContext(), getIntent().getStringExtra("CALLBACK_URL"));
     }
 }

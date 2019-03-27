@@ -3,6 +3,7 @@ package com.tokopedia.transaction.purchase.interactor;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.network.apiservices.payment.PaymentTransactionService;
 import com.tokopedia.core.network.apiservices.transaction.TXOrderActService;
 import com.tokopedia.core.network.apiservices.transaction.TXOrderService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -44,12 +45,14 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
     private final CompositeSubscription compositeSubscription;
     private final TXOrderService txOrderService;
     private final TXOrderActService txOrderActService;
+    private final PaymentTransactionService paymentTransactionService;
     private final TxVerificationRepository verificationRepository;
 
     public TxOrderNetInteractorImpl() {
         compositeSubscription = new CompositeSubscription();
         txOrderService = new TXOrderService();
         txOrderActService = new TXOrderActService();
+        paymentTransactionService = new PaymentTransactionService();
         verificationRepository = new TxVerificationRepository(paymentTransactionService);
     }
 
