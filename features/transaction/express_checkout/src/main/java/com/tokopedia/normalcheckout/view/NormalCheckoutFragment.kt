@@ -43,6 +43,7 @@ import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
 import com.tokopedia.normalcheckout.constant.ATC_ONLY
 import com.tokopedia.normalcheckout.constant.ProductAction
 import com.tokopedia.normalcheckout.constant.TRADEIN_BUY
+import com.tokopedia.normalcheckout.di.DaggerNormalCheckoutComponent
 import com.tokopedia.normalcheckout.model.ProductInfoAndVariant
 import com.tokopedia.normalcheckout.presenter.NormalCheckoutViewModel
 import com.tokopedia.normalcheckout.router.NormalCheckoutRouter
