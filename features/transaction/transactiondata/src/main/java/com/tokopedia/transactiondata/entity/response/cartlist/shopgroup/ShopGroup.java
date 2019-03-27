@@ -25,6 +25,12 @@ public class ShopGroup {
     @SerializedName("shop")
     @Expose
     private Shop shop = new Shop();
+    @SerializedName("is_fulfillment_service")
+    @Expose
+    private boolean isFulFillment;
+    @SerializedName("warehouse")
+    @Expose
+    private Warehouse warehouse;
     @SerializedName("cart_details")
     @Expose
     private List<CartDetail> cartDetails = new ArrayList<>();
@@ -43,6 +49,14 @@ public class ShopGroup {
 
     public Shop getShop() {
         return shop;
+    }
+
+    public boolean isFulFillment() {
+        return isFulFillment;
+    }
+
+    public Warehouse getWarehouse() {
+        return warehouse;
     }
 
     public List<CartDetail> getCartDetails() {

@@ -207,7 +207,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected Map<String, String> getHeaderMap(
             String path, String strParam, String method, String authKey, String contentTypeHeader) {
-        return AuthUtil.generateHeaders(path, strParam, method, authKey, contentTypeHeader, userSession.getUserId());
+        return AuthUtil.generateHeaders(path, strParam, method, authKey, contentTypeHeader,
+                userSession.getUserId(), userSession);
     }
 
     protected void generateHeader(Map<String, String> authHeaders, Request originRequest, Request.Builder newRequest) {

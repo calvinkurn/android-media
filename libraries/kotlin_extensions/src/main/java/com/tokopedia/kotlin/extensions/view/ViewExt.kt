@@ -111,6 +111,30 @@ fun View.hideLoading() {
     }
 }
 
+fun View.showLoadingTransparent() {
+    try {
+        this.findViewById<View>(R.id.loadingTransparentView)!!.show()
+    } catch (e: NullPointerException) {
+        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+        )
+        params.gravity = Gravity.CENTER
+        params.weight = 1.0f
+        inflater.inflate(R.layout.partial_loading_transparent_layout, this as ViewGroup)
+    }
+}
+
+fun View.hideLoadingTransparent() {
+    try {
+        this.findViewById<View>(R.id.loadingTransparentView)!!.hide()
+    } catch (e: NullPointerException) {
+        e.debugTrace()
+    }
+}
+
+
 fun View.showErrorToaster(errorMessage: String) {
     this.showErrorToaster(errorMessage, null as String?) { }
 }
