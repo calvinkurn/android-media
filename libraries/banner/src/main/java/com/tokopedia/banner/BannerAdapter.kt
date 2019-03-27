@@ -23,7 +23,7 @@ class BannerAdapter(bannerImageUrls : List<String>,
         val inflater = LayoutInflater.from(parent.context)
         val itemView = inflater.inflate(R.layout.banner_item_layout, parent, false)
 
-        val layoutParams = itemView.getLayoutParams()
+        val layoutParams = itemView.layoutParams
 
         if (parent.width != 0 ) {
             layoutParams.width = (parent.width * 0.9).toInt()
