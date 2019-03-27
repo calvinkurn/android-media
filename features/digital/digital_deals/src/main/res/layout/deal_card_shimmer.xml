@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/dp_250"
     android:layout_height="150dp"
-    android:layout_marginLeft="@dimen/dp_4"
+    android:layout_marginTop="@dimen/dp_16"
+    android:layout_marginLeft="@dimen/dp_16"
     android:layout_marginRight="@dimen/dp_4"
     android:layout_marginBottom="@dimen/dp_8"
     app:cardCornerRadius="@dimen/dp_8"
@@ -16,57 +17,21 @@
         android:layout_height="match_parent">
 
 
-        <ImageView
+        <com.elyeproj.loaderviewlibrary.LoaderImageView
             android:id="@+id/iv_product"
             android:layout_width="@dimen/dp_72"
             android:layout_height="0dp"
             android:scaleType="centerCrop"
-            android:src="@color/grey_1100"
+            android:background="@drawable/bg_shimmer_home_bg"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/cv_brand"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:layout_marginTop="@dimen/dp_4"
-            app:cardCornerRadius="@dimen/dp_8"
-            app:cardElevation="0dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:id="@+id/iv_brand"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitCenter" />
-
-        </android.support.v7.widget.CardView>
 
 
-        <TextView
-            android:id="@+id/tv_hot_deal"
-            style="@style/TextView.Micro11.FontMedium.White"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
-            android:background="@drawable/details_header_background"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_3"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingBottom="@dimen/dp_3"
-            android:text="@string/hot_deal"
-            android:visibility="gone"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/tv_brand_name"
-            style="@style/TextView.Micro.Black40"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
@@ -74,14 +39,13 @@
             android:layout_marginBottom="@dimen/dp_4"
             android:ellipsize="end"
             android:maxLines="1"
+            android:background="@drawable/bg_shimmer_home_bg"
             app:layout_constraintRight_toLeftOf="@+id/iv_wish_list"
             app:layout_constraintLeft_toRightOf="@+id/iv_product"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Bakerzin" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/tv_deal_intro"
-            style="@style/TextView.Small.FontMedium.BlackPrimary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
@@ -89,13 +53,13 @@
             android:layout_marginEnd="@dimen/dp_8"
             android:ellipsize="end"
             android:lineSpacingExtra="@dimen/dp_6"
-            android:lines="2"
+            android:lines="1"
             android:textColor="#e131353b"
             android:textSize="@dimen/sp_14"
+            android:background="@drawable/bg_shimmer_home_bg"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_product"
-            app:layout_constraintTop_toBottomOf="@+id/tv_brand_name"
-            tools:text="1 Set Jumbo Bento for 2 persons on Weekdays (Monday - Friday)" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_brand_name" />
 
 
         <TextView
@@ -117,13 +81,12 @@
 
         <TextView
             android:id="@+id/tv_off"
-            style="@style/TextView.Micro11.Bold.Red"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_20"
             android:layout_marginRight="@dimen/dp_8"
-            android:background="@drawable/background_lightgreen_oval"
+            android:background="@drawable/bg_shimmer_home_bg"
             android:gravity="center"
             android:lineSpacingExtra="@dimen/dp_6"
             android:paddingLeft="@dimen/dp_8"
@@ -131,10 +94,10 @@
             android:paddingRight="@dimen/dp_8"
             android:paddingBottom="@dimen/dp_2"
             android:textColor="#ff5c84"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/tv_sales_price"
             app:layout_constraintLeft_toRightOf="@+id/iv_product"
-            app:layout_constraintTop_toBottomOf="@+id/tv_deal_intro"
-            tools:text="20% OFF" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_deal_intro" />
 
 
         <View
@@ -150,36 +113,36 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_available_locations" />
 
-        <TextView
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/tv_mrp"
-            style="@style/TextView.Micro.Black40"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_20"
             android:layout_marginRight="@dimen/dp_8"
             android:gravity="center"
             android:textColor="#ae31353b"
+            android:background="@drawable/bg_shimmer_home_bg"
             android:textSize="@dimen/sp_12"
             app:layout_constraintLeft_toRightOf="@+id/tv_off"
             app:layout_constraintTop_toBottomOf="@+id/tv_deal_intro"
-            app:layout_constraintBottom_toTopOf="@+id/tv_sales_price"
-            tools:text="Rp50.000.000" />
+            app:layout_constraintBottom_toTopOf="@+id/tv_sales_price" />
 
-        <TextView
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/tv_sales_price"
             style="@style/TextView.Medium.FontMedium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_width="60dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_8"
             android:includeFontPadding="false"
+            android:layout_marginBottom="@dimen/dp_16"
             android:paddingVertical="@dimen/dp_8"
             android:textColor="#fa591d"
+            android:background="@drawable/bg_shimmer_home_bg"
             android:textSize="@dimen/sp_14"
             app:layout_constraintLeft_toRightOf="@+id/iv_product"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:text="Rp40.000.000" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <ImageView
             android:id="@+id/iv_wish_list"
@@ -199,8 +162,7 @@
             android:layout_marginRight="@dimen/dp_8"
             app:layout_constraintBottom_toBottomOf="@id/iv_wish_list"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@id/iv_wish_list"
-            tools:text="5" />
+            app:layout_constraintTop_toTopOf="@id/iv_wish_list" />
 
         <ImageView
             android:id="@+id/iv_share"

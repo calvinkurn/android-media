@@ -32,6 +32,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -87,8 +88,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Inject
     public DealsHomePresenter mPresenter;
     private CoordinatorLayout mainContent;
-    private View progressBarLayout;
-    private ProgressBar progBar;
+    private LinearLayout shimmerLayout;
     private Toolbar toolbar;
     private LinearLayout catItems;
     private RecyclerView rvTrendingDeals;
@@ -165,6 +165,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     private void setUpVariables(View view) {
+        shimmerLayout = view.findViewById(R.id.shimmer_layout);
         toolbar = view.findViewById(R.id.deals_toolbar);
         backArrow = view.findViewById(R.id.backArraw);
         overFlowIcon = view.findViewById(R.id.overFlow_icon);
@@ -172,8 +173,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         rvBrandItems = view.findViewById(R.id.rv_brand_items);
         rvTrendingDeals = view.findViewById(R.id.rv_trending_deals);
         mainContent = view.findViewById(R.id.main_content);
-        progressBarLayout = view.findViewById(R.id.progress_bar_layout);
-        progBar = view.findViewById(R.id.prog_bar);
         baseMainContent = view.findViewById(R.id.base_main_content);
         searchInputView = view.findViewById(R.id.search_input_view);
         tvLocationName = view.findViewById(R.id.tv_location_name);
@@ -199,8 +198,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Drawable img = getResources().getDrawable(R.drawable.ic_search_deal);
         setDrawableTint(img);
 
-        Drawable threeDotMenu = ContextCompat.getDrawable(getContext(), R.drawable.ic_three_dot_menu);
-        toolbar.setOverflowIcon(threeDotMenu);
+//        Drawable threeDotMenu = ContextCompat.getDrawable(getContext(), R.drawable.ic_three_dot_menu);
+//        toolbar.setOverflowIcon(threeDotMenu);
 
         searchInputView.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 
@@ -581,14 +580,12 @@ startActivityForResult(intent, requestCode);
 
     @Override
     public void showProgressBar() {
-        progBar.setVisibility(View.VISIBLE);
-        progressBarLayout.setVisibility(View.VISIBLE);
+        shimmerLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgressBar() {
-        progBar.setVisibility(View.GONE);
-        progressBarLayout.setVisibility(View.GONE);
+        shimmerLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -736,6 +733,7 @@ startActivityForResult(intent, requestCode);
         Intent detailsIntent = new Intent(getActivity(), CategoryDetailActivity.class);
         detailsIntent.putExtra(CategoryDetailActivity.CATEGORIES_DATA, categoriesModel);
         detailsIntent.putExtra(CategoryDetailActivity.CATEGORY_NAME, categoriesModel.getTitle());
+        detailsIntent.putExtra(CategoryDetailActivity.FROM_HOME, true);
         getActivity().startActivity(detailsIntent);
     }
 

@@ -75,7 +75,7 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
         this.trendingDeals = trendingDeals;
         this.title = title;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+        transaction.setCustomAnimations(R.anim.slide_in_left_brands, R.anim.slide_out_right_brands);
         transaction.add(R.id.parent_view, TrendingDealsFragment.createInstance());
         transaction.addToBackStack(null);
         transaction.commit();

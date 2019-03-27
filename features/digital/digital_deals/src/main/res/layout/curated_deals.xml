@@ -25,6 +25,7 @@
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         android:text="@string/see_all"
+        android:padding="@dimen/dp_8"
         android:textSize="@dimen/sp_12"
         android:textColor="#03ac0e"
         android:visibility="gone"

@@ -71,13 +71,13 @@ public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapt
 
 
         if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {
-            dealTitle.setText(categoryItem.getTitle() + " Deals");
+            dealTitle.setText(categoryItem.getTitle());
             seeAllCuratedDeals.setVisibility(VISIBLE);
             seeAllCuratedDeals.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (!TextUtils.isEmpty(categoryItem.getCategoryUrl())) {
-                        mPresenter.getAllTrendingDeals(categoryItem.getCategoryUrl(), dealTitle.getText().toString());
+                        mPresenter.getAllTrendingDeals(categoryItem.getCategoryUrl(), dealTitle.getText().toString().toUpperCase() + " DEALS");
                     }
                 }
             });
