@@ -581,7 +581,6 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         crackTokenErrorhandler.post(new Runnable() {
             @Override
             public void run() {
-                // Do something after 1s = 1000ms
                 if (getContext() != null) {
                     if (widgetTokenView.isCrackPercentageFull()) {
                         NetworkErrorHelper.showErrorSnackBar(errorMessage, getContext(), rootView, true);
@@ -722,7 +721,6 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         crackTokenSuccessHandler.post(new Runnable() {
             @Override
             public void run() {
-                // Do something after 1s = 1000ms
                 if (getContext() != null) {
                     if (widgetTokenView.isCrackPercentageFull()) {
                         widgetTokenView.clearTokenAnimation();
