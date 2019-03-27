@@ -313,6 +313,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
             override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
                 Toast.makeText(view?.context, "ssl "+ error.toString(), Toast.LENGTH_LONG).show()
                 super.onReceivedSslError(view, handler, error)
+                handler?.cancel()
             }
         }
     }
