@@ -8,8 +8,8 @@ import android.os.Parcelable
  * github: @isfaaghyth
  */
 data class MediaModel(
-        val path: String? = "",
-        val type: String? = "image"
+        val path: String = "",
+        val type: String = "image"
 ): Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString()?: "",

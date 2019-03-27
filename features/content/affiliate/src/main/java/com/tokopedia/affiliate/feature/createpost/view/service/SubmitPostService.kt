@@ -14,6 +14,7 @@ import com.tokopedia.affiliate.feature.createpost.di.CreatePostModule
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.SubmitPostUseCase
 import com.tokopedia.affiliate.feature.createpost.view.util.SubmitPostNotificationManager
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
+import com.tokopedia.affiliate.feature.createpost.view.viewmodel.MediaType
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -62,7 +63,7 @@ class SubmitPostService : JobIntentService() {
         val notifId = Random().nextInt()
         notificationManager = getNotificationManager(id,
                 viewModel.authorType,
-                viewModel.completeImageList.first().path ?: "",
+                viewModel.completeImageList.first().path,
                 notifId,
                 viewModel.completeImageList.size)
         submitPostUseCase.notificationManager = notificationManager
@@ -75,7 +76,7 @@ class SubmitPostService : JobIntentService() {
                             if (isTypeAffiliate(viewModel.authorType)) userSession.userId
                             else userSession.shopId,
                             viewModel.caption,
-                            viewModel.videoPath,
+                            viewModel.fileImageList.first().path,
                             if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
                             else viewModel.productIdList
                     ),
@@ -99,8 +100,9 @@ class SubmitPostService : JobIntentService() {
         }
     }
 
-    private fun isUploadVideo( viewModel: CreatePostViewModel): Boolean {
-        return viewModel.videoPath.isNotBlank()
+    private fun isUploadVideo(viewModel: CreatePostViewModel): Boolean {
+        return viewModel.fileImageList.first().type == MediaType.VIDEO &&
+               viewModel.fileImageList.first().path.isNotBlank()
     }
 
     private fun initInjector() {
