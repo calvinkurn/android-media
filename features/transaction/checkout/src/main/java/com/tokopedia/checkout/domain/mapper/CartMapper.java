@@ -295,18 +295,21 @@ public class CartMapper implements ICartMapper {
 
         AutoApplyStackData autoApplyStackData = new AutoApplyStackData();
         if (cartDataListResponse.getAutoapplyStack() != null) {
+            autoApplyStackData = new AutoApplyStackData();
+            if (cartDataListResponse.getAutoapplyStack().getCodes().size() > 0) {
+                autoApplyStackData.setCode(cartDataListResponse.getAutoapplyStack().getCodes().get(0));
+            }
+            autoApplyStackData.setDiscountAmount(cartDataListResponse.getAutoapplyStack().getDiscountAmount());
+            autoApplyStackData.setIsCoupon(cartDataListResponse.getAutoapplyStack().getIsCoupon());
+            if (cartDataListResponse.getAutoapplyStack().getMessage() != null) {
+                autoApplyStackData.setMessageSuccess(cartDataListResponse.getAutoapplyStack().getMessage().getText());
+                autoApplyStackData.setState(cartDataListResponse.getAutoapplyStack().getMessage().getState());
+            }
+            autoApplyStackData.setPromoCodeId(cartDataListResponse.getAutoapplyStack().getPromoCodeId());
+            autoApplyStackData.setSuccess(cartDataListResponse.getAutoapplyStack().isSuccess());
+            autoApplyStackData.setTitleDescription(cartDataListResponse.getAutoapplyStack().getTitleDescription());
             if (cartDataListResponse.getAutoapplyStack().getVoucherOrders() != null) {
                 if (cartDataListResponse.getAutoapplyStack().getVoucherOrders().size() > 0) {
-                    autoApplyStackData = new AutoApplyStackData();
-                    autoApplyStackData.setCode(cartDataListResponse.getAutoapplyStack().getCodes().get(0));
-                    autoApplyStackData.setDiscountAmount(cartDataListResponse.getAutoapplyStack().getDiscountAmount());
-                    autoApplyStackData.setIsCoupon(cartDataListResponse.getAutoapplyStack().getIsCoupon());
-                    autoApplyStackData.setMessageSuccess(cartDataListResponse.getAutoapplyStack().getMessage().getText());
-                    autoApplyStackData.setPromoCodeId(cartDataListResponse.getAutoapplyStack().getPromoCodeId());
-                    autoApplyStackData.setSuccess(cartDataListResponse.getAutoapplyStack().isSuccess());
-                    autoApplyStackData.setTitleDescription(cartDataListResponse.getAutoapplyStack().getTitleDescription());
-                    autoApplyStackData.setState(cartDataListResponse.getAutoapplyStack().getMessage().getState());
-
                     List<VoucherOrdersItemData> voucherOrdersItemDataList = new ArrayList<>();
                     for (VoucherOrdersItem voucherOrdersItem : cartDataListResponse.getAutoapplyStack().getVoucherOrders()) {
                         VoucherOrdersItemData voucherOrdersItemData = new VoucherOrdersItemData();
@@ -332,8 +335,6 @@ public class CartMapper implements ICartMapper {
 
         return cartListData;
     }
-
-
 
     @Override
     public CartListData convertToCartItemDataList(Context context, CartMultipleAddressDataListResponse cartDataListResponse) {
