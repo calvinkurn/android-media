@@ -1881,11 +1881,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             typePromo = PromoStackingData.CREATOR.getTYPE_VOUCHER();
         }
         promoStackingGlobalData.setTypePromo(typePromo);
-        promoStackingGlobalData.setPromoCode(responseGetPromoStackUiModel.getData().getCodes().get(0));
+        if (responseGetPromoStackUiModel.getData().getCodes().size() > 0) {
+            promoStackingGlobalData.setPromoCode(responseGetPromoStackUiModel.getData().getCodes().get(0));
+        }
         promoStackingGlobalData.setDescription(responseGetPromoStackUiModel.getData().getMessage().getText());
+        promoStackingGlobalData.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStackUiModel.getData().getMessage().getState()));
         promoStackingGlobalData.setTitle(responseGetPromoStackUiModel.getData().getTitleDescription());
         promoStackingGlobalData.setAmount(responseGetPromoStackUiModel.getData().getCashbackWalletAmount());
-        promoStackingGlobalData.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStackUiModel.getData().getMessage().getState()));
         promoStackingGlobalData.setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
 
         // Update merchant voucher state

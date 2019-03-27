@@ -49,7 +49,7 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
     }
 
     override fun checkPromoFirstStep(promoMerchantCode: String, currentCartString: String,
-                                     checkPromoFirstStepParam: CheckPromoFirstStepParam?) {
+                                     checkPromoFirstStepParam: CheckPromoFirstStepParam?, isFromList: Boolean) {
         if (checkPromoFirstStepParam != null) {
             checkPromoFirstStepParam.codes = ArrayList()
             val orders = checkPromoFirstStepParam.orders;
@@ -73,7 +73,7 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                 override fun onError(e: Throwable) {
                     if (isViewAttached) {
                         view.hideLoadingDialog()
-                        view.onErrorCheckPromoFirstStep(ErrorHandler.getErrorMessage(view.getActivityContext(), e))
+                        view.onErrorCheckPromoFirstStep(ErrorHandler.getErrorMessage(view.getActivityContext(), e), isFromList)
                     }
                 }
 
@@ -83,8 +83,14 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                         val responseGetPromoStack = checkPromoStackingCodeMapper.call(response)
                         if (responseGetPromoStack.status != "OK" || responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
                             val message = responseGetPromoStack.data.message.text
-                            view.onErrorCheckPromoFirstStep(message)
+                            view.onErrorCheckPromoFirstStep(message, isFromList)
                         } else {
+                            responseGetPromoStack.data.voucherOrders.forEach {
+                                if (!it.success && it.message.state.equals("red")) {
+                                    view.onErrorCheckPromoFirstStep(it.message.text, isFromList)
+                                    return
+                                }
+                            }
                             if (responseGetPromoStack.data.clashings.isClashedPromos) {
                                 view.onClashCheckPromoFirstStep(responseGetPromoStack.data.clashings)
                             } else {

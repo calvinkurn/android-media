@@ -8,7 +8,9 @@ import android.os.Bundle
 import android.support.design.widget.CoordinatorLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -21,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
@@ -54,6 +57,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     private lateinit var merchantVoucherContainer: LinearLayout
     private lateinit var errorContainer: LinearLayout
     private lateinit var pbLoading: ProgressBar
+    private lateinit var textInputLayoutCoupon: TkpdHintTextInputLayout
 
     private var checkPromoFirstStepParam: CheckPromoFirstStepParam? = null
     private var shopId: Int = 0
@@ -111,11 +115,37 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         merchantVoucherContainer = view.findViewById(R.id.merchant_voucher_container)
         errorContainer = view.findViewById(R.id.error_container)
         pbLoading = view.findViewById(R.id.pb_loading)
+        textInputLayoutCoupon = view.findViewById(R.id.textInputLayoutCoupon)
+
+        textInputCoupon.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+
+            }
+
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+                if (charSequence.isEmpty()) {
+                    textInputLayoutCoupon.error = "Kode Voucher Harus Diisi"
+                    updateHeight()
+                } else {
+                    textInputLayoutCoupon.setErrorEnabled(false)
+                }
+            }
+
+            override fun afterTextChanged(editable: Editable) {
+
+            }
+        })
 
         loadData()
 
         buttonUse.setOnClickListener {
-            presenter.checkPromoFirstStep(textInputCoupon.text.toString(), cartString, checkPromoFirstStepParam)
+            hideKeyboard()
+            if (textInputCoupon.text.toString().isEmpty()) {
+                textInputLayoutCoupon.error = "Kode Voucher Harus Diisi"
+                updateHeight()
+            } else {
+                presenter.checkPromoFirstStep(textInputCoupon.text.toString(), cartString, checkPromoFirstStepParam, false)
+            }
         }
     }
 
@@ -140,10 +170,6 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     }
 
     override fun showLoadingDialog() {
-        if (context != null) {
-            val inputMethodManager = context!!.getSystemService(Activity.INPUT_METHOD_SERVICE);
-            (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.windowToken, 0);
-        }
         if (progressDialog == null) {
             progressDialog = ProgressDialog(activity)
             progressDialog?.setCancelable(false)
@@ -197,7 +223,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
             return
         }
 
-        presenter.checkPromoFirstStep(merchantVoucherViewModel.voucherCode, cartString, checkPromoFirstStepParam)
+        presenter.checkPromoFirstStep(merchantVoucherViewModel.voucherCode, cartString, checkPromoFirstStepParam, false)
     }
 
     fun initInjector() {
@@ -230,29 +256,41 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         if (TextUtils.isEmpty(message)) {
             message = "Terjadi kesalahan. Ulangi beberapa saat lagi"
         }
-        NetworkErrorHelper.showEmptyState(activity, errorContainer, message
-        ) {
+        NetworkErrorHelper.showEmptyState(activity, errorContainer, message) {
             errorContainer.visibility = View.GONE
             loadData()
         }
     }
 
-    override fun onErrorCheckPromoFirstStep(message: String) {
+    override fun onErrorCheckPromoFirstStep(message: String, isFromList: Boolean) {
+        hideKeyboard()
         var messageInfo = message
         if (TextUtils.isEmpty(messageInfo)) {
             messageInfo = "Terjadi kesalahan. Ulangi beberapa saat lagi."
         }
-        ToasterError.make(layoutMerchantVoucher, messageInfo, ToasterError.LENGTH_SHORT).show()
+        if (isFromList) {
+            ToasterError.make(layoutMerchantVoucher, messageInfo, ToasterError.LENGTH_SHORT).show()
+        } else {
+            textInputLayoutCoupon.error = message
+            updateHeight()
+        }
     }
 
     override fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackUiModel) {
+        hideKeyboard()
         dismiss()
         actionListener.onSuccessCheckPromoFirstStep(model)
     }
 
     override fun onClashCheckPromoFirstStep(model: ClashingInfoDetailUiModel) {
+        hideKeyboard()
         dismiss()
         actionListener.onClashCheckPromo(model)
+    }
+
+    private fun hideKeyboard() {
+        val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.windowToken, 0);
     }
 
     // Todo : remove this
