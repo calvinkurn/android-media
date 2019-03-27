@@ -65,7 +65,6 @@ import com.tokopedia.tokopoints.view.model.section.SectionContent;
 import com.tokopedia.tokopoints.view.presenter.TokoPointsHomePresenterNew;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
-import com.tokopedia.tokopoints.view.util.TabUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -244,7 +243,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     private void slideUp() {
         if (bottomViewMembership.getVisibility() != View.VISIBLE) {
             CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) containerEgg.getLayoutParams();
-            layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.tp_margin_xxxlarge));
+            layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.dp_75));
             Animation bottomUp = AnimationUtils.loadAnimation(bottomViewMembership.getContext(),
                     R.anim.tp_bottom_up);
             bottomViewMembership.startAnimation(bottomUp);
@@ -819,7 +818,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                 mTextMembershipValue.setText(mValueMembershipDescription);
                 mTextMembershipValueBottom.setText(mValueMembershipDescription);
                 ImageHandler.loadImageCircle2(getActivityContext(), mImgEgg, data.getStatus().getTier().getEggImageHomepageURL());
-                ImageHandler.loadImageCircle2(getActivityContext(), mImgEggBottom, data.getStatus().getTier().getEggImageUrl());
+                ImageHandler.loadImageCircle2(getActivityContext(), mImgEggBottom, data.getStatus().getTier().getEggImageHomepageURL());
             }
 
             if (data.getStatus().getPoints() != null) {
