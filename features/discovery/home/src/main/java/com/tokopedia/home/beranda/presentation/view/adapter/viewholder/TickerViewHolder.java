@@ -17,6 +17,7 @@ import com.tokopedia.design.utils.StripedUnderlineUtil;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.domain.model.Ticker;
 import com.tokopedia.home.R;
+import com.tokopedia.home.beranda.listener.ActivityStateListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 
@@ -28,7 +29,7 @@ import java.util.TimerTask;
  * @author by errysuprayogi on 11/28/17.
  */
 
-public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implements View.OnClickListener {
+public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implements View.OnClickListener, ActivityStateListener {
 
     private static final String TAG = TickerViewHolder.class.getSimpleName();
     @LayoutRes
@@ -54,6 +55,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
         textMessage = itemView.findViewById(R.id.ticker_message);
         btnClose = itemView.findViewById(R.id.btn_close);
         btnClose.setOnClickListener(this);
+        listener.setActivityStateListener(this);
     }
 
     @Override
@@ -124,5 +126,20 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
             );
             return super.onTouchEvent(widget, buffer, event);
         }
+    }
+
+    @Override
+    public void onPause() {
+
+    }
+
+    @Override
+    public void onResume() {
+
+    }
+
+    @Override
+    public void onRefresh() {
+        hasStarted = false;
     }
 }
