@@ -30,7 +30,7 @@
 
 
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <TextView
             android:id="@+id/tv_brand_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
             app:layout_constraintLeft_toRightOf="@+id/iv_product"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <TextView
             android:id="@+id/tv_deal_intro"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -113,7 +113,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_available_locations" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <TextView
             android:id="@+id/tv_mrp"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
@@ -128,19 +128,14 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_deal_intro"
             app:layout_constraintBottom_toTopOf="@+id/tv_sales_price" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <TextView
             android:id="@+id/tv_sales_price"
-            style="@style/TextView.Medium.FontMedium"
             android:layout_width="60dp"
             android:layout_height="20dp"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_8"
-            android:includeFontPadding="false"
             android:layout_marginBottom="@dimen/dp_16"
-            android:paddingVertical="@dimen/dp_8"
-            android:textColor="#fa591d"
             android:background="@drawable/bg_shimmer_home_bg"
-            android:textSize="@dimen/sp_14"
             app:layout_constraintLeft_toRightOf="@+id/iv_product"
             app:layout_constraintBottom_toBottomOf="parent" />
 

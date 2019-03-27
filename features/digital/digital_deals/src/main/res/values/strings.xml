@@ -33,7 +33,7 @@
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="hot_deal">HOT DEAL</string>
-    <string name="text_trending_deals">Deals yang lagi hits</string>
+    <string name="text_trending_deals">Pilihan Deals terbaik</string>
     <string name="text_trending_promos">Hemat dengan promo Deals</string>
     <string name="text_all_deals">Semua Deals</string>
     <string name="favourite">Favourite Deals</string>
