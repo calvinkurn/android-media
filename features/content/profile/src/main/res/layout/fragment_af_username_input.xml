@@ -77,7 +77,7 @@
                 android:textColorHint="@color/black_56"
                 app:layout_constraintTop_toBottomOf="@+id/title">
 
-                <com.tokopedia.onboarding.view.widget.PrefixEditText
+                <com.tokopedia.affiliate.feature.onboarding.view.widget.PrefixEditText
                     android:id="@+id/usernameInput"
                     style="@style/EditText"
                     android:layout_width="match_parent"
