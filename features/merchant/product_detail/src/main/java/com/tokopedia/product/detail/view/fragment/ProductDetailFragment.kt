@@ -317,12 +317,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if(tv_trade_in.visibility == View.VISIBLE){
                 if(tv_trade_in.getLocalVisibleRect(outRectScroll) && !(tv_trade_in.tag as Boolean)){
                     if (tradeInParams.usedPrice <= 0)
-                        TrackApp.getInstance()?.gtm?.sendGeneralEvent("viewPDP",
+                        sendGeneralEvent("viewPDP",
                                 "product detail page",
                                 "view trade in section",
                                 "before diagnostic")
                     else
-                        TrackApp.getInstance()?.gtm?.sendGeneralEvent("viewPDP",
+                        sendGeneralEvent("viewPDP",
                                 "product detail page",
                                 "view trade in section",
                                 "after diagnostic")
@@ -1214,7 +1214,22 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 tradeInParams.isPreorder = false
             tradeInParams.isOnCampaign = productInfoP1.productInfo.hasActiveCampaign
             tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
-            tv_trade_in.setOnClickListener { goToNormalCheckout(TRADEIN_BUY) }
+            tv_trade_in.setOnClickListener {
+                goToNormalCheckout(TRADEIN_BUY)
+                tradeInParams?.let {
+                    if(tradeInParams!!.usedPrice>0)
+                        sendGeneralEvent(" clickPDP",
+                                "product detail page",
+                                "click tukar tambah sekarang",
+                                "after diagnostic")
+                    else
+                        sendGeneralEvent(" clickPDP",
+                                "product detail page",
+                                "click tukar tambah sekarang",
+                                "before diagnostic")
+
+                }
+            }
         }
         activity?.invalidateOptionsMenu()
     }
@@ -1676,5 +1691,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
         context?.let {
             LocalBroadcastManager.getInstance(it).unregisterReceiver(tradeInBroadcastReceiver)
         }
+    }
+
+    private fun sendGeneralEvent(event: String, category: String, action: String, label: String) {
+        TrackApp.getInstance()?.gtm?.sendGeneralEvent(event,
+                category,
+                action,
+                label)
     }
 }

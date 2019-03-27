@@ -14,6 +14,7 @@ import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.tradein.R;
 
 import viewmodel.AccessRequestViewModel;
@@ -70,11 +71,26 @@ public class AccessRequestFragment extends DialogFragment {
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.button_accept) {
+                TrackApp trackApp = TrackApp.getInstance();
+                if(trackApp!=null) {
+                    trackApp.getGTM().sendGeneralEvent("clickATC",
+                            "add to cart",
+                            "click - asking permission - setuju",
+                            "");
+                }
                 accessRequestListener.clickAccept();
                 dismiss();
             }
-            else
+            else {
+                TrackApp trackApp = TrackApp.getInstance();
+                if(trackApp!=null) {
+                    trackApp.getGTM().sendGeneralEvent("clickATC",
+                            "add to cart",
+                            "click - asking permission - batal",
+                            "");
+                }
                 dismiss();
+            }
         }
     }
 

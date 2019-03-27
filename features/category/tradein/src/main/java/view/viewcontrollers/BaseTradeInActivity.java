@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterNormal;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.tradein.R;
 
 import tradein_common.TradeInUtils;
@@ -149,6 +150,12 @@ public abstract class BaseTradeInActivity<T extends ViewModel> extends BaseSimpl
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.item_show_tnc) {
+            if (TrackApp.getInstance() != null && TrackApp.getInstance().getGTM() != null) {
+                TrackApp.getInstance().getGTM().sendGeneralEvent("clickTradeIn",
+                        "trade in start page",
+                        "click icon syarat dan ketentuan",
+                        "");
+            }
             showTnC(R.string.tradein_tnc);
             return true;
         } else {
@@ -192,5 +199,14 @@ public abstract class BaseTradeInActivity<T extends ViewModel> extends BaseSimpl
 
     protected String getDeviceId() {
         return TradeInUtils.getDeviceId(this);
+    }
+
+    protected void sendGeneralEvent(String event, String category, String action, String label) {
+        if (TrackApp.getInstance() != null && TrackApp.getInstance().getGTM() != null) {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(event,
+                    category,
+                    action,
+                    label);
+        }
     }
 }

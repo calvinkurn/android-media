@@ -22,6 +22,7 @@ import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.tradein.R;
 
 import org.json.JSONObject;
@@ -152,6 +153,13 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
                 Constants.APPID, Constants.APIKEY, Constants.LAKU6_BASEURL);
         inData = activityWeakReference.get().getIntent().getParcelableExtra(TradeInParams.class.getSimpleName());
         requestPermission();
+        if (TrackApp.getInstance() != null && TrackApp.getInstance().getGTM() != null) {
+            TrackApp.getInstance().getGTM().sendGeneralEvent("viewTradeIn",
+                    "trade in start page",
+                    "view preview trade in",
+                    "");
+        }
+
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)

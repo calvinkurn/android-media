@@ -5,7 +5,6 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.SpannableString;
@@ -153,7 +152,7 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
             stringBuilder.append("•").append(review).append("\n");
         }
         mTvDeviceReview.setText(stringBuilder.toString());
-        mTvPriceExchange.setText(String.format("- %1$s",CurrencyFormatUtil.convertPriceValueToIdrFormat(deviceDataResponse.getOldPrice(), true)));
+        mTvPriceExchange.setText(String.format("- %1$s", CurrencyFormatUtil.convertPriceValueToIdrFormat(deviceDataResponse.getOldPrice(), true)));
         mTvFinalAmount.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(deviceDataResponse.getRemainingPrice(), true));
 
         if (tradeInData != null) {
@@ -207,8 +206,8 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                showTnC(R.string.tradein_tnc);
-                setVisibilityGroup(View.INVISIBLE);
+                showtnc();
+
             }
         };
         int greenColor = getResources().getColor(R.color.green_nob);
@@ -220,7 +219,15 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         mTvTnc.setMovementMethod(LinkMovementMethod.getInstance());
         mTvButtonPayOrKtp.setBackgroundResource(R.drawable.bg_tradein_button_orange);
         mTvButtonPayOrKtp.setText(R.string.buy_now);
-        mTvButtonPayOrKtp.setOnClickListener(v -> goToCheckout());
+        mTvButtonPayOrKtp.setOnClickListener(v -> {
+            goToCheckout();
+            sendGeneralEvent("clickTradeIn",
+                    "harga final trade in",
+                    "click beli sekarang",
+                    "");
+
+
+        });
     }
 
     private void setButtonKyc() {
@@ -229,8 +236,8 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                showTnC(R.string.tradein_tnc);
-                setVisibilityGroup(View.INVISIBLE);
+                showtnc();
+
             }
         };
         int greenColor = getResources().getColor(R.color.green_nob);
@@ -242,7 +249,14 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         mTvTnc.setMovementMethod(LinkMovementMethod.getInstance());
         mTvButtonPayOrKtp.setBackgroundResource(R.drawable.bg_tradein_button_green);
         mTvButtonPayOrKtp.setText(R.string.do_ktp);
-        mTvButtonPayOrKtp.setOnClickListener(v -> goToKycActivity());
+        mTvButtonPayOrKtp.setOnClickListener(v -> {
+            goToKycActivity();
+            sendGeneralEvent("clickTradeIn",
+                    "harga final trade in",
+                    "click lanjut foto ktp",
+                    "");
+
+        });
     }
 
     @Override
@@ -250,6 +264,9 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         if (isTncShowing) {
             setVisibilityGroup(View.VISIBLE);
         }
+        sendGeneralEvent("clickTradeIn",
+                "harga final trade in",
+                "click back", "");
         super.onBackPressed();
     }
 
@@ -261,5 +278,14 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showtnc() {
+        showTnC(R.string.tradein_tnc);
+        setVisibilityGroup(View.INVISIBLE);
+        sendGeneralEvent("clickTradeIn",
+                "harga final trade in",
+                "click syarat dan ketentuan",
+                "");
     }
 }

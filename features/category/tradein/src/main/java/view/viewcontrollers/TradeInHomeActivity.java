@@ -76,7 +76,14 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                     try {
                         hideProgressBar();
                         mTvGoToProductDetails.setText(getString(R.string.text_check_functionality));
-                        mTvGoToProductDetails.setOnClickListener(v -> tradeInHomeViewModel.startGUITest());
+                        mTvGoToProductDetails.setOnClickListener(v -> {
+                            tradeInHomeViewModel.startGUITest();
+                            sendGeneralEvent("clickTradeIn",
+                                    "trade in start page",
+                                    "click mulai cek fungsi",
+                                    "");
+
+                        });
                         int maxPrice = jsonObject.getInt("max_price");
                         int minPrice = jsonObject.getInt("min_price");
                         if (!errorPriceNotElligible(minPrice)) {
@@ -105,6 +112,11 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                 mTvGoToProductDetails.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        sendGeneralEvent("clickTradeIn",
+                                "trade in start page",
+                                "click kembali ke detail produki",
+                                "");
+
                         finish();
                     }
                 });
@@ -184,6 +196,16 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
         super.onStop();
         if (isFinishing())
             isAlreadySet = false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        sendGeneralEvent("clickTradeIn",
+                "trade in start page",
+                "click back",
+                "");
+
     }
 
     private boolean errorPriceNotElligible(int oldMinPrice) {
