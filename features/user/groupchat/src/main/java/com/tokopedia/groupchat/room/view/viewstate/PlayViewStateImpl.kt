@@ -111,7 +111,8 @@ open class PlayViewStateImpl(
     private val webviewIcon = view.findViewById<ImageView>(R.id.webview_icon)
     private var errorView: View = view.findViewById(R.id.card_retry)
     private var loadingView: View = view.findViewById(R.id.loading_view)
-    private var videoToggle: View = view.findViewById(R.id.layout_video_toggle)
+    private var hideVideoToggle: View = view.findViewById(R.id.hide_video_toggle)
+    private var showVideoToggle: View = view.findViewById(R.id.show_video_toggle)
 
     private lateinit var overlayDialog: CloseableBottomSheetDialog
     private lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
@@ -228,20 +229,17 @@ open class PlayViewStateImpl(
                 sendMessage(pendingChatViewModel)
             }
         }
-        videoToggle.setOnClickListener {
-            var toggleTitle = videoToggle.findViewById<TextView>(R.id.video_toggle_title)
-            if(videoContainer.visibility == View.GONE) {
-                toggleTitle.text = getStringResource(R.string.hide_video)
-                videoToggle.background = MethodChecker.getDrawable(view.context, R.drawable.label_hide_video)
-                videoToggle.layoutParams
-                youTubePlayer?.play()
-                videoContainer.visibility = View.VISIBLE
-            } else {
-                toggleTitle.text = getStringResource(R.string.show_video)
-                videoToggle.background = MethodChecker.getDrawable(view.context, R.drawable.label_show_video)
-                youTubePlayer?.pause()
-                videoContainer.visibility = View.GONE
-            }
+        hideVideoToggle.setOnClickListener {
+            it.hide()
+            showVideoToggle.show()
+            youTubePlayer?.pause()
+            videoContainer.visibility = View.GONE
+        }
+        showVideoToggle.setOnClickListener {
+            it.hide()
+            hideVideoToggle.show()
+            youTubePlayer?.play()
+            videoContainer.visibility = View.VISIBLE
         }
     }
 
@@ -286,7 +284,7 @@ open class PlayViewStateImpl(
     private fun showStickComponent(item: StickyComponentViewModel?) {
         stickyComponent.hide()
         item?.run {
-            if(title.isNullOrEmpty() || !userSession.isLoggedIn) return
+            if (title.isNullOrEmpty() || !userSession.isLoggedIn) return
             StickyComponentHelper.setView(stickyComponent, item)
             stickyComponent.setOnClickListener {
                 viewModel?.let {
@@ -409,7 +407,7 @@ open class PlayViewStateImpl(
         lateinit var url: String
         it.let {
             var index = defaultType.indexOf(it.default)
-            background = defaultBackground[Math.max(0, index-1)]
+            background = defaultBackground[Math.max(0, index - 1)]
             url = it.url
 
             if (url.isBlank()) {
@@ -800,7 +798,8 @@ open class PlayViewStateImpl(
     fun initVideoFragment(fragmentManager: FragmentManager, videoId: String, isVideoLive: Boolean) {
         videoContainer.hide()
         liveIndicator.hide()
-        videoToggle.hide()
+        hideVideoToggle.hide()
+        showVideoToggle.hide()
         setChatListHasSpaceOnTop(true)
         videoId.let {
             if (it.isEmpty()) return
@@ -840,7 +839,9 @@ open class PlayViewStateImpl(
                                                 }
 
                                                 override fun onPaused() {
-                                                    videoToggle.show()
+                                                    if(!showVideoToggle.isShown) {
+                                                        hideVideoToggle.show()
+                                                    }
                                                     onPauseTime = System.currentTimeMillis() / 1000L
                                                 }
 
@@ -954,7 +955,7 @@ open class PlayViewStateImpl(
             viewModel?.let {
                 analytics.eventClickProminentButton(it, floatingButton)
 
-                if(!userSession.isLoggedIn) {
+                if (!userSession.isLoggedIn) {
                     listener.onLoginClicked(it.channelId)
                 } else {
                     val applink = RouteManager.routeWithAttribution(view.context, floatingButton.contentLinkUrl, GroupChatAnalytics.generateTrackerAttribution(
@@ -980,7 +981,7 @@ open class PlayViewStateImpl(
             webviewDialog.setUrl(url)
         }
 
-        if(!webviewDialog.isAdded)
+        if (!webviewDialog.isAdded)
             webviewDialog.show(activity.supportFragmentManager, "Webview Bottom Sheet")
 
     }
@@ -1183,7 +1184,7 @@ open class PlayViewStateImpl(
     private fun createPinnedMessageView(channelInfoViewModel: ChannelInfoViewModel): View {
         val view = activity.layoutInflater.inflate(R.layout
                 .layout_pinned_message_expanded, null)
-        (view.findViewById(R.id.nickname) as TextView).text = getStringResource(R.string.from) + " "+ channelInfoViewModel.adminName
+        (view.findViewById(R.id.nickname) as TextView).text = getStringResource(R.string.from) + " " + channelInfoViewModel.adminName
         channelInfoViewModel.pinnedMessageViewModel?.let {
             (view.findViewById(R.id.message) as TextView).text = it.message
             ImageHandler.loadImage(activity, view.findViewById(R.id.thumbnail), it.thumbnail, R
@@ -1225,7 +1226,7 @@ open class PlayViewStateImpl(
             hasSpace -> view.context.resources.getDimensionPixelSize(R.dimen.dp_24)
             else -> view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
         }
-        chatRecyclerView.setMargin(0, padding, 0,0)
+        chatRecyclerView.setMargin(0, padding, 0, 0)
         chatRecyclerView.setFadingEdgeLength(space)
         chatRecyclerView.invalidate()
     }

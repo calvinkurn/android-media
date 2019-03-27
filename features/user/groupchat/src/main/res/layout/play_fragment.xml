@@ -182,48 +182,88 @@
 
         <LinearLayout
             android:id="@+id/layout_video_toggle"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:background="@drawable/label_hide_video"
             android:elevation="@dimen/cardview_default_elevation"
             android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/space_med"
-            android:paddingTop="@dimen/space_small"
-            android:paddingRight="@dimen/space_med"
-            android:paddingBottom="@dimen/space_small"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
+            android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@id/video_horizontal"
-            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:targetApi="lollipop"
             android:layout_marginTop="@dimen/dp_16"
             tools:visibility="visible">
 
-            <ImageView
-                android:layout_width="@dimen/arrow_size"
-                android:layout_height="@dimen/arrow_size"
-                android:layout_gravity="center_vertical"
-                app:srcCompat="@drawable/ic_video"/>
-
-            <Space
-                android:layout_width="@dimen/dp_4"
-                android:layout_height="@dimen/dp_14"/>
-
-            <TextView
-                android:id="@+id/video_toggle_title"
+            <LinearLayout
+                android:id="@+id/hide_video_toggle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
-                android:text="@string/hide_video"
-                android:includeFontPadding="false"
-                android:textColor="@color/play_toggle_video_text"
-                android:textSize="@dimen/sp_12"
-                android:textStyle="normal"/>
+                android:background="@drawable/label_hide_video"
+                android:paddingLeft="@dimen/space_med"
+                android:paddingTop="@dimen/space_small"
+                android:paddingRight="@dimen/space_med"
+                android:paddingBottom="@dimen/space_small"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:visibility="gone">
+                <ImageView
+                    android:layout_width="@dimen/arrow_size"
+                    android:layout_height="@dimen/arrow_size"
+                    android:layout_gravity="center_vertical"
+                    app:srcCompat="@drawable/ic_video"/>
+
+                <Space
+                    android:layout_width="@dimen/dp_4"
+                    android:layout_height="@dimen/dp_14"/>
+
+                <TextView
+                    android:id="@+id/video_toggle_title_hide"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/hide_video"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/play_toggle_video_text"
+                    android:textSize="@dimen/sp_12"
+                    android:textStyle="normal"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/show_video_toggle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_show_video"
+                android:paddingLeft="@dimen/space_med"
+                android:paddingTop="@dimen/space_small"
+                android:paddingRight="@dimen/space_med"
+                android:paddingBottom="@dimen/space_small"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:gravity="center"
+                android:visibility="gone">
+                <ImageView
+                    android:layout_width="@dimen/arrow_size"
+                    android:layout_height="@dimen/arrow_size"
+                    android:layout_gravity="center_vertical"
+                    app:srcCompat="@drawable/ic_video"/>
+
+                <Space
+                    android:layout_width="@dimen/dp_4"
+                    android:layout_height="@dimen/dp_14"/>
+
+                <TextView
+                    android:id="@+id/video_toggle_title_show"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/show_video"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/play_toggle_video_text"
+                    android:textSize="@dimen/sp_12"
+                    android:textStyle="normal"/>
+            </LinearLayout>
 
         </LinearLayout>
 
