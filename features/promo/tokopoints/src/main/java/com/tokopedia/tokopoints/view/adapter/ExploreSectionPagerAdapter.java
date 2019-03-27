@@ -268,7 +268,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
 
             if (!TextUtils.isEmpty(data.getTitle())) {
-                view.findViewById(R.id.text_sub_title_bottom).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.text_title_bottom).setVisibility(View.VISIBLE);
                 ((TextView) view.findViewById(R.id.text_title_bottom)).setText(data.getTitle());
             }
 
@@ -320,7 +320,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
 
             if (!TextUtils.isEmpty(data.getTitle())) {
-                view.findViewById(R.id.text_sub_title_bottom).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.text_title_bottom).setVisibility(View.VISIBLE);
                 ((TextView) view.findViewById(R.id.text_title_bottom)).setText(data.getTitle());
             }
 
@@ -372,7 +372,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
 
             if (!TextUtils.isEmpty(data.getTitle())) {
-                view.findViewById(R.id.text_sub_title_bottom).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.text_title_bottom).setVisibility(View.VISIBLE);
                 ((TextView) view.findViewById(R.id.text_title_bottom)).setText(data.getTitle());
             }
 
