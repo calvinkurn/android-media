@@ -52,7 +52,7 @@ public class GetDynamicFeedFirstPageUseCase extends UseCase<DynamicFeedFirstPage
     private Observable<WhitelistDomain> getCreatePostWhitelist() {
         getWhitelistUseCase.clearRequest();
         getWhitelistUseCase.addRequest(getWhitelistUseCase.getRequest(
-                GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_CONTENT_USER))
+                GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_ENTRY_POINT))
         );
         return getWhitelistUseCase.createObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())

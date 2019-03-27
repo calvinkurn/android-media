@@ -18,6 +18,7 @@ import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
  */
 public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> {
 
+    private static final String FORMAT_NAME = "{{name}}";
     private FeedPlus.View mainView;
 
     private ImageView ivAvatar;
@@ -42,16 +43,19 @@ public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> 
     }
 
     private void initView(WhitelistViewModel model) {
-        tvCaption.setText(MethodChecker.fromHtml(String.format("<b>%s,</b> %s",
-                mainView.getUserSession().hasShop()? mainView.getUserSession().getShopName() :
-                        mainView.getUserSession().getName(),
-                model.getWhitelist().getDesc())));
+        tvCaption.setText(MethodChecker.fromHtml(formatWhiteListTitle(model.getWhitelist().getTitle())));
 
         ImageHandler.loadImageCircle2(
                 ivAvatar.getContext(),
                 ivAvatar,
                 model.getWhitelist().getImage()
         );
+    }
+
+    private String formatWhiteListTitle(String title) {
+        return title
+                .replace(FORMAT_NAME, mainView.getUserSession().hasShop()?
+                        mainView.getUserSession().getShopName() : mainView.getUserSession().getName());
     }
 
     private void initViewListener() {

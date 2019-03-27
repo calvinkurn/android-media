@@ -23,6 +23,7 @@ import com.tokopedia.tradein.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import model.TradeInParams;
 import viewmodel.TradeInHomeViewModel;
 
 public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewModel> {
@@ -34,6 +35,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     private TextView mTvInitialPrice;
     private TextView mTvGoToProductDetails;
     private TextView mTvNotUpto;
+    private TextView tvIndicateive;
     private TradeInHomeViewModel tradeInHomeViewModel;
     private boolean isAlreadySet = false;
     public static final int TRADEIN_HOME_REQUEST = 22345;
@@ -52,6 +54,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
         mTvInitialPrice = findViewById(R.id.tv_initial_price);
         mTvNotUpto = findViewById(R.id.tv_not_upto);
         mTvGoToProductDetails = findViewById(R.id.tv_go_to_product_details);
+        tvIndicateive = findViewById(R.id.tv_indicative);
         mTvModelName.setText(new StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString());
     }
 
@@ -86,11 +89,18 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                         });
                         int maxPrice = jsonObject.getInt("max_price");
                         int minPrice = jsonObject.getInt("min_price");
+                        TradeInParams tradeInParams = tradeInHomeViewModel.getTradeInParams();
+                        int diagnosedPrice = tradeInParams.getUsedPrice();
+                        if (tradeInParams != null && diagnosedPrice > 0)
+                            minPrice = diagnosedPrice;
                         if (!errorPriceNotElligible(minPrice)) {
                             mTvNotUpto.setVisibility(View.VISIBLE);
-                            mTvInitialPrice.setText(String.format("%1$s - %2$s",
-                                    CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true),
-                                    CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true)));
+                            if (diagnosedPrice <= 0)
+                                mTvInitialPrice.setText(String.format("%1$s - %2$s",
+                                        CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true),
+                                        CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true)));
+                            else
+                                mTvInitialPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnosedPrice, true));
                         } else {
                             mTvNotUpto.setVisibility(View.GONE);
                             mTvInitialPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true));
@@ -108,6 +118,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                 mTvInitialPrice.setText(jsonObject.getString("message"));
                 mTvPriceElligible.setText(getString(R.string.not_elligible));
                 mTvPriceElligible.setVisibility(View.VISIBLE);
+                tvIndicateive.setVisibility(View.GONE);
                 mTvGoToProductDetails.setText(R.string.go_to_product_details);
                 mTvGoToProductDetails.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -192,13 +203,6 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        if (isFinishing())
-            isAlreadySet = false;
-    }
-
-    @Override
     public void onBackPressed() {
         super.onBackPressed();
         sendGeneralEvent("clickTradeIn",
@@ -218,6 +222,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                     showTnC(R.string.tradein_tnc);
                 }
             };
+            tvIndicateive.setVisibility(View.GONE);
             mTvGoToProductDetails.setText(R.string.go_to_product_details);
             mTvGoToProductDetails.setOnClickListener(v -> finish());
             int greenColor = getResources().getColor(R.color.green_nob);

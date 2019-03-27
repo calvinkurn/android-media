@@ -39,5 +39,6 @@
     <dimen name="tp_tnc_height">800dp</dimen>
 
     <dimen name="tp_home_top_bg_height">192dp</dimen>
+    <dimen name="tp_toolbar_icon_wh">38dp</dimen>
 
 </resources>

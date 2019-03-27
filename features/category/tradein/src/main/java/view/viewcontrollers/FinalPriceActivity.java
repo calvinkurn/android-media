@@ -163,7 +163,11 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
                 if (kycDetails.getDetail().getIsSuccess() != 1) {
                     setButtonKyc();
                 } else {
-                    setbuttonCheckout();
+                    if (kycDetails.getDetail().getStatus() == 1 || kycDetails.getDetail().getStatus() == 0)
+                        setbuttonCheckout();
+                    else
+                        setButtonKyc();
+
                 }
             }
         }
