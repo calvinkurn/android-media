@@ -127,9 +127,9 @@ import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
 import model.TradeInParams
+import view.customview.TradeInTextView
 import viewmodel.TradeInBroadcastReceiver
 import javax.inject.Inject
-import view.customview.TradeInTextView
 
 class ProductDetailFragment : BaseDaggerFragment() {
     private var productId: String? = null
@@ -975,6 +975,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                         ApplinkConst.AFFILIATE_CREATE_POST,
                         pdpAffiliate.productId.toString(),
                         pdpAffiliate.adId.toString())
+                it.finish()
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                         REQUEST_CODE_LOGIN)
