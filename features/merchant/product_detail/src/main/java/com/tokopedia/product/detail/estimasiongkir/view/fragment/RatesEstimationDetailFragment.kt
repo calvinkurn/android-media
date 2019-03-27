@@ -133,7 +133,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(){
         val ratesEstimation = ratesEstimationModel.rates
         val shop = ratesEstimationModel.shop
 
-        shipping_destination.text = shop.districtName
+        shipping_destination.text = shop.cityName
         val title = userSession.name
         val spannableString = SpannableString(title)
         spannableString.setSpan(StyleSpan(Typeface.BOLD), 0, userSession.name.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
