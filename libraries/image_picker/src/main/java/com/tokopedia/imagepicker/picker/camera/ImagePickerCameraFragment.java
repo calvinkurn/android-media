@@ -125,7 +125,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
             @Override
             public void onCameraOpened(@NonNull CameraOptions options) {
                 super.onCameraOpened(options);
-                initialFlash();
+                //initialFlash();
                 setPreviewCameraLayout();
                 isCameraOpen = true;
             }
@@ -143,7 +143,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
                 }
                 if (supportedFlashList.size() > 0) {
                     flashImageButton.setVisibility(View.VISIBLE);
-                    //setCameraFlash();
+                    setCameraFlash();
                 } else {
                     flashImageButton.setVisibility(View.GONE);
                 }
