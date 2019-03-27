@@ -5,7 +5,6 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.SpannableString;
@@ -153,7 +152,7 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
             stringBuilder.append("•").append(review).append("\n");
         }
         mTvDeviceReview.setText(stringBuilder.toString());
-        mTvPriceExchange.setText(String.format("- %1$s",CurrencyFormatUtil.convertPriceValueToIdrFormat(deviceDataResponse.getOldPrice(), true)));
+        mTvPriceExchange.setText(String.format("- %1$s", CurrencyFormatUtil.convertPriceValueToIdrFormat(deviceDataResponse.getOldPrice(), true)));
         mTvFinalAmount.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(deviceDataResponse.getRemainingPrice(), true));
 
         if (tradeInData != null) {
@@ -164,7 +163,10 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
                 if (kycDetails.getDetail().getIsSuccess() != 1) {
                     setButtonKyc();
                 } else {
-                    setbuttonCheckout();
+                    if (kycDetails.getDetail().getStatus() != 1)
+                        setButtonKyc();
+                    else
+                        setbuttonCheckout();
                 }
             }
         }
