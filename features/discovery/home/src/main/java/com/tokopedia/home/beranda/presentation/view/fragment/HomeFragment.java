@@ -270,7 +270,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             statusBarBackground.setVisibility(View.INVISIBLE);
         } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            statusBarBackground.setVisibility(View.INVISIBLE);
+            statusBarBackground.setVisibility(View.VISIBLE);
         } else {
             statusBarBackground.setVisibility(View.GONE);
         }
