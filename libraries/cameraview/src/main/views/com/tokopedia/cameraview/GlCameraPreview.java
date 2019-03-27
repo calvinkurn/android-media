@@ -193,7 +193,10 @@ class GlCameraPreview extends CameraPreview<GLSurfaceView, SurfaceTexture> imple
             return;
         }
 
-        mInputSurfaceTexture.getTransformMatrix(mTransformMatrix);
+        if (mInputSurfaceTexture != null) {
+            mInputSurfaceTexture.getTransformMatrix(mTransformMatrix);
+        }
+
         if (isCropping()) {
             // Scaling is easy. However:
             // If the view is 10x1000 (very tall), it will show only the left strip of the preview (not the center one).
