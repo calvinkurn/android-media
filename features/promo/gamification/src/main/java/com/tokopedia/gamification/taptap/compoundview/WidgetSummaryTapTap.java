@@ -2,14 +2,8 @@ package com.tokopedia.gamification.taptap.compoundview;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -25,12 +19,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
-import com.tokopedia.gamification.taptap.activity.TapTapTokenActivity;
 import com.tokopedia.gamification.taptap.data.entiity.RewardButton;
 import com.tokopedia.gamification.taptap.utils.TapTapAnalyticsTrackerUtil;
 import com.tokopedia.gamification.taptap.utils.TapTapConstants;
@@ -39,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WidgetSummaryTapTap extends FrameLayout {
-    private static final String TOKOPOINTS_APPLINK = "tokopedia://tokopoints";
     private ImageView imageSinar;
     private Button btnBottomLeft;
     private Button btnBottomRight;
@@ -58,7 +48,7 @@ public class WidgetSummaryTapTap extends FrameLayout {
 
         void dismissDialog();
 
-        void navigateToActivity(String applink);
+        void navigateToActivity(String applink, String url);
     }
 
     public WidgetSummaryTapTap(@NonNull Context context) {
@@ -86,7 +76,7 @@ public class WidgetSummaryTapTap extends FrameLayout {
         errorView = view.findViewById(R.id.error_view);
         tvErrorMessage = view.findViewById(R.id.tv_msg);
         tvBtnErrorOk = view.findViewById(R.id.snack_ok);
-        ivImageStar=view.findViewById(R.id.image_star);
+        ivImageStar = view.findViewById(R.id.image_star);
         rewardsAdapter = new RewardsAdapter(null);
         ImageHandler.loadImageWithId(ivImageStar, R.drawable.ic_star_summary);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), R.drawable.item_divider_summary_page);
@@ -175,13 +165,8 @@ public class WidgetSummaryTapTap extends FrameLayout {
             interactionListener.playWithPoints();
         } else {
             interactionListener.dismissDialog();
-            if (!TextUtils.isEmpty(rewardButton.getApplink()) && rewardButton.getApplink().contains(TOKOPOINTS_APPLINK))  {
-                interactionListener.navigateToActivity(rewardButton.getApplink());
-            } else {
-                ApplinkUtil.navigateToAssociatedPage(getContext(), rewardButton.getApplink(),
-                        rewardButton.getUrl(),
-                        TapTapTokenActivity.class);
-            }
+            interactionListener.navigateToActivity(rewardButton.getApplink(), rewardButton.getUrl());
+
 
         }
         TapTapAnalyticsTrackerUtil.sendEvent(getContext(),
@@ -264,18 +249,5 @@ public class WidgetSummaryTapTap extends FrameLayout {
 
     public int getScreenHeight() {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
-    }
-
-    private Bitmap getBitmapFromVectorDrawable(Context context, int drawableId) {
-        Drawable drawable = ContextCompat.getDrawable(context, drawableId);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            drawable = DrawableCompat.wrap(drawable).mutate();
-        }
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
     }
 }
