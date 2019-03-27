@@ -32,6 +32,8 @@ import javax.inject.Inject
  */
 class UsernameInputFragment : BottomSheetDialogFragment(), UsernameInputContract.View {
 
+    var isSuccessRegister = false
+
     private val adapter: SuggestionAdapter by lazy {
         SuggestionAdapter(this)
     }
@@ -124,7 +126,8 @@ class UsernameInputFragment : BottomSheetDialogFragment(), UsernameInputContract
     }
 
     override fun onSuccessRegisterUsername() {
-        activity?.finish()
+        isSuccessRegister = true
+        dismiss()
     }
 
     override fun onErrorRegisterUsername(message: String) {

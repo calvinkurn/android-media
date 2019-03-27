@@ -353,6 +353,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     childFragmentManager,
                     UsernameInputFragment::class.java.simpleName
             )
+            usernameInputFragment.dialog.setOnDismissListener {
+                if (usernameInputFragment.isSuccessRegister) {
+                    doShare(link)
+                }
+            }
         } else {
             doShare(link)
             profilePreference.setShouldChangeUsername(shouldChange)
