@@ -117,6 +117,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     private static final String EXTRA_PRODUCT_ITEM = "EXTRA_PRODUCT_ITEM";
 
+    public static final int SHOP_INDEX_PROMO_GLOBAL = -1;
+    public static final int SHOP_INDEX_DELETE_PROMO = -2;
+
     private static final int HAS_ELEVATION = 8;
     private static final int NO_ELEVATION = 0;
     private static final String CART_TRACE = "mp_cart";
@@ -361,17 +364,35 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         return toolbar;
     }
 
+    private ArrayList<String> getAppliedPromoCodeList(List<CartItemData> toBeDeletedCartItemDataList) {
+        ArrayList<String> appliedPromoList = new ArrayList<>();
+        List<CartShopHolderData> cartShopHolderDataList = cartAdapter.getAllShopGroupDataList();
+        for (CartShopHolderData cartShopHolderData : cartShopHolderDataList) {
+            if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null &&
+                    !TextUtils.isEmpty(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode()) &&
+                    !appliedPromoList.contains(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode())) {
+                for (CartItemData cartItemData : toBeDeletedCartItemDataList) {
+                    if (cartShopHolderData.getShopGroupData().getCartString().equals(cartItemData.getOriginData().getCartString())) {
+                        appliedPromoList.add(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode());
+                        break;
+                    }
+                }
+            }
+        }
+
+        return appliedPromoList;
+    }
+
     @Override
     public void onToolbarRemoveAllCart() {
         sendAnalyticsOnClickRemoveButtonHeader();
         List<CartItemData> toBeDeletedCartItemDataList = cartAdapter.getSelectedCartItemData();
         List<CartItemData> allCartItemDataList = cartAdapter.getAllCartItemData();
-        final boolean deleteAllCartData = toBeDeletedCartItemDataList.size() == allCartItemDataList.size();
         if (toBeDeletedCartItemDataList.size() > 0) {
             final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(toBeDeletedCartItemDataList.size());
             dialog.setOnOkClickListener(v -> {
                 if (toBeDeletedCartItemDataList.size() > 0) {
-                    dPresenter.processDeleteAndRefreshCart(allCartItemDataList, toBeDeletedCartItemDataList, true, deleteAllCartData);
+                    dPresenter.processDeleteAndRefreshCart(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), true);
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedWithAddToWishList(
                             dPresenter.generateCartDataAnalytics(
                                     toBeDeletedCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -382,13 +403,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             });
             dialog.setOnCancelClickListener(v -> {
                 if (toBeDeletedCartItemDataList.size() > 0) {
-                    dPresenter.processDeleteAndRefreshCart(allCartItemDataList, toBeDeletedCartItemDataList, false, deleteAllCartData);
+                    dPresenter.processDeleteAndRefreshCart(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), false);
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
                             dPresenter.generateCartDataAnalytics(
                                     toBeDeletedCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
                             )
                     );
-
                 }
                 dialog.dismiss();
             });
@@ -467,14 +487,18 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition) {
         sendAnalyticsOnClickRemoveIconCartItem();
-        ArrayList<CartItemData> cartItemDatas =
-                new ArrayList<>(Collections.singletonList(cartItemHolderData.getCartItemData()));
+        ArrayList<String> appliedPromoCodes = new ArrayList<>();
+        CartShopHolderData cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(parentPosition);
+        if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null &&
+                !TextUtils.isEmpty(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode())) {
+            appliedPromoCodes.add(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode());
+        }
+        ArrayList<CartItemData> cartItemDatas = new ArrayList<>(Collections.singletonList(cartItemHolderData.getCartItemData()));
         List<CartItemData> allCartItemDataList = cartAdapter.getAllCartItemData();
-        final boolean deleteAllCartData = cartItemDatas.size() == allCartItemDataList.size();
         final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(1);
         dialog.setOnOkClickListener(view -> {
             if (cartItemDatas.size() > 0) {
-                dPresenter.processDeleteAndRefreshCart(allCartItemDataList, cartItemDatas, true, deleteAllCartData);
+                dPresenter.processDeleteAndRefreshCart(allCartItemDataList, cartItemDatas, appliedPromoCodes, true);
                 sendAnalyticsOnClickConfirmationRemoveCartSelectedWithAddToWishList(
                         dPresenter.generateCartDataAnalytics(
                                 cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -485,7 +509,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         });
         dialog.setOnCancelClickListener(view -> {
             if (cartItemDatas.size() > 0) {
-                dPresenter.processDeleteAndRefreshCart(allCartItemDataList, cartItemDatas, false, deleteAllCartData);
+                dPresenter.processDeleteAndRefreshCart(allCartItemDataList, cartItemDatas, appliedPromoCodes, false);
                 sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
                         dPresenter.generateCartDataAnalytics(
                                 cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -674,12 +698,16 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onCartPromoCancelVoucherPromoGlobalClicked(PromoStackingData cartPromoGlobal, int position) {
-        dPresenter.processCancelAutoApplyPromoStack(-1, cartPromoGlobal.getPromoCode(), false);
+        ArrayList<String> promoCodes = new ArrayList<>();
+        promoCodes.add(cartPromoGlobal.getPromoCode());
+        dPresenter.processCancelAutoApplyPromoStack(SHOP_INDEX_PROMO_GLOBAL, promoCodes, false);
     }
 
     @Override
     public void onCancelVoucherMerchantClicked(String promoMerchantCode, int shopIndex, boolean ignoreAPIResponse) {
-        dPresenter.processCancelAutoApplyPromoStack(shopIndex, promoMerchantCode, ignoreAPIResponse);
+        ArrayList<String> promoMerchantCodes = new ArrayList<>();
+        promoMerchantCodes.add(promoMerchantCode);
+        dPresenter.processCancelAutoApplyPromoStack(shopIndex, promoMerchantCodes, ignoreAPIResponse);
     }
 
     /*@Override
@@ -707,21 +735,35 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         List<CartShopHolderData> cartShopHolderDataList = getAllShopDataList();
         List<CartItemData> toBeDeletedCartItem = new ArrayList<>();
         List<CartItemData> allCartItemDataList = cartAdapter.getAllCartItemData();
+        ArrayList<String> appliedPromoCodes = new ArrayList<>();
 
         for (CartShopHolderData cartShopHolderData : cartShopHolderDataList) {
             if (cartShopHolderData.getShopGroupData().isError()) {
                 for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
                     toBeDeletedCartItem.add(cartItemHolderData.getCartItemData());
+                    if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null &&
+                            !TextUtils.isEmpty(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode())) {
+                        String promoCode = cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode();
+                        if (!appliedPromoCodes.contains(promoCode)) {
+                            appliedPromoCodes.add(promoCode);
+                        }
+                    }
                 }
             } else {
                 for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
                     if (cartItemHolderData.getCartItemData().isError()) {
                         toBeDeletedCartItem.add(cartItemHolderData.getCartItemData());
+                        if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null &&
+                                !TextUtils.isEmpty(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode())) {
+                            String promoCode = cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode();
+                            if (!appliedPromoCodes.contains(promoCode)) {
+                                appliedPromoCodes.add(promoCode);
+                            }
+                        }
                     }
                 }
             }
         }
-        final boolean deleteAllCartData = toBeDeletedCartItem.size() == allCartItemDataList.size();
 
         sendAnalyticsOnClickRemoveCartConstrainedProduct(dPresenter.generateCartDataAnalytics(
                 toBeDeletedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -729,7 +771,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(toBeDeletedCartItem.size());
         dialog.setOnOkClickListener(view -> {
             if (toBeDeletedCartItem.size() > 0) {
-                dPresenter.processDeleteAndRefreshCart(allCartItemDataList, toBeDeletedCartItem, true, deleteAllCartData);
+                dPresenter.processDeleteAndRefreshCart(allCartItemDataList, toBeDeletedCartItem, appliedPromoCodes, true);
                 sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductWithAddToWishList(
                         dPresenter.generateCartDataAnalytics(
                                 toBeDeletedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -740,7 +782,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         });
         dialog.setOnCancelClickListener(view -> {
             if (toBeDeletedCartItem.size() > 0) {
-                dPresenter.processDeleteAndRefreshCart(allCartItemDataList, toBeDeletedCartItem, false, deleteAllCartData);
+                dPresenter.processDeleteAndRefreshCart(allCartItemDataList, toBeDeletedCartItem, appliedPromoCodes, false);
                 sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductNoAddToWishList(
                         dPresenter.generateCartDataAnalytics(
                                 toBeDeletedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -1935,19 +1977,19 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onSuccessClearPromoStack(int shopIndex) {
-        if (shopIndex != -1) {
-            CartShopHolderData cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(shopIndex);
-            if (cartShopHolderData != null) {
-                cartShopHolderData.getShopGroupData().setVoucherOrdersItemData(null);
-                cartAdapter.notifyItemChanged(shopIndex);
-            }
-        } else {
+        if (shopIndex == SHOP_INDEX_PROMO_GLOBAL) {
             PromoStackingData promoStackingData = cartAdapter.getPromoStackingGlobaldata();
             promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
             promoStackingData.setAmount(0);
             promoStackingData.setPromoCode("");
             promoStackingData.setDescription("");
             cartAdapter.updateItemPromoStackVoucher(promoStackingData);
+        } else if (shopIndex != SHOP_INDEX_DELETE_PROMO) {
+            CartShopHolderData cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(shopIndex);
+            if (cartShopHolderData != null) {
+                cartShopHolderData.getShopGroupData().setVoucherOrdersItemData(null);
+                cartAdapter.notifyItemChanged(shopIndex);
+            }
         }
     }
 

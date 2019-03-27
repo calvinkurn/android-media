@@ -140,6 +140,7 @@ public class CartMapper implements ICartMapper {
                         data.getProduct().getProductNotes()
                 );
                 cartItemDataOrigin.setCartId(data.getCartId());
+                cartItemDataOrigin.setCartString(shopGroup.getCartString());
                 cartItemDataOrigin.setWeightFormatted(data.getProduct().getProductWeightFmt());
                 cartItemDataOrigin.setWeightUnit(data.getProduct().getProductWeightUnitCode());
                 cartItemDataOrigin.setWeightPlan(data.getProduct().getProductWeight());

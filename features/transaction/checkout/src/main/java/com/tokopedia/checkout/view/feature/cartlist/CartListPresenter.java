@@ -322,8 +322,10 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processDeleteAndRefreshCart(List<CartItemData> allCartItemData, List<CartItemData> removedCartItems,
-                                            boolean addWishList, boolean removeAllItem) {
+                                            ArrayList<String> appliedPromoOnDeletedProductList, boolean addWishList) {
         view.showProgressLoading();
+        boolean removeAllItem = allCartItemData.size() == removedCartItems.size();
+
         List<Integer> ids = new ArrayList<>();
         for (CartItemData cartItemData : removedCartItems) {
             ids.add(cartItemData.getOriginData().getCartId());
@@ -379,7 +381,7 @@ public class CartListPresenter implements ICartListPresenter {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
-                .subscribe(getSubscriberDeleteAndRefreshCart(removeAllItem)));
+                .subscribe(getSubscriberDeleteAndRefreshCart(removeAllItem, appliedPromoOnDeletedProductList)));
     }
 
     @Override
@@ -984,7 +986,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<DeleteAndRefreshCartListData> getSubscriberDeleteAndRefreshCart(boolean removeAllItem) {
+    private Subscriber<DeleteAndRefreshCartListData> getSubscriberDeleteAndRefreshCart(boolean removeAllItem, ArrayList<String> appliedPromoOnDeletedProductList) {
         return new Subscriber<DeleteAndRefreshCartListData>() {
             @Override
             public void onCompleted() {
@@ -1010,8 +1012,10 @@ public class CartListPresenter implements ICartListPresenter {
                     if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()
                             && deleteAndRefreshCartListData.getCartListData() != null) {
                         if (deleteAndRefreshCartListData.getCartListData().getShopGroupDataList().isEmpty()) {
+                            processCancelAutoApplyPromoStack(CartFragment.SHOP_INDEX_DELETE_PROMO, appliedPromoOnDeletedProductList, true);
                             processInitialGetCartData(cartListData == null);
                         } else {
+                            processCancelAutoApplyPromoStack(CartFragment.SHOP_INDEX_DELETE_PROMO, appliedPromoOnDeletedProductList, true);
                             CartListPresenter.this.cartListData = deleteAndRefreshCartListData.getCartListData();
                             view.renderInitialGetCartListDataSuccess(deleteAndRefreshCartListData.getCartListData());
                             view.onDeleteCartDataSuccess();
@@ -1022,6 +1026,7 @@ public class CartListPresenter implements ICartListPresenter {
                         );
                     }
                 } else {
+                    processCancelAutoApplyPromoStack(CartFragment.SHOP_INDEX_DELETE_PROMO, appliedPromoOnDeletedProductList, true);
                     processInitialGetCartData(cartListData == null);
                 }
             }
@@ -1266,14 +1271,12 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processCancelAutoApplyPromoStack(int shopIndex, String promoCode, boolean ignoreAPIResponse) {
-        if (!TextUtils.isEmpty(promoCode)) {
+    public void processCancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse) {
+        if (promoCodeList.size() > 0) {
             if (!ignoreAPIResponse) {
                 view.showProgressLoading();
             }
-            ArrayList<String> promoCodes = new ArrayList<>();
-            promoCodes.add(promoCode);
-            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodes);
+            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodeList);
             clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearCacheAutoApplySubscriber(view, this, shopIndex, ignoreAPIResponse));
         }
     }

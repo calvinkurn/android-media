@@ -26,7 +26,7 @@ public interface ICartListPresenter {
 
     void processDeleteCart(CartItemData cartItemData, boolean addWishList);
 
-    void processDeleteAndRefreshCart(List<CartItemData> allCartItemData, List<CartItemData> removedCartItems, boolean addWishList, boolean isLastItem);
+    void processDeleteAndRefreshCart(List<CartItemData> allCartItemData, List<CartItemData> removedCartItems, ArrayList<String> appliedPromocodeList, boolean addWishList);
 
     void processToUpdateCartData(List<CartItemData> cartItemDataList);
 
@@ -46,7 +46,7 @@ public interface ICartListPresenter {
 
     void processCancelAutoApply();
 
-    void processCancelAutoApplyPromoStack(int shopIndex, String promoCode, boolean ignoreAPIResponse);
+    void processCancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse);
 
     void processCancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList);
 
