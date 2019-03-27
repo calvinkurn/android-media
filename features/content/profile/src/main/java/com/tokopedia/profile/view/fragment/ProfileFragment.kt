@@ -69,6 +69,7 @@ import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
 import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
+import com.tokopedia.profile.view.preference.ProfilePreference
 import com.tokopedia.profile.view.viewmodel.DynamicFeedProfileViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileEmptyViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
@@ -121,6 +122,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     @Inject
     lateinit var profileAnalytics: ProfileAnalytics
+
+    @Inject
+    lateinit var profilePreference: ProfilePreference
 
     companion object {
         private const val PARAM_TAB_NAME = "{tab_name}"
@@ -351,6 +355,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             )
         } else {
             doShare(link)
+            profilePreference.setShouldChangeUsername(shouldChange)
         }
     }
 
@@ -1173,14 +1178,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 .build()
     }
 
-    private fun shareLinkClickListener(link: String, source: String): View.OnClickListener {
-        return View.OnClickListener {
-            shareLink(link)
-        }
-    }
-
     private fun shareLink(link: String) {
-        if (isOwner) {
+        if (isOwner && profilePreference.shouldChangeUsername()) {
             presenter.shouldChangeUsername(userSession.userId.toIntOrZero(), link)
         } else {
             doShare(link)
