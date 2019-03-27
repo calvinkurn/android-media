@@ -6,7 +6,6 @@ import android.app.ProgressDialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -309,8 +308,15 @@ class ProductDetailFragment : BaseDaggerFragment() {
         initView()
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
-        tradeInBroadcastReceiver.setBroadcastListener { tv_trade_in_promo.visible() }
-        LocalBroadcastManager.getInstance(context!!).registerReceiver(tradeInBroadcastReceiver, IntentFilter(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE))
+        tradeInBroadcastReceiver.setBroadcastListener {
+            if (tv_trade_in_promo != null) {
+                tv_trade_in_promo.visible()
+                tv_available_at?.visible()
+            }
+        }
+        context?.let {
+            LocalBroadcastManager.getInstance(context!!).registerReceiver(tradeInBroadcastReceiver, IntentFilter(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE))
+        }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
@@ -1188,7 +1194,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 tradeInParams.isPreorder = false
             tradeInParams.isOnCampaign = productInfoP1.productInfo.hasActiveCampaign
             tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
-            tv_trade_in.setOnClickListener {goToNormalCheckout(TRADEIN_BUY) }
+            tv_trade_in.setOnClickListener { goToNormalCheckout(TRADEIN_BUY) }
         }
         activity?.invalidateOptionsMenu()
     }
