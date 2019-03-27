@@ -465,9 +465,12 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         initializeEmptySearchFilterController();
     }
 
-    public void initializeEmptySearchFilterController() {
+    private void initializeEmptySearchFilterController() {
         emptySearchFilterController.initFilterController(searchParameter.getSearchParameterHashMap(), getFilters());
+        refreshEmptyStateAdapter();
     }
+
+    protected abstract void refreshEmptyStateAdapter();
 
     @Override
     public void renderFailGetDynamicFilter() {

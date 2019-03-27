@@ -314,6 +314,9 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
                         copyText = false;
                     }
                     mUserQuery = keyword;
+
+                    searchParameter.setSearchQuery(keyword);
+
                     if (queryListener != null) {
                         queryListener.onQueryChanged(keyword);
                     }
@@ -458,8 +461,6 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         }
 
         mOldQueryText = newText.toString();
-
-        searchParameter.setSearchQuery(newText.toString());
 
         if (mSuggestionFragment != null) {
             mSuggestionFragment.search(searchParameter);

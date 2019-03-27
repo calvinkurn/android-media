@@ -296,6 +296,11 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     @Override
+    protected void refreshEmptyStateAdapter() {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
     public String getScreenNameId() {
         return SCREEN_SEARCH_PAGE_SHOP_TAB;
     }

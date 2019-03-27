@@ -726,6 +726,11 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
+    protected void refreshEmptyStateAdapter() {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void reloadData() {
         if (adapter == null) {
             return;

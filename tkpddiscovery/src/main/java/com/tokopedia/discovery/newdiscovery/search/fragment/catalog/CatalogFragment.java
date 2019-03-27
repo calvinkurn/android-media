@@ -218,8 +218,8 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     private void initView(View view) {
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
-        loadingView = (ProgressBar) view.findViewById(R.id.loading);
+        recyclerView = view.findViewById(R.id.recyclerview);
+        loadingView = view.findViewById(R.id.loading);
     }
 
     protected void prepareView() {
@@ -228,12 +228,9 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     private void setupListener() {
-        topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
-            @Override
-            public void onLoad(int page, int totalCount) {
-                if (isAllowLoadMore()) {
-                    onLoadMoreCatalog();
-                }
+        topAdsRecyclerAdapter.setOnLoadListener((page, totalCount) -> {
+            if (isAllowLoadMore()) {
+                onLoadMoreCatalog();
             }
         });
     }
@@ -417,6 +414,11 @@ public class CatalogFragment extends SearchSectionFragment implements
             catalogAdapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getFlagFilterHelper(), getString(R.string.catalog_tab_title).toLowerCase());
             SearchTracking.eventSearchNoResult(getActivity(), getQueryKey(), getScreenName(), getSelectedFilter());
         }
+    }
+
+    @Override
+    protected void refreshEmptyStateAdapter() {
+        catalogAdapter.notifyDataSetChanged();
     }
 
     @Override
