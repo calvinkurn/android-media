@@ -8,6 +8,7 @@ import android.util.Log
 class ObservableNestedScrollView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : NestedScrollView(context, attrs, defStyleAttr){
+    var threshold: Int = 100
     private var isLoading: Boolean = false
     var listener: ScrollViewListener? = null
 
@@ -16,10 +17,10 @@ class ObservableNestedScrollView @JvmOverloads constructor(
 
     override fun onScrollChanged(x: Int, y: Int, oldX: Int, oldY: Int) {
         super.onScrollChanged(x, y, oldX, oldY)
-        Log.e(javaClass.canonicalName, "scroll ended $x $y $oldX $oldY")
+        Log.e(javaClass.canonicalName, "scroll changed $x $y $oldX $oldY")
         val diff = getChildAt(childCount - 1).bottom - (height + scrollY)
         listener?.let {
-            if (diff == 0 && !isLoading) it.onScrollEnded(this, x, y, oldX, oldY)
+            if (diff < threshold && !isLoading) it.onScrollEnded(this, x, y, oldX, oldY)
         }
     }
 
