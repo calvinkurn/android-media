@@ -50,7 +50,35 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
     private WeakReference<FragmentActivity> activityWeakReference;
     private TradeInParams inData;
     private Laku6TradeIn laku6TradeIn;
+    private Laku6GTMReceiver laku6GTMReceiver;
     public static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 123;
+
+
+    private class Laku6GTMReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null && "laku6-gtm".equals(intent.getAction())) {
+                String page = intent.getStringExtra("page");
+                String action = intent.getStringExtra("action");
+                String value = intent.getStringExtra("value");
+                if ("cek fisik".equals(page)) {
+                    if ("click back".equals(action) || "click salin".equals(action) || "click social share".equals(action))
+                        sendGeneralEvent("clickTradeIn", "cek fisik trade in", action, value);
+                    else if ("view cek fisik".equals(action))
+                        sendGeneralEvent("viewTradeIn", "cek fisik trade in", "view cek fisik", "");
+
+                } else if ("cek fungsi trade in".equals(page)) {
+                    if ("view cek fungsi".equals(action))
+                        sendGeneralEvent("viewTradeIn", "cek fungsi trade in", action, "");
+                    else
+                        sendGeneralEvent("clickTradeIn", "cek fungsi trade in", action, value);
+                } else if ("cek fisik result trade in".equals(page)) {
+                    sendGeneralEvent("viewTradeIn", "cek fisik result trade in", action, value);
+                }
+            }
+        }
+    }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -153,28 +181,36 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
                 Constants.APPID, Constants.APIKEY, Constants.LAKU6_BASEURL);
         inData = activityWeakReference.get().getIntent().getParcelableExtra(TradeInParams.class.getSimpleName());
         requestPermission();
-        if (TrackApp.getInstance() != null && TrackApp.getInstance().getGTM() != null) {
-            TrackApp.getInstance().getGTM().sendGeneralEvent("viewTradeIn",
-                    "trade in start page",
-                    "view preview trade in",
-                    "");
-        }
+        sendGeneralEvent("viewTradeIn",
+                "trade in start page",
+                "view preview trade in",
+                "");
+
 
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void registerReceivers() {
         if (activityWeakReference != null && activityWeakReference.get() != null) {
-            LocalBroadcastManager.getInstance(activityWeakReference.get()).registerReceiver(mMessageReceiver, new IntentFilter("laku6-test-end"));
-            LocalBroadcastManager.getInstance(activityWeakReference.get()).registerReceiver(mBackReceiver, new IntentFilter("laku6-back-action"));
+            FragmentActivity activity = activityWeakReference.get();
+            LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(activity);
+            localBroadcastManager.registerReceiver(mMessageReceiver, new IntentFilter("laku6-test-end"));
+            localBroadcastManager.registerReceiver(mBackReceiver, new IntentFilter("laku6-back-action"));
+            laku6GTMReceiver = new Laku6GTMReceiver();
+            localBroadcastManager.registerReceiver(laku6GTMReceiver, new IntentFilter("laku6-gtm"));
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void unRegisterReceivers() {
-        if (activityWeakReference != null && activityWeakReference.get() != null) {
-            LocalBroadcastManager.getInstance(activityWeakReference.get()).unregisterReceiver(mMessageReceiver);
-            LocalBroadcastManager.getInstance(activityWeakReference.get()).unregisterReceiver(mBackReceiver);
+        if (activityWeakReference.get().isFinishing()) {
+            if (activityWeakReference != null && activityWeakReference.get() != null) {
+                FragmentActivity activity = activityWeakReference.get();
+                LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(activity);
+                localBroadcastManager.unregisterReceiver(mMessageReceiver);
+                localBroadcastManager.unregisterReceiver(mBackReceiver);
+                localBroadcastManager.unregisterReceiver(laku6GTMReceiver);
+            }
         }
     }
 
@@ -210,5 +246,14 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
 
     public TradeInParams getTradeInParams() {
         return inData;
+    }
+
+    private void sendGeneralEvent(String event, String category, String action, String label) {
+        if (TrackApp.getInstance() != null && TrackApp.getInstance().getGTM() != null) {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(event,
+                    category,
+                    action,
+                    label);
+        }
     }
 }
