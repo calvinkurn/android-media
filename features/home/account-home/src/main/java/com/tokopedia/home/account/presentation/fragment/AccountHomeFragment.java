@@ -144,6 +144,10 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     private void setToolbar(View view) {
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         View statusBarBackground = view.findViewById(R.id.status_bar_bg);
+        if (getActivity() != null) {
+            statusBarBackground.getLayoutParams().height =
+                    DisplayMetricUtils.getStatusBarHeight(getActivity());
+        }
         TextView title = toolbar.findViewById(R.id.toolbar_title);
         title.setText(getString(R.string.title_account));
         menuNotification = toolbar.findViewById(R.id.action_notification);
