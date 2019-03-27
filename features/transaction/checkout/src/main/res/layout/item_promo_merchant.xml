@@ -8,7 +8,9 @@
         android:id="@+id/voucher_merchant_holder_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_12"
+        android:paddingLeft="@dimen/dp_12"
+        android:paddingRight="@dimen/dp_12"
+        android:paddingTop="@dimen/dp_12"
         android:visibility="visible"/>
 
 </LinearLayout>

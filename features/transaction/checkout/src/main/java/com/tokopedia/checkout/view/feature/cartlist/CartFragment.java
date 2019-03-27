@@ -604,11 +604,15 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
         if (object instanceof ShopGroupData) {
             if (getFragmentManager() != null) {
-                showMerchantVoucherListBottomsheet(
-                        Integer.parseInt(((ShopGroupData)object).getShopId()),
-                        ((ShopGroupData)object).getCartString(),
-                        checkPromoFirstStepParam
-                );
+                try {
+                    showMerchantVoucherListBottomsheet(
+                            Integer.parseInt(((ShopGroupData) object).getShopId()),
+                            ((ShopGroupData) object).getCartString(),
+                            checkPromoFirstStepParam
+                    );
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -623,7 +627,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             ArrayList<ProductDetail> productDetails = new ArrayList<>();
             for (CartItemHolderData cartItemHolderData : shopGroupData.getCartItemDataList()) {
                 ProductDetail productDetail = new ProductDetail();
-                productDetail.setProductId(Integer.parseInt(cartItemHolderData.getCartItemData().getOriginData().getProductId()));
+                try {
+                    productDetail.setProductId(Integer.parseInt(cartItemHolderData.getCartItemData().getOriginData().getProductId()));
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                    productDetail.setProductId(0);
+                }
                 productDetail.setQuantity(cartItemHolderData.getCartItemData().getUpdatedData().getQuantity());
                 productDetails.add(productDetail);
             }
@@ -636,7 +645,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             }
             order.setProductDetails(productDetails);
             order.setUniqueId(shopGroupData.getCartString());
-            order.setShopId(Integer.parseInt(shopGroupData.getShopId()));
+            try {
+                order.setShopId(Integer.parseInt(shopGroupData.getShopId()));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                order.setShopId(0);
+            }
             orders.add(order);
         }
         CheckPromoFirstStepParam checkPromoFirstStepParam = new CheckPromoFirstStepParam();
@@ -911,21 +925,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cartAdapter.resetData();
 
         PromoStackingData.Builder builderGlobal = new PromoStackingData.Builder();
-        /*if (cartListData.getAutoApplyData() != null && cartListData.getAutoApplyData().isSuccess()) {
-            AutoApplyData autoApplyData = cartListData.getAutoApplyData();
-            builderGlobal.typePromo(autoApplyData.getIsCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON() ?
-                    PromoStackingData.CREATOR.getTYPE_COUPON() : PromoStackingData.CREATOR.getTYPE_VOUCHER())
-                    .description(autoApplyData.getMessageSuccess())
-                    .amount(autoApplyData.getDiscountAmount())
-                    .promoCode(autoApplyData.getCode())
-                    .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(autoApplyData.getState()))
-                    .title(autoApplyData.getTitleDescription())
-                    .build();
-            sendAnalyticsOnViewPromoAutoApply();
-        } else {
-            builderGlobal.state(TickerPromoStackingCheckoutView.State.EMPTY);
-        }*/
-        if (cartListData.getAutoApplyStackData() != null && cartListData.getAutoApplyStackData().isSuccess()) {
+        if (cartListData.getAutoApplyStackData() != null && cartListData.getAutoApplyStackData().isSuccess()
+                && !TextUtils.isEmpty(cartListData.getAutoApplyStackData().getCode())
+                && !TextUtils.isEmpty(cartListData.getAutoApplyStackData().getMessageSuccess())
+                && !TextUtils.isEmpty(cartListData.getAutoApplyStackData().getState())
+                && !TextUtils.isEmpty(cartListData.getAutoApplyStackData().getTitleDescription())) {
             AutoApplyStackData autoApplyStackData = cartListData.getAutoApplyStackData();
             if (autoApplyStackData != null) {
                 if (autoApplyStackData.getMessageSuccess() != null && autoApplyStackData.getCode() != null
@@ -1884,11 +1888,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             typePromo = PromoStackingData.CREATOR.getTYPE_VOUCHER();
         }
         promoStackingGlobalData.setTypePromo(typePromo);
-        promoStackingGlobalData.setPromoCode(responseGetPromoStackUiModel.getData().getCodes().get(0));
+        if (responseGetPromoStackUiModel.getData().getCodes().size() > 0) {
+            promoStackingGlobalData.setPromoCode(responseGetPromoStackUiModel.getData().getCodes().get(0));
+        }
         promoStackingGlobalData.setDescription(responseGetPromoStackUiModel.getData().getMessage().getText());
+        promoStackingGlobalData.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStackUiModel.getData().getMessage().getState()));
         promoStackingGlobalData.setTitle(responseGetPromoStackUiModel.getData().getTitleDescription());
         promoStackingGlobalData.setAmount(responseGetPromoStackUiModel.getData().getCashbackWalletAmount());
-        promoStackingGlobalData.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStackUiModel.getData().getMessage().getState()));
         promoStackingGlobalData.setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
 
         // Update merchant voucher state
@@ -1898,6 +1904,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 for (VoucherOrdersItemUiModel voucherOrdersItemUiModel : responseGetPromoStackUiModel.getData().getVoucherOrders()) {
                     if (voucherOrdersItemUiModel.getUniqueId().equals(cartShopHolderData.getShopGroupData().getCartString())) {
                         VoucherOrdersItemData voucherOrdersItemData = cartShopHolderData.getShopGroupData().getVoucherOrdersItemData();
+                        if (voucherOrdersItemData == null) {
+                            voucherOrdersItemData = new VoucherOrdersItemData();
+                        }
                         voucherOrdersItemData.setCode(voucherOrdersItemUiModel.getCode());
                         voucherOrdersItemData.setSuccess(voucherOrdersItemUiModel.getSuccess());
                         voucherOrdersItemData.setUniqueId(voucherOrdersItemUiModel.getUniqueId());
