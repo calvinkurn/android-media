@@ -689,7 +689,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         checkPromoStackingCodeMapper.setFinal(true);
                         ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
                         if (!responseGetPromoStack.getStatus().equalsIgnoreCase("OK") || TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
-                            String message = responseGetPromoStack.getMessage().get(0);
+                            String message = "";
+                            if (responseGetPromoStack.getMessage().size() > 0) {
+                                message = responseGetPromoStack.getMessage().get(0);
+                            }
                             if (getView() != null) {
                                 getView().renderErrorCheckPromoShipmentData(message);
                             }
@@ -945,46 +948,46 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         checkPromoFirstStepParam.setCodes(listCodes);
         checkPromoStackingCodeUseCase.setParams(checkPromoFirstStepParam);
         checkPromoStackingCodeUseCase.execute(RequestParams.create(),
-                        new Subscriber<GraphqlResponse>() {
-                            @Override
-                            public void onCompleted() {
+                new Subscriber<GraphqlResponse>() {
+                    @Override
+                    public void onCompleted() {
 
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        if (getView() != null) {
+                            if (e instanceof CheckPromoCodeException) {
+                                getView().showToastError(e.getMessage());
+                            } else {
+                                getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
                             }
+                        }
+                    }
 
-                            @Override
-                            public void onError(Throwable e) {
-                                e.printStackTrace();
-                                if (getView() != null) {
-                                    if (e instanceof CheckPromoCodeException) {
-                                        getView().showToastError(e.getMessage());
-                                    }else {
-                                        getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
-                                    }
-                                }
+                    @Override
+                    public void onNext(GraphqlResponse graphqlResponse) {
+                        checkPromoStackingCodeMapper.setFinal(false);
+                        ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
+                        if (!responseGetPromoStack.getStatus().equalsIgnoreCase("OK") || TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
+                            String message = responseGetPromoStack.getMessage().get(0);
+                            if (getView() != null) {
+                                getView().renderErrorCheckPromoShipmentData(message);
                             }
-
-                            @Override
-                            public void onNext(GraphqlResponse graphqlResponse) {
-                                checkPromoStackingCodeMapper.setFinal(false);
-                                ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
-                                if (!responseGetPromoStack.getStatus().equalsIgnoreCase("OK") || TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
-                                    String message = responseGetPromoStack.getMessage().get(0);
-                                    if (getView() != null) {
-                                        getView().renderErrorCheckPromoShipmentData(message);
-                                    }
+                        } else {
+                            if (getView() != null) {
+                                if (responseGetPromoStack.getStatus().equalsIgnoreCase("OK")) {
+                                    getView().renderCheckPromoStackCodeFromCourierSuccess(responseGetPromoStack.getData(), itemPosition, noToast);
                                 } else {
-                                    if (getView() != null) {
-                                        if (responseGetPromoStack.getStatus().equalsIgnoreCase("OK")) {
-                                            getView().renderCheckPromoStackCodeFromCourierSuccess(responseGetPromoStack.getData(), itemPosition, noToast);
-                                        } else {
-                                            if (!noToast) {
-                                                getView().showToastError(responseGetPromoStack.getMessage().get(0));
-                                            }
-                                        }
+                                    if (!noToast) {
+                                        getView().showToastError(responseGetPromoStack.getMessage().get(0));
                                     }
                                 }
                             }
-                        });
+                        }
+                    }
+                });
     }
 
     private CheckoutRequest generateCheckoutRequest(String promoCode, int isDonation) {
@@ -1388,7 +1391,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         })
         );
     }
-
 
 
     @Override
