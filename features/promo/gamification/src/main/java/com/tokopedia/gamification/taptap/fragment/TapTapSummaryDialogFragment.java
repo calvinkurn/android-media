@@ -109,7 +109,7 @@ public class TapTapSummaryDialogFragment extends DialogFragment implements Gamif
 
     @Override
     public void navigateToActivity(String applink, String url) {
-        ApplinkUtil.navigateToAssociatedPage(getContext(), applink,
+        ApplinkUtil.navigateToAssociatedPage(getActivity(), applink,
                 url,
                 TapTapTokenActivity.class);
     }
