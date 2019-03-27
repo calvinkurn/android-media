@@ -316,7 +316,7 @@ class FilterController() : Parcelable {
         val activeFilterOptionList = mutableListOf<Option>()
 
         loopOptionsInFilterList { _, option ->
-            if(getFilterViewState(option)) {
+            if(filterParameter.contains(option.key)) {
                 activeFilterOptionList.add(option)
             }
         }

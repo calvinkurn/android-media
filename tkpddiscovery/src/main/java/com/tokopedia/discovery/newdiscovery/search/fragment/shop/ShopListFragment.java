@@ -293,6 +293,7 @@ public class ShopListFragment extends SearchSectionFragment
         adapter.removeLoading();
         if (adapter.isListEmpty()) {
             isListEmpty = true;
+            adapter.showEmptyState(getActivity(), getSearchParameter().getSearchQuery(), isFilterActive(), null, getString(R.string.shop_tab_title).toLowerCase());
             SearchTracking.eventSearchNoResult(getActivity(), getSearchParameter().getSearchQuery(), getScreenName(), getSelectedFilter());
         }
     }
@@ -300,7 +301,7 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     protected void refreshAdapterForEmptySearch() {
         if (adapter != null) {
-            adapter.showEmptyState(getActivity(), getSearchParameter().getSearchQuery(), isFilterActive(), null, getString(R.string.shop_tab_title).toLowerCase());
+            adapter.notifyDataSetChanged();
         }
     }
 

@@ -412,6 +412,7 @@ public class CatalogFragment extends SearchSectionFragment implements
             catalogAdapter.setElement(visitables);
         } else {
             isListEmpty = true;
+            catalogAdapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getFlagFilterHelper(), getString(R.string.catalog_tab_title).toLowerCase());
             topAdsRecyclerAdapter.shouldLoadAds(false);
             SearchTracking.eventSearchNoResult(getActivity(), getQueryKey(), getScreenName(), getSelectedFilter());
         }
@@ -420,7 +421,7 @@ public class CatalogFragment extends SearchSectionFragment implements
     @Override
     protected void refreshAdapterForEmptySearch() {
         if (catalogAdapter != null) {
-            catalogAdapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getFlagFilterHelper(), getString(R.string.catalog_tab_title).toLowerCase());
+            catalogAdapter.notifyDataSetChanged();
         }
     }
 
