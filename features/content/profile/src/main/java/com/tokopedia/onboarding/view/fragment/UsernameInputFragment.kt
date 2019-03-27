@@ -1,6 +1,7 @@
 package com.tokopedia.onboarding.view.fragment
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.BottomSheetDialog
@@ -26,12 +27,12 @@ import kotlinx.android.synthetic.main.fragment_af_username_input.*
 import javax.inject.Inject
 
 
-
 /**
  * @author by milhamj on 9/24/18.
  */
 class UsernameInputFragment : BottomSheetDialogFragment(), UsernameInputContract.View {
 
+    var onDismissListener: (() -> Unit)? = null
     var isSuccessRegister = false
 
     private val adapter: SuggestionAdapter by lazy {
@@ -104,6 +105,11 @@ class UsernameInputFragment : BottomSheetDialogFragment(), UsernameInputContract
     override fun onDestroy() {
         presenter.detachView()
         super.onDestroy()
+    }
+
+    override fun onDismiss(dialog: DialogInterface?) {
+        super.onDismiss(dialog)
+        onDismissListener?.invoke()
     }
 
     override fun showLoading() {
@@ -195,12 +201,5 @@ class UsernameInputFragment : BottomSheetDialogFragment(), UsernameInputContract
         private const val USERNAME_MAX_LENGTH = 15
         private const val USERNAME_MIN_LENGTH = 3
         private const val SHOW_SUGGESTION_LENGTH = 1
-        private const val PARAM_USER_ID = "{user_id}"
-
-        fun newInstance(bundle: Bundle): UsernameInputFragment {
-            val fragment = UsernameInputFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
     }
 }
