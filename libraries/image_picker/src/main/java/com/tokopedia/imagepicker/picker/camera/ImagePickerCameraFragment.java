@@ -299,9 +299,9 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
                         imageByte,
                         mCaptureNativeSize.getWidth(),
                         mCaptureNativeSize.getHeight(), bitmap -> {
-                    File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
-                    onSuccessImageTakenFromCamera(cameraResultFile);
-                });
+                            File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
+                            onSuccessImageTakenFromCamera(cameraResultFile);
+                        });
             }
         } catch (Throwable error) {
             File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
@@ -367,13 +367,17 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
         if (onImagePickerCameraFragmentListener.isFinishEditting()) {
             return;
         }
-        if (getActivity().isFinishing()) {
-            return;
+        if (getActivity() != null) {
+            if (getActivity().isFinishing()) {
+                return;
+            }
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             String permission = Manifest.permission.CAMERA;
-            if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
-                startCamera();
+            if (getContext() != null) {
+                if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
+                    startCamera();
+                }
             }
         } else {
             startCamera();
