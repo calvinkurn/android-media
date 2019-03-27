@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cons_ticker_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/tp_margin_medium"
+    android:background="@color/colorGray"
+    android:visibility="visible"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/container_dynamic_links">
+
+    <com.tokopedia.abstraction.base.view.widget.TouchViewPager
+        android:id="@+id/view_pager_ticker"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.design.viewpagerindicator.CirclePageIndicator
+        android:id="@+id/page_indicator_ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/tp_margin_xsmall"
+        android:padding="@dimen/tp_margin_xsmall"
+        app:layout_constraintTop_toBottomOf="@+id/view_pager_ticker" />
+</android.support.constraint.ConstraintLayout>

@@ -114,10 +114,10 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                     subQuery
             );
             ContainNullException exception = new ContainNullException(message);
-            if (!BuildConfig.DEBUG) {
-                Crashlytics.logException(exception);
-            }
             if (shouldThrow) {
+                if (!BuildConfig.DEBUG) {
+                    Crashlytics.logException(exception);
+                }
                 throw exception;
             }
             return Unit.INSTANCE;

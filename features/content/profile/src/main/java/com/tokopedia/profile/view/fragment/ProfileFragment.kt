@@ -701,6 +701,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     }
 
+    override fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String) {
+        onGoToLink(redirectUrl)
+    }
+
     override fun onBannerItemClick(positionInFeed: Int, adapterPosition: Int, redirectUrl: String) {
         onGoToLink(redirectUrl)
     }
@@ -1348,11 +1352,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun goToContentReport(contentId: Int) {
         if (context != null) {
-            val intent = ContentReportActivity.createIntent(
-                    context!!,
-                    contentId
-            )
-            startActivityForResult(intent, OPEN_CONTENT_REPORT)
+            if (userSession.isLoggedIn) {
+                val intent = ContentReportActivity.createIntent(
+                        context!!,
+                        contentId
+                )
+                startActivityForResult(intent, OPEN_CONTENT_REPORT)
+            } else {
+                goToLogin()
+            }
         }
     }
 

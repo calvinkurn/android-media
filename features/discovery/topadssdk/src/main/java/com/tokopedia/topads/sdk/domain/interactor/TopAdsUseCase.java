@@ -99,9 +99,6 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
                         }
                     }
                     view.displayAds(visitables, topAdsModel.getAdsPosition());
-                } else if (topAdsModel.getError() != null) {
-                    view.notifyAdsErrorLoaded(topAdsModel.getError().getCode(),
-                            topAdsModel.getError().getTitle());
                 } else {
                     view.notifyAdsErrorLoaded(topAdsModel.getStatus().getErrorCode(),
                             topAdsModel.getStatus().getMessage());

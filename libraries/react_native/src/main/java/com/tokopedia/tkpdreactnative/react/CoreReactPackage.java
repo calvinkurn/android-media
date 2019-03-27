@@ -5,6 +5,7 @@ import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 import com.tokopedia.tkpdreactnative.react.banner.ReactBannerManager;
+import com.tokopedia.tkpdreactnative.react.banner.ReactBannerManager2;
 import com.tokopedia.tkpdreactnative.react.image.RctImageManager;
 import com.tokopedia.tkpdreactnative.react.image.RctImageRemoteManager;
 import com.tokopedia.tkpdreactnative.react.lineargradient.LinearGradientManager;
@@ -36,6 +37,7 @@ public class CoreReactPackage implements ReactPackage {
         return Arrays.asList(
                 new YouTubeManager(),
                 new ReactBannerManager(),
+                new ReactBannerManager2(),
                 new LinearGradientManager(),
                 new ButtonViewManager(),
                 new ReactImageManager(),

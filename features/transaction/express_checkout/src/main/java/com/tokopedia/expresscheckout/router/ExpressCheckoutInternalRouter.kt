@@ -14,12 +14,17 @@ class ExpressCheckoutInternalRouter {
 
     companion object {
         const val EXTRA_ATC_REQUEST = "EXTRA_ATC_REQUEST"
+        const val TRACKER_ATTRIBUTION =  "tracker_attribution"
+        const val TRACKER_LIST_NAME = "tracker_list_name"
 
-        @JvmStatic
-        fun createIntent(context: Activity?, atcRequestParam: AtcRequestParam): Intent {
+        @JvmStatic @JvmOverloads
+        fun createIntent(context: Activity?, atcRequestParam: AtcRequestParam,
+                         trackerAttribution: String? = "",
+                         trackerListName: String? = ""): Intent {
             val intent = Intent(context, CheckoutVariantActivity::class.java)
             intent.putExtra(EXTRA_ATC_REQUEST, atcRequestParam)
-
+            intent.putExtra(TRACKER_ATTRIBUTION, trackerAttribution)
+            intent.putExtra(TRACKER_LIST_NAME, trackerListName)
             return intent
         }
     }

@@ -16,11 +16,25 @@ class OptionVariantViewModel(
         var hasAvailableChild: Boolean
 ) : Parcelable {
 
-    val STATE_SELECTED = 1
-    val STATE_NOT_SELECTED = 0
-    val STATE_NOT_AVAILABLE = -1
+    companion object {
+        val STATE_SELECTED = 1
+        val STATE_NOT_SELECTED = 0
+        val STATE_NOT_AVAILABLE = -1
 
-    constructor(parcel: Parcel?) : this(
+        @JvmField
+        val CREATOR = object : Parcelable.Creator<OptionVariantViewModel> {
+
+            override fun createFromParcel(parcel: Parcel): OptionVariantViewModel {
+                return OptionVariantViewModel(parcel)
+            }
+
+            override fun newArray(size: Int): Array<OptionVariantViewModel?> {
+                return arrayOfNulls(size)
+            }
+        }
+    }
+
+    constructor(parcel: Parcel? = null) : this(
             parcel?.readInt() ?: 0,
             parcel?.readInt() ?: 0,
             parcel?.readInt() ?: 0,
@@ -42,14 +56,4 @@ class OptionVariantViewModel(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<OptionVariantViewModel> {
-
-        override fun createFromParcel(parcel: Parcel): OptionVariantViewModel {
-            return OptionVariantViewModel(parcel)
-        }
-
-        override fun newArray(size: Int): Array<OptionVariantViewModel?> {
-            return arrayOfNulls(size)
-        }
-    }
 }

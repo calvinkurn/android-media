@@ -36,7 +36,9 @@ public class GetProductListSellingUseCase extends UseCase<ProductListSellerModel
 
     @Inject
     public GetProductListSellingUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
-                                        GetProductListSellingRepository getProductListSellingRepository, GetCashbackUseCase getCashbackUseCase, UserSessionInterface userSession) {
+                                        GetProductListSellingRepository getProductListSellingRepository,
+                                        GetCashbackUseCase getCashbackUseCase,
+                                        UserSessionInterface userSession) {
         super(threadExecutor, postExecutionThread);
         this.getProductListSellingRepository = getProductListSellingRepository;
         this.getCashbackUseCase = getCashbackUseCase;
@@ -46,32 +48,26 @@ public class GetProductListSellingUseCase extends UseCase<ProductListSellerModel
     @Override
     public Observable<ProductListSellerModel> createObservable(RequestParams requestParams) {
         return getProductListSellingRepository.getProductListSeller(requestParams.getParamsAllValueInString())
-                .flatMap(new Func1<ProductListSellerModel, Observable<ProductListSellerModel>>() {
-                    @Override
-                    public Observable<ProductListSellerModel> call(final ProductListSellerModel productListSellerModel) {
-                        List<String> productIds = new ArrayList<String>();
-                        for (ProductListSellerModel.Product data : productListSellerModel.getData().getList()) {
-                            productIds.add(data.getProductId());
-                        }
-
-
-                        return getCashbackUseCase.createObservable(GetCashbackUseCase.createRequestParams(productIds, userSession.getShopId()))
-                                .flatMap(new Func1<List<GMGetCashbackModel>, Observable<ProductListSellerModel>>() {
-                                    @Override
-                                    public Observable<ProductListSellerModel> call(List<GMGetCashbackModel> dataCashbackModels) {
-                                        for(GMGetCashbackModel dataCashbackModel : dataCashbackModels){
-                                            String productId = String.valueOf(dataCashbackModel.getProductId());
-                                            for(ProductListSellerModel.Product product : productListSellerModel.getData().getList()){
-                                                if(productId.equals(product.getProductId())){
-                                                    product.setProductCashback(dataCashbackModel.getCashback());
-                                                    product.setProductCashbackAmount(dataCashbackModel.getCashbackAmount());
-                                                }
-                                            }
-                                        }
-                                        return Observable.just(productListSellerModel);
-                                    }
-                                });
+                .flatMap((Func1<ProductListSellerModel, Observable<ProductListSellerModel>>) productListSellerModel -> {
+                    List<String> productIds = new ArrayList<>();
+                    for (ProductListSellerModel.Product data : productListSellerModel.getData().getList()) {
+                        productIds.add(data.getProductId());
                     }
+
+
+                    return getCashbackUseCase.createObservable(GetCashbackUseCase.createRequestParams(productIds, userSession.getShopId()))
+                            .flatMap((Func1<List<GMGetCashbackModel>, Observable<ProductListSellerModel>>) dataCashbackModels -> {
+                                for(GMGetCashbackModel dataCashbackModel : dataCashbackModels){
+                                    String productId = String.valueOf(dataCashbackModel.getProductId());
+                                    for(ProductListSellerModel.Product product : productListSellerModel.getData().getList()){
+                                        if(productId.equals(product.getProductId())){
+                                            product.setProductCashback(dataCashbackModel.getCashback());
+                                            product.setProductCashbackAmount(dataCashbackModel.getCashbackAmount());
+                                        }
+                                    }
+                                }
+                                return Observable.just(productListSellerModel);
+                            });
                 });
     }
 

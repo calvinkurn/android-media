@@ -31,6 +31,8 @@ import com.tokopedia.imageuploader.domain.GenerateHostRepository;
 import com.tokopedia.imageuploader.domain.UploadImageRepository;
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
@@ -65,9 +67,23 @@ public class ImageUploaderModule {
         this.progressListener = progressListener;
     }
 
+    @Provides
+    @ImageUploaderQualifier
+    public NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
+        return ((NetworkRouter) context);
+    }
+
+    @Provides
+    @ImageUploaderQualifier
+    public FingerprintInterceptor provideFingerprintInterceptor(@ImageUploaderQualifier NetworkRouter networkRouter,
+                                                                @ImageUploaderQualifier UserSessionInterface userSessionInterface) {
+        return new FingerprintInterceptor(networkRouter, userSessionInterface);
+    }
+
     @ImageUploaderQualifier
     @Provides
     public OkHttpClient provideOkHttpClient(@ImageUploaderQualifier TkpdAuthInterceptor tkpdAuthInterceptor,
+                                            @ImageUploaderQualifier FingerprintInterceptor fingerprintInterceptor,
                                             @ImageUploaderQualifier OkHttpRetryPolicy retryPolicy,
                                             @ImageUploaderChuckQualifier Interceptor chuckInterceptor,
                                             @ImageUploaderQualifier HttpLoggingInterceptor loggingInterceptor,
@@ -75,6 +91,7 @@ public class ImageUploaderModule {
                                             @ImageUploaderQualifier CacheApiInterceptor cacheApiInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.addInterceptor(tkpdAuthInterceptor);
+        builder.addInterceptor(fingerprintInterceptor);
         builder.addInterceptor(cacheApiInterceptor);
         builder.addInterceptor(errorHandlerInterceptor);
 
@@ -144,6 +161,7 @@ public class ImageUploaderModule {
         }
         throw new RuntimeException("App should implement " + ImageUploaderRouter.class.getSimpleName());
     }
+
     @ImageUploaderAuthInterceptorQualifier
     @Provides
     public Interceptor provideAuthInterceptor(@ImageUploaderQualifier Context context) {

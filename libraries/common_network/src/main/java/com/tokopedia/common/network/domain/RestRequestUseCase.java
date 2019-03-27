@@ -43,10 +43,10 @@ public abstract class RestRequestUseCase extends UseCase<Map<Type, RestResponse>
                             shouldThrowException()
                     );
                     ContainNullException exception = new ContainNullException(message);
-                    if (!BuildConfig.DEBUG) {
-                        Crashlytics.logException(exception);
-                    }
                     if (shouldThrowException()) {
+                        if (!BuildConfig.DEBUG) {
+                            Crashlytics.logException(exception);
+                        }
                         throw exception;
                     }
                     return Unit.INSTANCE;

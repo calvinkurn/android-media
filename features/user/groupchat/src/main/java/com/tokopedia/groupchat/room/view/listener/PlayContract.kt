@@ -34,6 +34,7 @@ interface PlayContract {
         fun closeOverlayDialog()
         fun addIncomingMessage(it: Visitable<*>)
         fun onDynamicIconClicked(it: DynamicButtonsViewModel.Button)
+        fun onFloatingIconClicked(it: DynamicButtonsViewModel.Button, applink: String)
         fun updateDynamicButton(it: DynamicButtonsViewModel)
         fun onBackgroundUpdated(it: BackgroundViewModel)
         fun openRedirectUrl(generateLink: String)

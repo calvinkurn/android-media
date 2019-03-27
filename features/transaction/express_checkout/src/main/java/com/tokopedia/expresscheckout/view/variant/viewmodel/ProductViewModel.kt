@@ -17,7 +17,9 @@ data class ProductViewModel(
         var productChildrenList: ArrayList<ProductChild>,
         var selectedVariantOptionsIdMap: LinkedHashMap<Int, Int> = LinkedHashMap(),
         var maxOrderQuantity: Int,
-        var minOrderQuantity: Int
+        var minOrderQuantity: Int,
+        var originalPrice: Int = productPrice,
+        var discountedPercentage: Float = 0f
 ) : Visitable<CheckoutVariantAdapterTypeFactory>, Parcelable {
 
     constructor(parcel: Parcel? = null) : this(
@@ -32,8 +34,10 @@ data class ProductViewModel(
                 parcel?.readMap(this, Int::class.java.classLoader)
             },
             parcel?.readInt() ?: 0,
-            parcel?.readInt() ?: 0
-    )
+            parcel?.readInt() ?: 0,
+            parcel?.readInt() ?: 0,
+            parcel?.readFloat() ?: 0f) {
+    }
 
     override fun type(typeFactory: CheckoutVariantAdapterTypeFactory): Int {
         return typeFactory.type(this)
@@ -44,10 +48,10 @@ data class ProductViewModel(
         parcel.writeString(productName)
         parcel.writeInt(productPrice)
         parcel.writeString(productImageUrl)
-        parcel.writeList(productChildrenList)
-        parcel.writeMap(selectedVariantOptionsIdMap)
         parcel.writeInt(maxOrderQuantity)
         parcel.writeInt(minOrderQuantity)
+        parcel.writeInt(originalPrice)
+        parcel.writeFloat(discountedPercentage)
     }
 
     override fun describeContents(): Int {
@@ -63,5 +67,6 @@ data class ProductViewModel(
             return arrayOfNulls(size)
         }
     }
+
 
 }

@@ -56,10 +56,10 @@ public abstract class RestRequestSupportInterceptorUseCase extends UseCase<Map<T
                             shouldThrowException()
                     );
                     ContainNullException exception = new ContainNullException(message);
-                    if (!BuildConfig.DEBUG) {
-                        Crashlytics.logException(exception);
-                    }
                     if (shouldThrowException()) {
+                        if (!BuildConfig.DEBUG) {
+                            Crashlytics.logException(exception);
+                        }
                         throw exception;
                     }
                     return Unit.INSTANCE;

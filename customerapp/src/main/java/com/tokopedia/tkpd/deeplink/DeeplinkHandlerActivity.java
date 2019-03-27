@@ -97,6 +97,8 @@ import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
 import com.tokopedia.pms.howtopay.HowtopayApplinkModule;
 import com.tokopedia.pms.howtopay.HowtopayApplinkModuleLoader;
+import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
+import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModule;
 import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModuleLoader;
 import com.tokopedia.product.manage.list.applink.ProductManageApplinkModule;
@@ -154,7 +156,7 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         SellerApplinkModule.class,
         TransactionApplinkModule.class,
         DigitalApplinkModule.class,
-        PdpApplinkModule.class,
+        ProductDetailApplinkModule.class,
         HomeApplinkModule.class,
         DiscoveryApplinkModule.class,
         SessionApplinkModule.class,
@@ -202,7 +204,8 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         ChatbotApplinkModule.class,
         HomeCreditAppLinkModule.class,
         OfficialStoreApplinkModule.class,
-        OvoPayWithQrApplinkModule.class
+        OvoPayWithQrApplinkModule.class,
+        PdpApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
@@ -222,7 +225,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new SellerApplinkModuleLoader(),
                     new TransactionApplinkModuleLoader(),
                     new DigitalApplinkModuleLoader(),
-                    new PdpApplinkModuleLoader(),
+                    new ProductDetailApplinkModuleLoader(),
                     new HomeApplinkModuleLoader(),
                     new DiscoveryApplinkModuleLoader(),
                     new SessionApplinkModuleLoader(),
@@ -269,7 +272,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new ChatbotApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
                     new OfficialStoreApplinkModuleLoader(),
-                    new OvoPayWithQrApplinkModuleLoader()
+                    new OvoPayWithQrApplinkModuleLoader(),
+                    new PdpApplinkModuleLoader()
             );
         }
 

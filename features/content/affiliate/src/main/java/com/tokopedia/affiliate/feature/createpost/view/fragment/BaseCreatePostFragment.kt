@@ -85,9 +85,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     override fun onStart() {
         super.onStart()
-        if (isTypeAffiliate()) {
-            affiliateAnalytics.analyticTracker.sendScreen(activity, screenName)
-        }
+        affiliateAnalytics.analyticTracker.sendScreen(activity, screenName)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -142,6 +140,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                     viewModel = resultViewModel
                     updateRelatedProduct()
                     updateThumbnail()
+
+                    if (viewModel.completeImageList.isEmpty()) {
+                        fetchContentForm()
+                    }
                 }
             }
             REQUEST_LOGIN -> fetchContentForm()
@@ -222,9 +224,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             Toast.makeText(it, R.string.text_full_affiliate_title, Toast.LENGTH_LONG)
                     .show()
             it.finish()
-            if (isTypeAffiliate()) {
-                affiliateAnalytics.onJatahRekomendasiHabisPdp()
-            }
+            affiliateAnalytics.onJatahRekomendasiHabisDialogShow()
         }
     }
 
@@ -292,7 +292,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             val numberOfProducts = if (isTypeAffiliate()) viewModel.adIdList.size else
                 viewModel.productIdList.size
             if (numberOfProducts < viewModel.maxProduct) {
-                relatedAddBtn.setOnClickListener { onRelatedAddProductClick() }
+                relatedAddBtn.setOnClickListener {
+                    onRelatedAddProductClick()
+                    affiliateAnalytics.onTambahTagButtonClicked()
+                }
                 relatedAddBtn.setTextColor(MethodChecker.getColor(it, R.color.medium_green))
             } else {
                 relatedAddBtn.setOnClickListener { }
@@ -332,9 +335,14 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         relatedProductRv.setHasFixedSize(true)
         doneBtn.setOnClickListener {
             saveDraftAndSubmit()
+            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList)
         }
         addImageBtn.setOnClickListener {
             goToImagePicker()
+            affiliateAnalytics.onTambahGambarButtonClicked()
+        }
+        addVideoBtn.setOnClickListener {
+            affiliateAnalytics.onTambahVideoButtonClicked()
         }
         caption.afterTextChanged {
             viewModel.caption = it
@@ -349,6 +357,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             }
             false
         }
+        caption.hint = getString(if (isTypeAffiliate())
+            R.string.af_caption_hint_affiliate else
+            R.string.af_caption_hint
+        )
         caption.setText(viewModel.caption)
         updateMaxCharacter()
         updateThumbnail()
@@ -356,9 +368,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun goToImagePicker() {
-        if (isTypeAffiliate()) {
-            affiliateAnalytics.onTambahGambarButtonClicked(viewModel.productIdList.firstOrNull())
-        }
         activity?.let {
             startActivityForResult(
                     CreatePostImagePickerActivity.getInstance(
@@ -400,10 +409,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
 
     private fun saveDraftAndSubmit() {
-        if (isTypeAffiliate()) {
-            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList.firstOrNull())
-        }
-
         if (isFormInvalid()) {
             return
         }
@@ -414,8 +419,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             val cacheManager = PersistentCacheManager(it, true)
             cacheManager.put(CreatePostViewModel.TAG, viewModel, TimeUnit.DAYS.toMillis(7))
 
-            val intent = SubmitPostService.createIntent(it, cacheManager.id!!)
-            it.startService(intent)
+            SubmitPostService.startService(it, cacheManager.id!!)
 
             hideLoading()
 
@@ -470,7 +474,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 goToMediaPreview()
             }
         } else {
-            thumbnail.loadDrawable(R.drawable.ic_system_action_addimage_grayscale_62)
+            thumbnail.loadImageDrawable(R.drawable.ic_system_action_addimage_grayscale_62)
             edit.hide()
             thumbnail.setOnClickListener { }
             carouselIcon.setOnClickListener { }

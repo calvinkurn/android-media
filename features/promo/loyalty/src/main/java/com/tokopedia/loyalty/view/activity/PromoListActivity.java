@@ -158,7 +158,7 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
     @Override
     public void renderPromoMenuDataList(final List<PromoMenuData> promoMenuDataList) {
         viewPager.setOffscreenPageLimit(promoMenuDataList.size());
-        adapter = new PromoPagerAdapter(getSupportFragmentManager(), promoMenuDataList, autoSelectedCategoryId);
+        adapter = new PromoPagerAdapter(this, getSupportFragmentManager(), promoMenuDataList, autoSelectedCategoryId);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
 

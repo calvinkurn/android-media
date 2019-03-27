@@ -283,26 +283,6 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), getString(resId));
     }
 
-    @SuppressLint("StringFormatMatches")
-    @Override
-    public void showLessThan6HoursDialog() {
-        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
-        dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
-        dialog.setDesc(buildAirlineContactInfo(
-                getString(R.string.flight_cancellation_recommendation_to_contact_airlines_description),
-                getString(R.string.flight_cancellation_recommendation_to_contact_airlines_description_mark)
-        ));
-        dialog.setDescMovementMethod();
-        dialog.setBtnOk(getString(R.string.flight_cancellation_less_than_6_hours_confirmation_dialog));
-        dialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-    }
-
     @NonNull
     private SpannableString buildAirlineContactInfo(String fullText, String mark) {
         final int color = getContext().getResources().getColor(R.color.green_500);
@@ -338,7 +318,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.checkIfFlightCancellable(orderJourneyList, invoiceId, item);
+                goToCancellationPage(invoiceId, item);
                 dialog.dismiss();
             }
         });
@@ -362,7 +342,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.checkIfFlightCancellable(orderJourneyList, invoiceId, item);
+                goToCancellationPage(invoiceId, item);
                 dialog.dismiss();
             }
         });

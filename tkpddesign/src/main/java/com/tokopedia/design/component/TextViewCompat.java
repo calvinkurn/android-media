@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.IntDef;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.AppCompatTextView;
@@ -13,7 +14,16 @@ import android.util.AttributeSet;
 
 import com.tokopedia.design.R;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import static android.util.TypedValue.COMPLEX_UNIT_SP;
+import static com.tokopedia.design.component.TextViewCompat.FontSize.HEADLINE;
+import static com.tokopedia.design.component.TextViewCompat.FontSize.MICRO;
+import static com.tokopedia.design.component.TextViewCompat.FontSize.SMALL;
+import static com.tokopedia.design.component.TextViewCompat.FontSize.SUB_HEADLINE;
+import static com.tokopedia.design.component.TextViewCompat.FontSize.TITLE;
+import static com.tokopedia.design.component.TextViewCompat.FontSize.TITLE_BIG;
 
 /**
  * Created by meyta on 06/03/18.
@@ -27,12 +37,15 @@ import static android.util.TypedValue.COMPLEX_UNIT_SP;
 
 public class TextViewCompat extends AppCompatTextView {
 
-    private static final int HEADLINE = 1;
-    private static final int SUB_HEADLINE = 2;
-    private static final int TITLE_BIG = 3;
-    private static final int TITLE = 4;
-    private static final int SMALL = 5;
-    private static final int MICRO = 6;
+    @IntDef({HEADLINE, SUB_HEADLINE, TITLE_BIG, TITLE, SMALL, MICRO})
+    public @interface FontSize{
+        int HEADLINE = 1;
+        int SUB_HEADLINE = 2;
+        int TITLE_BIG = 3;
+        int TITLE = 4;
+        int SMALL = 5;
+        int MICRO = 6;
+    }
 
     private static final int REGULAR = 1;
     private static final int MEDIUM = 2;
@@ -73,25 +86,7 @@ public class TextViewCompat extends AppCompatTextView {
 
     private void configFontSize(TypedArray attributeArray) {
         int fontSize  = attributeArray.getInteger(R.styleable.TextViewCompat_fontSize, 0);
-        if (fontSize == HEADLINE) {
-            this.setTextSize(COMPLEX_UNIT_SP, getResources().getInteger(R.integer.text_headline));
-            this.setMinimumHeight(getResources().getInteger(R.integer.text_headline_weight));
-        } else if (fontSize == SUB_HEADLINE) {
-            this.setTextSize(COMPLEX_UNIT_SP, getResources().getInteger(R.integer.text_sub_headline));
-            this.setMinimumHeight(getResources().getInteger(R.integer.text_sub_headline_weight));
-        } else if (fontSize == TITLE_BIG) {
-            this.setTextSize(COMPLEX_UNIT_SP, getResources().getInteger(R.integer.text_title_big));
-            this.setMinimumHeight(getResources().getInteger(R.integer.text_title_big_weight));
-        } else if (fontSize == TITLE) {
-            this.setTextSize(COMPLEX_UNIT_SP, getResources().getInteger(R.integer.text_title));
-            this.setMinimumHeight(getResources().getInteger(R.integer.text_title_weight));
-        } else if (fontSize == SMALL) {
-            this.setTextSize(COMPLEX_UNIT_SP, getResources().getInteger(R.integer.text_small));
-            this.setMinimumHeight(getResources().getInteger(R.integer.text_small_weight));
-        } else if (fontSize == MICRO) {
-            this.setTextSize(COMPLEX_UNIT_SP, getResources().getInteger(R.integer.text_micro));
-            this.setMinimumHeight(getResources().getInteger(R.integer.text_micro_weight));
-        }
+        setFontSize(fontSize);
     }
 
     private void configWeight(TypedArray attributeArray) {
@@ -149,11 +144,43 @@ public class TextViewCompat extends AppCompatTextView {
     }
 
     public void setDrawableRight(@DrawableRes int drawableRight){
+        Drawable drawable = null;
         if (drawableRight != -1){
-            Drawable drawable = AppCompatResources.getDrawable(getContext(), drawableRight);
-            setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
+            drawable = AppCompatResources.getDrawable(getContext(), drawableRight);
         }
+        setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
     }
 
 
+    public void setDrawableLeft(@DrawableRes int drawableLeft) {
+        Drawable drawable = null;
+        if (drawableLeft != -1){
+            drawable = AppCompatResources.getDrawable(getContext(), drawableLeft);
+        }
+        setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+    }
+
+    public void setFontSize(@FontSize int fontSize){
+        if (fontSize == HEADLINE) {
+            this.setTextSize(COMPLEX_UNIT_SP, getResources().getInteger(R.integer.text_headline));
+            this.setMinimumHeight(getResources().getInteger(R.integer.text_headline_weight));
+        } else if (fontSize == SUB_HEADLINE) {
+            this.setTextSize(COMPLEX_UNIT_SP, getResources().getInteger(R.integer.text_sub_headline));
+            this.setMinimumHeight(getResources().getInteger(R.integer.text_sub_headline_weight));
+        } else if (fontSize == TITLE_BIG) {
+            this.setTextSize(COMPLEX_UNIT_SP, getResources().getInteger(R.integer.text_title_big));
+            this.setMinimumHeight(getResources().getInteger(R.integer.text_title_big_weight));
+        } else if (fontSize == TITLE) {
+            this.setTextSize(COMPLEX_UNIT_SP, getResources().getInteger(R.integer.text_title));
+            this.setMinimumHeight(getResources().getInteger(R.integer.text_title_weight));
+        } else if (fontSize == SMALL) {
+            this.setTextSize(COMPLEX_UNIT_SP, getResources().getInteger(R.integer.text_small));
+            this.setMinimumHeight(getResources().getInteger(R.integer.text_small_weight));
+        } else if (fontSize == MICRO) {
+            this.setTextSize(COMPLEX_UNIT_SP, getResources().getInteger(R.integer.text_micro));
+            this.setMinimumHeight(getResources().getInteger(R.integer.text_micro_weight));
+        }
+        invalidate();
+        requestLayout();
+    }
 }

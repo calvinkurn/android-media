@@ -19,7 +19,7 @@
         app:layout_constraintStart_toEndOf="@+id/iv_ava"
         app:layout_constraintTop_toTopOf="@+id/iv_ava"
         tools:ignore="ContentDescription"
-        tools:srcCompat="@drawable/ic_official_store_pdp"
+        tools:srcCompat="@drawable/ic_badge_shop_official"
         tools:visibility="visible" />
 
     <ImageView

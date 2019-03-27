@@ -13,6 +13,7 @@ import com.tokopedia.broadcast.message.data.model.ProductPayloadMutation
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -25,7 +26,7 @@ import java.lang.RuntimeException
 import javax.inject.Inject
 
 class SaveChatBlastSellerUseCase @Inject constructor(
-        private val userSession: UserSessionInterface,
+        @ImageUploaderQualifier val userSession: UserSessionInterface,
         @ApplicationContext val context: Context,
         private val graphqlUseCase: GraphqlUseCase,
         private val uploadImageUseCase: UploadImageUseCase<ImageAttachment.Data>

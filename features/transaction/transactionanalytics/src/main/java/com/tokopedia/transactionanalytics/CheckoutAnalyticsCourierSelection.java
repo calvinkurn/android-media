@@ -309,10 +309,14 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
 
-    public void enhancedECommerceGoToCheckoutStep2(Map<String, Object> cartMap, String transactionId) {
+    public void enhancedECommerceGoToCheckoutStep2(Map<String, Object> cartMap, String transactionId, boolean isTradeIn) {
+        String eventCategory = EventCategory.COURIER_SELECTION;
+        if (isTradeIn) {
+            eventCategory = EventCategory.COURIER_SELECTION_TRADE_IN;
+        }
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 ConstantTransactionAnalytics.Key.EVENT, EventName.CHECKOUT,
-                ConstantTransactionAnalytics.Key.EVENT_CATEGORY, EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.Key.EVENT_CATEGORY, eventCategory,
                 ConstantTransactionAnalytics.Key.EVENT_ACTION, EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
                 ConstantTransactionAnalytics.Key.EVENT_LABEL, EventLabel.SUCCESS,
                 ConstantTransactionAnalytics.Key.PAYMENT_ID, transactionId,
@@ -569,6 +573,52 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_CHANGE_COURIER_OPTION,
                 label
+        );
+    }
+
+    // Trade In
+    public void eventViewCheckoutPageTradeIn() {
+        sendEventCategoryAction("",
+                EventCategory.COURIER_SELECTION_TRADE_IN,
+                EventAction.VIEW_CHECKOUYT_PAGE_TRADE_IN
+        );
+    }
+
+    public void eventClickGantiNomor() {
+        sendEventCategoryAction("",
+                EventCategory.COURIER_SELECTION_TRADE_IN,
+                EventAction.CLICK_GANTI_NOMOR
+        );
+    }
+
+    public void eventClickButtonPilihDurasi() {
+        sendEventCategoryAction("",
+                EventCategory.COURIER_SELECTION_TRADE_IN,
+                EventAction.CLICK_BUTTON_PILIH_DURASI
+        );
+    }
+
+    public void eventClickKurirTradeIn(String label) {
+        sendEventCategoryActionLabel("",
+                EventCategory.COURIER_SELECTION_TRADE_IN,
+                EventAction.CLICK_KURIR_TRADE_IN,
+                label
+        );
+    }
+
+    public void eventClickBayarTradeInFailed() {
+        sendEventCategoryActionLabel("",
+                EventCategory.COURIER_SELECTION_TRADE_IN,
+                EventAction.CLICK_BAYAR,
+                EventLabel.FAILED
+        );
+    }
+
+    public void eventClickBayarCourierNotComplete() {
+        sendEventCategoryActionLabel("",
+                EventCategory.COURIER_SELECTION_TRADE_IN,
+                EventAction.CLICK_BAYAR,
+                EventLabel.COURIER_NOT_COMPLETE
         );
     }
 }

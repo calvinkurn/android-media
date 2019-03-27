@@ -13,6 +13,7 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
 
 import java.util.ArrayList;
@@ -25,30 +26,7 @@ import rx.Observable;
 
 public interface PdpRouter {
 
-    void gotToProductDetail(Context context);
-
-    void goToProductDetail(Context context, String productUrl);
-
-    void goToProductDetail(Context context, ProductPass productPass);
-
-    void goToProductDetail(Context context, LinkerData shareData);
-
-    void goToAddProductDetail(Context context);
-
-    Fragment getProductDetailInstanceDeeplink(Context context, @NonNull ProductPass productPass);
-
-    void goToProductDetailForResult(Fragment fragment,
-                                    String productId,
-                                    int adapterPosition,
-                                    int requestCode);
-
-    void openImagePreview(Context context, ArrayList<String> images, ArrayList<String>
-            imageDesc, int position);
-
     void openImagePreview(Context context, ArrayList<String> images, int position);
-
-    void openImagePreviewFromChat(Context context, ArrayList<String> images,
-                                  ArrayList<String> imageDesc, String title, String date);
 
     Intent getProductReputationIntent(Context context, String productId, String productName);
 
@@ -56,7 +34,7 @@ public interface PdpRouter {
 
     Intent getCartIntent(Activity activity);
 
-    Intent getCheckoutIntent(Context context);
+    Intent getCheckoutIntent(Context context, ShipmentFormRequest shipmentFormRequest);
 
     Intent getExpressCheckoutIntent(Activity activity, AtcRequestParam atcRequestParam);
 
@@ -71,6 +49,8 @@ public interface PdpRouter {
     int getCartCount(Context context);
 
     Intent getProductTalk(Context context, String productId);
+
+    Intent getCheckoutIntent(Context context, String deviceid);
 
     void eventClickFilterReview(Context context,
                                 String filterName,

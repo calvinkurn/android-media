@@ -8,7 +8,9 @@ import com.tokopedia.feedcomponent.data.pojo.FeedQuery
 import com.tokopedia.feedcomponent.data.pojo.TemplateData
 import com.tokopedia.feedcomponent.data.pojo.feed.Cardpost
 import com.tokopedia.feedcomponent.data.pojo.feed.Feed
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Body
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Media
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTag
 import com.tokopedia.feedcomponent.data.pojo.template.Template
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
@@ -227,11 +229,13 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         val trackingPostModel = mapPostTracking(feed)
 
         if (shouldAddCardPost(feed, contentList)) {
+            var postTag = feed.content.cardpost.body.postTag.firstOrNull() ?: PostTag()
             posts.add(
                     DynamicPostViewModel(
                             feed.id,
                             feed.content.cardpost.title,
                             feed.content.cardpost.header,
+                            postTag,
                             feed.content.cardpost.footer,
                             feed.content.cardpost.body.caption,
                             contentList,
