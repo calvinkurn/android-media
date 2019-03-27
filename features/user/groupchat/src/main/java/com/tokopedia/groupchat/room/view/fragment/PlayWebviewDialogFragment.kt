@@ -185,7 +185,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
 //        webview.addJavascriptInterface(WebViewResizer(), "WebViewResizer")
         webview.settings.cacheMode = WebSettings.LOAD_NO_CACHE
         webview.settings.domStorageEnabled = true
-        webview.settings.javaScriptEnabled = true
+//        webview.settings.javaScriptEnabled = true
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webview.settings.mediaPlaybackRequiresUserGesture = false
         }
@@ -206,7 +206,6 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
                 isBottomSheetCloseable = false
             }
         })
-
     }
 
     override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
