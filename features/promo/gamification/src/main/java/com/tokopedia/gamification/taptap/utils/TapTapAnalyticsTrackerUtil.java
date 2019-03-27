@@ -1,4 +1,4 @@
-package com.tokopedia.gamification.util;
+package com.tokopedia.gamification.taptap.utils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -73,12 +73,4 @@ public class TapTapAnalyticsTrackerUtil {
         tracker.sendEventTracking(event, category, action, label);
     }
 
-
-    public interface ScreenKeys {
-        String MY_COUPON_LISTING_SCREEN_NAME = "/tokopoints/kupon-saya";
-        String COUPON_CATALOG_SCREEN_NAME = "/tokopoints/tukar-point/detail";
-        String CATALOG_LISTING_SCREEN_NAME = "/tokopoints/tukar-point";
-        String COUPON_DETAIL_SCREEN_NAME = "/tokopoints/kupon-saya/detail";
-        String HOME_PAGE_SCREEN_NAME = "/tokopoints";
-    }
 }

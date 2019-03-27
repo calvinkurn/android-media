@@ -55,7 +55,7 @@
                 android:layout_marginTop="@dimen/dp_48"
                 android:layout_weight="1"
                 android:background="@drawable/gf_rounded_rect_btn_green"
-                tools:text="Keluar"
+                tools:text="Cek Hadiah"
                 android:textSize="@dimen/sp_13"
                 android:textColor="@color/white" />
 
@@ -67,7 +67,7 @@
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_weight="1"
                 android:background="#00000000"
-                tools:text="Cek Hadiah"
+                tools:text="Keluar"
                 android:textColor="#03ac0e"
                 android:textSize="@dimen/sp_13" />
 

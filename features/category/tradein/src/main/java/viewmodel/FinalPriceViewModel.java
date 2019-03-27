@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -80,6 +81,13 @@ public class FinalPriceViewModel extends ViewModel implements LifecycleObserver 
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
+                NetworkErrorHelper.createSnackbarRedWithAction(activityWeakReference.get(),
+                        activityWeakReference.get().getString(R.string.default_request_error_timeout), new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                getDiagnosticData();
+                            }
+                        });
             }
 
             @Override

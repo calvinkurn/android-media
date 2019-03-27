@@ -191,6 +191,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
         updateMedia()
         updateThumbnail()
+        updateAddTagText()
         updateHeader(feedContentForm.authors)
     }
 

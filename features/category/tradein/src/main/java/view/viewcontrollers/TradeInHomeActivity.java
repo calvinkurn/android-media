@@ -33,8 +33,9 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     private TextView mTvHeaderPrice;
     private TextView mTvInitialPrice;
     private TextView mTvGoToProductDetails;
+    private TextView mTvNotUpto;
     private TradeInHomeViewModel tradeInHomeViewModel;
-
+    private boolean isAlreadySet = false;
     public static final int TRADEIN_HOME_REQUEST = 22345;
 
     public static Intent getIntent(Context context) {
@@ -49,6 +50,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
         mTvModelName = findViewById(R.id.tv_model_name);
         mTvHeaderPrice = findViewById(R.id.tv_header_price);
         mTvInitialPrice = findViewById(R.id.tv_initial_price);
+        mTvNotUpto = findViewById(R.id.tv_not_upto);
         mTvGoToProductDetails = findViewById(R.id.tv_go_to_product_details);
         mTvModelName.setText(new StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString());
     }
@@ -70,70 +72,58 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
         tradeInHomeViewModel.getMinPriceData().observe(this, new Observer<JSONObject>() {
             @Override
             public void onChanged(JSONObject jsonObject) {
-                try {
-                    hideProgressBar();
-                    mTvGoToProductDetails.setText(getString(R.string.text_check_functionality));
-                    mTvGoToProductDetails.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            tradeInHomeViewModel.startGUITest();
+                if (!isAlreadySet) {
+                    try {
+                        hideProgressBar();
+                        mTvGoToProductDetails.setText(getString(R.string.text_check_functionality));
+                        mTvGoToProductDetails.setOnClickListener(v -> tradeInHomeViewModel.startGUITest());
+                        int maxPrice = jsonObject.getInt("max_price");
+                        int minPrice = jsonObject.getInt("min_price");
+                        if (!errorPriceNotElligible(minPrice)) {
+                            mTvNotUpto.setVisibility(View.VISIBLE);
+                            mTvInitialPrice.setText(String.format("%1$s - %2$s",
+                                    CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true),
+                                    CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true)));
+                        } else {
+                            mTvNotUpto.setVisibility(View.GONE);
+                            mTvInitialPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true));
                         }
-                    });
-                    int maxPrice = jsonObject.getInt("max_price");
-                    int minPrice = jsonObject.getInt("min_price");
-                    if (minPrice > tradeInHomeViewModel.getTradeInParams().getNewPrice()) {
-                        String notElligible = getString(R.string.not_elligible_price_high);
-                        SpannableString spannableString = new SpannableString(notElligible);
-                        ClickableSpan clickableSpan = new ClickableSpan() {
-                            @Override
-                            public void onClick(View widget) {
-                                showTnC(R.string.tradein_tnc);
-                            }
-                        };
-                        mTvGoToProductDetails.setText(R.string.go_to_product_details);
-                        mTvGoToProductDetails.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                finish();
-                            }
-                        });
-                        int greenColor = getResources().getColor(R.color.green_nob);
-                        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
-                        spannableString.setSpan(foregroundColorSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                        spannableString.setSpan(clickableSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                        mTvPriceElligible.setText(spannableString);
-                        mTvPriceElligible.setVisibility(View.VISIBLE);
-                        mTvPriceElligible.setClickable(true);
-                        mTvPriceElligible.setMovementMethod(LinkMovementMethod.getInstance());
+                        isAlreadySet = true;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                    mTvInitialPrice.setText(String.format("%1$s - %2$s",
-                            CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true),
-                            CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true)));
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
             }
         });
-        tradeInHomeViewModel.getPriceFailData().observe(this, new Observer<JSONObject>() {
-            @Override
-            public void onChanged(JSONObject jsonObject) {
-                hideProgressBar();
-                try {
-                    mTvInitialPrice.setText(jsonObject.getString("message"));
-                    mTvPriceElligible.setText(getString(R.string.not_elligible));
-                    mTvPriceElligible.setVisibility(View.VISIBLE);
-                    mTvGoToProductDetails.setText(R.string.go_to_product_details);
-                    mTvGoToProductDetails.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            finish();
-                        }
-                    });
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
+        tradeInHomeViewModel.getPriceFailData().observe(this, jsonObject -> {
+            hideProgressBar();
+            try {
+                mTvInitialPrice.setText(jsonObject.getString("message"));
+                mTvPriceElligible.setText(getString(R.string.not_elligible));
+                mTvPriceElligible.setVisibility(View.VISIBLE);
+                mTvGoToProductDetails.setText(R.string.go_to_product_details);
+                mTvGoToProductDetails.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        finish();
+                    }
+                });
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+        });
+
+        tradeInHomeViewModel.getInsertResult().observe(this, price -> {
+            try {
+                if (price != null && price > 0) {
+                    errorPriceNotElligible(price);
+                    mTvNotUpto.setVisibility(View.GONE);
+                    mTvInitialPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(price, true));
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
     }
@@ -187,5 +177,42 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                 finish();
             }
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isFinishing())
+            isAlreadySet = false;
+    }
+
+    private boolean errorPriceNotElligible(int oldMinPrice) {
+        if (oldMinPrice > tradeInHomeViewModel.getTradeInParams().getNewPrice()) {
+            String notElligible = getString(R.string.not_elligible_price_high);
+            SpannableString spannableString = new SpannableString(notElligible);
+            ClickableSpan clickableSpan = new ClickableSpan() {
+                @Override
+                public void onClick(View widget) {
+                    showTnC(R.string.tradein_tnc);
+                }
+            };
+            mTvGoToProductDetails.setText(R.string.go_to_product_details);
+            mTvGoToProductDetails.setOnClickListener(v -> finish());
+            int greenColor = getResources().getColor(R.color.green_nob);
+            ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
+            spannableString.setSpan(foregroundColorSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(clickableSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            mTvPriceElligible.setText(spannableString);
+            mTvPriceElligible.setVisibility(View.VISIBLE);
+            mButtonRemove.setVisibility(View.VISIBLE);
+            mButtonRemove.setOnClickListener(view -> {
+                mTvPriceElligible.setVisibility(View.GONE);
+                mButtonRemove.setVisibility(View.GONE);
+            });
+            mTvPriceElligible.setClickable(true);
+            mTvPriceElligible.setMovementMethod(LinkMovementMethod.getInstance());
+            return true;
+        }
+        return false;
     }
 }
