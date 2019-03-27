@@ -139,9 +139,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         tabLayout = view.findViewById(R.id.tab_home_account);
         viewPager = view.findViewById(R.id.pager_home_account);
         setAdapter();
-        if(getContext() != null) {
-            view.setPadding(0, DisplayMetricUtils.getStatusBarHeight(getContext()), 0, 0);
-        }
     }
 
     private void setToolbar(View view) {
