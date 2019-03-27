@@ -23,6 +23,7 @@ import static com.tokopedia.checkout.domain.usecase.UpdateCartUseCase.PARAM_REQU
  * @author anggaprasetiyo on 30/04/18.
  */
 public class DeleteCartGetCartListUseCase extends UseCase<DeleteAndRefreshCartListData> {
+    public static final String PARAM_IS_DELETE_ALL_DATA = "PARAM_IS_DELETE_ALL_DATA";
     public static final String PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART
             = "PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART";
     public static final String PARAM_REQUEST_AUTH_MAP_STRING_GET_CART
@@ -52,10 +53,15 @@ public class DeleteCartGetCartListUseCase extends UseCase<DeleteAndRefreshCartLi
         final TKPDMapParam<String, String> paramUpdateCart = (TKPDMapParam<String, String>)
                 requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART);
 
+        final boolean isDeleteAllCart = requestParams.getBoolean(PARAM_IS_DELETE_ALL_DATA, false);
+
         return Observable.just(new DeleteAndRefreshCartListData())
                 .flatMap(new Func1<DeleteAndRefreshCartListData, Observable<DeleteAndRefreshCartListData>>() {
                     @Override
                     public Observable<DeleteAndRefreshCartListData> call(DeleteAndRefreshCartListData deleteAndRefreshCartListData) {
+                        if (isDeleteAllCart) {
+                            return Observable.just(deleteAndRefreshCartListData);
+                        }
                         return cartRepository.updateCartData(paramUpdateCart).map(new Func1<UpdateCartDataResponse, DeleteAndRefreshCartListData>() {
                             @Override
                             public DeleteAndRefreshCartListData call(UpdateCartDataResponse updateCartDataResponse) {
