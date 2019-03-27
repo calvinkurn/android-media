@@ -327,10 +327,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
             base_btn_affiliate.visible()
         }
 
-        nested_scroll.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
-            Log.e(javaClass.canonicalName, "scroll changed $scrollX $scrollY $oldScrollX $oldScrollX")
-        }
-
         nested_scroll.listener = object : ObservableNestedScrollView.ScrollViewListener {
             override fun onScrollEnded(scrollView: ObservableNestedScrollView, x: Int, y: Int, oldX: Int, oldY: Int) {
                 Log.e(javaClass.canonicalName, "scroll ended $x $y $oldX $oldY")
