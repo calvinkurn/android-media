@@ -182,6 +182,7 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setDropshiperName(groupShop.getDropshipperName());
         shipmentCartItemModel.setDropshiperPhone(groupShop.getDropshipperPhone());
         shipmentCartItemModel.setInsurance(groupShop.isUseInsurance());
+        shipmentCartItemModel.setHasPromoList(groupShop.isHasPromoList());
 
         List<Product> products = groupShop.getProducts();
         List<CartItemModel> cartItemModels = convertFromProductList(products);

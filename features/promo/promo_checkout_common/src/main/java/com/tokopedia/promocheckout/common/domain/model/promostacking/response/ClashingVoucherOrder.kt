@@ -20,5 +20,8 @@ data class ClashingVoucherOrder(
         val promoName: String = "",
 
         @SerializedName("potential_benefit")
-        val potentialBenefit: Int = 0
+        val potentialBenefit: Int = 0,
+
+        @SerializedName("shop_name")
+        val shopName: String = ""
 )

@@ -13,8 +13,8 @@ data class ClashingInfoDetailUiModel(
         var options: ArrayList<ClashingVoucherOptionUiModel> = ArrayList()
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
             parcel.readByte() != 0.toByte(),
             arrayListOf<ClashingVoucherOptionUiModel>().apply {
                 parcel.readList(this, ClashingVoucherOptionUiModel::class.java.classLoader)

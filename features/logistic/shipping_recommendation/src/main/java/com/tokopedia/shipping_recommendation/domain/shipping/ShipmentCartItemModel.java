@@ -79,6 +79,8 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private boolean isBlackbox;
     private int addressId;
 
+    // promo stacking
+    private boolean hasPromoList;
     private VoucherOrdersItemUiModel voucherOrdersItemUiModel;
 
     public ShipmentCartItemModel() {
@@ -127,6 +129,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         shopBadge = in.readString();
         isBlackbox = in.readByte() != 0;
         addressId = in.readInt();
+        hasPromoList = in.readByte() != 0;
         voucherOrdersItemUiModel = in.readParcelable(VoucherOrdersItem.class.getClassLoader());
     }
 
@@ -174,6 +177,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeString(shopBadge);
         dest.writeByte((byte) (isBlackbox ? 1 : 0));
         dest.writeInt(addressId);
+        dest.writeByte((byte) (hasPromoList ? 1 : 0));
         dest.writeParcelable(voucherOrdersItemUiModel, flags);
     }
 
@@ -237,6 +241,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setShopBadge(shipmentCartItemModel.getShopBadge());
         newShipmentCartItemModel.setIsBlackbox(shipmentCartItemModel.getIsBlackbox());
         newShipmentCartItemModel.setAddressId(shipmentCartItemModel.getAddressId());
+        newShipmentCartItemModel.setHasPromoList(shipmentCartItemModel.getHasPromoList());
         newShipmentCartItemModel.setVoucherOrdersItemUiModel(shipmentCartItemModel.getVoucherOrdersItemUiModel());
 
         return newShipmentCartItemModel;
@@ -572,6 +577,12 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setAddressId(int addressId) {
         this.addressId = addressId;
+    }
+
+    public boolean getHasPromoList() { return hasPromoList; }
+
+    public void setHasPromoList(boolean hasPromoList) {
+        this.hasPromoList = hasPromoList;
     }
 
     public VoucherOrdersItemUiModel getVoucherOrdersItemUiModel() {

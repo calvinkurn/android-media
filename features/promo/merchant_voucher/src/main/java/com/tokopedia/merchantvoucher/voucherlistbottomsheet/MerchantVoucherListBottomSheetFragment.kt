@@ -226,7 +226,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     }
 
     override fun onErrorGetMerchantVoucherList(e: Throwable) {
-        /*var message = ErrorHandler.getErrorMessage(context, e)
+        var message = ErrorHandler.getErrorMessage(context, e)
         if (TextUtils.isEmpty(message)) {
             message = "Terjadi kesalahan. Ulangi beberapa saat lagi"
         }
@@ -234,10 +234,10 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         ) {
             errorContainer.visibility = View.GONE
             loadData()
-        }*/
+        }
 
-        dismiss()
-        showClashingDummy()
+        /*dismiss()
+        showClashingDummy()*/
     }
 
     override fun onErrorCheckPromoFirstStep(message: String) {

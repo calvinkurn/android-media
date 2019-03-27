@@ -927,15 +927,22 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         }*/
         if (cartListData.getAutoApplyStackData() != null && cartListData.getAutoApplyStackData().isSuccess()) {
             AutoApplyStackData autoApplyStackData = cartListData.getAutoApplyStackData();
-            builderGlobal.typePromo(autoApplyStackData.getIsCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON() ?
-                    PromoStackingData.CREATOR.getTYPE_COUPON() : PromoStackingData.CREATOR.getTYPE_VOUCHER())
-                    .description(autoApplyStackData.getMessageSuccess())
-                    .amount(autoApplyStackData.getDiscountAmount())
-                    .promoCode(autoApplyStackData.getCode())
-                    .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(autoApplyStackData.getState()))
-                    .title(autoApplyStackData.getTitleDescription())
-                    .build();
-            sendAnalyticsOnViewPromoAutoApply();
+            if (autoApplyStackData != null) {
+                if (autoApplyStackData.getMessageSuccess() != null && autoApplyStackData.getCode() != null
+                        && autoApplyStackData.getState() != null && autoApplyStackData.getTitleDescription() != null) {
+                    builderGlobal.typePromo(autoApplyStackData.getIsCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON() ?
+                            PromoStackingData.CREATOR.getTYPE_COUPON() : PromoStackingData.CREATOR.getTYPE_VOUCHER())
+                            .description(autoApplyStackData.getMessageSuccess())
+                            .amount(autoApplyStackData.getDiscountAmount())
+                            .promoCode(autoApplyStackData.getCode())
+                            .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(autoApplyStackData.getState()))
+                            .title(autoApplyStackData.getTitleDescription())
+                            .build();
+                    sendAnalyticsOnViewPromoAutoApply();
+                }
+            } else {
+                builderGlobal.state(TickerPromoStackingCheckoutView.State.EMPTY);
+            }
         } else {
             builderGlobal.state(TickerPromoStackingCheckoutView.State.EMPTY);
         }

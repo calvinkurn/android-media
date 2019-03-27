@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import kotlin.Unit;
 import rx.Subscriber;
 
 /**
@@ -254,7 +255,8 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
                     if (!BuildConfig.DEBUG) {
                         Crashlytics.logException(exception);
                     }
-                    throw exception;
+                    // throw exception;
+                    return Unit.INSTANCE;
                 });
 
                 view.hideLoading();

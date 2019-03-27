@@ -15,6 +15,7 @@ import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import javax.inject.Inject
 
+
 class CheckPromoStackingCodeUseCase @Inject constructor (@ApplicationContext private val context: Context)
     : GraphqlUseCase() {
 

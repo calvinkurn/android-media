@@ -21,7 +21,6 @@
         android:id="@+id/item_shop_divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_5"
-        android:layout_marginTop="@dimen/dp_20"
         android:background="@color/separator_color" />
 
         <include

@@ -2324,6 +2324,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         .description("")
                         .amount(-1)
                         .state(TickerPromoStackingCheckoutView.State.EMPTY)
+                        .variant(TickerPromoStackingCheckoutView.Variant.MERCHANT)
                         .title("")
                         .build();
                 updateAppliedPromoStack(promoStackingData);

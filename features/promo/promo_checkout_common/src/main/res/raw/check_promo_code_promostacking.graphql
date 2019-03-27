@@ -26,11 +26,12 @@ mutation get_promo_stack_first($params: PromoStackRequest) {
           is_clashed_promos
           option {
             voucher_orders {
-                cart_id
-                code
-                potential_benefit
-                promo_name
-                unique_id
+              cart_id
+              code
+              shop_name
+              potential_benefit
+              promo_name
+              unique_id
             }
           }
         }
