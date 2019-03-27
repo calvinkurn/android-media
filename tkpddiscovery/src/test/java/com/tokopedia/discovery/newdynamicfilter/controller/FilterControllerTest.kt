@@ -247,6 +247,40 @@ class FilterControllerTest {
         assertFilterViewStateSizeCorrect(expectedOptions.size)
     }
 
+    @Test
+    fun testGetActiveFilterAsOptionList() {
+        val filterParameter = createFilterParameter()
+        val filterList = createFilterList()
+
+        filterController.initFilterController(filterParameter, filterList)
+        filterController.setFilter(createPriceOptionWithValue(minPriceOption, 1000), true, isCleanUpExistingFilterWithSameKey = true)
+        filterController.setFilter(jakartaOption, true)
+
+        val expectedOptionList = mutableListOf<Option>()
+        expectedOptionList.add(officialOption)
+        expectedOptionList.add(minPriceOption)
+        expectedOptionList.add(jakartaOption)
+
+        assertActiveFilterOptionList(expectedOptionList)
+    }
+
+    @Test
+    fun testGetActiveFilterAsMap() {
+        val filterParameter = createFilterParameter()
+        val filterList = createFilterList()
+
+        filterController.initFilterController(filterParameter, filterList)
+        filterController.setFilter(createPriceOptionWithValue(maxPriceOption, 3000000), true, isCleanUpExistingFilterWithSameKey = true)
+        filterController.setFilter(jakartaOption, true)
+
+        val expectedMap = mutableMapOf<String, String>()
+        expectedMap[officialOption.key] = officialOption.value
+        expectedMap[maxPriceOption.key] = 3000000.toString()
+        expectedMap[jakartaOption.key] = jakartaOption.value
+
+        assertActiveFilterMap(expectedMap)
+    }
+
     private fun assertFilterValueCorrect(optionList: List<Option>) {
         for(option in optionList) {
             val actualFilterValue = filterController.getFilterValue(option.key)
@@ -283,5 +317,42 @@ class FilterControllerTest {
 
     private fun getAssertFilterViewStateSizeMessage(expectedFilterViewStateSize: Int, actualFitlerViewStateSize: Int) : String {
         return "Testing filter view state size, expected: $expectedFilterViewStateSize, actual $actualFitlerViewStateSize"
+    }
+
+    private fun assertActiveFilterOptionList(expectedOptionList: List<Option>) {
+        val actualOptionList = filterController.getActiveFilterOptionList()
+
+        assert(actualOptionList.size == expectedOptionList.size) {
+            "Testing get active filter option list, expected size: ${expectedOptionList.size} actual size: ${actualOptionList.size}"
+        }
+
+        for(actualFilterOption in actualOptionList) {
+            val isExpectedContainsActual = expectedOptionList.filter {
+                it.key == actualFilterOption.key
+                        && it.name == actualFilterOption.name
+            }.isNotEmpty()
+
+            assert(isExpectedContainsActual) {
+                "Testing get active filter option list, option ${actualFilterOption.key} is expected."
+            }
+        }
+    }
+
+    private fun assertActiveFilterMap(expectedMap : Map<String, String>) {
+        val actualMap = filterController.getActiveFilterParameter()
+
+        assert(actualMap.size == expectedMap.size) {
+            "Testing get active filter map, expected size: ${expectedMap.size} actual size: ${actualMap.size}"
+        }
+
+        for(expectedMapEntry in expectedMap.entries) {
+            assert(actualMap.contains(expectedMapEntry.key)) {
+                "Testing get active filter map, expected Map key ${expectedMapEntry.key} not found in actual Map"
+            }
+
+            assert(actualMap[expectedMapEntry.key] == expectedMapEntry.value) {
+                "Testing get active filter map, comparing value for key ${expectedMapEntry.key}. Expected value: ${expectedMapEntry.value}, actual value: ${actualMap[expectedMapEntry.key]}"
+            }
+        }
     }
 }

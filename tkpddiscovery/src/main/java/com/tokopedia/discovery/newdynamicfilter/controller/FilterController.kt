@@ -304,7 +304,7 @@ class FilterController() : Parcelable {
         val activeFilter = mutableMapOf<String, String>()
 
         loopOptionsInFilterList { _, option ->
-            if(getFilterViewState(option)) {
+            if(isOptionConsideredActiveFilter(option)) {
                 activeFilter[option.key] = getFilterValue(option.key)
             }
         }
@@ -316,12 +316,17 @@ class FilterController() : Parcelable {
         val activeFilterOptionList = mutableListOf<Option>()
 
         loopOptionsInFilterList { _, option ->
-            if(filterParameter.contains(option.key)) {
+            if(isOptionConsideredActiveFilter(option)) {
                 activeFilterOptionList.add(option)
             }
         }
 
         return activeFilterOptionList
+    }
+
+    private fun isOptionConsideredActiveFilter(option: Option) : Boolean {
+        return (option.value == "" && filterParameter.contains(option.key))
+                || getFilterViewState(option)
     }
 
     @JvmOverloads
