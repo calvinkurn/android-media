@@ -592,7 +592,6 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
         }
 
-        view.setBackgroundColor(Color.parseColor("#ffe078"));
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
             view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
             ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
