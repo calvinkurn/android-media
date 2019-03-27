@@ -11,6 +11,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
@@ -20,6 +21,7 @@ import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
+import android.support.v4.widget.NestedScrollView
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.*
@@ -107,6 +109,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.listener.TopAdsListener
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
+import com.tokopedia.track.TrackApp
 import com.tokopedia.transaction.common.TransactionRouter
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
@@ -127,9 +130,9 @@ import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
 import model.TradeInParams
+import view.customview.TradeInTextView
 import viewmodel.TradeInBroadcastReceiver
 import javax.inject.Inject
-import view.customview.TradeInTextView
 
 class ProductDetailFragment : BaseDaggerFragment() {
     private var productId: String? = null
@@ -306,6 +309,30 @@ class ProductDetailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         initializePartialView(view)
         initView()
+        tv_trade_in.tag = false
+        val outRectScroll = Rect()
+        nested_scroll.getHitRect(outRectScroll)
+        nested_scroll.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener {
+            _, scrollX, scrollY, oldScrollX, oldScrollY ->
+            if(tv_trade_in.visibility == View.VISIBLE){
+                if(tv_trade_in.getLocalVisibleRect(outRectScroll) && !(tv_trade_in.tag as Boolean)){
+                    if (tradeInParams.usedPrice <= 0)
+                        TrackApp.getInstance()?.gtm?.sendGeneralEvent("viewPDP",
+                                "product detail page",
+                                "view trade in section",
+                                "before diagnostic")
+                    else
+                        TrackApp.getInstance()?.gtm?.sendGeneralEvent("viewPDP",
+                                "product detail page",
+                                "view trade in section",
+                                "after diagnostic")
+                    tv_trade_in.tag = true
+                }
+
+            }
+
+        })
+
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener {
