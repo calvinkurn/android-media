@@ -29,6 +29,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_dynamic_post.view.*
@@ -74,7 +75,7 @@ class DynamicPostViewHolder(v: View,
         bindCaption(element.caption, element.template.cardpost.body)
         bindContentList(element.id, element.contentList, element.template.cardpost.body)
         bindPostTag(element.postTag, element.template.cardpost.body)
-        bindFooter(element.id, element.footer, element.template.cardpost.footer, element.template.cardpost.body)
+        bindFooter(element.id, element.footer, element.template.cardpost.footer, isPostTagAvailable(element.postTag))
     }
 
     override fun bind(element: DynamicPostViewModel?, payloads: MutableList<Any>) {
@@ -231,10 +232,10 @@ class DynamicPostViewHolder(v: View,
         }
     }
 
-    private fun bindFooter(id: Int, footer: Footer, template: TemplateFooter, templateBody: TemplateBody) {
+    private fun bindFooter(id: Int, footer: Footer, template: TemplateFooter, isPostTagAvailable: Boolean) {
         itemView.footer.shouldShowWithAction(shouldShowFooter(template)) {
             itemView.footerBackground.visibility = View.GONE
-            if (template.ctaLink && !TextUtils.isEmpty(footer.buttonCta.text) && !templateBody.postTag) {
+            if (template.ctaLink && !TextUtils.isEmpty(footer.buttonCta.text) && !isPostTagAvailable) {
                 itemView.layoutFooterAction.show()
                 itemView.footerAction.text = footer.buttonCta.text
                 itemView.footerAction.setOnClickListener { listener.onFooterActionClick(adapterPosition, footer.buttonCta.appLink) }
@@ -336,20 +337,31 @@ class DynamicPostViewHolder(v: View,
         itemView.layoutPostTag.shouldShowWithAction(shouldShowPostTag(postTag, template)) {
             if (postTag.text.isNotEmpty()) {
                 itemView.cardTitlePostTag.text = postTag.text
-                itemView.cardTitlePostTag.visibility = View.VISIBLE
+                itemView.cardTitlePostTag.show()
+            } else{
+                itemView.cardTitlePostTag.hide()
             }
-            val layoutManager: RecyclerView.LayoutManager = when(postTag.totalItems) {
-                1 -> LinearLayoutManager(itemView.context)
-                else -> GridLayoutManager(itemView.context, 3)
+            if (postTag.totalItems > 0) {
+                itemView.rvPosttag.show()
+                val layoutManager: RecyclerView.LayoutManager = when (postTag.totalItems) {
+                    1 -> LinearLayoutManager(itemView.context)
+                    else -> GridLayoutManager(itemView.context, 3)
+                }
+                itemView.rvPosttag.layoutManager = layoutManager
+                itemView.rvPosttag.adapter = PostTagAdapter(postTag.items, listener, adapterPosition)
+                itemView.rvPosttag.adapter.notifyDataSetChanged()
+            } else {
+                itemView.rvPosttag.hide()
             }
-            itemView.rvPosttag.layoutManager = layoutManager
-            itemView.rvPosttag.adapter = PostTagAdapter(postTag.items, listener, adapterPosition)
-            itemView.rvPosttag.adapter.notifyDataSetChanged()
         }
     }
 
     private fun shouldShowPostTag(postTag: PostTag, template: TemplateBody): Boolean {
-        return template.postTag || postTag.totalItems != 0 || postTag.items.size != 0
+        return template.postTag || isPostTagAvailable(postTag)
+    }
+
+    private fun isPostTagAvailable(postTag: PostTag) : Boolean {
+        return postTag.totalItems != 0 || postTag.items.size != 0
     }
 
     interface DynamicPostListener {
@@ -370,5 +382,7 @@ class DynamicPostViewHolder(v: View,
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
 
         fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String)
+
+        fun onAffiliateTrackClicked(trackList : MutableList<TrackingViewModel>)
     }
 }
