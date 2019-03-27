@@ -820,12 +820,12 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                 mValueMembershipDescription = data.getStatus().getTier().getNameDesc();
                 mTextMembershipValue.setText(mValueMembershipDescription);
                 mTextMembershipValueBottom.setText(mValueMembershipDescription);
+                ImageHandler.loadImageFitCenter(mImgBackground.getContext(), mImgBackground,data.getStatus().getTier().getBackgroundImgURLMobile());
                 ImageHandler.loadImageCircle2(getActivityContext(), mImgEgg, data.getStatus().getTier().getEggImageHomepageURL());
                 ImageHandler.loadImageCircle2(getActivityContext(), mImgEggBottom, data.getStatus().getTier().getEggImageHomepageURL());
             }
 
             if (data.getStatus().getPoints() != null) {
-                ImageHandler.loadImageCircle2(getActivityContext(), mImgBackground, data.getStatus().getPoints().getBackgroundImgURLMobile());
                 mTextPoints.setText(CurrencyFormatUtil.convertPriceValue(data.getStatus().getPoints().getReward(), false));
                 mTextPointsBottom.setText(CurrencyFormatUtil.convertPriceValue(data.getStatus().getPoints().getReward(), false));
                 mTextLoyalty.setText(CurrencyFormatUtil.convertPriceValue(data.getStatus().getPoints().getLoyalty(), false));

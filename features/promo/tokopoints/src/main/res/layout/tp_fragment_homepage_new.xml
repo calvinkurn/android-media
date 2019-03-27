@@ -58,9 +58,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/tp_home_top_bg_height"
                                 android:layout_alignParentTop="true"
-                                android:scaleType="fitXY"
-                                android:src="@drawable/temp" />
-
+                                android:scaleType="fitXY" />
 
                             <ImageView
                                 android:id="@+id/img_egg"
