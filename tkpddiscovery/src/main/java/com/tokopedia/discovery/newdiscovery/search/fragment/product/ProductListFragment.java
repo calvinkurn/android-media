@@ -136,27 +136,8 @@ public class ProductListFragment extends SearchSectionFragment
     private void loadDataFromArguments() {
         if(getArguments() != null) {
             copySearchParameter(getArguments().getParcelable(EXTRA_SEARCH_PARAMETER));
-
             productViewModel = getArguments().getParcelable(ARG_VIEW_MODEL);
-            if (productViewModel != null) {
-                setForceSearch(productViewModel.isForceSearch());
-                renderDynamicFilter(productViewModel.getDynamicFilterModel());
-            }
-
-            initFilterControllerForQuickFilterIfExists();
         }
-    }
-
-    private void initFilterControllerForQuickFilterIfExists() {
-        if(isProductViewModelHasQuickFilter()) {
-            initQuickFilter(productViewModel.getQuickFilterModel().getFilter());
-        }
-    }
-
-    private boolean isProductViewModelHasQuickFilter() {
-        return productViewModel != null
-                && productViewModel.getQuickFilterModel() != null
-                && productViewModel.getQuickFilterModel().getFilter() != null;
     }
 
     @Override
@@ -192,6 +173,13 @@ public class ProductListFragment extends SearchSectionFragment
         initTopAdsParams();
         setupAdapter();
         setupListener();
+
+        if (productViewModel != null) {
+            setForceSearch(productViewModel.isForceSearch());
+            renderDynamicFilter(productViewModel.getDynamicFilterModel());
+        }
+
+        initFilterControllerForQuickFilterIfExists();
     }
 
     @Override
@@ -295,6 +283,18 @@ public class ProductListFragment extends SearchSectionFragment
         }
     }
 
+    private void initFilterControllerForQuickFilterIfExists() {
+        if(isProductViewModelHasQuickFilter()) {
+            initQuickFilter(productViewModel.getQuickFilterModel().getFilter());
+        }
+    }
+
+    private boolean isProductViewModelHasQuickFilter() {
+        return productViewModel != null
+                && productViewModel.getQuickFilterModel() != null
+                && productViewModel.getQuickFilterModel().getFilter() != null;
+    }
+
     private EndlessRecyclerviewListener getEndlessRecyclerViewListener(LinearLayoutManager linearLayoutManager) {
         return new EndlessRecyclerviewListener(linearLayoutManager) {
             @Override
@@ -352,6 +352,8 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void setProductList(List<Visitable> list) {
+        isListEmpty = false;
+
         sendProductImpressionTrackingEvent(list);
 
         adapter.appendItems(list);
@@ -721,13 +723,15 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void setEmptyProduct() {
-        adapter.showEmptyState(getActivity(), productViewModel.getQuery(), isFilterActive(), getFlagFilterHelper(), getString(R.string.product_tab_title).toLowerCase());
+        isListEmpty = true;
         SearchTracking.eventSearchNoResult(getActivity(), productViewModel.getQuery(), getScreenName(), getSelectedFilter());
     }
 
     @Override
-    protected void refreshEmptyStateAdapter() {
-        adapter.notifyDataSetChanged();
+    protected void refreshAdapterForEmptySearch() {
+        if (adapter != null) {
+            adapter.showEmptyState(getActivity(), productViewModel.getQuery(), isFilterActive(), getFlagFilterHelper(), getString(R.string.product_tab_title).toLowerCase());
+        }
     }
 
     @Override

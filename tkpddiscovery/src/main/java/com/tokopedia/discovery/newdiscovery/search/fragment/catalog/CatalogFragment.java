@@ -408,17 +408,20 @@ public class CatalogFragment extends SearchSectionFragment implements
     public void successRefreshCatalog(List<Visitable> visitables) {
         topAdsRecyclerAdapter.hideLoading();
         if (!visitables.isEmpty()) {
+            isListEmpty = false;
             catalogAdapter.setElement(visitables);
         } else {
+            isListEmpty = true;
             topAdsRecyclerAdapter.shouldLoadAds(false);
-            catalogAdapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getFlagFilterHelper(), getString(R.string.catalog_tab_title).toLowerCase());
             SearchTracking.eventSearchNoResult(getActivity(), getQueryKey(), getScreenName(), getSelectedFilter());
         }
     }
 
     @Override
-    protected void refreshEmptyStateAdapter() {
-        catalogAdapter.notifyDataSetChanged();
+    protected void refreshAdapterForEmptySearch() {
+        if (catalogAdapter != null) {
+            catalogAdapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getFlagFilterHelper(), getString(R.string.catalog_tab_title).toLowerCase());
+        }
     }
 
     @Override

@@ -93,6 +93,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     private FilterFlagSelectedModel flagFilterHelper;
     private boolean isGettingDynamicFilter;
     private boolean isUsingBottomSheetFilter;
+    protected boolean isListEmpty = false;
 
     protected SearchParameter searchParameter;
     protected FilterController emptySearchFilterController = new FilterController();
@@ -466,11 +467,13 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     private void initializeEmptySearchFilterController() {
-        emptySearchFilterController.initFilterController(searchParameter.getSearchParameterHashMap(), getFilters());
-        refreshEmptyStateAdapter();
+        if(isListEmpty) {
+            emptySearchFilterController.initFilterController(searchParameter.getSearchParameterHashMap(), getFilters());
+            refreshAdapterForEmptySearch();
+        }
     }
 
-    protected abstract void refreshEmptyStateAdapter();
+    protected abstract void refreshAdapterForEmptySearch();
 
     @Override
     public void renderFailGetDynamicFilter() {

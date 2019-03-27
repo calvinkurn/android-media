@@ -266,6 +266,8 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     private void handleSearchResult(List<ShopViewModel.ShopItem> shopItemList, boolean isHasNextPage, int startRow) {
+        isListEmpty = false;
+
         enrichPositionData(shopItemList, startRow);
         isNextPageAvailable = isHasNextPage;
         adapter.removeLoading();
@@ -290,14 +292,16 @@ public class ShopListFragment extends SearchSectionFragment
         isNextPageAvailable = false;
         adapter.removeLoading();
         if (adapter.isListEmpty()) {
-            adapter.showEmptyState(getActivity(), getSearchParameter().getSearchQuery(), isFilterActive(), null, getString(R.string.shop_tab_title).toLowerCase());
+            isListEmpty = true;
             SearchTracking.eventSearchNoResult(getActivity(), getSearchParameter().getSearchQuery(), getScreenName(), getSelectedFilter());
         }
     }
 
     @Override
-    protected void refreshEmptyStateAdapter() {
-        adapter.notifyDataSetChanged();
+    protected void refreshAdapterForEmptySearch() {
+        if (adapter != null) {
+            adapter.showEmptyState(getActivity(), getSearchParameter().getSearchQuery(), isFilterActive(), null, getString(R.string.shop_tab_title).toLowerCase());
+        }
     }
 
     @Override
