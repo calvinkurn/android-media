@@ -122,17 +122,28 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         cbSelectShop.setChecked(cartShopHolderData.isAllSelected());
         cbSelectShop.setOnClickListener(cbSelectShopClickListener(cartShopHolderData));
 
-        /*if(promoDataMerchant.getState() != TickerMerchantPromoCheckoutView.State.FAILED){
-            actionListener.onCartPromoMerchantTrackingImpression(promoDataMerchant, position);
-        }*/
     }
 
-    private void renderPromoMerchant(CartShopHolderData cartShopHolderData, boolean isEnabled) {
+    private void renderPromoMerchant(CartShopHolderData cartShopHolderData, boolean priorityToEnabled) {
         if (cartShopHolderData.getShopGroupData().isHasPromoList()) {
             tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
-            if (!isEnabled) {
-                tickerPromoStackingCheckoutView.disableView();
-                cartShopHolderData.getShopGroupData().setVoucherOrdersItemData(null);
+
+            if (!priorityToEnabled) {
+                int disabledItem = 0;
+                for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                    if (!cartItemHolderData.isSelected()) {
+                        disabledItem++;
+                    }
+                }
+                if (disabledItem == cartShopHolderData.getShopGroupData().getCartItemDataList().size()) {
+                    tickerPromoStackingCheckoutView.disableView();
+                } else {
+                    tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.EMPTY);
+                }
+                if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null) {
+                    actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode(), getAdapterPosition(), true);
+                    cartShopHolderData.getShopGroupData().setVoucherOrdersItemData(null);
+                }
             } else {
                 tickerPromoStackingCheckoutView.enableView();
                 if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null) {
@@ -174,6 +185,20 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                         actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode(), getAdapterPosition(), true);
                     }
                 });
+
+                int disabledItem = 0;
+                for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                    if (!cartItemHolderData.isSelected()) {
+                        disabledItem++;
+                    }
+                }
+                if (disabledItem == cartShopHolderData.getShopGroupData().getCartItemDataList().size()) {
+                    tickerPromoStackingCheckoutView.disableView();
+                    if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null) {
+                        actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode(), getAdapterPosition(), true);
+                        cartShopHolderData.getShopGroupData().setVoucherOrdersItemData(null);
+                    }
+                }
             }
         } else {
             tickerPromoStackingCheckoutView.setVisibility(View.GONE);
@@ -200,7 +225,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             flShopItemContainer.setForeground(ContextCompat.getDrawable(flShopItemContainer.getContext(), R.drawable.fg_enabled_item));
             llShopContainer.setBackgroundColor(llShopContainer.getContext().getResources().getColor(R.color.white));
             layoutError.setVisibility(View.GONE);
-            renderPromoMerchant(data, cbSelectShop.isChecked());
+            renderPromoMerchant(data, true);
         }
     }
 
