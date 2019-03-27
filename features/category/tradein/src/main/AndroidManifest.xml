@@ -7,8 +7,7 @@
         android:allowBackup="true"
         android:label="Tukar Tambah"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        tools:replace="android:label">
+        android:usesCleartextTraffic="true">
         <activity
             android:name="view.viewcontrollers.TradeInHomeActivity"
             android:label="@string/tukar_tambah" />
