@@ -5,27 +5,28 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
+import android.net.http.SslError
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.BottomSheetDialogFragment
+import android.support.design.widget.Snackbar
 import android.util.DisplayMetrics
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.Toast
+import android.widget.*
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView
 import com.tokopedia.abstraction.base.view.webview.TkpdWebViewClient
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.common.data.GroupChatUrl
@@ -181,8 +182,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         progressBar = view.findViewById(R.id.progress_bar)
         progressBar.isIndeterminate = true
         webview.setOnKeyListener(this)
-        webview.settings.javaScriptEnabled = true
-        webview.addJavascriptInterface(WebViewResizer(), "WebViewResizer")
+//        webview.addJavascriptInterface(WebViewResizer(), "WebViewResizer")
         webview.settings.cacheMode = WebSettings.LOAD_NO_CACHE
         webview.settings.domStorageEnabled = true
         webview.settings.javaScriptEnabled = true
@@ -290,11 +290,11 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
             override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
                 super.onReceivedError(view, request, error)
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    Toast.makeText(view?.context,"desc "+ error?.description, Toast.LENGTH_LONG).show()
-                    Toast.makeText(view?.context, "code " + error?.errorCode, Toast.LENGTH_LONG).show()
-                }
                 webview.hide()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    var text= error?.errorCode.toString() +" "+ error?.description
+                    errorView.findViewById<TextView>(R.id.error_subtitle).text = text
+                }
                 errorView.show()
 
             }
@@ -306,8 +306,13 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
-                webview.loadUrl("javascript:window.WebViewResizer.processHeight(document.querySelector('body').offsetHeight);")
+//                webview.loadUrl("javascript:window.WebViewResizer.processHeight(document.querySelector('body').offsetHeight);")
                 super.onPageFinished(view, url)
+            }
+
+            override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
+                Toast.makeText(view?.context, "ssl "+ error.toString(), Toast.LENGTH_LONG).show()
+                super.onReceivedSslError(view, handler, error)
             }
         }
     }
