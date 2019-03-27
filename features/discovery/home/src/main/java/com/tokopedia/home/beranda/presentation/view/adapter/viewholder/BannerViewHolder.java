@@ -126,9 +126,4 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
     public void onResume() {
         bannerView.startAutoScrollBanner();
     }
-
-    @Override
-    public void onRefresh() {
-
-    }
 }

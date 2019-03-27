@@ -850,9 +850,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRefresh() {
-        if (activityStateListener != null) {
-            activityStateListener.onRefresh();
-        }
         resetFeedState();
         removeNetworkError();
         if (presenter != null) {

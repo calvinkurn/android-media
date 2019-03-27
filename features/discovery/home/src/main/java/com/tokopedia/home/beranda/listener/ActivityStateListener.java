@@ -9,6 +9,4 @@ public interface ActivityStateListener {
 
     void onResume();
 
-    void onRefresh();
-
 }
