@@ -21,8 +21,10 @@ import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
+import android.support.v4.widget.NestedScrollView
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
+import android.util.Log
 import android.view.*
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
@@ -40,6 +42,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.design.widget.ObservableNestedScrollView
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
 import com.tokopedia.gallery.ImageReviewGalleryActivity
@@ -322,6 +325,16 @@ class ProductDetailFragment : BaseDaggerFragment() {
         if (isAffiliate){
             actionButtonView.gone()
             base_btn_affiliate.visible()
+        }
+
+        nested_scroll.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+            Log.e(javaClass.canonicalName, "scroll changed $scrollX $scrollY $oldScrollX $oldScrollX")
+        }
+
+        nested_scroll.listener = object : ObservableNestedScrollView.ScrollViewListener {
+            override fun onScrollEnded(scrollView: ObservableNestedScrollView, x: Int, y: Int, oldX: Int, oldY: Int) {
+                Log.e(javaClass.canonicalName, "scroll ended $x $y $oldX $oldY")
+            }
         }
 
         merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(object : MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
