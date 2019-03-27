@@ -292,7 +292,7 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
             builder.setAuthorizationMode(fun.convert(maps,ReactConst.Networking.AUTHORIZATIONMODE));
 
             HashMap<String, Object> headers = getHashMap.convert(maps, ReactConst.Networking.HEADERS);
-            if(url.contains("/hoth/discovery/api/page")){
+            if(url.contains("/hoth/discovery/api/page/flash-sale")){
                 if(!TextUtils.isEmpty(getSensorData()))
                 headers.put("X-acf-sensor-data", getSensorData());
             }
