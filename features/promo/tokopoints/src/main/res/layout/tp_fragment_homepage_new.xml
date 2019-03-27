@@ -23,7 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="@dimen/tp_margin_large" />
+                android:theme="@style/TPProgressBar" />
 
             <android.support.design.widget.CoordinatorLayout
                 android:id="@+id/col_header"
@@ -58,9 +58,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/tp_home_top_bg_height"
                                 android:layout_alignParentTop="true"
-                                android:scaleType="fitXY"
-                                android:src="@drawable/temp" />
-
+                                android:scaleType="fitXY" />
 
                             <ImageView
                                 android:id="@+id/img_egg"
@@ -160,7 +158,7 @@
                 </android.support.design.widget.AppBarLayout>
 
 
-                <android.support.v4.view.ViewPager
+                <com.tokopedia.tokopoints.view.customview.CustomViewPager
                     android:id="@+id/view_pager_promos"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -172,7 +170,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center_horizontal"
-                    android:layout_marginBottom="@dimen/dp_24"
+                    android:layout_marginBottom="@dimen/dp_40"
                     android:background="@color/transparent"
                     android:visibility="gone"
                     app:layout_behavior="com.tokopedia.tokopoints.view.util.QuickReturnFloaterBehavior">
@@ -189,7 +187,16 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <include layout="@layout/tp_bottomview_membership" />
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dp_16"
+                        app:cardCornerRadius="8dp"
+                        app:cardUseCompatPadding="true">
+
+                        <include layout="@layout/tp_bottomview_membership_new" />
+
+                    </android.support.v7.widget.CardView>
                 </LinearLayout>
 
 
