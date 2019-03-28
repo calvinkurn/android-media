@@ -63,7 +63,21 @@ public class RouteManager {
     }
 
     public static boolean isSupportApplink(Context context, String applink) {
-        return ((ApplinkRouter) context.getApplicationContext()).isSupportApplink(applink);
+        if (applink.startsWith(ApplinkConstInternal.INTERNAL_SCHEME)) {
+            Intent intent;
+            if (ProductDetailRouteManager.isProductApplink(applink)){
+                intent = getProductIntent(context, applink);
+            } else {
+                intent = buildInternalUri(context, applink);
+            }
+            if (intent.resolveActivity(context.getPackageManager()) != null) {
+                return true;
+            } else {
+                return ((ApplinkRouter) context.getApplicationContext()).isSupportApplink(applink);
+            }
+        } else {
+            return ((ApplinkRouter) context.getApplicationContext()).isSupportApplink(applink);
+        }
     }
 
     public static String routeWithAttribution(Context context, String applink,

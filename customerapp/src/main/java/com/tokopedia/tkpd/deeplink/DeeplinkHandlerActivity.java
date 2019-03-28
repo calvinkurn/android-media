@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.deeplink;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -339,11 +340,14 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         if (applink != null) {
             try {
                 TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
-                if (getApplicationContext() instanceof TkpdCoreRouter) {
-                    taskStackBuilder.addNextIntent(
-                            HomeRouter.getHomeActivityInterfaceRouter(this)
-                    );
+                if (isTaskRoot()) {
+                    if (getApplicationContext() instanceof TkpdCoreRouter) {
+                        taskStackBuilder.addNextIntent(
+                                HomeRouter.getHomeActivityInterfaceRouter(this)
+                        );
+                    }
                 }
+
                 Intent nextIntent = ((ApplinkRouter) getApplicationContext()).applinkDelegate().getIntent(this, applink.toString());
                 if (getIntent() != null && getIntent().getExtras() != null)
                     nextIntent.putExtras(getIntent().getExtras());
