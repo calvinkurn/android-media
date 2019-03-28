@@ -192,6 +192,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="@dimen/dp_16"
+            android:translationZ="-2dp"
             tools:visibility="visible">
 
             <LinearLayout
