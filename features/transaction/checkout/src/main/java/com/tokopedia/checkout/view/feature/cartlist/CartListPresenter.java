@@ -44,7 +44,6 @@ import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
-import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -413,7 +412,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processUpdateCartDataPromo(List<CartItemData> cartItemDataList, PromoData promoData, int stateGoTo) {
+    public void processUpdateCartDataPromoMerchant(List<CartItemData> cartItemDataList, ShopGroupData shopGroupData) {
         view.showProgressLoading();
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : cartItemDataList) {
@@ -435,7 +434,7 @@ public class CartListPresenter implements ICartListPresenter {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())
-                        .subscribe(getSubscriberUpdateCartPromo(promoData, stateGoTo))
+                        .subscribe(getSubscriberUpdateCartPromoMerchant(shopGroupData))
         );
     }
 
@@ -466,7 +465,7 @@ public class CartListPresenter implements ICartListPresenter {
         );
     }
 
-    private Subscriber<UpdateCartData> getSubscriberUpdateCartPromo(PromoData promoData, int stateGoTo) {
+    private Subscriber<UpdateCartData> getSubscriberUpdateCartPromoMerchant(ShopGroupData shopGroupData) {
         return new Subscriber<UpdateCartData>() {
             @Override
             public void onCompleted() {
@@ -476,39 +475,21 @@ public class CartListPresenter implements ICartListPresenter {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                view.hideProgressLoading();
-                if (e instanceof UnknownHostException) {
-                    view.showToastMessageRed(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    view.showToastMessageRed(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof CartResponseErrorException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else if (e instanceof CartResponseDataNullException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else if (e instanceof CartHttpErrorException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else if (e instanceof ResponseCartApiErrorException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else {
-                    view.showToastMessageRed(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                if (view != null) {
+                    view.hideProgressLoading();
+                    view.showToastMessageRed(ErrorHandler.getErrorMessage(view.getActivity(), e));
+                    processInitialGetCartData(cartListData == null);
                 }
-                processInitialGetCartData(cartListData == null);
             }
 
             @Override
             public void onNext(UpdateCartData data) {
-                view.hideProgressLoading();
-                if (!data.isSuccess()) {
-                    view.showToastMessageRed(data.getMessage());
-                } else {
-                    if (stateGoTo == CartFragment.GO_TO_LIST) {
-                        view.goToCouponList();
+                if (view != null) {
+                    view.hideProgressLoading();
+                    if (!data.isSuccess()) {
+                        view.showToastMessageRed(data.getMessage());
                     } else {
-                        view.goToDetail(promoData);
+                        view.showMerchantVoucherListBottomsheet(shopGroupData);
                     }
                 }
             }

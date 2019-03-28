@@ -5,6 +5,7 @@ import android.app.Activity;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.promostacking.ResponseFirstStep;
@@ -135,4 +136,6 @@ public interface ICartListView extends IBaseView {
     void onFailedClearPromoStack(boolean ignoreAPIResponse);
 
     CheckPromoFirstStepParam generateCheckPromoFirstStepParam();
+
+    void showMerchantVoucherListBottomsheet(ShopGroupData shopGroupData);
 }

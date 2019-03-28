@@ -613,7 +613,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     /*@Override
     public void onCartPromoUseVoucherPromoClicked(PromoData promoData, int position) {
         trackingPromoCheckoutUtil.cartClickUseTickerPromoOrCoupon();
-        dPresenter.processUpdateCartDataPromo(getSelectedCartDataList(), promoData, GO_TO_LIST);
+        dPresenter.processUpdateCartDataPromoMerchant(getSelectedCartDataList(), promoData, GO_TO_LIST);
     }*/
 
     @Override
@@ -624,19 +624,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onVoucherMerchantPromoClicked(Object object) {
-        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
         if (object instanceof ShopGroupData) {
-            if (getFragmentManager() != null) {
-                try {
-                    showMerchantVoucherListBottomsheet(
-                            Integer.parseInt(((ShopGroupData) object).getShopId()),
-                            ((ShopGroupData) object).getCartString(),
-                            checkPromoFirstStepParam
-                    );
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-            }
+            dPresenter.processUpdateCartDataPromoMerchant(getSelectedCartDataList(), (ShopGroupData) object);
         }
     }
 
@@ -801,7 +790,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     /*@Override
     public void onClickDetailPromo(PromoData data, int position) {
         trackingPromoCheckoutUtil.cartClickTicker(data.getPromoCodeSafe());
-        dPresenter.processUpdateCartDataPromo(getSelectedCartDataList(), data, GO_TO_DETAIL);
+        dPresenter.processUpdateCartDataPromoMerchant(getSelectedCartDataList(), data, GO_TO_DETAIL);
     }*/
 
     @Override
@@ -1904,10 +1893,22 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         }
     }
 
-    private void showMerchantVoucherListBottomsheet(int shopId, String cartString, CheckPromoFirstStepParam checkPromoFirstStepParam) {
-        MerchantVoucherListBottomSheetFragment merchantVoucherListBottomSheetFragment = MerchantVoucherListBottomSheetFragment.newInstance(shopId, cartString, checkPromoFirstStepParam);
-        merchantVoucherListBottomSheetFragment.setActionListener(this);
-        merchantVoucherListBottomSheetFragment.show(getFragmentManager(), "");
+    @Override
+    public void showMerchantVoucherListBottomsheet(ShopGroupData shopGroupData) {
+        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
+        if (getFragmentManager() != null) {
+            int shopId = 0;
+            try {
+                shopId = Integer.parseInt(shopGroupData.getShopId());
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+
+            MerchantVoucherListBottomSheetFragment merchantVoucherListBottomSheetFragment =
+                    MerchantVoucherListBottomSheetFragment.newInstance(shopId, shopGroupData.getCartString(), checkPromoFirstStepParam);
+            merchantVoucherListBottomSheetFragment.setActionListener(this);
+            merchantVoucherListBottomSheetFragment.show(getFragmentManager(), "");
+        }
     }
 
     @Override
