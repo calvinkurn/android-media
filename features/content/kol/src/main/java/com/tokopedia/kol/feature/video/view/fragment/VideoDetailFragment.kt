@@ -162,7 +162,6 @@ class VideoDetailFragment:
     }
 
     private fun initPlayer(url: String) {
-        val mediaController = MediaController(activity!!)
         mediaController.setAnchorView(videoView)
         videoView.setMediaController(mediaController)
         videoView.setVideoURI(Uri.parse(url))
@@ -244,7 +243,7 @@ class VideoDetailFragment:
         captionModel.let {
             if (it.text.isEmpty()) {
                 caption.visibility = View.GONE
-            } else if (caption.text.length > DynamicPostViewHolder.MAX_CHAR) {
+            } else if (it.text.length > DynamicPostViewHolder.MAX_CHAR) {
                 caption.visibility = View.VISIBLE
                 val captionText = caption.text.substring(0, DynamicPostViewHolder.CAPTION_END)
                         .replace(DynamicPostViewHolder.NEWLINE, "<br />")
@@ -262,7 +261,7 @@ class VideoDetailFragment:
                     }
                 }
             } else {
-//                caption.text = caption.text.replace(DynamicPostViewHolder.NEWLINE, " ")
+                it.text = it.text.replace(DynamicPostViewHolder.NEWLINE, " ")
             }
         }
     }
