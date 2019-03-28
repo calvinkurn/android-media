@@ -159,6 +159,7 @@ class VideoDetailFragment:
 
             like.value = like.value - 1
         }
+        bindLike(like)
     }
 
     override fun onLikeKolError(message: String?) {
@@ -232,13 +233,23 @@ class VideoDetailFragment:
             activity!!.finish()
         })
 
-        likeIcon.setOnClickListener({
-            presenter.likeKol(0,0, this)
-        })
+        likeIcon.setOnClickListener(onLikeSectionClicked())
+        likeText.setOnClickListener(onLikeSectionClicked())
 
-        commentIcon.setOnClickListener({
+        commentIcon.setOnClickListener(onCommentSectionClicked())
+        commentText.setOnClickListener(onCommentSectionClicked())
+    }
+
+    private fun onLikeSectionClicked(): View.OnClickListener {
+        return View.OnClickListener {
+            presenter.likeKol(id.toInt(), 0, this)
+        }
+    }
+
+    private fun onCommentSectionClicked(): View.OnClickListener {
+        return View.OnClickListener {
             startActivityForResult(KolCommentActivity.getCallingIntent(activity!!, id.toInt(), 0), INTENT_COMMENT)
-        })
+        }
     }
 
     private fun resizeVideo(mVideoWidth: Int, mVideoHeight: Int) {

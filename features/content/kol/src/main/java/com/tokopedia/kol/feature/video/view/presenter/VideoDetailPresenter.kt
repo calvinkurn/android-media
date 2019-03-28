@@ -74,6 +74,11 @@ class VideoDetailPresenter
         )
     }
     private fun getUserId(): String {
-        return view.getUserSession().userId ?: "0"
+        var userId = "0"
+        if (view.getUserSession().userId.isNotEmpty()) {
+            userId = view.getUserSession().userId
+        }
+
+        return userId
     }
 }
