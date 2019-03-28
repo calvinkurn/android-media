@@ -16,7 +16,7 @@ project.ext {
     artifactId = 'hotel'
     groupId = 'com.tokopedia.hotel'
     versionName = "2.22"
-    artifactName ="tkpdhotel-release"
+    artifactName = "tkpdhotel-release"
 }
 
 buildscript {

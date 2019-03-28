@@ -1,1 +1,12 @@
-<manifest package="com.tokopedia.hotel" />
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.hotel">
+
+    <application>
+        <activity android:name=".homepage.presentation.activity.HotelHomepageActivity"
+            android:label="@string/hotel_homepage_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Hotel" />
+    </application>
+
+</manifest>
