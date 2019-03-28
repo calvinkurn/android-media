@@ -90,7 +90,6 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     }
                     TYPE_CARDPOST -> {
                         if (feed.activity != ACTIVITY_TOPADS) {
-                            feed
                             mapCardPost(posts, feed, templateData.template)
                         }
                     }

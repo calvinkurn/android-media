@@ -35,7 +35,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
@@ -2028,10 +2027,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onVideoPlayerClicked(int positionInFeed,
                                      int contentPosition,
-                                     String id) {
+                                     String postId) {
         startActivity(VideoDetailActivity.Companion.getInstance(
                 getActivity(),
-                id));
+                postId));
     }
 
     private void goToContentReport(int contentId) {

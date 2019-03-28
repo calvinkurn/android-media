@@ -21,7 +21,7 @@ class VideoViewHolder(private val listener: VideoViewListener): BasePostViewHold
            listener.onVideoPlayerClicked(
                    element.positionInFeed,
                    pagerPosition,
-                   element.id)
+                   element.postId.toString())
         }
         itemView.image.viewTreeObserver.addOnGlobalLayoutListener(
                 object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -46,7 +46,7 @@ class VideoViewHolder(private val listener: VideoViewListener): BasePostViewHold
 
         fun onVideoPlayerClicked(positionInFeed: Int,
                                  contentPosition: Int,
-                                 id: String)
+                                 postId: String)
 
         fun onAffiliateTrackClicked(trackList : MutableList<TrackingViewModel>)
     }

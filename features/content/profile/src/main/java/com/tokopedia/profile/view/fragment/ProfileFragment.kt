@@ -812,10 +812,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onVideoPlayerClicked(
             positionInFeed: Int,
             contentPosition: Int,
-            id: String) {
+            postId: String) {
         startActivity(VideoDetailActivity.getInstance(
                 activity!!,
-                id))
+                postId))
 
     }
 
