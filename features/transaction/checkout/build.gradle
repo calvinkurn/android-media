@@ -26,6 +26,7 @@ project.ext {
 dependencies {
     implementation project(rootProject.ext.libraries.trackinterface)
     implementation project(rootProject.ext.libraries.track)
+    implementation project(":libraries:akamai_bot_lib")
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.design)
@@ -56,6 +57,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.shippingRecommendation)
+    implementation project(rootProject.ext.features.resourcesCommon)
 
     implementation rootProject.ext.firebase.performance
     implementation project(rootProject.ext.features.promoCheckoutCommon)

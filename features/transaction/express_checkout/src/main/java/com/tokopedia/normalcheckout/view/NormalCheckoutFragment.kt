@@ -48,9 +48,10 @@ import com.tokopedia.normalcheckout.presenter.NormalCheckoutViewModel
 import com.tokopedia.normalcheckout.router.NormalCheckoutRouter
 import com.tokopedia.payment.activity.TopPayActivity
 import com.tokopedia.payment.model.PaymentPassData
-import com.tokopedia.product.detail.common.data.model.ProductInfo
-import com.tokopedia.product.detail.common.data.model.ProductParams
+import com.tokopedia.product.detail.common.data.model.product.ProductInfo
+import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.Child
+import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
@@ -118,6 +119,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         private const val TRACKER_LIST_NAME = "tracker_list_name"
 
         const val RESULT_PRODUCT_DATA_CACHE_ID = "product_data_cache"
+        const val RESULT_SELECTED_WAREHOUSE = "selected_warehouse"
         const val RESULT_PRODUCT_DATA = "product_data"
         const val RESULT_ATC_SUCCESS_MESSAGE = "atc_success_message"
 
@@ -339,12 +341,16 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
     }
 
-    private fun renderTotalPrice(productInfo: ProductInfo) {
+    private fun renderTotalPrice(productInfo: ProductInfo, selectedwarehouse: MultiOriginWarehouse?) {
         // if it has campaign, use campaign price
         var totalString = ""
         if (productInfo.campaign.activeAndHasId) {
+            val discountedPrice = if (selectedwarehouse != null && selectedwarehouse.warehouseInfo.id.isNotBlank()){
+                selectedwarehouse.price.toFloat()
+            } else productInfo.campaign.discountedPrice
+
             totalString = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                productInfo.campaign.discountedPrice.toDouble() * quantity, true)
+                discountedPrice.toDouble() * quantity, true)
         } else {
             // if it has wholesale, use the price in the wholesale range
             if (productInfo.hasWholesale) {
@@ -361,8 +367,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             }
         }
         tv_total.text = if (totalString.isEmpty()) {
+            val price = if (selectedwarehouse != null && selectedwarehouse.warehouseInfo.id.isNotBlank())
+                selectedwarehouse.price.toDouble()
+            else productInfo.basic.price.toDouble()
+
             CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                productInfo.basic.price.toDouble() * quantity, true)
+                price * quantity, true)
         } else {
             totalString
         }
@@ -491,10 +501,13 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 setResult(Activity.RESULT_OK, Intent().apply {
                     if (!selectedVariantId.isNullOrEmpty()) {
                         putExtra(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
-                        selectedProductInfo?.let { it ->
+                        selectedProductInfo?.let {
                             val cacheManager =
                                 SaveInstanceCacheManager(this@run, true).apply {
                                     put(RESULT_PRODUCT_DATA, it)
+                                    viewModel.selectedwarehouse?.let {
+                                        put(RESULT_SELECTED_WAREHOUSE, it)
+                                    }
                                 }
                             putExtra(RESULT_PRODUCT_DATA_CACHE_ID, cacheManager.id)
                         }
@@ -599,6 +612,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     private fun addToCart(oneClickShipment: Boolean, onFinish: ((message: String?, cartId: String?) -> Unit),
                           onRetryWhenError: (() -> Unit)) {
         val selectedVariant = selectedVariantId
+        val selectedWarehouseId: Int = viewModel.selectedwarehouse?.warehouseInfo?.id?.toInt() ?: 0
         showLoadingDialog()
         //initiate checkout
         normalCheckoutTracking.eventAppsFlyerInitiateCheckout(productId,
@@ -618,6 +632,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             .shopId(shopId?.toInt() ?: 0)
             .trackerAttribution(trackerAttribution)
             .trackerListName(trackerListName)
+            .warehouseId(selectedWarehouseId)
             .build(), oneClickShipment)
             .subscribeOn(Schedulers.io())
             .unsubscribeOn(Schedulers.io())
@@ -748,11 +763,16 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     private fun onProductChange(originalProduct: ProductInfoAndVariant, inputSelectedVariantId: String?) {
+        inputSelectedVariantId?.let {
+            if (viewModel.warehouses.isNotEmpty()){
+                viewModel.selectedwarehouse = viewModel.warehouses[it]
+            }
+        }
         selectedVariantId = inputSelectedVariantId
         selectedProductInfo = getSelectedProductInfo(originalProduct, selectedVariantId)
-        selectedProductInfo?.let { it ->
-            val viewModels = ModelMapper.convertVariantToModels(it, originalProduct.productVariant,
-                notes, quantity)
+        selectedProductInfo?.let {
+            val viewModels = ModelMapper.convertVariantToModels(it, viewModel.selectedwarehouse,
+                    originalProduct.productVariant, notes, quantity)
             fragmentViewModel.viewModels = viewModels
             quantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity
                 ?: 0
@@ -760,7 +780,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             adapter.addDataViewModel(viewModels)
             adapter.notifyDataSetChanged()
             renderActionButton(it)
-            renderTotalPrice(it)
+            renderTotalPrice(it, viewModel.selectedwarehouse)
         }
     }
 
@@ -768,7 +788,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         quantity = quantityViewModel.orderQuantity
         selectedProductInfo?.let {
             renderActionButton(it)
-            renderTotalPrice(it)
+            renderTotalPrice(it, viewModel.selectedwarehouse)
         }
         fragmentViewModel.isStateChanged = true
     }
