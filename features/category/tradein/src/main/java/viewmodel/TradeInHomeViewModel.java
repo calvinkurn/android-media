@@ -74,7 +74,7 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
                 deviceDiagInput.setDeviceId(diagnostics.getImei());
                 inData.setDeviceId(diagnostics.getImei());
                 deviceDiagInput.setDeviceReview(diagnostics.getReviewDetails());
-                deviceDiagInput.setNewPrice(activityWeakReference.get().getIntent().getIntExtra(TradeInParams.PARAM_NEW_PRICE, 0));
+                deviceDiagInput.setNewPrice(inData.getNewPrice());
                 deviceDiagInput.setOldPrice(diagnostics.getTradeInPrice());
                 variables.put("params", deviceDiagInput);
                 GraphqlUseCase gqlDeviceDiagInput = new GraphqlUseCase();
