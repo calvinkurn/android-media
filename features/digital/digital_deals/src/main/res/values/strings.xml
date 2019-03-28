@@ -7,7 +7,7 @@
     <string name="title_activity_deals">Deals</string>
     <string name="bantuan">Bantuan</string>
     <string name="promo">Promo</string>
-    <string name="trending_deals">TRENDING DEALS</string>
+    <string name="trending_deals">Trending Deals</string>
     <string name="search_input_hint_deals">Cari Deals atau Brand</string>
     <string name="search_input_hint_location">Cari Kota</string>
     <string name="empty_search_text_upper">Hasil pencarian Anda tidak dapat ditemukan.</string>

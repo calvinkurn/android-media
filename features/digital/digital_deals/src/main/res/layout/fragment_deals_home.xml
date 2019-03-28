@@ -227,12 +227,14 @@
                         android:id="@+id/tv_see_all_deals"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingRight="@dimen/dp_16"
+                        android:paddingLeft="@dimen/dp_12"
+                        android:paddingRight="@dimen/dp_12"
                         android:text="@string/see_all"
                         android:textSize="@dimen/sp_12"
                         android:textColor="#03ac0e"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_popular"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="@+id/tv_popular" />
 
 
                     <android.support.v7.widget.RecyclerView
