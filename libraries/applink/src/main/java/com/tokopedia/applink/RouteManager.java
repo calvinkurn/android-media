@@ -46,8 +46,13 @@ public class RouteManager {
     }
 
     public static Intent getIntent(Context context, String applinkPattern, String... parameter) {
-        // Temporary solution: Only internal scheme to build internal Uri
+        // Temporary solution: using airbnb applink
         String applink = UriUtil.buildUri(applinkPattern, parameter);
+        if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(applink)){
+            return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, applink);
+        }
+
+        // Solution to redirect based on internal-scheme, or deeplink registered in manifest
         Intent intent;
         if (applink.startsWith(ApplinkConstInternal.INTERNAL_SCHEME) &&
                 ProductDetailRouteManager.isProductApplink(applink)){
@@ -55,11 +60,7 @@ public class RouteManager {
         } else {
             intent = buildInternalUri(context, applink);
         }
-        if (intent.resolveActivity(context.getPackageManager()) != null) {
-            return intent;
-        } else {
-            return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, applink);
-        }
+        return intent;
     }
 
     public static boolean isSupportApplink(Context context, String applink) {
