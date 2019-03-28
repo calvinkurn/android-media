@@ -616,10 +616,14 @@ public class MainParentActivity extends BaseActivity implements
 
         showCaseDialog = createShowCase();
 
+        int bottomNavTopPos = bottomNavigation.getTop();
         int bottomNavBottomPos = bottomNavigation.getBottom();
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             bottomNavBottomPos =
                     bottomNavBottomPos - DisplayMetricUtils.getStatusBarHeight(this);
+            bottomNavTopPos =
+                    bottomNavTopPos - DisplayMetricUtils.getStatusBarHeight(this);
         }
         ArrayList<ShowCaseObject> showcases = new ArrayList<>();
         showcases.add(new ShowCaseObject(
@@ -628,7 +632,7 @@ public class MainParentActivity extends BaseActivity implements
                 getString(R.string.desc_showcase))
                 .withCustomTarget(new int[]{
                         bottomNavigation.getLeft(),
-                        bottomNavigation.getTop(),
+                        bottomNavTopPos,
                         bottomNavigation.getRight(),
                         bottomNavBottomPos} ));
         showcases.addAll(showCaseObjects);
