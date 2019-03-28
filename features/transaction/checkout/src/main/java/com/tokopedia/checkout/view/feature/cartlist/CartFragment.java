@@ -296,9 +296,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         llHeader = view.findViewById(R.id.ll_header);
         cbSelectAll = view.findViewById(R.id.cb_select_all);
         emptyCartContainer = view.findViewById(R.id.container_empty_cart);
-        statusBarBackground = view.findViewById(R.id.status_bar_bg);
-        statusBarBackground.getLayoutParams().height =
-                DisplayMetricUtils.getStatusBarHeight(getActivity());
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
@@ -328,6 +325,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     private void setupToolbar(View view) {
         Toolbar appbar = view.findViewById(R.id.toolbar);
+        statusBarBackground = view.findViewById(R.id.status_bar_bg);
+        statusBarBackground.getLayoutParams().height =
+                DisplayMetricUtils.getStatusBarHeight(getActivity());
+
         appBarLayout = view.findViewById(R.id.app_bar_layout);
         if (isToolbarWithBackButton) {
             toolbar = toolbarRemoveWithBackView();
