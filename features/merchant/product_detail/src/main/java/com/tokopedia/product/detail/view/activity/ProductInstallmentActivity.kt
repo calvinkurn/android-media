@@ -21,6 +21,7 @@ import com.tokopedia.product.detail.view.adapter.ProductInstallmentAdapter
 import com.tokopedia.product.detail.view.fragment.ProductInstallmentFragment
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.ProductInstallmentViewModel
+import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
