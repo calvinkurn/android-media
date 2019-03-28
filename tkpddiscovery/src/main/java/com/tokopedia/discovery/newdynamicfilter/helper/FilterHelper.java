@@ -172,6 +172,7 @@ public class FilterHelper {
         removeFiltersWithEmptyOption(list);
         mergeSizeFilterOptionsWithSameValue(list);
         removeBrandFilterOptionsWithSameValue(list);
+        removeValueFromOptionWithInputTypeTextBox(list);
 
         return list;
     }
@@ -251,5 +252,15 @@ public class FilterHelper {
             if (filter.isBrandFilter()) return filter;
         }
         return null;
+    }
+
+    private static Filter removeValueFromOptionWithInputTypeTextBox(List<Filter> filterList) {
+        for (Filter filter : filterList) {
+            for(Option option : filter.getOptions()) {
+                if(option.getInputType().equals(Option.INPUT_TYPE_TEXTBOX)) {
+                    option.setValue("");
+                }
+            }
+        }
     }
 }
