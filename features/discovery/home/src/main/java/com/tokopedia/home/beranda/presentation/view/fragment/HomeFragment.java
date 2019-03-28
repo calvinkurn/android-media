@@ -1299,16 +1299,20 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (homeMainToolbar == null)
             return null;
         ArrayList<ShowCaseObject> list = new ArrayList<>();
+        int statusBarHeight = ViewHelper.getStatusBarHeight(getActivity());
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            statusBarHeight = 0;
+        }
         list.add(new ShowCaseObject(homeMainToolbar.getBtnNotification(),
                 getString(R.string.sc_notif_title),
                 getString(R.string.sc_notif_desc))
         .withCustomTarget(new int[]{
                 homeMainToolbar.getBtnNotification().getLeft(),
                 homeMainToolbar.getBtnNotification().getTop()
-                + ViewHelper.getStatusBarHeight(getActivity()),
+                + statusBarHeight,
                 homeMainToolbar.getBtnNotification().getRight(),
                 homeMainToolbar.getBtnNotification().getBottom()
-                + ViewHelper.getStatusBarHeight(getActivity())
+                + statusBarHeight
         }));
         list.add(new ShowCaseObject(homeMainToolbar.getBtnWishlist(),
                 getString(R.string.sc_wishlist_title),
@@ -1316,10 +1320,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 .withCustomTarget(new int[]{
                 homeMainToolbar.getBtnWishlist().getLeft(),
                 homeMainToolbar.getBtnWishlist().getTop()
-                        + ViewHelper.getStatusBarHeight(getActivity()),
+                        + statusBarHeight,
                 homeMainToolbar.getBtnWishlist().getRight(),
                 homeMainToolbar.getBtnWishlist().getBottom()
-                        + ViewHelper.getStatusBarHeight(getActivity())
+                        + statusBarHeight
         }));
         return list;
     }
