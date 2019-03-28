@@ -40,6 +40,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePreview)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.websocket)
@@ -52,6 +53,7 @@ dependencies {
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.merchantVoucher)
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'

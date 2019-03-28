@@ -69,7 +69,6 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     private OnFragmentInteractionListener interactionListener;
     private String fileFromCameraLocTemp;
     private int positionChangedImage = -1;
-    private int positionUploading = -1;
 
     private FlightCancellationReasonViewModel selectedReason;
 
@@ -213,23 +212,6 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     @Override
     public void renderAttachment() {
         adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void setUploadingPosition(int position) {
-        positionUploading = position;
-    }
-
-    @Override
-    public int getUploadingPosition() {
-        return positionUploading;
-    }
-
-    @Override
-    public void updateUploadingProgress(long percentage) {
-        attachments.get(positionUploading).setPercentageUpload(percentage);
-        adapter.setElement(positionUploading, attachments.get(positionUploading));
-        renderAttachment();
     }
 
     @Override

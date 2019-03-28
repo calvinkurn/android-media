@@ -15,15 +15,13 @@ import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationReasonAndProofFragment;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
-import com.tokopedia.imageuploader.data.ProgressResponseBody;
 import com.tokopedia.imageuploader.di.ImageUploaderModule;
 
 /**
  * @author by alvarisi on 3/26/18.
  */
 public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
-        implements HasComponent<FlightCancellationComponent>, FlightCancellationReasonAndProofFragment.OnFragmentInteractionListener,
-        ProgressResponseBody.ProgressListener{
+        implements HasComponent<FlightCancellationComponent>, FlightCancellationReasonAndProofFragment.OnFragmentInteractionListener{
 
     private static final String EXTRA_CANCELLATION_VIEW_MODEL = "EXTRA_CANCELLATION_VIEW_MODEL";
     private static final int REQUEST_REVIEW_CODE = 1;
@@ -65,7 +63,7 @@ public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
         if (getApplication() instanceof FlightModuleRouter) {
             cancellationComponent = DaggerFlightCancellationComponent.builder()
                     .flightComponent(getFlightComponent())
-                    .imageUploaderModule(new ImageUploaderModule(this))
+                    .imageUploaderModule(new ImageUploaderModule())
                     .build();
         } else {
             throw new RuntimeException("Application must implement FlightModuleRouter");
@@ -115,12 +113,5 @@ public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
     private void closeReasonAndProofPage() {
         setResult(Activity.RESULT_OK);
         finish();
-    }
-
-    @Override
-    public void update(long bytesRead, long contentLength, boolean done) {
-        if (contentLength > 0) {
-            fragment.updateUploadingProgress(bytesRead / contentLength);
-        }
     }
 }

@@ -3,51 +3,73 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dp_8"
-    android:paddingBottom="@dimen/dp_8"
-    android:paddingRight="@dimen/dp_16"
+    android:background="@drawable/card_shadow_top"
+    android:orientation="horizontal"
     android:paddingLeft="@dimen/dp_16"
-    android:background="@color/white"
-    android:orientation="horizontal">
+    android:paddingTop="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_16">
+
+    <TextView
+        android:id="@+id/getCommission"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/affiliate_get_commission"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/sp_14"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/commission"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/getCommission"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toStartOf="@+id/buttonAffiliate"
+        android:layout_toLeftOf="@+id/buttonAffiliate"
+        android:textColor="@color/af_commission_blue"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:text="Rp500.000.000.000" />
+
 
     <RelativeLayout
         android:id="@+id/buttonAffiliate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/green_button_rounded">
+        android:layout_width="@dimen/dp_145"
+        android:layout_height="@dimen/dp_40"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/bg_button_green">
 
         <TextView
             android:id="@id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_8"
             android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_horizontal"
             android:text="@string/button_add_to_affiliate"
             android:textColor="@color/href_link_rev"
             android:textSize="@dimen/sp_14"
-            android:fontFamily="sans-serif-medium"
-            android:textStyle="normal"
-            android:gravity="center_horizontal"
-            />
+            android:textStyle="normal" />
 
         <ProgressBar
             android:id="@+id/loadingAffiliate"
+            style="?android:attr/progressBarStyleInverse"
             android:layout_width="@dimen/dp_18"
             android:layout_height="@dimen/dp_18"
-            android:layout_toLeftOf="@id/textView"
-            android:layout_toStartOf="@id/textView"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
-            android:visibility="gone"
-            tools:visibility="visible"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_toStartOf="@id/textView"
+            android:layout_toLeftOf="@id/textView"
             android:indeterminateDrawable="@drawable/ic_progress_loading"
-            style="?android:attr/progressBarStyleInverse"
-            />
+            android:visibility="gone"
+            tools:visibility="visible" />
 
     </RelativeLayout>
-
 
 </RelativeLayout>

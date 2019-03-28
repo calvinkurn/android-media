@@ -298,6 +298,11 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 dialog.setDesc(exitMessage.body)
                 dialog.setBtnOk(activity?.getString(R.string.exit_group_chat_yes))
                 dialog.setOnOkClickListener {
+                    dialog.dismiss()
+                }
+
+                dialog.setBtnCancel(activity?.getString(R.string.exit_group_chat_no))
+                dialog.setOnCancelClickListener {
                     viewState.getChannelInfo()?.let {
                         analytics.eventUserExit(it.channelId + " " + (System.currentTimeMillis() - enterTimeStamp))
                         if(!viewState.getDurationWatchVideo().isNullOrBlank() &&
@@ -313,9 +318,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                     }
                     activity?.finish()
                 }
-
-                dialog.setBtnCancel(activity?.getString(R.string.exit_group_chat_no))
-                dialog.setOnCancelClickListener { dialog.dismiss() }
             }
         }
     }
@@ -609,6 +611,14 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         analytics.eventClickDynamicButtons(channelInfoViewModel, it)
         when (it.contentType) {
             DynamicButtonsViewModel.TYPE_REDIRECT_EXTERNAL -> openRedirectUrl(it.contentLinkUrl)
+            DynamicButtonsViewModel.TYPE_OVERLAY_CTA -> viewState.onShowOverlayCTAFromDynamicButton(it)
+            DynamicButtonsViewModel.TYPE_OVERLAY_WEBVIEW -> viewState.onShowOverlayWebviewFromDynamicButton(it)
+        }
+    }
+
+    override fun onFloatingIconClicked(it: DynamicButtonsViewModel.Button, applink: String) {
+        when (it.contentType) {
+            DynamicButtonsViewModel.TYPE_REDIRECT_EXTERNAL -> openRedirectUrl(applink)
             DynamicButtonsViewModel.TYPE_OVERLAY_CTA -> viewState.onShowOverlayCTAFromDynamicButton(it)
             DynamicButtonsViewModel.TYPE_OVERLAY_WEBVIEW -> viewState.onShowOverlayWebviewFromDynamicButton(it)
         }

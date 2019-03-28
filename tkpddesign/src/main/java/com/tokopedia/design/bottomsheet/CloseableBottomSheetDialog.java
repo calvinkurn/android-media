@@ -7,7 +7,6 @@ import android.support.design.widget.BottomSheetDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,6 +22,7 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
 
     Context context;
     private CloseClickedListener closeListener;
+    private boolean isRounded;
 
     public interface CloseClickedListener {
         void onCloseDialog();
@@ -50,6 +50,20 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
     public static CloseableBottomSheetDialog createInstance(Context context) {
         final CloseableBottomSheetDialog closeableBottomSheetDialog = new CloseableBottomSheetDialog
                 (context);
+        closeableBottomSheetDialog.isRounded = false;
+        closeableBottomSheetDialog.setListener(new CloseClickedListener() {
+            @Override
+            public void onCloseDialog() {
+                closeableBottomSheetDialog.dismiss();
+            }
+        });
+        return closeableBottomSheetDialog;
+    }
+
+    public static CloseableBottomSheetDialog createInstanceRounded(Context context) {
+        final CloseableBottomSheetDialog closeableBottomSheetDialog = new CloseableBottomSheetDialog
+                (context, R.style.TransparentBottomSheetDialogTheme);
+        closeableBottomSheetDialog.isRounded = true;
         closeableBottomSheetDialog.setListener(new CloseClickedListener() {
             @Override
             public void onCloseDialog() {
@@ -87,13 +101,11 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
 
     @Override
     public void setContentView(View view) {
-        View contentView = inflateCustomView(view, "", true);
-        super.setContentView(contentView);
+        setContentView(view, "");
     }
 
     public void setContentView(View view, String title) {
-        View contentView = inflateCustomView(view, title, true);
-        super.setContentView(contentView);
+        setCustomContentView(view, title, true);
     }
 
     public void setCustomContentView(View view, String title, boolean isCloseable) {
@@ -102,6 +114,14 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
     }
 
     private View inflateCustomView(View view, String title, boolean isCloseable) {
+        if(isRounded){
+            return inflateRoundedHeader(view, isCloseable);
+        } else {
+            return inflateCloseableHeader(view, title, isCloseable);
+        }
+    }
+
+    private View inflateCloseableHeader(View view, String title, boolean isCloseable) {
         View contentView = ((Activity) context).getLayoutInflater().inflate(R.layout
                 .closeable_bottom_sheet_dialog, null);
         FrameLayout frameLayout = contentView.findViewById(R.id.container);
@@ -111,14 +131,11 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
         if (!isCloseable) {
             closeButton.setVisibility(View.GONE);
             contentView.findViewById(R.id.view_separator).setVisibility(View.GONE);
-            ((TextView)contentView.findViewById(R.id.title_closeable)).setVisibility(View.GONE);
+            contentView.findViewById(R.id.title_closeable).setVisibility(View.GONE);
         } else {
-            closeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dismiss();
-                    closeListener.onCloseDialog();
-                }
+            closeButton.setOnClickListener(v -> {
+                dismiss();
+                closeListener.onCloseDialog();
             });
         }
 
@@ -127,6 +144,21 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
             ((TextView)contentView.findViewById(R.id.title_closeable)).setText(title);
         }
 
+        return contentView;
+    }
+
+
+    private View inflateRoundedHeader(View view, boolean isCloseable) {
+        View contentView = ((Activity) context).getLayoutInflater().inflate(R.layout
+                .rounded_closeable_bottom_sheet_dialog, null);
+        FrameLayout frameLayout = contentView.findViewById(R.id.container);
+        frameLayout.addView(view);
+        View trayClose = contentView.findViewById(R.id.tray_close);
+        if (isCloseable) {
+            trayClose.setVisibility(View.VISIBLE);
+        } else {
+            trayClose.setVisibility(View.GONE);
+        }
         return contentView;
     }
 

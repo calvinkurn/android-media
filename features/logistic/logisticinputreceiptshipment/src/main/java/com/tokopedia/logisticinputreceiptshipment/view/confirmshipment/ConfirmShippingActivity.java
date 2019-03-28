@@ -3,6 +3,7 @@ package com.tokopedia.logisticinputreceiptshipment.view.confirmshipment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -25,10 +26,9 @@ import com.tokopedia.logisticanalytics.SalesShippingAnalytics;
 import com.tokopedia.logisticanalytics.listener.IConfirmShippingAnalyticsActionListener;
 import com.tokopedia.logisticcommon.base.BaseSimpleLogisticActivity;
 import com.tokopedia.logisticinputreceiptshipment.R;
-import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
-import com.tokopedia.logisticinputreceiptshipment.view.barcodescanner.ReceiptShipmentBarcodeScannerActivity;
 import com.tokopedia.logisticinputreceiptshipment.di.DaggerOrderCourierComponent;
 import com.tokopedia.logisticinputreceiptshipment.di.OrderCourierComponent;
+import com.tokopedia.logisticinputreceiptshipment.view.barcodescanner.ReceiptShipmentBarcodeScannerActivity;
 import com.tokopedia.logisticinputreceiptshipment.view.data.CourierSelectionModel;
 import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
 import com.tokopedia.transaction.common.data.order.OrderDetailData;
@@ -62,10 +62,8 @@ public class ConfirmShippingActivity extends BaseSimpleLogisticActivity
     private OrderDetailShipmentModel editableModel;
 
     private TextView courierName;
-
-    private TkpdProgressDialog progressDialog;
-
     private EditText barcodeEditText;
+    private ProgressDialog progressDialog;
 
     @Inject
     OrderCourierPresenterImpl presenter;
@@ -131,16 +129,14 @@ public class ConfirmShippingActivity extends BaseSimpleLogisticActivity
 
     @Override
     public void showLoading() {
-        if (!isFinishing()) {
-            progressDialog.showDialog();
-        }
+        if (!isFinishing() && progressDialog != null && !progressDialog.isShowing())
+            progressDialog.show();
     }
 
     @Override
     public void hideLoading() {
-        if (!isFinishing()) {
+        if (!isFinishing() && progressDialog != null && progressDialog.isShowing())
             progressDialog.dismiss();
-        }
     }
 
     @Override
@@ -246,7 +242,10 @@ public class ConfirmShippingActivity extends BaseSimpleLogisticActivity
         FrameLayout frameLayout = findViewById(R.id.parent_view);
         LayoutInflater.from(this).inflate(R.layout.activity_confirm_shipping_logistic_module, frameLayout);
 
-        progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.title_loading));
+        progressDialog.setCancelable(false);
+
         courierName = findViewById(R.id.courier_name);
         barcodeEditText = findViewById(R.id.barcode_edit_text);
         ImageView barcodeScanner = findViewById(R.id.icon_scan);

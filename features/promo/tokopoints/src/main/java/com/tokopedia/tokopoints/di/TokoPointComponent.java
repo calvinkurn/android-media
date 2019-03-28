@@ -10,6 +10,7 @@ import com.tokopedia.tokopoints.view.fragment.CouponDetailFragment;
 import com.tokopedia.tokopoints.view.fragment.HomepageFragment;
 import com.tokopedia.tokopoints.view.fragment.MyCouponListingFragment;
 import com.tokopedia.tokopoints.view.fragment.SendGiftFragment;
+import com.tokopedia.tokopoints.view.fragment.TokoPointsHomeFragmentNew;
 import com.tokopedia.tokopoints.view.fragment.ValidateMerchantPinFragment;
 
 import dagger.Component;
@@ -18,6 +19,8 @@ import dagger.Component;
 @Component(dependencies = BaseAppComponent.class)
 public interface TokoPointComponent {
     void inject(HomepageFragment fragment);
+
+    void inject(TokoPointsHomeFragmentNew fragment);
 
     void inject(CatalogListingFragment fragment);
 

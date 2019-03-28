@@ -9,7 +9,6 @@ import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel;
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase;
 import com.tokopedia.shop.common.util.PagingListUtils;
-import com.tokopedia.shop.etalase.domain.interactor.GetShopEtalaseUseCase;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductFeaturedWithAttributeUseCase;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductListWithAttributeUseCase;
@@ -46,7 +45,6 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
 
     private final GetShopProductFeaturedWithAttributeUseCase getShopProductFeaturedWithAttributeUseCase;
     private final GetShopProductListWithAttributeUseCase productListWithAttributeUseCase;
-    private final GetShopEtalaseUseCase getShopEtalaseUseCase;
     private final GetShopEtalaseByShopUseCase getShopEtalaseByShopUseCase;
     private final AddWishListUseCase addWishListUseCase;
     private final RemoveWishListUseCase removeWishListUseCase;
@@ -56,14 +54,12 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
     @Inject
     public ShopProductLimitedListPresenter(GetShopProductListWithAttributeUseCase productListWithAttributeUseCase,
                                            GetShopProductFeaturedWithAttributeUseCase getShopProductFeaturedWithAttributeUseCase,
-                                           GetShopEtalaseUseCase getShopEtalaseUseCase,
                                            GetShopEtalaseByShopUseCase getShopEtalaseByShopUseCase,
                                            AddWishListUseCase addWishListUseCase,
                                            RemoveWishListUseCase removeWishListUseCase,
                                            UserSessionInterface userSession) {
         this.getShopProductFeaturedWithAttributeUseCase = getShopProductFeaturedWithAttributeUseCase;
         this.productListWithAttributeUseCase = productListWithAttributeUseCase;
-        this.getShopEtalaseUseCase = getShopEtalaseUseCase;
         this.getShopEtalaseByShopUseCase = getShopEtalaseByShopUseCase;
         this.addWishListUseCase = addWishListUseCase;
         this.removeWishListUseCase = removeWishListUseCase;
@@ -266,7 +262,6 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
         super.detachView();
         productListWithAttributeUseCase.unsubscribe();
         getShopProductFeaturedWithAttributeUseCase.unsubscribe();
-        getShopEtalaseUseCase.unsubscribe();
         addWishListUseCase.unsubscribe();
         removeWishListUseCase.unsubscribe();
     }

@@ -28,4 +28,9 @@
         <item name="android:background">@drawable/gf_bg_button_grey_rounded</item>
     </style>
 
+    <style name="TapTapCustomDialog" parent="@android:style/Theme.Holo.Light" >
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
 </resources>

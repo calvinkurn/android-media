@@ -12,6 +12,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 
 class BackgroundViewModel() : Visitable<Any>, Parcelable {
 
+    constructor(default: String, url: String) : this() {
+        this.default = default
+        this.url = url
+    }
 
     @SerializedName("background_url")
     @Expose
@@ -19,11 +23,11 @@ class BackgroundViewModel() : Visitable<Any>, Parcelable {
 
     @SerializedName("background_default")
     @Expose
-    var default: Int = 0
+    var default: String = ""
 
     constructor(`in`: Parcel) : this() {
         this.url = `in`.readString()
-        this.default = `in`.readInt()
+        this.default = `in`.readString()
     }
 
     companion object {
@@ -48,7 +52,7 @@ class BackgroundViewModel() : Visitable<Any>, Parcelable {
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(url)
-        dest.writeInt(default)
+        dest.writeString(default)
     }
 
     override fun describeContents(): Int {

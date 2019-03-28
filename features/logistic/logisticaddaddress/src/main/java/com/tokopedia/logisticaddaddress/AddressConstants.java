@@ -22,27 +22,21 @@ public class AddressConstants {
     public static final int REQUEST_CODE_PARAM_EDIT = 102;
     public static final int RESULT_ERROR = 999;
 
-
-    public static final int GET_LIST_PROVINCE = 1;
-    public static final int GET_LIST_DISTRICT = 2;
-    public static final int GET_LIST_CITY = 3;
-
     public static final String EXTRA_ADDRESS = "EXTRA_ADDRESS";
 
     public static final String KERO_TOKEN = "token";
 
+
     public static final int INSTANCE_TYPE_DEFAULT = 0;
 
     public static final int INSTANCE_TYPE_ADD_ADDRESS_FROM_MANAGE_ADDRESS = 1;
+    public static final int INSTANCE_TYPE_ADD_ADDRESS_FROM_MANAGE_ADDRESS_EMPTY_DEFAULT_ADDRESS = 3;
     public static final int INSTANCE_TYPE_EDIT_ADDRESS_FROM_MANAGE_ADDRESS = 2;
-    public static final int INSTANCE_TYPE_EDIT_ADDRESS_FROM_MANAGE_ADDRESS_EMPTY_DEFAULT_ADDRESS = 8;
 
+    public static final int INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT = 11;
+    public static final int INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS = 13;
+    public static final int INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT = 12;
 
-    public static final int INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT = 3;
-    public static final int INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT = 4;
-
-    public static final int INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT = 5;
-    public static final int INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS = 6;
-    public static final int INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT = 7;
-
+    public static final int INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT = 21;
+    public static final int INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT = 22;
 }

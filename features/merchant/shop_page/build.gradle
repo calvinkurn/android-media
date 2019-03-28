@@ -40,6 +40,7 @@ dependencies {
     }
 
     implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.shopEtalasePicker)
 
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)

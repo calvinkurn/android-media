@@ -95,41 +95,10 @@ public class GTMContainer implements IGTMContainer {
             PendingResult<ContainerHolder> pResult = tagManager.loadContainerPreferFresh(bundle.getString(AppEventTracking.GTM.GTM_ID),
                     bundle.getInt(AppEventTracking.GTM.GTM_RESOURCE));
 
-            pResult.setResultCallback(cHolder -> {
-                ContainerHolderSingleton.setContainerHolder(cHolder);
-                if (isAllowRefreshDefault(cHolder)) {
-                    Log.i("GTMTKPD", "Refreshed Container ");
-                    cHolder.refresh();
-                }
-            }, 2, TimeUnit.SECONDS);
+            pResult.setResultCallback(ContainerHolderSingleton::setContainerHolder, 2, TimeUnit.SECONDS);
         } catch (Exception e) {
             TrackingUtils.eventError(context, context.getClass().toString(), e.toString());
         }
-    }
-
-    private Boolean isAllowRefreshDefault(ContainerHolder containerHolder) {
-        long lastRefresh = 0;
-        if (containerHolder.getContainer() != null) {
-            lastRefresh = containerHolder.getContainer().getLastRefreshTime();
-        }
-        return System.currentTimeMillis() - lastRefresh > EXPIRE_CONTAINER_TIME_DEFAULT;
-    }
-
-    private Boolean isAllowRefresh() {
-        //if (MainApplication.isDebug()) return true;
-        LocalCacheHandler cache = new LocalCacheHandler(context, TkpdCache.ALLOW_REFRESH);
-        Log.i("GTM TKPD", "Allow Refresh? " + cache.isExpired());
-        return cache.isExpired();
-    }
-
-    private void setExpiryRefresh() {
-        LocalCacheHandler cache = new LocalCacheHandler(context, TkpdCache.ALLOW_REFRESH);
-        if (GlobalConfig.DEBUG) {
-            cache.setExpire(EXPIRE_CONTAINER_TIME_DEBUG);
-        } else {
-            cache.setExpire(EXPIRE_CONTAINER_TIME);
-        }
-        cache.applyEditor();
     }
 
     private DataLayer getDataLayer() {

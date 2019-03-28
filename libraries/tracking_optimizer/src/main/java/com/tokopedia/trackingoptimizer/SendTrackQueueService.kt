@@ -64,7 +64,7 @@ class SendTrackQueueService : Service(), CoroutineScope {
         return null
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         sendTrack(this, trackingRepository, trackingOptimizerRouter) {
             stopSelf()
         }

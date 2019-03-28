@@ -3,11 +3,18 @@ package com.tokopedia.tkpd.qrscanner;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.ovo.model.BarcodeResponseData;
+import com.tokopedia.ovo.model.Errors;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
@@ -23,7 +30,9 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -45,6 +54,12 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
     private static final String TAG_QR_PAYMENT = "QR";
     private static final String IDENTIFIER = "identifier";
+    private static final String GOAL_QR_INQUIRY = "goalQRInquiry";
+    private static final String ERRORS = "errors";
+    private static final String MESSAGE = "message";
+    private static final String QR_ID = "qr_id";
+    private static final String OVO_TEXT = "ovo";
+    private static final String GPNR_TEXT = "gpnqr";
 
     private PostBarCodeDataUseCase postBarCodeDataUseCase;
     private BranchIODeeplinkUseCase branchIODeeplinkUseCase;
@@ -71,7 +86,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     public void onBarCodeScanComplete(String barcodeData) {
         Uri uri = Uri.parse(barcodeData);
         String host = uri.getHost();
-
+        boolean isOvoPayQrEnabled = getView().getRemoteConfigForOvoPay();
         if (host != null && uri.getPathSegments() != null) {
             if (host.equals(QrScannerTypeDef.PAYMENT_QR_CODE)) {
                 onScanCompleteGetInfoQrPayment(uri.getPathSegments().get(0));
@@ -84,9 +99,55 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
             } else {
                 getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
             }
+        } else if (isOvoPayQrEnabled && barcodeData.toLowerCase().contains(OVO_TEXT)
+                || barcodeData.toLowerCase().contains(GPNR_TEXT)) {
+            checkBarCode(barcodeData);
         } else {
             getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
         }
+    }
+
+    private void checkBarCode(String barcodeData) {
+        GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
+        Map<String, Object> variables = new HashMap<>();
+
+        variables.put(QR_ID, barcodeData);
+        GraphqlRequest graphqlRequest = new GraphqlRequest(
+                GraphqlHelper.loadRawString(context.getResources(), R.raw.verify_ovo_qr_code),
+                BarcodeResponseData.class,
+                variables);
+
+        graphqlUseCase.addRequest(graphqlRequest);
+        graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                BarcodeResponseData response = graphqlResponse.getData(BarcodeResponseData.class);
+                if (response != null && response.getGoalQRInquiry() != null) {
+                    List<Errors> errors = response.getGoalQRInquiry().getErrors();
+                    if (errors != null && errors.size() > 0) {
+                        Errors error = errors.get(0);
+                        if (error != null && !TextUtils.isEmpty(error.getMessage())) {
+                            getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+                        }
+                    } else {
+                        getView().goToPaymentPage(barcodeData, response);
+                    }
+                } else {
+                    getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+                }
+
+            }
+        });
     }
 
     private void onScanBranchIOLink(String qrCode) {

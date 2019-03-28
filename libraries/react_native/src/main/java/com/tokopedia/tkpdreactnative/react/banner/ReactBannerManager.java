@@ -11,6 +11,7 @@ import com.facebook.react.uimanager.annotations.ReactProp;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.banner.Banner;
+import com.tokopedia.banner.Indicator;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.design.banner.BannerView;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
@@ -28,10 +29,12 @@ public class ReactBannerManager extends SimpleViewManager<Banner> implements Ban
     private static final String BANNER_CLASS = "BannerView";
     private static final String IMAGE_URL = "imageUrl";
     private static final String APPLINK = "applink";
+    private static final String INDICATOR_STYLE = "indicatorStyle";
+    private static final String BANNER_LIST = "bannerList";
 
     private List<String> applinkList = new ArrayList<>();
     private List<String> imageList = new ArrayList<>();
-
+    private int indicatorType = Indicator.WHITE;
     private Context context;
 
     @Override
@@ -46,8 +49,9 @@ public class ReactBannerManager extends SimpleViewManager<Banner> implements Ban
     }
 
     @ReactProp(name = "bannerData")
-    public void setBannerData(Banner banner, @Nullable ReadableArray readableArray) {
-        mapBannerData(readableArray);
+    public void setData(Banner banner, @Nullable ReadableMap data) {
+        parseData(data);
+        banner.setBannerIndicator(indicatorType);
         banner.setOnPromoClickListener(this);
         banner.setOnPromoAllClickListener(this);
         banner.setOnPromoScrolledListener(this);
@@ -57,16 +61,19 @@ public class ReactBannerManager extends SimpleViewManager<Banner> implements Ban
         banner.buildView();
     }
 
-    @ReactProp(name = "setSeeAllPromoTextColor")
-    public void setSeeAllPromoTextColor(Banner banner, @Nullable String string) {
+    @ReactProp(name = "buttonTextColor")
+    public void buttonTextColor(Banner banner, @Nullable String string) {
         try {
             banner.setBannerSeeAllTextColor(Color.parseColor(string));
         } catch (Exception ignored) { }
     }
 
-    private void mapBannerData(ReadableArray readableArray) {
+    private void parseData(ReadableMap data) {
         imageList.clear();
         applinkList.clear();
+
+        indicatorType = data.getInt(INDICATOR_STYLE);
+        ReadableArray readableArray = data.getArray(BANNER_LIST);
         if (readableArray != null && readableArray.size() > 0) {
             for (int i = 0; i < readableArray.size(); i++) {
                 ReadableMap map = readableArray.getMap(i);

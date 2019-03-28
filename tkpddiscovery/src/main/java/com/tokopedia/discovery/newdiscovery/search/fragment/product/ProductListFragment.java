@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.home.BannerWebView;
@@ -45,7 +47,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.Netwo
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.TopAdsViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
@@ -56,9 +57,14 @@ import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.Category;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -77,6 +83,7 @@ public class ProductListFragment extends SearchSectionFragment
         implements SearchSectionGeneralAdapter.OnItemChangeView, ProductListFragmentView,
         ProductListener, WishListActionListener {
 
+    public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     public static final int REQUEST_CODE_LOGIN = 561;
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
     private static final int REQUEST_ACTIVITY_SORT_PRODUCT = 1233;
@@ -104,6 +111,7 @@ public class ProductListFragment extends SearchSectionFragment
     private SimilarSearchManager similarSearchManager;
     private ShowCaseDialog showCaseDialog;
     private PerformanceMonitoring performanceMonitoring;
+    private TrackingQueue trackingQueue;
 
     public static ProductListFragment newInstance(ProductViewModel productViewModel) {
         Bundle args = new Bundle();
@@ -121,6 +129,7 @@ public class ProductListFragment extends SearchSectionFragment
         loadDataFromArguments();
         userSession = new UserSession(getContext());
         gcmHandler = new GCMHandler(getContext());
+        trackingQueue = new TrackingQueue(getContext());
     }
 
     private void loadDataFromArguments() {
@@ -233,10 +242,7 @@ public class ProductListFragment extends SearchSectionFragment
             headerViewModel.setCpmModel(productViewModel.getCpmModel());
         }
         list.add(headerViewModel);
-        if (!productViewModel.getAdsModel().getData().isEmpty()) {
-            list.add(new TopAdsViewModel(productViewModel.getAdsModel(), productViewModel.getQuery()));
-        }
-        list.addAll(productViewModel.getProductList());
+        list.addAll(ProductListPresenterImpl.enrich(productViewModel));
         if (productViewModel.getRelatedSearchModel() != null) {
             list.add(productViewModel.getRelatedSearchModel());
         }
@@ -328,7 +334,10 @@ public class ProductListFragment extends SearchSectionFragment
         List<Object> dataLayerList = new ArrayList<>();
         for (Visitable object : list) {
             if (object instanceof ProductItem) {
-                dataLayerList.add(((ProductItem) object).getProductAsObjectDataLayer(userId));
+                ProductItem item = (ProductItem) object;
+                if (!item.isTopAds()) {
+                    dataLayerList.add(item.getProductAsObjectDataLayer(userId));
+                }
             }
         }
         SearchTracking.eventImpressionSearchResultProduct(getActivity(), dataLayerList, getQueryKey());
@@ -384,7 +393,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public String getScreenNameId() {
-        return AppScreen.SCREEN_SEARCH_PAGE_PRODUCT_TAB;
+        return SCREEN_SEARCH_PAGE_PRODUCT_TAB;
     }
 
     @Override
@@ -417,7 +426,6 @@ public class ProductListFragment extends SearchSectionFragment
                 if (adapter.isEmptyItem(position) ||
                         adapter.isRelatedSearch(position) ||
                         adapter.isHeaderBanner(position) ||
-                        adapter.isTopAds(position) ||
                         adapter.isLoading(position)) {
                     return spanCount;
                 } else {
@@ -466,39 +474,39 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onItemClicked(ProductItem item, int adapterPosition) {
-        com.tokopedia.core.var.ProductItem data = new com.tokopedia.core.var.ProductItem();
-        data.setId(item.getProductID());
-        data.setName(item.getProductName());
-        data.setPrice(item.getPrice());
-        data.setImgUri(item.getImageUrl());
-        data.setIsWishlist(item.isWishlisted());
-        data.setRating(Integer.toString(item.getRating()));
-        data.setReviewCount(Integer.toString(item.getCountReview()));
-        data.setCountCourier(item.getCountCourier());
-        data.setDiscountPercentage(item.getDiscountPercentage());
-        data.setOriginalPrice(item.getOriginalPrice());
-        data.setShop(item.getShopName());
-        data.setShopLocation(item.getShopCity());
-        data.setOfficial(item.isOfficial());
+    public void onPause() {
+        super.onPause();
+        TopAdsGtmTracker.getInstance().eventSearchResultProductView(trackingQueue, getQueryKey());
+        trackingQueue.sendAll();
+    }
 
-        if (item.getLabelList() != null) {
-            for (int i = 0; i < item.getLabelList().size(); i++) {
-                if (item.getLabelList().get(i).getTitle().toLowerCase()
-                        .contains(com.tokopedia.core.var.ProductItem.CASHBACK)) {
-                    data.setCashback(item.getLabelList().get(i).getTitle());
-                    break;
-                }
-            }
+    @Override
+    public void onProductImpressed(ProductItem item, int adapterPosition) {
+        if (item.isTopAds()) {
+            new ImpresionTask().execute(item.getTopadsImpressionUrl());
+            Product product = new Product();
+            product.setId(item.getProductID());
+            product.setName(item.getProductName());
+            product.setPriceFormat(item.getPrice());
+            product.setCategory(new Category(item.getCategoryID()));
+            TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, adapterPosition);
         }
+    }
 
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
+    @Override
+    public void onItemClicked(ProductItem item, int adapterPosition) {
+        Intent intent = getProductIntent(item.getProductID());
         intent.putExtra(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
-        sendItemClickTrackingEvent(item);
+        sendItemClickTrackingEvent(item, adapterPosition);
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+    }
+
+    private Intent getProductIntent(String productId){
+        if (getContext() != null) {
+            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -507,18 +515,26 @@ public class ProductListFragment extends SearchSectionFragment
 
     }
 
-    private void sendItemClickTrackingEvent(ProductItem item) {
-        String userId = userSession.isLoggedIn() ?
-                userSession.getUserId() : "";
-
-        SearchTracking.trackEventClickSearchResultProduct(
-                getActivity(),
-                item.getProductAsObjectDataLayer(userId),
-                item.getPageNumber(),
-                productViewModel.getQuery(),
-                getSelectedFilter(),
-                getSelectedSort()
-        );
+    private void sendItemClickTrackingEvent(ProductItem item, int pos) {
+        String userId = userSession.isLoggedIn() ? userSession.getUserId() : "";
+        if (item.isTopAds()) {
+            new ImpresionTask().execute(item.getTopadsClickUrl());
+            Product product = new Product();
+            product.setId(item.getProductID());
+            product.setName(item.getProductName());
+            product.setPriceFormat(item.getPrice());
+            product.setCategory(new Category(item.getCategoryID()));
+            TopAdsGtmTracker.eventSearchResultProductClick(getContext(), getQueryKey(), product, pos);
+        } else {
+            SearchTracking.trackEventClickSearchResultProduct(
+                    getActivity(),
+                    item.getProductAsObjectDataLayer(userId),
+                    item.getPageNumber(),
+                    productViewModel.getQuery(),
+                    getSelectedFilter(),
+                    getSelectedSort()
+            );
+        }
     }
 
     @Override
@@ -633,6 +649,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onEmptyButtonClicked() {
+        SearchTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
         showSearchInputView();
     }
 
@@ -733,6 +750,7 @@ public class ProductListFragment extends SearchSectionFragment
                 = generateLoadMoreParameter(0, productViewModel.getQuery());
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_PRODUCT_TRACE);
         presenter.loadData(searchParameter, isForceSearch(), getAdditionalParams());
+        TopAdsGtmTracker.getInstance().clearDataLayerList();
     }
 
     private HashMap<String, String> getAdditionalParams() {

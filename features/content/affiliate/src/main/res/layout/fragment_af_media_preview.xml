@@ -39,9 +39,9 @@
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
-            android:src="@drawable/ic_system_action_delete_grayscale_32"
             app:layout_constraintEnd_toEndOf="@+id/mediaViewPager"
-            app:layout_constraintTop_toTopOf="@+id/mediaViewPager" />
+            app:layout_constraintTop_toTopOf="@+id/mediaViewPager"
+            app:srcCompat="@drawable/ic_system_action_delete_grayscale_32" />
 
         <TextView
             android:id="@+id/mainImageText"
@@ -67,12 +67,12 @@
             android:id="@+id/mainImageIcon"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
-            android:src="@drawable/ic_af_check_gray"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/mainImageText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/mainImageText"
             app:layout_constraintTop_toTopOf="@+id/mainImageText"
+            app:srcCompat="@drawable/ic_af_check_gray"
             tools:visibility="visible" />
 
         <View

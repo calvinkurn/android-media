@@ -82,12 +82,13 @@ class PlayWebSocketMessageMapper @Inject constructor() {
             DynamicButtonsViewModel.TYPE -> mapToDynamicButton(data)
             BackgroundViewModel.TYPE -> mapToBackground(data)
             StickyComponentViewModel.TYPE -> mapToStickyComponent(data)
+            StickyComponentViewModel.TYPE_CLOSE -> StickyComponentViewModel()
             else -> null
         }
     }
 
     private fun mapToStickyComponent(data: JsonObject?): Visitable<*>? {
-        val pojo = gson.fromJson(data, StickyComponentPojo::class.java)
+        val pojo = gson.fromJson(data, StickyComponentData::class.java)
         return StickyComponentMapper().mapToViewModel(pojo)
     }
 

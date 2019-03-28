@@ -8,7 +8,7 @@ public class DetailsData {
     @SerializedName("orderDetails")
     @Expose
 
-    OrderDetails orderDetails;
+    private OrderDetails orderDetails;
 
     public DetailsData(OrderDetails orderDetails) {
         this.orderDetails = orderDetails;
