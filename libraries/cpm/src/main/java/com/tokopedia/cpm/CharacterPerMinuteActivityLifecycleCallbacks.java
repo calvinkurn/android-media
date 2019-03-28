@@ -53,7 +53,8 @@ public class CharacterPerMinuteActivityLifecycleCallbacks implements Application
         if (enabled) {
             Log.d(this.getClass().getName(), "Jumlah Edittext : " + texts.size());
             for (EditText editText : texts) {
-                if(editText.isFocusable() && editText.isFocusableInTouchMode()) {
+                if(editText.isFocusable()) {
+                    editText.setFocusableInTouchMode(true);
                     if (!map.containsKey(editText)) {
                         map.put(editText, new CharacterPerMinuteTextWatcher(characterPerMinuteInterface));
                     }
