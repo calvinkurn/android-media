@@ -98,7 +98,7 @@ class VideoDetailFragment:
                     val mediaController = MediaController(activity!!)
                     mediaController.setAnchorView(videoView)
                     videoView.setMediaController(mediaController)
-                    mediaController.show()
+                    mediaController.show(0)
                 }
             })
             it.start()
@@ -271,7 +271,7 @@ class VideoDetailFragment:
                     }
                 }
             } else {
-                it.text = it.text.replace(DynamicPostViewHolder.NEWLINE, " ")
+                caption.text = it.text.replace(DynamicPostViewHolder.NEWLINE, " ")
             }
         }
     }

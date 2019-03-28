@@ -126,14 +126,19 @@
         tools:text="Welcoming October, road to hari batik nasional, you can wear batik and be stylish as well hey?" />
 
 
-    <com.tokopedia.videoplayer.view.widget.VideoPlayerView
-        android:id="@+id/videoView"
-        android:layout_below="@+id/caption"
-        android:layout_above="@+id/bottomLayout"
+    <FrameLayout
+        android:id="@+id/videoViewLayout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_weight="1"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/caption"
+        android:layout_above="@+id/bottomLayout">
+
+        <com.tokopedia.videoplayer.view.widget.VideoPlayerView
+            android:id="@+id/videoView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"/>
+    </FrameLayout>
 
     <RelativeLayout
         android:id="@+id/bottomLayout"
