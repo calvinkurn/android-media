@@ -75,6 +75,9 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     val productInfoP2resp = MutableLiveData<ProductInfoP2>()
     val productInfoP3resp = MutableLiveData<ProductInfoP3>()
     val productVariantResp = MutableLiveData<Result<ProductVariant>>()
+
+    val loadOtherProduct = MutableLiveData<RequestDataState<List<ProductOther>>>()
+
     var multiOrigin : WarehouseInfo = WarehouseInfo()
     val userId: String
         get() = userSessionInterface.userId
@@ -230,10 +233,10 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val latestTalkRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_LATEST_TALK],
                 TalkList.Response::class.java, latestTalkParams)
 
-        val otherProductParams = mapOf(KEY_PARAM to String.format(PARAMS_OTHER_PRODUCT_TEMPLATE,
+        /*val otherProductParams = mapOf(KEY_PARAM to String.format(PARAMS_OTHER_PRODUCT_TEMPLATE,
                 shopId, productId))
         val otherProductRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_OTHER_PRODUCT],
-                ProductOther.Response::class.java, otherProductParams)
+                ProductOther.Response::class.java, otherProductParams)*/
 
         val nearestWarehouseParam = mapOf("productIds" to listOf(productId.toString()))
         val nearestWarehouseRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_MULTI_ORIGIN],
@@ -245,7 +248,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
         val requests = mutableListOf(shopRequest, ratingRequest, wishlistCountRequest, voucherRequest,
                 shopBadgeRequest, shopCommitmentRequest, installmentRequest, imageReviewRequest,
-                helpfulReviewRequest, latestTalkRequest, otherProductRequest, shopCodRequest,
+                helpfulReviewRequest, latestTalkRequest, shopCodRequest,
                 nearestWarehouseRequest, productPurchaseProtectionRequest)
 
 
@@ -302,10 +305,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                         .result.data.talks.firstOrNull() ?: Talk()
             }
 
-            if (gqlResponse.getError(ProductOther.Response::class.java)?.isNotEmpty() != true) {
-                productInfoP2.productOthers = gqlResponse
-                        .getData<ProductOther.Response>(ProductOther.Response::class.java).result.products
-            }
+
 
             if (gqlResponse.getError(ShopCodStatus.Response::class.java)?.isNotEmpty() != true) {
                 productInfoP2.shopCod = gqlResponse.getData<ShopCodStatus.Response>(ShopCodStatus.Response::class.java)
@@ -414,7 +414,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             if (response.getError(TopAdsPdpAffiliateResponse::class.java)?.isNotEmpty() != true) {
                 productInfoP3.pdpAffiliate = response
                     .getData<TopAdsPdpAffiliateResponse>(TopAdsPdpAffiliateResponse::class.java)
-                    .topAdsPDPAffiliate?.data?.affiliate?.firstOrNull()
+                    .topAdsPDPAffiliate.data.affiliate.firstOrNull()
             }
 
             if (response.getError(GetCheckoutTypeResponse::class.java)?.isNotEmpty() != true) {
@@ -546,6 +546,31 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         super.clear()
         removeWishlistUseCase.unsubscribe()
         addWishListUseCase.unsubscribe()
+    }
+
+    fun loadMore() {
+        if (loadOtherProduct.value == null || loadOtherProduct.value is Loading)
+            doLoadOtherProduct()
+    }
+
+    private fun doLoadOtherProduct() {
+        val product = (productInfoP1Resp.value ?: return) as? Success ?: return
+
+        loadOtherProduct.value = Loading
+        val otherProductParams = mapOf(KEY_PARAM to String.format(PARAMS_OTHER_PRODUCT_TEMPLATE,
+                product.data.productInfo.basic.shopID, product.data.productInfo.basic.id))
+        val otherProductRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_OTHER_PRODUCT],
+                ProductOther.Response::class.java, otherProductParams)
+
+        launchCatchError(block = {
+            loadOtherProduct.value = Loaded(Success(
+                    withContext(Dispatchers.IO){
+                        graphqlRepository.getReseponse(listOf(otherProductRequest))
+                        .getSuccessData<ProductOther.Response>().result.products
+            }))
+        }){
+            loadOtherProduct.value = Loaded(Fail(it))
+        }
     }
 
 }

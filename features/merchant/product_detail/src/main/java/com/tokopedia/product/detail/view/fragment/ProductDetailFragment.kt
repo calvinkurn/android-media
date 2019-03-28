@@ -89,6 +89,8 @@ import com.tokopedia.product.detail.view.fragment.partialview.*
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
 import com.tokopedia.product.detail.view.util.FlingBehavior
+import com.tokopedia.product.detail.view.viewmodel.Loaded
+import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
 import com.tokopedia.product.detail.view.widget.CountDrawable
 import com.tokopedia.product.report.view.dialog.ReportDialogFragment
@@ -299,6 +301,16 @@ class ProductDetailFragment : BaseDaggerFragment() {
             it?.run { renderProductInfo3(this) }
         })
 
+        productInfoViewModel.loadOtherProduct.observe(this, Observer {
+            when(it){
+                is Loading -> otherProductView.startLoading()
+                is Loaded -> {
+                    otherProductView.renderData((it.data as? Success)?.data ?: listOf())
+                }
+            }
+            nested_scroll.completeLoad()
+        })
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -329,7 +341,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         nested_scroll.listener = object : ObservableNestedScrollView.ScrollViewListener {
             override fun onScrollEnded(scrollView: ObservableNestedScrollView, x: Int, y: Int, oldX: Int, oldY: Int) {
-                Log.e(javaClass.canonicalName, "scroll ended $x $y $oldX $oldY")
+                scrollView.startLoad()
+                productInfoViewModel.loadMore()
             }
         }
 
@@ -900,6 +913,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productInfoViewModel.productInfoP2resp.removeObservers(this)
         productInfoViewModel.productInfoP3resp.removeObservers(this)
         productInfoViewModel.productVariantResp.removeObservers(this)
+        productInfoViewModel.loadOtherProduct.removeObservers(this)
         productInfoViewModel.clear()
         productWarehouseViewModel.clear()
         super.onDestroy()
