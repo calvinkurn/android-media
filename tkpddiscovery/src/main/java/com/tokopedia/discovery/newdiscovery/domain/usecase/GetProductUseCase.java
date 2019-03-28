@@ -97,7 +97,7 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
     }
 
     private static void putRequestParamsSearchParameters(RequestParams requestParams, SearchParameter searchParameter, boolean forceSearch) {
-        requestParams.putString(SearchApiConst.SOURCE, getSearchSource(searchParameter));
+        requestParams.putString(SearchApiConst.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
         requestParams.putString(SearchApiConst.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
         requestParams.putString(SearchApiConst.ROWS, getSearchRows());
         requestParams.putString(SearchApiConst.OB, getSearchSort(searchParameter));
@@ -112,7 +112,7 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
     private static void putRequestParamsTopAdsParameters(RequestParams requestParams, SearchParameter searchParameter) {
         requestParams.putInt(TopAdsParams.KEY_ITEM, 2);
         requestParams.putString(TopAdsParams.KEY_EP, TopAdsParams.DEFAULT_KEY_EP);
-        requestParams.putString(TopAdsParams.KEY_SRC, getSearchSource(searchParameter));
+        requestParams.putString(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
         requestParams.putBoolean(TopAdsParams.KEY_WITH_TEMPLATE, true);
         requestParams.putInt(TopAdsParams.KEY_PAGE, getTopAdsKeyPage(searchParameter));
     }
@@ -124,14 +124,6 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
             requestParams.putString(SearchApiConst.SC, departmentId);
             requestParams.putString(TopAdsParams.KEY_DEPARTEMENT_ID, departmentId);
         }
-    }
-
-    private static String getSearchSource(SearchParameter searchParameter) {
-        String sourceFromParamModel = searchParameter.get(SearchApiConst.SOURCE);
-
-        return !TextUtils.isEmpty(sourceFromParamModel) ?
-                sourceFromParamModel :
-                BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH;
     }
 
     private static String getSearchRows() {
