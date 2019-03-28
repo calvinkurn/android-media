@@ -176,9 +176,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
         swipeToRefresh.setOnRefreshListener(this);
 
-        //TODO IMPORTANT?
-//        KolPostTypeFactoryImpl typeFactory = new KolPostTypeFactoryImpl(this);
-//        typeFactory.setType(KolPostViewHolder.Type.EXPLORE);
         adapter.setTypeFactory(new KolPostDetailTypeFactoryImpl(this, this, this, this, this, this, this, this));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
@@ -241,6 +238,10 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         commentCount.setOnClickListener(v -> onGoToKolComment(0, postDetailFooterModel.getContentId()));
         commentButton.setOnClickListener(v -> onGoToKolComment(0, postDetailFooterModel.getContentId()));
 
+        shareButton.setOnClickListener(v -> onShareClick(0, postDetailFooterModel.getContentId(),
+         "","heya","https://lalala",""       ));
+        shareText.setOnClickListener(v -> onShareClick(0, postDetailFooterModel.getContentId(),
+                "","heya","https://lalala",""       ));
     }
 
     private void setTotalComment(int totalComment) {
@@ -640,15 +641,14 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                              @NotNull String description, @NotNull String url,
                              @NotNull String imageUrl) {
         if (getActivity() != null) {
-            //TODO
-//            kolRouter.shareFeed(
-//                    getActivity(),
-//                    String.valueOf(id),
-//                    url,
-//                    title,
-//                    imageUrl,
-//                    description
-//            );
+            kolRouter.shareFeed(
+                    getActivity(),
+                    String.valueOf(id),
+                    url,
+                    title,
+                    imageUrl,
+                    description
+            );
         }
     }
 
