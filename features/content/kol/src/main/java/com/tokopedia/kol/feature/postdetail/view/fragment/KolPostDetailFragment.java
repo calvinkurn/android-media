@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.postdetail.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -7,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,33 +25,38 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.component.Menus;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
+import com.tokopedia.kol.common.util.PostMenuListener;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
-import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
-import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel;
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity;
 import com.tokopedia.kol.feature.postdetail.view.adapter.KolPostDetailAdapter;
 import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactoryImpl;
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
+import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
@@ -58,18 +65,21 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.kol.common.util.PostMenuUtilKt.createBottomMenu;
+
 /**
  * @author by yfsx on 23/07/18.
  */
 
 public class KolPostDetailFragment extends BaseDaggerFragment
         implements KolPostDetailContract.View, KolPostListener.View.Like,
-        KolPostListener.View.ViewHolder, KolComment.View.ViewHolder, KolComment.View.SeeAll,
+        KolComment.View.ViewHolder, KolComment.View.SeeAll,
         SwipeRefreshLayout.OnRefreshListener, DynamicPostViewHolder.DynamicPostListener, CardTitleView.CardTitleListener, ImagePostViewHolder.ImagePostListener, YoutubeViewHolder.YoutubePostListener, PollAdapter.PollOptionListener, GridPostAdapter.GridItemListener {
 
     private static final String PERFORMANCE_POST_DETAIL = "mp_explore_detail";
     private static final int OPEN_KOL_COMMENT = 101;
     private static final int OPEN_KOL_PROFILE = 13;
+    private static final int OPEN_CONTENT_REPORT = 1310;
 
     private Integer postId;
     private SwipeToRefresh swipeToRefresh;
@@ -81,7 +91,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private KolRouter kolRouter;
     private PerformanceMonitoring performanceMonitoring;
 
-    private KolPostViewModel kolPostViewModel;
+    private PostDetailFooterModel postDetailFooterModel;
     private boolean isTraceStopped;
 
     @Inject
@@ -162,10 +172,10 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
         swipeToRefresh.setOnRefreshListener(this);
 
-        KolPostTypeFactoryImpl typeFactory = new KolPostTypeFactoryImpl(this);
-        typeFactory.setType(KolPostViewHolder.Type.EXPLORE);
-        adapter.setTypeFactory(new KolPostDetailTypeFactoryImpl(this, this, this,
-                this, this, this, this, this, this));
+        //TODO IMPORTANT?
+//        KolPostTypeFactoryImpl typeFactory = new KolPostTypeFactoryImpl(this);
+//        typeFactory.setType(KolPostViewHolder.Type.EXPLORE);
+        adapter.setTypeFactory(new KolPostDetailTypeFactoryImpl(this, this, this, this, this, this, this, this));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
@@ -202,22 +212,30 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetKolPostDetail(List<Visitable> list, KolPostViewModel kolPostViewModel) {
+    public void onSuccessGetKolPostDetail(List<Visitable> list,
+                                          PostDetailFooterModel postDetailFooterModel) {
         adapter.setList(list);
-        setFooter(kolPostViewModel);
+        setFooter(postDetailFooterModel);
     }
 
-    private void setFooter(KolPostViewModel postKol) {
-        this.kolPostViewModel = postKol;
+    private void setFooter(PostDetailFooterModel postDetailFooterModel) {
+        this.postDetailFooterModel = postDetailFooterModel;
 
         footer.setVisibility(View.VISIBLE);
 
-        setLikeListener(postKol.isLiked());
-        setTotalLike(postKol.getTotalLike());
-        setTotalComment(postKol.getTotalComment());
+        if(postDetailFooterModel.isLiked()){
+            ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_green);
+        }else{
+            ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_gray);
 
-        commentCount.setOnClickListener(v -> onGoToKolComment(0, postKol.getContentId(), false, ""));
-        commentButton.setOnClickListener(v -> onGoToKolComment(0, postKol.getContentId(), false, ""));
+        }
+
+        setLikeListener(postDetailFooterModel.isLiked());
+        setTotalLike(postDetailFooterModel.getTotalLike());
+        setTotalComment(postDetailFooterModel.getTotalComment());
+
+        commentCount.setOnClickListener(v -> onGoToKolComment(0, postDetailFooterModel.getContentId()));
+        commentButton.setOnClickListener(v -> onGoToKolComment(0, postDetailFooterModel.getContentId()));
 
     }
 
@@ -281,21 +299,13 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     private void setLikeListener(boolean isLiked) {
         //TODO ANALYTICS
-        if (kolPostViewModel != null) {
+        if (postDetailFooterModel != null) {
             if (isLiked) {
-                likeCount.setOnClickListener(v -> onUnlikeKolClicked(0, kolPostViewModel.getContentId(),
-                        kolPostViewModel.isMultipleContent(),
-                        kolPostViewModel.getActivityType()));
-                likeButton.setOnClickListener(v -> onUnlikeKolClicked(0, kolPostViewModel.getContentId(),
-                        kolPostViewModel.isMultipleContent(),
-                        kolPostViewModel.getActivityType()));
+                likeCount.setOnClickListener(v -> onUnlikeKolClicked(0, postDetailFooterModel.getContentId()));
+                likeButton.setOnClickListener(v -> onUnlikeKolClicked(0, postDetailFooterModel.getContentId()));
             } else {
-                likeCount.setOnClickListener(v -> onLikeKolClicked(0, kolPostViewModel.getContentId(),
-                        kolPostViewModel.isMultipleContent(),
-                        kolPostViewModel.getActivityType()));
-                likeButton.setOnClickListener(v -> onLikeKolClicked(0, kolPostViewModel.getContentId(),
-                        kolPostViewModel.isMultipleContent(),
-                        kolPostViewModel.getActivityType()));
+                likeCount.setOnClickListener(v -> onLikeKolClicked(0, postDetailFooterModel.getContentId()));
+                likeButton.setOnClickListener(v -> onLikeKolClicked(0, postDetailFooterModel.getContentId()));
             }
         }
     }
@@ -305,45 +315,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         showError(message);
     }
 
-    @Override
-    public UserSessionInterface getUserSession() {
-        return userSession;
-    }
-
-    @Override
-    public AbstractionRouter getAbstractionRouter() {
-        return abstractionRouter;
-    }
-
-    @Override
-    public void onGoToKolProfile(int rowNumber, String userId, int postId) {
-        Intent intent = kolRouter.getTopProfileIntent(getContext(), userId);
-        startActivityForResult(intent, OPEN_KOL_PROFILE);
-    }
-
-    @Override
-    public void onGoToKolProfileUsingApplink(int rowNumber, String applink) {
-        kolRouter.openRedirectUrl(getActivity(), applink);
-    }
-
-    @Override
-    public void onOpenKolTooltip(int rowNumber, String uniqueTrackingId, String url) {
-        kolRouter.openRedirectUrl(getActivity(), url);
-    }
-
-    @Override
-    public void trackContentClick(boolean hasMultipleContent, String activityId, String
-            activityType, String position) {
-
-    }
-
-    @Override
-    public void trackTooltipClick(boolean hasMultipleContent, String activityId, String
-            activityType, String position) {
-
-    }
-
-    @Override
     public void onFollowKolClicked(int rowNumber, int id) {
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.followKol(id, rowNumber);
@@ -352,7 +323,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         }
     }
 
-    @Override
     public void onUnfollowKolClicked(int rowNumber, int id) {
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.unfollowKol(id, rowNumber);
@@ -361,9 +331,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         }
     }
 
-    @Override
-    public void onLikeKolClicked(int rowNumber, int id, boolean hasMultipleContent,
-                                 String activityType) {
+    public void onLikeKolClicked(int rowNumber, int id) {
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.likeKol(id, rowNumber, this);
         } else {
@@ -371,9 +339,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         }
     }
 
-    @Override
-    public void onUnlikeKolClicked(int adapterPosition, int id, boolean hasMultipleContent,
-                                   String activityType) {
+    public void onUnlikeKolClicked(int adapterPosition, int id) {
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.unlikeKol(id, adapterPosition, this);
         } else {
@@ -382,26 +348,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToKolComment(int rowNumber, int id, boolean hasMultipleContent,
-                                 String activityType) {
+    public void onGoToKolComment(int rowNumber, int id) {
         Intent intent = KolCommentActivity.getCallingIntent(getContext(), id, rowNumber);
         startActivityForResult(intent, OPEN_KOL_COMMENT);
-    }
-
-    @Override
-    public void onGoToKolComment(int rowNumber, int id) {
-        onGoToKolComment(rowNumber, id, false, "");
-    }
-
-    @Override
-    public void onEditClicked(boolean hasMultipleContent, String activityId,
-                              String activityType) {
-
-    }
-
-    @Override
-    public void onMenuClicked(int rowNumber, BaseKolViewModel element) {
-
     }
 
     @Override
@@ -454,6 +403,26 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onErrorToggleFavoriteShop(String errorMessage, String shopId) {
+        ToasterError.make(getView(), errorMessage, BaseToaster.LENGTH_LONG)
+                .setAction(R.string.title_try_again,
+                        v -> presenter.toggleFavoriteShop( shopId)
+                )
+                .show();
+    }
+
+    @Override
+    public void onSuccessToggleFavoriteShop() {
+        if (adapter.getList().get(0) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel model = (DynamicPostViewModel) adapter.getList().get(0);
+            model.getHeader().getFollowCta().setFollow(
+                    !model.getHeader().getFollowCta().isFollow()
+            );
+            adapter.notifyItemChanged(0, DynamicPostViewHolder.PAYLOAD_FOLLOW);
+        }
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -462,9 +431,39 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             case OPEN_KOL_PROFILE:
                 presenter.getCommentFirstTime(postId);
                 break;
+            case OPEN_CONTENT_REPORT:
+                if (resultCode == Activity.RESULT_OK) {
+                    if (data.getBooleanExtra(ContentReportActivity.RESULT_SUCCESS, false)) {
+                        onSuccessReportContent();
+                    } else {
+                        onErrorReportContent(
+                                data.getStringExtra(ContentReportActivity.RESULT_ERROR_MSG)
+                        );
+                    }
+                }
+                break;
             default:
                 break;
         }
+    }
+
+
+    private void onSuccessReportContent() {
+        ToasterNormal
+                .make(getView(),
+                        getString(R.string.feed_content_reported),
+                        BaseToaster.LENGTH_LONG)
+                .setAction(R.string.label_close, v -> {
+                })
+                .show();
+    }
+
+    private void onErrorReportContent(String errorMsg) {
+        ToasterError
+                .make(getView(), errorMsg, BaseToaster.LENGTH_LONG)
+                .setAction(R.string.label_close, v -> {
+                })
+                .show();
     }
 
     @Override
@@ -494,86 +493,176 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onAvatarClick(int positionInFeed, @NotNull String redirectUrl) {
+        onGoToLink(redirectUrl);
+    }
 
+    public void onGoToLink(String link) {
+        if (!TextUtils.isEmpty(link)) {
+            kolRouter.openRedirectUrl(getActivity(), link);
+        }
     }
 
     @Override
     public void onHeaderActionClick(int positionInFeed, @NotNull String id, @NotNull String type, boolean isFollow) {
 
+        if (userSession != null && userSession.isLoggedIn()) {
+
+            if (type.equals(FollowCta.AUTHOR_USER)) {
+                int userIdInt = 0;
+                try {
+                    userIdInt = Integer.valueOf(id);
+                } catch (NumberFormatException ignored) {
+                }
+
+                if (isFollow) {
+                    onUnfollowKolClicked(positionInFeed, userIdInt);
+                } else {
+                    onFollowKolClicked(positionInFeed, userIdInt);
+                }
+
+            } else if (type.equals(FollowCta.AUTHOR_SHOP)) {
+                presenter.toggleFavoriteShop(id);
+            }
+
+        } else {
+            startActivity(kolRouter.getLoginIntent(getActivity()));
+        }
     }
 
     @Override
     public void onMenuClick(int positionInFeed, int postId, boolean reportable, boolean deletable, boolean editable) {
+        if (getContext() != null) {
+            Menus menus = createBottomMenu(getContext(), deletable,
+                    reportable, false, new PostMenuListener() {
+                        @Override
+                        public void onDeleteClicked() {
 
+                        }
+
+                        @Override
+                        public void onReportClick() {
+                            goToContentReport(postId);
+                        }
+
+                        @Override
+                        public void onEditClick() {
+
+                        }
+                    });
+            menus.show();
+        }
+    }
+
+    private void goToContentReport(int contentId) {
+        if (getContext() != null) {
+            Intent intent = ContentReportActivity.Companion.createIntent(
+                    getContext(),
+                    contentId
+            );
+            startActivityForResult(intent, OPEN_CONTENT_REPORT);
+        }
     }
 
     @Override
     public void onCaptionClick(int positionInFeed, @NotNull String redirectUrl) {
-
+        onGoToLink(redirectUrl);
     }
 
     @Override
     public void onLikeClick(int positionInFeed, int id, boolean isLiked) {
-
+//NO NEED TO IMPLEMENT THIS IN DETAIL
     }
 
     @Override
     public void onCommentClick(int positionInFeed, int id) {
-
+//NO NEED TO IMPLEMENT THIS IN DETAIL
     }
 
     @Override
-    public void onShareClick(int positionInFeed, int id, @NotNull String title, @NotNull String description, @NotNull String url, @NotNull String iamgeUrl) {
-
+    public void onShareClick(int positionInFeed, int id, @NotNull String title,
+                             @NotNull String description, @NotNull String url,
+                             @NotNull String imageUrl) {
+        if (getActivity() != null) {
+            //TODO
+//            kolRouter.shareFeed(
+//                    getActivity(),
+//                    String.valueOf(id),
+//                    url,
+//                    title,
+//                    imageUrl,
+//                    description
+//            );
+        }
     }
 
     @Override
     public void onFooterActionClick(int positionInFeed, @NotNull String redirectUrl) {
-
+        onGoToLink(redirectUrl);
     }
 
     @Override
     public void onPostTagItemClick(int positionInFeed, @NotNull String redirectUrl) {
+        onGoToLink(redirectUrl);
 
     }
 
     @Override
     public void onActionPopup() {
-
+        //Supposedly not exist in detail
     }
 
     @Override
     public void onActionRedirect(@NotNull String redirectUrl) {
-
+        onGoToLink(redirectUrl);
     }
 
     @Override
     public void onTitleCtaClick(@NotNull String redirectUrl) {
+        onGoToLink(redirectUrl);
 
     }
 
     @Override
     public void onImageClick(int positionInFeed, int contentPosition, @NotNull String redirectLink) {
+        onGoToLink(redirectLink);
 
     }
 
     @Override
     public void onAffiliateTrackClicked(@NotNull List<TrackingViewModel> trackList) {
-
+        for (TrackingViewModel track : trackList) {
+            //TODO
+//            presenter.trackAffiliate(track.getClickURL());
+        }
     }
 
     @Override
     public void onYoutubeThumbnailClick(int positionInFeed, int contentPosition, @NotNull String youtubeId) {
+        String YOUTUBE_URL = "{youtube_url}";
+        String redirectUrl = ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId);
+
+        if (getContext() != null) {
+            RouteManager.route(
+                    getContext(),
+                    redirectUrl
+            );
+        }
 
     }
 
     @Override
     public void onPollOptionClick(int positionInFeed, int contentPosition, int option, @NotNull String pollId, @NotNull String optionId, boolean isVoted, @NotNull String redirectLink) {
-
+        if (isVoted) {
+            onGoToLink(redirectLink);
+        } else {
+            //TODO
+//            presenter.sendVote(positionInFeed, pollId, optionId);
+        }
     }
 
     @Override
     public void onGridItemClick(int positionInFeed, int contentPosition, @NotNull String redirectLink) {
+        onGoToLink(redirectLink);
 
     }
 }

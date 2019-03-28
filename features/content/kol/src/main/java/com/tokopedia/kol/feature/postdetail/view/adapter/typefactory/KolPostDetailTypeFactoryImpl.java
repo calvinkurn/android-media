@@ -23,7 +23,6 @@ import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostDetailViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.EmptyKolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
@@ -42,7 +41,6 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
         implements KolPostDetailTypeFactory, KolPostTypeFactory, KolCommentTypeFactory, DynamicFeedTypeFactory {
 
     //OLD
-    private final KolPostListener.View.ViewHolder kolPostListener;
     private final KolComment.View.ViewHolder kolCommentListener;
 
     //NEW
@@ -54,8 +52,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     private final GridPostAdapter.GridItemListener gridItemListener;
     private final KolComment.View.SeeAll seeAll;
 
-    public KolPostDetailTypeFactoryImpl(KolPostListener.View.ViewHolder kolPostListener,
-                                        KolComment.View.ViewHolder kolCommentListener,
+    public KolPostDetailTypeFactoryImpl(KolComment.View.ViewHolder kolCommentListener,
                                         KolComment.View.SeeAll seeAll,
                                         DynamicPostViewHolder.DynamicPostListener listener,
                                         CardTitleView.CardTitleListener cardTitleListener,
@@ -63,7 +60,6 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
                                         YoutubeViewHolder.YoutubePostListener youtubePostListener,
                                         PollAdapter.PollOptionListener pollOptionListener,
                                         GridPostAdapter.GridItemListener gridItemListener) {
-        this.kolPostListener = kolPostListener;
         this.kolCommentListener = kolCommentListener;
         this.seeAll = seeAll;
         this.listener = listener;
@@ -136,8 +132,8 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
             abstractViewHolder = new KolCommentViewHolder(view, kolCommentListener);
         else if (viewType == SeeAllCommentsViewHolder.LAYOUT)
             abstractViewHolder = new SeeAllCommentsViewHolder(view, seeAll);
-        else if (viewType == KolPostViewHolder.LAYOUT)
-            abstractViewHolder = new KolPostViewHolder(view, kolPostListener, KolPostViewHolder.Type.EXPLORE);
+//        else if (viewType == KolPostViewHolder.LAYOUT)
+//            abstractViewHolder = new KolPostViewHolder(view, kolPostListener, KolPostViewHolder.Type.EXPLORE);
         else
             abstractViewHolder = super.createViewHolder(view, viewType);
         return abstractViewHolder;

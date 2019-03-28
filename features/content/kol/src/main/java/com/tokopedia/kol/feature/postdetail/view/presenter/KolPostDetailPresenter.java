@@ -1,6 +1,8 @@
 package com.tokopedia.kol.feature.postdetail.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
@@ -10,9 +12,12 @@ import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCa
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.postdetail.view.subscriber.FollowUnfollowDetailSubscriber;
 import com.tokopedia.kol.feature.postdetail.view.subscriber.GetKolPostDetailSubscriber;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
+
+import rx.Subscriber;
 
 /**
  * @author by milhamj on 27/07/18.
@@ -24,16 +29,22 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
     private final GetPostDetailUseCase getPostDetailUseCase;
     private final LikeKolPostUseCase likeKolPostUseCase;
     private final FollowKolPostGqlUseCase followKolPostGqlUseCase;
+    private final ToggleFavouriteShopUseCase doFavoriteShopUseCase;
+//    private final TrackAffiliateClickUseCase trackAffiliateClickUseCase;
+
     private final UserSessionInterface userSession;
 
     @Inject
     public KolPostDetailPresenter(GetPostDetailUseCase getPostDetailUseCase,
                                   LikeKolPostUseCase likeKolPostUseCase,
                                   FollowKolPostGqlUseCase followKolPostGqlUseCase,
+                                  ToggleFavouriteShopUseCase doFavoriteShopUseCase,
                                   UserSessionInterface userSessionInterface) {
         this.getPostDetailUseCase = getPostDetailUseCase;
         this.likeKolPostUseCase = likeKolPostUseCase;
         this.followKolPostGqlUseCase = followKolPostGqlUseCase;
+        this.doFavoriteShopUseCase = doFavoriteShopUseCase;
+//        this.trackAffiliateClickUseCase = trackAffiliateClickUseCase;
         this.userSession = userSessionInterface;
     }
 
@@ -107,6 +118,50 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
         likeKolPostUseCase.execute(
                 LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_UNLIKE),
                 new LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.ACTION_UNLIKE)
+        );
+    }
+
+    @Override
+    public void toggleFavoriteShop(String shopId) {
+        doFavoriteShopUseCase.execute(
+                ToggleFavouriteShopUseCase.createRequestParam(shopId),
+                new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (GlobalConfig.isAllowDebuggingTools()) {
+                            e.printStackTrace();
+                        }
+
+                        if (!isViewAttached()) {
+                            return;
+                        }
+
+                        getView().onErrorToggleFavoriteShop(
+                                ErrorHandler.getErrorMessage(getView().getContext(), e),
+                                shopId
+                        );
+                    }
+
+                    @Override
+                    public void onNext(Boolean success) {
+                        if (success) {
+                            getView().onSuccessToggleFavoriteShop();
+                        } else {
+                            getView().onErrorToggleFavoriteShop(
+                                    ErrorHandler.getErrorMessage(
+                                            getView().getContext(),
+                                            new RuntimeException()
+                                    ),
+                                    shopId
+                            );
+                        }
+                    }
+                }
         );
     }
 }

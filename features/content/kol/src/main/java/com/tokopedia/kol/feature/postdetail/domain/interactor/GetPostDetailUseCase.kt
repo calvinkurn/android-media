@@ -3,11 +3,15 @@ package com.tokopedia.kol.feature.postdetail.domain.interactor
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.kol.common.util.TimeConverter
-import com.tokopedia.kol.feature.comment.data.pojo.get.*
+import com.tokopedia.kol.feature.comment.data.pojo.get.Comment
+import com.tokopedia.kol.feature.comment.data.pojo.get.GetKolCommentData
+import com.tokopedia.kol.feature.comment.data.pojo.get.GetUserPostComment
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
+import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.SeeAllCommentsViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -30,7 +34,6 @@ class GetPostDetailUseCase @Inject constructor(
         val domain = PostDetailViewModel()
         return getPostDetail(domain, createParamDynamicFeed(requestParams))
                 .flatMap { getKolComments(domain, requestParams) }
-
     }
 
     private fun createParamDynamicFeed(requestParams: RequestParams): RequestParams {
@@ -49,11 +52,13 @@ class GetPostDetailUseCase @Inject constructor(
                     val data: GetKolCommentData = it.getData(GetKolCommentData::class.java)
                     val postComment: GetUserPostComment = data.getUserPostComment
 
-                    val kolPostDetailViewModelList: KolPostViewModel = convertToKolPostViewModel(postComment.postKol)
-                    domain.kolPostViewModel = kolPostDetailViewModelList
+                    val footerModel: PostDetailFooterModel =
+                            convertToPostDetailFooterModel(domain.dynamicPostViewModel)
+                    domain.footerModel = footerModel
 
-                    if (postComment.postKol.isShowComment) {
-                        domain.dynamicPostViewModel.postList.add(addSeeAll(postComment.postKol))
+                    if (domain.footerModel.totalComment > 0) {
+                        domain.dynamicPostViewModel.postList.add(addSeeAll(domain.footerModel,
+                                postComment))
 
                         val kolCommentViewModels = convertToKolCommentViewModelList(postComment
                                 .comments).asReversed()
@@ -65,104 +70,26 @@ class GetPostDetailUseCase @Inject constructor(
 
     }
 
+    private fun convertToPostDetailFooterModel(dynamicFeedDomainModel: DynamicFeedDomainModel):
+            PostDetailFooterModel {
+        val footerModel = PostDetailFooterModel()
+        if (dynamicFeedDomainModel.postList.isNotEmpty()) {
+            val dynamicPostViewModel = dynamicFeedDomainModel.postList[0]
+            if (dynamicPostViewModel is DynamicPostViewModel) {
+                footerModel.contentId = dynamicPostViewModel.id
+                footerModel.isLiked = dynamicPostViewModel.footer.like.isChecked
+                footerModel.totalLike = dynamicPostViewModel.footer.like.value
+                footerModel.totalComment = dynamicPostViewModel.footer.comment.value
+            }
+        }
+        return footerModel
+    }
+
     private fun createParamPostComment(requestParams: RequestParams): RequestParams {
         val params = RequestParams.create()
         params.putAll(GetKolPostDetailUseCase.getVariables(requestParams.getInt
         (GetKolPostDetailUseCase.PARAM_ID, 0)))
         return params
-    }
-
-
-    private fun convertToKolPostViewModel(postKol: PostKol): KolPostViewModel {
-        val content = getContent(postKol)
-        val tag = getKolTag(content)
-        val imageList = ArrayList<String>()
-        imageList.add(getImageUrl(content))
-
-        return KolPostViewModel(
-                postKol.userId,
-                "",
-                "",
-                if (postKol.userName == null) "" else postKol.userName,
-                if (postKol.userPhoto == null) "" else postKol.userPhoto,
-                if (postKol.userInfo == null) "" else postKol.userInfo,
-                if (postKol.userUrl == null) "" else postKol.userUrl,
-                postKol.isFollowed,
-                if (postKol.description == null) "" else postKol.description,
-                postKol.isLiked,
-                postKol.likeCount,
-                postKol.commentCount,
-                0,
-                postKol.id,
-                if (postKol.createTime == null) "" else generateTime(postKol.createTime),
-                true,
-                true,
-                imageList,
-                getTagId(tag),
-                "",
-                getTagType(tag),
-                getTagCaption(tag),
-                getTagLink(tag)
-        )
-    }
-
-
-    private fun getContent(postKol: PostKol): Content {
-        return try {
-            postKol.content[0]
-        } catch (e: NullPointerException) {
-            Content("", listOf())
-        } catch (e: IndexOutOfBoundsException) {
-            Content("", listOf())
-        }
-
-    }
-
-    private fun getKolTag(content: Content): Tag {
-        return try {
-            content.tags[0]
-        } catch (e: NullPointerException) {
-            Tag(0, "", "", "", "", "")
-        } catch (e: IndexOutOfBoundsException) {
-            Tag(0, "", "", "", "", "")
-        }
-
-    }
-
-    private fun getImageUrl(content: Content?): String {
-        return if (content != null && content.imageurl != null) {
-            content.imageurl
-        } else {
-            ""
-        }
-    }
-
-    private fun getTagCaption(tag: Tag?): String {
-        return if (tag != null && tag.caption != null) {
-            tag.caption
-        } else {
-            ""
-        }
-    }
-
-    private fun getTagId(tag: Tag?): Int {
-        return tag?.id ?: 0
-    }
-
-    private fun getTagType(tag: Tag?): String {
-        return if (tag != null && tag.type != null) {
-            tag.type
-        } else {
-            ""
-        }
-    }
-
-    private fun getTagLink(tag: Tag?): String {
-        return if (tag != null && tag.link != null) {
-            tag.link
-        } else {
-            ""
-        }
     }
 
     private fun convertToKolCommentViewModelList(commentList: List<Comment>):
@@ -191,11 +118,12 @@ class GetPostDetailUseCase @Inject constructor(
         return TimeConverter.generateTime(context, rawTime)
     }
 
-    private fun addSeeAll(postKol: PostKol): Visitable<*> {
+    private fun addSeeAll(footerModel: PostDetailFooterModel, postComment: GetUserPostComment):
+            Visitable<*> {
         return SeeAllCommentsViewModel(
-                postKol.id,
-                postKol.commentCount,
-                postKol.commentCount > GetKolPostDetailUseCase.DEFAULT_LIMIT
+                postComment.postKol.id,
+                footerModel.totalComment,
+                footerModel.totalComment > GetKolPostDetailUseCase.DEFAULT_LIMIT
         )
     }
 
@@ -213,14 +141,6 @@ class GetPostDetailUseCase @Inject constructor(
 
 
     companion object {
-        private const val PARAM_USER_ID = "userID"
-        private const val PARAM_LIMIT = "limit"
-        private const val PARAM_CURSOR = "cursor"
-        private const val PARAM_SOURCE = "source"
-        private const val PARAM_SOURCE_ID = "sourceID"
-
-        private val PARAM_ID = "idPost"
-
         private const val LIMIT_3 = 3
 
         @JvmOverloads
