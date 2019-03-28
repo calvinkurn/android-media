@@ -34,8 +34,8 @@
 
             <View
                 android:id="@+id/vwRecord"
-                android:layout_width="@dimen/dp_10"
-                android:layout_height="@dimen/dp_10"
+                android:layout_width="@dimen/dp_8"
+                android:layout_height="@dimen/dp_8"
                 android:visibility="gone"
                 tools:visibility="visible"
                 android:background="@drawable/ic_record"/>
