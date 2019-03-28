@@ -118,7 +118,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private static final String EXTRA_PRODUCT_ITEM = "EXTRA_PRODUCT_ITEM";
 
     public static final int SHOP_INDEX_PROMO_GLOBAL = -1;
-    public static final int SHOP_INDEX_DELETE_PROMO = -2;
 
     private static final int HAS_ELEVATION = 8;
     private static final int NO_ELEVATION = 0;
@@ -1984,7 +1983,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             promoStackingData.setPromoCode("");
             promoStackingData.setDescription("");
             cartAdapter.updateItemPromoStackVoucher(promoStackingData);
-        } else if (shopIndex != SHOP_INDEX_DELETE_PROMO) {
+        } else {
             CartShopHolderData cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(shopIndex);
             if (cartShopHolderData != null) {
                 cartShopHolderData.getShopGroupData().setVoucherOrdersItemData(null);

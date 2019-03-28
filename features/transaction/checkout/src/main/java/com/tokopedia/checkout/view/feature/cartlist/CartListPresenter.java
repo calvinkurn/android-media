@@ -359,6 +359,7 @@ public class CartListPresenter implements ICartListPresenter {
         requestParams.putObject(UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
                 view.getGeneratedAuthParamNetwork(paramUpdate));
         requestParams.putBoolean(DeleteCartGetCartListUseCase.PARAM_IS_DELETE_ALL_DATA, allCartItemData.size() == removedCartItems.size());
+        requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_TO_BE_REMOVED_PROMO_CODES, appliedPromoOnDeletedProductList);
 
         compositeSubscription.add(deleteCartGetCartListUseCase.createObservable(requestParams)
                 .flatMap(new Func1<DeleteAndRefreshCartListData, Observable<DeleteAndRefreshCartListData>>() {
@@ -1012,10 +1013,10 @@ public class CartListPresenter implements ICartListPresenter {
                     if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()
                             && deleteAndRefreshCartListData.getCartListData() != null) {
                         if (deleteAndRefreshCartListData.getCartListData().getShopGroupDataList().isEmpty()) {
-                            processCancelAutoApplyPromoStack(CartFragment.SHOP_INDEX_DELETE_PROMO, appliedPromoOnDeletedProductList, true);
+//                            processCancelAutoApplyPromoStack(CartFragment.SHOP_INDEX_DELETE_PROMO, appliedPromoOnDeletedProductList, true);
                             processInitialGetCartData(cartListData == null);
                         } else {
-                            processCancelAutoApplyPromoStack(CartFragment.SHOP_INDEX_DELETE_PROMO, appliedPromoOnDeletedProductList, true);
+//                            processCancelAutoApplyPromoStack(CartFragment.SHOP_INDEX_DELETE_PROMO, appliedPromoOnDeletedProductList, true);
                             CartListPresenter.this.cartListData = deleteAndRefreshCartListData.getCartListData();
                             view.renderInitialGetCartListDataSuccess(deleteAndRefreshCartListData.getCartListData());
                             view.onDeleteCartDataSuccess();
@@ -1026,7 +1027,7 @@ public class CartListPresenter implements ICartListPresenter {
                         );
                     }
                 } else {
-                    processCancelAutoApplyPromoStack(CartFragment.SHOP_INDEX_DELETE_PROMO, appliedPromoOnDeletedProductList, true);
+//                    processCancelAutoApplyPromoStack(CartFragment.SHOP_INDEX_DELETE_PROMO, appliedPromoOnDeletedProductList, true);
                     processInitialGetCartData(cartListData == null);
                 }
             }
