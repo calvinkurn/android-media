@@ -92,7 +92,7 @@ class VideoDetailFragment:
             resizeVideo(it.getVideoWidth(), it.getVideoHeight())
             it.setOnVideoSizeChangedListener(object : MediaPlayer.OnVideoSizeChangedListener {
                 override fun onVideoSizeChanged(player: MediaPlayer?, width: Int, height: Int) {
-                    mediaController = MediaController(activity!!)
+                    val mediaController = MediaController(activity!!)
                     videoView.setMediaController(mediaController)
                     mediaController.setAnchorView(videoView)
                     mediaController.show()
