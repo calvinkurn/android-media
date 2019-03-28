@@ -204,7 +204,11 @@
                 android:layout_height="@dimen/dp_40"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:background="@drawable/bg_button_green">
+                android:background="@drawable/bg_button_green"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                tools:ignore="UnusedAttribute">
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:layout_width="wrap_content"
