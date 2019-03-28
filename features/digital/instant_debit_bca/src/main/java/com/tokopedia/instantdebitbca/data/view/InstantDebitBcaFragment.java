@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.bca.xco.widget.BCARegistrasiXCOWidget;
 import com.bca.xco.widget.BCAXCOListener;
@@ -48,7 +47,6 @@ public class InstantDebitBcaFragment extends BaseDaggerFragment implements Insta
     private BCARegistrasiXCOWidget widgetBca;
     private ActionListener listener;
     private String applinkUrl;
-    private TextView textView;
 
     public static Fragment newInstance(Context context, String callbackUrl) {
         InstantDebitBcaFragment fragment = new InstantDebitBcaFragment();
@@ -71,12 +69,6 @@ public class InstantDebitBcaFragment extends BaseDaggerFragment implements Insta
         super.onViewCreated(view, savedInstanceState);
 
         applinkUrl = getArguments().getString(InstantDebitBcaActivity.CALLBACK_URL);
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                redirectPageAfterRegisterBca();
-            }
-        });
         widgetBca = new BCARegistrasiXCOWidget(getActivity(), XCOEnum.ENVIRONMENT.DEV);
         widgetBca.setListener(this);
         layoutWidget.addView(widgetBca);
@@ -125,7 +117,7 @@ public class InstantDebitBcaFragment extends BaseDaggerFragment implements Insta
         String debitData = gsonObj.toJson(mapCardData);
         debitData.replace("\"", "\\\"");
 
-        presenter.notifyDebitRegisterBca(debitData);
+        presenter.notifyDebitRegisterBca(debitData, getDeviceId());
     }
 
     @Override

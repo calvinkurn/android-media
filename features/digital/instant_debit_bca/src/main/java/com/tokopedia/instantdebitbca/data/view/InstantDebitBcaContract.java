@@ -19,7 +19,7 @@ public interface InstantDebitBcaContract {
     interface Presenter extends CustomerPresenter<View> {
         void getAccessTokenBca();
 
-        void notifyDebitRegisterBca(String debitData);
+        void notifyDebitRegisterBca(String debitData, String deviceId);
 
         void onDestroy();
     }

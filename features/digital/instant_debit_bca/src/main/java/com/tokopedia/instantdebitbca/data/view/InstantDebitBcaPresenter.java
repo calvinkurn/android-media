@@ -59,9 +59,9 @@ public class InstantDebitBcaPresenter extends BaseDaggerPresenter<InstantDebitBc
     }
 
     @Override
-    public void notifyDebitRegisterBca(String debitData) {
+    public void notifyDebitRegisterBca(String debitData, String deviceId) {
         compositeSubscription.add(
-                notifyDebitRegisterBcaUseCase.createObservable(notifyDebitRegisterBcaUseCase.createRequestParam(debitData))
+                notifyDebitRegisterBcaUseCase.createObservable(notifyDebitRegisterBcaUseCase.createRequestParam(debitData, deviceId))
                         .subscribeOn(Schedulers.io())
                         .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())

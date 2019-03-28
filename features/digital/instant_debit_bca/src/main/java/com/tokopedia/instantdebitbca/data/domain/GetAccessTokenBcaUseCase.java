@@ -15,6 +15,8 @@ import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import rx.Observable;

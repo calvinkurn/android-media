@@ -81,10 +81,10 @@ public class NotifyDebitRegisterBcaUseCase extends UseCase<NotifyDebitRegisterBc
                 });
     }
 
-    public RequestParams createRequestParam(String debitDataString) {
+    public RequestParams createRequestParam(String debitDataString, String deviceId) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(MERCHANT_CODE, MERCHANT_DATA);
-        requestParams.putString(DEVICE_ID, getDeviceId());
+        requestParams.putString(DEVICE_ID, deviceId);
         requestParams.putString(BANK_CODE, BANK_DATA);
         requestParams.putString(CALLBACK_URL, CALLBACK_DATA);
         requestParams.putString(SIGNATURE, "");
