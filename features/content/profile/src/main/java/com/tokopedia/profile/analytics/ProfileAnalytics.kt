@@ -4,9 +4,8 @@ import android.app.Activity
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
 
 /**
  * @author by milhamj on 10/10/18.
@@ -101,14 +100,13 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
 
     private fun getDefaultData(screenName: String, event: String, category: String, action: String,
                                label: String): MutableMap<String, Any> {
-        val data = HashMap<String, Any>()
-        data[SCREEN_NAME] = screenName
-        data[EVENT] = event
-        data[CATEGORY] = category
-        data[ACTION] = action
-        data[LABEL] = label
-        data[USER_ID] = userSessionInterface.userId
-        return data
+        return mapOf(SCREEN_NAME to screenName,
+                EVENT to event,
+                CATEGORY to category,
+                ACTION to action,
+                LABEL to label,
+                USER_ID to userSessionInterface.userId)
+                .toMutableMap()
     }
 
     private fun setCustomDimensions(data: MutableMap<String, Any>, position: String)
