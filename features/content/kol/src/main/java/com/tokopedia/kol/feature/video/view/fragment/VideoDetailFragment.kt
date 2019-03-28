@@ -53,6 +53,7 @@ class VideoDetailFragment:
 
     lateinit var dynamicPostViewModel: DynamicPostViewModel
     lateinit var videoViewModel: VideoViewModel
+    lateinit var mediaController: MediaController
 
     private var id: String = ""
     companion object {
@@ -95,10 +96,7 @@ class VideoDetailFragment:
             resizeVideo(it.getVideoWidth(), it.getVideoHeight())
             it.setOnVideoSizeChangedListener(object : MediaPlayer.OnVideoSizeChangedListener {
                 override fun onVideoSizeChanged(player: MediaPlayer?, width: Int, height: Int) {
-                    val mediaController = MediaController(activity!!)
-                    mediaController.setAnchorView(videoView)
                     videoView.setMediaController(mediaController)
-                    mediaController.show(0)
                 }
             })
             it.start()
@@ -163,15 +161,16 @@ class VideoDetailFragment:
         } else {
             presenter.getFeedDetail(detailId)
         }
-//        initUi()
-//        initPlayer()
     }
 
-    private fun initUi() {
-
+    private fun initMediaController()  {
+        mediaController = MediaController(activity!!)
+        mediaController.setAnchorView(videoView)
+        mediaController.show(0)
     }
 
     private fun initPlayer(url: String) {
+        initMediaController()
         videoView.setVideoURI(Uri.parse(url))
         videoView.setOnErrorListener(object : MediaPlayer.OnErrorListener{
             override fun onError(p0: MediaPlayer?, p1: Int, p2: Int): Boolean {
@@ -195,6 +194,16 @@ class VideoDetailFragment:
             }
         })
         videoView.setOnPreparedListener(this)
+        videoView.setPlayPauseListener(object : VideoPlayerView.PlayPauseListener{
+            override fun onPlayVideo() {
+                mediaController.show(0)
+                videoView.setMediaController(mediaController)
+            }
+
+            override fun onPauseVideo() {
+
+            }
+        })
     }
 
     private fun initViewListener() {
@@ -226,6 +235,7 @@ class VideoDetailFragment:
 
     private fun bindHeader(header: Header) {
         header.let {
+            headerLayout.visibility = View.VISIBLE
             if (!TextUtils.isEmpty(it.avatar)) {
                 authorImage.loadImageCircle(it.avatar)
             } else {
@@ -253,32 +263,15 @@ class VideoDetailFragment:
         captionModel.let {
             if (it.text.isEmpty()) {
                 caption.visibility = View.GONE
-            } else if (it.text.length > DynamicPostViewHolder.MAX_CHAR) {
-                caption.visibility = View.VISIBLE
-                val captionText = caption.text.substring(0, DynamicPostViewHolder.CAPTION_END)
-                        .replace(DynamicPostViewHolder.NEWLINE, "<br />")
-                        .plus("... ")
-                        .plus("<font color='#ffffff'><b>")
-                        .plus(captionModel.buttonName)
-                        .plus("</b></font>")
-
-                caption.text = MethodChecker.fromHtml(captionText)
-                caption.setOnClickListener {
-                    if (!TextUtils.isEmpty(captionModel.appLink)) {
-//                        listener.onCaptionClick(adapterPosition, caption.appLink)
-                    } else {
-                        caption.text = caption.text
-                    }
-                }
             } else {
                 caption.text = it.text.replace(DynamicPostViewHolder.NEWLINE, " ")
             }
         }
     }
 
-
     private fun bindFooter(footer: Footer, template: TemplateFooter?) {
         footer.let {
+            bottomLayout.visibility = View.VISIBLE
             if (template!!.like) {
                 likeIcon.show()
                 likeText.show()
