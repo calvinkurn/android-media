@@ -455,8 +455,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     private boolean canRequestDynamicFilter() {
         return !isFilterDataAvailable()
-                && !isGettingDynamicFilter
-                && !isListEmpty;
+                && !isGettingDynamicFilter;
     }
     
     protected void requestDynamicFilter() {

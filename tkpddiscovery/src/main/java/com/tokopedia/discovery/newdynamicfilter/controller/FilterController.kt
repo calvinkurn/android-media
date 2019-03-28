@@ -98,11 +98,11 @@ class FilterController() : Parcelable {
         if (optionsWithSameKey.isEmpty()) {
             optionsForFilterViewState.add(option)
         } else {
-            setBundledOptionsForFlagFilterHelper(optionsForFilterViewState, option)
+            setBundledOptionsForFilterViewState(optionsForFilterViewState, option)
         }
     }
 
-    private fun setBundledOptionsForFlagFilterHelper(optionsForFilterViewState: MutableList<Option>, option: Option) {
+    private fun setBundledOptionsForFilterViewState(optionsForFilterViewState: MutableList<Option>, option: Option) {
         val iterator = optionsForFilterViewState.listIterator()
         var optionHasBeenAddedOrReplaced = false
 
@@ -218,7 +218,7 @@ class FilterController() : Parcelable {
         } else {
             selectedOptionList.addAll(
                 getCustomSelectedOptionList(filter) { option ->
-                isCustomOptionDisplayed(option) && isIncludePopularOption(popularOptionList, option)
+                getFilterViewState(option) && isIncludePopularOption(popularOptionList, option)
             })
         }
 
@@ -266,10 +266,6 @@ class FilterController() : Parcelable {
             }
         }
         return checkedOptions
-    }
-
-    private fun isCustomOptionDisplayed(option: Option) : Boolean {
-        return java.lang.Boolean.TRUE == getFilterViewState(option.uniqueId)
     }
 
     private fun isIncludePopularOption(popularOptionList: List<Option>, option: Option) : Boolean {

@@ -109,6 +109,130 @@ class FilterControllerTest {
     }
 
     @Test
+    fun testLoadFilterViewStateWithBundledOptions() {
+        val filterParameter = createFilterParameterWithBundledOption()
+        val filterList = createFilterList()
+
+        filterController.initFilterController(filterParameter, filterList)
+
+        assertFilterViewStateOnlyHasBundledOptions()
+    }
+
+    private fun createFilterParameterWithBundledOption() : Map<String, String> {
+        val filterParameter = mutableMapOf<String, String>()
+        filterParameter[SearchApiConst.Q] = QUERY_FOR_TEST_SAMSUNG
+        filterParameter[SearchApiConst.OFFICIAL] = TRUE_VALUE
+        filterParameter[SearchApiConst.FCITY] = "${jabodetabekOption.value},${bandungOption.value}"
+
+        return filterParameter
+    }
+
+    @Test
+    fun testLoadFilterViewStateWithBundledOptionsWithNotOrganizedFilterList() {
+        val filterParameter = createFilterParameterWithBundledOption()
+        val filterList = createNotOrganizedFilterList()
+
+        filterController.initFilterController(filterParameter, filterList)
+
+        assertFilterViewStateOnlyHasBundledOptions()
+    }
+
+    private fun createNotOrganizedFilterList() : List<Filter> {
+        val filterList = mutableListOf<Filter>()
+
+        tokoOptions.add(officialOption)
+        filterList.add(createFilterWithOptions(tokoOptions))
+
+        locationOptions.add(jakartaOption)
+        locationOptions.add(jakartaBaratOption)
+        locationOptions.add(jabodetabekOption)
+        locationOptions.add(tangerangOption)
+        locationOptions.add(bandungOption)
+        filterList.add(createFilterWithOptions(locationOptions))
+
+        categoryOptions.add(handphoneOption)
+        categoryOptions.add(tvOption)
+        filterList.add(createFilterWithOptions(categoryOptions))
+
+        priceOptions.add(minPriceOption)
+        priceOptions.add(maxPriceOption)
+        filterList.add(createFilterWithOptions(priceOptions))
+
+        return filterList
+    }
+
+    private fun assertFilterViewStateOnlyHasBundledOptions() {
+        val expectedOptions = mutableListOf<Option>()
+        expectedOptions.add(jabodetabekOption)
+        expectedOptions.add(bandungOption)
+        expectedOptions.add(officialOption)
+
+        assertFilterViewStateCorrect(expectedOptions)
+        assertFilterViewStateSizeCorrect(expectedOptions.size)
+    }
+
+    @Test
+    fun testSaveSliderValues() {
+        val originalSliderMinStateValue = 1
+        val originalSliderMaxStateValue = 1000
+
+        filterController.initFilterController()
+        filterController.saveSliderValueStates(originalSliderMinStateValue, originalSliderMaxStateValue)
+
+        assertSliderValueHasChanged(2, 1000, true)
+        assertSliderValueHasChanged(1, 2000, true)
+        assertSliderValueHasChanged(1, 1000, false)
+    }
+
+    private fun assertSliderValueHasChanged(newSliderMinStateValue: Int, newSliderMaxStateValue: Int, expectedIsSliderValueHasChanged: Boolean) {
+        val actualIsSliderValueHasChanged = filterController.isSliderValueHasChanged(newSliderMinStateValue, newSliderMaxStateValue)
+
+        assert(actualIsSliderValueHasChanged == expectedIsSliderValueHasChanged) {
+            getAssertSliderValueHasChangedMessage(newSliderMinStateValue, newSliderMaxStateValue, expectedIsSliderValueHasChanged)
+        }
+    }
+
+    private fun getAssertSliderValueHasChangedMessage(newSliderMinStateValue: Int, newSliderMaxStateValue: Int, expectedIsSliderValueHasChanged: Boolean) : String {
+        return "Testing slider value should be considered changed: $expectedIsSliderValueHasChanged.\n" +
+                "New slider state values: $newSliderMinStateValue - $newSliderMaxStateValue"
+    }
+
+    @Test
+    fun testResetAllFilters() {
+        val filterParameter = createFilterParameter()
+        val filterList = createFilterList()
+
+        filterController.initFilterController(filterParameter, filterList)
+        filterController.saveSliderValueStates(1, 1000)
+
+        filterController.resetAllFilters()
+
+        assertResetAllFiltersCorrect()
+    }
+
+    private fun assertResetAllFiltersCorrect() {
+        val actualFilterParameter = filterController.getFilterParameter()
+        val expectedFilterParameterSize = 1
+        val expectedFilterParameterKey = SearchApiConst.Q
+        val expectedFilterParameterContainsKey = true
+
+        assert(actualFilterParameter.size == expectedFilterParameterSize
+                && actualFilterParameter.contains(expectedFilterParameterKey)) {
+            "Testing reset all filters:\n" +
+                    "Filter Parameter expected size: $expectedFilterParameterSize, actual size: ${actualFilterParameter.size}\n" +
+                    "Filter Parameter should contain key: $expectedFilterParameterKey, expected: $expectedFilterParameterContainsKey, actual: ${actualFilterParameter.contains(expectedFilterParameterKey)}"
+        }
+
+        val actualFilterViewStateSize = filterController.getFilterViewStateSize()
+        assert(actualFilterViewStateSize == 0) {
+            "Testing reset all filters:\n" +
+                    "Filter View State expected size: 0, actual size: $actualFilterViewStateSize"
+        }
+
+        assertSliderValueHasChanged(-1, -1, false)
+    }
+
+    @Test
     fun testSetFilterNoCleanUp() {
         val filterParameter = createFilterParameter()
         val filterList = createFilterList()
