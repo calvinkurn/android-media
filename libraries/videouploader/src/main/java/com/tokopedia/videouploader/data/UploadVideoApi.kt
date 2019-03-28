@@ -18,8 +18,9 @@ interface UploadVideoApi {
             Observable<GenerateTokenPojo>
 
     @Multipart
-    @POST(UploadVideoUrl.URL_UPLOAD_VIDEO)
-    fun uploadVideo(@Header("x-token") videoToken: String,
+    @POST
+    fun uploadVideo(@Url videoUrl: String,
+                    @Header("x-token") videoToken: String,
                     @Part video: MultipartBody.Part):
             Observable<String>
 
