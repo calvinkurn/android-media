@@ -100,13 +100,12 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
 
     private fun getDefaultData(screenName: String, event: String, category: String, action: String,
                                label: String): MutableMap<String, Any> {
-        return mapOf(SCREEN_NAME to screenName,
+        return mutableMapOf(SCREEN_NAME to screenName,
                 EVENT to event,
                 CATEGORY to category,
                 ACTION to action,
                 LABEL to label,
                 USER_ID to userSessionInterface.userId)
-                .toMutableMap()
     }
 
     private fun setCustomDimensions(data: MutableMap<String, Any>, position: String)
