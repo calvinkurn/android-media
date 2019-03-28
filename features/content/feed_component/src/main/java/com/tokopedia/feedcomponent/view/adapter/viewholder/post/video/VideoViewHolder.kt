@@ -7,7 +7,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHold
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.kotlin.extensions.view.loadImage
-import kotlinx.android.synthetic.main.item_post_image.view.*
+import kotlinx.android.synthetic.main.item_post_video.view.*
 
 /**
  * @author by yfsx on 20/03/19.

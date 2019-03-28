@@ -15,7 +15,7 @@ class VideoDetailSubscriber constructor(private val view : VideoDetailContract.V
         if (t == null) {
             view.onErrorGetVideoDetail(RuntimeException().toString())
         }
-//        view.onSuccessGetVideoDetail(t.postList)
+        view.onSuccessGetVideoDetail(t!!.postList)
     }
 
     override fun onCompleted() {

@@ -23,6 +23,8 @@ import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateBody
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
@@ -46,6 +48,9 @@ class VideoDetailFragment:
 
     @Inject
     lateinit var presenter: VideoDetailContract.Presenter
+
+    lateinit var dynamicPostViewModel: DynamicPostViewModel
+    lateinit var videoViewModel: VideoViewModel
 
     private var id: String = ""
     companion object {
@@ -121,7 +126,14 @@ class VideoDetailFragment:
     }
 
     override fun onSuccessGetVideoDetail(visitables: List<Visitable<*>>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        dynamicPostViewModel = visitables.get(0) as DynamicPostViewModel
+        bindHeader(dynamicPostViewModel.header)
+        bindCaption(dynamicPostViewModel.caption, dynamicPostViewModel.template.cardpost.body)
+        bindFooter(dynamicPostViewModel.footer, dynamicPostViewModel.template.cardpost.footer)
+
+        videoViewModel = dynamicPostViewModel.contentList.get(0) as VideoViewModel
+        initPlayer(videoViewModel.url)
+
     }
 
     override fun getUserSession(): UserSession = UserSession(context)
@@ -278,11 +290,11 @@ class VideoDetailFragment:
                 commentText.hide()
             }
 
-//            if (template.share) {
-//                shareIcon.show()
-//                shareText.show()
-//                shareText.text = footer.share.text
-//                shareIcon.setOnClickListener {
+            if (template.share) {
+                shareIcon.show()
+                shareText.show()
+                shareText.text = footer.share.text
+                shareIcon.setOnClickListener {
 //                    listener.onShareClick(
 //                            adapterPosition,
 //                            id,
@@ -291,22 +303,11 @@ class VideoDetailFragment:
 //                            footer.share.url,
 //                            footer.share.imageUrl
 //                    )
-//                }
-//                shareText.setOnClickListener {
-//                    listener.onShareClick(
-//                            adapterPosition,
-//                            id,
-//                            footer.share.title,
-//                            footer.share.description,
-//                            footer.share.url,
-//                            footer.share.imageUrl
-//                    )
-//                }
-//
-//            } else {
-//                shareIcon.hide()
-//                shareText.hide()
-//            }
+                }
+            } else {
+                shareIcon.hide()
+                shareText.hide()
+            }
         }
 
     }
