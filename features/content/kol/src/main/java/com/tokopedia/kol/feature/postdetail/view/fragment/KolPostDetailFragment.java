@@ -34,7 +34,10 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAda
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
+import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.kol.KolComponentInstance;
@@ -58,6 +61,7 @@ import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDeta
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -223,9 +227,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
         footer.setVisibility(View.VISIBLE);
 
-        if(postDetailFooterModel.isLiked()){
+        if (postDetailFooterModel.isLiked()) {
             ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_green);
-        }else{
+        } else {
             ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_gray);
 
         }
@@ -406,7 +410,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void onErrorToggleFavoriteShop(String errorMessage, String shopId) {
         ToasterError.make(getView(), errorMessage, BaseToaster.LENGTH_LONG)
                 .setAction(R.string.title_try_again,
-                        v -> presenter.toggleFavoriteShop( shopId)
+                        v -> presenter.toggleFavoriteShop(shopId)
                 )
                 .show();
     }
@@ -420,6 +424,59 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             );
             adapter.notifyItemChanged(0, DynamicPostViewHolder.PAYLOAD_FOLLOW);
         }
+    }
+
+    @Override
+    public void onErrorSendVote(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessSendVote(int rowNumber, String optionId,
+                                  VoteStatisticDomainModel voteStatisticDomainModel) {
+
+        int DEFAULT = 0;
+        int UNSELECTED = 1;
+        int SELECTED = 2;
+
+        if (adapter.getList().size() > 0
+                && adapter.getList().get(0) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel model = (DynamicPostViewModel) adapter.getList().get(0);
+            for (BasePostViewModel basePostViewModel : model.getContentList()) {
+                if (basePostViewModel instanceof PollContentViewModel) {
+                    PollContentViewModel pollContentViewModel = (PollContentViewModel) basePostViewModel;
+                    pollContentViewModel.setVoted(true);
+
+                    int totalVoter;
+                    try {
+                        totalVoter = Integer.valueOf(voteStatisticDomainModel.getTotalParticipants());
+                    } catch (NumberFormatException ignored) {
+                        totalVoter = 0;
+                    }
+                    pollContentViewModel.setTotalVoterNumber(totalVoter);
+
+                    for (int i = 0; i < pollContentViewModel.getOptionList().size(); i++) {
+                        PollContentOptionViewModel optionViewModel
+                                = pollContentViewModel.getOptionList().get(i);
+
+                        optionViewModel.setSelected(optionId.equals(optionViewModel.getOptionId()) ?
+                                SELECTED : UNSELECTED);
+
+                        int newPercentage = 0;
+                        try {
+                            newPercentage = Integer.valueOf(
+                                    voteStatisticDomainModel.getListOptions().get(i).getPercentage()
+                            );
+                        } catch (NumberFormatException | IndexOutOfBoundsException ignored) {
+                        }
+                        optionViewModel.setPercentage(newPercentage);
+                    }
+                }
+            }
+        }
+
+        adapter.notifyItemChanged(0);
+
     }
 
     @Override
@@ -655,8 +712,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (isVoted) {
             onGoToLink(redirectLink);
         } else {
-            //TODO
-//            presenter.sendVote(positionInFeed, pollId, optionId);
+            presenter.sendVote(0, pollId, optionId);
         }
     }
 

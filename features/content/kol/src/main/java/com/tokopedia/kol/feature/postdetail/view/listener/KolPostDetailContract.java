@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel;
+import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 import java.util.List;
 
@@ -36,6 +37,10 @@ public interface KolPostDetailContract {
         void onErrorToggleFavoriteShop(String errorMessage, String shopId);
 
         void onSuccessToggleFavoriteShop();
+
+        void onErrorSendVote(String errorMessage);
+
+        void onSuccessSendVote(int positionInFeed, String optionId, VoteStatisticDomainModel voteStatisticDomainModel);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -50,5 +55,7 @@ public interface KolPostDetailContract {
         void unlikeKol(int id, int rowNumber, KolPostListener.View.Like likeListener);
 
         void toggleFavoriteShop(String shopId);
+
+        void sendVote(int positionInFeed, String pollId, String optionId);
     }
 }

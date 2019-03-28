@@ -19,6 +19,8 @@ import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.postdetail.view.presenter.KolPostDetailPresenter;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.vote.di.VoteModule;
+import com.tokopedia.vote.domain.usecase.SendVoteUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -27,7 +29,7 @@ import dagger.Provides;
  * @author by milhamj on 12/02/18.
  */
 
-@Module
+@Module(includes = {VoteModule.class})
 public class KolProfileModule {
     @KolProfileScope
     @Provides
@@ -48,11 +50,13 @@ public class KolProfileModule {
                                   LikeKolPostUseCase likeKolPostUseCase,
                                   FollowKolPostGqlUseCase followKolPostGqlUseCase,
                                   ToggleFavouriteShopUseCase toggleFavouriteShopUseCase,
+                                  SendVoteUseCase sendVoteUseCase,
                                   UserSessionInterface userSession) {
         return new KolPostDetailPresenter(getPostDetailUseCase,
                 likeKolPostUseCase,
                 followKolPostGqlUseCase,
                 toggleFavouriteShopUseCase,
+                sendVoteUseCase,
                 userSession);
     }
 

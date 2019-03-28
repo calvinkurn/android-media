@@ -14,6 +14,8 @@ import com.tokopedia.kol.feature.postdetail.view.subscriber.FollowUnfollowDetail
 import com.tokopedia.kol.feature.postdetail.view.subscriber.GetKolPostDetailSubscriber;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
+import com.tokopedia.vote.domain.usecase.SendVoteUseCase;
 
 import javax.inject.Inject;
 
@@ -30,8 +32,8 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
     private final LikeKolPostUseCase likeKolPostUseCase;
     private final FollowKolPostGqlUseCase followKolPostGqlUseCase;
     private final ToggleFavouriteShopUseCase doFavoriteShopUseCase;
-//    private final TrackAffiliateClickUseCase trackAffiliateClickUseCase;
-
+    //    private final TrackAffiliateClickUseCase trackAffiliateClickUseCase;
+    private final SendVoteUseCase sendVoteUseCase;
     private final UserSessionInterface userSession;
 
     @Inject
@@ -39,12 +41,14 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
                                   LikeKolPostUseCase likeKolPostUseCase,
                                   FollowKolPostGqlUseCase followKolPostGqlUseCase,
                                   ToggleFavouriteShopUseCase doFavoriteShopUseCase,
+                                  SendVoteUseCase sendVoteUseCase,
                                   UserSessionInterface userSessionInterface) {
         this.getPostDetailUseCase = getPostDetailUseCase;
         this.likeKolPostUseCase = likeKolPostUseCase;
         this.followKolPostGqlUseCase = followKolPostGqlUseCase;
         this.doFavoriteShopUseCase = doFavoriteShopUseCase;
 //        this.trackAffiliateClickUseCase = trackAffiliateClickUseCase;
+        this.sendVoteUseCase = sendVoteUseCase;
         this.userSession = userSessionInterface;
     }
 
@@ -59,6 +63,8 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
         getPostDetailUseCase.unsubscribe();
         likeKolPostUseCase.unsubscribe();
         followKolPostGqlUseCase.unsubscribe();
+        doFavoriteShopUseCase.unsubscribe();
+        sendVoteUseCase.unsubscribe();
     }
 
     @Override
@@ -163,5 +169,32 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
                     }
                 }
         );
+    }
+
+    @Override
+    public void sendVote(int positionInFeed, String pollId, String optionId) {
+        sendVoteUseCase.execute(
+                SendVoteUseCase.createParamsV1(pollId, optionId),
+                new Subscriber<VoteStatisticDomainModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (getView() != null) {
+                            getView().onErrorSendVote(ErrorHandler.getErrorMessage(getView().getContext(), e));
+                        }
+                    }
+
+                    @Override
+                    public void onNext(VoteStatisticDomainModel voteStatisticDomainModel) {
+                        if (getView() != null) {
+                            getView().onSuccessSendVote(positionInFeed, optionId, voteStatisticDomainModel);
+                        }
+                    }
+                });
+
     }
 }
