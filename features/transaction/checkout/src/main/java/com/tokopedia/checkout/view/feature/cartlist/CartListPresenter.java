@@ -44,7 +44,6 @@ import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
-import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -321,9 +320,11 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processDeleteAndRefreshCart(List<CartItemData> removedCartItems,
-                                            boolean addWishList, boolean removeAllItem) {
+    public void processDeleteAndRefreshCart(List<CartItemData> allCartItemData, List<CartItemData> removedCartItems,
+                                            ArrayList<String> appliedPromoOnDeletedProductList, boolean addWishList) {
         view.showProgressLoading();
+        boolean removeAllItem = allCartItemData.size() == removedCartItems.size();
+
         List<Integer> ids = new ArrayList<>();
         for (CartItemData cartItemData : removedCartItems) {
             ids.add(cartItemData.getOriginData().getCartId());
@@ -338,11 +339,26 @@ public class CartListPresenter implements ICartListPresenter {
         TKPDMapParam<String, String> paramGetList = new TKPDMapParam<>();
         paramGetList.put(PARAM_LANG, "id");
 
+        List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
+        for (CartItemData data : allCartItemData) {
+            updateCartRequestList.add(new UpdateCartRequest.Builder()
+                    .cartId(data.getOriginData().getCartId())
+                    .notes(data.getUpdatedData().getRemark())
+                    .quantity(data.getUpdatedData().getQuantity())
+                    .build());
+        }
+        TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
+        paramUpdate.put(UpdateCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
+
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART,
                 view.getGeneratedAuthParamNetwork(paramDelete));
         requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_CART,
                 view.getGeneratedAuthParamNetwork(paramGetList));
+        requestParams.putObject(UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
+                view.getGeneratedAuthParamNetwork(paramUpdate));
+        requestParams.putBoolean(DeleteCartGetCartListUseCase.PARAM_IS_DELETE_ALL_DATA, allCartItemData.size() == removedCartItems.size());
+        requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_TO_BE_REMOVED_PROMO_CODES, appliedPromoOnDeletedProductList);
 
         compositeSubscription.add(deleteCartGetCartListUseCase.createObservable(requestParams)
                 .flatMap(new Func1<DeleteAndRefreshCartListData, Observable<DeleteAndRefreshCartListData>>() {
@@ -365,7 +381,7 @@ public class CartListPresenter implements ICartListPresenter {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
-                .subscribe(getSubscriberDeleteAndRefreshCart(removeAllItem)));
+                .subscribe(getSubscriberDeleteAndRefreshCart(removeAllItem, appliedPromoOnDeletedProductList)));
     }
 
     @Override
@@ -396,7 +412,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processUpdateCartDataPromo(List<CartItemData> cartItemDataList, PromoData promoData, int stateGoTo) {
+    public void processUpdateCartDataPromoMerchant(List<CartItemData> cartItemDataList, ShopGroupData shopGroupData) {
         view.showProgressLoading();
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : cartItemDataList) {
@@ -418,7 +434,7 @@ public class CartListPresenter implements ICartListPresenter {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())
-                        .subscribe(getSubscriberUpdateCartPromo(promoData, stateGoTo))
+                        .subscribe(getSubscriberUpdateCartPromoMerchant(shopGroupData))
         );
     }
 
@@ -449,7 +465,7 @@ public class CartListPresenter implements ICartListPresenter {
         );
     }
 
-    private Subscriber<UpdateCartData> getSubscriberUpdateCartPromo(PromoData promoData, int stateGoTo) {
+    private Subscriber<UpdateCartData> getSubscriberUpdateCartPromoMerchant(ShopGroupData shopGroupData) {
         return new Subscriber<UpdateCartData>() {
             @Override
             public void onCompleted() {
@@ -459,39 +475,21 @@ public class CartListPresenter implements ICartListPresenter {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                view.hideProgressLoading();
-                if (e instanceof UnknownHostException) {
-                    view.showToastMessageRed(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    view.showToastMessageRed(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof CartResponseErrorException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else if (e instanceof CartResponseDataNullException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else if (e instanceof CartHttpErrorException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else if (e instanceof ResponseCartApiErrorException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else {
-                    view.showToastMessageRed(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                if (view != null) {
+                    view.hideProgressLoading();
+                    view.showToastMessageRed(ErrorHandler.getErrorMessage(view.getActivity(), e));
+                    processInitialGetCartData(cartListData == null);
                 }
-                processInitialGetCartData(cartListData == null);
             }
 
             @Override
             public void onNext(UpdateCartData data) {
-                view.hideProgressLoading();
-                if (!data.isSuccess()) {
-                    view.showToastMessageRed(data.getMessage());
-                } else {
-                    if (stateGoTo == CartFragment.GO_TO_LIST) {
-                        view.goToCouponList();
+                if (view != null) {
+                    view.hideProgressLoading();
+                    if (!data.isSuccess()) {
+                        view.showToastMessageRed(data.getMessage());
                     } else {
-                        view.goToDetail(promoData);
+                        view.showMerchantVoucherListBottomsheet(shopGroupData);
                     }
                 }
             }
@@ -970,7 +968,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<DeleteAndRefreshCartListData> getSubscriberDeleteAndRefreshCart(boolean removeAllItem) {
+    private Subscriber<DeleteAndRefreshCartListData> getSubscriberDeleteAndRefreshCart(boolean removeAllItem, ArrayList<String> appliedPromoOnDeletedProductList) {
         return new Subscriber<DeleteAndRefreshCartListData>() {
             @Override
             public void onCompleted() {
@@ -996,8 +994,10 @@ public class CartListPresenter implements ICartListPresenter {
                     if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()
                             && deleteAndRefreshCartListData.getCartListData() != null) {
                         if (deleteAndRefreshCartListData.getCartListData().getShopGroupDataList().isEmpty()) {
+//                            processCancelAutoApplyPromoStack(CartFragment.SHOP_INDEX_DELETE_PROMO, appliedPromoOnDeletedProductList, true);
                             processInitialGetCartData(cartListData == null);
                         } else {
+//                            processCancelAutoApplyPromoStack(CartFragment.SHOP_INDEX_DELETE_PROMO, appliedPromoOnDeletedProductList, true);
                             CartListPresenter.this.cartListData = deleteAndRefreshCartListData.getCartListData();
                             view.renderInitialGetCartListDataSuccess(deleteAndRefreshCartListData.getCartListData());
                             view.onDeleteCartDataSuccess();
@@ -1008,6 +1008,7 @@ public class CartListPresenter implements ICartListPresenter {
                         );
                     }
                 } else {
+//                    processCancelAutoApplyPromoStack(CartFragment.SHOP_INDEX_DELETE_PROMO, appliedPromoOnDeletedProductList, true);
                     processInitialGetCartData(cartListData == null);
                 }
             }
@@ -1252,14 +1253,12 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processCancelAutoApplyPromoStack(int shopIndex, String promoCode, boolean ignoreAPIResponse) {
-        if (!TextUtils.isEmpty(promoCode)) {
+    public void processCancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse) {
+        if (promoCodeList.size() > 0) {
             if (!ignoreAPIResponse) {
                 view.showProgressLoading();
             }
-            ArrayList<String> promoCodes = new ArrayList<>();
-            promoCodes.add(promoCode);
-            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodes);
+            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodeList);
             clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearCacheAutoApplySubscriber(view, this, shopIndex, ignoreAPIResponse));
         }
     }

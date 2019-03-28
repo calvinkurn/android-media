@@ -223,7 +223,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
             return
         }
 
-        presenter.checkPromoFirstStep(merchantVoucherViewModel.voucherCode, cartString, checkPromoFirstStepParam, false)
+        presenter.checkPromoFirstStep(merchantVoucherViewModel.voucherCode, cartString, checkPromoFirstStepParam, true)
     }
 
     fun initInjector() {

@@ -29,6 +29,7 @@ import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
 // import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 
 import dagger.Module;
@@ -95,8 +96,8 @@ public class CartUseCaseModule {
     }
 
     @Provides
-    DeleteCartGetCartListUseCase deleteCartGetCartListUseCase(Context context, ICartRepository cartRepository, ICartMapper mapper) {
-        return new DeleteCartGetCartListUseCase(context, cartRepository, mapper);
+    DeleteCartGetCartListUseCase deleteCartGetCartListUseCase(Context context, ICartRepository cartRepository, ICartMapper mapper, ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase) {
+        return new DeleteCartGetCartListUseCase(context, cartRepository, mapper, clearCacheAutoApplyStackUseCase);
     }
 
     @Provides

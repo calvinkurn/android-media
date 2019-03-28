@@ -10,6 +10,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.R
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
 import com.tokopedia.usecase.RequestParams
+import rx.Observable
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -38,12 +39,12 @@ class ClearCacheAutoApplyStackUseCase @Inject constructor(@ApplicationContext va
         queryString = queryString.replace(PARAM_PLACEHOLDER_PROMO_CODE, Gson().toJson(promoCodeList))
     }
 
-    override fun execute(requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {
+    override fun createObservable(params: RequestParams?): Observable<GraphqlResponse> {
         val graphqlRequest = GraphqlRequest(queryString, ClearCacheAutoApplyStackResponse::class.java)
         clearRequest()
         addRequest(graphqlRequest)
 
-        super.execute(requestParams, subscriber)
+        return super.createObservable(params)
     }
 
 }

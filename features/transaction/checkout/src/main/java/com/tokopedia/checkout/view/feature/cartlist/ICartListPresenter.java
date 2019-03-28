@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.feature.cartlist;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
@@ -26,11 +27,11 @@ public interface ICartListPresenter {
 
     void processDeleteCart(CartItemData cartItemData, boolean addWishList);
 
-    void processDeleteAndRefreshCart(List<CartItemData> removedCartItems, boolean addWishList, boolean isLastItem);
+    void processDeleteAndRefreshCart(List<CartItemData> allCartItemData, List<CartItemData> removedCartItems, ArrayList<String> appliedPromocodeList, boolean addWishList);
 
     void processToUpdateCartData(List<CartItemData> cartItemDataList);
 
-    void processUpdateCartDataPromo(List<CartItemData> cartItemDataList, PromoData promoData, int goToDetail);
+    void processUpdateCartDataPromoMerchant(List<CartItemData> cartItemDataList, ShopGroupData shopGroupData);
 
     void processUpdateCartDataPromoStacking(List<CartItemData> cartItemDataList, PromoStackingData promoStackingData, int goToDetail);
 
@@ -46,7 +47,7 @@ public interface ICartListPresenter {
 
     void processCancelAutoApply();
 
-    void processCancelAutoApplyPromoStack(int shopIndex, String promoCode, boolean ignoreAPIResponse);
+    void processCancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse);
 
     void processCancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList);
 
