@@ -125,7 +125,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                     public void onClick(View v) {
                         sendGeneralEvent("clickTradeIn",
                                 "trade in start page",
-                                "click kembali ke detail produki",
+                                "click kembali ke detail produk",
                                 "");
 
                         finish();

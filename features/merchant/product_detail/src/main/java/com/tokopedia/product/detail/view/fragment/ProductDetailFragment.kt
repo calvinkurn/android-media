@@ -317,12 +317,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if(tv_trade_in.visibility == View.VISIBLE){
                 if(tv_trade_in.getLocalVisibleRect(outRectScroll) && !(tv_trade_in.tag as Boolean)){
                     if (tradeInParams.usedPrice <= 0)
-                        sendGeneralEvent("viewPDP",
+                        productDetailTracking.sendGeneralEvent("viewPDP",
                                 "product detail page",
                                 "view trade in section",
                                 "before diagnostic")
                     else
-                        sendGeneralEvent("viewPDP",
+                        productDetailTracking.sendGeneralEvent("viewPDP",
                                 "product detail page",
                                 "view trade in section",
                                 "after diagnostic")
@@ -1226,12 +1226,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 goToNormalCheckout(TRADEIN_BUY)
                 tradeInParams?.let {
                     if(tradeInParams!!.usedPrice>0)
-                        sendGeneralEvent(" clickPDP",
+                        productDetailTracking.sendGeneralEvent(" clickPDP",
                                 "product detail page",
                                 "click tukar tambah sekarang",
                                 "after diagnostic")
                     else
-                        sendGeneralEvent(" clickPDP",
+                        productDetailTracking.sendGeneralEvent(" clickPDP",
                                 "product detail page",
                                 "click tukar tambah sekarang",
                                 "before diagnostic")
@@ -1699,12 +1699,5 @@ class ProductDetailFragment : BaseDaggerFragment() {
         context?.let {
             LocalBroadcastManager.getInstance(it).unregisterReceiver(tradeInBroadcastReceiver)
         }
-    }
-
-    private fun sendGeneralEvent(event: String, category: String, action: String, label: String) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(event,
-                category,
-                action,
-                label)
     }
 }

@@ -489,6 +489,13 @@ class ProductDetailTracking() {
         )
     }
 
+    fun sendGeneralEvent(event: String, category: String, action: String, label: String) {
+        TrackApp.getInstance()?.gtm?.sendGeneralEvent(event,
+                category,
+                action,
+                label)
+    }
+
     ////////////////////////////////////////////////////////////////
     // MOENGAGE END
     ////////////////////////////////////////////////////////////////
