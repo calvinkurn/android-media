@@ -13,6 +13,7 @@
         android:layout_height="?attr/actionBarSize">
 
         <ImageView
+            android:id="@+id/ivClose"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:src="@drawable/ic_close_white_24"
@@ -128,17 +129,11 @@
     <com.tokopedia.videoplayer.view.widget.VideoPlayerView
         android:id="@+id/videoView"
         android:layout_below="@+id/caption"
-        android:layout_above="@+id/mediaController"
+        android:layout_above="@+id/bottomLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_weight="1"/>
-
-    <MediaController
-        android:id="@+id/mediaController"
-        android:layout_above="@id/bottomLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 
     <RelativeLayout
         android:id="@+id/bottomLayout"

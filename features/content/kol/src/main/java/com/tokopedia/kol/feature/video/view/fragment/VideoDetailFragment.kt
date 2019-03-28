@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.MediaController
 import android.widget.Toast
+import android.widget.VideoView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -32,6 +33,7 @@ import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.videoplayer.view.widget.VideoPlayerView
 import kotlinx.android.synthetic.main.layout_single_video_fragment.*
 import javax.inject.Inject
 
@@ -162,9 +164,21 @@ class VideoDetailFragment:
     }
 
     private fun initPlayer(url: String) {
-        mediaController.setAnchorView(videoView)
-        videoView.setMediaController(mediaController)
         videoView.setVideoURI(Uri.parse(url))
+
+        videoView.setOnPreparedListener { object : MediaPlayer.OnPreparedListener {
+            override fun onPrepared(mediaPlayer: MediaPlayer?) {
+                mediaPlayer?.setOnVideoSizeChangedListener(object : MediaPlayer.OnVideoSizeChangedListener {
+                    override fun onVideoSizeChanged(player: MediaPlayer?, width: Int, height: Int) {
+                        val mediaController = MediaController(activity!!)
+                        mediaController.setAnchorView(videoView)
+                        videoView.setMediaController(mediaController)
+                        mediaController.show()
+                    }
+                })
+            }
+        } }
+
         videoView.setOnErrorListener(object : MediaPlayer.OnErrorListener{
             override fun onError(p0: MediaPlayer?, p1: Int, p2: Int): Boolean {
                 when(p1) {
@@ -190,7 +204,9 @@ class VideoDetailFragment:
     }
 
     private fun initViewListener() {
-
+        ivClose.setOnClickListener({
+            activity!!.finish()
+        })
     }
 
     private fun resizeVideo(mVideoWidth: Int, mVideoHeight: Int) {
