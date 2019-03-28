@@ -254,7 +254,7 @@ public class FilterHelper {
         return null;
     }
 
-    private static Filter removeValueFromOptionWithInputTypeTextBox(List<Filter> filterList) {
+    private static void removeValueFromOptionWithInputTypeTextBox(List<Filter> filterList) {
         for (Filter filter : filterList) {
             for(Option option : filter.getOptions()) {
                 if(option.getInputType().equals(Option.INPUT_TYPE_TEXTBOX)) {
