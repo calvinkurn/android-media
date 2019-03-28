@@ -50,7 +50,7 @@
             android:layout_marginBottom="@dimen/dp_12"
             android:textSize="@dimen/sp_10"
             android:visibility="gone"
-            android:text="(terpilih)"
+            android:text="(Terpilih)"
             android:textColor="#ae31353b" />
     </LinearLayout>
 
