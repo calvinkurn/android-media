@@ -239,9 +239,15 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         commentButton.setOnClickListener(v -> onGoToKolComment(0, postDetailFooterModel.getContentId()));
 
         shareButton.setOnClickListener(v -> onShareClick(0, postDetailFooterModel.getContentId(),
-         "","heya","https://lalala",""       ));
+         postDetailFooterModel.getShareData().getTitle(),
+                postDetailFooterModel.getShareData().getDescription(),
+                postDetailFooterModel.getShareData().getUrl(),
+                postDetailFooterModel.getShareData().getImageUrl()));
         shareText.setOnClickListener(v -> onShareClick(0, postDetailFooterModel.getContentId(),
-                "","heya","https://lalala",""       ));
+                postDetailFooterModel.getShareData().getTitle(),
+                postDetailFooterModel.getShareData().getDescription(),
+                postDetailFooterModel.getShareData().getUrl(),
+                postDetailFooterModel.getShareData().getImageUrl()));
     }
 
     private void setTotalComment(int totalComment) {

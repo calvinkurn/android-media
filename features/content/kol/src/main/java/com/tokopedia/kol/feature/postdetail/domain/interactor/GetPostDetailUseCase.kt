@@ -80,6 +80,7 @@ class GetPostDetailUseCase @Inject constructor(
                 footerModel.isLiked = dynamicPostViewModel.footer.like.isChecked
                 footerModel.totalLike = dynamicPostViewModel.footer.like.value
                 footerModel.totalComment = dynamicPostViewModel.footer.comment.value
+                footerModel.shareData = dynamicPostViewModel.footer.share
             }
         }
         return footerModel
