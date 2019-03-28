@@ -43,5 +43,6 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
 fun getCallingIntent(context: Context, extras: Bundle): Intent {
     val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
     val intent = Intent(context, HotelHomepageActivity::class.java)
-    return intent.setData(uri.build()).putExtra(extras)
+    return intent.setData(uri.build())
+            .putExtras(extras)
 }

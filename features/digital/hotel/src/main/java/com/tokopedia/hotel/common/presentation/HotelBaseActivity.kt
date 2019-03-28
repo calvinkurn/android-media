@@ -9,6 +9,7 @@ import com.tokopedia.design.component.Menus
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.di.component.HotelComponent
+import com.tokopedia.hotel.common.di.component.DaggerHotelComponent
 
 /**
  * @author by furqan on 25/03/19
@@ -83,7 +84,7 @@ abstract class HotelBaseActivity: BaseSimpleActivity() {
 
     protected fun getHotelComponent(): HotelComponent {
         if (hotelComponent == null) {
-            hotelComponent = HotelComponentInstance.getDigitalBrowseComponent(application)
+            hotelComponent = HotelComponentInstance.getHotelComponent(application)
         }
         return hotelComponent as HotelComponent
     }
