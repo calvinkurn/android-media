@@ -57,6 +57,9 @@ import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 import rx.Observable
@@ -113,6 +116,7 @@ open class PlayViewStateImpl(
     private var loadingView: View = view.findViewById(R.id.loading_view)
     private var hideVideoToggle: View = view.findViewById(R.id.hide_video_toggle)
     private var showVideoToggle: View = view.findViewById(R.id.show_video_toggle)
+    private var spaceChatVideo: View = view.findViewById(R.id.top_space_guideline)
 
     private lateinit var overlayDialog: CloseableBottomSheetDialog
     private lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
@@ -234,12 +238,14 @@ open class PlayViewStateImpl(
             showVideoToggle.show()
             youTubePlayer?.pause()
             videoContainer.visibility = View.GONE
+            setChatListHasSpaceOnTop(true)
         }
         showVideoToggle.setOnClickListener {
             it.hide()
             hideVideoToggle.show()
             youTubePlayer?.play()
             videoContainer.visibility = View.VISIBLE
+            setChatListHasSpaceOnTop(false)
         }
     }
 
@@ -808,7 +814,7 @@ open class PlayViewStateImpl(
                 videoContainer.show()
                 sponsorLayout.hide()
                 setChatListHasSpaceOnTop(false)
-                liveIndicator.shouldShowWithAction(isVideoLive) {}
+                liveIndicator.showWithCondition(isVideoLive)
                 youTubePlayer?.let {
                     it.cueVideo(videoId)
                     autoPlayVideo()
@@ -1218,15 +1224,11 @@ open class PlayViewStateImpl(
     }
 
     private fun setChatListHasSpaceOnTop(hasSpace: Boolean) {
-        var space = when {
+        val space = when {
             hasSpace -> view.context.resources.getDimensionPixelSize(R.dimen.dp_24)
             else -> view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
         }
-        var padding = when {
-            hasSpace -> view.context.resources.getDimensionPixelSize(R.dimen.dp_24)
-            else -> view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
-        }
-        chatRecyclerView.setMargin(0, padding, 0, 0)
+        spaceChatVideo.showWithCondition(hasSpace)
         chatRecyclerView.setFadingEdgeLength(space)
         chatRecyclerView.invalidate()
     }
