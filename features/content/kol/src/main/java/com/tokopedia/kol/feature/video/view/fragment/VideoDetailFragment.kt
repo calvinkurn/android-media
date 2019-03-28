@@ -25,6 +25,7 @@ import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
+import com.tokopedia.kol.KolRouter
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
@@ -55,10 +56,13 @@ class VideoDetailFragment:
 
     lateinit var dynamicPostViewModel: DynamicPostViewModel
     lateinit var videoViewModel: VideoViewModel
+    lateinit var kolRouter: KolRouter
 
     private var id: String = ""
     companion object {
         private val INTENT_COMMENT = 1234
+        private const val LOGIN_CODE = 1383
+        private const val LOGIN_FOLLOW_CODE = 1384
 
         fun getInstance(bundle: Bundle): VideoDetailFragment {
             val fragment = VideoDetailFragment()
@@ -124,6 +128,12 @@ class VideoDetailFragment:
                         calculateTotalComment(it.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0))
                     }
                 }
+            }
+            LOGIN_CODE -> {
+                initData()
+            }
+            LOGIN_FOLLOW_CODE -> {
+
             }
         }
     }
@@ -197,10 +207,17 @@ class VideoDetailFragment:
         if (detailId.isEmpty() || detailId.equals("0")) {
             activity!!.finish()
         } else {
-            presenter.getFeedDetail(detailId)
+            initData()
+        }
+
+        if (activity!!.applicationContext is KolRouter) {
+            kolRouter = activity!!.applicationContext as KolRouter
         }
     }
 
+    private fun initData() {
+        presenter.getFeedDetail(id)
+    }
 
     private fun initPlayer(url: String) {
         videoView.setVideoURI(Uri.parse(url))
@@ -242,13 +259,21 @@ class VideoDetailFragment:
 
     private fun onLikeSectionClicked(): View.OnClickListener {
         return View.OnClickListener {
-            presenter.likeKol(id.toInt(), 0, this)
+            if (getUserSession().isLoggedIn) {
+                presenter.likeKol(id.toInt(), 0, this)
+            } else{
+                goToLogin()
+            }
         }
     }
 
     private fun onCommentSectionClicked(): View.OnClickListener {
         return View.OnClickListener {
-            startActivityForResult(KolCommentActivity.getCallingIntent(activity!!, id.toInt(), 0), INTENT_COMMENT)
+            if (getUserSession().isLoggedIn) {
+                startActivityForResult(KolCommentActivity.getCallingIntent(activity!!, id.toInt(), 0), INTENT_COMMENT)
+            } else{
+                goToLogin()
+            }
         }
     }
 
@@ -396,4 +421,13 @@ class VideoDetailFragment:
         comment.value = comment.value + totalNewComment
         commentText.text = comment.fmt
     }
+
+    private fun goToLogin() {
+        startActivityForResult(kolRouter.getLoginIntent(context!!), LOGIN_CODE)
+    }
+
+    private fun goToLoginThenFollow() {
+        startActivityForResult(kolRouter.getLoginIntent(context!!), LOGIN_FOLLOW_CODE)
+    }
+
 }
