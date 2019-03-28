@@ -97,7 +97,9 @@ class UsernameInputFragment : BottomSheetDialogFragment(), UsernameInputContract
         dialog.setOnShowListener {
             val d = dialog as BottomSheetDialog
             val bottomSheet = d.findViewById<View>(android.support.design.R.id.design_bottom_sheet)
-            BottomSheetBehavior.from(bottomSheet!!).setState(BottomSheetBehavior.STATE_EXPANDED)
+            bottomSheet?.let {
+                BottomSheetBehavior.from(it).state = BottomSheetBehavior.STATE_EXPANDED
+            }
         }
         return dialog
     }
