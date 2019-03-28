@@ -1,11 +1,10 @@
 package com.tokopedia.affiliate.feature.onboarding.view.subscriber
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.affiliate.feature.onboarding.data.pojo.usernamesuggestion.GetUsernameSuggestionData
 import com.tokopedia.affiliate.feature.onboarding.view.listener.UsernameInputContract
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.Subscriber
-import java.util.*
 
 /**
  * @author by milhamj on 10/4/18.
@@ -28,16 +27,8 @@ class GetUsernameSuggestionSubscriber(
         val data = graphqlResponse.getData<GetUsernameSuggestionData>(GetUsernameSuggestionData::class.java)
         if (data?.suggestion != null) {
             view?.onSuccessGetUsernameSuggestion(
-                    convertToLowerCase(data.suggestion.suggestions)
+                    data.suggestion.suggestions.map { it.toLowerCase() }
             )
         }
-    }
-
-    private fun convertToLowerCase(sourceStrings: List<String>): List<String> {
-        val lowerCaseStrings = ArrayList<String>()
-        for (i in sourceStrings.indices) {
-            lowerCaseStrings.add(sourceStrings[i].toLowerCase())
-        }
-        return lowerCaseStrings
     }
 }
