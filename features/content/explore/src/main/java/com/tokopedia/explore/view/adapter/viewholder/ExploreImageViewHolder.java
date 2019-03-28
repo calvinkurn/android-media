@@ -12,6 +12,7 @@ import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
 
 import static com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel.TYPE_MULTI;
 import static com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel.TYPE_VIDEO;
+import static com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel.TYPE_YOUTUBE;
 
 /**
  * @author by milhamj on 24/07/18.
@@ -51,6 +52,7 @@ public class ExploreImageViewHolder extends AbstractViewHolder<ExploreImageViewM
 
     private int getBadgeId(ExploreImageViewModel element) {
         switch (element.getKolPostViewModel().getCardType()) {
+            case TYPE_YOUTUBE:
             case TYPE_VIDEO: return R.drawable.ic_affiliate_video;
             case TYPE_MULTI: return R.drawable.ic_affiliate_multi;
             default : return 0;

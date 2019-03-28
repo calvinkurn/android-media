@@ -43,7 +43,8 @@ open class DynamicPostViewHolder(v: View,
                             private val imagePostListener: ImagePostViewHolder.ImagePostListener,
                             private val youtubePostListener: YoutubeViewHolder.YoutubePostListener,
                             private val pollOptionListener: PollAdapter.PollOptionListener,
-                            private val gridItemListener: GridPostAdapter.GridItemListener)
+                            private val gridItemListener: GridPostAdapter.GridItemListener,
+                                 private val type : String = "")
     : AbstractViewHolder<DynamicPostViewModel>(v) {
 
     companion object {
@@ -59,6 +60,8 @@ open class DynamicPostViewHolder(v: View,
         const val CAPTION_END = 90
 
         const val NEWLINE = "(\r\n|\n)"
+
+        const val TYPE_DETAIL = "detail"
     }
 
     override fun bind(element: DynamicPostViewModel?) {
@@ -186,7 +189,7 @@ open class DynamicPostViewHolder(v: View,
                 || template.avatarTitle || template.followCta || template.report
     }
 
-    private fun bindCaption(caption: Caption, template: TemplateBody) {
+    open fun bindCaption(caption: Caption, template: TemplateBody) {
         itemView.caption.shouldShowWithAction(template.caption) {
             if (caption.text.isEmpty()) {
                 itemView.caption.visibility = View.GONE

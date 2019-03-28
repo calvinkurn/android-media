@@ -197,4 +197,29 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
                 });
 
     }
+
+    @Override
+    public void trackAffiliate(String clickURL) {
+        //TODO UNCOMMENT AFTER MERGE
+//        trackAffiliateUseCase.execute(
+//                TrackAffiliateClickUseCase.Companion.createRequestParams(clickURL),
+//                new Subscriber<VoteStatisticDomainModel>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        if (GlobalConfig.isAllowDebuggingTools()) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onNext(VoteStatisticDomainModel voteStatisticDomainModel) {
+//
+//                    }
+//                });
+    }
 }

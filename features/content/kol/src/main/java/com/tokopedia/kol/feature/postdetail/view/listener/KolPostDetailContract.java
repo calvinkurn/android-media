@@ -57,5 +57,7 @@ public interface KolPostDetailContract {
         void toggleFavoriteShop(String shopId);
 
         void sendVote(int positionInFeed, String pollId, String optionId);
+
+        void trackAffiliate(String clickURL);
     }
 }

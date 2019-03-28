@@ -647,6 +647,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                              @NotNull String description, @NotNull String url,
                              @NotNull String imageUrl) {
         if (getActivity() != null) {
+
             kolRouter.shareFeed(
                     getActivity(),
                     String.valueOf(id),
@@ -694,8 +695,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onAffiliateTrackClicked(@NotNull List<TrackingViewModel> trackList) {
         for (TrackingViewModel track : trackList) {
-            //TODO
-//            presenter.trackAffiliate(track.getClickURL());
+            presenter.trackAffiliate(track.getClickURL());
         }
     }
 

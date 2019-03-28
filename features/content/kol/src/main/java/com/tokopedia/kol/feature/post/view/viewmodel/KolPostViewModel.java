@@ -12,6 +12,7 @@ import java.util.List;
 public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolPostTypeFactory> {
     public final static int DEFAULT_ID = -1;
 
+    public final static String TYPE_YOUTUBE = "youtube";
     public final static String TYPE_VIDEO = "video";
     public final static String TYPE_MULTI = "multi";
 
