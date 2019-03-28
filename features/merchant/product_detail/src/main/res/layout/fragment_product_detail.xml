@@ -159,36 +159,49 @@
 
         </android.support.v4.widget.NestedScrollView>
 
-        <FrameLayout android:id="@+id/base_btn_affiliate"
+        <RelativeLayout
+            android:id="@+id/base_btn_affiliate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_8"
-            android:background="@color/white"
-            android:layout_gravity="bottom"
-            app:layout_anchorGravity="bottom"
-            android:visibility="gone">
+            android:background="@drawable/card_shadow_top"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_16">
 
-            <LinearLayout android:id="@+id/btn_affiliate"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/getCommission"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/green_button_rounded"
-                android:gravity="center"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
-                android:layout_marginEnd="@dimen/dp_8">
+                android:text="@string/affiliate_get_commission"
+                android:textColor="@color/black_54"
+                android:textSize="@dimen/sp_14"
+                android:visibility="gone" />
 
-                <ProgressBar
-                    android:id="@+id/loadingAffiliate"
-                    android:layout_width="@dimen/dp_18"
-                    android:layout_height="@dimen/dp_18"
-                    android:layout_marginRight="@dimen/dp_8"
-                    android:layout_marginEnd="@dimen/dp_8"
-                    android:visibility="gone"
-                    tools:visibility="visible"
-                    android:indeterminateDrawable="@drawable/ic_progress_loading"
-                    style="?android:attr/progressBarStyleInverse" />
+            <TextView
+                android:id="@+id/commission"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/getCommission"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_toStartOf="@+id/btn_affiliate"
+                android:layout_toLeftOf="@+id/btn_affiliate"
+                android:textColor="@color/af_commission_blue"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:text="Rp500.000.000.000" />
+
+
+            <RelativeLayout
+                android:id="@+id/btn_affiliate"
+                android:layout_width="@dimen/dp_145"
+                android:layout_height="@dimen/dp_40"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/bg_button_green">
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:layout_width="wrap_content"
@@ -198,9 +211,23 @@
                     app:fontSize="small"
                     app:textViewTheme="darkPrimary"/>
 
-            </LinearLayout>
+                <ProgressBar
+                    android:id="@+id/loadingAffiliate"
+                    style="?android:attr/progressBarStyleInverse"
+                    android:layout_width="@dimen/dp_18"
+                    android:layout_height="@dimen/dp_18"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:layout_toStartOf="@id/textView"
+                    android:layout_toLeftOf="@id/textView"
+                    android:indeterminateDrawable="@drawable/ic_progress_loading"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
 
-        </FrameLayout>
+            </RelativeLayout>
+
+        </RelativeLayout>
 
         <include layout="@layout/partial_layout_button_action"
             android:layout_width="match_parent"

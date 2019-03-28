@@ -93,7 +93,8 @@
     <string name="success_move_etalase">Produk berhasil dipindahkan ke etalase</string>
     <string name="choose">Pilih</string>
     <string name="and">dan</string>
-    <string name="button_affiliate">Kurasi Produk Ini</string>
+    <string name="button_affiliate">Kurasi</string>
+    <string name="affiliate_get_commission">Raih Komisi</string>
     <string name="priority_order_label">Order Prioritas</string>
     <string name="purchase_protection_label">Proteksi Gadget</string>
     <string name="title_cod">Bayar di Tempat</string>
