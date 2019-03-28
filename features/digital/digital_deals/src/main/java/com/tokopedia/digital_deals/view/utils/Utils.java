@@ -213,7 +213,7 @@ public class Utils {
                 throw new IllegalArgumentException("Bad id encountered: " +
                         i2.getCategoryId());
             }
-            return id1.compareTo(id2);
+            return id2.compareTo(id1);
         }
     }
 
