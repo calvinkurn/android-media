@@ -121,7 +121,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private CardView cardFooter;
     private LinearLayout llNetworkErrorView;
     private LinearLayout emptyCartContainer;
-    private View statusBarBackground;
 
     private ProgressDialog progressDialog;
 
@@ -325,7 +324,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     private void setupToolbar(View view) {
         Toolbar appbar = view.findViewById(R.id.toolbar);
-        statusBarBackground = view.findViewById(R.id.status_bar_bg);
+        View statusBarBackground = view.findViewById(R.id.status_bar_bg);
         statusBarBackground.getLayoutParams().height =
                 DisplayMetricUtils.getStatusBarHeight(getActivity());
 
@@ -335,8 +334,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             statusBarBackground.setVisibility(View.GONE);
         } else {
             toolbar = toolbarRemoveView();
-            // add padding programmatically
-            // status bar background compability
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 statusBarBackground.setVisibility(View.INVISIBLE);
             } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

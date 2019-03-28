@@ -14,7 +14,7 @@
         android:id="@+id/status_bar_bg"
         android:background="@color/green_600"
         android:layout_width="match_parent"
-        android:layout_height="25dp"/>
+        android:layout_height="@dimen/dp_25"/>
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"
