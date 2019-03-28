@@ -10,7 +10,6 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/dp_12"
         android:paddingRight="@dimen/dp_12"
-        android:paddingTop="@dimen/dp_12"
         android:visibility="visible"/>
 
 </LinearLayout>

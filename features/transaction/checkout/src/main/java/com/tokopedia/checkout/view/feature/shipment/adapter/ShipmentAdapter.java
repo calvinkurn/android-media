@@ -674,7 +674,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
         }
-        totalPrice = totalItemPrice + shippingFee + insuranceFee + totalPurchaseProtectionPrice + additionalFee - shipmentCostModel.getPromoPrice() - (double)shipmentCostModel.getTotalPromoStackAmount();
+        totalPrice = totalItemPrice + shippingFee + insuranceFee + totalPurchaseProtectionPrice + additionalFee - shipmentCostModel.getPromoPrice() - (double) shipmentCostModel.getTotalPromoStackAmount();
         shipmentCostModel.setTotalWeight(totalWeight);
         shipmentCostModel.setAdditionalFee(additionalFee);
         shipmentCostModel.setTotalItemPrice(totalItemPrice);
@@ -725,7 +725,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void updatePromoStack(DataUiModel dataUiModel) {
         if (shipmentCostModel != null) {
             if (promoGlobalStackData != null) {
-                if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(dataUiModel.getMessage().getState()) == TickerPromoStackingCheckoutView.State.ACTIVE) {
+                if (dataUiModel != null && dataUiModel.getMessage() != null && dataUiModel.getBenefit() != null && TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(dataUiModel.getMessage().getState()) == TickerPromoStackingCheckoutView.State.ACTIVE) {
                     shipmentCostModel.setTotalPromoStackAmount(dataUiModel.getBenefit().getFinalBenefitAmount());
                     shipmentCostModel.setTotalPromoStackAmountStr(dataUiModel.getBenefit().getFinalBenefitAmountStr());
                 } else {
@@ -742,7 +742,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         notifyItemChanged(i);
                     } else if (itemAdapter instanceof ShipmentCartItemModel) {
                         // updateFirstInvoiceItemMargin(i, (ShipmentCartItemModel) itemAdapter, true, dataUiModel.getVoucherOrders());
-                        updatePromoMerchant((ShipmentCartItemModel) itemAdapter, dataUiModel.getVoucherOrders());
+                        if (dataUiModel != null) {
+                            updatePromoMerchant((ShipmentCartItemModel) itemAdapter, dataUiModel.getVoucherOrders());
+                        }
                     }
                 }
             } else {
@@ -762,7 +764,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         notifyItemChanged(i);
                     } else if (itemAdapter instanceof ShipmentCartItemModel) {
                         // updateFirstInvoiceItemMargin(i, (ShipmentCartItemModel) itemAdapter, false);
-                        updatePromoMerchant((ShipmentCartItemModel) itemAdapter, dataUiModel.getVoucherOrders());
+                        if (dataUiModel != null) {
+                            updatePromoMerchant((ShipmentCartItemModel) itemAdapter, dataUiModel.getVoucherOrders());
+                        }
                     }
                 }
             }

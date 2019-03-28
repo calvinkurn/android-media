@@ -805,7 +805,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderCheckPromoStackCodeFromCourierSuccess(DataUiModel dataUiModel,
-                                                       int itemPosition, boolean noToast) {
+                                                            int itemPosition, boolean noToast) {
         if (!noToast && !shipmentAdapter.isCourierPromoStillExist()) {
             showToastNormal(dataUiModel.getMessage().getText());
         }
@@ -1338,9 +1338,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void showBottomSheetTotalBenefit() {
-        TotalBenefitBottomSheetFragment bottomSheet = TotalBenefitBottomSheetFragment.newInstance();
-        bottomSheet.setBenefit(getBenefitSummaryInfoUiModel());
-        bottomSheet.show(getFragmentManager(), null);
+        if (getFragmentManager() != null && getBenefitSummaryInfoUiModel() != null) {
+            TotalBenefitBottomSheetFragment bottomSheet = TotalBenefitBottomSheetFragment.newInstance();
+            bottomSheet.setBenefit(getBenefitSummaryInfoUiModel());
+            bottomSheet.show(getFragmentManager(), null);
+        }
     }
 
     private ShipmentDetailData getShipmentDetailData(ShipmentCartItemModel shipmentCartItemModel,
@@ -1649,8 +1651,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (object instanceof ShipmentCartItemModel) {
             if (getFragmentManager() != null) {
                 showMerchantVoucherListBottomsheet(
-                        ((ShipmentCartItemModel)object).getShopId(),
-                        ((ShipmentCartItemModel)object).getCartString(),
+                        ((ShipmentCartItemModel) object).getShopId(),
+                        ((ShipmentCartItemModel) object).getCartString(),
                         checkPromoFirstStepParam
                 );
             }
