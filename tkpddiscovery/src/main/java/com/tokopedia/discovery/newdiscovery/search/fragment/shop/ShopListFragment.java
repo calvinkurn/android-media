@@ -34,12 +34,9 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.typefac
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.listener.FavoriteActionListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -357,7 +354,7 @@ public class ShopListFragment extends SearchSectionFragment
 
     @Override
     public List<Option> getSelectedFilterAsOptionList() {
-        return getOptionListFromEmptySearchFilterController();
+        return getOptionListFromFilterController();
     }
 
     @Override

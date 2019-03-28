@@ -365,7 +365,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     @Override
     public HashMap<String, String> getSelectedFilter() {
-        return new HashMap<>(filterController.getActiveFilterParameter());
+        return new HashMap<>(filterController.getActiveFilterMap());
     }
 
     protected boolean isFilterActive() {
@@ -643,7 +643,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         this.searchParameter.getSearchParameterHashMap().putAll(filterParameter);
     }
 
-    protected List<Option> getOptionListFromEmptySearchFilterController() {
+    protected List<Option> getOptionListFromFilterController() {
         List<Option> activeFilterOptionList = filterController.getActiveFilterOptionList();
 
         combinePriceFilterIfExists(activeFilterOptionList);

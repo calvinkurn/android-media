@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -295,7 +294,7 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     @Override
     public List<Option> getSelectedFilterAsOptionList() {
-        return getOptionListFromEmptySearchFilterController();
+        return getOptionListFromFilterController();
     }
 
     protected void setupAdapter() {

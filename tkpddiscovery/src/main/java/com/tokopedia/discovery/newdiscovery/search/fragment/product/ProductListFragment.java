@@ -635,7 +635,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public List<Option> getSelectedFilterAsOptionList() {
-        return getOptionListFromEmptySearchFilterController();
+        return getOptionListFromFilterController();
     }
 
     @Override

@@ -489,7 +489,7 @@ class FilterControllerTest {
     }
 
     private fun assertActiveFilterMap(expectedMap : Map<String, String>) {
-        val actualMap = filterController.getActiveFilterParameter()
+        val actualMap = filterController.getActiveFilterMap()
 
         assert(actualMap.size == expectedMap.size) {
             "Testing get active filter map, expected size: ${expectedMap.size} actual size: ${actualMap.size}"

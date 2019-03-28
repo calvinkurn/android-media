@@ -300,7 +300,7 @@ class FilterController() : Parcelable {
         return this.filterParameter
     }
 
-    fun getActiveFilterParameter() : Map<String, String> {
+    fun getActiveFilterMap() : Map<String, String> {
         val activeFilter = mutableMapOf<String, String>()
 
         loopOptionsInFilterList { _, option ->
