@@ -28,7 +28,7 @@ class ClearShipmentCacheAutoApplySubscriber(val view: ShipmentContract.View?,
         view?.hideLoading()
         val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
         if (ignoreAPIResponse) {
-            if (responseData.success) {
+            if (responseData.successData.success) {
                 view?.onSuccessClearPromoStack(shopIndex)
             }
         } else {

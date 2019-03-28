@@ -49,7 +49,7 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
                 if (isViewAttached) {
                     view.hideProgressLoading()
                     val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
-                    if (responseData.success) {
+                    if (responseData.successData.success) {
                         view.onSuccessCancelPromoStacking()
                     } else {
                         view.onErrorCancelPromo(RuntimeException())

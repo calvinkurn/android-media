@@ -35,7 +35,7 @@ public class ClearAutoApplySubscriber extends Subscriber<GraphqlResponse> {
     public void onNext(GraphqlResponse graphqlResponse) {
         view.hideLoadingDialog();
         ClearCacheAutoApplyStackResponse responseData = graphqlResponse.getData(ClearCacheAutoApplyStackResponse.class);
-        if (responseData != null && responseData.getSuccess()) {
+        if (responseData != null && responseData.getSuccessData().getSuccess()) {
             view.renderCancelAutoApplyCouponSuccess();
         } else {
             view.showErrorToast("");

@@ -28,7 +28,7 @@ class ClearCacheAutoApplyAfterClashSubscriber(val view: ICartListView?,
     override fun onNext(response: GraphqlResponse) {
         view?.hideProgressLoading()
         val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
-        if (responseData.success) {
+        if (responseData.successData.success) {
             presenter.processApplyPromoStackAfterClash(newPromoList)
         } else {
             view?.onFailedClearPromoStack(false)

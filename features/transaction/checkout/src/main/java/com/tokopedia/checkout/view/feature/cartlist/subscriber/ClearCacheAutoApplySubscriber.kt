@@ -31,11 +31,11 @@ class ClearCacheAutoApplySubscriber(val view: ICartListView?,
         view?.hideProgressLoading()
         val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
         if (ignoreAPIResponse) {
-            if (responseData.success) {
+            if (responseData.successData.success) {
                 view?.onSuccessClearPromoStack(shopIndex)
             }
         } else {
-            if (responseData.success) {
+            if (responseData.successData.success) {
                 view?.onSuccessClearPromoStack(shopIndex)
             } else {
                 view?.onFailedClearPromoStack(ignoreAPIResponse)
