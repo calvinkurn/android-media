@@ -17,11 +17,6 @@ class VideoPlayerView @JvmOverloads constructor(
 
     private var mVideoWidth: Int = 0
     private var mVideoHeight: Int = 0
-    private lateinit var listener: PlayPauseListener
-
-    fun setPlayPauseListener(playPauseListener: PlayPauseListener) {
-        this.listener = playPauseListener
-    }
 
     fun setSize(width: Int, height: Int) {
         mVideoHeight = height
@@ -40,25 +35,5 @@ class VideoPlayerView @JvmOverloads constructor(
             }
         }
         setMeasuredDimension(width, height)
-    }
-
-    override fun resume() {
-        super.resume()
-        listener.onPlayVideo()
-    }
-
-    override fun pause() {
-        super.pause()
-        listener.onPauseVideo()
-    }
-
-    override fun start() {
-        super.start()
-        listener.onPlayVideo()
-    }
-
-    public interface PlayPauseListener {
-        fun onPlayVideo()
-        fun onPauseVideo()
     }
 }

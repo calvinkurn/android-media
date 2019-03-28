@@ -111,14 +111,15 @@
     </android.support.constraint.ConstraintLayout>
 
     <ScrollView
+        android:layout_marginTop="@dimen/dp_8"
         android:id="@+id/captionLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_72"
         android:layout_below="@+id/headerLayout">
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="@dimen/dp_72">
 
             <TextView
                 android:id="@+id/caption"
@@ -143,6 +144,7 @@
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_below="@+id/captionLayout"
+        android:layout_marginTop="@dimen/dp_12"
         android:layout_above="@+id/bottomLayout">
 
         <com.tokopedia.videoplayer.view.widget.VideoPlayerView

@@ -11,13 +11,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.MediaController
 import android.widget.Toast
-import android.widget.VideoView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateBody
@@ -53,7 +50,6 @@ class VideoDetailFragment:
 
     lateinit var dynamicPostViewModel: DynamicPostViewModel
     lateinit var videoViewModel: VideoViewModel
-    lateinit var mediaController: MediaController
 
     private var id: String = ""
     companion object {
@@ -96,7 +92,10 @@ class VideoDetailFragment:
             resizeVideo(it.getVideoWidth(), it.getVideoHeight())
             it.setOnVideoSizeChangedListener(object : MediaPlayer.OnVideoSizeChangedListener {
                 override fun onVideoSizeChanged(player: MediaPlayer?, width: Int, height: Int) {
+                    mediaController = MediaController(activity!!)
                     videoView.setMediaController(mediaController)
+                    mediaController.setAnchorView(videoView)
+                    mediaController.show()
                 }
             })
             it.start()
@@ -163,14 +162,8 @@ class VideoDetailFragment:
         }
     }
 
-    private fun initMediaController()  {
-        mediaController = MediaController(activity!!)
-        mediaController.setAnchorView(videoView)
-        mediaController.show(0)
-    }
 
     private fun initPlayer(url: String) {
-        initMediaController()
         videoView.setVideoURI(Uri.parse(url))
         videoView.setOnErrorListener(object : MediaPlayer.OnErrorListener{
             override fun onError(p0: MediaPlayer?, p1: Int, p2: Int): Boolean {
@@ -194,16 +187,6 @@ class VideoDetailFragment:
             }
         })
         videoView.setOnPreparedListener(this)
-        videoView.setPlayPauseListener(object : VideoPlayerView.PlayPauseListener{
-            override fun onPlayVideo() {
-                mediaController.show(0)
-                videoView.setMediaController(mediaController)
-            }
-
-            override fun onPauseVideo() {
-
-            }
-        })
     }
 
     private fun initViewListener() {
@@ -262,7 +245,7 @@ class VideoDetailFragment:
     private fun bindCaption(captionModel: Caption, template: TemplateBody) {
         captionModel.let {
             if (it.text.isEmpty()) {
-                caption.visibility = View.GONE
+                captionLayout.visibility = View.GONE
             } else {
                 caption.text = it.text.replace(DynamicPostViewHolder.NEWLINE, " ")
             }
