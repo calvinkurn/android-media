@@ -37,6 +37,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String AUTHORIZATION = "authorization";
     private static final String TOKEN = "token";
     private static final String ACCOUNTS_AUTHORIZATION = "accounts-authorization";
+    public static final int BYTE_COUNT = 512;
     private final String authKey;
 
     private static final String RESPONSE_STATUS_INVALID_GRANT = "INVALID_GRANT";
@@ -73,15 +74,9 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
          * Temporary fix to handle outofmemory
          * should use inputstream instead
          */
-        String bodyResponse = "";
-        try {
-            bodyResponse = response.body().string();
-        } catch (Throwable t){
+        checkResponse(response);
 
-        }
-        checkResponse(bodyResponse, response);
-
-        return createNewResponse(response, bodyResponse);
+        return response;
     }
 
     protected Response checkForceLogout(Chain chain, Response response, Request finalRequest) throws
@@ -117,17 +112,23 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
 
-    protected void checkResponse(String string, Response response) {
-        String bodyResponse = string;
-
-        if (isMaintenance(bodyResponse)) {
-            ServerErrorHandler.showMaintenancePage();
-        } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
-            ServerErrorHandler.sendErrorNetworkAnalytics(response.request().url().toString(),
-                    response.code());
-        } else if (isForbiddenRequest(bodyResponse, response.code())
-                && isTimezoneNotAutomatic()) {
-            ServerErrorHandler.showTimezoneErrorSnackbar();
+    protected void checkResponse(Response response) {
+        String bodyResponse;
+        try {
+            // Improvement for response, only check maintenance, server error and timezone by only peeking the body
+            // instead of getting all string and create the new response.
+            bodyResponse = response.peekBody(BYTE_COUNT).string();
+            if (isMaintenance(bodyResponse)) {
+                ServerErrorHandler.showMaintenancePage();
+            } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
+                ServerErrorHandler.sendErrorNetworkAnalytics(response.request().url().toString(),
+                        response.code());
+            } else if (isForbiddenRequest(bodyResponse, response.code())
+                    && isTimezoneNotAutomatic()) {
+                ServerErrorHandler.showTimezoneErrorSnackbar();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -142,12 +143,16 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     protected boolean isForbiddenRequest(String bodyResponse, int code) {
-
-        JSONObject json;
+        // improvement for by java.lang.OutOfMemoryError
+        // at java.lang.AbstractStringBuilder.enlargeBuffer(AbstractStringBuilder.java:94)
+        // do not parse too much JSONObject for checking forbidden request
         try {
-            json = new JSONObject(bodyResponse);
+            if (code != ERROR_FORBIDDEN_REQUEST) {
+                return false;
+            }
+            JSONObject json = new JSONObject(bodyResponse);
             String status = json.optString("status", "OK");
-            return status.equals("FORBIDDEN") && code == ERROR_FORBIDDEN_REQUEST;
+            return status.equals("FORBIDDEN");
         } catch (Exception e) {
             e.printStackTrace();
             return false;
