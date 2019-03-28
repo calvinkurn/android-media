@@ -5,21 +5,21 @@ import android.os.Parcelable
 
 data class BenefitSummaryInfoUiModel(
 		var finalBenefitText: String = "",
-		var finalBenefitAmountStr: String = "",
-		var finalBenefitAmount: Int = 0,
+//		var finalBenefitAmountStr: String = "",
+		var finalBenefitAmount: String = "",
 		var summaries: List<SummariesUiModel> = emptyList()
 ) : Parcelable {
 	constructor(parcel: Parcel) : this(
 			parcel.readString(),
+//			parcel.readString(),
 			parcel.readString(),
-			parcel.readInt(),
 			parcel.createTypedArrayList(SummariesUiModel)) {
 	}
 
 	override fun writeToParcel(parcel: Parcel, flags: Int) {
 		parcel.writeString(finalBenefitText)
-		parcel.writeString(finalBenefitAmountStr)
-		parcel.writeInt(finalBenefitAmount)
+//		parcel.writeString(finalBenefitAmountStr)
+		parcel.writeString(finalBenefitAmount)
 		parcel.writeTypedList(summaries)
 	}
 

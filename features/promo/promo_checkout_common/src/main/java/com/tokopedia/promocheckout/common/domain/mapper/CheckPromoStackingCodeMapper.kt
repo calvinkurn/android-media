@@ -13,7 +13,7 @@ open class CheckPromoStackingCodeMapper @Inject constructor() {
 
     fun call(response: GraphqlResponse?): ResponseGetPromoStackUiModel {
         var status = ""
-        var listMessage = ArrayList<String>()
+        val listMessage = ArrayList<String>()
         var data = DataUiModel()
         val responseFirst: ResponseGetPromoStackFirst?
         val responseFinal: ResponseGetPromoStackFinal?
@@ -26,11 +26,14 @@ open class CheckPromoStackingCodeMapper @Inject constructor() {
                     it?.message?.forEach { message ->
                         listMessage.add(message)
                     }
-                    when (it?.status) {
-                        STATUS_OK -> {
-                            data = mapData(it.data)
-                        }
+                    if (it?.status?.equals(STATUS_ERROR) == false) {
+                        data = mapData(it.data)
                     }
+//                    when (it?.status) {
+//                        STATUS_OK -> {
+//                            data = mapData(it.data)
+//                        }
+//                    }
                 }
             }
         } else {
@@ -137,7 +140,7 @@ open class CheckPromoStackingCodeMapper @Inject constructor() {
     private fun mapBenefit(benefit: BenefitSummaryInfo): BenefitSummaryInfoUiModel {
         return BenefitSummaryInfoUiModel(
                 finalBenefitText = benefit.finalBenefitText,
-                finalBenefitAmountStr = benefit.finalBenefitAmountStr,
+//                finalBenefitAmountStr = benefit.finalBenefitAmountStr,
                 finalBenefitAmount = benefit.finalBenefitAmount,
                 summaries = benefit.summaries.map {
                     mapSummariesBenefit(it)

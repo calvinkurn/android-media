@@ -60,7 +60,7 @@ open class TotalBenefitBottomSheetFragment : BottomSheetDialogFragment() {
         tvTotalLabel.text = benefitUiModel.finalBenefitText
 
         val tvTotalAmount: TextView = view.findViewById(R.id.label_total_amount)
-        tvTotalAmount.text = benefitUiModel.finalBenefitAmountStr
+        tvTotalAmount.text = benefitUiModel.finalBenefitAmount
 
         val layoutTitle = view.findViewById<View>(com.tokopedia.design.R.id.layout_title)
         layoutTitle.setOnClickListener {

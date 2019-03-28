@@ -37,6 +37,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
@@ -738,8 +739,14 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (shipmentCostModel != null) {
                 if (promoGlobalStackData != null) {
                     if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(dataUiModel.getMessage().getState()) == TickerPromoStackingCheckoutView.State.ACTIVE) {
-                        shipmentCostModel.setTotalPromoStackAmount(dataUiModel.getBenefit().getFinalBenefitAmount());
-                        shipmentCostModel.setTotalPromoStackAmountStr(dataUiModel.getBenefit().getFinalBenefitAmountStr());
+                        int finalBenefitAmount = 0;
+                        if (dataUiModel.getBenefit() != null && dataUiModel.getBenefit().getSummaries() != null) {
+                            for (SummariesUiModel summariesUiModel : dataUiModel.getBenefit().getSummaries()) {
+                                finalBenefitAmount += summariesUiModel.getAmount();
+                            }
+                        }
+                        shipmentCostModel.setTotalPromoStackAmount(finalBenefitAmount);
+                        shipmentCostModel.setTotalPromoStackAmountStr(dataUiModel.getBenefit().getFinalBenefitAmount());
                     } else {
                         shipmentCostModel.setTotalPromoStackAmount(0);
                         shipmentCostModel.setTotalPromoStackAmountStr("-");
