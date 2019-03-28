@@ -7,10 +7,13 @@ import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel;
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.kolcommon.data.pojo.Author;
 import com.tokopedia.kolcommon.data.pojo.WhitelistQuery;
 import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -92,6 +95,9 @@ public class GetDynamicFeedFirstPageUseCase extends UseCase<DynamicFeedFirstPage
             domain.setImage(query.getWhitelist().getImageUrl() != null ?
                     query.getWhitelist().getImageUrl() :
                     "");
+            domain.setAuthors(query.getWhitelist().getAuthors() != null ?
+                    query.getWhitelist().getAuthors() :
+                    new ArrayList<>());
             return domain;
         }
     }
