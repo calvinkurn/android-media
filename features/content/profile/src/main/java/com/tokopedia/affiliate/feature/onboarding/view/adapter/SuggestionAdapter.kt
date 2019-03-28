@@ -1,11 +1,11 @@
 package com.tokopedia.affiliate.feature.onboarding.view.adapter
 
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.affiliate.feature.onboarding.view.listener.UsernameInputContract
+import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.profile.R
 import java.util.*
 
@@ -17,8 +17,7 @@ class SuggestionAdapter(private val listener: UsernameInputContract.View)
     private val list: MutableList<String> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_af_username, parent, false)
+        val view = parent.inflateLayout(R.layout.item_af_username, false)
         return ViewHolder(view)
     }
 
@@ -38,6 +37,6 @@ class SuggestionAdapter(private val listener: UsernameInputContract.View)
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var name: TextView = itemView.findViewById(R.id.name)
+        val name: TextView = itemView.findViewById(R.id.name)
     }
 }
