@@ -4,26 +4,25 @@
     android:id="@+id/rl_shipment_cost"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:paddingTop="@dimen/dp_16">
+    android:background="@color/white">
+
+    <View
+        android:id="@+id/item_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/checkout_module_color_background" />
 
     <TextView
         android:id="@+id/tv_shop_summary"
         style="@style/TextMidMediumBlack70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/item_divider"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_16"
         android:text="@string/label_shop_summary"
         android:textStyle="bold" />
-
-    <!--<View
-        android:id="@+id/separator"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_below="@+id/tv_shop_summary"
-        android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/separator_color" />-->
 
     <TextView
         android:id="@+id/tv_total_item_label"
@@ -42,7 +41,7 @@
         style="@style/TextSmallMediumBlack70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/separator"
+        android:layout_below="@+id/tv_shop_summary"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginTop="@dimen/dp_16"
@@ -212,9 +211,9 @@
     <View
         android:id="@+id/item_shipment_divider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_5"
+        android:layout_height="@dimen/dp_8"
         android:layout_below="@id/tv_donation_label"
-        android:background="@color/separator_color" />
+        android:background="@color/checkout_module_color_background" />
 
     <RelativeLayout
         android:id="@+id/rl_total_promo"
