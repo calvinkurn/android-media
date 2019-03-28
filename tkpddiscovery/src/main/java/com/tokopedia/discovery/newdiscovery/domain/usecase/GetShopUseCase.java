@@ -9,6 +9,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.tome.FavoriteCheckResult;
 import com.tokopedia.core.network.apiservices.tome.TomeService;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.data.repository.ShopRepository;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
@@ -60,12 +61,12 @@ public class GetShopUseCase extends UseCase<ShopViewModel> {
     }
 
     private static void putRequestParamsOtherParameters(RequestParams requestParams) {
-        requestParams.putString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
-        requestParams.putString(BrowseApi.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
-        requestParams.putString(BrowseApi.OB, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SORT);
-        requestParams.putString(BrowseApi.ROWS, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS);
-        requestParams.putString(BrowseApi.IMAGE_SIZE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE);
-        requestParams.putString(BrowseApi.IMAGE_SQUARE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
+        requestParams.putString(SearchApiConst.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
+        requestParams.putString(SearchApiConst.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
+        requestParams.putString(SearchApiConst.OB, requestParams.getString(SearchApiConst.OB, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SORT));
+        requestParams.putString(SearchApiConst.ROWS, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS);
+        requestParams.putString(SearchApiConst.IMAGE_SIZE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE);
+        requestParams.putString(SearchApiConst.IMAGE_SQUARE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
     }
 
     @Override

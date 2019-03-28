@@ -100,7 +100,7 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
         requestParams.putString(SearchApiConst.SOURCE, getSearchSource(searchParameter));
         requestParams.putString(SearchApiConst.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
         requestParams.putString(SearchApiConst.ROWS, getSearchRows());
-        requestParams.putString(SearchApiConst.OB, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SORT);
+        requestParams.putString(SearchApiConst.OB, getSearchSort(searchParameter));
         requestParams.putString(SearchApiConst.START, getSearchStart(searchParameter));
         requestParams.putString(SearchApiConst.IMAGE_SIZE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE);
         requestParams.putString(SearchApiConst.IMAGE_SQUARE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
@@ -136,6 +136,14 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
 
     private static String getSearchRows() {
         return (changeParamRow) ? PARAMETER_ROWS : BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS;
+    }
+
+    private static String getSearchSort(SearchParameter searchParameter) {
+        String sort = searchParameter.get(SearchApiConst.OB);
+
+        return !TextUtils.isEmpty(sort) ?
+                sort :
+                BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SORT;
     }
 
     private static String getSearchStart(SearchParameter searchParameter) {

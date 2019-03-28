@@ -153,7 +153,7 @@ public class CatalogPresenter extends SearchSectionFragmentPresenterImpl<Catalog
         requestParams.putString(SearchApiConst.BREADCRUMB, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_BREADCRUMB);
         requestParams.putString(SearchApiConst.IMAGE_SIZE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE);
         requestParams.putString(SearchApiConst.IMAGE_SQUARE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
-        requestParams.putString(SearchApiConst.OB, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SORT);
+        requestParams.putString(SearchApiConst.OB, requestParams.getString(SearchApiConst.OB, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SORT));
     }
 
     @Override

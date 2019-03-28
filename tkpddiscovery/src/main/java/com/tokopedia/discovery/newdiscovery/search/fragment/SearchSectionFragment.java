@@ -37,6 +37,7 @@ import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
+import com.tokopedia.discovery.newdynamicfilter.helper.SortHelper;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -344,9 +345,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         if (sorts == null) {
             return;
         }
-        for (Sort pojo : sorts) {
-            this.sort.add(pojo);
-        }
+
+        this.sort.addAll(sorts);
     }
 
     private ArrayList<Sort> getSort() {
@@ -469,10 +469,19 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         setSortData(pojo.getData().getSort());
 
         filterController.initFilterController(searchParameter.getSearchParameterHashMap(), getFilters());
+        initSelectedSort();
 
         if(isListEmpty) {
             refreshAdapterForEmptySearch();
         }
+    }
+
+    private void initSelectedSort() {
+        HashMap<String, String> selectedSort = new HashMap<>(
+                SortHelper.Companion.getSelectedSortFromSearchParameter(searchParameter.getSearchParameterHashMap(), getSort())
+        );
+
+        setSelectedSort(selectedSort);
     }
 
     protected abstract void refreshAdapterForEmptySearch();
