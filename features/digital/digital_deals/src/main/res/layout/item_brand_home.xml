@@ -7,8 +7,6 @@
     android:layout_margin="@dimen/dp_4"
     android:padding="@dimen/dp_4"
     app:cardCornerRadius="@dimen/dp_8"
-    android:paddingLeft="@dimen/dp_4"
-    android:paddingRight="@dimen/dp_4"
     android:orientation="vertical"
     app:cardElevation="@dimen/dp_2">
 
@@ -23,11 +21,10 @@
             android:layout_width="58dp"
             android:layout_height="58dp"
             android:layout_gravity="center"
-            android:padding="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:layout_marginRight="@dimen/dp_4"
             android:layout_marginTop="@dimen/dp_4"
-            android:scaleType="fitCenter" />
+            android:layout_marginRight="@dimen/dp_2"
+            android:layout_marginLeft="@dimen/dp_2"
+            android:scaleType="fitXY" />
 
 
         <TextView
@@ -39,11 +36,12 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:gravity="center"
+            android:lineSpacingExtra="@dimen/dp_4"
             android:layout_gravity="center"
-            android:paddingTop="@dimen/dp_2"
-            android:paddingBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_4"
-            android:paddingRight="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
             tools:text="Carls o joohohhiohoihohiohohibiubigihguigi" />
 
     </LinearLayout>
