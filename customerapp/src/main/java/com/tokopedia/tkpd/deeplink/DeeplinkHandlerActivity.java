@@ -293,7 +293,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
             Intent intent = getIntent();
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             Uri applink = Uri.parse(intent.getData().toString().replaceAll("%", "%25"));
             presenter.processUTM(this, applink);
             if (deepLinkDelegate.supportsUri(applink.toString())) {
@@ -303,6 +302,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
                 if (getIntent() != null && getIntent().getExtras() != null)
                     homeIntent.putExtras(getIntent().getExtras());
+                homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(homeIntent);
             }
 
@@ -345,6 +345,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                         taskStackBuilder.addNextIntent(
                                 HomeRouter.getHomeActivityInterfaceRouter(this)
                         );
+                        getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     }
                 }
 
