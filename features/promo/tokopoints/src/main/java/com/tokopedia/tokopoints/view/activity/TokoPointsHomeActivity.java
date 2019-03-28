@@ -16,10 +16,13 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
+import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
+import com.tokopedia.tokopoints.view.fragment.HomepageFragment;
 import com.tokopedia.tokopoints.view.fragment.TokoPointsHomeFragmentNew;
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener;
+import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.user.session.UserSession;
 
 @DeepLink(ApplinkConst.TOKOPOINTS)
