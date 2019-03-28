@@ -86,6 +86,9 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         get() = userSessionInterface.hasShop()
 
     fun getProductInfo(productParams: ProductParams, forceRefresh: Boolean = false) {
+        if (forceRefresh){
+            loadOtherProduct.value = null
+        }
         launchCatchError(block = {
             val cacheStrategy = GraphqlCacheStrategy
                 .Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
@@ -549,7 +552,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     }
 
     fun loadMore() {
-        if (loadOtherProduct.value == null || loadOtherProduct.value is Loading)
+        if ((loadOtherProduct.value as? Loaded)?.data as? Success == null)
             doLoadOtherProduct()
     }
 
@@ -561,11 +564,12 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 product.data.productInfo.basic.shopID, product.data.productInfo.basic.id))
         val otherProductRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_OTHER_PRODUCT],
                 ProductOther.Response::class.java, otherProductParams)
+        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
 
         launchCatchError(block = {
             loadOtherProduct.value = Loaded(Success(
                     withContext(Dispatchers.IO){
-                        graphqlRepository.getReseponse(listOf(otherProductRequest))
+                        graphqlRepository.getReseponse(listOf(otherProductRequest), cacheStrategy)
                         .getSuccessData<ProductOther.Response>().result.products
             }))
         }){
