@@ -11,11 +11,15 @@ public interface InstantDebitBcaContract {
     interface View extends CustomerView {
         void openWidgetBca(String accessToken);
 
+        void redirectPageAfterRegisterBca();
+
         void showErrorMessage(Throwable throwable);
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void getAccessTokenBca();
+
+        void notifyDebitRegisterBca(String debitData);
 
         void onDestroy();
     }

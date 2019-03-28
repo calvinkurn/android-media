@@ -1,7 +1,6 @@
 package com.tokopedia.instantdebitbca.data.view;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,26 +9,35 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.bca.xco.widget.BCARegistrasiXCOWidget;
 import com.bca.xco.widget.BCAXCOListener;
 import com.bca.xco.widget.XCOEnum;
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.instantdebitbca.R;
 import com.tokopedia.instantdebitbca.data.di.InstantDebitBcaComponent;
+import com.tokopedia.instantdebitbca.data.domain.NotifyDebitRegisterBcaUseCase;
+import com.tokopedia.instantdebitbca.data.view.utils.DeviceUtil;
 import com.tokopedia.instantdebitbca.data.view.utils.InstantDebitBcaInstance;
+import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 /**
  * Created by nabillasabbaha on 25/03/19.
  */
-public class InstantDebitBcaFragment extends BaseDaggerFragment implements BCAXCOListener, InstantDebitBcaContract.View {
+public class InstantDebitBcaFragment extends BaseDaggerFragment implements InstantDebitBcaContract.View, BCAXCOListener {
 
     @Inject
     InstantDebitBcaPresenter presenter;
@@ -38,12 +46,14 @@ public class InstantDebitBcaFragment extends BaseDaggerFragment implements BCAXC
 
     private RelativeLayout layoutWidget;
     private BCARegistrasiXCOWidget widgetBca;
+    private ActionListener listener;
     private String applinkUrl;
+    private TextView textView;
 
     public static Fragment newInstance(Context context, String callbackUrl) {
         InstantDebitBcaFragment fragment = new InstantDebitBcaFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("CALLBACK_URL", callbackUrl);
+        bundle.putString(InstantDebitBcaActivity.CALLBACK_URL, callbackUrl);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -60,7 +70,13 @@ public class InstantDebitBcaFragment extends BaseDaggerFragment implements BCAXC
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        applinkUrl = getArguments().getString("CALLBACK_URL");
+        applinkUrl = getArguments().getString(InstantDebitBcaActivity.CALLBACK_URL);
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                redirectPageAfterRegisterBca();
+            }
+        });
         widgetBca = new BCARegistrasiXCOWidget(getActivity(), XCOEnum.ENVIRONMENT.DEV);
         widgetBca.setListener(this);
         layoutWidget.addView(widgetBca);
@@ -82,8 +98,8 @@ public class InstantDebitBcaFragment extends BaseDaggerFragment implements BCAXC
 
     @Override
     public void openWidgetBca(String accessToken) {
-        widgetBca.openWidget(accessToken, "f333e9e6-4de0-46ec-aa6f-5683afd56bc0", "7a272369-4c29-44a6-ab84-94b120298a35",
-                userSession.getUserId(), "61017");
+        widgetBca.openWidget(accessToken, AuthUtil.KEY.API_KEY_INSTANT_DEBIT_BCA, AuthUtil.KEY.API_SEED_INSTANT_DEBIT_BCA,
+                userSession.getUserId(), AuthUtil.KEY.INSTANT_DEBIT_BCA_MERCHANT_ID);
     }
 
     @Override
@@ -91,22 +107,34 @@ public class InstantDebitBcaFragment extends BaseDaggerFragment implements BCAXC
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), throwable));
     }
 
-    @Override
-    public void onBCASuccess(String s, String s1, String s2, String s3) {
-        if (RouteManager.isSupportApplink(getActivity(), applinkUrl)) {
-            Intent intentRegisteredApplink = RouteManager.getIntent(getActivity(), applinkUrl);
-            startActivity(intentRegisteredApplink);
-            getActivity().finish();
-        }
+    private String getDeviceId() {
+        // ads id | user agent | IP
+        return userSession.getDeviceId() + " | " + DeviceUtil.getUserAgent() + " | " + DeviceUtil.getLocalIpAddress();
     }
 
     @Override
-    public void onBCATokenExpired(String s) {
+    public void onBCASuccess(String xcoID, String credentialType, String credentialNo, String maxLimit) {
+        Map<String, String> mapCardData = new HashMap<>();
+        mapCardData.put(NotifyDebitRegisterBcaUseCase.XCOID, xcoID);
+        mapCardData.put(NotifyDebitRegisterBcaUseCase.CREDENTIAL_TYPE, credentialType);
+        mapCardData.put(NotifyDebitRegisterBcaUseCase.CREDENTIAL_NO, credentialNo);
+        mapCardData.put(NotifyDebitRegisterBcaUseCase.MAX_LIMIT, maxLimit);
+
+        JSONObject jsonObj = new JSONObject();
+        Gson gsonObj = new Gson();
+        String debitData = gsonObj.toJson(mapCardData);
+        debitData.replace("\"", "\\\"");
+
+        presenter.notifyDebitRegisterBca(debitData);
+    }
+
+    @Override
+    public void onBCATokenExpired(String tokenStatus) {
 
     }
 
     @Override
-    public void onBCARegistered(String s) {
+    public void onBCARegistered(String xcoID) {
 
     }
 
@@ -116,8 +144,22 @@ public class InstantDebitBcaFragment extends BaseDaggerFragment implements BCAXC
     }
 
     @Override
+    public void redirectPageAfterRegisterBca() {
+        listener.redirectPage(applinkUrl);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         presenter.onDestroy();
+    }
+
+    @Override
+    protected void onAttachActivity(Context context) {
+        listener = (ActionListener) context;
+    }
+
+    public interface ActionListener {
+        void redirectPage(String applinkUrl);
     }
 }

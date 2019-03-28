@@ -1,9 +1,10 @@
 package com.tokopedia.instantdebitbca.data.view;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.instantdebitbca.data.domain.GetAccessTokenUseCase;
+import com.tokopedia.instantdebitbca.data.domain.GetAccessTokenBcaUseCase;
+import com.tokopedia.instantdebitbca.data.domain.NotifyDebitRegisterBcaUseCase;
+import com.tokopedia.instantdebitbca.data.view.model.NotifyDebitRegisterBca;
 import com.tokopedia.instantdebitbca.data.view.model.TokenInstantDebitBca;
-import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 
@@ -19,18 +20,21 @@ public class InstantDebitBcaPresenter extends BaseDaggerPresenter<InstantDebitBc
         implements InstantDebitBcaContract.Presenter {
 
     private CompositeSubscription compositeSubscription;
-    private GetAccessTokenUseCase getAccessTokenUseCase;
+    private GetAccessTokenBcaUseCase getAccessTokenBcaUseCase;
+    private NotifyDebitRegisterBcaUseCase notifyDebitRegisterBcaUseCase;
 
     @Inject
-    public InstantDebitBcaPresenter(GetAccessTokenUseCase getAccessTokenUseCase) {
-        this.getAccessTokenUseCase = getAccessTokenUseCase;
+    public InstantDebitBcaPresenter(GetAccessTokenBcaUseCase getAccessTokenBcaUseCase,
+                                    NotifyDebitRegisterBcaUseCase notifyDebitRegisterBcaUseCase) {
+        this.getAccessTokenBcaUseCase = getAccessTokenBcaUseCase;
+        this.notifyDebitRegisterBcaUseCase = notifyDebitRegisterBcaUseCase;
         this.compositeSubscription = new CompositeSubscription();
     }
 
     @Override
     public void getAccessTokenBca() {
         compositeSubscription.add(
-                getAccessTokenUseCase.createObservable(RequestParams.EMPTY)
+                getAccessTokenBcaUseCase.createObservable(getAccessTokenBcaUseCase.createRequestParam())
                         .subscribeOn(Schedulers.io())
                         .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -50,6 +54,33 @@ public class InstantDebitBcaPresenter extends BaseDaggerPresenter<InstantDebitBc
                             @Override
                             public void onNext(TokenInstantDebitBca tokenInstantDebitBca) {
                                 getView().openWidgetBca(tokenInstantDebitBca.getAccessToken());
+                            }
+                        }));
+    }
+
+    @Override
+    public void notifyDebitRegisterBca(String debitData) {
+        compositeSubscription.add(
+                notifyDebitRegisterBcaUseCase.createObservable(notifyDebitRegisterBcaUseCase.createRequestParam(debitData))
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<NotifyDebitRegisterBca>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                if (isViewAttached()) {
+                                    getView().redirectPageAfterRegisterBca();
+                                }
+                            }
+
+                            @Override
+                            public void onNext(NotifyDebitRegisterBca notifyDebitRegisterBca) {
+                                getView().redirectPageAfterRegisterBca();
                             }
                         }));
     }
