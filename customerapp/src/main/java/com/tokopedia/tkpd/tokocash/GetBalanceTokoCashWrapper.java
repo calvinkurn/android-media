@@ -8,12 +8,10 @@ import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.tokocash.balance.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.pendingcashback.domain.GetPendingCasbackUseCase;
-import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 import rx.functions.Func1;
-import rx.functions.Func2;
 
 /**
  * Created by nabillasabbaha on 3/8/18.
@@ -46,21 +44,18 @@ public class GetBalanceTokoCashWrapper {
     public Observable<WalletModel> getTokoCashAccountBalance() {
         return getBalanceTokoCashUseCase
                 .createObservable(RequestParams.EMPTY)
-                .flatMap(new Func1<BalanceTokoCash, Observable<BalanceTokoCash>>() {
-                    @Override
-                    public Observable<BalanceTokoCash> call(BalanceTokoCash balanceTokoCash) {
-                        if (!balanceTokoCash.getLink()) {
-                            return Observable.zip(Observable.just(balanceTokoCash), getPendingCasbackUseCase.createObservable(RequestParams.EMPTY),
-                                    (Func2<BalanceTokoCash, PendingCashback, BalanceTokoCash>) (balanceTokoCash1, pendingCashback1) -> {
-                                            balanceTokoCash1.setPendingCashback(pendingCashback1.getAmountText());
-                                            balanceTokoCash1.setAmountPendingCashback(pendingCashback1.getAmount());
-                                        return balanceTokoCash1;
-                                    });
-                        }
-                        balanceTokoCash.setPendingCashback("");
-                        balanceTokoCash.setAmountPendingCashback(0);
-                        return Observable.just(balanceTokoCash);
+                .flatMap((Func1<BalanceTokoCash, Observable<BalanceTokoCash>>) balanceTokoCash -> {
+                    if (!balanceTokoCash.getLink()) {
+                        return Observable.zip(Observable.just(balanceTokoCash), getPendingCasbackUseCase.createObservable(RequestParams.EMPTY),
+                                (balanceTokoCash1, pendingCashback1) -> {
+                                        balanceTokoCash1.setPendingCashback(pendingCashback1.getAmountText());
+                                        balanceTokoCash1.setAmountPendingCashback(pendingCashback1.getAmount());
+                                    return balanceTokoCash1;
+                                });
                     }
+                    balanceTokoCash.setPendingCashback("");
+                    balanceTokoCash.setAmountPendingCashback(0);
+                    return Observable.just(balanceTokoCash);
                 })
 
                 .map(new TokoCashAccountBalanceMapper());

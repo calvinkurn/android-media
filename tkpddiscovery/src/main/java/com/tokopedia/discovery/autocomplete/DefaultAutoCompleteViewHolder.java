@@ -130,7 +130,7 @@ public class DefaultAutoCompleteViewHolder extends AbstractViewHolder<DefaultAut
             model.setKeyword(item.getKeyword());
             model.setSearchTerm(searchTerm);
             model.setImageUrl(item.getImageURI());
-            model.setProductId(item.getProductId());
+            model.setProductId(item.getItemId());
             model.setProductPrice(item.getPrice());
             model.setIsOfficial(item.isOfficial());
             childList.add(model);

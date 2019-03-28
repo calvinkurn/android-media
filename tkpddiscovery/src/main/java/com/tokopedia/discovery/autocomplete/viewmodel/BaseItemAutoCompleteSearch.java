@@ -18,6 +18,7 @@ public class BaseItemAutoCompleteSearch {
     private String productId;
     private String productPrice;
     private boolean isOfficial;
+    private int positionOfType;
 
     public String getProductId() {
         return productId;
@@ -113,6 +114,14 @@ public class BaseItemAutoCompleteSearch {
 
     public void setIsOfficial(boolean isOfficial) {
         this.isOfficial = isOfficial;
+    }
+
+    public int getPositionOfType() {
+        return positionOfType;
+    }
+
+    public void setPositionOfType(int positionOfType) {
+        this.positionOfType = positionOfType;
     }
 
     public HashMap<String, String> getApplinkParameterHashmap() {

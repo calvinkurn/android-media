@@ -30,9 +30,19 @@ public class FingerprintModel {
         this.registrarionId = registrarionId;
     }
 
+    public String getTypingVelocity() {
+        return typingVelocity;
+    }
+
+    public void setTypingVelocity(String typingVelocity) {
+        this.typingVelocity = typingVelocity;
+    }
+
     private String fingerprintHash;
 
     private String adsId;
 
     private String registrarionId;
+
+    private String typingVelocity;
 }

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/layout_user"
+        android:padding="@dimen/dp_16">
+
+        <ImageView
+            android:id="@+id/ivAvatarUser"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:src="@drawable/ic_loading_image"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars"/>
+
+        <TextView
+            android:id="@+id/tvTitleUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="6sp"
+            android:maxLines="2"
+            android:textColor="@color/black_54"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="normal"
+            android:text="@string/post_personal"
+            app:layout_constraintLeft_toRightOf="@id/ivAvatarUser"
+            app:layout_constraintTop_toTopOf="@id/ivAvatarUser"
+            tools:text="Post Pribadi "/>
+
+        <TextView
+            android:id="@+id/tvNameUser"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_4"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="6sp"
+            android:maxLines="2"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toRightOf="@id/ivAvatarUser"
+            app:layout_constraintTop_toBottomOf="@id/tvTitleUser"
+            tools:text="Post Pribadi "/>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:background="@color/grey_300"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_shop"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_16"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/ivAvatarShop"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:src="@drawable/ic_loading_image"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars"/>
+
+        <TextView
+            android:id="@+id/tvTitleShop"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="6sp"
+            android:maxLines="2"
+            android:textColor="@color/black_54"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="normal"
+            android:text="@string/post_shop"
+            app:layout_constraintLeft_toRightOf="@id/ivAvatarShop"
+            app:layout_constraintRight_toLeftOf="@+id/btnCreatePost"
+            app:layout_constraintTop_toTopOf="@id/ivAvatarShop"
+            />
+
+        <ImageView
+            android:id="@+id/ivBadge"
+            android:layout_width="@dimen/dp_13"
+            android:layout_height="@dimen/dp_13"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_4"
+            android:src="@drawable/ic_loading_image"
+            app:layout_constraintLeft_toRightOf="@id/ivAvatarShop"
+            app:layout_constraintTop_toBottomOf="@id/tvTitleShop"
+            tools:visibility="visible"
+            android:visibility="gone"
+            tools:src="@tools:sample/avatars"/>
+
+        <TextView
+            android:id="@+id/tvNameShop"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_3"
+            android:layout_marginTop="@dimen/dp_4"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="6sp"
+            android:maxLines="2"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toRightOf="@id/ivBadge"
+            app:layout_constraintTop_toBottomOf="@id/tvTitleShop"
+            app:layout_goneMarginLeft="@dimen/dp_16"
+            tools:text="Post Pribadi "/>
+
+    </android.support.constraint.ConstraintLayout>
+</LinearLayout>

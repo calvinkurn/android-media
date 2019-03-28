@@ -10,6 +10,7 @@ import javax.inject.Inject;
 public class WalletAnalytics {
 
     private String GENERIC_EVENT = "clickSaldo";
+    private String HOME_PAGE = "clickHomepage";
 
     private AnalyticTracker analyticTracker;
 
@@ -49,7 +50,7 @@ public class WalletAnalytics {
     }
 
     public void eventClickActivationOvoHomepage() {
-        analyticTracker.sendEventTracking(GENERIC_EVENT, Category.HOMEPAGE,
+        analyticTracker.sendEventTracking(HOME_PAGE, Category.HOMEPAGE,
                 Action.CLICK_HOME_ACTIVATION_OVO, "");
     }
 

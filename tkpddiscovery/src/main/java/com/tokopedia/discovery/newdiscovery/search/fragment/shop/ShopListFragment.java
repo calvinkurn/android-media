@@ -9,13 +9,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.DiscoveryRouter;
@@ -50,6 +49,7 @@ public class ShopListFragment extends SearchSectionFragment
         implements ShopListFragmentView,
         FavoriteActionListener, SearchSectionGeneralAdapter.OnItemChangeView, ShopListener {
 
+    public static final String SCREEN_SEARCH_PAGE_SHOP_TAB = "Search result - Store tab";
     private static final String SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE";
     private static final String EXTRA_QUERY = "EXTRA_QUERY";
     private static final int REQUEST_CODE_GOTO_SHOP_DETAIL = 125;
@@ -294,7 +294,7 @@ public class ShopListFragment extends SearchSectionFragment
 
     @Override
     public String getScreenNameId() {
-        return AppScreen.SCREEN_SEARCH_PAGE_SHOP_TAB;
+        return SCREEN_SEARCH_PAGE_SHOP_TAB;
     }
 
     @Override
@@ -338,6 +338,7 @@ public class ShopListFragment extends SearchSectionFragment
 
     @Override
     public void onEmptyButtonClicked() {
+        SearchTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
         showSearchInputView();
     }
 

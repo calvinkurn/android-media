@@ -1,16 +1,16 @@
 package com.tokopedia.saldodetails.subscriber;
 
 import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.saldodetails.deposit.listener.MerchantSaldoDetailsActionListener;
+import com.tokopedia.saldodetails.deposit.listener.MerchantFinancialStatusActionListener;
 import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
 
 import rx.Subscriber;
 
 public class GetMerchantSaldoDetailsSubscriber extends Subscriber<GraphqlResponse> {
 
-    private MerchantSaldoDetailsActionListener viewListener;
+    private MerchantFinancialStatusActionListener viewListener;
 
-    public GetMerchantSaldoDetailsSubscriber(MerchantSaldoDetailsActionListener viewListener) {
+    public GetMerchantSaldoDetailsSubscriber(MerchantFinancialStatusActionListener viewListener) {
         this.viewListener = viewListener;
     }
 
