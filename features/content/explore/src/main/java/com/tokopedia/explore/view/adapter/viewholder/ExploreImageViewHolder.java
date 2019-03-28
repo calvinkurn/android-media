@@ -39,7 +39,7 @@ public class ExploreImageViewHolder extends AbstractViewHolder<ExploreImageViewM
         int badgeId = getBadgeId(element);
         if (badgeId != 0) {
             badge.setVisibility(View.VISIBLE);
-            ImageHandler.loadImageWithId(image, badgeId);
+            ImageHandler.loadImageWithId(badge, badgeId);
         } else {
             badge.setVisibility(View.GONE);
         }
