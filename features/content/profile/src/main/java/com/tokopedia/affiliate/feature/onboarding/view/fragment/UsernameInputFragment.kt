@@ -149,12 +149,13 @@ class UsernameInputFragment : BottomSheetDialogFragment(), UsernameInputContract
     }
 
     private fun initInjector() {
-        val baseAppComponent = (activity!!.application as BaseMainApplication)
-                .baseAppComponent
-        DaggerOnboardingComponent.builder()
-                .baseAppComponent(baseAppComponent)
-                .build()
-                .inject(this)
+        activity?.let {
+            val baseAppComponent = (it.application as BaseMainApplication).baseAppComponent
+            DaggerOnboardingComponent.builder()
+                    .baseAppComponent(baseAppComponent)
+                    .build()
+                    .inject(this)
+        }
     }
 
     private fun initView() {
