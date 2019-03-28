@@ -529,7 +529,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     /**
      * called when on Success Add to Cart
      */
-    fun onFinishAddToCart(atcSuccessMessage: String?) {
+    fun onFinishAddToCart(atcSuccessMessage: String? = null) {
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
@@ -547,7 +547,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     }
                 putExtra(EXTRA_QUANTITY, quantity)
                 putExtra(EXTRA_NOTES, notes)
-                putExtra(RESULT_ATC_SUCCESS_MESSAGE, atcSuccessMessage)
+                atcSuccessMessage?.let {
+                    putExtra(RESULT_ATC_SUCCESS_MESSAGE, atcSuccessMessage)
+                }
             })
             finish()
         }
@@ -557,7 +559,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         tempQuantity = quantity
         isTradeIn = 0
         addToCart(true, onFinish = { message: String?, cartId: String? ->
-            onFinishAddToCart(message)
+            onFinishAddToCart()
             selectedProductInfo?.run {
                 normalCheckoutTracking.eventClickBuyInVariant(
                     originalProduct,
@@ -579,7 +581,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         tempQuantity = 1
         isTradeIn = 1
         addToCart(true, onFinish = { message: String?, cartId: String? ->
-            onFinishAddToCart(message)
+            onFinishAddToCart()
             selectedProductInfo?.run {
                 normalCheckoutTracking.eventClickBuyInVariant(
                     originalProduct,
