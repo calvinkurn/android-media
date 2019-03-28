@@ -80,7 +80,8 @@ class NotifCenterSubscriber(val view: NotifCenterContract.View, val dateUtil: No
                             notification.readStatus,
                             notification.userId,
                             notification.shopId,
-                            (!TextUtils.equals(lastPrettyDate, prettyDate) || visitables.isEmpty())
+                            (!TextUtils.equals(lastPrettyDate, prettyDate) || visitables.isEmpty()),
+                            notification.templateKey
                     )
             )
             lastPrettyDate = prettyDate

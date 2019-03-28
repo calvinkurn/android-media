@@ -151,8 +151,8 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
         filterBtn.show()
     }
 
-    override fun openRedirectUrl(url: String, notifId: String) {
-        analytics.trackClickList(notifId)
+    override fun openRedirectUrl(url: String, templateKey: String) {
+        analytics.trackClickList(templateKey)
         activity?.let {
             notifCenterRouter.openRedirectUrl(it, url)
         }

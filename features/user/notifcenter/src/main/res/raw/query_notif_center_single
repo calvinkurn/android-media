@@ -5,6 +5,7 @@ query ($notifId: String, $notifLang: String) {
       has_prev
     }
     list {
+      template_key
       notif_id
       user_id
       shop_id
