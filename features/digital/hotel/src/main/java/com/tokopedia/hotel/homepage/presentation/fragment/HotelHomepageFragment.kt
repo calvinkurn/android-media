@@ -14,7 +14,7 @@ import com.tokopedia.hotel.R
 class HotelHomepageFragment: BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.activity_hotel_homepage, container, false)
+            inflater.inflate(R.layout.fragment_hotel_homepage, container, false)
 
     override fun initInjector() {
         getComponent(HotelHomepageComponent::class.java).inject(this)
