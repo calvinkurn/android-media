@@ -92,6 +92,16 @@
                     app:mvlwTitleTextSize="@dimen/sp_16" />
 
                 <include layout="@layout/partial_product_detail_wholesale"/>
+                <view.customview.TradeInTextView
+                    android:id="@+id/tv_trade_in"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:tag="@string/noclick"
+                    android:visibility="gone" />
                 <include layout="@layout/partial_product_full_descr"/>
                 <include layout="@layout/partial_product_shop_info"/>
                 <include layout="@layout/partial_product_image_review"/>

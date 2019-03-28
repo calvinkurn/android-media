@@ -8,6 +8,9 @@ import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
+import com.tokopedia.flight.bookingV2.data.FlightBookingCartDataSource;
+import com.tokopedia.flight.bookingV2.data.entity.AddToCartEntity;
+import com.tokopedia.flight.bookingV2.data.entity.GetCartEntity;
 import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataSource;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
@@ -59,6 +62,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     private FlightPassengerFactorySource flightPassengerFactorySource;
     private FlightCancellationCloudDataSource flightCancellationCloudDataSource;
     private FlightCancelVoucherDataSource flightCancelVoucherDataSource;
+    private FlightBookingCartDataSource flightBookingCartDataSource;
 
     public FlightRepositoryImpl(BannerDataSource bannerDataSource,
                                 FlightCountryListDbSource flightCountryListDbSource,
@@ -70,7 +74,8 @@ public class FlightRepositoryImpl implements FlightRepository {
                                 FlightOrderMapper flightOrderMapper,
                                 FlightPassengerFactorySource flightPassengerFactorySource,
                                 FlightCancellationCloudDataSource flightCancellationCloudDataSource,
-                                FlightCancelVoucherDataSource flightCancelVoucherDataSource) {
+                                FlightCancelVoucherDataSource flightCancelVoucherDataSource,
+                                FlightBookingCartDataSource flightBookingCartDataSource) {
         this.bannerDataSource = bannerDataSource;
         this.flightCountryListDbSource = flightCountryListDbSource;
         this.flightClassesDataSource = flightClassesDataSource;
@@ -82,6 +87,7 @@ public class FlightRepositoryImpl implements FlightRepository {
         this.flightPassengerFactorySource = flightPassengerFactorySource;
         this.flightCancellationCloudDataSource = flightCancellationCloudDataSource;
         this.flightCancelVoucherDataSource = flightCancelVoucherDataSource;
+        this.flightBookingCartDataSource = flightBookingCartDataSource;
     }
 
     @Override
@@ -124,6 +130,16 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<CartEntity> addCart(FlightCartRequest request, String idEmpotencyKey) {
         return flightCartDataSource.addCart(request, idEmpotencyKey);
+    }
+
+    @Override
+    public Observable<AddToCartEntity> addCartV11(FlightCartRequest request, String idEmpotencyKey) {
+        return flightBookingCartDataSource.addToCart(request, idEmpotencyKey);
+    }
+
+    @Override
+    public Observable<GetCartEntity> getCart(String cartId) {
+        return flightBookingCartDataSource.getCart(cartId);
     }
 
     @Override

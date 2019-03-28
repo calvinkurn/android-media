@@ -34,7 +34,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -613,8 +612,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         Uri uri = Uri.parse(actionButton.getUri());
                         invoiceUrl = uri.getQueryParameter("invoiceUrl");
                         String applink = "tokopedia://topchat/askseller/" + shopId;
-                        applink = applink.concat("?customMessage=" + invoiceUrl + "&source=" + "tx_ask_seller" + "&opponent_name=" + "" + "&avatar=" + "");
                         RouteManager.route(getContext(), applink);
+                        Intent intent = RouteManager.getIntent(getContext(), applink);
+                        intent.putExtra(ApplinkConst.Chat.CUSTOM_MESSAGE, invoiceUrl);
+                        intent.putExtra(ApplinkConst.Chat.SOURCE, "tx_ask_seller");
+                        startActivity(intent);
                     }
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                     Intent intent = new Intent(getContext(), RequestCancelActivity.class);
@@ -788,10 +790,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     }
 
     @Override
-    public void setItems(List<Items> items) {
+    public void setItems(List<Items> items, boolean isTradeIn) {
         productInformationTitle.setVisibility(View.VISIBLE);
         itemsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter));
+        itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter, isTradeIn));
     }
 
     @Override

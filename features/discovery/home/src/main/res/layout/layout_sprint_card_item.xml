@@ -5,7 +5,6 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/margin_ms"
     android:orientation="vertical">
 
     <ImageView
@@ -14,76 +13,70 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true" />
 
-    <RelativeLayout
-        android:id="@+id/header"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/channel_title_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:background="@color/white"
+        android:padding="@dimen/page_margin">
 
         <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
+            android:id="@+id/channel_title"
+            android:layout_width="0dp"
+            style="@style/TextView.Title"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_weight="1"
-            android:fontFamily="sans-serif"
-            android:lineSpacingExtra="7sp"
-            android:paddingBottom="@dimen/page_margin"
-            android:paddingLeft="@dimen/page_margin"
-            android:paddingTop="@dimen/page_margin"
-            android:scrollHorizontally="true"
-            android:textColor="#ffffff"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            tools:text="Lucky Hour" />
+            android:maxEms="12"
+            android:textSize="@dimen/sp_18"
+            app:layout_constraintEnd_toStartOf="@+id/count_down"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_default="wrap"
+            tools:text="Hypebeast Banget Pokoknya" />
 
         <com.tokopedia.design.countdown.CountDownView
             android:id="@+id/count_down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/margin_ms"
-            android:layout_marginRight="@dimen/margin_ms"
-            android:layout_toRightOf="@+id/title"
-            app:coundDownBackgroud="@drawable/background_countdown_white"
-            app:countDownSparatorColor="@color/white"
-            app:countDownTxtColor="@color/black_70" />
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_toRightOf="@id/channel_title"
+            app:coundDownBackgroud="@drawable/background_countdown"
+            app:layout_constraintBottom_toBottomOf="@+id/channel_title"
+            app:layout_constraintEnd_toStartOf="@+id/see_all_button"
+            app:layout_constraintStart_toEndOf="@id/channel_title"
+            app:layout_constraintTop_toTopOf="@+id/channel_title"
+            tools:layout_height="40dp"
+            tools:layout_width="100dp"
+            tools:visibility="visible" />
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/see_more_container"
+        <TextView
+            android:id="@+id/see_all_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/button_margin"
-            app:cardCornerRadius="@dimen/pading_4dp"
-            app:cardUseCompatPadding="true">
-
-            <TextView
-                android:id="@+id/see_more"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center_vertical"
-                android:lineSpacingExtra="4sp"
-                android:paddingBottom="@dimen/pading_4dp"
-                android:paddingLeft="@dimen/margin_ms"
-                android:paddingRight="@dimen/margin_ms"
-                android:paddingTop="@dimen/pading_4dp"
-                android:text="@string/lihat_semua"
-                android:textColor="#399c3f"
-                android:textSize="12sp"
-                android:textStyle="normal" />
-
-        </android.support.v7.widget.CardView>
-
-    </RelativeLayout>
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="end"
+            android:lineSpacingExtra="3sp"
+            android:text="@string/lihat_semua"
+            android:textColor="@color/medium_green"
+            android:textSize="13sp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="@+id/channel_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/channel_title" />
+    </android.support.constraint.ConstraintLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/header"
+        android:layout_below="@+id/channel_title_container"
         android:descendantFocusability="afterDescendants" />
 </RelativeLayout>

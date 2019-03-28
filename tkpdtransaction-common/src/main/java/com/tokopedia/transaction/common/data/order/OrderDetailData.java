@@ -130,6 +130,8 @@ public class OrderDetailData implements Parcelable {
 
     private List<String> bookingCodeMessage = null;
 
+    private boolean isFulfillment;
+
     public String getBookingCode() {
         return bookingCode;
     }
@@ -607,6 +609,14 @@ public class OrderDetailData implements Parcelable {
         this.codFee = codFee;
     }
 
+    public boolean isFulfillment() {
+        return isFulfillment;
+    }
+
+    public void setFulfillment(boolean fulfillment) {
+        isFulfillment = fulfillment;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -653,6 +663,8 @@ public class OrderDetailData implements Parcelable {
         dest.writeString(this.deliveryPrice);
         dest.writeString(this.insurancePrice);
         dest.writeString(this.additionalFee);
+        dest.writeByte(this.isHavingCod ? (byte) 1 : (byte) 0);
+        dest.writeString(this.codFee);
         dest.writeString(this.totalPayment);
         dest.writeParcelable(this.buttonData, flags);
         dest.writeString(this.driverName);
@@ -662,15 +674,16 @@ public class OrderDetailData implements Parcelable {
         dest.writeByte(this.showInsuranceNotification ? (byte) 1 : (byte) 0);
         dest.writeString(this.insuranceNotification);
         dest.writeString(this.pickupPinCode);
+        dest.writeString(this.liveTrackingUrl);
         dest.writeByte(this.showUploadAwb ? (byte) 1 : (byte) 0);
         dest.writeString(this.awbUploadProofText);
         dest.writeString(this.awbUploadProofUrl);
-        dest.writeString(this.liveTrackingUrl);
         dest.writeString(this.bookingCode);
         dest.writeString(this.barcodeType);
         dest.writeInt(this.totalProtectionItem);
         dest.writeString(this.totalProtectionFee);
         dest.writeStringList(this.bookingCodeMessage);
+        dest.writeByte(this.isFulfillment ? (byte) 1 : (byte) 0);
     }
 
     protected OrderDetailData(Parcel in) {
@@ -713,6 +726,8 @@ public class OrderDetailData implements Parcelable {
         this.deliveryPrice = in.readString();
         this.insurancePrice = in.readString();
         this.additionalFee = in.readString();
+        this.isHavingCod = in.readByte() != 0;
+        this.codFee = in.readString();
         this.totalPayment = in.readString();
         this.buttonData = in.readParcelable(ButtonData.class.getClassLoader());
         this.driverName = in.readString();
@@ -722,15 +737,16 @@ public class OrderDetailData implements Parcelable {
         this.showInsuranceNotification = in.readByte() != 0;
         this.insuranceNotification = in.readString();
         this.pickupPinCode = in.readString();
+        this.liveTrackingUrl = in.readString();
         this.showUploadAwb = in.readByte() != 0;
         this.awbUploadProofText = in.readString();
         this.awbUploadProofUrl = in.readString();
-        this.liveTrackingUrl = in.readString();
         this.bookingCode = in.readString();
         this.barcodeType = in.readString();
         this.totalProtectionItem = in.readInt();
         this.totalProtectionFee = in.readString();
         this.bookingCodeMessage = in.createStringArrayList();
+        this.isFulfillment = in.readByte() != 0;
     }
 
     public static final Creator<OrderDetailData> CREATOR = new Creator<OrderDetailData>() {

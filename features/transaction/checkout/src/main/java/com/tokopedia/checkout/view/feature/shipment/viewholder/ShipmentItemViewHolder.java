@@ -204,10 +204,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private ImageView imgYellowBulb;
     private TextView tvShipmentBlackboxTickerInfo;
 
+    private TextView tvTradeInLabel;
+
     private List<Object> shipmentDataList;
     private Pattern phoneNumberRegexPattern;
     private CompositeSubscription compositeSubscription;
     private SaveStateDebounceListener saveStateDebounceListener;
+    private TextView tvFulfillName;
+    private ImageView imgFulfill;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -340,7 +344,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llShipmentBlackboxInfoTicker = itemView.findViewById(R.id.ll_shipment_blackbox_info_ticker);
         imgYellowBulb = itemView.findViewById(R.id.img_bulb);
         tvShipmentBlackboxTickerInfo = itemView.findViewById(R.id.tv_shipment_blackbox_ticker_info);
-
+        tvFulfillName = itemView.findViewById(R.id.tv_fulfill_district);
+        imgFulfill = itemView.findViewById(R.id.img_shop_fulfill);
+        tvTradeInLabel = itemView.findViewById(R.id.tv_trade_in_label);
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
     }
@@ -425,6 +431,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             this.shipmentDataList = shipmentDataList;
         }
         renderShop(shipmentCartItemModel);
+        renderFulfillment(shipmentCartItemModel);
         renderAddress(shipmentCartItemModel.getRecipientAddressModel());
         renderShippingType(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, showCaseObjectList);
         renderErrorAndWarning(shipmentCartItemModel);
@@ -432,6 +439,17 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderDropshipper(recipientAddressModel != null && recipientAddressModel.isCornerAddress());
         renderCostDetail(shipmentCartItemModel);
         renderCartItem(shipmentCartItemModel);
+    }
+
+    private void renderFulfillment(ShipmentCartItemModel model) {
+        if (model.isFulfillment()) {
+            imgFulfill.setVisibility(View.VISIBLE);
+            tvFulfillName.setVisibility(View.VISIBLE);
+            tvFulfillName.setText(model.getFulfillmentName());
+        } else {
+            imgFulfill.setVisibility(View.GONE);
+            tvFulfillName.setVisibility(View.GONE);
+        }
     }
 
     private void renderErrorAndWarning(ShipmentCartItemModel shipmentCartItemModel) {
@@ -506,6 +524,18 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderShop(ShipmentCartItemModel shipmentCartItemModel) {
+        boolean hasTradeInItem = false;
+        for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+            if (cartItemModel.isValidTradeIn()) {
+                hasTradeInItem = true;
+                break;
+            }
+        }
+        if (hasTradeInItem) {
+            tvTradeInLabel.setVisibility(View.VISIBLE);
+        } else {
+            tvTradeInLabel.setVisibility(View.GONE);
+        }
         if (shipmentCartItemModel.isOfficialStore() || shipmentCartItemModel.isGoldMerchant()) {
             if (!shipmentCartItemModel.getShopBadge().isEmpty()) {
                 ImageHandler.loadImageWithoutPlaceholder(imgShopBadge, shipmentCartItemModel.getShopBadge());
@@ -559,7 +589,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
 
         ivFreeReturnIcon.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
-        if (cartItemModel.isPreOrder()){
+        if (cartItemModel.isPreOrder()) {
             tvPreOrder.setText(cartItemModel.getPreOrderInfo());
             tvPreOrder.setVisibility(View.VISIBLE);
         } else {
@@ -796,10 +826,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderCourierBlackbox(ShipmentCartItemModel shipmentCartItemModel,
-                                             ShipmentDetailData shipmentDetailData,
-                                             RecipientAddressModel recipientAddressModel,
-                                             List<ShopShipment> shopShipmentList,
-                                             RatesDataConverter ratesDataConverter) {
+                                       ShipmentDetailData shipmentDetailData,
+                                       RecipientAddressModel recipientAddressModel,
+                                       List<ShopShipment> shopShipmentList,
+                                       RatesDataConverter ratesDataConverter) {
         RecipientAddressModel currentAddress;
         if (recipientAddressModel == null) {
             currentAddress = shipmentCartItemModel.getRecipientAddressModel();
