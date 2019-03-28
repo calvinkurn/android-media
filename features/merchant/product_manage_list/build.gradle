@@ -47,7 +47,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.trackinterface)
+    
 
     implementation rootProject.ext.networkDependencies.glide
 

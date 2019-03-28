@@ -119,7 +119,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.trackinterface)
+    
     implementation project(rootProject.ext.libraries.track)
 }
 

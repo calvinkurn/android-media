@@ -26,7 +26,7 @@ project.ext {
 dependencies {
     implementation rootProject.ext.miscDependencies.gson
 
-    implementation project(rootProject.ext.libraries.trackinterface)
+    
     implementation project(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
