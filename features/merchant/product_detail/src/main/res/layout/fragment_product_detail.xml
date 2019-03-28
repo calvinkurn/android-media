@@ -163,12 +163,15 @@
             android:id="@+id/base_btn_affiliate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:background="@drawable/card_shadow_top"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/dp_16"
             android:paddingTop="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
-            android:paddingBottom="@dimen/dp_16">
+            android:paddingBottom="@dimen/dp_16"
+            android:visibility="gone"
+            app:layout_anchorGravity="bottom">
 
             <TextView
                 android:id="@+id/getCommission"
@@ -206,10 +209,13 @@
                 <com.tokopedia.design.component.TextViewCompat
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/button_affiliate"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
                     android:fontFamily="sans-serif-medium"
+                    android:gravity="center_horizontal"
+                    android:text="@string/button_affiliate"
                     app:fontSize="small"
-                    app:textViewTheme="darkPrimary"/>
+                    app:textViewTheme="darkPrimary" />
 
                 <ProgressBar
                     android:id="@+id/loadingAffiliate"
