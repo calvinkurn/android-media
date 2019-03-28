@@ -106,7 +106,7 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
     public void unlikeKol(int id, int rowNumber, KolPostListener.View.Like likeListener) {
         likeKolPostUseCase.execute(
                 LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_UNLIKE),
-                new LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.ACTION_LIKE)
+                new LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.ACTION_UNLIKE)
         );
     }
 }
