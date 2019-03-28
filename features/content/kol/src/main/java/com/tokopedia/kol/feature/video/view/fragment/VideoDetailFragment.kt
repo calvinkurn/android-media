@@ -93,6 +93,14 @@ class VideoDetailFragment:
     override fun onPrepared(mediaPlayer: MediaPlayer?) {
         mediaPlayer?.let {
             resizeVideo(it.getVideoWidth(), it.getVideoHeight())
+            it.setOnVideoSizeChangedListener(object : MediaPlayer.OnVideoSizeChangedListener {
+                override fun onVideoSizeChanged(player: MediaPlayer?, width: Int, height: Int) {
+                    val mediaController = MediaController(activity!!)
+                    mediaController.setAnchorView(videoView)
+                    videoView.setMediaController(mediaController)
+                    mediaController.show()
+                }
+            })
             it.start()
         }
     }
@@ -165,20 +173,6 @@ class VideoDetailFragment:
 
     private fun initPlayer(url: String) {
         videoView.setVideoURI(Uri.parse(url))
-
-        videoView.setOnPreparedListener { object : MediaPlayer.OnPreparedListener {
-            override fun onPrepared(mediaPlayer: MediaPlayer?) {
-                mediaPlayer?.setOnVideoSizeChangedListener(object : MediaPlayer.OnVideoSizeChangedListener {
-                    override fun onVideoSizeChanged(player: MediaPlayer?, width: Int, height: Int) {
-                        val mediaController = MediaController(activity!!)
-                        mediaController.setAnchorView(videoView)
-                        videoView.setMediaController(mediaController)
-                        mediaController.show()
-                    }
-                })
-            }
-        } }
-
         videoView.setOnErrorListener(object : MediaPlayer.OnErrorListener{
             override fun onError(p0: MediaPlayer?, p1: Int, p2: Int): Boolean {
                 when(p1) {
@@ -340,14 +334,14 @@ class VideoDetailFragment:
                 likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb)
                 likeText.text = like.fmt
                 likeText.setTextColor(
-                        MethodChecker.getColor(likeText.context, R.color.black_54)
+                        MethodChecker.getColor(likeText.context, R.color.white)
                 )
             }
             else -> {
                 likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb)
                 likeText.setText(R.string.kol_action_like)
                 likeText.setTextColor(
-                        MethodChecker.getColor(likeIcon.context, R.color.black_54)
+                        MethodChecker.getColor(likeIcon.context, R.color.white)
                 )
             }
         }
