@@ -301,7 +301,7 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     protected void refreshAdapterForEmptySearch() {
         if (adapter != null) {
-            adapter.notifyDataSetChanged();
+            adapter.showEmptyState(getActivity(), getSearchParameter().getSearchQuery(), isFilterActive(), null, getString(R.string.shop_tab_title).toLowerCase());
         }
     }
 

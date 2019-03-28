@@ -420,7 +420,7 @@ public class CatalogFragment extends SearchSectionFragment implements
     @Override
     protected void refreshAdapterForEmptySearch() {
         if (catalogAdapter != null) {
-            catalogAdapter.notifyDataSetChanged();
+            catalogAdapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getFlagFilterHelper(), getString(R.string.catalog_tab_title).toLowerCase());
         }
     }
 

@@ -721,7 +721,7 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     protected void refreshAdapterForEmptySearch() {
         if (adapter != null) {
-            adapter.notifyDataSetChanged();
+            adapter.showEmptyState(getActivity(), productViewModel.getQuery(), isFilterActive(), getFlagFilterHelper(), getString(R.string.product_tab_title).toLowerCase());
         }
     }
 
