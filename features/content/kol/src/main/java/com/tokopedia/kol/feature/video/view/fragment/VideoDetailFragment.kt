@@ -1,6 +1,8 @@
 package com.tokopedia.kol.feature.video.view.fragment
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -25,12 +27,15 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
+import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.videoplayer.view.widget.VideoPlayerView
+import kotlinx.android.synthetic.main.kol_comment_item.*
 import kotlinx.android.synthetic.main.layout_single_video_fragment.*
 import javax.inject.Inject
 
@@ -53,6 +58,8 @@ class VideoDetailFragment:
 
     private var id: String = ""
     companion object {
+        private val INTENT_COMMENT = 1234
+
         fun getInstance(bundle: Bundle): VideoDetailFragment {
             val fragment = VideoDetailFragment()
             fragment.arguments = bundle
@@ -107,12 +114,24 @@ class VideoDetailFragment:
         presenter.detachView()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            INTENT_COMMENT -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    data?.let {
+                        calculateTotalComment(it.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0))
+                    }
+                }
+            }
+        }
+    }
+
     override fun onSuccessFollowKol() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onErrorFollowKol(error: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun getContext(): Context {
@@ -120,7 +139,26 @@ class VideoDetailFragment:
     }
 
     override fun onLikeKolSuccess(rowNumber: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        val like = dynamicPostViewModel.footer.like
+        like.isChecked = !like.isChecked
+        if (like.isChecked) {
+            try {
+                val likeValue = Integer.valueOf(like.fmt) + 1
+                like.fmt = likeValue.toString()
+            } catch (ignored: NumberFormatException) {
+            }
+
+            like.value = like.value + 1
+        } else {
+            try {
+                val likeValue = Integer.valueOf(like.fmt) - 1
+                like.fmt = likeValue.toString()
+            } catch (ignored: NumberFormatException) {
+            }
+
+            like.value = like.value - 1
+        }
     }
 
     override fun onLikeKolError(message: String?) {
@@ -192,6 +230,14 @@ class VideoDetailFragment:
     private fun initViewListener() {
         ivClose.setOnClickListener({
             activity!!.finish()
+        })
+
+        likeIcon.setOnClickListener({
+            presenter.likeKol(0,0, this)
+        })
+
+        commentIcon.setOnClickListener({
+            startActivityForResult(KolCommentActivity.getCallingIntent(activity!!, id.toInt(), 0), INTENT_COMMENT)
         })
     }
 
@@ -326,5 +372,17 @@ class VideoDetailFragment:
         commentText.text =
                 if (comment.value == 0) getString(R.string.kol_action_comment)
                 else comment.fmt
+    }
+
+    private fun calculateTotalComment(totalNewComment: Int) {
+        val comment: Comment = dynamicPostViewModel.footer.comment
+        try {
+            val commentValue = Integer.valueOf(comment.fmt) + totalNewComment
+            comment.fmt = commentValue.toString()
+        } catch (ignored: NumberFormatException) {
+        }
+
+        comment.value = comment.value + totalNewComment
+        commentText.text = comment.fmt
     }
 }
