@@ -121,6 +121,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private CardView cardFooter;
     private LinearLayout llNetworkErrorView;
     private LinearLayout emptyCartContainer;
+    private View statusBarBackground;
 
     private ProgressDialog progressDialog;
 
@@ -295,6 +296,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         llHeader = view.findViewById(R.id.ll_header);
         cbSelectAll = view.findViewById(R.id.cb_select_all);
         emptyCartContainer = view.findViewById(R.id.container_empty_cart);
+        statusBarBackground = view.findViewById(R.id.status_bar_bg);
+        statusBarBackground.getLayoutParams().height =
+                DisplayMetricUtils.getStatusBarHeight(getActivity());
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
@@ -327,10 +331,18 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         appBarLayout = view.findViewById(R.id.app_bar_layout);
         if (isToolbarWithBackButton) {
             toolbar = toolbarRemoveWithBackView();
+            statusBarBackground.setVisibility(View.GONE);
         } else {
             toolbar = toolbarRemoveView();
             // add padding programmatically
-            view.setPadding(0,DisplayMetricUtils.getStatusBarHeight(getContext()),0,0);
+            // status bar background compability
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                statusBarBackground.setVisibility(View.INVISIBLE);
+            } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                statusBarBackground.setVisibility(View.VISIBLE);
+            } else {
+                statusBarBackground.setVisibility(View.GONE);
+            }
         }
         appbar.addView(toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(appbar);
