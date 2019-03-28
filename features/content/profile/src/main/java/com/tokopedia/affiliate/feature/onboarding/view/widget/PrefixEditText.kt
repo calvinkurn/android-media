@@ -13,7 +13,10 @@ import com.tokopedia.profile.R
  * Created by Hendry on 3/9/2017.
  */
 
-class PrefixEditText : AppCompatEditText, TextWatcher {
+class PrefixEditText @JvmOverloads constructor(context: Context,
+                                               attrs: AttributeSet? = null,
+                                               defStyle: Int = 0)
+    : AppCompatEditText(context, attrs, defStyle), TextWatcher {
     private var mPrefix: String? = null
     private var mColor: Int = 0
 
@@ -39,15 +42,7 @@ class PrefixEditText : AppCompatEditText, TextWatcher {
             text = text
         }
 
-    constructor(context: Context) : super(context) {
-        init(null, 0)
-    }
-
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(attrs, 0)
-    }
-
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+    init {
         init(attrs, defStyle)
     }
 
