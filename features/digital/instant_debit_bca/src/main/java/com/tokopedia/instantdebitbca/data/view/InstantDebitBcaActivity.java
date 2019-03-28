@@ -22,7 +22,7 @@ public class InstantDebitBcaActivity extends BaseSimpleActivity implements Insta
     @DeepLink({ApplinkConstant.INSTANT_DEBIT_BCA_APPLINK})
     public static Intent intentForTaskStackBuilderMethods(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        String callbackUrl = extras.getString(CALLBACK_URL);
+        String callbackUrl = extras.containsKey(CALLBACK_URL) ? extras.getString(CALLBACK_URL) : "";
         return InstantDebitBcaActivity.newInstance(context, callbackUrl);
     }
 
@@ -34,7 +34,7 @@ public class InstantDebitBcaActivity extends BaseSimpleActivity implements Insta
 
     @Override
     protected Fragment getNewFragment() {
-        return InstantDebitBcaFragment.newInstance(getApplicationContext(), getIntent().getStringExtra("CALLBACK_URL"));
+        return InstantDebitBcaFragment.newInstance(getApplicationContext(), getIntent().getStringExtra(CALLBACK_URL));
     }
 
     @Override
@@ -42,7 +42,7 @@ public class InstantDebitBcaActivity extends BaseSimpleActivity implements Insta
         if (RouteManager.isSupportApplink(getApplicationContext(), applinkUrl)) {
             Intent intentRegisteredApplink = RouteManager.getIntent(getApplicationContext(), applinkUrl);
             startActivity(intentRegisteredApplink);
-            finish();
         }
+        finish();
     }
 }
