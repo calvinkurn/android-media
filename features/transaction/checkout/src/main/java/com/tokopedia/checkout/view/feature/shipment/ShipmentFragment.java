@@ -34,6 +34,8 @@ import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.checkout.domain.datamodel.promostacking.MessageData;
+import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
@@ -81,6 +83,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
@@ -873,29 +876,58 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     .build();
             sendAnalyticsOnViewPromoAutoApply();
 
-            /*if (autoApplyStackData.getVoucherOrders() != null) {
-                List<PromoStackingData.Builder> listPromoStackingMerchantData = new ArrayList<>();
+            if (autoApplyStackData.getVoucherOrders() != null) {
                 if (autoApplyStackData.getVoucherOrders().size() > 0) {
                     for (int i=0; i<autoApplyStackData.getVoucherOrders().size(); i++) {
                         VoucherOrdersItemData voucherOrdersItemData = autoApplyStackData.getVoucherOrders().get(i);
-                        PromoStackingData.Builder merchantBuilder = new PromoStackingData.Builder();
-                        merchantBuilder.description(voucherOrdersItemData.getMessageText())
-                                .description(voucherOrdersItemData.getMessageText())
+
+                        /*PromoStackingData.Builder merchantBuilder = new PromoStackingData.Builder();
+                        merchantBuilder.description(voucherOrdersItemData.getMessageData().getText())
+                                .description(voucherOrdersItemData.getMessageData().getText())
                                 .amount(voucherOrdersItemData.getCashbackWalletAmount())
                                 .promoCode(voucherOrdersItemData.getCode())
-                                .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(voucherOrdersItemData.getState()))
+                                .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(voucherOrdersItemData.getMessageData().getState()))
                                 .title(voucherOrdersItemData.getTitleDescription())
                                 .build();
-                        listPromoStackingMerchantData.add(merchantBuilder);
+                        listPromoStackingMerchantData.add(merchantBuilder);*/
+
+                        if (shipmentAdapter.getShipmentCartItemModelList() != null) {
+                            for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
+                                if (shipmentCartItemModel.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
+                                    shipmentCartItemModel.setVoucherOrdersItemUiModel(setVouchersItemUiModel(voucherOrdersItemData));
+                                }
+                            }
+                        }
                     }
                 }
-                shipmentAdapter.addListPromoStackingMerchantVoucherData(listPromoStackingMerchantData);
-            }*/
+            }
         } else {
             builder.state(TickerPromoStackingCheckoutView.State.EMPTY);
         }
         shipmentAdapter.addPromoStackingVoucherData(builder.build());
         shipmentAdapter.notifyDataSetChanged();
+    }
+
+    public VoucherOrdersItemUiModel setVouchersItemUiModel(VoucherOrdersItemData voucherOrdersItemData) {
+        VoucherOrdersItemUiModel voucherOrdersItemUiModel = new VoucherOrdersItemUiModel();
+        voucherOrdersItemUiModel.setSuccess(voucherOrdersItemData.isSuccess());
+        voucherOrdersItemUiModel.setCode(voucherOrdersItemData.getCode());
+        voucherOrdersItemUiModel.setUniqueId(voucherOrdersItemData.getUniqueId());
+        voucherOrdersItemUiModel.setCartId(voucherOrdersItemData.getCartId());
+        voucherOrdersItemUiModel.setType(voucherOrdersItemData.getType());
+        voucherOrdersItemUiModel.setCashbackWalletAmount(voucherOrdersItemData.getCashbackWalletAmount());
+        voucherOrdersItemUiModel.setDiscountAmount(voucherOrdersItemData.getDiscountAmount());
+        voucherOrdersItemUiModel.setInvoiceDescription(voucherOrdersItemData.getInvoiceDescription());
+        voucherOrdersItemUiModel.setMessage(setMessageItemUiModel(voucherOrdersItemData.getMessageData()));
+        return voucherOrdersItemUiModel;
+    }
+
+    public MessageUiModel setMessageItemUiModel(MessageData messageData) {
+        MessageUiModel messageUiModel = new MessageUiModel();
+        messageUiModel.setColor(messageData.getColor());
+        messageUiModel.setState(messageData.getState());
+        messageUiModel.setText(messageData.getText());
+        return messageUiModel;
     }
 
     @Override
@@ -1588,6 +1620,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentAdapter.hasAppliedPromoStackCode()) {
             shipmentPresenter.checkPromoShipment(shipmentAdapter.getPromoData().getPromoCodeSafe(), isOneClickShipment());
         }*/
+
+        // TODO: ask apakah harus promo global applied?
         if (shipmentAdapter.getPromoGlobalStackData() != null && shipmentAdapter.hasAppliedPromoStackCode()) {
             CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
             shipmentPresenter.checkPromoStackShipment(checkPromoFirstStepParam);

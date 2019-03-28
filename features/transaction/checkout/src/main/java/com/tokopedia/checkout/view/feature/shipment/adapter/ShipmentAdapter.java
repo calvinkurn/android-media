@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
 import com.tokopedia.checkout.view.common.viewholder.CartPromoSuggestionViewHolder;
 import com.tokopedia.checkout.view.common.viewholder.CartVoucherPromoViewHolder;
@@ -272,6 +273,16 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             shipmentDataList.add(promoStackingData);
         }
     }
+
+    /*public void setPromoStackingMerchantData(VoucherOrdersItemData voucherOrdersItemData) {
+        if (voucherOrdersItemData != null) {
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                if (shipmentCartItemModel.getHasPromoList() && shipmentCartItemModel.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
+                    shipmentCartItemModel.setVoucherOrdersItemUiModel();
+                }
+            }
+        }
+    }*/
 
     public void addPromoSuggestionData(CartPromoSuggestion cartPromoSuggestion) {
         if (cartPromoSuggestion != null && !TextUtils.isEmpty(cartPromoSuggestion.getPromoCode())) {
@@ -723,51 +734,53 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void updatePromoStack(DataUiModel dataUiModel) {
-        if (shipmentCostModel != null) {
-            if (promoGlobalStackData != null) {
-                if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(dataUiModel.getMessage().getState()) == TickerPromoStackingCheckoutView.State.ACTIVE) {
-                    shipmentCostModel.setTotalPromoStackAmount(dataUiModel.getBenefit().getFinalBenefitAmount());
-                    shipmentCostModel.setTotalPromoStackAmountStr(dataUiModel.getBenefit().getFinalBenefitAmountStr());
+        if (dataUiModel != null) {
+            if (shipmentCostModel != null) {
+                if (promoGlobalStackData != null) {
+                    if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(dataUiModel.getMessage().getState()) == TickerPromoStackingCheckoutView.State.ACTIVE) {
+                        shipmentCostModel.setTotalPromoStackAmount(dataUiModel.getBenefit().getFinalBenefitAmount());
+                        shipmentCostModel.setTotalPromoStackAmountStr(dataUiModel.getBenefit().getFinalBenefitAmountStr());
+                    } else {
+                        shipmentCostModel.setTotalPromoStackAmount(0);
+                        shipmentCostModel.setTotalPromoStackAmountStr("-");
+                    }
+                    for (int i = 0; i < shipmentDataList.size(); i++) {
+                        Object itemAdapter = shipmentDataList.get(i);
+                        if (itemAdapter instanceof CartPromoSuggestion) {
+                            ((CartPromoSuggestion) itemAdapter).setVisible(false);
+                            notifyItemChanged(i);
+                        } else if (itemAdapter instanceof RecipientAddressModel) {
+                            ((RecipientAddressModel) itemAdapter).setStateExtraPaddingTop(true);
+                            notifyItemChanged(i);
+                        } else if (itemAdapter instanceof ShipmentCartItemModel) {
+                            // updateFirstInvoiceItemMargin(i, (ShipmentCartItemModel) itemAdapter, true, dataUiModel.getVoucherOrders());
+                            updatePromoMerchant((ShipmentCartItemModel) itemAdapter, dataUiModel.getVoucherOrders());
+                        }
+                    }
                 } else {
                     shipmentCostModel.setTotalPromoStackAmount(0);
                     shipmentCostModel.setTotalPromoStackAmountStr("-");
-                }
-                for (int i = 0; i < shipmentDataList.size(); i++) {
-                    Object itemAdapter = shipmentDataList.get(i);
-                    if (itemAdapter instanceof CartPromoSuggestion) {
-                        ((CartPromoSuggestion) itemAdapter).setVisible(false);
-                        notifyItemChanged(i);
-                    } else if (itemAdapter instanceof RecipientAddressModel) {
-                        ((RecipientAddressModel) itemAdapter).setStateExtraPaddingTop(true);
-                        notifyItemChanged(i);
-                    } else if (itemAdapter instanceof ShipmentCartItemModel) {
-                        // updateFirstInvoiceItemMargin(i, (ShipmentCartItemModel) itemAdapter, true, dataUiModel.getVoucherOrders());
-                        updatePromoMerchant((ShipmentCartItemModel) itemAdapter, dataUiModel.getVoucherOrders());
+                    for (int i = 0; i < shipmentDataList.size(); i++) {
+                        Object itemAdapter = shipmentDataList.get(i);
+                        if (itemAdapter instanceof PromoStackingData) {
+                            ((PromoStackingData) itemAdapter).setState(TickerPromoStackingCheckoutView.State.EMPTY);
+                            ((PromoStackingData) itemAdapter).setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
+                            notifyItemChanged(i);
+                        } else if (itemAdapter instanceof CartPromoSuggestion) {
+                            ((CartPromoSuggestion) itemAdapter).setVisible(true);
+                            notifyItemChanged(i);
+                        } else if (itemAdapter instanceof RecipientAddressModel) {
+                            ((RecipientAddressModel) itemAdapter).setStateExtraPaddingTop(false);
+                            notifyItemChanged(i);
+                        } else if (itemAdapter instanceof ShipmentCartItemModel) {
+                            // updateFirstInvoiceItemMargin(i, (ShipmentCartItemModel) itemAdapter, false);
+                            updatePromoMerchant((ShipmentCartItemModel) itemAdapter, dataUiModel.getVoucherOrders());
+                        }
                     }
                 }
-            } else {
-                shipmentCostModel.setTotalPromoStackAmount(0);
-                shipmentCostModel.setTotalPromoStackAmountStr("-");
-                for (int i = 0; i < shipmentDataList.size(); i++) {
-                    Object itemAdapter = shipmentDataList.get(i);
-                    if (itemAdapter instanceof PromoStackingData) {
-                        ((PromoStackingData) itemAdapter).setState(TickerPromoStackingCheckoutView.State.EMPTY);
-                        ((PromoStackingData) itemAdapter).setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
-                        notifyItemChanged(i);
-                    } else if (itemAdapter instanceof CartPromoSuggestion) {
-                        ((CartPromoSuggestion) itemAdapter).setVisible(true);
-                        notifyItemChanged(i);
-                    } else if (itemAdapter instanceof RecipientAddressModel) {
-                        ((RecipientAddressModel) itemAdapter).setStateExtraPaddingTop(false);
-                        notifyItemChanged(i);
-                    } else if (itemAdapter instanceof ShipmentCartItemModel) {
-                        // updateFirstInvoiceItemMargin(i, (ShipmentCartItemModel) itemAdapter, false);
-                        updatePromoMerchant((ShipmentCartItemModel) itemAdapter, dataUiModel.getVoucherOrders());
-                    }
-                }
+                updateShipmentCostModel();
+                notifyItemChanged(getShipmentCostPosition());
             }
-            updateShipmentCostModel();
-            notifyItemChanged(getShipmentCostPosition());
         }
     }
 
