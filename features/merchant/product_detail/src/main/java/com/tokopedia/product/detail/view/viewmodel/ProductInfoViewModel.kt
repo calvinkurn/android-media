@@ -49,6 +49,7 @@ import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.topads.sdk.domain.Xparams
+import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -56,10 +57,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.experimental.CoroutineDispatcher
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.experimental.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -77,6 +75,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     val productVariantResp = MutableLiveData<Result<ProductVariant>>()
 
     val loadOtherProduct = MutableLiveData<RequestDataState<List<ProductOther>>>()
+    val loadTopAdsProduct = MutableLiveData<RequestDataState<TopAdsModel>>()
 
     var multiOrigin : WarehouseInfo = WarehouseInfo()
     val userId: String
@@ -236,11 +235,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val latestTalkRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_LATEST_TALK],
                 TalkList.Response::class.java, latestTalkParams)
 
-        /*val otherProductParams = mapOf(KEY_PARAM to String.format(PARAMS_OTHER_PRODUCT_TEMPLATE,
-                shopId, productId))
-        val otherProductRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_OTHER_PRODUCT],
-                ProductOther.Response::class.java, otherProductParams)*/
-
         val nearestWarehouseParam = mapOf("productIds" to listOf(productId.toString()))
         val nearestWarehouseRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_MULTI_ORIGIN],
                 MultiOriginWarehouse.Response::class.java, nearestWarehouseParam)
@@ -378,13 +372,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val requests = mutableListOf(isWishlistedRequest, estimationRequest,
                 getCheckoutTypeRequest, affiliateRequest)
 
-        if (GlobalConfig.isCustomerApp()){
-            val topadsParams = mapOf(KEY_PARAM to generateTopAdsParams(productInfo))
-            val topAdsRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_DISPLAY_ADS],
-                    TopAdsDisplayResponse::class.java, topadsParams)
-            requests.add(topAdsRequest)
-        }
-
         if (needRequestCod){
             val userCodParams = mapOf("isPDP" to true)
             val userCodRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_USER_COD_STATUS],
@@ -406,13 +393,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             else
                 productInfoP3.isWishlisted = true
 
-
-            if (GlobalConfig.isCustomerApp()) {
-                if (response.getError(TopAdsDisplayResponse::class.java)?.isNotEmpty() != true) {
-                    productInfoP3.displayAds = response
-                            .getData<TopAdsDisplayResponse>(TopAdsDisplayResponse::class.java).result
-                }
-            }
 
             if (response.getError(TopAdsPdpAffiliateResponse::class.java)?.isNotEmpty() != true) {
                 productInfoP3.pdpAffiliate = response
@@ -552,28 +532,52 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     }
 
     fun loadMore() {
-        if ((loadOtherProduct.value as? Loaded)?.data as? Success == null)
-            doLoadOtherProduct()
+        val product = (productInfoP1Resp.value ?: return) as? Success ?: return
+        launch {
+            val otherProductDef = if ((loadOtherProduct.value as? Loaded)?.data as? Success == null) {
+                loadOtherProduct.value = Loading
+                doLoadOtherProduct(product.data.productInfo)
+            } else null
+
+            val topAdsProductDef = if (GlobalConfig.isCustomerApp() && isUserSessionActive() &&
+                    (loadTopAdsProduct.value as? Loaded)?.data as? Success == null){
+                loadTopAdsProduct.value = Loading
+                doLoadTopAdsProduct(product.data.productInfo)
+            } else null
+
+            otherProductDef?.await()?.let { loadOtherProduct.value = it }
+            topAdsProductDef?.await()?.let { loadTopAdsProduct.value = it }
+        }
+
+
     }
 
-    private fun doLoadOtherProduct() {
-        val product = (productInfoP1Resp.value ?: return) as? Success ?: return
-
-        loadOtherProduct.value = Loading
+    private fun doLoadOtherProduct(productInfo: ProductInfo) = async(Dispatchers.IO) {
         val otherProductParams = mapOf(KEY_PARAM to String.format(PARAMS_OTHER_PRODUCT_TEMPLATE,
-                product.data.productInfo.basic.shopID, product.data.productInfo.basic.id))
+                productInfo.basic.shopID, productInfo.basic.id))
         val otherProductRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_OTHER_PRODUCT],
                 ProductOther.Response::class.java, otherProductParams)
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
 
-        launchCatchError(block = {
-            loadOtherProduct.value = Loaded(Success(
-                    withContext(Dispatchers.IO){
-                        graphqlRepository.getReseponse(listOf(otherProductRequest), cacheStrategy)
-                        .getSuccessData<ProductOther.Response>().result.products
-            }))
-        }){
-            loadOtherProduct.value = Loaded(Fail(it))
+        try {
+            Loaded(Success(graphqlRepository.getReseponse(listOf(otherProductRequest), cacheStrategy)
+                    .getSuccessData<ProductOther.Response>().result.products))
+        } catch (t: Throwable){
+            Loaded(Fail(t))
+        }
+    }
+
+    private fun doLoadTopAdsProduct(productInfo: ProductInfo) = async(Dispatchers.IO) {
+        val topadsParams = mapOf(KEY_PARAM to generateTopAdsParams(productInfo))
+        val topAdsRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_DISPLAY_ADS],
+                TopAdsDisplayResponse::class.java, topadsParams)
+        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+
+        try {
+            Loaded(Success(graphqlRepository.getReseponse(listOf(topAdsRequest), cacheStrategy)
+                    .getSuccessData<TopAdsDisplayResponse>().result))
+        } catch (t: Throwable){
+            Loaded(Fail(t))
         }
     }
 

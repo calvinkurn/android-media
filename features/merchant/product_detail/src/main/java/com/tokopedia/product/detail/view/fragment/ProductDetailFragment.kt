@@ -308,7 +308,19 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     otherProductView.renderData((it.data as? Success)?.data ?: listOf())
                 }
             }
-            nested_scroll.completeLoad()
+        })
+
+        productInfoViewModel.loadTopAdsProduct.observe(this, Observer {
+            when(it){
+                is Loading -> {
+                    loading_topads_product.visible()
+                    topads_carousel.gone()
+                }
+                is Loaded -> {
+                    loading_topads_product.gone()
+                    (it.data as? Success)?.data?.let { topads_carousel.setData(it) }
+                }
+            }
         })
 
     }
@@ -657,6 +669,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     AppBarState.EXPANDED -> {
                         isAppBarCollapsed = false
                         expandedAppBar()
+                        nested_scroll.completeLoad()
                     }
                     AppBarState.COLLAPSED -> {
                         isAppBarCollapsed = true
@@ -914,6 +927,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productInfoViewModel.productInfoP3resp.removeObservers(this)
         productInfoViewModel.productVariantResp.removeObservers(this)
         productInfoViewModel.loadOtherProduct.removeObservers(this)
+        productInfoViewModel.loadTopAdsProduct.removeObservers(this)
         productInfoViewModel.clear()
         productWarehouseViewModel.clear()
         super.onDestroy()
@@ -960,8 +974,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     shopInfo?.location ?: "", ::gotoRateEstimation)
         }
         shopInfo?.let { updateWishlist(it, productInfoP3.isWishlisted) }
-
-        productInfoP3.displayAds?.let { topads_carousel.setData(it) }
         productInfoP3.pdpAffiliate?.let { renderAffiliate(it) }
 
         actionButtonView.renderData(productInfoP3.isExpressCheckoutType)
