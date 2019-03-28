@@ -13,7 +13,7 @@ import java.util.*
 class FilterController() : Parcelable {
 
     private val filterParameter = mutableMapOf<String, String>()
-    private val filterViewState = mutableMapOf<String, Boolean>()
+    private val filterViewState = mutableSetOf<String>()
     private val filterList = mutableListOf<Filter>()
 
     private var pressedSliderMinValueState = -1
@@ -22,11 +22,21 @@ class FilterController() : Parcelable {
     constructor(parcel: Parcel) : this() {
         resetStatesBeforeLoad()
 
+        val filterViewStateList = mutableListOf<String>()
+
         parcel.readMap(filterParameter, String::class.java.classLoader)
-        parcel.readMap(filterViewState, Boolean::class.java.classLoader)
+        parcel.readList(filterViewStateList, String::class.java.classLoader)
         parcel.readList(filterList, Filter::class.java.classLoader)
         pressedSliderMinValueState = parcel.readInt()
         pressedSliderMaxValueState = parcel.readInt()
+
+        loadFilterViewStateFromParcel(filterViewStateList)
+    }
+
+    private fun loadFilterViewStateFromParcel(filterViewStateList: List<String>) {
+        for(viewState in filterViewStateList) {
+            filterViewState.add(viewState)
+        }
     }
 
     fun initFilterController(filterParameter: Map<String, String>? = mapOf(),
@@ -76,7 +86,7 @@ class FilterController() : Parcelable {
 
         for(option in optionsForFilterViewState) {
             if(option.value == "") option.value = getFilterValue(option.key)
-            filterViewState[option.uniqueId] = true
+            filterViewState.add(option.uniqueId)
         }
     }
 
@@ -172,8 +182,8 @@ class FilterController() : Parcelable {
     private fun removeActiveFiltersFromFilterParameter() {
         val activeFilterKeySet = mutableSetOf<String>()
 
-        for(filterViewStateKey in filterViewState.keys) {
-            val optionKey = OptionHelper.parseKeyFromUniqueId(filterViewStateKey)
+        for(filterViewStateUniqueId in filterViewState) {
+            val optionKey = OptionHelper.parseKeyFromUniqueId(filterViewStateUniqueId)
             activeFilterKeySet.add(optionKey)
         }
 
@@ -289,7 +299,7 @@ class FilterController() : Parcelable {
     }
 
     fun getFilterViewState(uniqueId: String) : Boolean {
-        return filterViewState[uniqueId] ?: false
+        return filterViewState.contains(uniqueId)
     }
 
     fun getFilterViewStateSize() : Int {
@@ -343,10 +353,10 @@ class FilterController() : Parcelable {
     }
 
     private fun cleanUpExistingFilterWithSameKey(newOptionKey: String) {
-        val filterViewStateIterator = filterViewState.entries.iterator()
+        val filterViewStateIterator = filterViewState.iterator()
         while(filterViewStateIterator.hasNext()) {
-            val entrySet = filterViewStateIterator.next()
-            val existingOptionKey = OptionHelper.parseKeyFromUniqueId(entrySet.key)
+            val filterViewStateUniqueId = filterViewStateIterator.next()
+            val existingOptionKey = OptionHelper.parseKeyFromUniqueId(filterViewStateUniqueId)
             if(existingOptionKey == newOptionKey) {
                 filterViewStateIterator.remove()
             }
@@ -355,7 +365,7 @@ class FilterController() : Parcelable {
 
     private fun saveFilterViewState(uniqueId: String, isFilterApplied: Boolean) {
         if(isFilterApplied) {
-            filterViewState[uniqueId] = true
+            filterViewState.add(uniqueId)
         }
         else {
             filterViewState.remove(uniqueId)
@@ -386,10 +396,10 @@ class FilterController() : Parcelable {
     private fun populateFilterViewStateToFilterParameter(key: String) {
         val newFilterParameterValueList = mutableSetOf<String>()
 
-        for(entrySet in filterViewState.entries) {
-            val optionKeyInViewState = OptionHelper.parseKeyFromUniqueId(entrySet.key)
+        for(filterViewStateUniqueId in filterViewState) {
+            val optionKeyInViewState = OptionHelper.parseKeyFromUniqueId(filterViewStateUniqueId)
             if(optionKeyInViewState == key) {
-                val optionValueInViewState = OptionHelper.parseValueFromUniqueId(entrySet.key)
+                val optionValueInViewState = OptionHelper.parseValueFromUniqueId(filterViewStateUniqueId)
                 newFilterParameterValueList.add(optionValueInViewState)
             }
         }
@@ -404,7 +414,7 @@ class FilterController() : Parcelable {
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeMap(filterParameter)
-        parcel.writeMap(filterViewState)
+        parcel.writeList(filterViewState.toList())
         parcel.writeList(filterList)
         parcel.writeInt(pressedSliderMinValueState)
         parcel.writeInt(pressedSliderMaxValueState)
