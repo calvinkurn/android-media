@@ -75,6 +75,7 @@ class FilterController() : Parcelable {
         }
 
         for(option in optionsForFilterViewState) {
+            if(option.value == "") option.value = getFilterValue(option.key)
             filterViewState[option.uniqueId] = true
         }
     }
@@ -82,14 +83,17 @@ class FilterController() : Parcelable {
     private fun isOptionSelected(option: Option) : Boolean {
         val key = option.key
 
-        if(filterParameter.containsKey(key)) {
-            val optionValues = option.value.split(OptionHelper.VALUE_SEPARATOR)
-            val filterParameterValues = getFilterValue(key).split(OptionHelper.VALUE_SEPARATOR)
+        return if(filterParameter.containsKey(key))
+            return if(option.value == "") true
+            else isOptionValuesExistsInFilterParameter(option)
+        else false
+    }
 
-            return filterParameterValues.containsAll(optionValues)
-        }
+    private fun isOptionValuesExistsInFilterParameter(option: Option) : Boolean {
+        val optionValues = option.value.split(OptionHelper.VALUE_SEPARATOR)
+        val filterParameterValues = getFilterValue(option.key).split(OptionHelper.VALUE_SEPARATOR)
 
-        return false
+        return filterParameterValues.containsAll(optionValues)
     }
 
     private fun addOrCombineOptions(optionsForFilterViewState: MutableList<Option>, option: Option) {

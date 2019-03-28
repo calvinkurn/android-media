@@ -109,6 +109,36 @@ class FilterControllerTest {
     }
 
     @Test
+    fun testFilterControllerInitializedUsingOptionsWithEmptyValue() {
+        val filterParameter = HashMap<String, String>(createFilterParameter())
+        filterParameter[minPriceOption.key] = 1000.toString()
+        filterParameter[maxPriceOption.key] = 10000.toString()
+
+        val filterList = createFilterList()
+
+        filterController.initFilterController(filterParameter, filterList)
+
+        assertFilterControllerInitializedUsingOptionsWithEmptyValue()
+    }
+
+    private fun assertFilterControllerInitializedUsingOptionsWithEmptyValue() {
+        val expectedOptionList = mutableListOf<Option>()
+        expectedOptionList.add(officialOption)
+        expectedOptionList.add(createPriceOptionWithValue(minPriceOption, 1000))
+        expectedOptionList.add(createPriceOptionWithValue(maxPriceOption, 10000))
+
+        assertFilterViewStateSizeCorrect(expectedOptionList.size)
+        assertFilterViewStateCorrect(expectedOptionList)
+    }
+
+    private fun createPriceOptionWithValue(priceOption: Option, priceOptionValue: Int) : Option {
+        val createdPriceOption = OptionHelper.generateOptionFromUniqueId(priceOption.uniqueId)
+        createdPriceOption.value = priceOptionValue.toString()
+
+        return createdPriceOption
+    }
+
+    @Test
     fun testLoadFilterViewStateWithBundledOptions() {
         val filterParameter = createFilterParameterWithBundledOption()
         val filterList = createFilterList()
@@ -266,13 +296,6 @@ class FilterControllerTest {
         filterController.setFilter(createPriceOptionWithValue(minPriceOption, 1000), true, isCleanUpExistingFilterWithSameKey = true)
 
         assertFilterViewStateReplaced()
-    }
-
-    private fun createPriceOptionWithValue(priceOption: Option, priceOptionValue: Int) : Option {
-        val createdPriceOption = OptionHelper.generateOptionFromUniqueId(priceOption.uniqueId)
-        createdPriceOption.value = priceOptionValue.toString()
-
-        return createdPriceOption
     }
 
     private fun assertFilterViewStateReplaced() {
