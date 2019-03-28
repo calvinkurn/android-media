@@ -1289,11 +1289,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void cancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList,
-                                                    ArrayList<ClashingVoucherOrderUiModel> newPromoList, boolean isFromMultipleAddress, boolean isOneClickShipment, String cornerId) {
+                                                    ArrayList<ClashingVoucherOrderUiModel> newPromoList, boolean isFromMultipleAddress, boolean isOneClickShipment, @Nullable String cornerId) {
+        String corner = "";
+        if (cornerId != null) {
+            corner = cornerId;
+        }
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), oldPromoList);
         clearCacheAutoApplyStackUseCase.execute(RequestParams.create(),
                 new ClearShipmentCacheAutoApplyAfterClashSubscriber(getView(), this,
-                        newPromoList, isFromMultipleAddress, isOneClickShipment, cornerId));
+                        newPromoList, isFromMultipleAddress, isOneClickShipment, corner));
     }
 
     @Override

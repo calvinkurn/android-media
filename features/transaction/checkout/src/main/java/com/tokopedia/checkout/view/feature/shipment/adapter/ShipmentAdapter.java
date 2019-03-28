@@ -674,7 +674,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
         }
-        totalPrice = totalItemPrice + shippingFee + insuranceFee + totalPurchaseProtectionPrice + additionalFee - shipmentCostModel.getPromoPrice();
+        totalPrice = totalItemPrice + shippingFee + insuranceFee + totalPurchaseProtectionPrice + additionalFee - shipmentCostModel.getPromoPrice() - (double)shipmentCostModel.getTotalPromoStackAmount();
         shipmentCostModel.setTotalWeight(totalWeight);
         shipmentCostModel.setAdditionalFee(additionalFee);
         shipmentCostModel.setTotalItemPrice(totalItemPrice);
@@ -725,12 +725,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void updatePromoStack(DataUiModel dataUiModel) {
         if (shipmentCostModel != null) {
             if (promoGlobalStackData != null) {
-                // Todo : buka lagi kondisi if else nya
-                // if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(dataUiModel.getMessage().getState()) == TickerPromoStackingCheckoutView.State.ACTIVE) {
+                if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(dataUiModel.getMessage().getState()) == TickerPromoStackingCheckoutView.State.ACTIVE) {
                     shipmentCostModel.setTotalPromoStackAmount(dataUiModel.getBenefit().getFinalBenefitAmount());
-                /*} else {
-                    shipmentCostModel.setTotalPromoStackAmount("-");
-                }*/
+                    shipmentCostModel.setTotalPromoStackAmountStr(dataUiModel.getBenefit().getFinalBenefitAmountStr());
+                } else {
+                    shipmentCostModel.setTotalPromoStackAmount(0);
+                    shipmentCostModel.setTotalPromoStackAmountStr("-");
+                }
                 for (int i = 0; i < shipmentDataList.size(); i++) {
                     Object itemAdapter = shipmentDataList.get(i);
                     if (itemAdapter instanceof CartPromoSuggestion) {
@@ -745,7 +746,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                 }
             } else {
-                shipmentCostModel.setTotalPromoStackAmount("-");
+                shipmentCostModel.setTotalPromoStackAmount(0);
+                shipmentCostModel.setTotalPromoStackAmountStr("-");
                 for (int i = 0; i < shipmentDataList.size(); i++) {
                     Object itemAdapter = shipmentDataList.get(i);
                     if (itemAdapter instanceof PromoStackingData) {
@@ -773,11 +775,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         for (int i = 0; i < shipmentDataList.size(); i++) {
             if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
                 for (VoucherOrdersItemUiModel voucherOrdersItemUiModel : voucherOrdersItemUiModelList) {
-                    // Todo : buka lagi kondisi if nya
-                    // if (shipmentCartItemModel.getCartString().equalsIgnoreCase(voucherOrdersItemUiModel.getUniqueId())) {
-                    shipmentCartItemModel.setVoucherOrdersItemUiModel(voucherOrdersItemUiModel);
-                    notifyItemChanged(i);
-                    // }
+                    if (shipmentCartItemModel.getCartString().equalsIgnoreCase(voucherOrdersItemUiModel.getUniqueId())) {
+                        shipmentCartItemModel.setVoucherOrdersItemUiModel(voucherOrdersItemUiModel);
+                        notifyItemChanged(i);
+                    }
                 }
             }
         }
@@ -885,6 +886,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             Object shipmentData = shipmentDataList.get(i);
             if (shipmentData instanceof PromoStackingData) {
                 ((PromoStackingData) shipmentData).setState(TickerPromoStackingCheckoutView.State.EMPTY);
+                // TODO :  check apakah merchant_voucher atau merchant
                 if (!variant.isEmpty() && variant.equalsIgnoreCase("merchant_voucher")) {
                     ((PromoStackingData) shipmentData).setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
                 } else {

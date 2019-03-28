@@ -1453,7 +1453,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void goToDetailPromoStacking(PromoStackingData promoStackingData) {
         CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
 
-        if (promoStackingData.getTypePromo() == PromoData.CREATOR.getTYPE_COUPON()) {
+        if (promoStackingData.getTypePromo() == PromoStackingData.CREATOR.getTYPE_COUPON()) {
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutDetailIntentWithCode(promoStackingData.getPromoCodeSafe(),
                     cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART(), checkPromoFirstStepParam), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         } else {

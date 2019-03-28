@@ -137,6 +137,7 @@ open class CheckPromoStackingCodeMapper @Inject constructor() {
     private fun mapBenefit(benefit: BenefitSummaryInfo): BenefitSummaryInfoUiModel {
         return BenefitSummaryInfoUiModel(
                 finalBenefitText = benefit.finalBenefitText,
+                finalBenefitAmountStr = benefit.finalBenefitAmountStr,
                 finalBenefitAmount = benefit.finalBenefitAmount,
                 summaries = benefit.summaries.map {
                     mapSummariesBenefit(it)

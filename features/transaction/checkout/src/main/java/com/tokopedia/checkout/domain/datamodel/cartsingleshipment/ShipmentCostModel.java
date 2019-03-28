@@ -23,7 +23,8 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
     private double promoPrice;
     private double donation;
     private String promoMessage;
-    private String totalPromoStackAmount;
+    private int totalPromoStackAmount;
+    private String totalPromoStackAmountStr;
 
     public int getTotalItem() {
         return totalItem;
@@ -121,12 +122,20 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         this.purchaseProtectionFee = purchaseProtectionFee;
     }
 
-    public String getTotalPromoStackAmount() {
+    public int getTotalPromoStackAmount() {
         return totalPromoStackAmount;
     }
 
-    public void setTotalPromoStackAmount(String totalPromoStackAmount) {
+    public void setTotalPromoStackAmount(int totalPromoStackAmount) {
         this.totalPromoStackAmount = totalPromoStackAmount;
+    }
+
+    public String getTotalPromoStackAmountStr() {
+        return totalPromoStackAmountStr;
+    }
+
+    public void setTotalPromoStackAmountStr(String totalPromoStackAmountStr) {
+        this.totalPromoStackAmountStr = totalPromoStackAmountStr;
     }
 
     @Override
@@ -146,7 +155,7 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         dest.writeString(this.promoMessage);
         dest.writeDouble(this.additionalFee);
         dest.writeDouble(this.donation);
-        dest.writeString(this.totalPromoStackAmount);
+        dest.writeInt(this.totalPromoStackAmount);
     }
 
     public ShipmentCostModel() {
@@ -163,7 +172,7 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         this.promoMessage = in.readString();
         this.additionalFee = in.readDouble();
         this.donation = in.readDouble();
-        this.totalPromoStackAmount = in.readString();
+        this.totalPromoStackAmount = in.readInt();
     }
 
     public static final Creator<ShipmentCostModel> CREATOR = new Creator<ShipmentCostModel>() {

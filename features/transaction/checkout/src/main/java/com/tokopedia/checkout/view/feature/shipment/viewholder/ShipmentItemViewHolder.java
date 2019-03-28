@@ -529,7 +529,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 tickerPromoStackingCheckoutView.setDesc(shipmentCartItemModel.getVoucherOrdersItemUiModel().getInvoiceDescription());
                 tickerPromoStackingCheckoutView.setTitle(shipmentCartItemModel.getVoucherOrdersItemUiModel().getMessage().getText());
             } else {
-                // TODO : yg bener!
                 tickerPromoStackingCheckoutView.enableView();
                 tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.EMPTY);
             }
@@ -543,14 +542,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 public void onResetPromoDiscount() {
                     if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
                         mActionListener.onCancelVoucherMerchantClicked(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode(), getAdapterPosition(), false);
-                    } else {
-                        // TODO : nanti buang test nya, hanya untuk keperluan mekanisme close
-                        mActionListener.onCancelVoucherMerchantClicked("TESTCODE001", getAdapterPosition(), false);
                     }
                 }
 
                 @Override
                 public void onClickDetailPromo() {
+
                 }
 
                 @Override

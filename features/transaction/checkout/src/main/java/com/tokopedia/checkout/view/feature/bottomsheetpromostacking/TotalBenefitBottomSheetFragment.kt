@@ -46,8 +46,6 @@ open class TotalBenefitBottomSheetFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        println("++ Total Discount = ${benefitUiModel.finalBenefitAmount}")
-
         val container = view.findViewById<FrameLayout>(R.id.bottomsheet_container)
         View.inflate(context, R.layout.bottom_sheet_total_benefit, container)
 
@@ -62,7 +60,7 @@ open class TotalBenefitBottomSheetFragment : BottomSheetDialogFragment() {
         tvTotalLabel.text = benefitUiModel.finalBenefitText
 
         val tvTotalAmount: TextView = view.findViewById(R.id.label_total_amount)
-        tvTotalAmount.text = benefitUiModel.finalBenefitAmount
+        tvTotalAmount.text = benefitUiModel.finalBenefitAmountStr
 
         val layoutTitle = view.findViewById<View>(com.tokopedia.design.R.id.layout_title)
         layoutTitle.setOnClickListener {
