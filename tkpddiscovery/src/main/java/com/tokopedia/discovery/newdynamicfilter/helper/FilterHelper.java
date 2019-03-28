@@ -26,6 +26,20 @@ import static com.tokopedia.core.discovery.model.Option.METRIC_INTERNATIONAL;
 public class FilterHelper {
 
     @Nullable
+    public static Category getSelectedCategoryDetailsFromFilterList(List<Filter> filterList, String categoryId) {
+        return getSelectedCategoryDetails(getCategoryFilterFromList(filterList), categoryId);
+    }
+
+    @Nullable
+    public static Filter getCategoryFilterFromList(List<Filter> filterList) {
+        for(Filter filter : filterList) {
+            if(filter.isCategoryFilter()) return filter;
+        }
+
+        return null;
+    }
+
+    @Nullable
     public static Category getSelectedCategoryDetails(Filter categoryFilter, String categoryId) {
         if (categoryFilter == null || TextUtils.isEmpty(categoryId)) {
             return null;

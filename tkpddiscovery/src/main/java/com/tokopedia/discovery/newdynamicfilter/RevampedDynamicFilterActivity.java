@@ -328,7 +328,10 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
         selectedCategoryName = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_NAME);
         selectedCategoryRootId = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ROOT_ID);
 
-        Option categoryOption = OptionHelper.generateOptionFromCategory(selectedCategoryId, selectedCategoryName);
+        Category category = FilterHelper.getSelectedCategoryDetailsFromFilterList(adapter.getFilterList(), selectedCategoryId);
+
+        String selectedCategoryNameFromList = category != null ? category.getCategoryName() : "";
+        Option categoryOption = OptionHelper.generateOptionFromCategory(selectedCategoryId, selectedCategoryNameFromList);
 
         filterController.setFilter(categoryOption, true, true);
     }

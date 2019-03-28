@@ -387,9 +387,10 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     private void handleResultFromCategoryPage(Intent data) {
         String selectedCategoryId = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ID);
-        String selectedCategoryName = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_NAME);
-        String selectedCategoryRootId = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ROOT_ID);
 
+        Category category = FilterHelper.getSelectedCategoryDetailsFromFilterList(filterMainAdapter.getFilterList(), selectedCategoryId);
+
+        String selectedCategoryName = category != null ? category.getCategoryName() : "";
         Option categoryOption = OptionHelper.generateOptionFromCategory(selectedCategoryId, selectedCategoryName);
 
         filterController.setFilter(categoryOption, true, true);
