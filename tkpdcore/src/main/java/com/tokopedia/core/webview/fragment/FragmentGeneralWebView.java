@@ -315,6 +315,9 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                     return true;
                 case DeepLinkChecker.WALLET_OVO:
                     return false;
+                case DeepLinkChecker.PROFILE:
+                    DeepLinkChecker.openProfile(getActivity(), url);
+                    return false;
                 default:
                     return false;
             }
