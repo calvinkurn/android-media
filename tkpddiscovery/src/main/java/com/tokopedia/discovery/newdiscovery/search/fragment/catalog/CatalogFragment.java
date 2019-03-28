@@ -394,6 +394,7 @@ public class CatalogFragment extends SearchSectionFragment implements
         topAdsRecyclerAdapter.reset();
         catalogAdapter.clearData();
         catalogAdapter.addElements(catalogViewModels);
+        isListEmpty = catalogViewModels.isEmpty();
     }
 
     @Override
