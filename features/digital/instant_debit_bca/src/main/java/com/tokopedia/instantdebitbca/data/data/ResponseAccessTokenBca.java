@@ -9,9 +9,9 @@ import com.google.gson.annotations.SerializedName;
 public class ResponseAccessTokenBca {
     @SerializedName("merchantAuth")
     @Expose
-    private MerchantAuthEntity merchantAuth;
+    private MerchantAuthBcaEntity merchantAuth;
 
-    public MerchantAuthEntity getMerchantAuth() {
+    public MerchantAuthBcaEntity getMerchantAuth() {
         return merchantAuth;
     }
 }
