@@ -339,21 +339,23 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     private void routeFromApplink(Uri applink) {
         if (applink != null) {
             try {
-                TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
+                Intent nextIntent = ((ApplinkRouter) getApplicationContext()).applinkDelegate().getIntent(this, applink.toString());
+                if (getIntent() != null && getIntent().getExtras() != null)
+                    nextIntent.putExtras(getIntent().getExtras());
+
                 if (isTaskRoot()) {
+                    TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
                     if (getApplicationContext() instanceof TkpdCoreRouter) {
                         taskStackBuilder.addNextIntent(
                                 HomeRouter.getHomeActivityInterfaceRouter(this)
                         );
                         getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     }
+                    taskStackBuilder.addNextIntent(nextIntent);
+                    taskStackBuilder.startActivities();
+                } else {
+                    startActivity(nextIntent);
                 }
-
-                Intent nextIntent = ((ApplinkRouter) getApplicationContext()).applinkDelegate().getIntent(this, applink.toString());
-                if (getIntent() != null && getIntent().getExtras() != null)
-                    nextIntent.putExtras(getIntent().getExtras());
-                taskStackBuilder.addNextIntent(nextIntent);
-                taskStackBuilder.startActivities();
                 return;
             } catch (Exception ignored) {
             }
