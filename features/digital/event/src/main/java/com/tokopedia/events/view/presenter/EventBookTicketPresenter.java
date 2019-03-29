@@ -4,15 +4,12 @@ import android.content.Intent;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
@@ -23,10 +20,12 @@ import com.tokopedia.events.domain.postusecase.PostValidateShowUseCase;
 import com.tokopedia.events.view.activity.ReviewTicketActivity;
 import com.tokopedia.events.view.activity.SeatSelectionActivity;
 import com.tokopedia.events.view.adapter.AddTicketAdapter;
+import com.tokopedia.events.view.contractor.EventBaseContract;
 import com.tokopedia.events.view.contractor.EventBookTicketContract;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
 import com.tokopedia.events.view.mapper.SeatLayoutResponseToSeatLayoutViewModelMapper;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
@@ -34,24 +33,21 @@ import com.tokopedia.events.view.viewmodel.LocationDateModel;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SchedulesViewModel;
 import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import rx.Subscriber;
 
 /**
  * Created by pranaymohapatra on 28/11/17.
  */
-public class EventBookTicketPresenter
-        extends BaseDaggerPresenter<EventBookTicketContract.EventBookTicketView>
-        implements EventBookTicketContract.Presenter {
+public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContract.EventBaseView>
+        implements EventBookTicketContract.BookTicketPresenter {
 
     private PackageViewModel selectedPackageViewModel;
     private GetEventSeatLayoutUseCase getSeatLayoutUseCase;
-    private ProfileUseCase profileUseCase;
     private SeatLayoutViewModel seatLayoutViewModel;
     private int mSelectedPackage = -1;
     private int mSelectedSchedule = 0;
@@ -65,21 +61,35 @@ public class EventBookTicketPresenter
     private int px;
     private EventsDetailsViewModel dataModel;
     private List<LocationDateModel> locationDateModels;
+    private EventBookTicketContract.EventBookTicketView mView;
+    private EventsAnalytics eventsAnalytics;
 
-    public static String EXTRA_PACKAGEVIEWMODEL = "packageviewmodel";
-    public static String EXTRA_SEATLAYOUTVIEWMODEL = "seatlayoutviewmodel";
-
-    @Inject
-    public EventBookTicketPresenter(GetEventSeatLayoutUseCase seatLayoutUseCase, PostValidateShowUseCase useCase, ProfileUseCase profileCase) {
+    public EventBookTicketPresenter(GetEventSeatLayoutUseCase seatLayoutUseCase, PostValidateShowUseCase useCase, EventsAnalytics eventsAnalytics) {
         this.getSeatLayoutUseCase = seatLayoutUseCase;
         this.postValidateShowUseCase = useCase;
-        this.profileUseCase = profileCase;
+        this.eventsAnalytics = eventsAnalytics;
     }
 
+    @Override
+    public boolean onClickOptionMenu(int id) {
+        mView.getActivity().onBackPressed();
+        return true;
+    }
 
     @Override
-    public void initialize() {
+    public void onBackPressed() {
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode) {
+        if (requestCode == mView.getRequestCode()) {
+            if (Utils.getUserSession(mView.getActivity()).isLoggedIn()) {
+                getProfile();
+            } else {
+                mView.hideProgressBar();
+            }
+        }
     }
 
     @Override
@@ -87,27 +97,26 @@ public class EventBookTicketPresenter
 
     }
 
-    @Override
-    public void getTicketDetails() {
-        dataModel = getView().
+    private void getTicketDetails() {
+        dataModel = mView.
                 getActivity().
                 getIntent().
                 getParcelableExtra(EventsDetailsPresenter.EXTRA_EVENT_VIEWMODEL);
-        hasSeatLayout = getView().getActivity().getIntent().getIntExtra(EventsDetailsPresenter.EXTRA_SEATING_PARAMETER, 0);
+        hasSeatLayout = mView.getActivity().getIntent().getIntExtra(EventsDetailsPresenter.EXTRA_SEATING_PARAMETER, 0);
         generateLocationDateModels();
-        getView().renderFromDetails(dataModel);
+        mView.renderFromDetails(dataModel);
         if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
-            selectedPackageDate = Utils.convertEpochToString(dataModel.getSchedulesViewModels().get(0).getStartDate());
+            selectedPackageDate = Utils.getSingletonInstance().convertEpochToString(dataModel.getSchedulesViewModels().get(0).getStartDate());
         if (dataModel.getSeatMapImage() != null && !dataModel.getSeatMapImage().isEmpty())
-            getView().renderSeatmap(dataModel.getSeatMapImage());
+            mView.renderSeatmap(dataModel.getSeatMapImage());
         else
-            getView().hideSeatmap();
+            mView.hideSeatmap();
         schedulesList = dataModel.getSchedulesViewModels();
     }
 
     @Override
     public void validateSelection() {
-        postValidateShowUseCase.execute(RequestParams.EMPTY, new Subscriber<ValidateResponse>() {
+        postValidateShowUseCase.execute(RequestParams.create(), new Subscriber<ValidateResponse>() {
             @Override
             public void onCompleted() {
 
@@ -117,54 +126,40 @@ public class EventBookTicketPresenter
             public void onError(Throwable throwable) {
                 Log.d("BookTicketPresenter", "onError");
                 throwable.printStackTrace();
-                getView().hideProgressBar();
-                NetworkErrorHelper.showEmptyState(getView().getActivity(),
-                        getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                            @Override
-                            public void onRetryClicked() {
-                                validateSelection();
-                            }
-                        });
+                mView.hideProgressBar();
+                NetworkErrorHelper.showEmptyState(mView.getActivity(),
+                        mView.getRootView(), () -> validateSelection());
             }
 
             @Override
             public void onNext(ValidateResponse objectResponse) {
                 if (objectResponse.getStatus() != 400) {
                     if (hasSeatLayout == 1 && seatLayoutViewModel.getArea() != null) {
-                        Intent reviewTicketIntent = new Intent(getView().getActivity(), SeatSelectionActivity.class);
-                        reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
-                        reviewTicketIntent.putExtra(EXTRA_SEATLAYOUTVIEWMODEL, seatLayoutViewModel);
+                        Intent reviewTicketIntent = new Intent(mView.getActivity(), SeatSelectionActivity.class);
+                        reviewTicketIntent.putExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
+                        reviewTicketIntent.putExtra(Utils.Constants.EXTRA_SEATLAYOUTVIEWMODEL, seatLayoutViewModel);
+                        reviewTicketIntent.putExtra("event_detail", dataModel);
                         reviewTicketIntent.putExtra("EventTitle", eventTitle);
-                        getView().navigateToActivityRequest(reviewTicketIntent, 100);
+                        mView.navigateToActivityRequest(reviewTicketIntent, Utils.Constants.REVIEW_REQUEST);
                     } else {
-                        Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
-                        reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
-                        getView().navigateToActivityRequest(reviewTicketIntent, 100);
+                        Intent reviewTicketIntent = new Intent(mView.getActivity(), ReviewTicketActivity.class);
+                        reviewTicketIntent.putExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
+                        reviewTicketIntent.putExtra("event_detail", dataModel);
+                        mView.navigateToActivityRequest(reviewTicketIntent, Utils.Constants.REVIEW_REQUEST);
                     }
                 } else {
-                    getView().showMessage(objectResponse.getMessageError());
+                    mView.showToast(objectResponse.getMessageError(), Toast.LENGTH_SHORT);
                 }
             }
         });
     }
 
-    @Override
-    public void onActivityResult(int requestCode) {
-        if (requestCode == getView().getRequestCode()) {
-            if (SessionHandler.isV4Login(getView().getActivity())) {
-                getProfile();
-            } else {
-                getView().hideProgressBar();
-            }
-        }
-    }
-
     private void getProfile() {
-        getView().showProgressBar();
-        if (!SessionHandler.isV4Login(getView().getActivity())) {
-            Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
-                    getLoginIntent(getView().getActivity());
-            getView().navigateToActivityRequest(intent, getView().getRequestCode());
+        mView.showProgressBar();
+        if (!Utils.getUserSession(mView.getActivity()).isLoggedIn()) {
+            Intent intent = ((EventModuleRouter) mView.getActivity().getApplication()).
+                    getLoginIntent(mView.getActivity());
+            mView.navigateToActivityRequest(intent, mView.getRequestCode());
         } else {
             if (hasSeatLayout == 1)
                 getSeatSelectionDetails();
@@ -172,12 +167,6 @@ public class EventBookTicketPresenter
                 validateSelection();
         }
 
-    }
-
-    @Override
-    public void attachView(EventBookTicketContract.EventBookTicketView view) {
-        super.attachView(view);
-        px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getView().getActivity().getResources().getDisplayMetrics());
     }
 
     @Override
@@ -191,8 +180,8 @@ public class EventBookTicketPresenter
         validateShow.setScheduleId(selectedPackageViewModel.getProductScheduleId());
         validateShow.setProductId(selectedPackageViewModel.getProductId());
         postValidateShowUseCase.setValidateShowModel(validateShow);
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CHECKOUT, selectedPackageViewModel.getTitle() + " - " +
-                selectedPackageViewModel.getDisplayName() + " - " +
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CHECKOUT, selectedPackageViewModel.getTitle().toLowerCase() + " - " +
+                selectedPackageViewModel.getDisplayName().toLowerCase() + " - " +
                 CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()));
         getProfile();
     }
@@ -206,7 +195,7 @@ public class EventBookTicketPresenter
         if (mSelectedPackage != -1 && mSelectedPackage != index) {
             selectedPackageViewModel.setSelectedQuantity(0);
             selectedViewHolder.setTvTicketCnt(selectedPackageViewModel.getSelectedQuantity());
-            selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.white));
+            selectedViewHolder.setTicketViewColor(mView.getActivity().getResources().getColor(R.color.white));
             selectedViewHolder.toggleMinTicketWarning(View.INVISIBLE, selectedPackageViewModel.getMinQty());
             selectedViewHolder.toggleMaxTicketWarning(View.INVISIBLE, selectedPackageViewModel.getSelectedQuantity());
             mSelectedPackage = index;
@@ -224,7 +213,7 @@ public class EventBookTicketPresenter
                 && selectedCount < selectedPackageViewModel.getMaxQty()) {
             selectedPackageViewModel.setSelectedQuantity(++selectedCount);
             selectedViewHolder.setTvTicketCnt(selectedCount);
-            selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.light_green));
+            selectedViewHolder.setTicketViewColor(mView.getActivity().getResources().getColor(R.color.light_green));
         }
         if (selectedCount >= selectedPackageViewModel.getAvailable() ||
                 selectedCount >= selectedPackageViewModel.getMaxQty()) {
@@ -232,13 +221,13 @@ public class EventBookTicketPresenter
         }
         if (selectedCount < selectedPackageViewModel.getMinQty()) {
             selectedViewHolder.toggleMinTicketWarning(View.VISIBLE, selectedPackageViewModel.getMinQty());
-            getView().hidePayButton();
+            mView.hidePayButton();
         } else {
-            getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
+            mView.showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
         }
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_ADD_TICKET, "add - " + selectedPackageViewModel.getTitle() + " - " +
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_ADD_TICKET, "add - " + selectedPackageViewModel.getTitle().toLowerCase() + " - " +
                 selectedPackageViewModel.getDisplayName() + " - " +
-                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()));
+                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()).toLowerCase());
     }
 
     public void removeTickets() {
@@ -249,29 +238,29 @@ public class EventBookTicketPresenter
             selectedViewHolder.toggleMaxTicketWarning(View.INVISIBLE, selectedPackageViewModel.getMaxQty());
             if (selectedCount < selectedPackageViewModel.getMinQty()) {
                 selectedViewHolder.toggleMinTicketWarning(View.VISIBLE, selectedPackageViewModel.getMinQty());
-                getView().hidePayButton();
+                mView.hidePayButton();
             } else {
                 selectedViewHolder.toggleMinTicketWarning(View.INVISIBLE, selectedPackageViewModel.getMinQty());
-                getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
+                mView.showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
             }
         }
         if (selectedCount == 0) {
-            selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.white));
+            selectedViewHolder.setTicketViewColor(mView.getActivity().getResources().getColor(R.color.white));
             selectedViewHolder.toggleMinTicketWarning(View.INVISIBLE, selectedPackageViewModel.getMinQty());
             mSelectedPackage = -1;
             selectedViewHolder = null;
             mChildFragment.setDecorationHeight(0);
-            getView().hidePayButton();
+            mView.hidePayButton();
         }
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_REMOVE_TICKET, "remove - " + selectedPackageViewModel.getTitle() + " - " +
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_REMOVE_TICKET, "remove - " + selectedPackageViewModel.getTitle().toLowerCase() + " - " +
                 selectedPackageViewModel.getDisplayName() + " - " +
-                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()));
+                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()).toLowerCase());
     }
 
     private void getSeatSelectionDetails() {
         RequestParams params = RequestParams.create();
         params.putString("seatlayouturl", selectedPackageViewModel.getFetchSectionUrl());
-        getView().showProgressBar();
+        mView.showProgressBar();
         getSeatLayoutUseCase.execute(params, new Subscriber<List<SeatLayoutItem>>() {
             @Override
             public void onCompleted() {
@@ -280,9 +269,9 @@ public class EventBookTicketPresenter
 
             @Override
             public void onError(Throwable throwable) {
-                getView().hideProgressBar();
-                NetworkErrorHelper.showEmptyState(getView().getActivity(),
-                        getView().getRootView(), () -> getSeatSelectionDetails());
+                mView.hideProgressBar();
+                NetworkErrorHelper.showEmptyState(mView.getActivity(),
+                        mView.getRootView(), () -> getSeatSelectionDetails());
             }
 
             @Override
@@ -299,8 +288,7 @@ public class EventBookTicketPresenter
 
         String data = responseEntity.getLayout();
         Gson gson = new Gson();
-        EventSeatLayoutResonse seatLayoutResponse = gson.fromJson(data, EventSeatLayoutResonse.class);
-        return seatLayoutResponse;
+        return gson.fromJson(data, EventSeatLayoutResonse.class);
     }
 
 
@@ -316,8 +304,8 @@ public class EventBookTicketPresenter
     }
 
     private void scrollToLastIfNeeded() {
-        if (schedulesList.get(mSelectedSchedule).getPackages().size() > 2) {
-            mChildFragment.setDecorationHeight(getView().getButtonLayoutHeight() + px);
+        if (schedulesList.get(mSelectedSchedule).getPackages().size() > 1) {
+            mChildFragment.setDecorationHeight(mView.getButtonLayoutHeight() + px);
             if (mSelectedPackage == schedulesList.get(mSelectedSchedule).getPackages().size() - 1)
                 mChildFragment.scrollToLast();
         }
@@ -325,22 +313,29 @@ public class EventBookTicketPresenter
 
     public void onClickLocationDate(LocationDateModel model, int index) {
         SchedulesViewModel selectedSchedule = dataModel.getSchedulesViewModels().get(index);
-        getView().setLocationDate(model.getmLocation(), model.getDate(), selectedSchedule);
+        mView.setLocationDate(model.getmLocation(), model.getDate(), selectedSchedule);
         if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
-            selectedPackageDate = Utils.convertEpochToString(selectedSchedule.getStartDate());
+            selectedPackageDate = Utils.getSingletonInstance().convertEpochToString(selectedSchedule.getStartDate());
         mSelectedSchedule = index;
     }
 
     private void generateLocationDateModels() {
         locationDateModels = new ArrayList<>();
-        for (SchedulesViewModel viewModel : dataModel.getSchedulesViewModels()) {
-            LocationDateModel model = new LocationDateModel();
-            model.setmLocation(viewModel.getCityName());
-            if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
-                model.setDate(Utils.convertEpochToString(viewModel.getStartDate()));
-            else
-                model.setDate("");
-            locationDateModels.add(model);
+
+        List<SchedulesViewModel> schedulesViewModelList = new ArrayList<>();
+        if (dataModel != null) {
+            schedulesViewModelList = dataModel.getSchedulesViewModels();
+            if (schedulesViewModelList != null && !schedulesViewModelList.isEmpty()) {
+                for (SchedulesViewModel viewModel : schedulesViewModelList) {
+                    LocationDateModel model = new LocationDateModel();
+                    model.setmLocation(viewModel.getCityName());
+                    if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
+                        model.setDate(Utils.getSingletonInstance().convertEpochToString(viewModel.getStartDate()));
+                    else
+                        model.setDate("");
+                    locationDateModels.add(model);
+                }
+            }
         }
     }
 
@@ -354,11 +349,18 @@ public class EventBookTicketPresenter
             selectedPackageViewModel = null;
         }
         if (selectedViewHolder != null) {
-            selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.white));
+            selectedViewHolder.setTicketViewColor(mView.getActivity().getResources().getColor(R.color.white));
             selectedViewHolder = null;
         }
         mSelectedPackage = -1;
-        getView().hidePayButton();
+        mView.hidePayButton();
     }
 
+    @Override
+    public void attachView(EventBaseContract.EventBaseView view) {
+        super.attachView(view);
+        mView = (EventBookTicketContract.EventBookTicketView) view;
+        getTicketDetails();
+        px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, mView.getActivity().getResources().getDisplayMetrics());
+    }
 }

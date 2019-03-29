@@ -122,6 +122,9 @@ public class CatalogPresenter extends SearchSectionFragmentPresenterImpl<Catalog
 
     @Override
     public void requestCatalogList(String departmentId) {
+        if (getView() == null) {
+            return;
+        }
         RequestParams requestParams = generateParamInitBrowseCatalog(departmentId);
         getView().initTopAdsParamsByCategory(requestParams);
         getBrowseCatalogUseCase.execute(requestParams, new GetBrowseCatalogSubscriber(getView()));

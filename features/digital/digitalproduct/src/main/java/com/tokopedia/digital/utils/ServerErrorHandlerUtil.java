@@ -28,7 +28,6 @@ public class ServerErrorHandlerUtil {
                         ((ServerErrorException) serverErrorException).getUrl(),
                         ((ServerErrorException) serverErrorException).getErrorCode()
                 );
-            ServerErrorHandler.showServerErrorSnackbar();
         }
     }
 }

@@ -7,16 +7,17 @@ import android.view.View;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.CatalogHeaderViewModel;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
-import com.tokopedia.topads.sdk.view.TopAdsBannerView;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
+import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 
 /**
  * @author by errysuprayogi on 11/7/17.
@@ -31,12 +32,13 @@ public class CatalogHeaderViewHolder extends AbstractViewHolder<CatalogHeaderVie
     private Context context;
     public static final String KEYWORD = "keyword";
     public static final String ETALASE_NAME = "etalase_name";
-    private ItemClickListener clickListener;
+    private CatalogListener catalogListener;
+    public static final String SHOP = "shop";
 
-    public CatalogHeaderViewHolder(View itemView, ItemClickListener clickListener, Config topAdsConfig) {
+    public CatalogHeaderViewHolder(View itemView, CatalogListener catalogListener, Config topAdsConfig) {
         super(itemView);
         context = itemView.getContext();
-        this.clickListener = clickListener;
+        this.catalogListener = catalogListener;
         adsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.ads_banner);
         initTopAds(topAdsConfig);
     }
@@ -48,7 +50,7 @@ public class CatalogHeaderViewHolder extends AbstractViewHolder<CatalogHeaderVie
 
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(context))
+                .setUserId(catalogListener.getUserId())
                 .setEndpoint(Endpoint.CPM)
                 .topAdsParams(adsParams)
                 .build();
@@ -56,8 +58,19 @@ public class CatalogHeaderViewHolder extends AbstractViewHolder<CatalogHeaderVie
         adsBannerView.loadTopAds();
         adsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
-            public void onBannerAdsClicked(String applink) {
-                clickListener.onBannerAdsClicked(applink);
+            public void onBannerAdsClicked(int position, String applink, CpmData data) {
+                catalogListener.onBannerAdsClicked(applink);
+                if (applink.contains(SHOP)) {
+                    TopAdsGtmTracker.eventSearchResultPromoShopClick(context, data, position);
+                } else {
+                    TopAdsGtmTracker.eventSearchResultPromoProductClick(context, data, position);
+                }
+            }
+        });
+        adsBannerView.setTopAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionHeadlineAdsItem(int position, CpmData data) {
+                TopAdsGtmTracker.eventSearchResultPromoView(context, data, position);
             }
         });
     }

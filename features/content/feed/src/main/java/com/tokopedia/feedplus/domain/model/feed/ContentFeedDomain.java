@@ -2,6 +2,8 @@ package com.tokopedia.feedplus.domain.model.feed;
 
 import com.tokopedia.feedplus.domain.model.TopPicksDomain;
 import com.tokopedia.feedplus.domain.model.officialstore.OfficialStoreDomain;
+import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
 
 import java.util.List;
@@ -58,6 +60,11 @@ public class ContentFeedDomain {
     @Nullable
     private final KolCtaDomain kolCtaDomain;
 
+    @Nullable
+    private final ProductCommunicationViewModel productCommunicationViewModel;
+
+    @Nullable
+    private final PollViewModel pollViewModel;
 
     public ContentFeedDomain(@Nullable String type, @Nullable int total_product,
                              @Nullable List<ProductFeedDomain> products,
@@ -70,6 +77,8 @@ public class ContentFeedDomain {
                              @Nullable KolRecommendationDomain kolRecommendations,
                              @Nullable FavoriteCtaDomain favoriteCtaDomain,
                              @Nullable KolCtaDomain kolCtaDomain,
+                             @Nullable ProductCommunicationViewModel productCommunicationViewModel,
+                             @Nullable PollViewModel pollViewModel,
                              @Nullable String status_activity) {
         this.type = type;
         this.totalProduct = total_product;
@@ -84,6 +93,8 @@ public class ContentFeedDomain {
         this.kolRecommendations = kolRecommendations;
         this.favoriteCtaDomain = favoriteCtaDomain;
         this.kolCtaDomain = kolCtaDomain;
+        this.productCommunicationViewModel = productCommunicationViewModel;
+        this.pollViewModel = pollViewModel;
     }
 
     @Nullable
@@ -149,5 +160,15 @@ public class ContentFeedDomain {
     @Nullable
     public List<Data> getTopAdsList() {
         return topAdsList;
+    }
+
+    @Nullable
+    public ProductCommunicationViewModel getProductCommunications() {
+        return productCommunicationViewModel;
+    }
+
+    @Nullable
+    public PollViewModel getPollViewModel() {
+        return pollViewModel;
     }
 }

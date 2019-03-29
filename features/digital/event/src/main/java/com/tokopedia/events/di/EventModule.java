@@ -2,26 +2,14 @@ package com.tokopedia.events.di;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
-import com.tokopedia.core.drawer2.data.mapper.ProfileMapper;
-import com.tokopedia.core.drawer2.data.repository.ProfileRepositoryImpl;
-import com.tokopedia.core.drawer2.domain.ProfileRepository;
-import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
-import com.tokopedia.core.network.apiservices.user.PeopleService;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.core.OkHttpFactory;
-import com.tokopedia.core.network.core.OkHttpRetryPolicy;
-import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.EventInerceptors;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
+import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.data.EventRepositoryData;
 import com.tokopedia.events.data.EventsDataStoreFactory;
 import com.tokopedia.events.data.source.EventsApi;
+import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.events.di.scope.EventScope;
 import com.tokopedia.events.domain.EventRepository;
 import com.tokopedia.events.domain.GetEventDetailsRequestUseCase;
@@ -29,10 +17,46 @@ import com.tokopedia.events.domain.GetEventSeatLayoutUseCase;
 import com.tokopedia.events.domain.GetEventsListByLocationRequestUseCase;
 import com.tokopedia.events.domain.GetEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetEventsLocationListRequestUseCase;
+import com.tokopedia.events.domain.GetProductRatingUseCase;
 import com.tokopedia.events.domain.GetSearchEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetSearchNextUseCase;
+import com.tokopedia.events.domain.GetUserLikesUseCase;
+import com.tokopedia.events.domain.postusecase.CheckoutPaymentUseCase;
+import com.tokopedia.events.domain.postusecase.PostInitCouponUseCase;
+import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
 import com.tokopedia.events.domain.postusecase.PostValidateShowUseCase;
-import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
+import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
+import com.tokopedia.events.domain.scanTicketUsecase.CheckScanOptionUseCase;
+import com.tokopedia.events.domain.scanTicketUsecase.RedeemTicketUseCase;
+import com.tokopedia.events.domain.scanTicketUsecase.ScanBarCodeUseCase;
+import com.tokopedia.events.view.contractor.EventBaseContract;
+import com.tokopedia.events.view.contractor.EventBookTicketContract;
+import com.tokopedia.events.view.contractor.EventFavouriteContract;
+import com.tokopedia.events.view.contractor.EventFilterContract;
+import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
+import com.tokopedia.events.view.contractor.EventSearchContract;
+import com.tokopedia.events.view.contractor.EventsContract;
+import com.tokopedia.events.view.contractor.EventsDetailsContract;
+import com.tokopedia.events.view.contractor.ScanCodeContract;
+import com.tokopedia.events.view.contractor.SeatSelectionContract;
+import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
+import com.tokopedia.events.view.presenter.EventFavouritePresenter;
+import com.tokopedia.events.view.presenter.EventFilterPresenterImpl;
+import com.tokopedia.events.view.presenter.EventHomePresenter;
+import com.tokopedia.events.view.presenter.EventLocationsPresenter;
+import com.tokopedia.events.view.presenter.EventReviewTicketPresenter;
+import com.tokopedia.events.view.presenter.EventSearchPresenter;
+import com.tokopedia.events.view.presenter.EventsDetailsPresenter;
+import com.tokopedia.events.view.presenter.ScanCodeDataPresenter;
+import com.tokopedia.events.view.presenter.SeatSelectionPresenter;
+import com.tokopedia.events.view.utils.EventsAnalytics;
+import com.tokopedia.events.view.utils.VerifyCartWrapper;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.oms.domain.postusecase.PostPaymentUseCase;
+import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
+import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
 import dagger.Provides;
@@ -47,6 +71,11 @@ import retrofit2.Retrofit;
 @Module
 public class EventModule {
 
+    private static final int NET_READ_TIMEOUT = 60;
+    private static final int NET_WRITE_TIMEOUT = 60;
+    private static final int NET_CONNECT_TIMEOUT = 60;
+    private static final int NET_RETRY = 1;
+
     Context thisContext;
 
     public EventModule(Context context) {
@@ -54,7 +83,6 @@ public class EventModule {
     }
 
     @Provides
-    @EventScope
     EventsApi provideEventsApi(@EventQualifier Retrofit retrofit) {
         return retrofit.create(EventsApi.class);
     }
@@ -73,119 +101,78 @@ public class EventModule {
 
     @Provides
     @EventScope
-    GetEventsListRequestUseCase provideGetEventsListRequestUseCase(ThreadExecutor threadExecutor,
-                                                                   PostExecutionThread postExecutionThread,
-                                                                   EventRepository eventRepository) {
-        return new GetEventsListRequestUseCase(threadExecutor, postExecutionThread, eventRepository);
+    GetEventsListRequestUseCase provideGetEventsListRequestUseCase(EventRepository eventRepository) {
+        return new GetEventsListRequestUseCase(eventRepository);
     }
 
     @Provides
-    @EventQualifier
     @EventScope
-    Retrofit provideEventRetrofit(@EventQualifier OkHttpClient okHttpClient,
+    @EventQualifier
+    Retrofit provideEventRetrofit(OkHttpClient okHttpClient,
                                   Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.EVENTS_DOMAIN).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(EventsUrl.EVENTS_DOMAIN).client(okHttpClient).build();
     }
 
-    @EventQualifier
     @Provides
-    @EventScope
-    OkHttpClient provideOkHttpClientEvent(EventInerceptors eventInerceptors,
-                                          OkHttpRetryPolicy okHttpRetryPolicy,
-                                          ChuckInterceptor chuckInterceptor,
-                                          DebugInterceptor debugInterceptor,
-                                          HttpLoggingInterceptor loggingInterceptor) {
-
-        return OkHttpFactory.create().buildDaggerClientBearerEvents(
-                eventInerceptors,
-                okHttpRetryPolicy,
-                chuckInterceptor,
-                debugInterceptor,
-                loggingInterceptor
-        );
-
+    public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
+                                            HeaderErrorResponseInterceptor errorResponseInterceptor, @ApplicationContext Context context) {
+        UserSession userSession = new UserSession(context);
+        return new OkHttpClient.Builder()
+                .addInterceptor(httpLoggingInterceptor)
+                .addInterceptor(errorResponseInterceptor)
+                .addInterceptor(new TkpdAuthInterceptor(context, (NetworkRouter) context, userSession))
+                .addInterceptor(new FingerprintInterceptor((NetworkRouter) context, userSession))
+                .addInterceptor(((EventModuleRouter) context).getChuckInterceptor())
+                .build();
     }
 
 
-    @EventScope
     @Provides
-    EventInerceptors provideEventInterCeptor(Context context) {
-        String oAuthString = "Bearer " + SessionHandler.getAccessToken();
-        return new EventInerceptors(oAuthString, context);
+    @EventScope
+    GetEventsLocationListRequestUseCase provideGetEventsLocationListRequestUseCase(EventRepository eventRepository) {
+        return new GetEventsLocationListRequestUseCase(eventRepository);
     }
 
     @Provides
     @EventScope
-    HttpLoggingInterceptor provideHttpLoggingInterceptor() {
-        HttpLoggingInterceptor.Level loggingLevel = HttpLoggingInterceptor.Level.NONE;
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            loggingLevel = HttpLoggingInterceptor.Level.BODY;
-        }
-        return new HttpLoggingInterceptor().setLevel(loggingLevel);
+    GetEventsListByLocationRequestUseCase provideGetEventsListByLocationRequestUseCase(EventRepository eventRepository) {
+        return new GetEventsListByLocationRequestUseCase(eventRepository);
     }
 
     @Provides
     @EventScope
-    GetEventsLocationListRequestUseCase provideGetEventsLocationListRequestUseCase(ThreadExecutor threadExecutor,
-                                                                                   PostExecutionThread postExecutionThread,
-                                                                                   EventRepository eventRepository) {
-        return new GetEventsLocationListRequestUseCase(threadExecutor, postExecutionThread, eventRepository);
+    GetEventDetailsRequestUseCase provideGetEventDetailsRequestUseCase(EventRepository eventRepository) {
+        return new GetEventDetailsRequestUseCase(eventRepository);
     }
 
     @Provides
     @EventScope
-    GetEventsListByLocationRequestUseCase provideGetEventsListByLocationRequestUseCase(ThreadExecutor threadExecutor,
-                                                                                       PostExecutionThread postExecutionThread,
-                                                                                       EventRepository eventRepository) {
-        return new GetEventsListByLocationRequestUseCase(threadExecutor, postExecutionThread, eventRepository);
+    GetSearchEventsListRequestUseCase provideGetSearchEventsListRequestUseCase(EventRepository eventRepository) {
+        return new GetSearchEventsListRequestUseCase(eventRepository);
     }
 
     @Provides
     @EventScope
-    GetEventDetailsRequestUseCase provideGetEventDetailsRequestUseCase(ThreadExecutor threadExecutor,
-                                                                       PostExecutionThread postExecutionThread,
-                                                                       EventRepository eventRepository) {
-        return new GetEventDetailsRequestUseCase(threadExecutor, postExecutionThread, eventRepository);
+    PostValidateShowUseCase providesPostValidateShowUseCase(EventRepository eventRepository) {
+        return new PostValidateShowUseCase(eventRepository);
     }
 
     @Provides
     @EventScope
-    GetSearchEventsListRequestUseCase provideGetSearchEventsListRequestUseCase(ThreadExecutor threadExecutor,
-                                                                               PostExecutionThread postExecutionThread,
-                                                                               EventRepository eventRepository) {
-        return new GetSearchEventsListRequestUseCase(threadExecutor, postExecutionThread, eventRepository);
+    VerifyCartUseCase provideVerifyCartUseCase(EventRepository eventRepository) {
+        return new VerifyCartUseCase(eventRepository);
     }
 
     @Provides
     @EventScope
-    PostValidateShowUseCase providesPostValidateShowUseCase(ThreadExecutor threadExecutor,
-                                                            PostExecutionThread postExecutionThread,
-                                                            EventRepository eventRepository) {
-        return new PostValidateShowUseCase(threadExecutor, postExecutionThread, eventRepository);
+    GetEventSeatLayoutUseCase providesGetEventSeatLayoutUseCase(EventRepository eventRepository) {
+        return new GetEventSeatLayoutUseCase(eventRepository);
     }
 
     @Provides
     @EventScope
-    PostVerifyCartUseCase providesPostVerifyCartUseCase(ThreadExecutor threadExecutor,
-                                                        PostExecutionThread postExecutionThread,
-                                                        EventRepository eventRepository) {
-        return new PostVerifyCartUseCase(threadExecutor, postExecutionThread, eventRepository);
-    }
-
-    @Provides
-    @EventScope
-    GetEventSeatLayoutUseCase providesGetEventSeatLayoutUseCase(ThreadExecutor threadExecutor,
-                                                                PostExecutionThread postExecutionThread,
-                                                                EventRepository eventRepository) {
-        return new GetEventSeatLayoutUseCase(threadExecutor, postExecutionThread, eventRepository);
-    }
-
-    @Provides
-    @EventScope
-    GetSearchNextUseCase providesGetSearchNextUseCase(ThreadExecutor threadExecutor,
-                                                      PostExecutionThread postExecutionThread,
-                                                      EventRepository eventRepository) {
-        return new GetSearchNextUseCase(threadExecutor, postExecutionThread, eventRepository);
+    GetSearchNextUseCase providesGetSearchNextUseCase(EventRepository eventRepository) {
+        return new GetSearchNextUseCase(eventRepository);
     }
 
     @Provides
@@ -196,28 +183,82 @@ public class EventModule {
 
     @Provides
     @EventScope
-    ProfileSourceFactory providesProfileSourceFactory(Context context, SessionHandler sessionHandler) {
-        return new ProfileSourceFactory(context,
-                new PeopleService(),
-                new ProfileMapper(),
-                new GlobalCacheManager(),
-                sessionHandler);
+    VerifyCartWrapper providesVerifyCartWrapper(VerifyCartUseCase useCase) {
+        return new VerifyCartWrapper(useCase);
+    }
+
+
+    @Provides
+    @EventScope
+    EventFilterContract.EventFilterPresenter providesEventFilterPresenter() {
+        return new EventFilterPresenterImpl();
     }
 
     @Provides
     @EventScope
-    ProfileRepository providesProfileRepository(ProfileSourceFactory profileSourceFactory) {
-        return new ProfileRepositoryImpl(profileSourceFactory);
+    EventBookTicketContract.BookTicketPresenter providesEventBookTicketPresenter(GetEventSeatLayoutUseCase seatLayoutUseCase,
+                                                                                 PostValidateShowUseCase postValidateShowUseCase, EventsAnalytics eventsAnalytics) {
+        return new EventBookTicketPresenter(seatLayoutUseCase, postValidateShowUseCase, eventsAnalytics);
     }
 
     @Provides
     @EventScope
-    ProfileUseCase providesProfileUseCase(ThreadExecutor threadExecutor,
-                                          PostExecutionThread postExecutionThread,
-                                          ProfileRepository profileRepository) {
-        return new ProfileUseCase(
-                threadExecutor, postExecutionThread, profileRepository);
+    EventsDetailsContract.EventDetailPresenter providesEventsDetailsPresenter(GetEventDetailsRequestUseCase getEventDetailsRequestUseCase, EventsAnalytics eventsAnalytics, CheckScanOptionUseCase checkScanOptionUseCase) {
+        return new EventsDetailsPresenter(getEventDetailsRequestUseCase, eventsAnalytics, checkScanOptionUseCase);
     }
 
+    @Provides
+    @EventScope
+    EventFavouriteContract.EventFavoritePresenter providesEventFavouritePresenter(GetUserLikesUseCase getUserLikesUseCase,
+                                                                                  PostUpdateEventLikesUseCase eventLikesUseCase, EventsAnalytics eventsAnalytics) {
+        return new EventFavouritePresenter(getUserLikesUseCase, eventLikesUseCase, eventsAnalytics);
+    }
+
+    @Provides
+    @EventScope
+    EventLocationsPresenter providesEventLocationsPresenter(GetEventsLocationListRequestUseCase getEventsLocationListRequestUseCase) {
+        return new EventLocationsPresenter(getEventsLocationListRequestUseCase);
+    }
+
+
+    @Provides
+    @EventScope
+    EventSearchContract.EventSearchPresenter providesEventSearchPresenter(GetSearchEventsListRequestUseCase getSearchEventsListRequestUseCase,
+                                                                          GetSearchNextUseCase searchNextUseCase, PostUpdateEventLikesUseCase eventLikesUseCase, EventsAnalytics eventsAnalytics) {
+        return new EventSearchPresenter(getSearchEventsListRequestUseCase,
+                searchNextUseCase, eventLikesUseCase, eventsAnalytics);
+    }
+
+    @Provides
+    @EventScope
+    EventsContract.EventHomePresenter providesEventHomePresenter(GetEventsListRequestUseCase getEventsListRequestUsecase,
+                                                                 PostUpdateEventLikesUseCase eventLikesUseCase,
+                                                                 GetUserLikesUseCase likesUseCase,
+                                                                 GetProductRatingUseCase ratingUseCase, EventsAnalytics eventsAnalytics) {
+        return new EventHomePresenter(getEventsListRequestUsecase,
+                eventLikesUseCase, likesUseCase, ratingUseCase, eventsAnalytics);
+    }
+
+
+    @Provides
+    @EventScope
+    EventReviewTicketsContractor.EventReviewTicketPresenter providesReviewTicketPresenter(VerifyCartUseCase usecase, CheckoutPaymentUseCase payment,
+                                                                                          PostInitCouponUseCase couponUseCase, PostVerifyCartUseCase postVerifyCartUseCase, PostPaymentUseCase postPaymentUseCase, EventsAnalytics eventsAnalytics) {
+        return new EventReviewTicketPresenter(usecase,
+                payment, couponUseCase, postVerifyCartUseCase, postPaymentUseCase, eventsAnalytics);
+    }
+
+    @Provides
+    @EventScope
+    SeatSelectionContract.SeatSelectionPresenter providesSeatSelectionPresenter(VerifyCartUseCase verifyCartUseCase,
+                                                                                PostVerifyCartUseCase postVerifyCartUseCase) {
+        return new SeatSelectionPresenter(verifyCartUseCase, postVerifyCartUseCase);
+    }
+
+    @Provides
+    @EventScope
+    ScanCodeContract.ScanPresenter providesScanCodePresenter(ScanBarCodeUseCase scanBarCodeUseCase, RedeemTicketUseCase redeemTicketUseCase) {
+        return new ScanCodeDataPresenter(scanBarCodeUseCase, redeemTicketUseCase);
+    }
 
 }

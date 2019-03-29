@@ -26,8 +26,11 @@ import java.util.List;
 public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.ViewHolder> {
 
     private static final int VIEW_UPLOAD_BUTTON = 100;
+    private static final int VIEW_REVIEW_IMAGE = 97;
     private static final int MAX_IMAGE = 5;
+    public static final int RADIUS_CORNER = 4;
     private int canUpload = 0;
+    private boolean isReviewImage;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -45,7 +48,6 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
         View.OnClickListener onImageClicked(int position, ImageUpload imageUpload);
     }
 
-
     private ProductImageListener listener;
     private ArrayList<ImageUpload> data;
     private ArrayList<ImageUpload> deletedImage;
@@ -62,10 +64,23 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
         return new ImageUploadAdapter(context);
     }
 
+    public void setReviewImage(boolean isReviewImage){
+        this.isReviewImage = isReviewImage;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        return new ViewHolder(LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.listview_image_upload, viewGroup, false));
+        ViewHolder viewHolder;
+        switch (viewType) {
+            case VIEW_REVIEW_IMAGE :
+                viewHolder = new ViewHolder(LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.listview_image_review_item, viewGroup, false));
+                break;
+            default:
+                viewHolder = new ViewHolder(LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.listview_image_upload_review, viewGroup, false));
+        }
+        return viewHolder;
     }
 
     @Override
@@ -84,13 +99,13 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
         try {
             if (data.get(position).getFileLoc() == null) {
-                ImageHandler.loadImageRounded2(holder.image.getContext(),holder.image, data.get(position).getPicSrc());
+                ImageHandler.loadImageRounded2(holder.image.getContext(),holder.image, data.get(position).getPicSrc(), convertDpToPx(holder.image.getContext(), RADIUS_CORNER));
             } else {
                 Glide.with(holder.image.getContext())
                         .load(new File(data.get(position).getFileLoc()))
                         .asBitmap()
                         .centerCrop()
-                        .into(getRoundedImageViewTarget(holder.image, 5.0f));
+                        .into(getRoundedImageViewTarget(holder.image, convertDpToPx(holder.image.getContext(), RADIUS_CORNER)));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,6 +115,10 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
         setBorder(holder, position);
 
+    }
+
+    public float convertDpToPx(Context context, float dp) {
+        return dp * context.getResources().getDisplayMetrics().density;
     }
 
     private static BitmapImageViewTarget getRoundedImageViewTarget(final ImageView imageView, final float radius) {
@@ -139,7 +158,10 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
     public int getItemViewType(int position) {
         if (position == data.size() && data.size() < MAX_IMAGE) {
             return VIEW_UPLOAD_BUTTON;
-        } else {
+        } else if (isReviewImage) {
+            return VIEW_REVIEW_IMAGE;
+        }
+        else {
             return super.getItemViewType(position);
         }
     }

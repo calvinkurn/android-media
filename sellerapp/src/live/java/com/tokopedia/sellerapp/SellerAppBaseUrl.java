@@ -34,4 +34,7 @@ public class SellerAppBaseUrl {
     public static final String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com";
     public static final String TOP_PAY_DOMAIN = "https://pay.tokopedia.id";
     public static final String HOME_DATA_BASE_URL = "https://gql.tokopedia.com/";
+    public static final String CHANGE_PHONE_DOMAIN = BASE_MOBILE_DOMAIN;
+    public static final String PAYMENT_DOMAIN = "https://payment.tokopedia.com/";
+    public static final String GRAPHQL_DOMAIN = "https://gql.tokopedia.com/";
 }

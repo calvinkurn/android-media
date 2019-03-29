@@ -12,7 +12,4 @@ public interface WishListCommonRepository {
 
     Observable<List<String>> getWishList(String userId, List<String> productIdList);
 
-    Observable<Boolean> addToWishList(String userId, String productId);
-
-    Observable<Boolean> removeFromWishList(String userId, String productId);
 }

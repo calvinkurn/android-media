@@ -4,10 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.support.v4.app.Fragment;
-import android.net.Uri;
-import android.os.Bundle;
 
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 
@@ -23,8 +20,9 @@ public interface TkpdInboxRouter {
     String PRODUCT = "product";
     String PROFILE = "profile";
 
-    String ENABLE_GROUPCHAT = "enable_groupchat";
     String IS_CHAT_BOT = "is_chat_bot";
+    String CREATE_TASK_STACK = "create_task_stack";
+    String INDICATOR_VISIBILITY = "indicator_groupchat";
 
 
     Intent getAskBuyerIntent(Context context, String toUserId,
@@ -46,8 +44,6 @@ public interface TkpdInboxRouter {
 
     Intent getHomeIntent(Context context);
 
-    Intent getGalleryIntent(Context context, boolean forceOpenCamera, int maxImageSelection, boolean compressToTkpd);
-
     Intent getShopPageIntent(Context context, String shopId);
 
     Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
@@ -62,9 +58,17 @@ public interface TkpdInboxRouter {
 
     Intent getTopProfileIntent(Context context, String userId);
 
-    Intent getProductDetailIntent(Context context, ProductPass productPass);
-
     void startAddProduct(Activity activity, String shopId);
 
-    boolean isEnabledGroupChat();
+    Intent getHelpUsIntent(Context context);
+
+    Intent getWebviewActivityWithIntent(Context context, String url, String title);
+
+    Intent getWebviewActivityWithIntent(Context context, String url);
+
+    Intent getChatBotIntent(Context context, String messageId);
+
+    boolean isIndicatorVisible();
+
+    boolean isSupportedDelegateDeepLink(String url);
 }

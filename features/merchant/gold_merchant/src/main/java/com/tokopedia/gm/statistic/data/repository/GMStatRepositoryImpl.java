@@ -16,7 +16,7 @@ import com.tokopedia.gm.statistic.domain.mapper.GMTransactionStatDomainMapper;
 import com.tokopedia.gm.statistic.domain.mapper.GMTransactionTableMapper;
 import com.tokopedia.gm.statistic.domain.model.transaction.table.GetTransactionTableModel;
 import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
 
 import javax.inject.Inject;
 
@@ -91,11 +91,6 @@ public class GMStatRepositoryImpl implements GMStatRepository {
     public Observable<GetShopCategory> getShopCategory(long startDate, long endDate) {
         String shopId = shopInfoRepository.getShopId();
         return gmStatDataSource.getShopCategory(shopId, startDate, endDate);
-    }
-
-    @Override
-    public Observable<Boolean> clearCache() {
-        return gmStatDataSource.clearAllCache();
     }
 
     @Override

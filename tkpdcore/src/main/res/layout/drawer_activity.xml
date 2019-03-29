@@ -24,7 +24,8 @@
                 android:layout_height="wrap_content"
                 android:background="@color/tkpd_main_green"
                 android:minHeight="?attr/actionBarSize"
-                android:theme="@style/AppBarTheme"
+                app:theme="@style/AppBarTheme"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:titleTextAppearance="@style/ToolbarText"
                 app:subtitleTextAppearance="@style/ToolbarSubtitleText"/>
 
@@ -37,7 +38,6 @@
 
     </LinearLayout>
 
-    <include layout="@layout/drawer_layout"
-        />
+    <include layout="@layout/drawer_layout" />
 
 </android.support.v4.widget.DrawerLayout>

@@ -85,15 +85,36 @@ public class CategoryProductListAdapter extends SearchSectionGeneralAdapter {
         notifyDataSetChanged();
     }
 
-    public void setWishlistButtonEnabled(int adapterPosition, boolean isEnabled) {
-        if (list.get(adapterPosition) instanceof ProductItem) {
-            ((ProductItem) list.get(adapterPosition)).setWishlistButtonEnabled(isEnabled);
-            notifyItemChanged(adapterPosition);
+    public void setWishlistButtonEnabled(String productID, boolean isEnabled) {
+
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) instanceof ProductItem) {
+                ProductItem model = ((ProductItem) list.get(i));
+                if (productID.equals(model.getProductID())) {
+                    model.setWishlistButtonEnabled(isEnabled);
+                    notifyItemChanged(i);
+                    break;
+                }
+            }
+        }
+    }
+
+    public void updateWishlistStatus(String productId, boolean isWishlisted) {
+
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) instanceof ProductItem) {
+                ProductItem model = ((ProductItem) list.get(i));
+                if (productId.equals(model.getProductID())) {
+                    model.setWishlisted(isWishlisted);
+                    notifyItemChanged(i);
+                    break;
+                }
+            }
         }
     }
 
     public void updateWishlistStatus(int adapterPosition, boolean isWishlisted) {
-        if (list.get(adapterPosition) instanceof ProductItem) {
+        if (adapterPosition >= 0 && list.get(adapterPosition) instanceof ProductItem) {
             ((ProductItem) list.get(adapterPosition)).setWishlisted(isWishlisted);
             notifyItemChanged(adapterPosition);
         }

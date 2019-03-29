@@ -5,7 +5,7 @@
     <string name="empty_notes_3">Pihak logistik tidak memberikan informasi nama penerima ketika pesanan tiba.</string>
     <string name="further_information_text">Untuk informasi lengkap mengenai jasa pengiriman yang disediakan Tokopedia. Silakan lihat disini.</string>
     <string name="further_information_text_html"><![CDATA[Untuk informasi lengkap mengenai jasa pengiriman yang disediakan Tokopedia. <font color=\'#42b549\'>Silakan lihat disini</font>.]]></string>
-    <string name="label_tracking_status">Tanggal Pengiriman</string>
+    <string name="label_tracking_status">Status</string>
     <string name="label_delivery_date">Tanggal Pengiriman</string>
     <string name="label_service_code">Service Code</string>
     <string name="label_buyer">Pembeli</string>
@@ -15,4 +15,5 @@
     <string name="warning_no_courier_change">Belum ada update pengiriman dari kurir. Silakan lacak kembali secara berkala maksimal 3 x 24 jam.</string>
     <string name="warning_courier_invalid">Apabila masih tidak ada update status pengiriman
 setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
+    <string name="label_tracking_activity">Lacak</string>
 </resources>

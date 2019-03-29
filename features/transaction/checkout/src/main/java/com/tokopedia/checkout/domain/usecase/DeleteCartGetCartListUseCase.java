@@ -3,11 +3,11 @@ package com.tokopedia.checkout.domain.usecase;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
+import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
 import com.tokopedia.transactiondata.repository.ICartRepository;
-import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
-import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -25,7 +25,6 @@ public class DeleteCartGetCartListUseCase extends UseCase<DeleteAndRefreshCartLi
     public static final String PARAM_REQUEST_AUTH_MAP_STRING_GET_CART
             = "PARAM_REQUEST_AUTH_MAP_STRING_GET_CART";
 
-
     private final ICartRepository cartRepository;
     private final ICartMapper cartMapper;
     private final Context context;
@@ -41,12 +40,12 @@ public class DeleteCartGetCartListUseCase extends UseCase<DeleteAndRefreshCartLi
     @SuppressWarnings("unchecked")
     public Observable<DeleteAndRefreshCartListData> createObservable(RequestParams requestParams) {
 
-
         final TKPDMapParam<String, String> paramDelete = (TKPDMapParam<String, String>)
                 requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART);
 
         final TKPDMapParam<String, String> paramGetCart = (TKPDMapParam<String, String>)
                 requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING_GET_CART);
+
         return Observable.just(new DeleteAndRefreshCartListData())
                 .flatMap(new Func1<DeleteAndRefreshCartListData, Observable<DeleteAndRefreshCartListData>>() {
                     @Override
@@ -68,7 +67,7 @@ public class DeleteCartGetCartListUseCase extends UseCase<DeleteAndRefreshCartLi
                 .flatMap(new Func1<DeleteAndRefreshCartListData, Observable<DeleteAndRefreshCartListData>>() {
                     @Override
                     public Observable<DeleteAndRefreshCartListData> call(final DeleteAndRefreshCartListData deleteAndRefreshCartListData) {
-                        return cartRepository.getCartList(paramGetCart)
+                        return cartRepository.getShopGroupList(paramGetCart)
                                 .map(new Func1<CartDataListResponse, DeleteAndRefreshCartListData>() {
                                     @Override
                                     public DeleteAndRefreshCartListData call(CartDataListResponse cartDataListResponse) {

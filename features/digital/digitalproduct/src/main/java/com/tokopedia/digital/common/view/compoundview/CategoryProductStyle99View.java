@@ -11,22 +11,19 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Product;
+import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.view.compoundview.BaseDigitalChooserView;
 import com.tokopedia.digital.product.view.compoundview.DigitalProductChooserView;
 import com.tokopedia.digital.product.view.compoundview.ProductAdditionalInfoView;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
-import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
-import com.tokopedia.digital.product.view.model.Product;
-import com.tokopedia.digital.product.view.model.Validation;
 
 import java.util.List;
 import java.util.regex.Pattern;
-
-import butterknife.BindView;
 
 /**
  * Created by Rizky on 22/01/18.
@@ -36,24 +33,15 @@ public class CategoryProductStyle99View extends
         BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber>
         implements ProductAdditionalInfoView.ActionListener {
 
-    @BindView(R2.id.tv_title_category)
-    TextView tvTitle;
-    @BindView(R2.id.holder_client_number)
-    LinearLayout holderClientNumber;
-    @BindView(R2.id.holder_chooser_product)
-    LinearLayout holderChooserProduct;
-    @BindView(R2.id.holder_additional_info_product)
-    LinearLayout holderAdditionalInfoProduct;
-    @BindView(R2.id.holder_price_info_product)
-    LinearLayout holderPriceInfoProduct;
-    @BindView(R2.id.btn_buy_digital)
-    TextView btnBuyDigital;
-    @BindView(R2.id.cb_instant_checkout)
-    CheckBox cbInstantCheckout;
-    @BindView(R2.id.layout_checkout)
-    RelativeLayout layoutCheckout;
-    @BindView(R2.id.tooltip_instant_checkout)
-    ImageView tooltipInstantCheckout;
+    private TextView tvTitle;
+    private LinearLayout holderClientNumber;
+    private LinearLayout holderChooserProduct;
+    private LinearLayout holderAdditionalInfoProduct;
+    private LinearLayout holderPriceInfoProduct;
+    private TextView btnBuyDigital;
+    private CheckBox cbInstantCheckout;
+    private RelativeLayout layoutCheckout;
+    private ImageView tooltipInstantCheckout;
 
     private ClientNumberInputView clientNumberInputView;
     private DigitalProductChooserView digitalProductChooserView;
@@ -79,6 +67,16 @@ public class CategoryProductStyle99View extends
 
     @Override
     protected void onCreateView() {
+        tvTitle = findViewById(R.id.tv_title_category);
+        holderClientNumber = findViewById(R.id.holder_client_number);
+        holderChooserProduct = findViewById(R.id.holder_chooser_product);
+        holderAdditionalInfoProduct = findViewById(R.id.holder_additional_info_product);
+        holderPriceInfoProduct = findViewById(R.id.holder_price_info_product);
+        btnBuyDigital = findViewById(R.id.btn_buy_digital);
+        cbInstantCheckout = findViewById(R.id.cb_instant_checkout);
+        layoutCheckout = findViewById(R.id.layout_checkout);
+        tooltipInstantCheckout = findViewById(R.id.tooltip_instant_checkout);
+
         clientNumberInputView = new ClientNumberInputView(context);
         digitalProductChooserView = new DigitalProductChooserView(context);
         productAdditionalInfoView = new ProductAdditionalInfoView(context);

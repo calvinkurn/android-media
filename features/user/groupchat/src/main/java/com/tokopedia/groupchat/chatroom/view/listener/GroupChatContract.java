@@ -3,12 +3,12 @@ package com.tokopedia.groupchat.chatroom.view.listener;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
-import com.sendbird.android.OpenChannel;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage;
-import com.tokopedia.groupchat.chatroom.domain.usecase.LoginGroupChatUseCase;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
@@ -34,8 +34,6 @@ public interface GroupChatContract {
 
         void updateVoteViewModel(VoteInfoViewModel voteInfoViewModel, String voteType);
 
-        void setChannelHandler();
-
         void showInfoDialog();
 
         void updateSprintSaleData(SprintSaleAnnouncementViewModel messageItem);
@@ -57,9 +55,15 @@ public interface GroupChatContract {
         String generateAttributeApplink(String applink,
                                         String attributeBanner);
 
-        void vibratePhone();
+        void startApplink(String applink);
 
-        void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel);
+        void transitionToTabChat();
+
+        void transitionToTabVote();
+
+        void transitionToTabInfo();
+
+        void vibratePhone();
 
         String getAttributionTracking(String attributePartnerLogo);
 
@@ -74,18 +78,34 @@ public interface GroupChatContract {
 
         @Nullable
         ExitMessage getExitMessage();
+
+        void onMessageReceived(Visitable text, boolean hideMessage);
+
+        void setSnackBarRetry();
+
+        void setSnackBarErrorLoading();
+
+        void onOpenWebSocket();
+
+        void onSuccessEnterChannel();
+
+        void clearMessageEditText();
+
+        void afterSendMessage(PendingChatViewModel pendingChatViewModel, Exception errorSendIndicator);
+
+        void reportWebSocket(String url, String error);
+
+        void initVideoFragment();
+
+        void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel);
+
+        void showOverlayDialogOnScreen();
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {
 
         void getChannelInfo(String channelUuid);
 
-        void logoutChannel(OpenChannel mChannel);
-
-        void enterChannel(String userId, String channelUrl, String userName, String userAvatar,
-                          LoginGroupChatUseCase.LoginGroupChatListener
-                                  loginGroupChatListener, String sendBirdToken);
-
-        void refreshChannelInfo(String channelUuid);
+        void getChannelInfo(String channelUuid, boolean reInit);
     }
 }

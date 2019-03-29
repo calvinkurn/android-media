@@ -1,5 +1,7 @@
 package com.tokopedia.shop.common.util;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
 
 /**
@@ -9,13 +11,8 @@ import com.tokopedia.abstraction.common.data.model.response.PagingList;
 public class PagingListUtils {
 
     public static boolean checkNextPage(PagingList shopProductList) {
-        if (shopProductList.getPaging() != null &&
-                shopProductList.getPaging().getUriNext() != null &&
-                !shopProductList.getPaging().getUriNext().isEmpty() &&
-                !shopProductList.getPaging().getUriNext().equals("0")) {
-            return true;
-        } else {
-            return false;
-        }
+        return shopProductList.getPaging() != null &&
+                !TextUtils.isEmpty(shopProductList.getPaging().getUriNext()) &&
+                !"0".equals(shopProductList.getPaging().getUriNext());
     }
 }

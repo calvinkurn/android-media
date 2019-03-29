@@ -49,7 +49,9 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
 
         inboxStyle.setSummaryText(SummaryNotification.generateSummaryText(notificationType, listHistoryNotification.size()));
 
-        builder.setContentText(genarateContentText(listHistoryNotification.get(0)));
+        if (listHistoryNotification!= null && listHistoryNotification.size() > 0) {
+            builder.setContentText(genarateContentText(listHistoryNotification.get(0)));
+        }
         builder.setLargeIcon(getBitmapLargeIcon());
         builder.setStyle(inboxStyle);
         if (ApplinkNotificationHelper.allowGroup()) {

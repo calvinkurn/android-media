@@ -1,6 +1,7 @@
 package com.tokopedia.events.data.source;
 
 import com.google.gson.JsonObject;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
@@ -17,6 +18,7 @@ import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartRespon
 import java.util.List;
 import java.util.Map;
 
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
@@ -33,57 +35,57 @@ import rx.Observable;
 
 public interface EventsApi {
     @GET(EventsUrl.EVENTS_LIST)
-    Observable<EventResponseEntity> getEvents();
+    Observable<Response<DataResponse<EventResponseEntity>>> getEvents();
 
     @GET(EventsUrl.EVENTS_LIST_SEARCH)
-    Observable<SearchResponse> getSearchEvents(@QueryMap Map<String, Object> param);
+    Observable<Response<DataResponse<SearchResponse>>> getSearchEvents(@QueryMap Map<String, Object> param);
 
     @GET(EventsUrl.EVENTS_LOCATION_LIST)
-    Observable<EventLocationEntity> getEventsLocationList();
+    Observable<Response<DataResponse<EventLocationEntity>>> getEventsLocationList();
 
     @GET(EventsUrl.EVENTS_LIST_BY_LOCATION)
-    Observable<EventResponseEntity> getEventsByLocation(@Path("location") String location);
+    Observable<Response<DataResponse<EventResponseEntity>>> getEventsByLocation(@Path("location") String location);
 
     @GET()
-    Observable<EventsDetailsEntity> getEventDetails(@Url String url);
+    Observable<Response<DataResponse<EventsDetailsEntity>>> getEventDetails(@Url String url);
 
     @GET()
-    Observable<SearchResponse> getSearchNext(@Url String nextUrl);
+    Observable<Response<DataResponse<SearchResponse>>> getSearchNext(@Url String nextUrl);
 
     @POST(EventsUrl.EVENTS_VERIFY)
     @Headers({"Content-Type: application/json"})
-    Observable<VerifyCartResponse> postCartVerify(@Body JsonObject requestBody, @Query("book") boolean value);
+    Observable<Response<DataResponse<VerifyCartResponse>>> postCartVerify(@Body JsonObject requestBody, @Query("book") boolean value);
 
     @POST(EventsUrl.EVENT_INIT_COUPON)
     @Headers({"Content-Type: application/json"})
-    Observable<VerifyCartResponse> postCouponInit(@Body JsonObject requestBody);
+    Observable<Response<DataResponse<VerifyCartResponse>>> postCouponInit(@Body JsonObject requestBody);
 
     @POST(EventsUrl.EVENT_VALIDATE)
     @Headers({"Content-Type: application/json"})
-    Observable<ValidateResponse> validateShow(@Body JsonObject requestBody);
+    Observable<Response<DataResponse<ValidateResponse>>> validateShow(@Body JsonObject requestBody);
 
     @POST(EventsUrl.EVENTS_CHECKOUT)
     @Headers({"Content-Type: application/json"})
-    Observable<CheckoutResponse> checkoutCart(@Body JsonObject requestBody);
+    Observable<Response<DataResponse<CheckoutResponse>>> checkoutCart(@Body JsonObject requestBody);
 
     @GET(EventsUrl.EVENT_SEAT_LAYOUT)
-    Observable<SeatLayoutResponse> getSeatLayout(@Path("category_id") int category_id,
+    Observable<Response<DataResponse<SeatLayoutResponse>>> getSeatLayout(@Path("category_id") int category_id,
                                                  @Path("product_id") int product_id,
                                                  @Path("schedule_id") int schedule_id,
                                                  @Path("group_id") int group_id,
                                                  @Path("package_id") int package_id);
 
     @GET()
-    Observable<List<SeatLayoutItem>> getEventSeatLayout(@Url String url);
+    Observable<Response<DataResponse<List<SeatLayoutItem>>>> getEventSeatLayout(@Url String url);
 
     @GET(EventsUrl.EVENT_GET_USER_LIKES)
-    Observable<List<UserLikesResponse>> getUserLikesProduct();
+    Observable<Response<DataResponse<List<UserLikesResponse>>>> getUserLikesProduct();
 
     @POST(EventsUrl.EVENTS_LIKES)
     @Headers({"Content-Type: application/json"})
-    Observable<LikeUpdateResponse> updateLikes(@Body JsonObject requestBody);
+    Observable<Response<DataResponse<LikeUpdateResponse>>> updateLikes(@Body JsonObject requestBody);
 
     @GET(EventsUrl.EVENT_PRODUCT_RATING)
     @Headers({"Content-Type: application/json"})
-    Observable<ProductRatingResponse> getProductLike(@Path("id") int productID);
+    Observable<Response<DataResponse<ProductRatingResponse>>> getProductLike(@Path("id") int productID);
 }

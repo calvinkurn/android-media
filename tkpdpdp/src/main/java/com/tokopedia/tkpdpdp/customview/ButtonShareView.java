@@ -8,10 +8,10 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
-import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
@@ -71,17 +71,7 @@ public class ButtonShareView extends BaseView<ProductDetailData, ProductDetailVi
 
         @Override
         public void onClick(View v) {
-            ShareData shareData = ShareData.Builder.aShareData()
-                    .setName(data.getInfo().getProductName())
-                    .setTextContent(data.getInfo().getProductName())
-                    .setDescription(data.getInfo().getProductDescription())
-                    .setImgUri(data.getProductImages().get(0).getImageSrc())
-                    .setPrice(data.getInfo().getProductPrice())
-                    .setUri(data.getInfo().getProductUrl())
-                    .setType(ShareData.PRODUCT_TYPE)
-                    .setId(data.getInfo().getProductId().toString())
-                    .build();
-            listener.onProductShareClicked(shareData);
+            listener.onProductShareClicked(data);
         }
     }
 

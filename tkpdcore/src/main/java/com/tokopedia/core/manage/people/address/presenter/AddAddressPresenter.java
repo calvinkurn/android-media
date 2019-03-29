@@ -18,9 +18,13 @@ public interface AddAddressPresenter {
 
     void onProvinceSelected(int pos);
 
+    void onEditProvinceSelected(int pos);
+
     void onRegencySelected(int pos);
 
     void getListCity(Province province);
+
+    void provinceChanged(Province province);
 
     void getListDistrict(City city);
 

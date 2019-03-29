@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TopAdsSubtitledRadioButton">
+        <attr name="title_radio" format="reference|string" />
+        <attr name="subtitle_radio" format="reference|string" />
+        <attr name="checked" format="boolean" />
+        <attr name="radio_id" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="TopAdsSubtitledRadioGroup">
+        <attr name="checked_id" format="reference" />
+    </declare-styleable>
+</resources>

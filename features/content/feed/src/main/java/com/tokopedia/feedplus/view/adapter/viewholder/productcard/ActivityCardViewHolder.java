@@ -15,13 +15,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.TimeConverter;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;
+import com.tokopedia.kol.common.util.TimeConverter;
 
 /**
  * @author by nisie on 5/16/17.
@@ -42,7 +42,6 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
     private ImageView osBadge;
     private TextView time;
     private View shareButton;
-    private View buyButton;
 
     private FeedProductAdapter adapter;
     private FeedPlus.View viewListener;
@@ -55,7 +54,6 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         shopAvatar = itemView.findViewById(R.id.shop_avatar);
         time = itemView.findViewById(R.id.time);
         shareButton = itemView.findViewById(R.id.share_button);
-        buyButton = itemView.findViewById(R.id.buy_button);
         gmBadge = itemView.findViewById(R.id.gold_merchant);
         osBadge = itemView.findViewById(R.id.official_store);
         RecyclerView recyclerView = itemView.findViewById(R.id.product_list);
@@ -90,7 +88,6 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
             setHeader(activityCardViewModel);
             activityCardViewModel.setRowNumber(getAdapterPosition());
             adapter.setData(activityCardViewModel, getAdapterPosition() + 1);
-            setFooter(activityCardViewModel);
         }
     }
 
@@ -167,7 +164,8 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
 
         ImageHandler.LoadImage(shopAvatar, activityCardViewModel.getHeader().getShopAvatar());
 
-        time.setText(TimeConverter.generateTime(activityCardViewModel.getHeader().getTime()));
+        time.setText(TimeConverter.generateTime(time.getContext(),
+                activityCardViewModel.getHeader().getTime()));
 
         shopAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,34 +192,6 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         } else if (titleText.toString().contains(stringEdited)) {
             actionSpanString.setSpan(object, titleText.indexOf(stringEdited)
                     , titleText.indexOf(stringEdited) + stringEdited.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-    }
-
-    public void setFooter(final ActivityCardViewModel viewModel) {
-        if (viewModel.getListProduct().size() > 1) {
-            shareButton.setVisibility(View.GONE);
-            buyButton.setVisibility(View.GONE);
-            shareButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    viewListener.onShareButtonClicked(
-                            viewModel.getShareUrl(),
-                            viewModel.getHeader().getShopName(),
-                            viewModel.getHeader().getShopAvatar(),
-                            viewModel.getShareLinkDescription(),
-                            viewModel.getPage() + "." + viewModel.getRowNumber()
-                    );
-                }
-            });
-        } else {
-            shareButton.setVisibility(View.GONE);
-            buyButton.setVisibility(View.GONE);
-            buyButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    viewListener.onGoToBuyProduct(viewModel.getListProduct().get(0));
-                }
-            });
         }
     }
 }

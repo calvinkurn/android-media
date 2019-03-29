@@ -6,8 +6,9 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.manage.people.address.fragment.AddAddressFragment;
@@ -15,9 +16,12 @@ import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.address.model.Token;
 
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EDIT_PARAM;
+import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST;
+import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EXTRA_PLATFORM_PAGE;
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.IS_DISTRICT_RECOMMENDATION;
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.IS_EDIT;
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.KERO_TOKEN;
+import static com.tokopedia.core.manage.people.address.ManageAddressConstant.PLATFORM_MARKETPLACE_CART;
 
 /**
  * Created by nisie on 9/6/16.
@@ -103,6 +107,22 @@ public class AddAddressActivity extends BasePresenterActivity {
         intent.putExtras(bundle);
         return intent;
     }
+
+    public static Intent createInstanceFromCartCheckout(
+            Activity activity, @Nullable AddressModel data, Token token, boolean isEdit, boolean isEmptyAddressFirst
+    ) {
+        Intent intent = new Intent(activity, AddAddressActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(IS_DISTRICT_RECOMMENDATION, true);
+        bundle.putString(EXTRA_PLATFORM_PAGE, PLATFORM_MARKETPLACE_CART);
+        if (data != null) bundle.putParcelable(EDIT_PARAM, data.convertToDestination());
+        bundle.putBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, isEmptyAddressFirst);
+        bundle.putBoolean(IS_EDIT, isEdit);
+        bundle.putParcelable(KERO_TOKEN, token);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
 
     @Override
     protected boolean isLightToolbarThemes() {

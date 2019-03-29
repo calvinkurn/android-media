@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/ic_loading_toped_new"
+    android:insetBottom="@dimen/dp_20"
+    android:insetLeft="@dimen/dp_20"
+    android:insetRight="@dimen/dp_20"
+    android:insetTop="@dimen/dp_20" />

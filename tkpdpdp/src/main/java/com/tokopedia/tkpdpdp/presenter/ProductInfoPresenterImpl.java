@@ -6,23 +6,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.view.TextureView;
 
-import com.raizlabs.android.dbflow.sql.language.Select;
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.database.model.CategoryDB;
-import com.tokopedia.core.database.model.CategoryDB_Table;
-import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.share.fragment.ProductShareFragment;
 import com.tokopedia.core.var.ProductItem;
-import com.tokopedia.tkpdpdp.ProductInfoActivity;
-import com.tokopedia.tkpdpdp.R;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductInfoView;
+import com.tokopedia.core.analytics.*;
 
 import java.util.List;
 
@@ -41,12 +36,20 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
     @Override
     public void initialFragment(@NonNull Context context, Uri uri, Bundle bundle) {
         if (bundle !=null && uri !=null && uri.getPathSegments().size() == 2) {
-            viewListener.inflateFragment(ProductDetailFragment.newInstanceForDeeplink(ProductPass.Builder.aProductPass()
-                            .setProductKey(uri.getPathSegments().get(1))
-                            .setShopDomain(uri.getPathSegments().get(0))
-                            .setProductUri(uri.toString())
-                            .build()),
-                    ProductDetailFragment.class.getSimpleName());
+            if (bundle.getBoolean(DeepLink.IS_DEEP_LINK, false)
+                    && !TextUtils.isEmpty(bundle.getString("product_id", ""))) {
+                viewListener.inflateFragment(
+                        ProductDetailFragment.newInstance(generateProductPass(bundle, uri)),
+                        ProductDetailFragment.class.getSimpleName()
+                );
+            } else {
+                viewListener.inflateFragment(ProductDetailFragment.newInstanceForDeeplink(ProductPass.Builder.aProductPass()
+                                .setProductKey(uri.getPathSegments().get(1))
+                                .setShopDomain(uri.getPathSegments().get(0))
+                                .setProductUri(uri.toString())
+                                .build()),
+                        ProductDetailFragment.class.getSimpleName());
+            }
         } else if (isProductDetail(uri, bundle)) {
             viewListener.inflateFragment(ProductDetailFragment
                             .newInstance(generateProductPass(bundle, uri)),
@@ -61,14 +64,13 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
             for (int i = 2; i < uriSegments.size(); i++) {
                 iden = iden + "_" + uriSegments.get(i);
             }
-            Intent moveIntent = BrowseProductRouter.getIntermediaryIntent(context,iden);
-
+            Intent moveIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,iden);
             viewListener.navigateToActivity(moveIntent);
         }
     }
 
-    public void processToShareProduct(Context context, @NonNull ShareData shareData) {
-        UnifyTracking.eventShareProduct();
+    public void processToShareProduct(Context context, @NonNull LinkerData shareData) {
+        UnifyTracking.eventShareProduct(context);
     }
 
     private ProductPass generateProductPass(Bundle bundleData, Uri uriData) {
@@ -85,6 +87,7 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
                         .setShopDomain(bundleData.getString("shop_domain", ""))
                         .setTrackerAttribution(bundleData.getString("tracker_attribution", ""))
                         .setTrackerListName(bundleData.getString("tracker_list_name", ""))
+                        .setFromExploreAffiliate(bundleData.getBoolean("is_from_explore_affiliate", false))
                         .build();
             } else if (productItem != null) {
                 productPass = ProductPass.Builder.aProductPass()

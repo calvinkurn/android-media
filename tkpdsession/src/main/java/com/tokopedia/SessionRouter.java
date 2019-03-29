@@ -10,6 +10,7 @@ import okhttp3.Interceptor;
  */
 
 public interface SessionRouter {
+
     Intent getHomeIntent(Context context);
 
     Intent getTopProfileIntent(Context context, String userId);
@@ -17,4 +18,8 @@ public interface SessionRouter {
     Interceptor getChuckInterceptor();
 
     Intent getShopPageIntent(Context context, String shopId);
+
+    boolean isLoginInactivePhoneLinkEnabled();
+
+    void sendAFCompleteRegistrationEvent(int userId,String methodName);
 }

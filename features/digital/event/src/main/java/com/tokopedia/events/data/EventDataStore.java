@@ -1,7 +1,6 @@
 package com.tokopedia.events.data;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
@@ -15,6 +14,7 @@ import com.tokopedia.events.data.entity.response.searchresponse.SearchResponse;
 import com.tokopedia.events.data.entity.response.seatlayoutresponse.SeatLayoutResponse;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 
+import java.util.HashMap;
 import java.util.List;
 
 import rx.Observable;
@@ -25,13 +25,13 @@ import rx.Observable;
 
 public interface EventDataStore {
 
-    Observable<EventResponseEntity> getEvents(TKPDMapParam<String, Object> params);
+    Observable<EventResponseEntity> getEvents(HashMap<String, Object> params);
 
-    Observable<SearchResponse> getSearchEvents(TKPDMapParam<String, Object> params);
+    Observable<SearchResponse> getSearchEvents(HashMap<String, Object> params);
 
     Observable<SearchResponse> getSearchNext(String nextUrl);
 
-    Observable<EventLocationEntity> getEventsLocationList(TKPDMapParam<String, Object> params);
+    Observable<EventLocationEntity> getEventsLocationList(HashMap<String, Object> params);
 
     Observable<EventResponseEntity> getEventsListByLocation(String location);
 

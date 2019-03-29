@@ -3,17 +3,15 @@ package com.tokopedia.digital.categorylist.data.repository;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.database.model.SimpleDatabaseModel;
-import com.tokopedia.core.network.apiservices.mojito.MojitoService;
-import com.tokopedia.core.network.entity.homeMenu.HomeCategoryMenuItem;
-import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.digital.categorylist.data.cloud.DigitalCategoryListApi;
+import com.tokopedia.digital.categorylist.data.cloud.entity.HomeCategoryMenuItem;
 import com.tokopedia.digital.categorylist.data.mapper.ICategoryDigitalListDataMapper;
 import com.tokopedia.digital.categorylist.domain.IDigitalCategoryListRepository;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
+import com.tokopedia.network.constant.ErrorNetMessage;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
 
@@ -26,37 +24,38 @@ import rx.functions.Func1;
  */
 
 public class DigitalCategoryListRepository implements IDigitalCategoryListRepository {
+    public static final String DIGITAL_CATEGORY_ITEM_LIST = "DIGITAL_CATEGORY_ITEM_LIST";
 
-    private final GlobalCacheManager globalCacheManager;
+    private DigitalCategoryListApi digitalApi;
+    private final CacheManager globalCacheManager;
     private final ICategoryDigitalListDataMapper digitalListDataMapper;
-    private final MojitoService mojitoService;
-    private final SessionHandler sessionHandler;
+    private final UserSession sessionHandler;
 
-    public DigitalCategoryListRepository(MojitoService mojitoService,
-                                         GlobalCacheManager globalCacheManager,
+    public DigitalCategoryListRepository(DigitalCategoryListApi digitalApi,
+                                         CacheManager globalCacheManager,
                                          ICategoryDigitalListDataMapper digitalListDataMapper,
-                                         SessionHandler sessionHandler) {
+                                         UserSession sessionHandler) {
+        this.digitalApi = digitalApi;
         this.globalCacheManager = globalCacheManager;
         this.digitalListDataMapper = digitalListDataMapper;
-        this.mojitoService = mojitoService;
         this.sessionHandler = sessionHandler;
     }
 
     @Override
-    public Observable<List<DigitalCategoryItemData>> getDigitalCategoryItemDataList() {
+    public Observable<List<DigitalCategoryItemData>> getDigitalCategoryItemDataList(String deviceVersion) {
         return Observable.just(
-                globalCacheManager.getValueString(TkpdCache.Key.DIGITAL_CATEGORY_ITEM_LIST)
+                globalCacheManager.get(DIGITAL_CATEGORY_ITEM_LIST)
         ).flatMap(getFuncObservableDigitalCategoryListDataFromCache())
-                .onErrorResumeNext(getResumeFunctionObservableDigitalCategoryListDataFromNetwork());
+                .onErrorResumeNext(getResumeFunctionObservableDigitalCategoryListDataFromNetwork(deviceVersion));
     }
 
     @NonNull
     private Func1<Throwable, Observable<? extends List<DigitalCategoryItemData>>>
-    getResumeFunctionObservableDigitalCategoryListDataFromNetwork() {
+    getResumeFunctionObservableDigitalCategoryListDataFromNetwork(String deviceVersion) {
         return new Func1<Throwable, Observable<? extends List<DigitalCategoryItemData>>>() {
             @Override
             public Observable<? extends List<DigitalCategoryItemData>> call(Throwable throwable) {
-                return getDigitalCategoryItemDataListFromNetwork();
+                return getDigitalCategoryItemDataListFromNetwork(deviceVersion);
             }
         };
     }
@@ -68,8 +67,8 @@ public class DigitalCategoryListRepository implements IDigitalCategoryListReposi
             @Override
             public Observable<List<DigitalCategoryItemData>> call(String s) {
                 HomeCategoryMenuItem homeCategoryMenuItem = new Gson()
-                        .fromJson(globalCacheManager.getValueString(
-                                TkpdCache.Key.DIGITAL_CATEGORY_ITEM_LIST),
+                        .fromJson(globalCacheManager.get(
+                                DIGITAL_CATEGORY_ITEM_LIST),
                                 HomeCategoryMenuItem.class
                         );
 
@@ -86,12 +85,15 @@ public class DigitalCategoryListRepository implements IDigitalCategoryListReposi
     }
 
     @NonNull
-    private Observable<List<DigitalCategoryItemData>> getDigitalCategoryItemDataListFromNetwork() {
-        return mojitoService.getApi().getHomeCategoryMenu(sessionHandler.getLoginID(),
-                GlobalConfig.getPackageApplicationName()
-        ).map(
-                getFuncTransformResponseHomeCategoryToDigitalCategoryItemDataList()
-        );
+    private Observable<List<DigitalCategoryItemData>> getDigitalCategoryItemDataListFromNetwork(String deviceVersion) {
+        return digitalApi
+                .getDigitalCategoryList(
+                        sessionHandler.getUserId(),
+                        GlobalConfig.getPackageApplicationName(),
+                        deviceVersion)
+                .map(
+                        getFuncTransformResponseHomeCategoryToDigitalCategoryItemDataList()
+                );
     }
 
     @NonNull
@@ -107,17 +109,13 @@ public class DigitalCategoryListRepository implements IDigitalCategoryListReposi
                             );
                     if (homeCategoryMenuItem != null && homeCategoryMenuItem.getData() != null
                             && !homeCategoryMenuItem.getData().getLayoutSections().isEmpty()) {
-                        globalCacheManager.store(new SimpleDatabaseModel.Builder()
-                                .key(TkpdCache.Key.DIGITAL_CATEGORY_ITEM_LIST)
-                                .value(stringResponse.body())
-                                .build());
+                        globalCacheManager.save(DIGITAL_CATEGORY_ITEM_LIST, stringResponse.body(), 0);
                     }
                     return digitalListDataMapper.transformDigitalCategoryItemDataList(
                             homeCategoryMenuItem
                     );
-                } else {
-                    throw new RuntimeHttpErrorException(stringResponse.code());
                 }
+                throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }
         };
     }

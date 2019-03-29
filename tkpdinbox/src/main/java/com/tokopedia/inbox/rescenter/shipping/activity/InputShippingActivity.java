@@ -133,10 +133,10 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
         if (getParamsModel().isFromChat()) {
             if (getParamsModel().isEdit())
                 UnifyTracking.eventTracking(
-                        InboxAnalytics.eventResoChatImpressionSaveEditAWB(getParamsModel().getResolutionID()));
+                        this,InboxAnalytics.eventResoChatImpressionSaveEditAWB(getParamsModel().getResolutionID()));
             else
                 UnifyTracking.eventTracking(
-                        InboxAnalytics.eventResoChatImpressionSaveInputAWB(getParamsModel().getResolutionID()));
+                        this,InboxAnalytics.eventResoChatImpressionSaveInputAWB(getParamsModel().getResolutionID()));
         }
     }
 
@@ -206,10 +206,10 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
         if (getParamsModel().isFromChat()) {
             if (getParamsModel().isEdit())
                 UnifyTracking.eventTracking(
-                        InboxAnalytics.eventResoChatClickCancelEditAWB(getParamsModel().getResolutionID()));
+                        this,InboxAnalytics.eventResoChatClickCancelEditAWB(getParamsModel().getResolutionID()));
             else
                 UnifyTracking.eventTracking(
-                        InboxAnalytics.eventResoChatClickCancelInputAWB(getParamsModel().getResolutionID()));
+                        this,InboxAnalytics.eventResoChatClickCancelInputAWB(getParamsModel().getResolutionID()));
         }
         getBottomBackSheetActivityTransition();
     }

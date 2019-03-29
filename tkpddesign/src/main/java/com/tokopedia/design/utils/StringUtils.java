@@ -32,6 +32,10 @@ public class StringUtils {
         return shareUrl == null || shareUrl.length() == 0;
     }
 
+    public static boolean isEmptyNumber(String numberString) {
+        return numberString == null || numberString.length() == 0 || "0".equals(numberString);
+    }
+
     public static boolean containInList(List<String> stringList, String stringToCheck){
         if (stringList == null || TextUtils.isEmpty(stringToCheck)) {
             return false;
@@ -58,7 +62,7 @@ public class StringUtils {
 
     public static String omitNonNumeric(String stringToReplace){
         if (TextUtils.isEmpty(stringToReplace)){
-            return "";
+            return "0";
         }
         else {
             return stringToReplace.replaceAll("[^\\d]", "");

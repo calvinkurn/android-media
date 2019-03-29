@@ -20,15 +20,11 @@ import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
-import com.tokopedia.gm.cashback.domain.SetCashbackUseCase;
-import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
-import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
-import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
+import com.tokopedia.datepicker.range.view.presenter.DatePickerPresenter;
 import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.common.di.scope.GMScope;
-import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
-import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
+import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
+import com.tokopedia.gm.statistic.view.fragment.BaseDatePickerFragment;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
@@ -92,8 +88,4 @@ public interface GMComponent {
     ImageHandler imageHandler();
 
     GMFeaturedProductGetListUseCase getFeaturedProductGetListUseCase();
-
-    SetCashbackUseCase getSetCashbackUseCase();
-
-    GetCashbackUseCase getCashbackUseCase();
 }

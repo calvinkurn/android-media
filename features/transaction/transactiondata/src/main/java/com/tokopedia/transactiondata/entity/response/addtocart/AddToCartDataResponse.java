@@ -18,9 +18,16 @@ public class AddToCartDataResponse {
     @SerializedName("message")
     @Expose
     private List<String> message = new ArrayList<>();
+    @SerializedName("data")
+    @Expose
+    private Data data;
 
     public int getSuccess() {
         return success;
+    }
+
+    public Data getData() {
+        return data;
     }
 
     public List<String> getMessage() {

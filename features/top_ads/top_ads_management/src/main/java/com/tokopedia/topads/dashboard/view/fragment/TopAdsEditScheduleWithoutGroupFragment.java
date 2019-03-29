@@ -53,9 +53,9 @@ public class TopAdsEditScheduleWithoutGroupFragment extends TopAdsNewScheduleFra
 
     private void trackingEditScheduleTopads() {
         if(detailAd.isScheduled()) {
-            UnifyTracking.eventTopAdsProductEditProductSchedule(AppEventTracking.EventLabel.SHOWTIME_SETUP);
+            UnifyTracking.eventTopAdsProductEditProductSchedule(getActivity(), AppEventTracking.EventLabel.SHOWTIME_SETUP);
         }else{
-            UnifyTracking.eventTopAdsProductEditProductSchedule(AppEventTracking.EventLabel.SHOWTIME_AUTO);
+            UnifyTracking.eventTopAdsProductEditProductSchedule(getActivity(), AppEventTracking.EventLabel.SHOWTIME_AUTO);
         }
     }
 

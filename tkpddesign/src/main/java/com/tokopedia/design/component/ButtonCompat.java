@@ -6,14 +6,15 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
-import android.support.annotation.StyleRes;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.*;
 import android.support.v7.content.res.AppCompatResources;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 
 import com.tokopedia.design.R;
+
+import static android.util.TypedValue.COMPLEX_UNIT_SP;
 
 /**
  * Created by meta on 16/03/18.
@@ -23,7 +24,9 @@ public class ButtonCompat extends AppCompatButton {
 
     public final static int PRIMARY = 1;
     public final static int SECONDARY = 2;
-    public final static int DISABLE = 3;
+    public final static int TRANSACTION = 3;
+    public final static int DISABLE = 4;
+    public final static int WHITE_TRANSPARENT = 5;
 
     public final static int BIG = 4;
     public final static int MEDIUM = 5;
@@ -58,6 +61,12 @@ public class ButtonCompat extends AppCompatButton {
         }
     }
 
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        defineSize();
+    }
+
     protected void initImage(Context context, TypedArray attributeArray) {
         Drawable drawableLeft = null;
         Drawable drawableRight = null;
@@ -90,12 +99,14 @@ public class ButtonCompat extends AppCompatButton {
         mType = attributeArray.getInteger(R.styleable.ButtonCompat_buttonCompatType, 0);
         mSize = attributeArray.getInteger(R.styleable.ButtonCompat_buttonCompatSize, 0);
 
+        boolean textAllCaps = attributeArray.getBoolean(R.styleable.ButtonCompat_buttonCompatTextAllCaps, false);
+
+        if (!textAllCaps) {
+            setTransformationMethod(null);
+        }
+
         defineType();
         defineSize();
-
-        if (!isEnabled()) {
-            initDraw(R.color.grey_350, R.drawable.bg_button_disabled);
-        }
     }
 
     private void initDraw(@ColorRes int textColor, @DrawableRes int backgroundDrawable) {
@@ -106,7 +117,10 @@ public class ButtonCompat extends AppCompatButton {
     private void initSize(float textSize, int height) {
         setMinHeight(height);
         setMinimumHeight(height);
-        setTextSize(textSize);
+        setTextSize(COMPLEX_UNIT_SP, textSize);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setStateListAnimator(null);
+        }
     }
 
     public int getButtonCompatType() {
@@ -130,13 +144,17 @@ public class ButtonCompat extends AppCompatButton {
     private void defineType() {
         switch (mType) {
             case PRIMARY:
-                initDraw(R.color.white, R.drawable.bg_button_primary);
+                initDraw(R.color.white, R.drawable.bg_button_green);
                 break;
             case SECONDARY:
-                initDraw(R.color.grey_500, R.drawable.bg_button_secondary);
+                initDraw(R.color.grey_500, R.drawable.bg_button_white_border);
                 break;
+            case TRANSACTION:
+                initDraw(R.color.white, R.drawable.bg_button_orange);
+                break;
+            case WHITE_TRANSPARENT:
+                initDraw(R.color.white, R.drawable.bg_button_white_transparent);
             case DISABLE:
-                initDraw(R.color.grey_500, R.drawable.bg_button_secondary);
                 break;
         }
     }
@@ -144,13 +162,13 @@ public class ButtonCompat extends AppCompatButton {
     private void defineSize() {
         switch (mSize) { // this size initiate same as zeplin by px
             case BIG:
-                initSize(14, getResources().getDimensionPixelSize(R.dimen.dp_48));
+                initSize(getResources().getInteger(R.integer.button_big), getResources().getDimensionPixelSize(R.dimen.dp_48));
                 break;
             case MEDIUM:
-                initSize(13, getResources().getDimensionPixelSize(R.dimen.dp_40));
+                initSize(getResources().getInteger(R.integer.button_medium), getResources().getDimensionPixelSize(R.dimen.dp_40));
                 break;
             case SMALL:
-                initSize(11, getResources().getDimensionPixelSize(R.dimen.dp_32));
+                initSize(getResources().getInteger(R.integer.button_small), getResources().getDimensionPixelSize(R.dimen.dp_32));
                 break;
         }
     }

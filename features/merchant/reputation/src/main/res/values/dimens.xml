@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="user_avatar">40dp</dimen>
+    <dimen name="user_avatar">52dp</dimen>
     <dimen name="notif_size">8dp</dimen>
     <dimen name="footer_height">56dp</dimen>
     <dimen name="padding_activity">16dp</dimen>

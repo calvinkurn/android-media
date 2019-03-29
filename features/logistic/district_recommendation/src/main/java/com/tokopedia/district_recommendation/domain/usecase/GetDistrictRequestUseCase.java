@@ -1,11 +1,10 @@
 package com.tokopedia.district_recommendation.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.district_recommendation.data.repository.DistrictRecommendationRepository;
 import com.tokopedia.district_recommendation.domain.model.AddressResponse;
+import com.tokopedia.network.utils.TKPDMapParam;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
@@ -25,16 +24,15 @@ public class GetDistrictRequestUseCase extends UseCase<AddressResponse> {
     private final DistrictRecommendationRepository repository;
 
     @Inject
-    public GetDistrictRequestUseCase(ThreadExecutor threadExecutor,
-                                     PostExecutionThread postExecutionThread,
-                                     DistrictRecommendationRepository repository) {
-        super(threadExecutor, postExecutionThread);
+    public GetDistrictRequestUseCase(DistrictRecommendationRepository repository) {
         this.repository = repository;
     }
 
     @Override
     public Observable<AddressResponse> createObservable(RequestParams requestParams) {
-        return repository.getAddresses(requestParams.getParamsAllValueInString());
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.putAll(requestParams.getParamsAllValueInString());
+        return repository.getAddresses(param);
     }
 
 }

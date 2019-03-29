@@ -1,16 +1,16 @@
 package com.tokopedia.feedplus.view.subscriber;
 
-import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.feedplus.R;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.feedplus.data.pojo.Feed;
+import com.tokopedia.feedplus.data.pojo.FeedQuery;
+import com.tokopedia.feedplus.data.pojo.ProductFeedType;
+import com.tokopedia.feedplus.data.pojo.ShopDetail;
+import com.tokopedia.feedplus.data.pojo.Wholesale;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
-import com.tokopedia.feedplus.domain.model.feeddetail.DataFeedDetailDomain;
-import com.tokopedia.feedplus.domain.model.feeddetail.FeedDetailProductDomain;
-import com.tokopedia.feedplus.domain.model.feeddetail.FeedDetailShopDomain;
-import com.tokopedia.feedplus.domain.model.feeddetail.FeedDetailWholesaleDomain;
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,13 +21,15 @@ import rx.Subscriber;
  * @author by nisie on 5/24/17.
  */
 
-public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>> {
-    private final FeedPlusDetail.View viewListener;
+public class FeedDetailSubscriber extends Subscriber<GraphqlResponse> {
     private static final int MAX_RATING = 100;
     private static final int NUM_STARS = 5;
+    private final FeedPlusDetail.View viewListener;
+    private final int page;
 
-    public FeedDetailSubscriber(FeedPlusDetail.View viewListener) {
+    public FeedDetailSubscriber(FeedPlusDetail.View viewListener, int page) {
         this.viewListener = viewListener;
+        this.page = page;
     }
 
     @Override
@@ -37,116 +39,105 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
 
     @Override
     public void onError(Throwable e) {
-        if (e instanceof ApolloNetworkException)
-            viewListener.onErrorGetFeedDetail(viewListener.getString(R.string.msg_network_error));
-        else viewListener.onErrorGetFeedDetail(e.toString());
+        viewListener.onErrorGetFeedDetail(
+                ErrorHandler.getErrorMessage(viewListener.getActivity(), e)
+        );
     }
 
     @Override
-    public void onNext(List<DataFeedDetailDomain> dataFeedDetailDomains) {
-        if (hasFeed(dataFeedDetailDomains)
-                && dataFeedDetailDomains.get(0).getContent().getProducts().size() == 1) {
-            DataFeedDetailDomain dataFeedDetailDomain = dataFeedDetailDomains.get(0);
-            viewListener.onSuccessGetSingleFeedDetail(
-                    createHeaderViewModel(
-                            dataFeedDetailDomain.getCreate_time(),
-                            dataFeedDetailDomain.getSource().getShop(),
-                            dataFeedDetailDomain.getContent().getStatus_activity()),
-                    convertToSingleViewModel(dataFeedDetailDomain));
-        } else if (hasFeed(dataFeedDetailDomains)) {
-            DataFeedDetailDomain dataFeedDetailDomain = dataFeedDetailDomains.get(0);
-            viewListener.onSuccessGetFeedDetail(
-                    createHeaderViewModel(
-                            dataFeedDetailDomain.getCreate_time(),
-                            dataFeedDetailDomain.getSource().getShop(),
-                            dataFeedDetailDomain.getContent().getStatus_activity()),
-                    convertToViewModel(dataFeedDetailDomain),
-                    checkHasNextPage(dataFeedDetailDomains));
+    public void onNext(GraphqlResponse graphqlResponse) {
+        FeedQuery feedQuery = graphqlResponse.getData(FeedQuery.class);
+
+        if (page == 1) {
+            viewListener.dismissLoading();
+            if (!hasFeed(feedQuery)) {
+                viewListener.onEmptyFeedDetail();
+                return;
+            }
         } else {
-            viewListener.onEmptyFeedDetail();
+            viewListener.dismissLoadingMore();
+            if (!hasFeed(feedQuery)) {
+                viewListener.setHasNextPage(false);
+                return;
+            }
         }
 
+        List<Feed> feedList = feedQuery.getFeed().getData();
+        Feed feedDetail = feedList.get(0);
+        FeedDetailHeaderViewModel headerViewModel = createHeaderViewModel(
+                feedDetail.getCreateTime(),
+                feedDetail.getSource().getShop(),
+                feedDetail.getContent().getStatusActivity());
+        viewListener.onSuccessGetFeedDetail(
+                headerViewModel,
+                convertToViewModel(feedDetail),
+                checkHasNextPage(feedQuery));
+    }
+    
+    private Double getRating(Float rating) {
+        return (double) rating / MAX_RATING * NUM_STARS;
     }
 
-    private SingleFeedDetailViewModel convertToSingleViewModel(DataFeedDetailDomain dataFeedDetailDomain) {
-        FeedDetailProductDomain productDomain = dataFeedDetailDomain.getContent().getProducts()
-                .get(0);
-        return createSingleProductViewModel(productDomain);
+    private boolean hasFeed(FeedQuery feedQuery) {
+        return feedQuery != null
+                && feedQuery.getFeed() != null
+                && feedQuery.getFeed().getData() != null
+                && !feedQuery.getFeed().getData().isEmpty()
+                && feedQuery.getFeed().getData().get(0) != null
+                && feedQuery.getFeed().getData().get(0).getContent() != null
+                && feedQuery.getFeed().getData().get(0).getContent().getProducts() != null
+                && !feedQuery.getFeed().getData().get(0).getContent().getProducts().isEmpty();
     }
 
-    private SingleFeedDetailViewModel createSingleProductViewModel(FeedDetailProductDomain productDomain) {
-        return new SingleFeedDetailViewModel(
-                productDomain.getId(),
-                productDomain.getName(),
-                productDomain.getPrice(),
-                productDomain.getImage(),
-                productDomain.getProductLink(),
-                productDomain.getCashback(),
-                getIsWholesale(productDomain.getWholesale()),
-                productDomain.getPreorder(),
-                productDomain.getFreereturns(),
-                productDomain.getWishlist(),
-                getRating(productDomain.getRating())
-        );
+    private boolean checkHasNextPage(FeedQuery feedQuery) {
+        try {
+            return feedQuery.getFeed().getData().get(0).getMeta().isHasNextPage();
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
 
-    private Double getRating(Double rating) {
-        return rating / MAX_RATING * NUM_STARS;
-    }
-
-    private boolean hasFeed(List<DataFeedDetailDomain> dataFeedDetailDomain) {
-        return !dataFeedDetailDomain.isEmpty()
-                && dataFeedDetailDomain.get(0) != null
-                && dataFeedDetailDomain.get(0).getContent() != null
-                && dataFeedDetailDomain.get(0).getContent().getProducts() != null
-                && !dataFeedDetailDomain.get(0).getContent().getProducts().isEmpty();
-    }
-
-    private boolean checkHasNextPage(List<DataFeedDetailDomain> dataFeedDetailDomains) {
-        return dataFeedDetailDomains.get(0).getMeta().getHas_next_page();
-    }
-
-    private ArrayList<Visitable> convertToViewModel(DataFeedDetailDomain dataFeedDetailDomain) {
-
+    private ArrayList<Visitable> convertToViewModel(Feed feedDetail) {
         ArrayList<Visitable> listDetail = new ArrayList<>();
 
-        if (dataFeedDetailDomain.getContent() != null && dataFeedDetailDomain.getContent().getProducts() != null)
-            for (FeedDetailProductDomain productDomain : dataFeedDetailDomain.getContent().getProducts()) {
-                listDetail.add(createProductViewModel(productDomain));
+        if (feedDetail.getContent() != null && feedDetail.getContent().getProducts() != null) {
+            for (ProductFeedType productFeed : feedDetail.getContent().getProducts()) {
+                listDetail.add(createProductViewModel(productFeed));
             }
+        }
         return listDetail;
     }
 
-    private FeedDetailViewModel createProductViewModel(FeedDetailProductDomain productDomain) {
+    private FeedDetailViewModel createProductViewModel(ProductFeedType productFeed) {
         return new FeedDetailViewModel(
-                productDomain.getId(),
-                productDomain.getName(),
-                productDomain.getPrice(),
-                productDomain.getImage(),
-                productDomain.getProductLink(),
-                productDomain.getCashback(),
-                getIsWholesale(productDomain.getWholesale()),
-                productDomain.getPreorder(),
-                productDomain.getFreereturns(),
-                productDomain.getWishlist(),
-                getRating(productDomain.getRating())
+                productFeed.getId(),
+                productFeed.getName(),
+                productFeed.getPrice(),
+                productFeed.getImage(),
+                productFeed.getProductLink(),
+                productFeed.getCashback(),
+                getIsWholesale(productFeed.getWholesale()),
+                productFeed.getPreorder(),
+                productFeed.getFreereturns(),
+                productFeed.getWishlist(),
+                getRating(productFeed.getRating())
         );
     }
 
-    private boolean getIsWholesale(List<FeedDetailWholesaleDomain> wholesale) {
+    private boolean getIsWholesale(List<Wholesale> wholesale) {
         return wholesale.size() > 0;
     }
 
 
     private FeedDetailHeaderViewModel createHeaderViewModel(String create_time,
-                                                            FeedDetailShopDomain shop,
+                                                            ShopDetail shop,
                                                             String status_activity) {
         return new FeedDetailHeaderViewModel(shop.getId(),
                 shop.getName(),
                 shop.getAvatar(),
-                shop.getGold(),
+                shop.getIsGold(),
                 create_time,
-                shop.getOfficial(),
+                shop.getIsOfficial(),
                 shop.getShopLink(),
                 shop.getShareLinkURL(),
                 shop.getShareLinkDescription(),

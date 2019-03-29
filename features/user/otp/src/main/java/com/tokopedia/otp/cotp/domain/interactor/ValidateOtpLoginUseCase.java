@@ -5,7 +5,7 @@ import com.tokopedia.otp.cotp.view.viewmodel.ValidateOtpDomain;
 import com.tokopedia.otp.cotp.view.viewmodel.ValidateOtpLoginDomain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -18,12 +18,12 @@ import rx.functions.Func1;
 
 public class ValidateOtpLoginUseCase extends UseCase<ValidateOtpLoginDomain> {
 
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private ValidateOtpUseCase validateOtpUseCase;
     private MakeLoginUseCase makeLoginUseCase;
 
     @Inject
-    public ValidateOtpLoginUseCase(UserSession userSession,
+    public ValidateOtpLoginUseCase(UserSessionInterface userSession,
                                    ValidateOtpUseCase validateOtpUseCase,
                                    MakeLoginUseCase makeLoginUseCase) {
         super();

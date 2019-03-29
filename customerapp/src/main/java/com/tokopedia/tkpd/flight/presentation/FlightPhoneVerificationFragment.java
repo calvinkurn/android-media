@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationFragment;
+import com.tokopedia.phoneverification.view.fragment.PhoneVerificationFragment;
 import com.tokopedia.tkpd.R;
 
 /**

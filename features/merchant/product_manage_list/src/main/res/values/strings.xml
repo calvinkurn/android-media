@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">product_manage_list</string>
+    <string name="pml_price_format_text">%1$s %2$s</string>
+    <string name="pml_product_variant_stock_limited">Stok Terbatas</string>
+    <string name="pml_product_manage_label_add_product_to_sell">Tambah produk Anda untuk dapat mulai berjualan.</string>
+    <string name="pml_product_manage_label_add_product">+ Tambah Produk</string>
+    <string name="pml_product_manage_label_supervision">Pengawasan</string>
+    <string name="pml_sticker_cashback">Cashback %1$d%%</string>
+    <string name="pml_sticker_shop_link">https://tokopedia.com/%s</string>
+    <string name="pml_label_subscribe">Berlangganan</string>
+
+    <string name="product_manage_you_have_x_unfinished_product">Anda memiliki %1$d draft produk yang belum terselesaikan.<![CDATA[<br /><font color=\"#42b549\">Cek Sekarang</font>]]></string>
+    <string name="product_manage_cashback_limited_title">Pemakaian Cashback Terbatas</string>
+    <string name="product_manage_cashback_limited_desc">Anda telah memakai cashback sebanyak 5 kali. Dapatkan cashback tanpa minimum pemakaian dengan berlangganan %1$s.</string>
+    <string name="product_manage_item_stock">Stok %1$s</string>
+    <string name="product_manage_item_cashback">Cashback %1$d%%</string>
+    <string name="product_manage_menu_set_price">Atur Harga</string>
+    <string name="product_manage_menu_set_cashback">Atur &#37; cashback</string>
+    <string name="product_manage_menu_set_promo_ads">Iklan TopAds</string>
+    <string name="product_manage_filter_menu_etalase_all">Semua Produk</string>
+    <string name="product_manage_filter_menu_category_all">Semua Kategori</string>
+    <string name="product_manage_cashback_title">Atur Cashback</string>
+    <string name="product_manage_cashback_option">%1$s%% senilai %2$s %3$s</string>
+    <string name="product_manage_cashback_option_none">Tanpa Cashback</string>
+    <string name="product_manage_cashback_not_subscribe_message">Berikan bonus belanja berupa TokoCash kepada pembeli hingga 5&#37; dari harga produk. Dapatkan akses Atur Cashback dengan berlangganan Gold Merchant</string>
+    <string name="product_manage_filter_sold">Produk Terjual</string>
+    <string name="product_manage_filter_empty_stok">Stok Kosong</string>
+    <string name="product_manage_filter_pending">Pengawasan</string>
+    <string name="product_manage_filter_free_returns">Free Returns</string>
+    <string name="product_manage_filter_preorder">Preorder</string>
+    <string name="product_manage_filter_all_showcase">Semua Etalase</string>
+    <string name="product_manage_stock_empty">Kosong</string>
+    <string name="product_manage_label_change_search">Ubah pencarian produk Anda</string>
+    <string name="product_manage_label_product_list_empty">Daftar Produk Kosong</string>
+    <string name="product_manage_title_duplicate_product_menu">Duplikat</string>
+    <string name="product_manage_alert_gold_merchant">Berikan bonus belanja berupa TokoCash kepada pembeli hingga 5&#37; dari harga produk. Dapatkan akses Atur Cashback dengan berlangganan Gold Merchant.</string>
+    <string name="product_manage_label_subscribe_gold_merchant">Berlangganan</string>
+    <string name="product_manage_label_stock_counter">Stok %1$d</string>
+    <string name="product_manage_desc_product_on_supervision">Produk dalam Pengawasan %1$s</string>
+</resources>

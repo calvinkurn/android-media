@@ -31,6 +31,6 @@ public class AutoSweepApiUnitTest {
     @Test
     public void getData() {
         mAutoSweepRepositoryImpl.getAutoSweepDetail();
-        Mockito.verify()
+//        Mockito.verify()
     }
 }

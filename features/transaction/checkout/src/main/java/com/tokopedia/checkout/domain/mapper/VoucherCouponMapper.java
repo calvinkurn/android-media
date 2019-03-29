@@ -1,15 +1,19 @@
 package com.tokopedia.checkout.domain.mapper;
 
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
-import com.tokopedia.core.router.transactionmodule.sharedata.CouponListResult;
-import com.tokopedia.transactiondata.entity.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
-import com.tokopedia.transactiondata.entity.response.checkpromocodefinal.CheckPromoCodeFinalDataResponse;
-import com.tokopedia.transactiondata.entity.response.couponlist.Coupon;
-import com.tokopedia.transactiondata.entity.response.couponlist.CouponDataResponse;
+import android.text.TextUtils;
+
+import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.checkout.domain.datamodel.voucher.CouponListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
+import com.tokopedia.transaction.common.sharedata.CouponListResult;
+import com.tokopedia.transactiondata.entity.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.promocheckout.common.domain.model.DataVoucher;
+import com.tokopedia.transactiondata.entity.response.checkpromocodefinal.CheckPromoCodeFinalDataResponse;
+import com.tokopedia.transactiondata.entity.response.couponlist.Coupon;
+import com.tokopedia.transactiondata.entity.response.couponlist.CouponDataResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,26 +58,28 @@ public class VoucherCouponMapper implements IVoucherCouponMapper {
 
     @Override
     public PromoCodeCartListData convertPromoCodeCartListData(
-            CheckPromoCodeCartListDataResponse dataResponse
+            DataVoucher dataVoucherPromo
     ) {
         PromoCodeCartListData promoCodeCartListData = new PromoCodeCartListData();
-        promoCodeCartListData.setError(!mapperUtil.isEmpty(dataResponse.getError()));
-        promoCodeCartListData.setErrorMessage(dataResponse.getError());
+        promoCodeCartListData.setError(mapperUtil.isEmpty(dataVoucherPromo));
+        promoCodeCartListData.setErrorMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
 
-        if (!mapperUtil.isEmpty(dataResponse.getDataVoucher())) {
+        if (!mapperUtil.isEmpty(dataVoucherPromo)) {
             PromoCodeCartListData.DataVoucher dataVoucher = new PromoCodeCartListData.DataVoucher();
-            dataVoucher.setCashbackAmount(dataResponse.getDataVoucher().getCashbackAmount());
-            dataVoucher.setCashbackTopCashAmount(dataResponse.getDataVoucher().getCashbackTopCashAmount());
-            dataVoucher.setCashbackVoucherAmount(dataResponse.getDataVoucher().getCashbackVoucherAmount());
-            dataVoucher.setCashbackVoucherDescription(dataResponse.getDataVoucher().getCashbackVoucherDescription());
-            dataVoucher.setCode(dataResponse.getDataVoucher().getCode());
-            dataVoucher.setDiscountAmount(dataResponse.getDataVoucher().getDiscountAmount());
-            dataVoucher.setExtraAmount(dataResponse.getDataVoucher().getExtraAmount());
-            dataVoucher.setGatewayId(dataResponse.getDataVoucher().getGatewayId());
-            dataVoucher.setMessageSuccess(dataResponse.getDataVoucher().getMessageSuccess());
-            dataVoucher.setPromoCodeId(dataResponse.getDataVoucher().getPromoCodeId());
-            dataVoucher.setSaldoAmount(dataResponse.getDataVoucher().getSaldoAmount());
-            dataVoucher.setToken(dataResponse.getDataVoucher().getToken());
+            dataVoucher.setCashbackAmount(dataVoucherPromo.getCashbackAmount());
+            dataVoucher.setCashbackTopCashAmount(dataVoucherPromo.getCashbackTopCashAmount());
+            dataVoucher.setCashbackVoucherAmount(dataVoucherPromo.getCashbackVoucherAmount());
+            dataVoucher.setCashbackVoucherDescription(dataVoucherPromo.getCashbackVoucherDescription());
+            dataVoucher.setCode(dataVoucherPromo.getCode());
+            dataVoucher.setDiscountAmount(dataVoucherPromo.getDiscountAmount());
+            dataVoucher.setExtraAmount(dataVoucherPromo.getExtraAmount());
+            dataVoucher.setGatewayId(dataVoucherPromo.getGatewayId());
+            dataVoucher.setMessageSuccess(dataVoucherPromo.getMessage().getText());
+            dataVoucher.setPromoCodeId(dataVoucherPromo.getPromoCodeId());
+            dataVoucher.setSaldoAmount(dataVoucherPromo.getSaldoAmount());
+            dataVoucher.setToken(dataVoucherPromo.getToken());
+            dataVoucher.setTitleDescription(dataVoucherPromo.getTitleDescription());
+            dataVoucher.setState(dataVoucherPromo.getMessage().getState());
 
             promoCodeCartListData.setDataVoucher(dataVoucher);
         }
@@ -92,6 +98,7 @@ public class VoucherCouponMapper implements IVoucherCouponMapper {
             dataVoucher.setVoucherNoOtherPromotion(dataResponse.getDataVoucher().getVoucherNoOtherPromotion());
             dataVoucher.setVoucherStatus(dataResponse.getDataVoucher().getVoucherStatus());
             dataVoucher.setVoucherPromoDesc(dataResponse.getDataVoucher().getVoucherPromoDesc());
+            dataVoucher.setIsCoupon(dataResponse.getDataVoucher().getIsCoupon());
             promoCodeCartShipmentData.setDataVoucher(dataVoucher);
         }
         return promoCodeCartShipmentData;
@@ -122,48 +129,25 @@ public class VoucherCouponMapper implements IVoucherCouponMapper {
     }
 
     @Override
-    public CheckPromoCodeCartListResult convertCheckPromoCodeCartListResult(
-            PromoCodeCartListData promoCodeCartListData
-    ) {
-        CheckPromoCodeCartListResult checkPromoCodeCartListResult = new CheckPromoCodeCartListResult();
-        checkPromoCodeCartListResult.setError(promoCodeCartListData.isError());
-        checkPromoCodeCartListResult.setErrorMessage(promoCodeCartListData.getErrorMessage());
-        if (!mapperUtil.isEmpty(promoCodeCartListData.getDataVoucher())) {
-            CheckPromoCodeCartListResult.DataVoucher dataVoucher = new CheckPromoCodeCartListResult.DataVoucher();
-            dataVoucher.setCashbackTopCashAmount(promoCodeCartListData.getDataVoucher().getCashbackTopCashAmount());
-            dataVoucher.setCashbackAmount(promoCodeCartListData.getDataVoucher().getCashbackAmount());
-            dataVoucher.setCashbackVoucherAmount(promoCodeCartListData.getDataVoucher().getCashbackVoucherAmount());
-            dataVoucher.setCashbackVoucherDescription(promoCodeCartListData.getDataVoucher().getCashbackVoucherDescription());
-            dataVoucher.setCode(promoCodeCartListData.getDataVoucher().getCode());
-            dataVoucher.setDiscountAmount(promoCodeCartListData.getDataVoucher().getDiscountAmount());
-            dataVoucher.setExtraAmount(promoCodeCartListData.getDataVoucher().getExtraAmount());
-            dataVoucher.setGatewayId(promoCodeCartListData.getDataVoucher().getGatewayId());
-            dataVoucher.setMessageSuccess(promoCodeCartListData.getDataVoucher().getMessageSuccess());
-            dataVoucher.setPromoCodeId(promoCodeCartListData.getDataVoucher().getPromoCodeId());
-            dataVoucher.setSaldoAmount(promoCodeCartListData.getDataVoucher().getSaldoAmount());
-            dataVoucher.setToken(promoCodeCartListData.getDataVoucher().getToken());
-            checkPromoCodeCartListResult.setDataVoucher(dataVoucher);
-        }
-        return checkPromoCodeCartListResult;
-    }
+    public PromoCodeCartShipmentData convertPromoCodeCartShipmentData(DataVoucher dataVoucherShipment) {
+        PromoCodeCartShipmentData promoCodeCartShipmentData = new PromoCodeCartShipmentData();
+        promoCodeCartShipmentData.setError(mapperUtil.isEmpty(dataVoucherShipment));
+        promoCodeCartShipmentData.setErrorMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        if (!mapperUtil.isEmpty(dataVoucherShipment)) {
+            PromoCodeCartShipmentData.DataVoucher dataVoucher = new PromoCodeCartShipmentData.DataVoucher();
+            int voucherAmount = 0;
+            if(!TextUtils.isEmpty(dataVoucherShipment.getDiscountAmount())){
+                voucherAmount = CurrencyFormatHelper.convertRupiahToInt(dataVoucherShipment.getDiscountAmount());
+            }
+            dataVoucher.setVoucherAmount(voucherAmount);
+            dataVoucher.setVoucherPromoDesc(dataVoucherShipment.getMessage().getText());
+            dataVoucher.setIsCoupon(dataVoucherShipment.isCoupon());
+            dataVoucher.setState(dataVoucherShipment.getMessage().getState());
+            dataVoucher.setTitleDescription(dataVoucherShipment.getTitleDescription());
+            dataVoucher.setPromoCode(dataVoucherShipment.getCode());
+            promoCodeCartShipmentData.setDataVoucher(dataVoucher);
 
-    @Override
-    public CheckPromoCodeCartShipmentResult convertCheckPromoCodeCartShipmentResult(
-            PromoCodeCartShipmentData promoCodeCartShipmentData
-    ) {
-        CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult = new CheckPromoCodeCartShipmentResult();
-        checkPromoCodeCartShipmentResult.setError(promoCodeCartShipmentData.isError());
-        checkPromoCodeCartShipmentResult.setErrorMessage(promoCodeCartShipmentData.getErrorMessage());
-        if (!mapperUtil.isEmpty(promoCodeCartShipmentData.getDataVoucher())) {
-            CheckPromoCodeCartShipmentResult.DataVoucher dataVoucher =
-                    new CheckPromoCodeCartShipmentResult.DataVoucher();
-            dataVoucher.setVoucherAmount(promoCodeCartShipmentData.getDataVoucher().getVoucherAmount());
-            dataVoucher.setVoucherAmountIdr(promoCodeCartShipmentData.getDataVoucher().getVoucherAmountIdr());
-            dataVoucher.setVoucherNoOtherPromotion(promoCodeCartShipmentData.getDataVoucher().getVoucherNoOtherPromotion());
-            dataVoucher.setVoucherPromoDesc(promoCodeCartShipmentData.getDataVoucher().getVoucherPromoDesc());
-            dataVoucher.setVoucherStatus(promoCodeCartShipmentData.getDataVoucher().getVoucherStatus());
-            checkPromoCodeCartShipmentResult.setDataVoucher(dataVoucher);
         }
-        return checkPromoCodeCartShipmentResult;
+        return promoCodeCartShipmentData;
     }
 }

@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemItemListener;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
     public static final int ITEM_PRODUCT = 2;
 
     private Context context;
-    private List<ProblemResult> selectedProblemResultList = new ArrayList<>();
+    private List<ComplaintResult> selectedProblemResultList = new ArrayList<>();
     private List<Object> itemList = new ArrayList<>();
     private ProductProblemItemListener listener;
 
@@ -60,7 +60,7 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
         notifyDataSetChanged();
     }
 
-    public void clearAndUpdateSelectedItem(List<ProblemResult> selectedProblemResultList) {
+    public void clearAndUpdateSelectedItem(List<ComplaintResult> selectedProblemResultList) {
         this.selectedProblemResultList = selectedProblemResultList;
         notifyDataSetChanged();
     }
@@ -79,13 +79,13 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
             holder.llItem.setVisibility(View.VISIBLE);
             holder.llFreeReturn.setVisibility(View.GONE);
             holder.checkBox.setChecked(false);
-            for (ProblemResult problemResult : selectedProblemResultList) {
+            for (ComplaintResult complaintResult : selectedProblemResultList) {
                 if (productProblem.getProblem().getType() == ITEM_TEXT) {
-                    if (problemResult.name.equals(productProblem.getProblem().getName())) {
+                    if (complaintResult.problem.name != null && complaintResult.problem.name.equals(productProblem.getProblem().getName())) {
                         holder.checkBox.setChecked(true);
                     }
                 } else {
-                    if (problemResult.id == productProblem.getOrder().getDetail().getId()) {
+                    if (complaintResult.problem.id == productProblem.getOrder().getDetail().getId()) {
                         holder.checkBox.setChecked(true);
                     }
                 }
@@ -107,30 +107,24 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
                     }
                 }
             }
-            holder.llItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+            holder.llItem.setOnClickListener(view -> {
+                if (productProblem.getProblem().getType() == ITEM_PRODUCT) {
+                    listener.onItemClicked(productProblem);
+                } else {
+                    listener.onStringProblemClicked(productProblem);
+                }
+            });
+
+            holder.checkBox.setOnClickListener(view -> {
+                if (holder.checkBox.isChecked()) {
+                    holder.checkBox.setChecked(false);
                     if (productProblem.getProblem().getType() == ITEM_PRODUCT) {
                         listener.onItemClicked(productProblem);
                     } else {
                         listener.onStringProblemClicked(productProblem);
                     }
-                }
-            });
-
-            holder.checkBox.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (holder.checkBox.isChecked()) {
-                        holder.checkBox.setChecked(false);
-                        if (productProblem.getProblem().getType() == ITEM_PRODUCT) {
-                            listener.onItemClicked(productProblem);
-                        } else {
-                            listener.onStringProblemClicked(productProblem);
-                        }
-                    } else {
-                        listener.onRemoveProductProblem(productProblem);
-                    }
+                } else {
+                    listener.onRemoveProductProblem(productProblem);
                 }
             });
         } else if (itemList.get(position) instanceof String) {

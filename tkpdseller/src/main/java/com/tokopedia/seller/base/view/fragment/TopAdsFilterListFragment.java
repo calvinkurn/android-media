@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 
+import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.TopAdsFilterAdapter;
 import com.tokopedia.seller.base.view.model.FilterTitleItem;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 /**
  * Created by Nathaniel on 1/27/2017.
  */
+@Deprecated
 public class TopAdsFilterListFragment extends BasePresenterFragment implements TopAdsFilterAdapter.Callback {
 
     public static final String EXTRA_TITLE_ITEM_LIST = "EXTRA_TITLE_ITEM_LIST";

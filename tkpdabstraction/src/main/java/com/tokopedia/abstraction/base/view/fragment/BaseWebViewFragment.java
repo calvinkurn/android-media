@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -21,11 +22,11 @@ import com.tokopedia.abstraction.base.view.webview.TkpdWebView;
 
 import static android.app.Activity.RESULT_OK;
 
-
+@Deprecated
 public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final int MAX_PROGRESS = 100;
 
-    private TkpdWebView webView;
+    protected TkpdWebView webView;
     private ProgressBar progressBar;
     private ValueCallback<Uri> uploadMessageBeforeLolipop;
     public ValueCallback<Uri[]> uploadMessageAfterLolipop;
@@ -164,7 +165,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
-    private void loadWeb() {
+    protected void loadWeb() {
         webView.clearCache(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
@@ -173,12 +174,17 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webView.setWebViewClient(new WebViewClient());
         webView.setWebChromeClient(new MyWebViewClient());
         webView.loadAuthUrl(getUrl(), getUserIdForHeader(), getAccessToken());
-        webView.setWebViewClient(new WebViewClient() {
+        webView.setWebViewClient(getWebviewClient());
+    }
+
+    @NonNull
+    protected WebViewClient getWebviewClient() {
+        return new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 return BaseWebViewFragment.this.shouldOverrideUrlLoading(view, url);
             }
-        });
+        };
     }
 
     protected boolean shouldOverrideUrlLoading(WebView webView, String url) {

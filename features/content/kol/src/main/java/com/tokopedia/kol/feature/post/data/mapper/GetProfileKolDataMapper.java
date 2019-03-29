@@ -13,6 +13,7 @@ import com.tokopedia.kol.feature.post.domain.model.KolProfileModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -41,33 +42,35 @@ public class GetProfileKolDataMapper
         for (PostKolData postKolData : postKol.postKolData) {
             PostKolContent content = getPostKolContent(postKolData);
             TagsFeedKol tag = getKolTag(content);
+            List<String> imageList = new ArrayList<>();
+            imageList.add(getImageUrl(content));
 
             KolPostViewModel kolPostViewModel = new KolPostViewModel(
+                    postKolData.id != null ? postKolData.id : 0,
+                    "",
                     "",
                     postKolData.userName != null ? postKolData.userName : "",
                     postKolData.userPhoto != null ? postKolData.userPhoto : "",
                     postKolData.userInfo != null ? postKolData.userInfo : "",
+                    "",
                     true,
-                    getImageUrl(content),
-                    getTagCaption(tag),
                     postKolData.description != null ? postKolData.description : "",
                     postKolData.isLiked != null ? postKolData.isLiked : false,
                     postKolData.likeCount != null ? postKolData.likeCount : 0,
                     postKolData.commentCount != null ? postKolData.commentCount : 0,
                     0,
-                    "",
-                    getTagId(tag),
                     postKolData.id != null ? postKolData.id : 0,
                     postKolData.createTime != null ? postKolData.createTime : "",
-                    "",
-                    getTagPrice(tag),
-                    false,
-                    getTagType(tag),
-                    getTagLink(tag),
-                    postKolData.userId != null ? postKolData.userId : 0,
                     postKolData.showComment != null ? postKolData.showComment : true,
-                    ""
+                    postKolData.showLike != null ? postKolData.showLike : true,
+                    imageList,
+                    getTagId(tag),
+                    "",
+                    getTagType(tag),
+                    getTagCaption(tag),
+                    !TextUtils.isEmpty(getTagLink(tag)) ? getTagLink(tag) : getTagUrl(tag)
             );
+            kolPostViewModel.setShowTopShadow(true);
             kolPostViewModels.add(kolPostViewModel);
         }
         return new KolProfileModel(kolPostViewModels, postKol.lastCursor);
@@ -151,6 +154,14 @@ public class GetProfileKolDataMapper
     private String getTagLink(TagsFeedKol tag) {
         if (tag != null && tag.link != null) {
             return tag.link;
+        } else {
+            return "";
+        }
+    }
+
+    private String getTagUrl(TagsFeedKol tag) {
+        if (tag != null && tag.url != null) {
+            return tag.url;
         } else {
             return "";
         }

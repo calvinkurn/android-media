@@ -22,13 +22,24 @@ public class BalanceTokoCash implements Parcelable {
     private long rawHoldBalance;
     private String applinks;
     private String redirectUrl;
-    private int link;
+    private boolean link;
     private long rawThreshold;
     private String threshold;
     private List<String> abTags;
+    private String pointBalance;
+    private int rawPointBalance;
+    private String cashBalance;
+    private int rawCashBalance;
+    private String walletType;
+    private String pendingCashback;
+    private int amountPendingCashback;
+    private String helpApplink;
+    private String tncApplink;
+    private boolean showAnnouncement;
 
     public BalanceTokoCash() {
     }
+
 
     protected BalanceTokoCash(Parcel in) {
         titleText = in.readString();
@@ -41,10 +52,53 @@ public class BalanceTokoCash implements Parcelable {
         rawHoldBalance = in.readLong();
         applinks = in.readString();
         redirectUrl = in.readString();
-        link = in.readInt();
+        link = in.readByte() != 0;
         rawThreshold = in.readLong();
         threshold = in.readString();
         abTags = in.createStringArrayList();
+        pointBalance = in.readString();
+        rawPointBalance = in.readInt();
+        cashBalance = in.readString();
+        rawCashBalance = in.readInt();
+        walletType = in.readString();
+        pendingCashback = in.readString();
+        amountPendingCashback = in.readInt();
+        helpApplink = in.readString();
+        tncApplink = in.readString();
+        showAnnouncement = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(titleText);
+        dest.writeParcelable(actionBalance, flags);
+        dest.writeString(balance);
+        dest.writeLong(rawBalance);
+        dest.writeString(totalBalance);
+        dest.writeLong(rawTotalBalance);
+        dest.writeString(holdBalance);
+        dest.writeLong(rawHoldBalance);
+        dest.writeString(applinks);
+        dest.writeString(redirectUrl);
+        dest.writeByte((byte) (link ? 1 : 0));
+        dest.writeLong(rawThreshold);
+        dest.writeString(threshold);
+        dest.writeStringList(abTags);
+        dest.writeString(pointBalance);
+        dest.writeInt(rawPointBalance);
+        dest.writeString(cashBalance);
+        dest.writeInt(rawCashBalance);
+        dest.writeString(walletType);
+        dest.writeString(pendingCashback);
+        dest.writeInt(amountPendingCashback);
+        dest.writeString(helpApplink);
+        dest.writeString(tncApplink);
+        dest.writeByte((byte) (showAnnouncement ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<BalanceTokoCash> CREATOR = new Creator<BalanceTokoCash>() {
@@ -58,29 +112,6 @@ public class BalanceTokoCash implements Parcelable {
             return new BalanceTokoCash[size];
         }
     };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(titleText);
-        parcel.writeParcelable(actionBalance, i);
-        parcel.writeString(balance);
-        parcel.writeLong(rawBalance);
-        parcel.writeString(totalBalance);
-        parcel.writeLong(rawTotalBalance);
-        parcel.writeString(holdBalance);
-        parcel.writeLong(rawHoldBalance);
-        parcel.writeString(applinks);
-        parcel.writeString(redirectUrl);
-        parcel.writeInt(link);
-        parcel.writeLong(rawThreshold);
-        parcel.writeString(threshold);
-        parcel.writeStringList(abTags);
-    }
 
     public String getTitleText() {
         return titleText;
@@ -162,11 +193,11 @@ public class BalanceTokoCash implements Parcelable {
         this.redirectUrl = redirectUrl;
     }
 
-    public int getLink() {
+    public boolean getLink() {
         return link;
     }
 
-    public void setLink(int link) {
+    public void setLink(boolean link) {
         this.link = link;
     }
 
@@ -192,5 +223,85 @@ public class BalanceTokoCash implements Parcelable {
 
     public void setAbTags(List<String> abTags) {
         this.abTags = abTags;
+    }
+
+    public String getPointBalance() {
+        return pointBalance;
+    }
+
+    public void setPointBalance(String pointBalance) {
+        this.pointBalance = pointBalance;
+    }
+
+    public int getRawPointBalance() {
+        return rawPointBalance;
+    }
+
+    public void setRawPointBalance(int rawPointBalance) {
+        this.rawPointBalance = rawPointBalance;
+    }
+
+    public String getCashBalance() {
+        return cashBalance;
+    }
+
+    public void setCashBalance(String cashBalance) {
+        this.cashBalance = cashBalance;
+    }
+
+    public int getRawCashBalance() {
+        return rawCashBalance;
+    }
+
+    public void setRawCashBalance(int rawCashBalance) {
+        this.rawCashBalance = rawCashBalance;
+    }
+
+    public String getWalletType() {
+        return walletType;
+    }
+
+    public void setWalletType(String walletType) {
+        this.walletType = walletType;
+    }
+
+    public String getPendingCashback() {
+        return pendingCashback;
+    }
+
+    public void setPendingCashback(String pendingCashback) {
+        this.pendingCashback = pendingCashback;
+    }
+
+    public int getAmountPendingCashback() {
+        return amountPendingCashback;
+    }
+
+    public void setAmountPendingCashback(int amountPendingCashback) {
+        this.amountPendingCashback = amountPendingCashback;
+    }
+
+    public String getHelpApplink() {
+        return helpApplink;
+    }
+
+    public void setHelpApplink(String helpApplink) {
+        this.helpApplink = helpApplink;
+    }
+
+    public String getTncApplink() {
+        return tncApplink;
+    }
+
+    public void setTncApplink(String tncApplink) {
+        this.tncApplink = tncApplink;
+    }
+
+    public boolean isShowAnnouncement() {
+        return showAnnouncement;
+    }
+
+    public void setShowAnnouncement(boolean showAnnouncement) {
+        this.showAnnouncement = showAnnouncement;
     }
 }

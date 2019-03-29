@@ -1,11 +1,13 @@
 package com.tokopedia.events.view.presenter;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.events.domain.GetEventsLocationListRequestUseCase;
 import com.tokopedia.events.domain.model.EventLocationDomain;
+import com.tokopedia.events.view.contractor.EventBaseContract;
 import com.tokopedia.events.view.contractor.EventsLocationContract;
 import com.tokopedia.events.view.viewmodel.EventLocationViewModel;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,17 +20,36 @@ import rx.Subscriber;
  * Created by ashwanityagi on 06/11/17.
  */
 
-public class EventLocationsPresenter extends BaseDaggerPresenter<EventsLocationContract.View> implements EventsLocationContract.Presenter {
+public class EventLocationsPresenter extends BaseDaggerPresenter<EventBaseContract.EventBaseView> implements EventsLocationContract.EventLocationsPresenter {
 
     private GetEventsLocationListRequestUseCase getEventsLocationListRequestUseCase;
+    private EventsLocationContract.EventLocationsView mView;
 
-    @Inject
     public EventLocationsPresenter(GetEventsLocationListRequestUseCase getEventsLocationListRequestUseCase) {
         this.getEventsLocationListRequestUseCase = getEventsLocationListRequestUseCase;
     }
 
+
     @Override
-    public void initialize() {
+    public void attachView(EventBaseContract.EventBaseView view) {
+        super.attachView(view);
+        mView = (EventsLocationContract.EventLocationsView) view;
+        getLocationsListList();
+    }
+
+    @Override
+    public boolean onClickOptionMenu(int id) {
+        mView.getActivity().onBackPressed();
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode) {
 
     }
 
@@ -37,9 +58,9 @@ public class EventLocationsPresenter extends BaseDaggerPresenter<EventsLocationC
 
     }
 
-    public void getLocationsListList() {
+    private void getLocationsListList() {
 
-        getEventsLocationListRequestUseCase.execute(getView().getParams(), new Subscriber<List<EventLocationDomain>>() {
+        getEventsLocationListRequestUseCase.execute(RequestParams.EMPTY, new Subscriber<List<EventLocationDomain>>() {
             @Override
             public void onCompleted() {
                 CommonUtils.dumper("enter onCompleted");
@@ -52,7 +73,7 @@ public class EventLocationsPresenter extends BaseDaggerPresenter<EventsLocationC
 
             @Override
             public void onNext(List<EventLocationDomain> eventLocationDomains) {
-                getView().renderLocationList(convertIntoVeiwModel(eventLocationDomains));
+                mView.renderLocationList(convertIntoVeiwModel(eventLocationDomains));
                 CommonUtils.dumper("enter onNext");
             }
         });

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TouchViewPager">
+        <attr name="can_swipe" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="VerticalRecyclerView">
+        <attr name="has_divider_left_padding" format="boolean" />
+    </declare-styleable>
+</resources>

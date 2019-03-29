@@ -15,10 +15,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.seller.ShippingConfirmationDetail;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
 import com.tokopedia.seller.facade.FacadeShopTransaction;
@@ -31,6 +30,8 @@ import com.tokopedia.seller.selling.model.ModelParamSelling;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingData;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.core.util.ValidationTextUtil;
+import com.tokopedia.seller.selling.view.listener.SellingTransaction;
+import com.tokopedia.transaction.common.TransactionRouter;
 
 import org.parceler.Parcel;
 import org.parceler.Parcels;
@@ -421,7 +422,7 @@ public class ShippingImpl extends Shipping {
                 modelParamSellings.add(modelParamSelling);
             }
             bundle.putParcelable(SellingService.MODEL_PARAM_SELLING_KEY, Parcels.wrap(modelParamSellings));
-            ((ActivitySellingTransaction) context).SellingAction(SellingService.CONFIRM_MULTI_SHIPPING, bundle);
+            ((SellingTransaction) context).SellingAction(SellingService.CONFIRM_MULTI_SHIPPING, bundle);
             view.clearMultiSelector();
         }
     }

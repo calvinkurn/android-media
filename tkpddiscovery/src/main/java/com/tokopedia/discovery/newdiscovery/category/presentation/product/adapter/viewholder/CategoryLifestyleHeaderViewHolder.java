@@ -20,17 +20,19 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.ChildCategoryLifestyleAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
-import com.tokopedia.topads.sdk.view.TopAdsBannerView;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
+import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -47,6 +49,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
     public static final int LAYOUT = R.layout.layout_category_header_lifestyle;
 
     public static final String DEFAULT_ITEM_VALUE = "1";
+    public static final String SHOP = "shop";
     private final Context context;
     private final ImageView imageHeader;
     private final RelativeLayout imageHeaderContainer;
@@ -56,6 +59,8 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
     private final TextView titleHeader;
     private final TextView totalProduct;
     private final TopAdsBannerView topAdsBannerView;
+    private final SubCategoryLifestyleItemDecoration itemDecoration;
+    private boolean isInit;
 
     public CategoryLifestyleHeaderViewHolder(View itemView,
                                              RevampCategoryAdapter.CategoryListener listener) {
@@ -68,26 +73,39 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
         this.layoutChildCategory = itemView.findViewById(R.id.view_child_category);
         this.listChildCategory = itemView.findViewById(R.id.recyclerview_child_category);
         this.topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.topAdsBannerView);
+        this.itemDecoration = new SubCategoryLifestyleItemDecoration(itemView.getResources().getDimensionPixelSize(R.dimen.dp_8));
         this.categoryListener = listener;
     }
 
-    private void initTopAds(String depId) {
+    private void initTopAds(String depId, String categoryName) {
         TopAdsParams adsParams = new TopAdsParams();
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
         adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, depId);
         adsParams.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
+        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, categoryListener.getUserId());
 
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(context))
+                .setUserId(categoryListener.getUserId())
                 .setEndpoint(Endpoint.CPM)
                 .topAdsParams(adsParams)
                 .build();
         this.topAdsBannerView.setConfig(config);
         this.topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
-            public void onBannerAdsClicked(String applink) {
+            public void onBannerAdsClicked(int position, String applink, CpmData data) {
                 categoryListener.onBannerAdsClicked(applink);
+                if(applink.contains(SHOP)) {
+                    TopAdsGtmTracker.eventCategoryPromoShopClick(context, categoryName, data, position);
+                } else {
+                    TopAdsGtmTracker.eventCategoryPromoProductClick(context, categoryName, data, position);
+                }
+            }
+        });
+        this.topAdsBannerView.setTopAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionHeadlineAdsItem(int position, CpmData data) {
+                TopAdsGtmTracker.eventCategoryPromoView(context, categoryName, data, position);
             }
         });
         this.topAdsBannerView.loadTopAds();
@@ -95,7 +113,10 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
 
     @Override
     public void bind(CategoryHeaderModel model) {
-        initTopAds(model.getDepartementId());
+        if (!isInit) {
+            initTopAds(model.getDepartementId(), model.getHeaderModel().getCategoryName());
+            isInit = true;
+        }
         renderBannerCategory(model);
         renderChildCategory(model);
         renderTotalProduct(model);
@@ -116,7 +137,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
                 );
             }
             model.setDoneTrackImpression(true);
-            UnifyTracking.eventCategoryLifestyleImpression(list);
+            UnifyTracking.eventCategoryLifestyleImpression(itemView.getContext(), list);
         }
     }
 
@@ -132,7 +153,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
     }
 
     private void renderChildCategory(CategoryHeaderModel model) {
-        if (isRootCategory(model) || !isHasChild(model)) {
+        if (!isHasChild(model)) {
             layoutChildCategory.setVisibility(View.GONE);
         } else {
             trackImpression(model);
@@ -146,6 +167,8 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
             adapter.notifyDataSetChanged();
             listChildCategory.setHasFixedSize(true);
             listChildCategory.setLayoutManager(generateLayoutManager(model.getChildCategoryModelList().size()));
+            listChildCategory.removeItemDecoration(itemDecoration);
+            listChildCategory.addItemDecoration(itemDecoration);
             listChildCategory.setAdapter(adapter);
         }
     }
@@ -166,7 +189,11 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
         if (size == 3) {
             return new GridLayoutManager(context, 3);
         } else {
-            return new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+            if (size < 8) {
+                return new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+            } else {
+                return new GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false);
+            }
         }
     }
 

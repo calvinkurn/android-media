@@ -1,9 +1,12 @@
 package com.tokopedia.otp.cotp.view.subscriber;
 
+import android.text.TextUtils;
+
 import com.tokopedia.otp.common.network.OtpErrorCode;
 import com.tokopedia.otp.common.network.OtpErrorHandler;
 import com.tokopedia.otp.cotp.view.viewlistener.Verification;
 import com.tokopedia.otp.cotp.view.viewmodel.ValidateOtpDomain;
+import com.tokopedia.otp.R;
 
 import rx.Subscriber;
 
@@ -26,7 +29,14 @@ public class VerifyOtpSubscriber extends Subscriber<ValidateOtpDomain> {
     @Override
     public void onError(Throwable e) {
         view.dismissLoadingProgress();
-        view.onErrorVerifyOtpCode(OtpErrorHandler.getErrorMessage(e, view.getContext(), false));
+        String errorMessage = OtpErrorHandler.getErrorMessage(e, view.getContext(), true);
+        view.onErrorVerifyOtpCode(errorMessage);
+
+        if (!TextUtils.isEmpty(e.getMessage())
+                && errorMessage.contains(view.getContext().getString(R.string
+                .default_request_error_unknown))) {
+            view.logUnknownError(e);
+        }
     }
 
     @Override
@@ -37,6 +47,7 @@ public class VerifyOtpSubscriber extends Subscriber<ValidateOtpDomain> {
         else {
             view.onErrorVerifyOtpCode(OtpErrorHandler.getDefaultErrorCodeMessage(OtpErrorCode
                     .UNSUPPORTED_FLOW, view.getContext()));
+            view.logUnknownError(new Throwable("Validate is not success"));
         }
     }
 }

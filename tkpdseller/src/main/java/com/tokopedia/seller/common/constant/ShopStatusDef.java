@@ -11,8 +11,6 @@ import static com.tokopedia.seller.common.constant.ShopStatusDef.MODERATED;
 import static com.tokopedia.seller.common.constant.ShopStatusDef.MODERATED_PERMANENTLY;
 import static com.tokopedia.seller.common.constant.ShopStatusDef.NOT_ACTIVE;
 import static com.tokopedia.seller.common.constant.ShopStatusDef.OPEN;
-import static com.tokopedia.seller.product.edit.constant.CurrencyTypeDef.TYPE_IDR;
-import static com.tokopedia.seller.product.edit.constant.CurrencyTypeDef.TYPE_USD;
 
 /**
  * @author normansyahputa on 4/25/17.

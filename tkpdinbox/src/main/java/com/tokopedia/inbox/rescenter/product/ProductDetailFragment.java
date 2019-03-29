@@ -48,6 +48,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
     ImageView productImage;
     TextView troubleName;
     TextView troubleReason;
+    TextView troubleAmount;
     View attachmentView;
     RecyclerView recyclerViewAttachment;
 
@@ -166,6 +167,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         productName = (TextView) view.findViewById(R.id.tv_product_name);
         productPrice = (TextView) view.findViewById(R.id.tv_product_price);
         productImage = (ImageView) view.findViewById(R.id.iv_product_image);
+        troubleAmount = (TextView) view.findViewById(R.id.complaint_amount);
         troubleName = (TextView) view.findViewById(R.id.complaint_name);
         troubleReason = (TextView) view.findViewById(R.id.complaint_reason);
         attachmentView = view.findViewById(R.id.view_attachment);
@@ -182,6 +184,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         productPrice.setText(viewData.getProductPrice());
         ImageHandler.LoadImage(productImage, viewData.getProductThumbUrl());
         troubleName.setText(getTroubleText());
+        troubleAmount.setText(getTroubleAmount());
         troubleReason.setText(viewData.getTroubleReason());
         if (viewData.getAttachment() != null && !viewData.getAttachment().isEmpty()) {
             attachmentView.setVisibility(View.VISIBLE);
@@ -206,6 +209,10 @@ public class ProductDetailFragment extends BaseDaggerFragment
             troubleText = getString(R.string.template_product_detail_trouble, viewData.getTrouble(), viewData.getQuantity());
         }
         return troubleText;
+    }
+
+    private String getTroubleAmount() {
+        return viewData.getTroubleAmountString();
     }
 
     private void renderAttachment() {

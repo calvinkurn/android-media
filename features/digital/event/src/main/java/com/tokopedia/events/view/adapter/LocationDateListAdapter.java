@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
+import com.tokopedia.events.view.contractor.EventBookTicketContract;
 import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.viewmodel.LocationDateModel;
 
@@ -26,9 +27,9 @@ public class LocationDateListAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private List<LocationDateModel> dataSet;
     private Context mContext;
-    private EventBookTicketPresenter mPresenter;
+    private EventBookTicketContract.BookTicketPresenter mPresenter;
 
-    public LocationDateListAdapter(List<LocationDateModel> data, Context context, EventBookTicketPresenter presenter) {
+    public LocationDateListAdapter(List<LocationDateModel> data, Context context, EventBookTicketContract.BookTicketPresenter presenter) {
         dataSet = data;
         this.mContext = context;
         this.mPresenter = presenter;

@@ -12,5 +12,9 @@ public class ApplinkConstant {
     public static final String WALLET_ACTIVATION = "tokopedia://wallet/activation";
     public static final String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
 
+    public static final String WALLET_INTRODUCTION_OVO = "tokopedia://ovo/introduction";
+    public static final String WALLET_TOKOCASH_ACTIVE = "tokocash";
+    public static final String WALLET_ACTIVATION_OVO = "tokopedia://ovo/activation";
+
     public static final String WALLET_TOP_UP_VISIBILITY = "top_up_visible";
 }

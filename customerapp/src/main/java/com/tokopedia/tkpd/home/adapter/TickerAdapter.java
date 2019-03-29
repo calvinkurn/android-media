@@ -19,14 +19,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.network.entity.home.Ticker;
+import com.tokopedia.home.beranda.domain.model.Ticker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.tkpd.R;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Nisie on 7/18/16.
@@ -72,7 +69,7 @@ public class TickerAdapter extends RecyclerView.Adapter<TickerAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(
-                LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_ticker, parent, false));
+                LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_ticker_home, parent, false));
     }
 
     @Override

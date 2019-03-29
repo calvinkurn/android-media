@@ -2,7 +2,12 @@ package com.tkpd.library.utils;
 
 import android.widget.EditText;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.FieldPosition;
 import java.text.NumberFormat;
+import java.text.ParsePosition;
+import java.util.Currency;
 import java.util.Locale;
 
 /**
@@ -13,7 +18,7 @@ import java.util.Locale;
 @Deprecated
 public final class CurrencyFormatHelper {
 	private static final NumberFormat RupiahFormat = NumberFormat.getCurrencyInstance(Locale.US);
-	private static final NumberFormat DollarFormat = NumberFormat.getCurrencyInstance(new Locale("en", "US"));;
+	private static final NumberFormat DollarFormat = NumberFormat.getCurrencyInstance(new Locale("en", "US"));
 	// this flag intend to block textwatcher to be called recursively
 	private static boolean LockTextWatcher = false;
 
@@ -247,4 +252,35 @@ public final class CurrencyFormatHelper {
 			return 0;
 		}
     }
+
+	public static double convertRupiahToDouble(String rupiah) {
+		rupiah = rupiah.replace("Rp", "");
+		rupiah = rupiah.replace(".", "");
+		rupiah = rupiah.replace(" ", "");
+		rupiah = rupiah.replace(",", ".");
+		return Double.parseDouble(rupiah);
+	}
+
+    public static String toRupiah(long money) {
+		try{
+			String inRupiah = getRupiahFormat().format(money).replace(",", ".");
+			return inRupiah;
+		} catch(NumberFormatException e) {
+			e.printStackTrace();
+			return "Exception raised";
+		}
+	}
+
+	public static NumberFormat getRupiahFormat() {
+		DecimalFormat formatter = (DecimalFormat) DecimalFormat.getCurrencyInstance();
+		DecimalFormatSymbols rupiahFormat = new DecimalFormatSymbols();
+
+		rupiahFormat.setCurrencySymbol("Rp ");
+		rupiahFormat.setGroupingSeparator('.');
+		formatter.setDecimalFormatSymbols(rupiahFormat);
+		formatter.setMaximumFractionDigits(0);
+		formatter.setGroupingUsed(true);
+
+		return formatter;
+	}
 }

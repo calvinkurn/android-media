@@ -6,9 +6,10 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.seller.base.view.dialog.BaseTextPickerDialogFragment;
 import com.tokopedia.seller.product.etalase.view.dialog.AddEtalaseDialog;
 import com.tokopedia.seller.product.etalase.view.fragment.EtalasePickerFragment;
@@ -22,8 +23,6 @@ import com.tokopedia.seller.product.etalase.view.listener.EtalasePickerView;
 public class EtalasePickerActivity extends BaseSimpleActivity implements HasComponent<ProductComponent>,
         EtalasePickerFragmentListener, BaseTextPickerDialogFragment.Listener {
 
-    public static final String ETALASE_ID = "ETALASE_ID";
-    public static final String ETALASE_NAME = "ETALASE_NAME";
     public static final int UNSELECTED_ETALASE_ID = -1;
     public static final String SELECTED_ETALASE_ID = "SELECTED_ETALASE_ID";
 
@@ -42,8 +41,8 @@ public class EtalasePickerActivity extends BaseSimpleActivity implements HasComp
     @Override
     public void selectEtalase(Integer etalaseId, String etalaseName) {
         Intent intent = new Intent();
-        intent.putExtra(ETALASE_ID, etalaseId);
-        intent.putExtra(ETALASE_NAME, etalaseName);
+        intent.putExtra(ProductExtraConstant.EXTRA_ETALASE_ID, etalaseId);
+        intent.putExtra(ProductExtraConstant.EXTRA_ETALASE_NAME, etalaseName);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }

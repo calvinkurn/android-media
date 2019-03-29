@@ -14,7 +14,10 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.content.res.AppCompatResources;
 import android.telephony.SmsMessage;
 import android.text.Html;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -88,6 +91,9 @@ public class MethodChecker {
     }
 
     public static Spanned fromHtml(String text) {
+        if (TextUtils.isEmpty(text)) {
+            return new SpannableStringBuilder("");
+        }
         Spanned result;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             result = Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY);

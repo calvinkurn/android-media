@@ -1,9 +1,12 @@
 package com.tokopedia.sellerapp.dashboard.di;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -26,15 +29,28 @@ import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
-import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
-import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
-import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
+import com.tokopedia.gm.common.constant.GMCommonUrl;
+import com.tokopedia.gm.common.data.interceptor.GMAuthInterceptor;
+import com.tokopedia.gm.common.data.repository.GMCommonRepositoryImpl;
+import com.tokopedia.gm.common.data.source.GMCommonDataSource;
+import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi;
+import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
+import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
+import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
+import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
+import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.product.manage.list.di.GMProductManageQualifier;
+import com.tokopedia.product.manage.list.di.ProductManageScope;
+import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.product.picker.data.api.GetProductListSellerApi;
+import com.tokopedia.seller.product.picker.data.repository.GetProductListSellingRepositoryImpl;
+import com.tokopedia.seller.product.picker.data.source.GetProductListSellingDataSource;
+import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepository;
 import com.tokopedia.seller.shop.common.di.scope.DeleteCacheScope;
 import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoTomeUseCase;
 import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.shop.setting.data.datasource.UpdateShopScheduleDataSource;
 import com.tokopedia.seller.shop.setting.data.datasource.cloud.ShopScheduleApi;
 import com.tokopedia.seller.shop.setting.data.repository.UpdateShopScheduleRepositoryImpl;
@@ -43,9 +59,14 @@ import com.tokopedia.seller.shopscore.data.factory.ShopScoreFactory;
 import com.tokopedia.seller.shopscore.data.mapper.ShopScoreDetailMapper;
 import com.tokopedia.seller.shopscore.data.repository.ShopScoreRepositoryImpl;
 import com.tokopedia.seller.shopscore.domain.ShopScoreRepository;
+import com.tokopedia.user.session.UserSessionInterface;
+
+import javax.annotation.Resource;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -53,12 +74,34 @@ import retrofit2.Retrofit;
  */
 
 @SellerDashboardScope
-@Module
+@Module(includes = {SellerDashboardGMCommonModule.class})
 public class SellerDashboardModule {
     @SellerDashboardScope
     @Provides
     ShopScoreRepository provideShopScoreRepository(ShopScoreFactory shopScoreFactory) {
         return new ShopScoreRepositoryImpl(shopScoreFactory);
+    }
+
+    @SellerDashboardScope
+    @Provides
+    GetProductListSellingRepository productListSellingRepository(GetProductListSellingDataSource getProductListSellingDataSource){
+        return new GetProductListSellingRepositoryImpl(getProductListSellingDataSource);
+    }
+
+    @SellerDashboardScope
+    @Provides
+    GetProductListSellerApi provideGetProductListApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
+        return retrofit.create(GetProductListSellerApi.class);
+    }
+
+    @Provides
+    @SellerDashboardScope
+    public SellerModuleRouter provideSellerModuleRouter(@ApplicationContext Context context){
+        if(context instanceof SellerModuleRouter){
+            return ((SellerModuleRouter)context);
+        }else{
+            return null;
+        }
     }
 
     @SellerDashboardScope
@@ -195,5 +238,27 @@ public class SellerDashboardModule {
     @Provides
     CacheApiClearAllUseCase provideCacheApiClearAllUseCase() {
         return new CacheApiClearAllUseCase();
+    }
+
+    @SellerDashboardScope
+    @Provides
+    Resources provideResources(@ApplicationContext Context context){
+        return context.getResources();
+    }
+
+    @SellerDashboardScope
+    @Provides
+    public AbstractionRouter provideAbstractionRouter(@ApplicationContext Context context) {
+        if(context instanceof AbstractionRouter){
+            return ((AbstractionRouter)context);
+        }else{
+            return null;
+        }
+    }
+
+    @SellerDashboardScope
+    @Provides
+    public UserSessionInterface provideUserSession(@ApplicationContext Context context) {
+        return new com.tokopedia.user.session.UserSession(context);
     }
 }

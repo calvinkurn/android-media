@@ -7,10 +7,10 @@
 
     <TextView
         android:id="@+id/tv_title"
-        style="@style/TextTitleMedium"
+        style="@style/TextView.Title.Bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:lines="1"
-        android:padding="@dimen/digital_padding_16"
+        android:padding="@dimen/dp_16"
         tools:text="Promo Pulsa" />
 </LinearLayout>

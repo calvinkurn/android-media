@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +16,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.base.list.seller.common.util.ItemType;
+import com.tokopedia.base.list.seller.view.old.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.reputation.util.DateHeaderFormatter;
 import com.tokopedia.seller.reputation.view.helper.DateUtilHelper;
-import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.reputation.view.helper.ReputationHeaderViewHelper;
 import com.tokopedia.seller.reputation.view.model.EmptyListModel;
 import com.tokopedia.seller.reputation.view.model.EmptySeparatorModel;
 import com.tokopedia.seller.reputation.view.model.ReputationReviewModel;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
-import com.tokopedia.seller.base.view.adapter.ItemType;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -121,10 +122,18 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
                 ReputationReviewModel.Data data = reputationReviewModel.getData();
                 holder.date.setText(data.getDate());
                 String information = data.getInformation();
-                int i = information.indexOf("I");
-
-                holder.description.setText(information.substring(0, i));
-                holder.tvInvoice.setText(information.substring(i));
+                int indexOfI = 0;
+                if (!TextUtils.isEmpty(information)) {
+                    indexOfI = information.indexOf("I");
+                }
+                String descriptionText = "";
+                String invoiceText = "";
+                if (indexOfI > 0) {
+                    descriptionText = information.substring(0, indexOfI);
+                    invoiceText = information.substring(indexOfI);
+                }
+                holder.description.setText(descriptionText);
+                holder.tvInvoice.setText(invoiceText);
                 holder.penaltyScore.setText(decimalFormat.format(data.getPenaltyScore()));
             }
         }

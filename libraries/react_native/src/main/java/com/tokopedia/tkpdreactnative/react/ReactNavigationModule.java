@@ -1,28 +1,37 @@
 package com.tokopedia.tkpdreactnative.react;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 
+import com.facebook.react.bridge.ActivityEventListener;
+import com.facebook.react.bridge.BaseActivityEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.design.component.Dialog;
+import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.tkpdreactnative.R;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerPrintUIHelper;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerprintDialogConfirmation;
 import com.tokopedia.tkpdreactnative.react.singleauthpayment.view.SingleAuthPaymentDialog;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
 
@@ -33,14 +42,18 @@ import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
  */
 
 public class ReactNavigationModule extends ReactContextBaseJavaModule implements FingerPrintUIHelper.Callback {
-    private static final int LOGIN_REQUEST_CODE = 1005;
+    private final Context appContext;
 
     private Context context;
     private ProgressDialog progressDialog;
+    private Promise mNativeModulePromise;
 
     public ReactNavigationModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.context = reactContext;
+        this.appContext = reactContext.getApplicationContext();
+
+        reactContext.addActivityEventListener(mActivityEventListener);
     }
 
     @Override
@@ -63,11 +76,18 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     public void navigateWithMobileUrl(String appLinks, String mobileUrl, String extra) {
         if (((IDigitalModuleRouter) context.getApplicationContext()).isSupportedDelegateDeepLink(appLinks)) {
             ((TkpdCoreRouter) context.getApplicationContext())
-                    .actionApplink(this.getCurrentActivity(), appLinks);
+                    .actionApplink(this.getCurrentActivity(), appLinks, extra);
         } else {
             ((TkpdCoreRouter) context.getApplicationContext())
                     .actionOpenGeneralWebView(this.getCurrentActivity(), mobileUrl);
         }
+    }
+
+    @ReactMethod
+    public void navigateAndFinish(String appLinks, String extra) {
+        navigate(appLinks, extra);
+
+        finish();
     }
 
     @ReactMethod
@@ -79,15 +99,30 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     }
 
     @ReactMethod
+    public void loginWithresult(Promise promise) {
+        Intent intent = RouteManager.getIntent(getCurrentActivity(), ApplinkConst.LOGIN);
+        String UserID = getUserId(getCurrentActivity().getApplicationContext());
+        if (UserID.equals("")){
+            getCurrentActivity().startActivityForResult(intent, ReactConst.REACT_LOGIN_REQUEST_CODE);
+        }
+    }
+
+    @ReactMethod
     public void getCurrentUserId(Promise promise) {
-        promise.resolve(SessionHandler.getLoginID(context));
+        promise.resolve(getUserId(context));
+    }
+
+    public static String getUserId(Context context){
+        UserSessionInterface userSession = new UserSession(context);
+        return userSession.getUserId();
     }
 
 
     @ReactMethod
     public void getCurrentDeviceId(Promise promise) {
         if (context.getApplicationContext() instanceof AbstractionRouter) {
-            promise.resolve(((AbstractionRouter) context.getApplicationContext()).getSession().getDeviceId());
+            UserSessionInterface userSession = new UserSession(context);
+            promise.resolve(userSession.getDeviceId());
         }
     }
 
@@ -164,7 +199,15 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     @ReactMethod
     public void sendTrackingEvent(ReadableMap dataLayer) {
         HashMap<String, Object> maps = dataLayer.toHashMap();
-        TrackingUtils.eventTrackingEnhancedEcommerce(maps);
+        TrackingUtils.eventTrackingEnhancedEcommerce(appContext, maps);
+    }
+
+    @ReactMethod
+    public void trackScreenName(String name) {
+        if(context.getApplicationContext() instanceof AbstractionRouter) {
+            AnalyticTracker analyticTracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+            analyticTracker.sendScreen(getCurrentActivity(), name);
+        }
     }
 
     @ReactMethod
@@ -192,4 +235,37 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
             progressDialog.dismiss();
         }
     }
+
+    @ReactMethod
+    public void getDebuggingMode(Promise promise){
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            promise.resolve("debug");
+        } else {
+            promise.resolve("release");
+        }
+    }
+
+    @ReactMethod
+    public void navigateWithResult(String applink, int requestCode, Promise promise) {
+        if(RouteManager.isSupportApplink(context, applink) && getCurrentActivity() != null) {
+            Intent intent = RouteManager.getIntent(getCurrentActivity(), applink);
+            getCurrentActivity().startActivityForResult(intent, requestCode);
+            mNativeModulePromise = promise;
+        }
+    }
+
+    private final ActivityEventListener mActivityEventListener = new BaseActivityEventListener() {
+        @Override
+        public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(activity, requestCode, resultCode, data);
+
+            if (requestCode == ReactConst.REACT_ADD_CREDIT_CARD_REQUEST_CODE) {
+                if (resultCode == Activity.RESULT_OK) {
+                    mNativeModulePromise.resolve("OK");
+                } else {
+                    mNativeModulePromise.reject("FAILED");
+                }
+            }
+        }
+    };
 }

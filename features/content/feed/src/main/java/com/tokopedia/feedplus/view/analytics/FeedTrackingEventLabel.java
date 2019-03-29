@@ -8,6 +8,9 @@ public class FeedTrackingEventLabel {
 
     public static final String PAGE_FEED = "Feed";
     public static final String PAGE_PRODUCT_LIST = "Product List";
+    public static final String SCREEN_FEED_DETAIL = "Feed Detail";
+    public static final String SCREEN_UNIFY_HOME_FEED = "/feed";
+
 
     // bottom nav feed before login
     public static final String USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
@@ -47,8 +50,6 @@ public class FeedTrackingEventLabel {
         public static final String OFFICIAL_STORE_CAMPAIGN_PDP = "Official Store Campaign - PDP";
         public static final String OFFICIAL_STORE_CAMPAIGN_SHOP = "Official Store Campaign - " +
                 "Shop";
-        public static final String TOPPICKS_SEE_ALL = "Toppicks - Lihat Semua";
-        public static final String TOPPICKS = "Toppicks : ";
 
         public static final String FEED_BEFORE_LOGIN = "masuk sekarang";
     }

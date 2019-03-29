@@ -16,6 +16,7 @@ import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.accountsetting.presentation.activity.AccountSettingActivity;
 import com.tokopedia.tokocash.historytokocash.presentation.fragment.HomeTokoCashFragment;
+import com.tokopedia.tokocash.network.api.WalletUrl;
 
 /**
  * Created by nabillasabbaha on 2/5/18.
@@ -64,7 +65,7 @@ public class HomeTokoCashActivity extends BaseSimpleActivity
             Application application = this.getApplication();
             if (application != null && application instanceof TokoCashRouter) {
                 Intent intent = ((TokoCashRouter) application).getWebviewActivityWithIntent(this,
-                        getString(R.string.url_help_center_tokocash), getString(R.string.title_help_history));
+                        WalletUrl.BaseUrl.WEB_DOMAIN + WalletUrl.Wallet.WEBVIEW_HELP_CENTER, getString(R.string.title_help_history));
                 startActivity(intent);
             }
             return true;
@@ -85,6 +86,7 @@ public class HomeTokoCashActivity extends BaseSimpleActivity
                 if (resultCode == Activity.RESULT_OK && data != null &&
                         data.hasExtra(AccountSettingActivity.KEY_INTENT_RESULT)) {
                     setResult(RESULT_OK);
+                    sendBroadcastTokocash();
                     finish();
                 }
                 break;
@@ -95,4 +97,14 @@ public class HomeTokoCashActivity extends BaseSimpleActivity
     public void setTitle(String title) {
         updateTitle(title);
     }
+
+    private void sendBroadcastTokocash() {
+        Intent intent = new Intent(((TokoCashRouter)getApplicationContext()).getExtraBroadcastReceiverWallet());
+        Bundle extras = new Bundle();
+        extras.putString(((TokoCashRouter)getApplicationContext()).getExtraBroadcastReceiverWallet(),
+                ((TokoCashRouter)getApplicationContext()).getExtraBroadcastReceiverWallet());
+        intent.putExtras(extras);
+        sendBroadcast(intent);
+    }
+
 }

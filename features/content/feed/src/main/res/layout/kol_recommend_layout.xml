@@ -58,7 +58,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="@dimen/dp_10"
         android:paddingBottom="@dimen/dp_6"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:reverseLayout="false"

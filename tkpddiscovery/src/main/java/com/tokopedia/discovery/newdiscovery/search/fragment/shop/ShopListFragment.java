@@ -10,34 +10,32 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
-import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.SearchTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.ShopListAdapter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.listener.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.decoration.ShopListItemDecoration;
+import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.listener.ShopListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.typefactory.ShopListTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.listener.FavoriteActionListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameterBuilder;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -49,14 +47,16 @@ import javax.inject.Inject;
 
 public class ShopListFragment extends SearchSectionFragment
         implements ShopListFragmentView,
-        FavoriteActionListener, SearchSectionGeneralAdapter.OnItemChangeView, ItemClickListener {
+        FavoriteActionListener, SearchSectionGeneralAdapter.OnItemChangeView, ShopListener {
 
+    public static final String SCREEN_SEARCH_PAGE_SHOP_TAB = "Search result - Store tab";
     private static final String SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE";
     private static final String EXTRA_QUERY = "EXTRA_QUERY";
     private static final int REQUEST_CODE_GOTO_SHOP_DETAIL = 125;
     private static final int REQUEST_CODE_LOGIN = 561;
     private static final int REQUEST_ACTIVITY_SORT_SHOP = 1235;
     private static final int REQUEST_ACTIVITY_FILTER_SHOP = 4322;
+    private static final String SEARCH_SHOP_TRACE = "search_shop_trace";
 
     private RecyclerView recyclerView;
     private ShopListAdapter adapter;
@@ -64,14 +64,15 @@ public class ShopListFragment extends SearchSectionFragment
 
     @Inject
     ShopListPresenter presenter;
-    private SessionHandler sessionHandler;
+    private UserSessionInterface userSession;
     private GCMHandler gcmHandler;
     private int lastSelectedItemPosition = -1;
     private boolean isLoadingData;
     private boolean isNextPageAvailable = true;
 
-    private EndlessRecyclerviewListener linearLayoutLoadMoreTriggerListener;
-    private EndlessRecyclerviewListener gridLayoutLoadMoreTriggerListener;
+    private EndlessRecyclerViewScrollListener linearLayoutLoadMoreTriggerListener;
+    private EndlessRecyclerViewScrollListener gridLayoutLoadMoreTriggerListener;
+    private PerformanceMonitoring performanceMonitoring;
 
     public static ShopListFragment newInstance(String query) {
         Bundle args = new Bundle();
@@ -89,7 +90,7 @@ public class ShopListFragment extends SearchSectionFragment
         } else {
             loadDataFromArguments();
         }
-        sessionHandler = new SessionHandler(getContext());
+        userSession = new UserSession(getContext());
         gcmHandler = new GCMHandler(getContext());
     }
 
@@ -114,7 +115,7 @@ public class ShopListFragment extends SearchSectionFragment
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         presenter.attachView(this, this);
-        return inflater.inflate(R.layout.fragment_base_discovery, null);
+        return inflater.inflate(R.layout.fragment_shop_list_search, null);
     }
 
     @Override
@@ -130,6 +131,15 @@ public class ShopListFragment extends SearchSectionFragment
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(getGridLayoutManager());
+        recyclerView.addItemDecoration(
+                new ShopListItemDecoration(
+                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_2),
+                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_2),
+                        -(getContext().getResources().getDimensionPixelSize(R.dimen.dp_1)),
+                        0
+                )
+        );
+
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(gridLayoutLoadMoreTriggerListener);
 
@@ -137,23 +147,42 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     private void initListener() {
-        gridLayoutLoadMoreTriggerListener = new EndlessRecyclerviewListener(getGridLayoutManager()) {
+        gridLayoutLoadMoreTriggerListener = new EndlessRecyclerViewScrollListener(getGridLayoutManager()) {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+            public void onLoadMore(int page, int totalItemsCount) {
                 if (isAllowLoadMore()) {
                     loadMoreShop(totalItemsCount - 1);
                 }
             }
         };
 
-        linearLayoutLoadMoreTriggerListener = new EndlessRecyclerviewListener(getLinearLayoutManager()) {
+        linearLayoutLoadMoreTriggerListener = new EndlessRecyclerViewScrollListener(getLinearLayoutManager()) {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+            public void onLoadMore(int page, int totalItemsCount) {
                 if (isAllowLoadMore()) {
                     loadMoreShop(totalItemsCount - 1);
                 }
             }
         };
+    }
+
+    public void updateScrollListenerState(boolean hasNextPage){
+        switch (getAdapter().getCurrentLayoutType()) {
+            case GRID_1: // List
+                if (linearLayoutLoadMoreTriggerListener != null) {
+                    linearLayoutLoadMoreTriggerListener.updateStateAfterGetData();
+                    linearLayoutLoadMoreTriggerListener.setHasNextPage(hasNextPage);
+                }
+                break;
+            case GRID_2: // Grid 2x2
+            case GRID_3: // Grid 1x1
+                if (gridLayoutLoadMoreTriggerListener != null) {
+                    gridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
+                    gridLayoutLoadMoreTriggerListener.setHasNextPage(hasNextPage);
+                }
+                break;
+        }
+
     }
 
     private boolean isAllowLoadMore() {
@@ -164,6 +193,7 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     private void loadShopFirstTime() {
+        performanceMonitoring = PerformanceMonitoring.start(SEARCH_SHOP_TRACE);
         loadMoreShop(START_ROW_FIRST_TIME_LOAD);
     }
 
@@ -178,6 +208,9 @@ public class ShopListFragment extends SearchSectionFragment
                 if (shopItemList.isEmpty()) {
                     handleEmptySearchResult();
                 } else {
+                    if (performanceMonitoring != null) {
+                        performanceMonitoring.stopTrace();
+                    }
                     handleSearchResult(shopItemList, isHasNextPage, startRow);
                 }
                 isLoadingData = false;
@@ -220,12 +253,12 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     private String generateUserId() {
-        return sessionHandler.isV4Login() ? sessionHandler.getLoginID() : null;
+        return userSession.isLoggedIn() ? userSession.getUserId() : null;
     }
 
     private String generateUniqueId() {
-        return sessionHandler.isV4Login() ?
-                AuthUtil.md5(sessionHandler.getLoginID()) :
+        return userSession.isLoggedIn() ?
+                AuthUtil.md5(userSession.getUserId()) :
                 AuthUtil.md5(gcmHandler.getRegistrationId());
     }
 
@@ -234,10 +267,12 @@ public class ShopListFragment extends SearchSectionFragment
         isNextPageAvailable = isHasNextPage;
         adapter.removeLoading();
         adapter.appendItems(shopItemList);
+
+        updateScrollListenerState(isHasNextPage);
+
         if (isHasNextPage) {
             adapter.addLoading();
         }
-        showBottomBarNavigation(true);
     }
 
     private void enrichPositionData(List<ShopViewModel.ShopItem> shopItemList, int startRow) {
@@ -252,21 +287,14 @@ public class ShopListFragment extends SearchSectionFragment
         isNextPageAvailable = false;
         adapter.removeLoading();
         if (adapter.isListEmpty()) {
-            String message = String.format(getString(R.string.empty_search_content_template), query);
-            adapter.showEmptyState(message);
-            SearchTracking.eventSearchNoResult(query, getScreenName(), getSelectedFilter());
+            adapter.showEmptyState(getActivity(), query, isFilterActive(), getFlagFilterHelper(), getString(R.string.shop_tab_title).toLowerCase());
+            SearchTracking.eventSearchNoResult(getActivity(), query, getScreenName(), getSelectedFilter());
         }
     }
 
     @Override
     public String getScreenNameId() {
-        return AppScreen.SCREEN_SEARCH_PAGE_SHOP_TAB;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        showBottomBarNavigation(false);
+        return SCREEN_SEARCH_PAGE_SHOP_TAB;
     }
 
     @Override
@@ -282,38 +310,10 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     @Override
-    protected List<AHBottomNavigationItem> getBottomNavigationItems() {
-        List<AHBottomNavigationItem> items = new ArrayList<>();
-        items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
-        items.add(new AHBottomNavigationItem(getString(adapter.getTitleTypeRecyclerView()), adapter.getIconTypeRecyclerView()));
-        return items;
-    }
-
-    @Override
-    protected AHBottomNavigation.OnTabSelectedListener getBottomNavClickListener() {
-        return new AHBottomNavigation.OnTabSelectedListener() {
-            @Override
-            public boolean onTabSelected(final int position, boolean wasSelected) {
-                switch (position) {
-                    case 0:
-                        SearchTracking.eventSearchResultOpenFilterPageShop();
-                        openFilterActivity();
-                        return true;
-                    case 1:
-                        switchLayoutType();
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        };
-    }
-
-    @Override
     public void onItemClicked(ShopViewModel.ShopItem shopItem, int adapterPosition) {
         Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopItem.getShopId());
         lastSelectedItemPosition = adapterPosition;
-        SearchTracking.eventSearchResultShopItemClick(query, shopItem.getShopName(),
+        SearchTracking.eventSearchResultShopItemClick(getActivity(), query, shopItem.getShopName(),
                 shopItem.getPage(), shopItem.getPosition());
         startActivityForResult(intent, REQUEST_CODE_GOTO_SHOP_DETAIL);
     }
@@ -321,13 +321,24 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     public void onFavoriteButtonClicked(ShopViewModel.ShopItem shopItem,
                                         int adapterPosition) {
-        SearchTracking.eventSearchResultFavoriteShopClick(query, shopItem.getShopName(),
+        SearchTracking.eventSearchResultFavoriteShopClick(getActivity(), query, shopItem.getShopName(),
                 shopItem.getPage(), shopItem.getPosition());
         presenter.handleFavoriteButtonClicked(shopItem, adapterPosition);
     }
 
     @Override
+    public void onBannerAdsClicked(String appLink) {
+
+    }
+
+    @Override
+    public void onSelectedFilterRemoved(String uniqueId) {
+        removeSelectedFilter(uniqueId);
+    }
+
+    @Override
     public void onEmptyButtonClicked() {
+        SearchTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
         showSearchInputView();
     }
 
@@ -356,6 +367,11 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     @Override
+    protected boolean isSortEnabled() {
+        return false;
+    }
+
+    @Override
     public void launchLoginActivity(Bundle extras) {
         Intent intent = ((DiscoveryRouter) MainApplication.getAppContext()).getLoginIntent
                 (getActivity());
@@ -365,12 +381,12 @@ public class ShopListFragment extends SearchSectionFragment
 
     @Override
     public boolean isUserHasLogin() {
-        return SessionHandler.isV4Login(getContext());
+        return userSession.isLoggedIn();
     }
 
     @Override
     public String getUserId() {
-        return SessionHandler.getLoginID(getContext());
+        return userSession.getUserId();
     }
 
     @Override
@@ -425,7 +441,7 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     protected void switchLayoutType() {
         super.switchLayoutType();
-        
+
         if (!getUserVisibleHint()) {
             return;
         }
@@ -445,7 +461,6 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     public void reloadData() {
         adapter.clearData();
-        showBottomBarNavigation(false);
         loadShopFirstTime();
     }
 

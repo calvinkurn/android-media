@@ -2,12 +2,10 @@ package com.tokopedia.topads.dashboard.domain.interactor;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.domain.TopAdsGroupAdsRepository;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.List;
 
@@ -24,8 +22,8 @@ public class TopAdsSearchGroupAdsNameUseCase extends UseCase<List<GroupAd>> {
     private final TopAdsGroupAdsRepository topAdsGroupAdsRepository;
 
     @Inject
-    public TopAdsSearchGroupAdsNameUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, TopAdsGroupAdsRepository topAdsGroupAdsRepository) {
-        super(threadExecutor, postExecutionThread);
+    public TopAdsSearchGroupAdsNameUseCase(TopAdsGroupAdsRepository topAdsGroupAdsRepository) {
+        super();
         this.topAdsGroupAdsRepository = topAdsGroupAdsRepository;
     }
 

@@ -1,17 +1,14 @@
 package com.tokopedia.inbox.rescenter.createreso.view.activity;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListActivityListener;
-import com.tokopedia.inbox.rescenter.createreso.view.presenter.SolutionListActivityPresenter;
+import com.tokopedia.inbox.rescenter.createreso.view.fragment.SolutionListFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
 import com.tokopedia.inbox.util.analytics.InboxAnalytics;
@@ -20,8 +17,7 @@ import com.tokopedia.inbox.util.analytics.InboxAnalytics;
  * Created by yoasfs on 24/08/17.
  */
 
-public class SolutionListActivity extends BasePresenterActivity<SolutionListActivityListener.Presenter>
-        implements SolutionListActivityListener.View, HasComponent {
+public class SolutionListActivity extends BaseSimpleActivity {
 
     private static final String ARGS_PARAM_PASS_DATA = "ARGS_PARAM_PASS_DATA";
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
@@ -77,78 +73,22 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
         return intent;
     }
 
-
     @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
+    protected Fragment getNewFragment() {
+        Bundle extras = getIntent().getExtras();
+        isCreateReso = extras.getBoolean(PARAM_IS_CREATE_RESO, false);
         if (extras.getParcelable(RESULT_VIEW_MODEL_DATA) != null) {
             resultViewModel = extras.getParcelable(RESULT_VIEW_MODEL_DATA);
+            return SolutionListFragment.newInstance(resultViewModel);
         } else {
             editAppealSolutionModel = extras.getParcelable(ARGS_PARAM_PASS_DATA);
-        }
-        isCreateReso = extras.getBoolean(PARAM_IS_CREATE_RESO, false);
-    }
-
-    @Override
-    protected void initialPresenter() {
-        presenter = new SolutionListActivityPresenter(this, this);
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_solution_list;
-    }
-
-    @Override
-    protected void initView() {
-        if (resultViewModel != null) {
-            presenter.initFragment(resultViewModel);
-        } else {
-            presenter.initEditAppealFragment(editAppealSolutionModel);
             if (editAppealSolutionModel.isEdit) {
                 toolbar.setTitle(R.string.string_edit_title);
             } else {
                 toolbar.setTitle(R.string.string_appeal_title);
             }
+            return SolutionListFragment.newEditAppealInstance(editAppealSolutionModel);
         }
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
-    public void inflateFragment(Fragment fragment, String TAG) {
-        if (getFragmentManager().findFragmentByTag(TAG) == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, fragment, TAG)
-                    .commit();
-        }
-    }
-
-    @Override
-    public Object getComponent() {
-        return getApplicationComponent();
     }
 
     public static EditAppealSolutionModel generateEditPassData(boolean isEdit,
@@ -162,10 +102,10 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
     public void onBackPressed() {
         if (!isCreateReso) {
             if (isEditFromChatReso(editAppealSolutionModel)) {
-                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickCloseEditPage(
+                UnifyTracking.eventTracking(this,InboxAnalytics.eventResoChatClickCloseEditPage(
                         editAppealSolutionModel.resolutionId));
             } else {
-                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickCloseAppealPage(
+                UnifyTracking.eventTracking(this,InboxAnalytics.eventResoChatClickCloseAppealPage(
                         editAppealSolutionModel.resolutionId));
             }
         }

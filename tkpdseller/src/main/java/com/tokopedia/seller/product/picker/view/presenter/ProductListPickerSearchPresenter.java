@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.picker.view.presenter;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.seller.product.picker.view.listener.ProductListPickerSearchView;
 
 /**

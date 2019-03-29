@@ -19,6 +19,7 @@ import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.util.TimeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,9 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
     public static final int LIKE_STATUS_ACTIVE = 1;
     public static final String WIB = "WIB";
     public static final String TARGET = "WIB";
+
+    private static final int MENU_REPORT = 102;
+    private static final int MENU_DELETE = 103;
 
     boolean isReplyOpened = false;
     private ListenerReviewHolder viewListener;
@@ -70,8 +74,8 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
         review = (TextView) itemView.findViewById(R.id.review);
         reviewStar = (RatingBar) itemView.findViewById(R.id.product_rating);
         adapter = ImageUploadAdapter.createAdapter(itemView.getContext());
+        adapter.setReviewImage(true);
         adapter.setCanUpload(false);
-        adapter.setListener(onImageClicked());
         reviewAttachment.setLayoutManager(new LinearLayoutManager(itemView.getContext(),
                 LinearLayoutManager.HORIZONTAL, false));
         reviewAttachment.setAdapter(adapter);
@@ -91,6 +95,8 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
 
     @Override
     public void bind(final ReviewProductModelContent element) {
+        adapter.setListener(onImageClicked(element));
+
         reviewerName.setText(getReviewerNameText(element));
         reviewerName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,10 +110,10 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
             @Override
             public void onClick(View view) {
                 viewListener.onSeeReplied(getAdapterPosition());
-                toggleReply();
+                toggleReply(element);
             }
         });
-        reviewTime.setText(TimeConverter.generateTimeYearly(element.getReviewTime().replace(WIB, "")));
+        reviewTime.setText(TimeUtil.generateTimeYearly(element.getReviewTime().replace(WIB, "")));
 
         reviewStar.setRating(element.getReviewStar());
         review.setText(getReview(element.getReviewMessage()));
@@ -127,7 +133,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
             reviewOverflow.setVisibility(View.GONE);
         }
 
-        initReplyViewState();
+        initReplyViewState(element);
 
         if (element.isReviewHasReplied()) {
             setSellerReply(element);
@@ -149,6 +155,11 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
         });
         setLikeStatus(element);
 
+        if(element.getReviewAttachment() != null && !element.getReviewAttachment().isEmpty()) {
+            reviewAttachment.setVisibility(View.VISIBLE);
+        }else{
+            reviewAttachment.setVisibility(View.GONE);
+        }
         adapter.addList(convertToAdapterViewModel(element.getReviewAttachment()));
         adapter.notifyDataSetChanged();
     }
@@ -186,7 +197,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
         return list;
     }
 
-    private ImageUploadAdapter.ProductImageListener onImageClicked() {
+    private ImageUploadAdapter.ProductImageListener onImageClicked(ReviewProductModelContent element) {
         return new ImageUploadAdapter.ProductImageListener() {
             @Override
             public View.OnClickListener onUploadClicked(int position) {
@@ -203,7 +214,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
                 return new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        viewListener.goToPreviewImage(position, adapter.getList());
+                        viewListener.goToPreviewImage(position, adapter.getList(), element);
                     }
                 };
             }
@@ -221,7 +232,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
                 viewListener.onGoToShopInfo(element.getShopId());
             }
         });
-        sellerReplyTime.setText(TimeConverter.generateTimeYearly(element.getResponseCreateTime().replace(WIB, "")));
+        sellerReplyTime.setText(TimeUtil.generateTimeYearly(element.getResponseCreateTime().replace(WIB, "")));
         sellerReply.setText(MethodChecker.fromHtml(element.getResponseMessage()));
         if (element.isSellerRepliedOwner()) {
             replyOverflow.setVisibility(View.VISIBLE);
@@ -230,14 +241,14 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
                 public void onClick(View v) {
 
                     final PopupMenu popup = new PopupMenu(itemView.getContext(), v);
-                    popup.getMenu().add(1, R.id.menu_delete, 1,
+                    popup.getMenu().add(1, MENU_DELETE, 1,
                             MainApplication.getAppContext()
                                     .getString(R.string.menu_delete));
 
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
-                            if (item.getItemId() == R.id.menu_delete) {
+                            if (item.getItemId() == MENU_DELETE) {
                                 viewListener.onDeleteReviewResponse(element, getAdapterPosition());
                                 return true;
                             } else {
@@ -255,13 +266,13 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
         }
     }
 
-    private void toggleReply() {
-        isReplyOpened = !isReplyOpened;
-        initReplyViewState();
+    private void toggleReply(ReviewProductModelContent element) {
+        element.setReplyOpened(!element.isReplyOpened());
+        initReplyViewState(element);
     }
 
-    private void initReplyViewState() {
-        if (isReplyOpened) {
+    private void initReplyViewState(ReviewProductModelContent element) {
+        if (element.isReplyOpened()) {
             seeReplyText.setText(MainApplication.getAppContext().getText(R.string.close_reply));
             replyArrow.setRotation(180);
             replyReviewLayout.setVisibility(View.VISIBLE);
@@ -271,10 +282,6 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
             replyArrow.setRotation(0);
             replyReviewLayout.setVisibility(View.GONE);
         }
-    }
-
-    private String getFormattedTime(String reviewTime) {
-        return TimeConverter.generateTimeYearly(reviewTime.replace(TARGET, ""));
     }
 
     private Spanned getReview(String review) {
@@ -308,12 +315,12 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
             public void onClick(View v) {
                 viewListener.onMenuClicked(getAdapterPosition());
                 PopupMenu popup = new PopupMenu(itemView.getContext(), v);
-                popup.getMenu().add(1, R.id.menu_report, 2, v.getContext().getString(R.string.menu_report));
+                popup.getMenu().add(1, MENU_REPORT, 2, v.getContext().getString(R.string.menu_report));
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        if (item.getItemId() == R.id.menu_report) {
+                        if (item.getItemId() == MENU_REPORT) {
                             viewListener.onGoToReportReview(
                                     element.getShopId(),
                                     element.getReviewId(),
@@ -334,7 +341,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
     public interface ListenerReviewHolder {
         void onGoToProfile(String reviewerId, int adapterPosition);
 
-        void goToPreviewImage(int position, ArrayList<ImageUpload> list);
+        void goToPreviewImage(int position, ArrayList<ImageUpload> list, ReviewProductModelContent element);
 
         void onGoToShopInfo(String shopId);
 

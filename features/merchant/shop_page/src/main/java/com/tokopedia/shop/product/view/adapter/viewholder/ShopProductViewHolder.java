@@ -4,7 +4,6 @@ import android.graphics.Paint;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -13,8 +12,11 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.shop.R;
+import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
+
+import static com.tokopedia.shop.common.constant.ShopPageConstant.ITEM_OFFSET;
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -23,8 +25,9 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_shop_product_grid;
-    public static final int SPAN_LOOK_UP = 1;
+    public static final int GRID_LAYOUT = R.layout.item_shop_product_grid;
+    public static final int LIST_LAYOUT = R.layout.item_shop_product_list;
+    public static final double RATIO_WITH_RELATIVE_TO_SCREEN = 2.3;
 
     private final ShopProductClickedListener shopProductClickedListener;
     private ImageView wishlistImageView;
@@ -42,8 +45,21 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private TextView totalReview;
     private View soldOutView;
 
-    public ShopProductViewHolder(View itemView, ShopProductClickedListener shopProductClickedListener) {
+    private boolean isFixWidth;
+    private @ShopTrackProductTypeDef int shopTrackType;
+    private int deviceWidth;
+    private int layoutType;
+    private View vgRating;
+    private View badgeContainer;
+
+    public ShopProductViewHolder(View itemView, ShopProductClickedListener shopProductClickedListener,
+                                 boolean isFixWidth, int deviceWidth,
+                                 @ShopTrackProductTypeDef int shopTrackType, int layoutType) {
         super(itemView);
+        this.isFixWidth = isFixWidth;
+        this.shopTrackType = shopTrackType;
+        this.deviceWidth = deviceWidth;
+        this.layoutType = layoutType;
         this.shopProductClickedListener = shopProductClickedListener;
         findViews(itemView);
     }
@@ -58,18 +74,25 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         wholesaleTextView = view.findViewById(R.id.text_view_wholesale);
         preOrderTextView = view.findViewById(R.id.text_view_pre_order);
 
+        badgeContainer = view.findViewById(R.id.badges_container);
+
         freeReturnImageView = view.findViewById(R.id.image_view_free_return);
         productImageView = view.findViewById(R.id.product_image);
         wishlistImageView = view.findViewById(R.id.image_view_wishlist);
         wishlistContainer = view.findViewById(R.id.wishlist_button_container);
         soldOutView = view.findViewById(R.id.sold_out_view);
-
+        vgRating = view.findViewById(R.id.vg_rating);
         qualityRatingBar = view.findViewById(R.id.ratingBar);
         totalReview = view.findViewById(R.id.total_review);
+
     }
 
     @Override
     public void bind(final ShopProductViewModel shopProductViewModel) {
+        if (isFixWidth && deviceWidth > 0 && layoutType == ShopProductViewHolder.GRID_LAYOUT) {
+            itemView.getLayoutParams().width = (int) (deviceWidth / RATIO_WITH_RELATIVE_TO_SCREEN);
+        }
+
         updateDisplayGeneralView(shopProductViewModel);
         updateDisplayPrice(shopProductViewModel);
         updateDisplayRating(shopProductViewModel);
@@ -98,18 +121,20 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     }
 
     protected void onProductClicked(ShopProductViewModel shopProductViewModel) {
-        shopProductClickedListener.onProductClicked(shopProductViewModel);
+        shopProductClickedListener.onProductClicked(shopProductViewModel, shopTrackType, getAdapterPosition() - ITEM_OFFSET );
     }
 
     private void updateDisplayRating(final ShopProductViewModel shopProductViewModel) {
-        if (totalReview != null && qualityRatingBar != null && !TextUtils.isEmpty(shopProductViewModel.getTotalReview())) {
+        if (TextUtils.isEmpty(shopProductViewModel.getTotalReview()) ||
+                shopProductViewModel.getRating() == 0) {
+            vgRating.setVisibility(View.GONE);
+        } else {
             totalReview.setText(itemView.getResources().getString(R.string.total_point_format,
                     String.valueOf(shopProductViewModel.getTotalReview())));
-            totalReview.setVisibility(View.VISIBLE);
             if (qualityRatingBar != null) {
                 qualityRatingBar.setRating((float) shopProductViewModel.getRating());
-                qualityRatingBar.setVisibility(View.VISIBLE);
             }
+            vgRating.setVisibility(View.VISIBLE);
         }
     }
 
@@ -134,16 +159,36 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     }
 
     private void updateDisplayBadges(final ShopProductViewModel shopProductViewModel) {
+        badgeContainer.setVisibility(View.GONE);
         if (shopProductViewModel.getCashback() > 0) {
             cashBackTextView.setText(cashBackTextView.getContext().getString(
                     R.string.shop_product_manage_item_cashback, (int) shopProductViewModel.getCashback()));
             cashBackTextView.setVisibility(View.VISIBLE);
+            badgeContainer.setVisibility(View.VISIBLE);
         } else {
             cashBackTextView.setVisibility(View.GONE);
         }
-        freeReturnImageView.setVisibility(shopProductViewModel.isFreeReturn() ? View.VISIBLE : View.GONE);
-        preOrderTextView.setVisibility(shopProductViewModel.isPo() ? View.VISIBLE : View.GONE);
-        wholesaleTextView.setVisibility(shopProductViewModel.isWholesale() ? View.VISIBLE : View.GONE);
+
+        if (shopProductViewModel.isFreeReturn()) {
+            freeReturnImageView.setVisibility(View.VISIBLE);
+            badgeContainer.setVisibility(View.VISIBLE);
+        } else {
+            freeReturnImageView.setVisibility(View.GONE);
+        }
+
+        if (shopProductViewModel.isPo()) {
+            preOrderTextView.setVisibility(View.VISIBLE);
+            badgeContainer.setVisibility(View.VISIBLE);
+        } else {
+            preOrderTextView.setVisibility(View.GONE);
+        }
+
+        if (shopProductViewModel.isWholesale()) {
+            wholesaleTextView.setVisibility(View.VISIBLE);
+            badgeContainer.setVisibility(View.VISIBLE);
+        } else {
+            wholesaleTextView.setVisibility(View.GONE);
+        }
     }
 
     private void updateDisplayWishList(final ShopProductViewModel shopProductViewModel) {
@@ -158,7 +203,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     }
 
     protected void onWishlistClicked(ShopProductViewModel shopProductViewModel) {
-        shopProductClickedListener.onWishListClicked(shopProductViewModel);
+        shopProductClickedListener.onWishListClicked(shopProductViewModel, shopTrackType);
     }
 
     protected String getImageUrl(ShopProductViewModel shopProductViewModel) {

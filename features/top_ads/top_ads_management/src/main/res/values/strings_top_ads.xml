@@ -4,6 +4,9 @@
     <string name="top_ads_title_dashboard">TopAds</string>
     <string name="top_ads_title_product">Produk</string>
     <string name="title_top_ads_store">Toko</string>
+    <string name="label_top_ads_impression">Tampil</string>
+    <string name="label_top_ads_click">Klik</string>
+
     <string name="title_top_ads_promo_group">Grup</string>
     <string name="title_top_ads_add_credit">Tambah Kredit TopAds</string>
     <string name="title_top_ads_new_promo_shop">Pilih Atau Buat Iklan</string>
@@ -17,12 +20,7 @@
     <string name="title_top_ads_keyword_add_detail">Tambah Kata Kunci</string>
     <string name="topads_title_promo_grup_activity">Grup Iklan</string>
 
-    <string name="label_top_ads_impression">Tampil</string>
-    <string name="label_top_ads_click">Klik</string>
-    <string name="label_top_ads_ctr">Persentase Klik</string>
-    <string name="label_top_ads_conversion">Konversi</string>
-    <string name="label_top_ads_average">Rata - Rata</string>
-    <string name="label_top_ads_cost">Terpakai</string>
+
     <string name="label_top_ads_groups">Grup</string>
     <string name="label_top_ads_items">Produk</string>
     <string name="label_top_ads_keyword">Kata Kunci</string>
@@ -121,14 +119,6 @@
     <string name="topads_label_title_percentation_detail">Persentase Klik</string>
 
     <!-- Top Ads Statistic-->
-    <string name="title_top_ads_statistic_graph_impression">Jumlah orang yang melihat iklan Anda.</string>
-    <string name="title_top_ads_statistic_graph_avg">Biaya rata-rata yang Anda bayarkan untuk setiap klik.</string>
-    <string name="title_top_ads_statistic_graph_convertion">Jumlah favorit / transaksi dari iklan Anda.</string>
-    <string name="title_top_ads_statistic_graph_ctr">Perbandingan orang yang melihat iklan Anda dengan jumlah klik pada iklan tersebut.</string>
-    <string name="title_top_ads_statistic_graph_click">Jumlah klik pada iklan Anda.</string>
-    <string name="title_top_ads_statistic_graph_spent">Jumlah anggaran yang telah terpakai untuk iklan ini.</string>
-    <string name="title_activity_statistic">Statistik</string>
-    <string name="top_ads_statistic_info_default_value">-</string>
 
     <string name="label_top_ads_empty_group">Tanpa Grup</string>
     <string name="label_top_ads_favorit">Favorit</string>
@@ -205,8 +195,12 @@
     <string name="top_ads_keyword_search_group">Cari Grup</string>
     <string name="top_ads_keyword_title_add">Tambah Kata Kunci</string>
     <string name="top_ads_keyword_broad_match">Broad Match</string>
-    <string name="top_ads_keyword_phrase_match">Phrase Match</string>
-    <string name="top_ads_keyword_exact_match">Exact Match</string>
+    <string name="top_ads_keyword_phrase_match">Pencarian Luas</string>
+    <string name="top_ads_keyword_exact_match">Pencarian Spesifik</string>
+    <string name="top_ads_keyword_phrase_match_3">Pencarian Luas</string>
+    <string name="top_ads_keyword_exact_match_3">Pencarian Spesifik</string>
+    <string name="top_ads_keyword_phrase_match_2">Pencarian Luas</string>
+    <string name="top_ads_keyword_exact_match_2">Pencarian Spesifik</string>
     <string name="top_ads_keyword_broad_match_positive_description">Kata Kunci dengan jangkauan pencarian luas</string>
     <string name="top_ads_keyword_phrase_match_positive_description">Iklan ditampilkan ketika pencarian mengandung kata kunci.</string>
     <string name="top_ads_keyword_exact_match_positive_description">Iklan ditampilkan ketika pencarian mengandung kata kunci yang sama persis.</string>
@@ -221,14 +215,19 @@
     <string name="top_ads_keyword_label_type">Tipe Kata Kunci</string>
     <string name="top_ads_keyword_title_delete">Hapus Kata Kunci?</string>
     <string name="top_ads_keyword_confirmation_delete">Kata kunci akan dihapus dari daftar iklan TopAds Anda.</string>
+    <string name="top_ads_keyword_copy_hint_desc">Kata kunci akan disalin ke grup iklan yang sudah ada.</string>
 
     <string name="top_ads_keyword_type">Tipe Kata Kunci</string>
     <string name="top_ads_choose_keyword_type">Pilih Tipe Kata Kunci</string>
     <string name="top_ads_keyword_title_detail">Detail Kata Kunci</string>
     <string name="top_ads_keyword_phrase_match_example"><![CDATA[<i>Contoh kata kunci:</i> <i><b>Pakaian Wanita</b></i><br />]]>
                                                                  <![CDATA[<i>Contoh pencarian:</i>]]> Pakaian Wanita <![CDATA[<i><b>Murah</b></i>]]>, <![CDATA[<i><b>Trend</b></i>]]> Pakaian Wanita</string>
+    <string name="top_ads_keyword_phrase_match_example_2"><![CDATA[Contoh kata kunci&#x09;: <b>Pakaian Wanita</b><br />]]>
+                                                            <![CDATA[Contoh pencarian&#x09;:]]> Pakaian Wanita <![CDATA[<i><b>Murah</b></i>]]></string>
     <string name="top_ads_keyword_exact_match_example"><![CDATA[<i>Contoh kata kunci:</i> <i><b>Pakaian Wanita</b></i> <br />]]>\n
                                                                  <![CDATA[<i>Contoh pencarian:</i>]]> Pakaian Wanita</string>
+    <string name="top_ads_keyword_exact_match_example_2"><![CDATA[Contoh kata kunci&#x09;: <b>Pakaian Wanita</b><br />]]>\n
+                                                                 <![CDATA[Contoh pencarian&#x09;:]]> Pakaian Wanita</string>
     <string name="top_ads_keyword_has_been_added">Kata Kunci berhasil ditambahkan</string>
     <string name="top_ads_keyword__all_group">Semua Grup</string>
     <string name="top_ads_keyword_delete">Hapus</string>
@@ -236,13 +235,11 @@
     <string name="top_ads_label_price_desc">Sesuaikan biaya dengan anggaran iklan Anda.</string>
 
     <!-- tooltip statistic topads -->
-    <string name="top_ads_tooltip_statistic_use">Rp %1s</string>
-    <string name="top_ads_tooltip_statistic_avg">Rp %1s</string>
     <string name="title_top_ads_keyword">Kata Kunci</string>
     <string name="title_top_ads_filter_keyword">Filter Kata Kunci</string>
     <string name="top_ads_keyword_your_keyword_empty">Kata Kunci Anda Kosong</string>
     <string name="top_ads_keyword_your_keyword_negative_empty">Kata Kunci Negatif Anda Kosong</string>
-    <string name="top_ads_keyword_please_use">Gunakan kata kunci agar iklan Anda dapat tampil  pada pencarian yang sesuai.</string>
+    <string name="top_ads_keyword_please_use">Gunakan kata kunci agar jangkauan iklan Anda semakin luas. Kata kunci yang relevan dengan produk membuat nilai iklan Anda semakin baik.</string>
     <string name="top_ads_keyword_please_use_negative">Optimalkan anggaran iklan Anda dengan kata kunci negatif agar tidak tampil pada pencarian yang tidak sesuai.</string>
     <string name="top_ads_keyword_add_keyword">Tambah Kata Kunci</string>
     <string name="top_ads_keyword_group_title">Grup</string>
@@ -253,5 +250,28 @@
 
     <string name="topads_keyword_add_cancel_dialog">Kata kunci yang sudah Anda masukkan akan hilang\nTinggalkan halaman ini?</string>
     <string name="static_suggestion_bid_recommendation">Sesuaikan biaya dengan anggaran iklan Anda.</string>
-
+    <string name="topads_multi_select_title">%1$d Terpilih</string>
+    <string name="topads_status_active">Aktifkan</string>
+    <string name="topads_status_inactive">Nonaktifkan</string>
+    <string name="label_top_ads_change_group">Pindah Grup</string>
+    <string name="label_change_price">Ubah Biaya</string>
+    <string name="label_top_ads_choose_group_desc">Pilih Grup Iklan yang akan Anda tambahkan kata kunci.</string>
+    <string name="label_top_ads_choose_group_info">Kata kunci dalam grup</string>
+    <string name="label_top_ads_choose_type">Pilih Tipe</string>
+    <string name="top_ads_title_keyword_add_keyword_desc">Biaya maksimum yang akan diterapkan adalah Rp 750 perklik.</string>
+    <string name="keyword_group_label_view">Grup: %1s</string>
+    <string name="top_ads_keyword_total_keyword_in_group_2">%1$d Kata Kunci</string>
+    <string name="keyword_enter_product_description"><i>Contoh Penulisan:\nPakaian Wanita\nSepatu Bola</i></string>
+    <string name="top_ads_keywords_add_how_to"><i>Masukkan atau tempel kata kunci, satu kata kunci per baris.</i></string>
+    <string name="lihat_detail">Lihat Detail</string>
+    <string name="top_ads_see_detail_info_keyword_phrase">Iklan tetap tampil meski pembeli memasukkan kata sebelum atau setelah kata kunci utama.</string>
+    <string name="top_ads_see_detail_info_keyword_match">Iklan tampil jika kata kunci dalam pencarian sama dengan yang Anda pasang.</string>
+    <string name="topads_keyword_example">Contoh kata kunci\t\t\t:</string>
+    <string name="topads_keyword_search_example">Contoh pencarian\t\t\t:</string>
+    <string name="topads_keyword_example_value">&#160;pakaian wanita</string>
+    <string name="topads_keyword_search_example_value_phrase"><![CDATA[<i>&#160;pakaian wanita <b>murah</b></i>]]></string>
+    <string name="topads_keyword_search_example_value_exact"><![CDATA[<i>&#160;pakaian wanita</i>]]></string>
+    <string name="top_ads_keyword_subtitle_negative">Memblokir kata kunci yang tidak diinginkan.</string>
+    <string name="top_ads_keyword_subtitle">Iklan tampil pada kata kunci yang sesuai.</string>
+    <string name="topads_keyword_local_empty_title">Tambah kata kunci yang akan dimasukkan ke grup iklan.</string>
 </resources>

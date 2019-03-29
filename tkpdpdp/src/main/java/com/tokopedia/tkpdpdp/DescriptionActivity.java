@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.text.util.Linkify;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -17,8 +16,6 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpdpdp.customview.DescriptionTextView;
 import com.tokopedia.tkpdpdp.customview.ProductVideoHorizontalScroll;
 import com.tokopedia.tkpdpdp.customview.YoutubeThumbnailViewHolder;
-
-import butterknife.ButterKnife;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
 import static com.tokopedia.core.var.TkpdCache.Key.STATE_ORIENTATION_CHANGED;
@@ -34,9 +31,9 @@ public class DescriptionActivity extends TActivity implements View.OnClickListen
     public static final String KEY_VIDEO = "PRODUCT_DETAIL_VIDEO";
 
     private TextView topBarTitle;
-    private DescriptionTextView tvDesc;
-    private ScrollView descriptionContainer;
-    private ProductVideoHorizontalScroll productVideoHorizontalScroll;
+    protected DescriptionTextView tvDesc;
+    protected ScrollView descriptionContainer;
+    protected ProductVideoHorizontalScroll productVideoHorizontalScroll;
     private boolean isBackPressed;
     private LocalCacheHandler localCacheHandler;
 
@@ -53,7 +50,6 @@ public class DescriptionActivity extends TActivity implements View.OnClickListen
         setContentView(R.layout.activity_description);
         initView();
         hideToolbar();
-        ButterKnife.bind(this);
         showData();
         setupTopbar();
     }
@@ -62,7 +58,7 @@ public class DescriptionActivity extends TActivity implements View.OnClickListen
     public void onClick(View v) {
         if (v.getId() == R.id.simple_top_bar_close_button) {
             finish();
-            DescriptionActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+            DescriptionActivity.this.overridePendingTransition(0,com.tokopedia.core2.R.anim.push_down);
         }
     }
 
@@ -76,7 +72,7 @@ public class DescriptionActivity extends TActivity implements View.OnClickListen
         if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             if (!localCacheHandler.getBoolean(STATE_ORIENTATION_CHANGED).booleanValue()) {
                 String productId = getIntent().getParcelableExtra(EXTRA_PRODUCT_ID);
-                UnifyTracking.eventPDPOrientationChanged(productId);
+                UnifyTracking.eventPDPOrientationChanged(this, productId);
                 localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED,Boolean.TRUE);
                 localCacheHandler.applyEditor();
             }

@@ -25,11 +25,12 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.district_recommendation.domain.model.Address;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
+import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopsettings.shipping.customview.CourierView;
 import com.tokopedia.seller.shopsettings.shipping.customview.ShippingAddressLayout;
@@ -58,6 +59,8 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     ShippingAddressLayout addressLayout;
 
     TextView submitButtonCreateShop;
+
+    LogisticRouter logisticRouter;
 
     private EditShippingPresenter editShippingPresenter;
     private TkpdProgressDialog mainProgressDialog;
@@ -115,6 +118,10 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
             editShippingPresenter.setSavedInstance(getArguments());
         } else {
             editShippingPresenter.setSavedInstance(savedInstanceState);
+        }
+
+        if (getActivity().getApplicationContext() instanceof LogisticRouter) {
+            logisticRouter = (LogisticRouter) getActivity().getApplicationContext();
         }
     }
 
@@ -360,7 +367,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
 
     @Override
     public void editAddress() {
-        startActivityForResult(DistrictRecommendationActivity.createInstance(getActivity(),
+        startActivityForResult(DistrictRecommendationActivity.createInstanceIntent(getActivity(),
                 editShippingPresenter.getToken()),
                 GET_DISTRICT_RECCOMENDATION_REQUEST_CODE);
     }
@@ -422,7 +429,11 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         if (isAdded() && getActivity() != null) {
-            getActivity().getMenuInflater().inflate(R.menu.save_btn, menu);
+            if(GlobalConfig.isCustomerApp()) {
+                getActivity().getMenuInflater().inflate(R.menu.save_btn_black, menu);
+            } else {
+                getActivity().getMenuInflater().inflate(R.menu.save_btn, menu);
+            }
             MenuItem item = menu.findItem(R.id.action_send);
             item.setTitle(getString(R.string.title_action_save_shipping));
         }
@@ -466,7 +477,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
             getActivity().finish();
         } else if (fragmentShipingMainLayout.getChildCount() < 1) {
             showErrorToast(getActivity().getString(R.string.title_select_shop_location));
-            UnifyTracking.eventCreateShopFillLogisticError();
+            UnifyTracking.eventCreateShopFillLogisticError(getActivity());
         }
     }
 
@@ -491,7 +502,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
                 );
                 locationPass.setCityName(editShippingPresenter.getShopInformation().getCityName());
             }
-            Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass);
+            Intent intent = logisticRouter.navigateToGeoLocationActivityRequest(getActivity(), locationPass);
             startActivityForResult(intent, OPEN_MAP_CODE);
         } else {
             CommonUtils.dumper("Google play services unavailable");

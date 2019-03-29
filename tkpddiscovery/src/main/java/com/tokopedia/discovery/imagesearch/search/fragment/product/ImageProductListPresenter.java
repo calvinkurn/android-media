@@ -1,10 +1,9 @@
 package com.tokopedia.discovery.imagesearch.search.fragment.product;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragmentView;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.HashMap;
 
@@ -16,8 +15,8 @@ public interface ImageProductListPresenter extends CustomerPresenter<ImageProduc
 
     void loadMoreData(SearchParameter searchParameter, HashMap<String, String> additionalParams);
 
-    void handleWishlistButtonClicked(ProductItem productItem, int adapterPosition);
+    void handleWishlistButtonClicked(ProductItem productItem);
 
-    void attachView(ImageProductListFragmentView viewListener, WishlistActionListener wishlistActionListener);
+    void attachView(ImageProductListFragmentView viewListener, WishListActionListener wishlistActionListener);
 
 }

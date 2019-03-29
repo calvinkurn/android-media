@@ -2,7 +2,7 @@ package com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.topads.dashboard.data.model.data.DataEtalase;
-import com.tokopedia.seller.common.data.response.DataResponse;
+import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
 
 import java.util.Map;
 

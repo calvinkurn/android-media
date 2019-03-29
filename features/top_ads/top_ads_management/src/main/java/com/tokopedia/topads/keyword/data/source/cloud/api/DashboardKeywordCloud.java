@@ -1,8 +1,8 @@
 package com.tokopedia.topads.keyword.data.source.cloud.api;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
-import com.tokopedia.seller.common.data.response.DataResponse;
+import com.tokopedia.abstraction.common.data.model.request.DataRequest;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.keyword.data.model.EditTopAdsKeywordDetailDataModel;
 import com.tokopedia.topads.keyword.data.model.TopAdsKeywordEditDetailInputDataModel;
@@ -24,6 +24,7 @@ import rx.Observable;
  * Created by normansyahputa on 5/18/17.
  */
 
+@Deprecated
 public class DashboardKeywordCloud {
 
     private KeywordApi keywordApi;
@@ -42,10 +43,9 @@ public class DashboardKeywordCloud {
     }
 
     private DataRequest<List<TopAdsKeywordEditDetailInputDataModel>> getEditTopAdsKeywordDetailModel(TopAdsKeywordEditDetailInputDataModel dataModel) {
-        DataRequest<List<TopAdsKeywordEditDetailInputDataModel>> dataRequest = new DataRequest<>();
         List<TopAdsKeywordEditDetailInputDataModel> list = new ArrayList<>();
         list.add(dataModel);
-        dataRequest.setData(list);
+        DataRequest<List<TopAdsKeywordEditDetailInputDataModel>> dataRequest = new DataRequest<>(list);
         return dataRequest;
     }
 

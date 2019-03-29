@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -83,7 +84,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginStart="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/keyline_1_minus_8dp" />
+                        android:layout_marginTop="@dimen/dp_8" />
 
                     <View
                         android:layout_width="match_parent"
@@ -428,13 +429,13 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/promo_code"
-                            android:drawableLeft="@drawable/promo_code"
-                            android:drawablePadding="@dimen/dp_8"
-                            android:gravity="center_vertical"
-                            android:includeFontPadding="false"
                             android:layout_marginLeft="@dimen/dp_16"
                             android:layout_marginStart="@dimen/dp_16"
+                            android:drawableLeft="@drawable/promo_code"
+                            android:drawablePadding="@dimen/dp_8"
+                            android:drawableStart="@drawable/promo_code"
+                            android:gravity="center_vertical"
+                            android:includeFontPadding="false"
                             android:text="@string/promo_section"
                             android:textColor="@color/green_nob"
                             android:textSize="@dimen/sp_14"
@@ -457,9 +458,9 @@
                             android:layout_height="@dimen/dp_32"
                             android:layout_alignParentRight="true"
                             android:layout_gravity="end|center_vertical"
-                            android:layout_marginTop="@dimen/dp_8"
                             android:layout_marginEnd="@dimen/dp_16"
                             android:layout_marginRight="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_8"
                             android:background="@drawable/rounded_rectangle_grey_solid"
                             android:foreground="?attr/selectableItemBackground"
                             android:gravity="center"
@@ -475,7 +476,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentStart="true"
-                            android:layout_marginEnd="@dimen/margin_ms"
+                            android:layout_marginEnd="@dimen/dp_8"
                             android:layout_marginLeft="@dimen/dp_16"
                             android:layout_marginRight="@dimen/dp_8"
                             android:layout_marginStart="@dimen/dp_16"
@@ -537,7 +538,7 @@
                         android:paddingBottom="8dp"
                         android:paddingEnd="@dimen/dp_16"
                         android:paddingStart="@dimen/dp_16"
-                        android:text="Rincian Harga"
+                        android:text="@string/rincian_harga"
                         android:textColor="@color/black_70"
                         android:textSize="@dimen/sp_22"
                         android:textStyle="bold" />
@@ -592,6 +593,40 @@
                     </RelativeLayout>
 
                     <RelativeLayout
+                        android:id="@+id/rl_section_discount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dp_8"
+                        android:visibility="gone"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingEnd="@dimen/dp_16"
+                            android:paddingStart="@dimen/dp_16"
+                            android:text="@string/total_diskon"
+                            android:textColor="@color/grey_700"
+                            android:textSize="@dimen/sp_12"
+                            android:textStyle="normal" />
+
+                        <TextView
+                            android:id="@+id/tv_discount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginEnd="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:paddingLeft="@dimen/dp_16"
+                            android:paddingStart="@dimen/dp_16"
+                            android:textColor="@color/grey_500"
+                            android:textSize="@dimen/sp_12"
+                            android:textStyle="normal"
+                            tools:text="Rp 540000" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dp_8"
@@ -602,7 +637,7 @@
                             android:layout_height="wrap_content"
                             android:paddingEnd="@dimen/dp_16"
                             android:paddingStart="@dimen/dp_16"
-                            android:text="Biaya Layanan"
+                            android:text="@string/biaya_layanan"
                             android:textColor="@color/grey_700"
                             android:textSize="@dimen/sp_12"
                             android:textStyle="normal" />
@@ -617,10 +652,10 @@
                             android:layout_marginRight="@dimen/dp_16"
                             android:paddingLeft="@dimen/dp_16"
                             android:paddingStart="@dimen/dp_16"
-                            android:text="Rp 540000"
                             android:textColor="@color/grey_500"
                             android:textSize="@dimen/sp_12"
-                            android:textStyle="normal" />
+                            android:textStyle="normal"
+                            tools:text="Rp 540000" />
                     </RelativeLayout>
 
                     <View
@@ -657,7 +692,7 @@
                             android:paddingLeft="@dimen/dp_16"
                             android:paddingStart="@dimen/dp_16"
                             android:text="Rp 540000"
-                            android:textColor="@color/price_pdp"
+                            android:textColor="@color/red_800"
                             android:textSize="@dimen/sp_18"
                             android:textStyle="bold" />
                     </RelativeLayout>
@@ -706,7 +741,7 @@
         android:orientation="vertical">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/app_bar"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/white"

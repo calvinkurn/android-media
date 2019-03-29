@@ -13,6 +13,6 @@
         android:text="Pindahkan ke Saldo"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="@dimen/fonts" />
+        android:textSize="@dimen/sp_14" />
 
 </LinearLayout>

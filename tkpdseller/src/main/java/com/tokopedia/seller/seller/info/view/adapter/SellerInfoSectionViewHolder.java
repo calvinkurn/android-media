@@ -1,11 +1,10 @@
 package com.tokopedia.seller.seller.info.view.adapter;
 
-import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.base.list.seller.view.adapter.BaseViewHolder;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
 import com.tokopedia.seller.seller.info.view.model.SellerInfoSectionModel;
 import com.tokopedia.seller.seller.info.view.util.SellerInfoDateUtil;
 

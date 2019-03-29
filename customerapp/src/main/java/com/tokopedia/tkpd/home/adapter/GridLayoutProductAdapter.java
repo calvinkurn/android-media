@@ -13,22 +13,22 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.entity.home.recentView.RecentView;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
@@ -254,25 +254,29 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
             public void onClick(View view) {
                 if (data.get(position) instanceof ProductItem) {
                     ProductItem product = (ProductItem) data.get(position);
-                    UnifyTracking.eventWishlistView(product.getName());
+                    UnifyTracking.eventWishlistView(view.getContext(), product.getName());
 
                     Bundle bundle = new Bundle();
                     Intent intent
-                            = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
-                    bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data.get(position));
-                    intent.putExtras(bundle);
+                            = getProductIntent(((ProductItem) data.get(position)).id);
                     context.startActivity(intent);
                 } else if (data.get(position) instanceof RecentView) {
                     RecentView product = (RecentView) data.get(position);
-                    UnifyTracking.eventWishlistView(product.getProductName());
+                    UnifyTracking.eventWishlistView(view.getContext(), product.getProductName());
                     context.startActivity(
-                            ProductDetailRouter.createInstanceProductDetailInfoActivity(
-                                    context, getProductDataToPass((RecentView) data.get(position))
-                            )
+                            getProductIntent(((RecentView) data.get(position)).getProductId().toString())
                     );
                 }
             }
         };
+    }
+
+    private Intent getProductIntent(String productId){
+        if (context != null) {
+            return RouteManager.getIntent(context,ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return new Intent();
+        }
     }
 
     private void setBadges(ViewHolder holder, ProductItem data) {
@@ -383,7 +387,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventWishlistBuy();
+                UnifyTracking.eventWishlistBuy(v.getContext());
                 if (wishlistView != null) wishlistView.displayAddToCart(productId);
             }
         };
@@ -396,7 +400,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     private void setBuyButtonAvailable(TextView buyButtonUnavailable) {
-        buyButtonUnavailable.setBackgroundResource(R.drawable.btn_buy);
+        buyButtonUnavailable.setBackgroundResource(R.drawable.rect_orange);
         buyButtonUnavailable.setTextColor(getColor(context, R.color.white));
         buyButtonUnavailable.setText(R.string.title_buy);
     }

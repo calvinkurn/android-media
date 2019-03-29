@@ -1,9 +1,10 @@
 package com.tokopedia.topads.dashboard.data.repository;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.topads.dashboard.data.source.GetDepositTopadsDataSource;
 import com.tokopedia.topads.dashboard.domain.GetDepositTopAdsRepository;
+
+import java.util.HashMap;
 
 import rx.Observable;
 
@@ -20,7 +21,7 @@ public class GetDepositTopAdsRepositoryImpl implements GetDepositTopAdsRepositor
     }
 
     @Override
-    public Observable<DataDeposit> getDeposit(TKPDMapParam<String, String> params) {
+    public Observable<DataDeposit> getDeposit(HashMap<String, String> params) {
         return getDepositTopadsDataSource.getDeposit(params);
     }
 }

@@ -26,10 +26,10 @@ public class ChangeNameUseCase extends UseCase<ChangeNameViewModel> {
         return changeNameSource.changeName(requestParams);
     }
 
-    public static RequestParams getParams(String userId, String email) {
+    public static RequestParams getParams(String userId, String name) {
         RequestParams params = RequestParams.create();
         params.putString(PARAM_USER_ID, userId);
-        params.putString(PARAM_NAME, email);
+        params.putString(PARAM_NAME, name);
         return params;
     }
 }

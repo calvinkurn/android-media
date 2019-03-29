@@ -26,4 +26,7 @@ public interface TokoCashApi {
 
     @GET(WalletUrl.Account.GET_TOKEN_WALLET)
     Call<RefreshTokenEntity> getTokenWalletSynchronous();
+
+    @GET(WalletUrl.Account.GET_TOKEN_WALLET)
+    Observable<RefreshTokenEntity> getTokenWallet();
 }

@@ -27,7 +27,16 @@
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/black"
         android:gravity="center"
-        android:id="@+id/text_label_progress"/>
+        android:id="@+id/text_label_progress_title"/>
+
+    <TextView
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/text_label_progress_message"/>
 
 </LinearLayout>

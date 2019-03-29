@@ -5,14 +5,15 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -31,8 +32,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
+import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.payment.BuildConfig;
 import com.tokopedia.payment.R;
 import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent;
@@ -47,6 +54,7 @@ import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.payment.utils.Constant;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 
+import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -58,7 +66,7 @@ import javax.inject.Inject;
  * Created by kris on 3/9/17. Tokopedia
  */
 
-public class TopPayActivity extends AppCompatActivity implements TopPayContract.View, FingerPrintDialogPayment.ListenerPayment, FingerprintDialogRegister.ListenerRegister {
+public class TopPayActivity extends AppCompatActivity implements TopPayContract.View, FingerPrintDialogPayment.ListenerPayment, FingerprintDialogRegister.ListenerRegister, FilePickerInterface {
     private static final String TAG = TopPayActivity.class.getSimpleName();
 
     public static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
@@ -68,11 +76,15 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     public static final String KEY_QUERY_LD = "ld";
     public static final String CHARSET_UTF_8 = "UTF-8";
     private static final String LOGIN_URL = "login.pl";
+    private static final String HCI_CAMERA_KTP = "android-js-call://ktp";
+    private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
+    private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String[] THANK_PAGE_URL_LIST = new String[]{"thanks", "thank"};
 
     public static final int PAYMENT_SUCCESS = 5;
     public static final int PAYMENT_CANCELLED = 6;
     public static final int PAYMENT_FAILED = 7;
+    public static final int HCI_CAMERA_REQUEST_CODE = 978;
     public static final long FORCE_TIMEOUT = 90000L;
 
     @Inject
@@ -91,6 +103,9 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     private FingerPrintDialogPayment fingerPrintDialogPayment;
     private FingerprintDialogRegister fingerPrintDialogRegister;
     private boolean isInterceptOtp = true;
+    private CommonWebViewClient webChromeWebviewClient;
+
+    private String mJsHciCallbackFuncName;
 
     public static Intent createInstance(Context context, PaymentPassData paymentPassData) {
         Intent intent = new Intent(context, TopPayActivity.class);
@@ -161,7 +176,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
         WebSettings webSettings = scroogeWebView.getSettings();
 
-        String userAgent = String.format("%s [%s/%s]", webSettings.getUserAgentString(), getString(R.string.app_android), BuildConfig.VERSION_NAME);
+        String userAgent = String.format("%s [%s/%s]", webSettings.getUserAgentString(), getString(R.string.app_android), GlobalConfig.VERSION_NAME);
         webSettings.setUserAgentString(userAgent);
 
         webSettings.setJavaScriptEnabled(true);
@@ -170,18 +185,13 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         webSettings.setDisplayZoomControls(true);
         webSettings.setAppCacheEnabled(true);
         scroogeWebView.setWebViewClient(new TopPayWebViewClient());
-        scroogeWebView.setWebChromeClient(new TopPayWebViewChromeClient());
+        scroogeWebView.setWebChromeClient(webChromeWebviewClient);
         scroogeWebView.setOnKeyListener(getWebViewOnKeyListener());
         btnBack.setVisibility(View.VISIBLE);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (paymentModuleRouter != null && paymentModuleRouter.getBaseUrlDomainPayment() != null
-                        && scroogeWebView.getUrl() != null
-                        && scroogeWebView.getUrl().contains(paymentModuleRouter.getBaseUrlDomainPayment()))
-                    scroogeWebView.loadUrl("javascript:handlePopAndroid();");
-                else
-                    onBackPressed();
+                onBackPressed();
             }
         });
         btnClose.setOnClickListener(new View.OnClickListener() {
@@ -193,7 +203,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     }
 
     private void initVar() {
-
+        webChromeWebviewClient = new CommonWebViewClient(this, progressBar);
     }
 
     private void initView() {
@@ -277,7 +287,11 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
     @Override
     public void onBackPressed() {
-        if (isEndThanksPage()) {
+        if (paymentModuleRouter != null && paymentModuleRouter.getBaseUrlDomainPayment() != null
+                && scroogeWebView.getUrl() != null
+                && scroogeWebView.getUrl().contains(paymentModuleRouter.getBaseUrlDomainPayment())) {
+            scroogeWebView.loadUrl("javascript:handlePopAndroid();");
+        } else if (isEndThanksPage()) {
             callbackPaymentSucceed();
         } else {
             callbackPaymentCanceled();
@@ -374,18 +388,16 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                     + Constant.TempRedirectPayment.TOP_PAY_PATH_HELP_URL_TEMPORARY))) {
                 String deepLinkUrl = Constant.TempRedirectPayment.APP_LINK_SCHEME_WEB_VIEW
                         + "?url=" + URLEncoder.encode(url);
-                paymentModuleRouter.actionAppLinkPaymentModule(
-                        TopPayActivity.this, deepLinkUrl
-                );
+                RouteManager.route(TopPayActivity.this, deepLinkUrl);
                 return true;
             } else {
-                if (!url.isEmpty() && (url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_LIVE) ||
-                        url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_STAGING))) {
-                    paymentModuleRouter.actionAppLinkPaymentModule(
-                            TopPayActivity.this, Constant.TempRedirectPayment.APP_LINK_SCHEME_HOME
-                    );
-                    return true;
-                }
+//                if (!url.isEmpty() && (url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_LIVE) ||
+//                        url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_STAGING))) {
+//                    paymentModuleRouter.actionAppLinkPaymentModule(
+//                            TopPayActivity.this, Constant.TempRedirectPayment.APP_LINK_SCHEME_HOME
+//                    );
+//                    return true;
+//                }
             }
 
             if (!TextUtils.isEmpty(paymentPassData.getCallbackSuccessUrl()) &&
@@ -406,31 +418,42 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                 view.stopLoading();
                 showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TOPPAY);
                 return true;
+            } else if (url.contains(HCI_CAMERA_KTP)) {
+                view.stopLoading();
+                mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
+                startActivityForResult(RouteManager.getIntent(TopPayActivity.this, ApplinkConst.HOME_CREDIT_KTP), HCI_CAMERA_REQUEST_CODE);
+                return true;
+            } else if (url.contains(HCI_CAMERA_SELFIE)) {
+                view.stopLoading();
+                mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
+                startActivityForResult(RouteManager.getIntent(TopPayActivity.this, ApplinkConst.HOME_CREDIT_SELFIE), HCI_CAMERA_REQUEST_CODE);
+                return true;
             } else {
-                if (paymentModuleRouter != null
-                        && paymentModuleRouter.getSchemeAppLinkCancelPayment() != null
-                        && paymentModuleRouter.getSchemeAppLinkCancelPayment().equalsIgnoreCase(url)) {
+                if (ApplinkConst.PAYMENT_BACK_TO_DEFAULT.equalsIgnoreCase(url)) {
                     if (isEndThanksPage()) callbackPaymentSucceed();
                     else callbackPaymentCanceled();
                     return true;
-                } else if (paymentModuleRouter != null
-                        && paymentModuleRouter.isSupportedDelegateDeepLink(url)
-                        && paymentModuleRouter.getIntentDeepLinkHandlerActivity() != null) {
-                    Intent intent = paymentModuleRouter.getIntentDeepLinkHandlerActivity();
+                } else if (RouteManager.isSupportApplink(TopPayActivity.this, url)) {
+                    //  RouteManager.route(TopPayActivity.this, url);
+                    Intent intent = RouteManager.getIntent(TopPayActivity.this, url);
                     intent.setData(Uri.parse(url));
                     navigateToActivity(intent);
                     return true;
-                } else if (paymentModuleRouter != null) {
-                    String urlFinal = paymentModuleRouter.getGeneratedOverrideRedirectUrlPayment(url);
-                    if (urlFinal == null)
-                        return super.shouldOverrideUrlLoading(view, url);
-                    view.loadUrl(
-                            urlFinal,
-                            paymentModuleRouter.getGeneratedOverrideRedirectHeaderUrlPayment(urlFinal)
-                    );
-                    return true;
                 } else {
-                    return super.shouldOverrideUrlLoading(view, url);
+                    if (paymentModuleRouter != null) {
+                        String urlFinal = paymentModuleRouter.getGeneratedOverrideRedirectUrlPayment(url);
+                        if (urlFinal == null) {
+                            return super.shouldOverrideUrlLoading(view, url);
+                        } else {
+                            view.loadUrl(
+                                    urlFinal,
+                                    paymentModuleRouter.getGeneratedOverrideRedirectHeaderUrlPayment(urlFinal)
+                            );
+                            return true;
+                        }
+                    } else {
+                        return super.shouldOverrideUrlLoading(view, url);
+                    }
                 }
             }
         }
@@ -497,7 +520,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                showError(view, WebViewClient.ERROR_TIMEOUT);
+                                showErrorTimeout(view);
                             }
                         });
                     }
@@ -506,18 +529,9 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
             if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
         }
 
-        private void showError(WebView view, int errorCode) {
-            String message;
-            switch (errorCode) {
-                case WebViewClient.ERROR_TIMEOUT:
-                    message = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
-                    break;
-                default:
-                    message = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
-                    break;
-            }
+        private void showErrorTimeout(WebView view) {
             view.stopLoading();
-            showToastMessageWithForceCloseView(message);
+            showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
         }
     }
 
@@ -642,5 +656,37 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         fingerPrintDialogPayment.stopListening();
         fingerPrintDialogPayment.dismiss();
         scroogeWebView.loadUrl(String.format("%1$s?%2$s", url, paramEncode));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == CommonWebViewClient.ATTACH_FILE_REQUEST && webChromeWebviewClient != null) {
+            webChromeWebviewClient.onActivityResult(requestCode, resultCode, intent);
+        } else if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
+            String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
+            String base64 = encodeToBase64(imagePath);
+            if (imagePath != null) {
+                StringBuilder jsCallbackBuilder = new StringBuilder();
+                jsCallbackBuilder.append("javascript:")
+                        .append(mJsHciCallbackFuncName)
+                        .append("('")
+                        .append(imagePath)
+                        .append("'")
+                        .append(", ")
+                        .append("'")
+                        .append(base64)
+                        .append("')");
+                scroogeWebView.loadUrl(jsCallbackBuilder.toString());
+            }
+        }
+    }
+
+    public static String encodeToBase64(String imagePath) {
+        Bitmap bm = BitmapFactory.decodeFile(imagePath);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 60, baos);
+        byte[] b = baos.toByteArray();
+        return Base64.encodeToString(b, Base64.DEFAULT);
     }
 }

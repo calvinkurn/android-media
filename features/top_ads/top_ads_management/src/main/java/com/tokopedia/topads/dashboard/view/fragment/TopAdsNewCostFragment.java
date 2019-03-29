@@ -14,18 +14,18 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
-import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.base.view.model.StepperModel;
-import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
+import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTypeDef;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
-import com.tokopedia.seller.common.widget.PrefixEditText;
 
 /**
  * Created by zulfikarrahman on 8/7/17.
@@ -191,6 +191,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         setSuggestionBidText(data.getData().get(0).getMedian(), data.getData().get(0).getMedianFmt());
         if (TextUtils.isEmpty(maxPriceEditText.getTextWithoutPrefix())) {
             maxPriceEditText.setText(String.valueOf(data.getData().get(0).getMedian()));
+            budgetPerDayEditText.setText(String.valueOf(data.getData().get(0).getMedian()*10));
         }
     }
 
@@ -211,6 +212,9 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
 
     private void showBudgetPerDay(boolean show) {
         containerBudgetPerDay.setVisibility(show ? View.VISIBLE : View.GONE);
+        if (show){
+            containerBudgetPerDay.getParent().requestChildFocus(containerBudgetPerDay, containerBudgetPerDay);
+        }
         if (!show && !budgetLifeTimeRadioButton.isChecked()) {
             budgetLifeTimeRadioButton.setChecked(true);
         }

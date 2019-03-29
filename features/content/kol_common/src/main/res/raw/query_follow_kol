@@ -1,0 +1,10 @@
+mutation FollowKol($userID: Int!, $action: Int!) {
+  do_follow_kol(userID: $userID, action: $action) {
+    __typename
+    error
+    data {
+      __typename
+      status
+    }
+  }
+}

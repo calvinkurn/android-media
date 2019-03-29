@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.intermediary.data.mapper;
 
+import com.tokopedia.core.network.entity.hotlist.HotListResponse;
 import com.tokopedia.core.network.entity.intermediary.Badge;
 import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 import com.tokopedia.core.network.entity.intermediary.Child;
@@ -7,7 +8,6 @@ import com.tokopedia.core.network.entity.intermediary.Image;
 import com.tokopedia.core.network.entity.intermediary.Label;
 import com.tokopedia.core.network.entity.intermediary.Product;
 import com.tokopedia.core.network.entity.intermediary.Section;
-import com.tokopedia.core.network.entity.hotlist.HotListResponse;
 import com.tokopedia.core.network.entity.intermediary.brands.Brand;
 import com.tokopedia.core.network.entity.intermediary.brands.MojitoBrandsModel;
 import com.tokopedia.discovery.intermediary.domain.model.BadgeModel;
@@ -45,11 +45,11 @@ public class IntermediaryCategoryMapper implements Func3<CategoryHadesModel,
                 getIntermediaryTemplate(categoryHadesModel)) {
             intermediaryCategoryDomainModel.setIntermediary(true);
             intermediaryCategoryDomainModel.setCuratedSectionModelList(mapCuration(categoryHadesModel));
-            if (categoryHadesModel.getData().getVideo()!=null) {
+            if (categoryHadesModel.getData().getVideo() != null) {
                 intermediaryCategoryDomainModel.setVideoModel(mapVideo(categoryHadesModel));
             }
             intermediaryCategoryDomainModel.setHotListModelList(mapHotList(hotListResponseResponse.body()));
-            if (mojitoBrandsModelResponse!=null) {
+            if (mojitoBrandsModelResponse != null) {
                 intermediaryCategoryDomainModel.setBrandModelList(mapBrands(mojitoBrandsModelResponse.body()));
             }
         }
@@ -58,13 +58,13 @@ public class IntermediaryCategoryMapper implements Func3<CategoryHadesModel,
         intermediaryCategoryDomainModel.setHeaderModel(mapHeaderModel(categoryHadesModel));
         intermediaryCategoryDomainModel.setChildCategoryModelList(mapCategoryChildren(categoryHadesModel));
         intermediaryCategoryDomainModel.setBannerModelList(mapBanner(categoryHadesModel));
-        return  intermediaryCategoryDomainModel;
+        return intermediaryCategoryDomainModel;
     }
 
     private HeaderModel mapHeaderModel(CategoryHadesModel categoryHadesModel) {
 
         HeaderModel headerModel = new HeaderModel();
-        if (categoryHadesModel.getData()!=null) {
+        if (categoryHadesModel.getData() != null) {
             headerModel = new HeaderModel(categoryHadesModel.getData().getName(),
                     categoryHadesModel.getData().getHeaderImage());
         }
@@ -74,9 +74,11 @@ public class IntermediaryCategoryMapper implements Func3<CategoryHadesModel,
     private List<ChildCategoryModel> mapCategoryChildren(CategoryHadesModel categoryHadesModel) {
 
         List<ChildCategoryModel> categoryModelList = new ArrayList<>();
-        if (categoryHadesModel.getData()!=null && categoryHadesModel.getData().getChild()!=null) {
-            for (Child child: categoryHadesModel.getData().getChild()) {
+        if (categoryHadesModel.getData() != null && categoryHadesModel.getData().getChild() != null) {
+            for (Child child : categoryHadesModel.getData().getChild()) {
                 ChildCategoryModel childCategoryModel = new ChildCategoryModel();
+                String categoryName = categoryHadesModel.getData().getName().toLowerCase();
+                childCategoryModel.setParentCategoryName(categoryName);
                 childCategoryModel.setCategoryId(child.getId());
                 childCategoryModel.setCategoryImageUrl(child.getThumbnailImage());
                 childCategoryModel.setCategoryName(child.getName());
@@ -89,17 +91,17 @@ public class IntermediaryCategoryMapper implements Func3<CategoryHadesModel,
     private List<CuratedSectionModel> mapCuration(CategoryHadesModel categoryHadesModel) {
 
         List<CuratedSectionModel> curatedSectionModels = new ArrayList<>();
-        if (categoryHadesModel.getData() !=null && categoryHadesModel.getData().getCuratedProduct()
-                !=null && categoryHadesModel.getData().getCuratedProduct().getSections() !=null) {
-            for (Section section: categoryHadesModel.getData().getCuratedProduct().getSections()) {
+        if (categoryHadesModel.getData() != null && categoryHadesModel.getData().getCuratedProduct()
+                != null && categoryHadesModel.getData().getCuratedProduct().getSections() != null) {
+            for (Section section : categoryHadesModel.getData().getCuratedProduct().getSections()) {
                 CuratedSectionModel curatedSectionModel = new CuratedSectionModel();
                 curatedSectionModel.setTitle(section.getTitle());
 
 
                 List<ProductModel> productModels = new ArrayList<>();
 
-                if (section.getProducts()!=null) {
-                    for (Product product: section.getProducts()) {
+                if (section.getProducts() != null) {
+                    for (Product product : section.getProducts()) {
                         ProductModel productModel = new ProductModel();
                         productModel.setName(product.getName());
                         productModel.setId(product.getId());
@@ -108,18 +110,18 @@ public class IntermediaryCategoryMapper implements Func3<CategoryHadesModel,
                         productModel.setShopName(product.getShop().getName());
                         productModel.setShopLocation(product.getShop().getLocation());
                         List<BadgeModel> badgeModels = new ArrayList<>();
-                        for (Badge badge: product.getBadges()) {
-                            badgeModels.add(new BadgeModel(badge.getImageUrl(),badge.getTitle()));
+                        for (Badge badge : product.getBadges()) {
+                            badgeModels.add(new BadgeModel(badge.getImageUrl(), badge.getTitle()));
                         }
                         productModel.setBadges(badgeModels);
                         List<LabelModel> labelModels = new ArrayList<>();
-                        for (Label label: product.getLabels()) {
-                            labelModels.add(new LabelModel(label.getColor(),label.getTitle()));
+                        for (Label label : product.getLabels()) {
+                            labelModels.add(new LabelModel(label.getColor(), label.getTitle()));
                         }
                         productModel.setLabels(labelModels);
                         productModels.add(productModel);
 
-                        if (productModels.size()==6)
+                        if (productModels.size() == 6)
                             break;
                     }
                 }
@@ -133,26 +135,28 @@ public class IntermediaryCategoryMapper implements Func3<CategoryHadesModel,
 
     private List<HotListModel> mapHotList(HotListResponse hotListResponse) {
         List<HotListModel> hotListModels = new ArrayList<>();
-        if (hotListResponse==null) return hotListModels;
-        for (com.tokopedia.core.network.entity.hotlist.List list: hotListResponse.getList()) {
+        if (hotListResponse == null) return hotListModels;
+        for (com.tokopedia.core.network.entity.hotlist.List list : hotListResponse.getList()) {
             HotListModel hotListModel = new HotListModel();
             hotListModel.setId(list.getHotProductId());
-            hotListModel.setImageUrl(list.getImgPortrait()==null ? "" :list.getImgPortrait().get280x418());
-            hotListModel.setImageUrlBanner(list.getImgShare()==null ? "" :list.getImg().get375x200());
-            hotListModel.setImageUrlSquare(list.getImgSquare()==null ? "" :list.getImgSquare().get200x200());
+            hotListModel.setImageUrl(list.getImgPortrait() == null ? "" : list.getImgPortrait().get280x418());
+            hotListModel.setImageUrlBanner(list.getImgShare() == null ? "" : list.getImg().get375x200());
+            hotListModel.setImageUrlSquare(list.getImgSquare() == null ? "" : list.getImgSquare().get200x200());
             hotListModel.setTitle(list.getTitle());
             hotListModel.setUrl(list.getUrl());
             hotListModels.add(hotListModel);
         }
-        return  hotListModels;
+        return hotListModels;
     }
 
     private List<BannerModel> mapBanner(CategoryHadesModel categoryHadesModel) {
 
         List<BannerModel> bannerModels = new ArrayList<>();
-        if (categoryHadesModel.getData().getBanner()!=null && categoryHadesModel.getData().getBanner().getImages()!=null) {
-            for (Image image: categoryHadesModel.getData().getBanner().getImages()) {
+        if (categoryHadesModel.getData().getBanner() != null && categoryHadesModel.getData().getBanner().getImages() != null) {
+            for (Image image : categoryHadesModel.getData().getBanner().getImages()) {
                 BannerModel bannerModel = new BannerModel();
+                bannerModel.setTitle(image.getTitle());
+                bannerModel.setCategoryName(categoryHadesModel.getData().getName());
                 bannerModel.setUrl(image.getUrl());
                 bannerModel.setImageUrl(image.getImageUrl());
                 bannerModel.setPosition(image.getPosition());
@@ -160,15 +164,15 @@ public class IntermediaryCategoryMapper implements Func3<CategoryHadesModel,
                 bannerModels.add(bannerModel);
             }
         }
-        return  bannerModels;
+        return bannerModels;
     }
 
 
     private List<BrandModel> mapBrands(MojitoBrandsModel mojitoBrandsModel) {
 
         List<BrandModel> brandModels = new ArrayList<>();
-        if (mojitoBrandsModel.getData()!=null && mojitoBrandsModel.getData().size()>0) {
-            for (Brand brand: mojitoBrandsModel.getData()) {
+        if (mojitoBrandsModel.getData() != null && mojitoBrandsModel.getData().size() > 0) {
+            for (Brand brand : mojitoBrandsModel.getData()) {
                 BrandModel brandModel = new BrandModel();
                 brandModel.setId(String.valueOf(brand.getShopId()));
                 brandModel.setImageUrl(brand.getLogoUrl());
@@ -176,7 +180,7 @@ public class IntermediaryCategoryMapper implements Func3<CategoryHadesModel,
                 brandModels.add(brandModel);
             }
         }
-        return  brandModels;
+        return brandModels;
     }
 
     private VideoModel mapVideo(CategoryHadesModel categoryHadesModel) {
@@ -186,11 +190,11 @@ public class IntermediaryCategoryMapper implements Func3<CategoryHadesModel,
         videoModel.setDescription(categoryHadesModel.getData().getVideo().getDescription());
         videoModel.setVideoUrl(categoryHadesModel.getData().getVideo().getVideoUrl());
 
-        return  videoModel;
+        return videoModel;
     }
 
     private boolean getIntermediaryTemplate(CategoryHadesModel categoryHadesModel) {
-        if (categoryHadesModel.getData().getTemplate()==null) return false;
+        if (categoryHadesModel.getData().getTemplate() == null) return false;
         switch (categoryHadesModel.getData().getTemplate()) {
             case IntermediaryCategoryDomainModel.LIFESTYLE_TEMPLATE:
                 return true;
@@ -202,8 +206,8 @@ public class IntermediaryCategoryMapper implements Func3<CategoryHadesModel,
             case CategoryHeaderModel.DEFAULT_TEMPLATE:
                 intermediaryCategoryDomainModel.setTemplate(CategoryHeaderModel.DEFAULT_TEMPLATE);
                 return true;*/
-           default:
-               return false;
+            default:
+                return false;
         }
     }
 

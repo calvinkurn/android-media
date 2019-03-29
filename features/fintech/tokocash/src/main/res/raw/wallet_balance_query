@@ -1,1 +1,35 @@
-{"query":"{\n  wallet{\n    linked\n    balance\n    rawBalance\n    errors{\n      name\n      message\n    }\n    text\n    total_balance\n    raw_total_balance\n    hold_balance\n    raw_hold_balance\n    redirect_url\n    applinks\n    ab_tags{\n      tag\n    }\n    action{\n      text\n      redirect_url\n      applinks\n      visibility\n    }\n  }\n}","variables":null,"operationName":null}
+{
+  wallet {
+    linked
+    balance
+    rawBalance
+    errors {
+      name
+      message
+    }
+    text
+    total_balance
+    raw_total_balance
+    hold_balance
+    raw_hold_balance
+    redirect_url
+    applinks
+    ab_tags {
+      tag
+    }
+    action {
+      text
+      redirect_url
+      applinks
+      visibility
+    }
+    point_balance
+    raw_point_balance
+    cash_balance
+    raw_cash_balance
+    wallet_type
+    help_applink
+    tnc_applink
+    show_announcement
+  }
+}

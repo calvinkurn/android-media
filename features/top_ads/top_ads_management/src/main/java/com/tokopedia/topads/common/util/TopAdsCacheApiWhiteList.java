@@ -1,7 +1,7 @@
 package com.tokopedia.topads.common.util;
 
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 
 import java.util.ArrayList;
@@ -27,15 +27,19 @@ public class TopAdsCacheApiWhiteList {
         List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
 
         // TopAds Deposit
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TopAdsCommonConstant.BASE_DOMAIN_URL,
                 TopAdsNetworkConstant.PATH_DASHBOARD_DEPOSIT, TEN_SECOND));
 
         // TopAds Statistic
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TopAdsCommonConstant.BASE_DOMAIN_URL,
                 TopAdsNetworkConstant.PATH_DASHBOARD_STATISTIC, FIVE_MINUTE));
 
+        // TopAds totalAd
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TopAdsCommonConstant.BASE_DOMAIN_URL,
+                TopAdsNetworkConstant.PATH_DASHBOARD_TOTAL_AD, ONE_HOUR));
+
         // Suggestion Bid
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TopAdsCommonConstant.BASE_DOMAIN_URL,
                 TopAdsNetworkConstant.GET_SUGGESTION, ONE_HOUR));
 
         return cacheApiWhiteList;

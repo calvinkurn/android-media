@@ -9,5 +9,7 @@
     <declare-styleable name="ReviewProductItemFilterView">
         <attr name="counter_rating" format="integer" />
         <attr name="isActive" format="boolean"/>
+        <attr name="isAll" format="boolean"/>
+        <attr name="isWithPhoto" format="boolean"/>
     </declare-styleable>
 </resources>

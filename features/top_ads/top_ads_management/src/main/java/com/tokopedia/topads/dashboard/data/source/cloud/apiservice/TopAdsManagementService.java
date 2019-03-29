@@ -1,12 +1,11 @@
 package com.tokopedia.topads.dashboard.data.source.cloud.apiservice;
 
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.retrofit.services.BearerService;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
 
 import retrofit2.Retrofit;
 
@@ -14,7 +13,7 @@ import retrofit2.Retrofit;
  * Created by zulfikarrahman on 11/4/16.
  */
 
-public class TopAdsManagementService extends BearerService<TopAdsManagementApi> {
+public class TopAdsManagementService extends BearerService<TopAdsOldManagementApi> {
 
     public TopAdsManagementService(SessionHandler sessionHandler) {
         super(sessionHandler.getAuthAccessToken());
@@ -22,7 +21,7 @@ public class TopAdsManagementService extends BearerService<TopAdsManagementApi> 
 
     @Override
     protected void initApiService(Retrofit retrofit) {
-        api = retrofit.create(TopAdsManagementApi.class);
+        api = retrofit.create(TopAdsOldManagementApi.class);
     }
 
     @Override
@@ -36,7 +35,7 @@ public class TopAdsManagementService extends BearerService<TopAdsManagementApi> 
     }
 
     @Override
-    public TopAdsManagementApi getApi() {
+    public TopAdsOldManagementApi getApi() {
         return api;
     }
 
@@ -45,7 +44,7 @@ public class TopAdsManagementService extends BearerService<TopAdsManagementApi> 
         return RetrofitFactory.createRetrofitDefaultConfig(processedBaseUrl)
                 .client(OkHttpFactory.create()
                         .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                        .buildClientTopAdsAuth(null))
+                        .buildClientTopAdsAuth())
                 .build();
     }
 }

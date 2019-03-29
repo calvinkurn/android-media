@@ -25,6 +25,9 @@ import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -419,7 +422,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     @OnClick(R2.id.receive_btn)
     void actionConfirmDeliver() {
         presenter.processFinish(this, orderData);
-        UnifyTracking.eventReceivedShipping();
+        UnifyTracking.eventReceivedShipping(this);
     }
 
     @OnClick(R2.id.btn_do_complain)
@@ -430,7 +433,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     @OnClick(R2.id.track_btn)
     void actionTracking() {
         presenter.processTrackOrder(this, orderData);
-        UnifyTracking.eventTrackOrder();
+        UnifyTracking.eventTrackOrder(this);
     }
 
     @OnClick(R2.id.btn_request_cancel_order)
@@ -465,9 +468,12 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
 
     @Override
     public void actionToProductInfo(ProductPass productPass) {
-        Intent intent = ProductDetailRouter
-                .createInstanceProductDetailInfoActivity(this, productPass);
+        Intent intent = getProductIntent(productPass.getProductId());
         navigateToActivity(intent);
+    }
+
+    private Intent getProductIntent(String productId){
+            return RouteManager.getIntent(this,ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
     }
 
     @Override

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/dp_8"
+    android:layout_marginRight="@dimen/dp_8"
+    app:cardCornerRadius="@dimen/dp_4">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_16">
+
+        <TextView
+            android:id="@+id/tv_purchase_summary_title"
+            style="@style/TextSmallMedium"
+            android:textColor="@color/black_text_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:text="@string/label_summary" />
+
+        <View
+            android:id="@+id/v_purchase_summary_separator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:layout_below="@+id/tv_purchase_summary_title"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_6"
+            android:background="@drawable/bg_line_separator" />
+
+        <TextView
+            android:id="@+id/tv_purchase_summary_item_price_label"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/v_purchase_summary_separator"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:text="@string/label_total_item_price" />
+
+        <TextView
+            android:id="@+id/tv_purchase_summary_item_price_value"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/v_purchase_summary_separator"
+            android:layout_marginBottom="@dimen/dp_8"
+            tools:text="Rp 66.000" />
+
+        <TextView
+            android:id="@+id/tv_purchase_summary_shipping_price_label"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_purchase_summary_item_price_label"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:text="@string/label_total_shipping_price" />
+
+        <TextView
+            android:id="@+id/tv_purchase_summary_shipping_price_value"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/tv_purchase_summary_item_price_value"
+            android:layout_marginBottom="@dimen/dp_8"
+            tools:text="Rp 10.000" />
+
+        <TextView
+            android:id="@+id/tv_purchase_summary_service_price_label"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_purchase_summary_shipping_price_label"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:text="@string/label_additional_fee" />
+
+        <TextView
+            android:id="@+id/tv_purchase_summary_service_price_value"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/tv_purchase_summary_shipping_price_value"
+            android:layout_marginBottom="@dimen/dp_8"
+            tools:text="Rp 500" />
+
+        <TextView
+            android:id="@+id/tv_purchase_summary_insurance_price_label"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_purchase_summary_service_price_label"
+            android:text="@string/label_insurance_price" />
+
+        <ImageButton
+            android:id="@+id/img_bt_insurance_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_purchase_summary_service_price_label"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_toEndOf="@+id/tv_purchase_summary_insurance_price_label"
+            android:layout_toRightOf="@+id/tv_purchase_summary_insurance_price_label"
+            android:background="@color/transparent"
+            android:src="@drawable/info_icon" />
+
+        <TextView
+            android:id="@+id/tv_purchase_summary_insurance_price_value"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/tv_purchase_summary_service_price_value"
+            tools:text="Rp 500" />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

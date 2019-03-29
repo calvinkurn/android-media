@@ -1,5 +1,8 @@
 package com.tokopedia.transactiondata.entity.request;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -10,7 +13,7 @@ import java.util.List;
  * @author anggaprasetiyo on 05/03/18.
  */
 
-public class ShopProductCheckoutRequest {
+public class ShopProductCheckoutRequest implements Parcelable {
 
     @SerializedName("shop_id")
     @Expose
@@ -36,6 +39,12 @@ public class ShopProductCheckoutRequest {
     @SerializedName("fcancel_partial")
     @Expose
     public int fcancelPartial;
+    @SerializedName("warehouse_id")
+    @Expose
+    public int warehouseId;
+
+    public ShopProductCheckoutRequest() {
+    }
 
     private ShopProductCheckoutRequest(Builder builder) {
         shopId = builder.shopId;
@@ -46,8 +55,52 @@ public class ShopProductCheckoutRequest {
         dropshipData = builder.dropshipData;
         productData = builder.productData;
         fcancelPartial = builder.fcancelPartial;
+        warehouseId = builder.warehouseId;
     }
 
+    protected ShopProductCheckoutRequest(Parcel in) {
+        shopId = in.readInt();
+        isPreorder = in.readInt();
+        finsurance = in.readInt();
+        shippingInfo = in.readParcelable(ShippingInfoCheckoutRequest.class.getClassLoader());
+        isDropship = in.readInt();
+        dropshipData = in.readParcelable(DropshipDataCheckoutRequest.class.getClassLoader());
+        productData = in.createTypedArrayList(ProductDataCheckoutRequest.CREATOR);
+        fcancelPartial = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(shopId);
+        dest.writeInt(isPreorder);
+        dest.writeInt(finsurance);
+        dest.writeParcelable(shippingInfo, flags);
+        dest.writeInt(isDropship);
+        dest.writeParcelable(dropshipData, flags);
+        dest.writeTypedList(productData);
+        dest.writeInt(fcancelPartial);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ShopProductCheckoutRequest> CREATOR = new Creator<ShopProductCheckoutRequest>() {
+        @Override
+        public ShopProductCheckoutRequest createFromParcel(Parcel in) {
+            return new ShopProductCheckoutRequest(in);
+        }
+
+        @Override
+        public ShopProductCheckoutRequest[] newArray(int size) {
+            return new ShopProductCheckoutRequest[size];
+        }
+    };
+
+    public int getShopId() {
+        return shopId;
+    }
 
     public static final class Builder {
         private int shopId;
@@ -58,6 +111,7 @@ public class ShopProductCheckoutRequest {
         private DropshipDataCheckoutRequest dropshipData;
         private List<ProductDataCheckoutRequest> productData;
         private int fcancelPartial;
+        private int warehouseId;
 
         public Builder() {
         }
@@ -101,6 +155,12 @@ public class ShopProductCheckoutRequest {
             fcancelPartial = val;
             return this;
         }
+
+        public Builder warehouseId(int id) {
+            warehouseId = id;
+            return this;
+        }
+
 
         public ShopProductCheckoutRequest build() {
             return new ShopProductCheckoutRequest(this);

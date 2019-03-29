@@ -37,7 +37,7 @@
 
     </LinearLayout>
 
-    <com.tokopedia.topads.sdk.view.TopAdsView
+    <com.tokopedia.topads.sdk.widget.TopAdsView
         android:id="@id/topads"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

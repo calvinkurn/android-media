@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.picker.di;
 
 import com.tokopedia.seller.product.picker.view.ProductListPickerSearchFragment;
-import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 
 import dagger.Component;
 

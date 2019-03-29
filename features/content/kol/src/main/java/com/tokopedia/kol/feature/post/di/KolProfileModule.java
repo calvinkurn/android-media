@@ -1,10 +1,21 @@
 package com.tokopedia.kol.feature.post.di;
 
-import com.tokopedia.kol.feature.post.domain.interactor.GetKolPostUseCase;
-import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
-import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.kol.common.data.source.api.KolApi;
+import com.tokopedia.kol.feature.post.data.mapper.LikeKolPostMapper;
+import com.tokopedia.kol.feature.post.data.source.LikeKolPostSourceCloud;
+import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
+import com.tokopedia.kol.feature.post.domain.usecase.GetContentListUseCase;
+import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kol.feature.post.view.listener.KolPostShopContract;
 import com.tokopedia.kol.feature.post.view.presenter.KolPostPresenter;
+import com.tokopedia.kol.feature.post.view.presenter.KolPostShopPresenter;
+import com.tokopedia.kol.feature.postdetail.domain.interactor.GetKolPostDetailUseCase;
+import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
+import com.tokopedia.kol.feature.postdetail.view.presenter.KolPostDetailPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -15,21 +26,32 @@ import dagger.Provides;
 
 @Module
 public class KolProfileModule {
-    private final KolPostListener.View.ViewHolder viewListener;
-
-    public KolProfileModule(KolPostListener.View.ViewHolder viewListener) {
-        this.viewListener = viewListener;
+    @KolProfileScope
+    @Provides
+    KolPostListener.Presenter providesPresenter(KolPostPresenter presenter) {
+        return presenter;
     }
 
     @KolProfileScope
     @Provides
-    KolPostListener.Presenter providesPresenter(GetKolPostUseCase getKolPostUseCase) {
-        return new KolPostPresenter(getKolPostUseCase);
+    LikeKolPostSourceCloud provideLikeKolPostSourceCloud(@ApplicationContext Context context, KolApi kolApi, LikeKolPostMapper likeKolPostMapper) {
+        return new LikeKolPostSourceCloud(context, kolApi, likeKolPostMapper);
     }
 
     @KolProfileScope
     @Provides
-    KolPostTypeFactory provideKolTypeFactory() {
-        return new KolPostTypeFactoryImpl(viewListener);
+    KolPostDetailContract.Presenter
+    provideKolPostDetailPresenter(GetKolPostDetailUseCase getKolPostDetailUseCase,
+                                  LikeKolPostUseCase likeKolPostUseCase,
+                                  FollowKolPostGqlUseCase followKolPostGqlUseCase) {
+        return new KolPostDetailPresenter(getKolPostDetailUseCase, likeKolPostUseCase,
+                followKolPostGqlUseCase);
+    }
+
+    @KolProfileScope
+    @Provides
+    KolPostShopContract.Presenter
+    provideKolPostShopPresenter(GetContentListUseCase getContentListUseCase) {
+        return new KolPostShopPresenter(getContentListUseCase);
     }
 }

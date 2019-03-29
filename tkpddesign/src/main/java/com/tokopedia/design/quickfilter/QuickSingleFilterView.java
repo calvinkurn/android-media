@@ -2,6 +2,7 @@ package com.tokopedia.design.quickfilter;
 
 import android.content.Context;
 import android.os.Handler;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,7 +22,7 @@ import java.util.List;
 public class QuickSingleFilterView extends BaseCustomView {
 
     private QuickFilterItem defaultItem = null;
-    private RecyclerView recyclerView;
+    protected RecyclerView recyclerView;
     protected BaseQuickSingleFilterAdapter<ItemFilterViewHolder> adapterFilter;
     private ActionListener listener;
 
@@ -44,15 +45,28 @@ public class QuickSingleFilterView extends BaseCustomView {
         this.listener = listener;
     }
 
-    private void init() {
-        View rootView = inflate(getContext(), R.layout.widget_quick_filter, this);
+    protected void init() {
+        View rootView = inflate(getContext(), getLayoutRes(), this);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_filter);
 
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
-                LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setLayoutManager(getLayoutManager());
         initialAdapter();
         recyclerView.setAdapter(adapterFilter);
+    }
+
+    public void updateLayoutManager(RecyclerView.LayoutManager layoutManager) {
+        recyclerView.setLayoutManager(layoutManager);
+    }
+
+    protected RecyclerView.LayoutManager getLayoutManager() {
+        return new LinearLayoutManager(getContext(),
+                LinearLayoutManager.HORIZONTAL, false);
+    }
+
+    @LayoutRes
+    protected int getLayoutRes(){
+        return R.layout.widget_quick_filter;
     }
 
     protected void initialAdapter() {
@@ -61,6 +75,9 @@ public class QuickSingleFilterView extends BaseCustomView {
 
     public void renderFilter(List<QuickFilterItem> quickFilterItems) {
         adapterFilter.addQuickFilterList(quickFilterItems);
+    }
+    protected boolean isMultipleSelectionAllowed() {
+        return false;
     }
 
     protected QuickSingleFilterListener getQuickSingleFilterListener() {
@@ -78,7 +95,7 @@ public class QuickSingleFilterView extends BaseCustomView {
                         } else {
                             items.get(i).setSelected(true);
                         }
-                    } else {
+                    } else if(!isMultipleSelectionAllowed()){
                         totalFalse++;
                         items.get(i).setSelected(false);
                     }
@@ -91,11 +108,15 @@ public class QuickSingleFilterView extends BaseCustomView {
                         setSelectedFilter(items.get(indexOf).getType());
                     }
                 } else {
-                    setSelectedFilter(quickFilterItem.getType());
+                        setSelectedFilter(getDefaultSelectedFilterType(quickFilterItem));
                 }
                 adapterFilter.notifyDataSetChanged();
             }
         };
+    }
+
+    protected String getDefaultSelectedFilterType(QuickFilterItem quickFilterItem) {
+            return quickFilterItem.getType();
     }
 
     private void setSelectedFilter(String type) {

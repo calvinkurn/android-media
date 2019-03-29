@@ -3,224 +3,132 @@ package com.tokopedia.kol.feature.post.view.viewmodel;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 
+import java.util.List;
+
 /**
  * @author by nisie on 10/27/17.
  */
 
-public class KolPostViewModel implements Visitable<KolPostTypeFactory> {
+public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolPostTypeFactory> {
     public final static int DEFAULT_ID = -1;
 
-    private final String tagsType;
-    private final String contentLink;
-    private final int userId;
-    private final String cardType;
-    private String title;
-    private String name;
-    private String avatar;
-    private String label;
-    private String kolProfileUrl;
-    private boolean followed;
-    private String productTooltip;
-    private String review;
-    private boolean liked;
-    private int totalLike;
-    private int totalComment;
-    private int page;
-    private boolean temporarilyFollowed;
-    private String kolImage;
-    private int contentId;
-    private int kolId;
-    private boolean reviewExpanded;
-    private String time;
+    private List<String> imageList;
+    private int tagsId;
     private String contentName;
-    private String productPrice;
-    private boolean wishlisted;
-    private boolean isShowComment;
+    private String tagsType;
+    private String tagsCaption;
+    private String tagsLink;
+    private String trackingId;
+    private String info;
+    private boolean showTopShadow;
 
-    public KolPostViewModel(String title, String name, String avatar, String label,
-                            boolean followed, String kolImage, String productTooltip,
-                            String review, boolean liked, int totalLike, int totalComment,
-                            int page, String kolProfileUrl, int contentId, int id, String time,
-                            String contentName, String productPrice, boolean wishlisted, String tagsType,
-                            String contentLink, int userId, boolean isShowComment, String cardType) {
-        this.title = title;
-        this.name = name;
-        this.avatar = avatar;
-        this.label = label;
-        this.followed = followed;
-        this.kolImage = kolImage;
-        this.productTooltip = productTooltip;
-        this.review = review;
-        this.liked = liked;
-        this.totalLike = totalLike;
-        this.totalComment = totalComment;
-        this.page = page;
-        this.kolProfileUrl = kolProfileUrl;
-        this.contentId = contentId;
-        this.kolId = id;
-        this.time = time;
+    public KolPostViewModel(int userId, String cardType, String title, String name, String avatar,
+                            String label, String kolProfileUrl, boolean followed, String review,
+                            boolean liked, int totalLike, int totalComment, int page, int kolId,
+                            String time, boolean isShowComment, boolean isShowLike,
+                            List<String> imageList, int tagsId, String contentName, String tagsType,
+                            String tagsCaption, String tagsLink) {
+        super(userId, tagsType, cardType, title, name, avatar, label, kolProfileUrl, followed,
+                review, liked, totalLike, totalComment, page, kolId, time, isShowComment,
+                isShowLike, false, false, imageList.size() > 1);
+        this.imageList = imageList;
+        this.tagsId = tagsId;
         this.contentName = contentName;
-        this.productPrice = productPrice;
-        this.wishlisted = wishlisted;
         this.tagsType = tagsType;
-        this.contentLink = contentLink;
-        this.userId = userId;
-        this.isShowComment = isShowComment;
-        this.cardType = cardType;
+        this.tagsCaption = tagsCaption;
+        this.tagsLink = tagsLink;
     }
 
-    public String getTitle() {
-        return title;
+    public KolPostViewModel(int userId, String cardType, String title, String name, String avatar,
+                            String label, String kolProfileUrl, boolean followed, String review,
+                            boolean liked, int totalLike, int totalComment, int page, int kolId,
+                            String time, boolean isShowComment, boolean isShowLike,
+                            boolean editable, boolean deletable, List<String> imageList,
+                            int tagsId, String contentName, String tagsType,
+                            String tagsCaption, String tagsLink, String trackingId, String info) {
+        super(userId, tagsType, cardType, title, name, avatar, label, kolProfileUrl, followed,
+                review, liked, totalLike, totalComment, page, kolId, time, isShowComment,
+                isShowLike, editable, deletable, imageList.size() > 1);
+        this.imageList = imageList;
+        this.tagsId = tagsId;
+        this.contentName = contentName;
+        this.tagsType = tagsType;
+        this.tagsCaption = tagsCaption;
+        this.tagsLink = tagsLink;
+        this.trackingId = trackingId;
+        this.info = info;
     }
 
-    public String getName() {
-        return name;
+    public List<String> getImageList() {
+        return imageList;
     }
 
-    public String getAvatar() {
-        return avatar;
+    public void setImageList(List<String> imageList) {
+        this.imageList = imageList;
     }
 
-    public String getLabel() {
-        return label;
+    public int getTagsId() {
+        return tagsId;
     }
 
-    public boolean isFollowed() {
-        return followed;
-    }
-
-    public String getKolImage() {
-        return kolImage;
-    }
-
-    public String getProductTooltip() {
-        return productTooltip;
-    }
-
-    public String getReview() {
-        return review;
-    }
-
-    public boolean isLiked() {
-        return liked;
-    }
-
-    public int getTotalLike() {
-        return totalLike;
-    }
-
-    public int getTotalComment() {
-        return totalComment;
-    }
-
-    public int getPage() {
-        return page;
-    }
-
-    public void setPage(int page) {
-        this.page = page;
-    }
-
-    public String getKolProfileUrl() {
-        return kolProfileUrl;
-    }
-
-    public boolean isTemporarilyFollowed() {
-        return temporarilyFollowed;
-    }
-
-    public int getContentId() {
-        return contentId;
-    }
-
-    public void setProductId(int contentId) {
-        this.contentId = contentId;
-    }
-
-
-    public int getId() {
-        return kolId;
-    }
-
-    public void setId(int id) {
-        this.kolId = id;
-    }
-
-    public void setFollowed(boolean followed) {
-        this.followed = followed;
-    }
-
-    public void setTemporarilyFollowed(boolean temporarilyFollowed) {
-        this.temporarilyFollowed = temporarilyFollowed;
-    }
-
-    public void setLiked(boolean liked) {
-        this.liked = liked;
-    }
-
-    public boolean isReviewExpanded() {
-        return reviewExpanded;
-    }
-
-    public void setReviewExpanded(boolean reviewExpanded) {
-        this.reviewExpanded = reviewExpanded;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
+    public void setTagsId(int tagsId) {
+        this.tagsId = tagsId;
     }
 
     public String getContentName() {
         return contentName;
     }
 
-    public String getProductPrice() {
-        return productPrice;
-    }
-
-    public void setProductPrice(String productPrice) {
-        this.productPrice = productPrice;
-    }
-
-
-    public boolean isWishlisted() {
-        return wishlisted;
-    }
-
-    public void setTotalLike(int totalLike) {
-        this.totalLike = totalLike;
-    }
-
-    public void setTotalComment(int totalComment) {
-        this.totalComment = totalComment;
-    }
-
-    public String getContentLink() {
-        return contentLink;
-    }
-
-    public int getUserId() {
-        return userId;
+    public void setContentName(String contentName) {
+        this.contentName = contentName;
     }
 
     public String getTagsType() {
         return tagsType;
     }
 
-    public boolean isShowComment() {
-        return isShowComment;
+    public void setTagsType(String tagsType) {
+        this.tagsType = tagsType;
     }
 
-    public void setShowComment(boolean showComment) {
-        isShowComment = showComment;
+    public String getTagsCaption() {
+        return tagsCaption;
     }
 
-    public String getCardType() {
-        return cardType;
+    public void setTagsCaption(String tagsCaption) {
+        this.tagsCaption = tagsCaption;
+    }
+
+    public String getTagsLink() {
+        return tagsLink;
+    }
+
+    public void setTagsLink(String tagsLink) {
+        this.tagsLink = tagsLink;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    public String getTrackingId() {
+        return trackingId;
+    }
+
+    public void setTrackingId(String trackingId) {
+        this.trackingId = trackingId;
+    }
+
+    public boolean isShowTopShadow() {
+        return showTopShadow;
+    }
+
+    public void setShowTopShadow(boolean showTopShadow) {
+        this.showTopShadow = showTopShadow;
     }
 
     @Override

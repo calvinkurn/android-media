@@ -3,12 +3,15 @@ package com.tokopedia.checkout.domain.usecase;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
-import com.tokopedia.checkout.view.view.shipment.converter.RatesDataConverter;
+import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
 import com.tokopedia.logisticdata.data.entity.rates.RatesResponse;
 import com.tokopedia.logisticdata.data.repository.RatesRepository;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -25,6 +28,7 @@ public class GetRatesUseCase extends UseCase<ShipmentDetailData> {
     private RatesRepository repository;
     private ShipmentDetailData shipmentDetailData;
     private RatesDataConverter ratesDataConverter;
+    private List<ShopShipment> shopShipmentList;
 
     @Inject
     public GetRatesUseCase(RatesRepository repository, RatesDataConverter ratesDataConverter) {
@@ -36,6 +40,10 @@ public class GetRatesUseCase extends UseCase<ShipmentDetailData> {
         this.shipmentDetailData = shipmentDetailData;
     }
 
+    public void setShopShipmentList(List<ShopShipment> shopShipmentList) {
+        this.shopShipmentList = shopShipmentList;
+    }
+
     @Override
     public Observable<ShipmentDetailData> createObservable(RequestParams requestParams) {
         TKPDMapParam<String, String> mapParam = new TKPDMapParam<>();
@@ -43,7 +51,7 @@ public class GetRatesUseCase extends UseCase<ShipmentDetailData> {
         return repository.getRates(mapParam).map(new Func1<RatesResponse, ShipmentDetailData>() {
             @Override
             public ShipmentDetailData call(RatesResponse ratesResponse) {
-                return ratesDataConverter.getShipmentDetailData(shipmentDetailData, ratesResponse);
+                return ratesDataConverter.getShipmentDetailData(shipmentDetailData, shopShipmentList, ratesResponse);
             }
         });
     }

@@ -14,11 +14,9 @@ import android.webkit.WebViewClient;
 
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.BuildConfig;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.common.dbManager.FeedDbManager;
 import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
 import com.tokopedia.core.base.common.dbManager.TopAdsDbManager;
@@ -35,10 +33,19 @@ import com.tokopedia.core.prototype.ProductCache;
 import com.tokopedia.core.prototype.ShopCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.session.DialogLogoutFragment;
-import com.tokopedia.core.talk.cache.database.InboxTalkCacheManager;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.linker.LinkerConstants;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.model.UserData;
+import com.tokopedia.linker.requests.LinkerGenericRequest;
+import com.tokopedia.user.session.UserSession;
 
+@Deprecated
+/**
+ * Please use {@link com.tokopedia.user.session.UserSession} instead.
+ */
 public class SessionHandler {
     public static final String DEFAULT_EMPTY_SHOP_ID = "0";
     public static final String CACHE_PROMOTION_PRODUCT = "CACHE_PROMOTION_PRODUCT";
@@ -55,7 +62,7 @@ public class SessionHandler {
     private static final String STATE_BROWSE = "STATE_BROWSE";
     private static final String FULL_NAME = "FULL_NAME";
     private static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
-    private static final String LOGIN_SESSION = "LOGIN_SESSION";
+    protected static final String LOGIN_SESSION = "LOGIN_SESSION";
     private static final String USER_AVATAR_URI = "USER_AVATAR_URI";
     private static final String SHOP_DOMAIN = "SHOP_DOMAIN";
     private static final String IS_FIRST_TIME_USER = "IS_FIRST_TIME";
@@ -66,6 +73,7 @@ public class SessionHandler {
     private static final String REFRESH_TOKEN_KEY = "REFRESH_TOKEN_KEY";
     private static final String WALLET_REFRESH_TOKEN = "WALLET_REFRESH_TOKEN";
     private static final String TOKEN_TYPE = "TOKEN_TYPE";
+    private static final String USER_SCOPE = "USER_SCOPE";
     private static final String IS_FIRST_TIME_STORAGE = "IS_FIRST_TIME_STORAGE";
     private static final String LOGIN_UUID_KEY = "LOGIN_UUID";
     private static final String UUID_KEY = "uuid";
@@ -80,6 +88,9 @@ public class SessionHandler {
     private static final String EMAIL = "EMAIL";
     private static final String PROFILE_PICTURE = "PROFILE_PICTURE";
     private static final String HAS_PASSWORD = "HAS_PASSWORD";
+    private static final String KEY_PROFILE_BUYER = "KEY_PROFILE_BUYER";
+    private static final String KEY_AFFILIATE = "KEY_AFFILIATE";
+    public static final String INSTAGRAM_CACHE_KEY = "instagram_cache_key";
 
     private Context context;
     private String email;
@@ -109,7 +120,7 @@ public class SessionHandler {
         editor.putString(LOGIN_ID, user_id + "");
         editor.putBoolean(IS_LOGIN, isLogin);
         editor.apply();
-        TrackingUtils.eventPushUserID();
+        TrackingUtils.eventPushUserID(context, getGTMLoginID(context));
     }
 
     public static void clearUserData(Context context) {
@@ -122,7 +133,6 @@ public class SessionHandler {
         ProductCache.ClearCache(context);
         ShopCache.ClearCache(context);
         ManageProductCache.ClearCache(context);
-        InboxTalkCacheManager.ClearCache();
         CacheInteractorImpl messageCacheInteractor = new CacheInteractorImpl();
         messageCacheInteractor.deleteCache();
         new ProductDetailCacheManager().deleteAll();
@@ -133,11 +143,13 @@ public class SessionHandler {
         editor.putString(FULL_NAME, null);
         editor.putString(SHOP_DOMAIN, null);
         editor.putString(SHOP_ID, null);
+        editor.putString(SHOP_NAME, null);
         editor.putBoolean(IS_LOGIN, false);
         editor.putBoolean(IS_MSISDN_VERIFIED, false);
         editor.putString(PHONE_NUMBER, null);
         editor.putString(USER_DATA, null);
         editor.putString(REFRESH_TOKEN, null);
+        editor.putString(USER_SCOPE, null);
         editor.putString(ACCESS_TOKEN_TOKOCASH, null);
         editor.putString(TOKEN_TYPE, null);
         editor.putString(ACCESS_TOKEN, null);
@@ -158,6 +170,8 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY);
         LocalCacheHandler.clearCache(context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
         LocalCacheHandler.clearCache(context, TOKOCASH_SESSION);
+        LocalCacheHandler.clearCache(context, KEY_PROFILE_BUYER);
+        LocalCacheHandler.clearCache(context, KEY_AFFILIATE);
         logoutInstagram(context);
         try {
             MethodChecker.removeAllCookies(context);
@@ -193,6 +207,8 @@ public class SessionHandler {
     }
 
     private static void logoutInstagram(Context context) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context,  INSTAGRAM_CACHE_KEY);
+        localCacheHandler.clearCache(INSTAGRAM_CACHE_KEY);
         if (isV4Login(context) && context instanceof AppCompatActivity) {
             ((AppCompatActivity) context).setContentView(R.layout.activity_webview_general);
             WebView webView = (WebView) ((AppCompatActivity) context).findViewById(R.id.webview);
@@ -222,9 +238,6 @@ public class SessionHandler {
             });
             webView.loadUrl("https://instagram.com/accounts/logout/");
             webView.setVisibility(View.GONE);
-        }
-        if (context.getApplicationContext() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) context.getApplicationContext()).removeInstopedToken();
         }
     }
 
@@ -276,6 +289,16 @@ public class SessionHandler {
             shopId = DEFAULT_EMPTY_SHOP_ID;
         }
         return shopId;
+    }
+
+    public void setShopName(String name) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        sharedPrefs.edit().putString(SHOP_NAME, name).apply();
+    }
+
+    public static String getShopName(Context context) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(SHOP_NAME, "");
     }
 
     public static String getLoginName(Context context) {
@@ -424,12 +447,12 @@ public class SessionHandler {
 
     public static String getAccessToken() {
         SharedPreferences sharedPrefs = MainApplication.getAppContext().getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(ACCESS_TOKEN, "");
+        return sharedPrefs.getString(ACCESS_TOKEN, "").trim();
     }
 
     public static String getRefreshToken(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(REFRESH_TOKEN, "");
+        return sharedPrefs.getString(REFRESH_TOKEN, "").trim();
     }
 
     public static String getRefreshTokenIV(Context context) {
@@ -464,12 +487,12 @@ public class SessionHandler {
 
     public static String getAccessToken(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(ACCESS_TOKEN, "");
+        return sharedPrefs.getString(ACCESS_TOKEN, "").trim();
     }
 
     public static String getAccessTokenTokoCash() {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(MainApplication.getAppContext(), TOKOCASH_SESSION);
-        return localCacheHandler.getString(ACCESS_TOKEN_TOKOCASH, "");
+        return localCacheHandler.getString(ACCESS_TOKEN_TOKOCASH, "").trim();
     }
 
     public void clearToken() {
@@ -533,12 +556,12 @@ public class SessionHandler {
 
     public String getAuthAccessToken() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(ACCESS_TOKEN, "");
+        return sharedPrefs.getString(ACCESS_TOKEN, "").trim();
     }
 
     public String getAuthRefreshToken() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(REFRESH_TOKEN, "");
+        return sharedPrefs.getString(REFRESH_TOKEN, "").trim();
     }
 
     public boolean isUserHasShop() {
@@ -557,10 +580,14 @@ public class SessionHandler {
         editor.putString(SHOP_NAME, shopName);
         editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
         editor.apply();
-        TrackingUtils.eventPushUserID();
+        TrackingUtils.eventPushUserID(context, getGTMLoginID(context));
         if (!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier(u_id);
 
-        BranchSdkUtils.sendIdentityEvent(u_id);
+        UserData userData = new UserData();
+        userData.setUserId(u_id);
+
+        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
+                userData));
 
         //return status;
     }
@@ -575,7 +602,10 @@ public class SessionHandler {
         }
 
         //Set logout to Branch.io sdk,
-        BranchSdkUtils.sendLogoutEvent();
+        LinkerManager.getInstance().sendEvent(
+                LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGOUT_VAL,
+                        null)
+        );
     }
 
     private void clearUserData() {
@@ -583,8 +613,10 @@ public class SessionHandler {
     }
 
     public void forceLogout() {
-        PasswordGenerator.clearTokenStorage(context);
-        TrackingUtils.eventMoEngageLogoutUser();
+        if(context != null) {
+            PasswordGenerator.clearTokenStorage(context);
+            TrackingUtils.eventMoEngageLogoutUser(context);
+        }
         clearUserData();
     }
 
@@ -640,6 +672,18 @@ public class SessionHandler {
         editor.apply();
     }
 
+    public void setScope(String scopeName) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        Editor editor = sharedPrefs.edit();
+        saveToSharedPref(editor, USER_SCOPE, scopeName);
+        editor.apply();
+    }
+
+    public static String getUserScope() {
+        SharedPreferences sharedPrefs = MainApplication.getAppContext().getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(USER_SCOPE, "");
+    }
+
     public void setToken(String accessToken, String tokenType) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
@@ -672,7 +716,7 @@ public class SessionHandler {
 
     public String getTokenType(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(TOKEN_TYPE, "");
+        return sharedPrefs.getString(TOKEN_TYPE, "").trim();
     }
 
     public String getUUID() {

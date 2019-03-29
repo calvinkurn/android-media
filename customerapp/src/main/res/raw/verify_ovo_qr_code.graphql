@@ -1,0 +1,27 @@
+mutation ($qr_id:String!){
+      goalQRInquiry (qr_id: $qr_id) {
+          redirect_url
+          amount
+          fee
+          transfer_id
+          is_cash_enabled
+          is_point_enabled
+          is_input_fee_enabled
+          show_use_point_toggle
+          merchant {
+              name
+              description
+          },
+          promo {
+              banner
+              name
+              start_date
+              end_date
+              descriptions
+          }
+          errors {
+              title
+              message
+          }
+      }
+  }

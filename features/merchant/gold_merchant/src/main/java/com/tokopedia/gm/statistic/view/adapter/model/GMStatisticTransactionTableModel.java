@@ -1,6 +1,6 @@
 package com.tokopedia.gm.statistic.view.adapter.model;
 
-import com.tokopedia.seller.base.view.adapter.ItemType;
+import com.tokopedia.base.list.seller.common.util.ItemType;
 
 /**
  * Created by normansyahputa on 7/13/17.

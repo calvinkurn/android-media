@@ -2,32 +2,32 @@ package com.tokopedia.discovery.newdiscovery.category.presentation;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.URLParser;
-import com.tokopedia.core.discovery.model.Filter;
+import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
-import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.category.di.component.CategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.di.component.DaggerCategoryComponent;
-import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
-import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategorySectionItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.base.CategorySectionPagerAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.ProductFragment;
+import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
+import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategorySectionItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.CatalogFragment;
-import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
+import com.tokopedia.discovery.util.MoEngageEventTracking;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,8 +40,9 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     private static final String EXTRA_CATEGORY_HEADER_VIEW_MODEL = "CATEGORY_HADES_MODEL";
     private static final String EXTRA_TRACKER_ATTRIBUTION = "EXTRA_TRACKER_ATTRIBUTION";
 
-    public static final int TAB_SHOP_CATALOG= 1;
+    public static final int TAB_SHOP_CATALOG = 1;
     public static final int TAB_PRODUCT = 0;
+    private static final String PERFORMANCE_TRACE_CATEGORY = "mp_category_list";
 
     private String departmentId;
     private String categoryName;
@@ -52,13 +53,15 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     private ViewPager viewPager;
     private FrameLayout container;
 
-    private  ProductFragment productFragment;
-    private CatalogFragment catalogFragment;
+    private ProductFragment productFragment;
+    private CategoryCatalogFragment catalogFragment;
 
     @Inject
     CategoryPresenter categoryPresenter;
 
     private CategoryComponent categoryComponent;
+    private PerformanceMonitoring performanceMonitoring;
+    private boolean isTraceStopped;
 
     public static void moveTo(Context context, String departmentId, String categoryName, boolean removeAnimation, String trackerAttribution) {
         if (context != null) {
@@ -66,6 +69,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
             intent.putExtra(BrowseProductRouter.DEPARTMENT_ID, departmentId);
             intent.putExtra(BrowseProductRouter.DEPARTMENT_NAME, categoryName);
             intent.putExtra(EXTRA_TRACKER_ATTRIBUTION, trackerAttribution);
+            MoEngageEventTracking.sendProductCategory(departmentId, categoryName);
             if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             context.startActivity(intent);
         }
@@ -77,8 +81,9 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
             Intent intent = new Intent(activity, CategoryActivity.class);
             intent.putExtra(BrowseProductRouter.DEPARTMENT_ID, departmentId);
             intent.putExtra(BrowseProductRouter.DEPARTMENT_NAME, categoryName);
+            MoEngageEventTracking.sendSubCategory(departmentId, categoryName);
             if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            activity.startActivityForResult(intent,CategoryNavigationActivity.DESTROY_INTERMEDIARY);
+            activity.startActivityForResult(intent, CategoryNavigationActivity.DESTROY_INTERMEDIARY);
         }
     }
 
@@ -106,6 +111,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(PERFORMANCE_TRACE_CATEGORY);
         initInjector();
         setPresenter(categoryPresenter);
         categoryPresenter.attachView(this);
@@ -157,29 +163,33 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     @Override
     public void hideLoading() {
         showLoadingView(false);
+        if (performanceMonitoring != null && !isTraceStopped) {
+            performanceMonitoring.stopTrace();
+            isTraceStopped = true;
+        }
     }
 
     private void loadInitialData() {
         Bundle bundle = getIntent().getExtras();
-        if (bundle.getParcelable(EXTRA_CATEGORY_HEADER_VIEW_MODEL)!=null) {
+        if (bundle.getParcelable(EXTRA_CATEGORY_HEADER_VIEW_MODEL) != null) {
             CategoryHeaderModel categoryHeaderModel = bundle.getParcelable(EXTRA_CATEGORY_HEADER_VIEW_MODEL);
             trackerAttribution = bundle.getString(EXTRA_TRACKER_ATTRIBUTION, "");
             departmentId = categoryHeaderModel.getDepartementId();
             categoryName = categoryHeaderModel.getHeaderModel().getCategoryName();
             categoryPresenter.getCategoryPage1(categoryHeaderModel);
-        } else if (!TextUtils.isEmpty(bundle.getString(BrowseProductRouter.DEPARTMENT_ID))){
+        } else if (!TextUtils.isEmpty(bundle.getString(BrowseProductRouter.DEPARTMENT_ID))) {
             trackerAttribution = bundle.getString(EXTRA_TRACKER_ATTRIBUTION, "");
             departmentId = bundle.getString(BrowseProductRouter.DEPARTMENT_ID);
             if (!TextUtils.isEmpty(bundle.getString(BrowseProductRouter.DEPARTMENT_NAME))) {
                 categoryName = bundle.getString(BrowseProductRouter.DEPARTMENT_NAME);
             }
-            categoryPresenter.getCategoryHeader(departmentId,new HashMap<String, String>());
-        } else if (!TextUtils.isEmpty(bundle.getString(BrowseProductRouter.EXTRA_CATEGORY_URL))){
+            categoryPresenter.getCategoryHeader(departmentId, new HashMap<String, String>());
+        } else if (!TextUtils.isEmpty(bundle.getString(BrowseProductRouter.EXTRA_CATEGORY_URL))) {
             trackerAttribution = bundle.getString(EXTRA_TRACKER_ATTRIBUTION, "");
             categoryUrl = bundle.getString(BrowseProductRouter.EXTRA_CATEGORY_URL);
             URLParser urlParser = new URLParser(categoryUrl);
             departmentId = urlParser.getDepIDfromURI(CategoryActivity.this);
-            categoryPresenter.getCategoryHeader(departmentId,urlParser.getParamKeyValueMap());
+            categoryPresenter.getCategoryHeader(departmentId, urlParser.getParamKeyValueMap());
         }
         setToolbarTitle(categoryName);
     }
@@ -232,6 +242,15 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
         });
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        Bundle bundle = new Bundle();
+        super.onSaveInstanceState(bundle);
+        if (!TooLargeTool.isPotentialCrash(bundle)) {
+            outState.putAll(bundle);
+        }
+    }
+
     private void initInjector() {
         categoryComponent =
                 DaggerCategoryComponent.builder()
@@ -241,13 +260,14 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
         categoryComponent.inject(this);
     }
 
-    private CatalogFragment getCatalogFragment(String departmentId) {
-        return CatalogFragment.createInstanceByCategoryID(departmentId);
+    private CategoryCatalogFragment getCatalogFragment(String departmentId) {
+        return CategoryCatalogFragment.createInstanceByCategoryID(departmentId);
     }
 
     private Fragment getProductFragment(ProductViewModel productViewModel) {
         return ProductFragment.newInstance(productViewModel, trackerAttribution);
     }
+
     protected void showContainer(boolean visible) {
         container.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
@@ -268,7 +288,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-         if (resultCode == CategoryNavigationActivity.DESTROY_BROWSE_PARENT) {
+        if (resultCode == CategoryNavigationActivity.DESTROY_BROWSE_PARENT) {
             setResult(CategoryNavigationActivity.DESTROY_INTERMEDIARY);
             finish();
         }

@@ -15,27 +15,14 @@
         android:background="@color/white"
         android:orientation="vertical">
 
+
         <android.support.constraint.ConstraintLayout
             android:id="@+id/bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="bottom"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            tools:layout_editor_absoluteX="58dp"
-            tools:layout_editor_absoluteY="451dp">
-
-            <View
-                android:id="@+id/view"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginBottom="8dp"
-                android:background="@color/grey_300"
-                app:layout_constraintStart_toStartOf="@id/bottom"
-                app:layout_constraintTop_toTopOf="@id/bottom"
-                android:visibility="gone"
-                tools:visibility="gone"/>
+            app:layout_constraintEnd_toEndOf="parent">
 
             <ImageView
                 android:id="@+id/button_send"
@@ -43,23 +30,27 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:padding="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_8"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
                 app:layout_constraintBottom_toBottomOf="@id/bottom"
                 app:layout_constraintEnd_toEndOf="@id/bottom"
                 app:layout_constraintRight_toRightOf="@id/bottom"
+                app:layout_constraintTop_toTopOf="@id/reply_edit_text"
                 app:srcCompat="@drawable/ic_send_24dp_green"
                 tools:layout_editor_absoluteX="42dp"
                 tools:layout_editor_absoluteY="460dp"
-                tools:visibility="gone"/>
+                tools:visibility="visible" />
 
-            <EditText
+            <com.tokopedia.design.text.BackEditText
                 android:id="@+id/reply_edit_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/bg_rounded_chat_input"
                 android:inputType="textMultiLine"
                 android:maxLength="200"
@@ -72,11 +63,10 @@
                 app:layout_constraintBottom_toBottomOf="@id/bottom"
                 app:layout_constraintEnd_toStartOf="@+id/button_send"
                 app:layout_constraintRight_toLeftOf="@+id/button_send"
-                android:layout_marginTop="@dimen/dp_8"
                 app:layout_constraintStart_toStartOf="@id/bottom"
-                app:layout_constraintTop_toBottomOf="@id/view"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="dsajj\nfdfidjidfijdfijd\n asd\basd"
-                tools:visibility="gone"/>
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/login"
@@ -94,10 +84,9 @@
                 android:textColor="@color/medium_green"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="normal"
-                tools:visibility="visible"
-                />
-        </android.support.constraint.ConstraintLayout>
+                tools:visibility="gone" />
 
+        </android.support.constraint.ConstraintLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/chat_list"
@@ -161,8 +150,9 @@
             android:id="@+id/sprintsale_icon_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_15"
+            android:layout_marginBottom="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_15"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/pinned_message"
             app:layout_constraintEnd_toEndOf="parent">
 
@@ -193,19 +183,39 @@
 
         </RelativeLayout>
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/quick_reply"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@id/bottom"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="gone"
+            />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/grey_300"
+            app:layout_constraintStart_toStartOf="@id/quick_reply"
+            app:layout_constraintTop_toTopOf="@id/quick_reply"
+            android:visibility="gone"
+            tools:visibility="gone"/>
+
+
         <include
             android:id="@+id/pinned_message"
             layout="@layout/pinned_message_view_holder"
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            app:layout_constraintBottom_toTopOf="@id/bottom"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:visibility="visible"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_12"
+            android:layout_height="wrap_content"
             android:paddingBottom="@dimen/dp_12"
+            android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_8"
-            />
+            android:paddingTop="@dimen/dp_12"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@id/quick_reply"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 

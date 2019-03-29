@@ -6,8 +6,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.util.SparseArrayCompat;
 import android.view.ViewGroup;
 
-import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordListFragment;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordNegativeListFragment;
+import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordPositiveListFragment;
 
 /**
  * @author normansyahputa on 5/19/17.
@@ -30,10 +30,10 @@ public class TopAdsPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case POSITIVE:
-                return TopAdsKeywordListFragment.createInstance();
+                return new TopAdsKeywordPositiveListFragment();
             default:
             case NEGATIVE:
-                return TopAdsKeywordNegativeListFragment.createInstance();
+                return new TopAdsKeywordNegativeListFragment();
         }
     }
 

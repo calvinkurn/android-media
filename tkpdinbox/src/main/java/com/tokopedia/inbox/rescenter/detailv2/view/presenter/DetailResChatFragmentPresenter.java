@@ -5,13 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
-import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.gallery.MediaItem;
-import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AcceptSolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AskHelpResolutionUseCase;
@@ -38,11 +34,13 @@ import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.ReplyDiscussionSub
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
 /**
  * Created by yoasfs on 09/10/17.
@@ -67,11 +65,10 @@ public class DetailResChatFragmentPresenter
     private InputAddressUseCase inputAddressUseCase;
     private EditAddressUseCase editAddressUseCase;
     private FinishResolutionUseCase finishResolutionUseCase;
-    private ImageUploadHandler uploadImageDialog;
     private String resolutionId;
     private Context context;
-    private String[] extensions = {
-            "jpg", "jpeg", "png", "mp4", "m4v", "mov", "ogv"
+    private String[] videoExtensions = {
+            "mp4", "m4v", "mov", "ogv"
     };
 
     @Inject
@@ -95,12 +92,6 @@ public class DetailResChatFragmentPresenter
         this.inputAddressUseCase = inputAddressUseCase;
         this.editAddressUseCase = editAddressUseCase;
         this.finishResolutionUseCase = finishResolutionUseCase;
-    }
-
-    @Override
-    public void initUploadImageHandler(Context context, ImageUploadHandler imageUploadHandler) {
-        this.context = context;
-        this.uploadImageDialog = imageUploadHandler;
     }
 
     @Override
@@ -128,6 +119,11 @@ public class DetailResChatFragmentPresenter
     public void initView(String resolutionId) {
         this.resolutionId = resolutionId;
         loadConversation(resolutionId);
+    }
+
+    @Override
+    public void initContext(Context context) {
+        this.context = context;
     }
 
     public void loadConversation(String resolutionId) {
@@ -240,66 +236,66 @@ public class DetailResChatFragmentPresenter
     }
 
     private void postReply(String message, List<AttachmentViewModel> attachmentList) {
+        sendDiscussionV2UseCase.execute(
+                SendDiscussionV2UseCase
+                        .getSendReplyParams(resolutionId, message, attachmentList),
+                new ReplyDiscussionSubscriber(mainView));
+    }
 
-        if (TrackingUtils.getGtmString(AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
-            sendDiscussionV2UseCase.execute(
-                    SendDiscussionV2UseCase
-                            .getSendReplyParams(resolutionId, message, attachmentList),
-                    new ReplyDiscussionSubscriber(mainView));
+    @Override
+    public void handleImageResult(int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+            if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
+                onAddImageAttachment(imageUrlOrPathList.get(0),
+                        AttachmentViewModel.FILE_IMAGE);
+            } else {
+                onFailedAddAttachment();
+            }
         } else {
-            sendDiscussionUseCase.execute(
-                    SendDiscussionUseCase.getSendReplyParams(
-                            resolutionId,
-                            message,
-                            attachmentList),
-                    new ReplyDiscussionSubscriber(mainView));
+            onFailedAddAttachment();
         }
     }
 
     @Override
-    public void handleDefaultOldUploadImageHandlerResult(int resultCode, Intent data) {
-        switch (resultCode) {
-            case GalleryBrowser.RESULT_CODE:
-                if (data != null && data.getStringExtra(ImageGallery.EXTRA_URL) != null) {
-                    onAddImageAttachment(data.getStringExtra(ImageGallery.EXTRA_URL),
-                            AttachmentViewModel.FILE_IMAGE);
-                } else {
-                    onFailedAddAttachment();
-                }
-                break;
-            case Activity.RESULT_OK:
-                if (uploadImageDialog != null && uploadImageDialog.getCameraFileloc() != null) {
-                    onAddImageAttachment(uploadImageDialog.getCameraFileloc(),
-                            AttachmentViewModel.FILE_IMAGE);
-                } else {
-                    onFailedAddAttachment();
-                }
-                break;
-        }
-    }
+    public void handleVideoResult(int resultCode, Intent data) {
 
-    @Override
-    public void handleNewGalleryResult(int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (data != null && data.getParcelableExtra("EXTRA_RESULT_SELECTION") != null) {
-                MediaItem item = data.getParcelableExtra("EXTRA_RESULT_SELECTION");
-                if (checkAttachmentValidation(item)) {
-                    onAddImageAttachment(item.getRealPath(), getTypeFile(item));
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            ArrayList<String> videoPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+            if (videoPathList != null && videoPathList.size() > 0) {
+                String videoPath = videoPathList.get(0);
+                if (checkAttachmentVideo(videoPath)) {
+                    onAddImageAttachment(videoPath, AttachmentViewModel.FILE_VIDEO);
                 }
             } else {
                 onFailedAddAttachment();
             }
+        } else {
+            onFailedAddAttachment();
         }
     }
 
-    private int getTypeFile(MediaItem item) {
-        if (item.isVideo()) {
-            return AttachmentViewModel.FILE_VIDEO;
-        } else if (item.isImage()) {
-            return AttachmentViewModel.FILE_IMAGE;
-        } else {
-            return AttachmentViewModel.UNKNOWN;
+    public boolean isDeviceSupportVideo() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            mainView.showSnackBar(context.getString(R.string.error_reply_discussion_resolution_version_minimum));
+            return false;
         }
+        return true;
+    }
+
+    public boolean isAllowToAddMoreVideo() {
+        int countVideoAlreadyAdded = 0;
+        for (AttachmentViewModel model : mainView.getAttachmentListFromAdapter()) {
+            if (model.isVideo()) {
+                countVideoAlreadyAdded++;
+                break;
+            }
+        }
+        if (countVideoAlreadyAdded == MAXIMAL_VIDEO_CONTENT_ALLOW) {
+            mainView.showSnackBar(context.getString(R.string.error_reply_discussion_resolution_reach_max));
+            return false;
+        }
+        return true;
     }
 
     private void onFailedAddAttachment() {
@@ -313,12 +309,10 @@ public class DetailResChatFragmentPresenter
         mainView.addAttachmentFile(attachmentViewModel);
     }
 
-
-    private boolean checkAttachmentValidation(MediaItem item) {
+    private boolean checkAttachmentVideo(String videoPath) {
         boolean isExtensionAllow = false;
-        for (String extension : extensions) {
-            String path = item.getRealPath();
-            if (path != null && path.toLowerCase(Locale.US).endsWith(extension)) {
+        for (String extension : videoExtensions) {
+            if (videoPath != null && videoPath.toLowerCase(Locale.US).endsWith(extension)) {
                 isExtensionAllow = true;
             }
         }
@@ -327,46 +321,6 @@ public class DetailResChatFragmentPresenter
             return false;
         }
 
-        if (item.isImage() && (item.height < 300 || item.width < 300)) {
-            mainView.showSnackBar(context.getString(R.string.error_reply_discussion_resolution_min_size));
-            return false;
-        }
-
-        if (item.isImage()) {
-            File file = new File(item.getRealPath());
-            long length = file.length() / 1024;
-            if (length >= 15000) {
-                mainView.showSnackBar(context.getString(R.string.error_reply_discussion_resolution_reach_max_size_image));
-                return false;
-            }
-        }
-
-        int countVideoAlreadyAdded = 0;
-        if (item.isVideo()) {
-            for (AttachmentViewModel model : mainView.getAttachmentListFromAdapter()) {
-                if (model.isVideo()) {
-                    countVideoAlreadyAdded++;
-                }
-            }
-        }
-        if (countVideoAlreadyAdded == MAXIMAL_VIDEO_CONTENT_ALLOW) {
-            mainView.showSnackBar(context.getString(R.string.error_reply_discussion_resolution_reach_max));
-            return false;
-        }
-
-        if (item.isVideo()) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                mainView.showSnackBar(context.getString(R.string.error_reply_discussion_resolution_version_minimum));
-                return false;
-            }
-            File file = new File(item.getRealPath());
-            long length = file.length() / 1024;
-            if (length >= 20000) {
-                mainView.showSnackBar(context.getString(R.string.error_reply_discussion_resolution_reach_max_size_video));
-                return false;
-            }
-        }
-
-        return true;
+        return isAllowToAddMoreVideo();
     }
 }

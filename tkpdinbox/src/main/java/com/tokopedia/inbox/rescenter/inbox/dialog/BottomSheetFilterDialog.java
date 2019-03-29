@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.inbox.rescenter.inbox.presenter.InboxResCenterPresenter;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
 

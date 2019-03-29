@@ -14,7 +14,6 @@
 
     <string name="price_format_text">%1$s %2$s</string>
 
-    <string name="title_date_setting">Atur Tanggal</string>
     <string name="next">Selanjutnya</string>
     <string name="label_top_ads_choose_credit">Pilih</string>
     <string name="title_activity_category_picker">Pilih Kategori</string>
@@ -24,20 +23,7 @@
     <string name="error_no_browser">\"Tidak ada aplikasi untuk membuka link\"</string>
 
     <string name="set_date">Atur Tanggal</string>
-    <string name="yesterday">Kemarin</string>
-    <string name="seven_days_ago">7 hari terakhir</string>
-    <string name="thirty_days_ago">30 hari terakhir</string>
 
-    <string name="label_today">Hari Ini</string>
-    <string name="label_this_month">Bulan Ini</string>
-    <string name="label_date_period">Periode</string>
-    <string name="label_date_custom">Kustom</string>
-
-    <string name="label_date_picker_start_date">Tanggal Mulai</string>
-    <string name="label_date_picker_end_date">Tanggal Selesai</string>
-    <string name="date_picker_date_range_format_text">%1$s - %2$s</string>
-
-    <string name="save_date">Simpan</string>
     <string name="market_insight_item_non_gm_text">Kata Kunci %s</string>
 
     <string name="title_shop_score">Performa Toko</string>
@@ -47,14 +33,14 @@
     <string name="title_shop_score_detail_gold_badge_info">Gold Badge</string>
 
     <string name="button_go_to_seller_tokopedia_web"><![CDATA[Tips & Trick meningkatkan Performa Toko]]></string>
-    <string name="button_go_to_gm_subscribe">Berlangganan Gold Merchant</string>
+    <string name="button_go_to_gm_subscribe">Berlangganan Power Merchant</string>
     <string name="error_title_shop_score_failed">Data Gagal Ditampilkan</string>
     <string name="error_subtitle_shop_score_failed">Periksa koneksi internet Anda dan coba lagi</string>
     <string name="button_shop_score_go_to_complete_information">Info Selengkapnya</string>
     <string name="subtitle_shop_score_detail_summary_description">Nilai dihitung berdasarkan rata-rata nilai indikator performa toko anda dalam 30 hari terakhir</string>
     <string name="title_shop_score_indicator">Indikator Performa Toko</string>
     <string name="subtitle_shop_score_indicator_thirtydays">30 hari terakhir</string>
-    <string name="description_shop_score_gold_badge_state">Mulai tanggal 27 Maret 2017, ikon Gold Badge hanya akan diberikan kepada seller dengan skor minimal 75 poin.</string>
+    <string name="description_shop_score_gold_badge_state">Mulai tanggal 27 Maret 2017, ikon %1$s hanya akan diberikan kepada seller dengan skor minimal 75 poin.</string>
     <string name="title_shop_setting_location">Lokasi Pengiriman</string>
     <string name="description_shop_setting_location">Lengkapi informasi lokasi pengiriman untuk memilih layanan jasa pengiriman yang tersedia di lokasi Anda.</string>
     <string name="hint_shop_setting_location_city">Kota Asal Pengiriman</string>
@@ -126,8 +112,6 @@
     <string name="add_product_label_alert_dialog_video">Fitur upload video hanya tersedia untuk Gold Merchant. Berlangganan Gold Merchant sekarang?</string>
     <string name="add_product_label_alert_save_as_draft_dollar_and_video">%s Jika ya, produk akan disimpan sebagai Draft</string>
 
-    <string name="product_manage_you_have_x_unfinished_product">Anda memiliki %1$d draft produk yang belum terselesaikan.<![CDATA[<br /><font color=\"#42b549\">Cek Sekarang</font>]]></string>
-
     <string name="app_widget_title_new_order">Order</string>
     <string name="app_widget_new_order_wording_empty">Belum ada data</string>
     <string name="app_widget_label_today">Hari ini</string>
@@ -137,7 +121,6 @@
     <string name="product_instagram_draft_error_save_resolution">Gambar instagram memiliki resolusi di bawah 300 pixel.</string>
     <string name="product_draft_instagram_save_success">%1$d Produk Instagram Anda berhasil ditambahkan di draft.</string>
     <string name="delete_this_variant">Hapus Variant untuk <![CDATA[<b>%1$s</b>]]>?</string>
-    <string name="label_variant_save">Simpan</string>
 
     <string name="product_list_picker_max_has_been_reached">Jumlah produk yang ditambahkan sudah mencapai maksimum</string>
     <string name="title_activity_product_list_picker">Pilih Produk Unggulan</string>
@@ -163,6 +146,8 @@
     <string name="import_from_instagram_text_description">Ambil gambar dari Instagram</string>
     <string name="added_from_gallery_text_description">Tambah gambar dari Galeri</string>
     <string name="added_from_camera_text_description">Tambah gambar dari Kamera</string>
+    <string name="add_product_text_description">Tambah Produk</string>
+    <string name="import_from_instagram_to_draft">Impor Instagram ke Draft</string>
 
     <string name="product_manage_label_add_product_to_sell">Tambah produk Anda untuk dapat mulai berjualan.</string>
     <string name="product_manage_label_add_product">+ Tambah Produk</string>
@@ -203,11 +188,10 @@
     <string name="product_manage_title_dialog_variant">Produk dengan Varian</string>
     <string name="product_manage_label_dialog_variant">Saat ini produk yang memiliki varian hanya bisa diubah dan dihapus melalui desktop</string>
     <string name="product_manage_label_snackbar_variant">Produk dengan Varian hanya dapat dihapus dan diubah melalui desktop.</string>
-    <string name="product_desc_guide">Panduan Deskripsi Produk</string>
     <string name="test_strike"><strike>TextView</strike></string>
     <string name="item_price_label">Harga Barang</string>
     <string name="shipping_fee_label">Ongkos Kirim</string>
-	<string name="shipping_location_pinpoint_label">Pinpoint Lokasi Pengiriman</string>
+    <string name="shipping_location_pinpoint_label">Pinpoint Lokasi Pengiriman</string>
     <string name="shipping_location_pinpoint_detail">Isi pinpoint lokasi toko Anda untuk mengaktifkan Layanan Pengiriman Ekspress.</string>
 
     <!-- Opportunity -->
@@ -230,15 +214,20 @@
     <string name="product_sizechart_optional">Panduan Ukuran (Optional)</string>
     <string name="product_sizechart_info">Tambah gambar panduan atau tabel ukuran agar pembeli mengetahui dimensi produk setiap varian.</string>
     <string name="product_variant_option_cannot_empty">Minimum 1 opsi varian harus dipilih</string>
-    <string name="product_description_tips_title"><![CDATA[<b>Tips:</b> Penulisan Deskripsi Produk yang menarik lihat di sini.]]></string>
     <string name="product_grosir_not_available_if_has_variant">Harga grosir tidak berlaku jika memiliki varian produk.</string>
-    <string name="change">Ubah</string>
     <string name="change_all_variant_price">Ubah Semua Harga Varian</string>
-    <string name="product_price_locked">Harga Produk Terkunci</string>
-    <string name="product_price_locked_desc">Atur harga di masing-masing varian atau ubah semua harga varian dengan mengisi harga di bawah.</string>
-    <string name="product_price_locked_manage_desc">Pengaturan harga dengan varian hanya bisa dilakukan melalui Ubah Produk.</string>
-    <string name="product_category_locked">Kategori Terkunci</string>
-    <string name="product_category_locked_description">Tidak dapat mengubah kategori dari produk yang sudah memiliki varian.</string>
     <string name="product_add_sku_title">SKU (Stock Keeping Unit)</string>
+    <string name="choose_shop_picture">Pilih Gambar Toko</string>
 
+    <string name="sticker_shop_link">https://tokopedia.com/%s</string>
+    <string name="sticker_cashback">Cashback %1$d%%</string>
+    <string name="catalog">Katalog</string>
+    <string name="primary">Utama</string>
+    <string name="title_activity_seller_center">Seller Center</string>
+    <string name="title_seller_tx_ready_to_ship">Siap Dikirim</string>
+    <string name="title_seller_tx_shipped">Sedang Dikirim</string>
+    <string name="title_seller_tx_delivered">Sampai Tujuan</string>
+    <string name="product_label_message_error_upload_image">Gagal mengunggah gambar, silahkan coba lagi.</string>
+    <string name="tooltip_fulfillment_title">Tak Perlu Repot Lagi</string>
+    <string name="tooltip_fulfillment_desc">Semua pesanan berlabel Dilayani TokoCabang, akan diurus oleh admin TokoCabang</string>
 </resources>

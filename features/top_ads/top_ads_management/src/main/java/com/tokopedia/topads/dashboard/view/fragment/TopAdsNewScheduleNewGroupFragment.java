@@ -97,9 +97,9 @@ public class TopAdsNewScheduleNewGroupFragment extends TopAdsNewScheduleFragment
 
     private void trackingNewScheduleTopads() {
         if(detailAd != null && detailAd.isScheduled()) {
-            UnifyTracking.eventTopAdsProductAddPromoStep3(AppEventTracking.EventLabel.SHOWTIME_SETUP);
+            UnifyTracking.eventTopAdsProductAddPromoStep3(getActivity(), AppEventTracking.EventLabel.SHOWTIME_SETUP);
         }else{
-            UnifyTracking.eventTopAdsProductAddPromoStep3(AppEventTracking.EventLabel.SHOWTIME_AUTO);
+            UnifyTracking.eventTopAdsProductAddPromoStep3(getActivity(), AppEventTracking.EventLabel.SHOWTIME_AUTO);
         }
     }
 

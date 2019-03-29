@@ -3,6 +3,7 @@ package com.tokopedia.tokocash.activation.data;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.tokocash.activation.data.entity.ActivateTokoCashEntity;
 import com.tokopedia.tokocash.network.api.TokoCashApi;
+import com.tokopedia.tokocash.network.model.RefreshTokenEntity;
 
 import java.util.HashMap;
 
@@ -40,6 +41,17 @@ public class ActivateTokoCashCloudDataStore implements ActivateTokoCashDataStore
                     @Override
                     public ActivateTokoCashEntity call(Response<DataResponse<ActivateTokoCashEntity>> dataResponseResponse) {
                         return dataResponseResponse.body().getData();
+                    }
+                });
+    }
+
+    @Override
+    public Observable<String> getRefreshWalletToken() {
+        return tokoCashApi.getTokenWallet()
+                .map(new Func1<RefreshTokenEntity, String>() {
+                    @Override
+                    public String call(RefreshTokenEntity refreshTokenEntity) {
+                        return refreshTokenEntity.getData().getToken();
                     }
                 });
     }

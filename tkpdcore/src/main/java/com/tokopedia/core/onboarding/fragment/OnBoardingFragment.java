@@ -7,7 +7,6 @@ package com.tokopedia.core.onboarding.fragment;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -16,14 +15,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
-import com.tokopedia.core.onboarding.ISlideBackgroundColorHolder;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 
-public class OnBoardingFragment extends TkpdBaseV4Fragment implements ISlideBackgroundColorHolder{
+public class OnBoardingFragment extends TkpdBaseV4Fragment{
 
     protected static final String ARG_TITLE = "title";
     protected static final String ARG_DESC = "desc";
@@ -178,20 +176,6 @@ public class OnBoardingFragment extends TkpdBaseV4Fragment implements ISlideBack
 
     protected View getDefaultView(LayoutInflater inflater, ViewGroup container) {
         return inflater.inflate(R.layout.fragment_onboarding_intro, container, false);
-    }
-
-    @Override
-    public int getDefaultBackgroundColor() {
-        // Return the default background color of the slide.
-        return MethodChecker.getColor(getActivity(),R.color.black);
-    }
-
-    @Override
-    public void setBackgroundColor(@ColorInt int backgroundColor) {
-        // Set the background color of the view within your slide to which the transition should be applied.
-        if (main != null) {
-            main.setBackgroundColor(backgroundColor);
-        }
     }
 
     @Override

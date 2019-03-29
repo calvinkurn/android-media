@@ -12,6 +12,8 @@ import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.ImageUploadPreviewFragment;
 
+import java.util.ArrayList;
+
 /**
  * @author by nisie on 9/4/17.
  */
@@ -45,10 +47,9 @@ public class ImageUploadPreviewActivity extends BasePresenterActivity {
     @Override
     protected void initView() {
 
-        String fileLoc = "";
-        if (getIntent().getExtras() != null
-                && getIntent().getExtras().getString(ImageUploadHandler.FILELOC) != null)
-            fileLoc = getIntent().getExtras().getString(ImageUploadHandler.FILELOC, "");
+        ArrayList<String> fileLoc = new ArrayList<>();
+        if (getIntent().getExtras() != null)
+            fileLoc = getIntent().getExtras().getStringArrayList(ImageUploadHandler.FILELOC);
 
         boolean isUpdate = false;
         if (getIntent().getExtras() != null)
@@ -85,10 +86,10 @@ public class ImageUploadPreviewActivity extends BasePresenterActivity {
 
     }
 
-    public static Intent getCallingIntent(Context context, String fileLoc) {
+    public static Intent getCallingIntent(Context context, ArrayList<String> fileLoc) {
         Intent intent = new Intent(context, ImageUploadPreviewActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(ImageUploadHandler.FILELOC, fileLoc);
+        bundle.putStringArrayList(ImageUploadHandler.FILELOC, fileLoc);
         intent.putExtras(bundle);
         return intent;
     }

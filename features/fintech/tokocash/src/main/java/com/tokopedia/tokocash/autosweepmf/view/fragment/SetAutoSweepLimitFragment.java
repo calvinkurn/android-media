@@ -26,10 +26,11 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
+import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.autosweepmf.view.contract.SetAutoSweepLimitContract;
 import com.tokopedia.tokocash.autosweepmf.view.model.AutoSweepLimit;
 import com.tokopedia.tokocash.autosweepmf.view.presenter.SetAutoSweepLimitPresenter;
-import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.common.di.TokoCashComponent;
 
 import javax.inject.Inject;
 
@@ -202,6 +203,11 @@ public class SetAutoSweepLimitFragment extends BaseDaggerFragment implements Set
     }
 
     @Override
+    public Long getLongRemoteConfig(String key) {
+        return ((TokoCashRouter) getActivity().getApplication()).getLongConfig(key);
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
     }
@@ -217,7 +223,6 @@ public class SetAutoSweepLimitFragment extends BaseDaggerFragment implements Set
                 TokoCashComponentInstance.getComponent(getActivity().getApplication());
         tokoCashComponent.inject(this);
         mPresenter.attachView(this);
-        mPresenter.initRemoteConfig();
     }
 
     @Override

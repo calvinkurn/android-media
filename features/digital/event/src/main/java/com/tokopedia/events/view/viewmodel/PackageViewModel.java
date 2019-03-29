@@ -41,6 +41,9 @@ public class PackageViewModel implements Parcelable {
     private int digitalCategoryID;
     private int digitalProductID;
     private String digitalProductCode;
+    private long startDate;
+    private long endDate;
+    private boolean isSaleStarted;
 
     public String getTitle() {
         return title;
@@ -114,6 +117,30 @@ public class PackageViewModel implements Parcelable {
 
     public void setProviderTicketId(String providerTicketId) {
         this.providerTicketId = providerTicketId;
+    }
+
+    public long getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(long startDate) {
+        this.startDate = startDate;
+    }
+
+    public long getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(long endDate) {
+        this.endDate = endDate;
+    }
+
+    public boolean getSaleStarted() {
+        return isSaleStarted;
+    }
+
+    public void setSaleStarted(boolean saleStarted) {
+        isSaleStarted = saleStarted;
     }
 
     public String getDisplayName() {
@@ -304,6 +331,10 @@ public class PackageViewModel implements Parcelable {
         this.forms = forms;
     }
 
+    public boolean isSaleStarted() {
+        return isSaleStarted;
+    }
+
     public PackageViewModel() {
     }
 
@@ -345,6 +376,9 @@ public class PackageViewModel implements Parcelable {
         dest.writeInt(this.digitalCategoryID);
         dest.writeInt(this.digitalProductID);
         dest.writeString(this.digitalProductCode);
+        dest.writeLong(this.startDate);
+        dest.writeLong(this.endDate);
+        dest.writeByte(this.isSaleStarted ? (byte) 1 : (byte) 0);
         dest.writeInt(this.categoryId);
     }
 
@@ -380,6 +414,9 @@ public class PackageViewModel implements Parcelable {
         this.digitalCategoryID = in.readInt();
         this.digitalProductID = in.readInt();
         this.digitalProductCode = in.readString();
+        this.startDate = in.readLong();
+        this.endDate = in.readLong();
+        this.isSaleStarted = in.readByte() != 0;
         this.categoryId = in.readInt();
     }
 

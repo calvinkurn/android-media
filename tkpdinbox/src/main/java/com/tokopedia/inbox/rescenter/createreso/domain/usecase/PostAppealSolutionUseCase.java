@@ -1,11 +1,12 @@
 package com.tokopedia.inbox.rescenter.createreso.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.inbox.rescenter.createreso.data.repository.PostAppealSolutionRepository;
+import com.tokopedia.inbox.rescenter.createreso.data.source.CreateResolutionSource;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditAppealResolutionSolutionDomain;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -17,19 +18,18 @@ public class PostAppealSolutionUseCase extends UseCase<EditAppealResolutionSolut
     public static final String RESO_ID = "reso_id";
     public static final String PARAM_SOLUTION = "solution";
     public static final String PARAM_REFUND_AMOUNT = "refund_amount";
+    public static final String PARAM_RESULT = "result";
 
-    private PostAppealSolutionRepository postAppealSolutionRepository;
+    private CreateResolutionSource createResolutionSource;
 
-    public PostAppealSolutionUseCase(ThreadExecutor threadExecutor,
-                                     PostExecutionThread postExecutionThread,
-                                     PostAppealSolutionRepository postAppealSolutionRepository) {
-        super(threadExecutor, postExecutionThread);
-        this.postAppealSolutionRepository = postAppealSolutionRepository;
+    @Inject
+    public PostAppealSolutionUseCase(CreateResolutionSource createResolutionSource) {
+        this.createResolutionSource = createResolutionSource;
     }
 
     @Override
     public Observable<EditAppealResolutionSolutionDomain> createObservable(RequestParams requestParams) {
-        return postAppealSolutionRepository.postAppealSolutionDataCloud(requestParams);
+        return createResolutionSource.postAppealSolution(requestParams);
     }
 
     public static RequestParams postAppealSolutionUseCaseParams(String resoId,
@@ -47,6 +47,13 @@ public class PostAppealSolutionUseCase extends UseCase<EditAppealResolutionSolut
         RequestParams params = RequestParams.create();
         params.putInt(PARAM_SOLUTION, solutionId);
         params.putString(RESO_ID, resoId);
+        return params;
+    }
+
+    public static RequestParams postAppealSolution(EditAppealSolutionModel model) {
+        RequestParams params = RequestParams.create();
+        params.putObject(PARAM_RESULT, model.writeToJson());
+        params.putString(RESO_ID, model.resolutionId);
         return params;
     }
 

@@ -50,10 +50,6 @@ public interface InboxReputationForm {
                         List<ImageUpload> deletedList, boolean shareFb, boolean anonymous,
                         String productName, String productAvatar, String productUrl);
 
-        void openCamera();
-
-        void openImageGallery();
-
         void setFormToCache(int position, SendReviewPass sendReviewPass);
 
         String getFileLocFromCamera();

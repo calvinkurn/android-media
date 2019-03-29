@@ -26,7 +26,7 @@ public class DecimalInputView extends BaseCustomView {
 
     private static final String DECIMAL_FORMAT = "#.##";
     private static final String DEFAULT_VALUE = "0";
-    private static final int DEFAULT_INPUT_VALUE_LENGTH = -1;
+    private static final int DEFAULT_INPUT_VALUE_LENGTH = 20;
 
     private TextInputLayout textInputLayout;
     private EditText editText;
@@ -164,8 +164,6 @@ public class DecimalInputView extends BaseCustomView {
     }
 
     public void setMaxLength(int maxLengthInput) {
-        if (maxLengthInput > DEFAULT_INPUT_VALUE_LENGTH) {
-            editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLengthInput)});
-        }
+        editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLengthInput)});
     }
 }

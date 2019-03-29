@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.base.common.service.ServiceV4;
 import com.tokopedia.core.base.common.service.TopAdsService;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -16,7 +15,6 @@ import com.tokopedia.tkpd.home.favorite.data.source.cloud.CloudWishlistDataStore
 import com.tokopedia.tkpd.home.favorite.data.source.local.LocalFavoriteShopDataSource;
 import com.tokopedia.tkpd.home.favorite.data.source.local.LocalTopAdsShopDataSource;
 import com.tokopedia.tkpd.home.favorite.data.source.local.LocalWishlistDataSource;
-import com.tokopedia.tkpd.home.favorite.domain.interactor.GetTopAdsShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
@@ -35,35 +33,30 @@ public class FavoriteFactory {
     private Gson gson;
     private ServiceV4 serviceV4;
     private TopAdsService topAdsService;
-    private MojitoService mojitoService;
     private GlobalCacheManager cacheManager;
 
     public FavoriteFactory(Context context, Gson gson, ServiceV4 serviceVersion4,
-                           TopAdsService topAdsService, MojitoService mojitoService,
+                           TopAdsService topAdsService,
                            GlobalCacheManager cacheManager) {
 
         this.context = context;
         this.gson = gson;
         serviceV4 = serviceVersion4;
         this.topAdsService = topAdsService;
-        this.mojitoService = mojitoService;
         this.cacheManager = cacheManager;
     }
 
     Observable<DomainWishlist> getWishlist(TKPDMapParam<String, Object> param) {
-
         return cloudWishlistObservable(param)
                 .onExceptionResumeNext(
-                        localWishlistObservable().doOnNext(setWishlistErrorNetwork()));
-
+                        localWishlistObservable(param).doOnNext(setWishlistErrorNetwork()));
     }
-
 
 
     Observable<DomainWishlist> getFreshWishlist(TKPDMapParam<String, Object> param) {
         return cloudWishlistObservable(param)
                 .onExceptionResumeNext(
-                        localWishlistObservable().doOnNext(setWishlistErrorNetwork()));
+                        localWishlistObservable(param).doOnNext(setWishlistErrorNetwork()));
     }
 
     Observable<FavoriteShop> getFavoriteShop(TKPDMapParam<String, String> param) {
@@ -124,12 +117,13 @@ public class FavoriteFactory {
 
     private Observable<DomainWishlist> cloudWishlistObservable(TKPDMapParam<String, Object> param) {
         String userId = SessionHandler.getLoginID(context);
-        return new CloudWishlistDataStore(context, gson, mojitoService)
+        return new CloudWishlistDataStore(context)
                 .getWishlist(userId, param);
     }
 
-    private Observable<DomainWishlist> localWishlistObservable() {
-        return new LocalWishlistDataSource(context, gson, cacheManager).getWishlist();
+    private Observable<DomainWishlist> localWishlistObservable(TKPDMapParam<String, Object> param) {
+        String userId = SessionHandler.getLoginID(context);
+        return new LocalWishlistDataSource(context).getWishlist(userId, param);
     }
 
     private Action1<DomainWishlist> setWishlistErrorNetwork() {

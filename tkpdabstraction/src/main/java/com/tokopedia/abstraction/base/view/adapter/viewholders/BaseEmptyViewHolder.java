@@ -16,10 +16,10 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 
 public class BaseEmptyViewHolder<T extends EmptyModel> extends AbstractViewHolder<T> {
 
-    private ImageView emptyIconImageView;
+    protected ImageView emptyIconImageView;
     protected TextView emptyTitleTextView;
-    private TextView emptyContentTextView;
-    private TextView emptyContentItemTextView;
+    protected TextView emptyContentTextView;
+    protected TextView emptyContentItemTextView;
     private Button emptyButtonItemButton;
     private Callback callback;
 

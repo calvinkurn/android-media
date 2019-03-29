@@ -34,7 +34,7 @@ public interface ReviewProductContract {
 
         void onSuccessPostLikeDislike(LikeDislikeDomain likeDislikeDomain, String reviewId);
 
-        void onErrorPostLikeDislike(Throwable e);
+        void onErrorPostLikeDislike(Throwable e, String reviewId, int likeStatus);
 
         void onSuccessDeleteReview(DeleteReviewResponseDomain deleteReviewResponseDomain, String reviewId);
 

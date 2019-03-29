@@ -7,7 +7,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryPresenter;
@@ -20,6 +19,8 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmo
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
 
@@ -34,14 +35,14 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
 
     @Inject
     GetCategoryHeaderUseCase getCategoryHeaderUseCase;
+    @Inject
+    UserSessionInterface userSession;
     GetProductUseCase getProductUseCase;
-    SessionHandler sessionHandler;
     GCMHandler gcmHandler;
 
     public CategoryPresenter(Context context, GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
-        super(getProductUseCase, getImageSearchUseCase);
+        super(context, getProductUseCase, getImageSearchUseCase);
         this.getProductUseCase = getProductUseCase;
-        this.sessionHandler = new SessionHandler(context);
         this.gcmHandler = new GCMHandler(context);
         CategoryComponent categoryComponent = DaggerCategoryComponent.builder()
                 .appComponent(getComponent(context))
@@ -64,13 +65,13 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
             searchParameter.setSource(BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
             searchParameter.setDepartmentId(categoryHeaderModel.getDepartementId());
             searchParameter.setUniqueID(
-                    sessionHandler.isV4Login() ?
-                            AuthUtil.md5(sessionHandler.getLoginID()) :
+                    userSession.isLoggedIn() ?
+                            AuthUtil.md5(userSession.getUserId()) :
                             AuthUtil.md5(gcmHandler.getRegistrationId())
             );
             searchParameter.setUserID(
-                    sessionHandler.isV4Login() ?
-                            sessionHandler.getLoginID() :
+                    userSession.isLoggedIn() ?
+                            userSession.getUserId() :
                             null
             );
             searchParameter.setSource(BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
@@ -96,7 +97,7 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
         @Override
         public void onError(Throwable e) {
             e.printStackTrace();
-            ((DiscoveryActivity)getView()).onHandleResponseError();
+            ((DiscoveryActivity) getView()).onHandleResponseError();
         }
 
         @Override
@@ -106,13 +107,13 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
                 searchParameter.setSource(BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
                 searchParameter.setDepartmentId(categoryHeaderModel.getDepartementId());
                 searchParameter.setUniqueID(
-                        sessionHandler.isV4Login() ?
-                                AuthUtil.md5(sessionHandler.getLoginID()) :
+                        userSession.isLoggedIn() ?
+                                AuthUtil.md5(userSession.getUserId()) :
                                 AuthUtil.md5(gcmHandler.getRegistrationId())
                 );
                 searchParameter.setUserID(
-                        sessionHandler.isV4Login() ?
-                                sessionHandler.getLoginID() :
+                        userSession.isLoggedIn() ?
+                                userSession.getUserId() :
                                 null
                 );
                 RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false);
@@ -143,13 +144,13 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
         @Override
         public void onError(Throwable e) {
             e.printStackTrace();
-            ((DiscoveryActivity)getView()).onHandleResponseError();
+            ((DiscoveryActivity) getView()).onHandleResponseError();
         }
 
         @Override
         public void onNext(SearchResultModel searchResultModel) {
             ProductViewModel productViewModel
-                    = CategoryModelHelper.convertToProductViewModel(searchResultModel,categoryHeaderModel);
+                    = CategoryModelHelper.convertToProductViewModel(searchResultModel, categoryHeaderModel);
             getView().prepareFragment(productViewModel);
 
         }

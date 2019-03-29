@@ -28,6 +28,9 @@ public class OrderData {
     @SerializedName("shipping_price")
     @Expose
     private float shippingPrice;
+    @SerializedName("item_price")
+    @Expose
+    private float itemPrice;
 
     public int getOrderId() {
         return orderId;
@@ -75,5 +78,13 @@ public class OrderData {
 
     public void setShippingPrice(float shippingPrice) {
         this.shippingPrice = shippingPrice;
+    }
+
+    public float getItemPrice() {
+        return itemPrice;
+    }
+
+    public void setItemPrice(float itemPrice) {
+        this.itemPrice = itemPrice;
     }
 }

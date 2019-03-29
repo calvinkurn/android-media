@@ -10,7 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.WindowManager;
 
 import com.tkpd.library.utils.DownloadResultReceiver;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdActivity;

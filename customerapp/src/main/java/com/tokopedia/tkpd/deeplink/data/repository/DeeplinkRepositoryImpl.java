@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -25,6 +26,7 @@ import rx.functions.Func1;
  */
 
 public class DeeplinkRepositoryImpl implements DeeplinkRepository {
+    private static final long ONE_MONTH = TimeUnit.DAYS.toSeconds(30);
 
     private final String KEY_MAPPING = "KEY_MAPPING";
     private final String KEY_VERSION = "KEY_VERSION";
@@ -100,6 +102,8 @@ public class DeeplinkRepositoryImpl implements DeeplinkRepository {
             Whitelist whitelist = new Whitelist();
             whitelist.data = whitelistItems;
             globalCacheManager.setValue(gson.toJson(whitelist));
+            globalCacheManager.setCacheDuration(ONE_MONTH);
+            globalCacheManager.store();
         }
     }
 
@@ -107,6 +111,8 @@ public class DeeplinkRepositoryImpl implements DeeplinkRepository {
         globalCacheManager.setKey(KEY_VERSION);
         Gson gson = new Gson();
         globalCacheManager.setValue(gson.toJson(GlobalConfig.VERSION_CODE));
+        globalCacheManager.setCacheDuration(ONE_MONTH);
+        globalCacheManager.store();
     }
 
     private List<WhitelistItem> readWhitelistFromFile() {

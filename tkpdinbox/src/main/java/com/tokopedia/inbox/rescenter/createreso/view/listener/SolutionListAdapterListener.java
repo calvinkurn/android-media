@@ -7,5 +7,8 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.Solution
  */
 
 public interface SolutionListAdapterListener {
+
     void onItemClicked(SolutionViewModel solutionViewModel);
+
+    boolean showCheckOnItem(int solutionId);
 }

@@ -14,7 +14,7 @@ public class AutoApply {
     private boolean success;
     @SerializedName("code")
     @Expose
-    private String code;
+    private String code = "";
     @SerializedName("is_coupon")
     @Expose
     private int isCoupon;
@@ -23,13 +23,24 @@ public class AutoApply {
     private int discountAmount;
     @SerializedName("title_description")
     @Expose
-    private String titleDescription;
+    private String titleDescription = "";
     @SerializedName("message_success")
     @Expose
-    private String messageSuccess;
+    private String messageSuccess = "";
     @SerializedName("promo_id")
     @Expose
     private int promoId;
+    @SerializedName("message")
+    @Expose
+    private MessageAutoApply messageAutoApply = new MessageAutoApply();
+
+    public MessageAutoApply getMessageAutoApply() {
+        return messageAutoApply;
+    }
+
+    public void setMessageAutoApply(MessageAutoApply messageAutoApply) {
+        this.messageAutoApply = messageAutoApply;
+    }
 
     public boolean isSuccess() {
         return success;

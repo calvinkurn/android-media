@@ -1,12 +1,10 @@
 package com.tokopedia.topads.dashboard.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.domain.TopAdsGroupAdsRepository;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
@@ -20,10 +18,8 @@ public class TopAdsGetDetailGroupUseCase extends UseCase<TopAdsDetailGroupDomain
     private final TopAdsGroupAdsRepository topAdsGroupAdsRepository;
 
     @Inject
-    public TopAdsGetDetailGroupUseCase(ThreadExecutor threadExecutor,
-                                       PostExecutionThread postExecutionThread,
-                                       TopAdsGroupAdsRepository topAdsGroupAdsRepository) {
-        super(threadExecutor, postExecutionThread);
+    public TopAdsGetDetailGroupUseCase(TopAdsGroupAdsRepository topAdsGroupAdsRepository) {
+        super();
         this.topAdsGroupAdsRepository = topAdsGroupAdsRepository;
     }
 

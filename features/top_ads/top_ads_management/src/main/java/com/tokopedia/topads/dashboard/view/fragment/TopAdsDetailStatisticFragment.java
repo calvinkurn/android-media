@@ -2,11 +2,13 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.tokopedia.topads.R;
 import com.tokopedia.design.label.DateLabelView;
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.model.Ad;
@@ -49,7 +51,7 @@ public abstract class TopAdsDetailStatisticFragment<T extends TopAdsDetailViewPr
     }
 
     protected TopAdsComponent getTopAdsComponent(){
-        return TopAdsComponentUtils.getTopAdsComponent(getActivity());
+        return TopAdsComponentInstance.getComponent(getActivity().getApplication());
     }
 
     protected void initDateLabelView(View view) {

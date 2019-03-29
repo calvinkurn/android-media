@@ -24,6 +24,8 @@ public class EmptyKolPostViewHolder extends AbstractViewHolder<EmptyKolPostViewM
 
     @Override
     public void bind(EmptyKolPostViewModel element) {
-        topShadow.setVisibility(getAdapterPosition() == 0 ? View.VISIBLE : View.GONE);
+        topShadow.setVisibility(getAdapterPosition() == 0 && element.isShowTopShadow()
+                ? View.VISIBLE
+                : View.GONE);
     }
 }

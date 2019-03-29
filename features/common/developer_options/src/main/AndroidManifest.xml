@@ -1,0 +1,12 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.developer_options">
+
+    <application>
+        <activity
+            android:name=".presentation.activity.ReactNativeDeveloperOptionsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Base.Theme"
+            android:label="@string/react_native_logger_title" />
+    </application>
+
+</manifest>

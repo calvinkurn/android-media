@@ -9,7 +9,7 @@ import android.view.Window;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.inbox.rescenter.detail.customadapter.TrackShippingAdapter;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.ResCenterTrackShipping;
 

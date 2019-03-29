@@ -42,6 +42,10 @@ public class PromoCodeCartShipmentData implements Parcelable {
         private int voucherAmount;
         private int voucherStatus;
         private String voucherPromoDesc;
+        private int isCoupon;
+        private String state;
+        private String titleDescription;
+        private String promoCode;
 
         public String getVoucherPromoDesc() {
             return voucherPromoDesc;
@@ -83,8 +87,39 @@ public class PromoCodeCartShipmentData implements Parcelable {
             this.voucherStatus = voucherStatus;
         }
 
+        public int getIsCoupon() {
+            return isCoupon;
+        }
+
+        public void setIsCoupon(int isCoupon) {
+            this.isCoupon = isCoupon;
+        }
 
         public DataVoucher() {
+        }
+
+        public void setState(String state) {
+            this.state = state;
+        }
+
+        public String getState() {
+            return state;
+        }
+
+        public String getTitleDescription() {
+            return titleDescription;
+        }
+
+        public String getPromoCode() {
+            return promoCode;
+        }
+
+        public void setTitleDescription(String titleDescription) {
+            this.titleDescription = titleDescription;
+        }
+
+        public void setPromoCode(String promoCode) {
+            this.promoCode = promoCode;
         }
 
         @Override
@@ -99,6 +134,10 @@ public class PromoCodeCartShipmentData implements Parcelable {
             dest.writeInt(this.voucherAmount);
             dest.writeInt(this.voucherStatus);
             dest.writeString(this.voucherPromoDesc);
+            dest.writeInt(this.isCoupon);
+            dest.writeString(this.state);
+            dest.writeString(this.titleDescription);
+            dest.writeString(this.promoCode);
         }
 
         protected DataVoucher(Parcel in) {
@@ -107,6 +146,10 @@ public class PromoCodeCartShipmentData implements Parcelable {
             this.voucherAmount = in.readInt();
             this.voucherStatus = in.readInt();
             this.voucherPromoDesc = in.readString();
+            this.isCoupon = in.readInt();
+            this.state = in.readString();
+            this.titleDescription = in.readString();
+            this.promoCode = in.readString();
         }
 
         public static final Creator<DataVoucher> CREATOR = new Creator<DataVoucher>() {

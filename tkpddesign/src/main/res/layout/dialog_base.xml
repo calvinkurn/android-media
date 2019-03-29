@@ -1,49 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_32"
-    android:padding="@dimen/dp_16">
+    xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_margin="@dimen/dp_16"
+              android:orientation="vertical"
+              android:background="@color/white"
+              android:paddingTop="@dimen/dp_16"
+              android:paddingLeft="@dimen/dp_16"
+              android:paddingRight="@dimen/dp_16">
 
     <TextView
         android:id="@+id/tv_title_dialog"
-        android:layout_marginBottom="@dimen/dp_16"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:lineSpacingExtra="@dimen/dp_6"
         android:textSize="@dimen/sp_16"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:textColor="@color/font_black_primary_70"
+        tools:text="Title Goes Here"/>
 
     <TextView
         android:id="@+id/tv_desc_dialog"
-        android:layout_marginBottom="@dimen/dp_24"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_14" />
+        android:lineSpacingExtra="@dimen/sp_5"
+        android:textColor="@color/font_black_secondary_54"
+        android:textSize="@dimen/sp_14"
+        tools:text="Make the copy compact to communicate what you want, approx 50 character like this"/>
 
     <LinearLayout
-        android:layout_gravity="right|end"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_24"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="end"
         android:orientation="horizontal">
 
-        <Button
+        <TextView
             android:id="@+id/btn_cancel_dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@null"
+            android:textAllCaps="false"
+            android:textColor="@color/font_black_secondary_54"
             android:textSize="@dimen/sp_14"
-            android:textColor="@color/grey_550"
-            android:textAllCaps="false"/>
+            android:padding="@dimen/dp_8"
+            android:textStyle="bold"
+            tools:text="CTA Here"/>
 
-        <Button
+        <TextView
             android:id="@+id/btn_ok_dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@null"
-            android:textSize="@dimen/sp_14"
+            android:textAllCaps="false"
             android:textColor="@color/tkpd_main_green"
-            android:textAllCaps="false"/>
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold"
+            android:padding="@dimen/dp_8"
+            tools:text="CTA Here"/>
 
     </LinearLayout>
 

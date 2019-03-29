@@ -9,7 +9,7 @@ import com.tokopedia.core.util.RouterUtils;
 /**
  * Created by ricoharisin on 11/10/16.
  */
-
+@Deprecated
 public class SellerRouter {
 
     public static Intent getActivityShopCreateEdit(Context context){

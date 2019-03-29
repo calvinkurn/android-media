@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.thankyou.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 import com.tokopedia.tkpd.thankyou.data.repository.ThanksTrackerRepository;
 
 import rx.Observable;

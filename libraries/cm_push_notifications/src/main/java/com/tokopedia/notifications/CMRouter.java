@@ -1,0 +1,16 @@
+package com.tokopedia.notifications;
+
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+
+/**
+ * Created by Ashwani Tyagi on 29/10/18.
+ */
+public interface CMRouter {
+    String getUserId();
+
+    boolean getBooleanRemoteConfig(String key, boolean defaultValue);
+
+    long getLongRemoteConfig(String key, long defaultValue);
+
+    AnalyticTracker getAnalyticTracker();
+}

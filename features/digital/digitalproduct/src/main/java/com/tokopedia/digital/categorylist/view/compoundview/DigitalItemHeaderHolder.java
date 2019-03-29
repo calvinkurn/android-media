@@ -10,21 +10,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemHeader;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * @author anggaprasetiyo on 8/7/17.
  */
 
 public class DigitalItemHeaderHolder extends LinearLayout {
-    @BindView(R2.id.iv_icon)
-    ImageView ivIcon;
-    @BindView(R2.id.tv_category_name)
-    TextView tvName;
+
+    private ImageView ivIcon;
+    private TextView tvName;
 
     private DigitalCategoryItemHeader data;
     private ActionListener actionListener;
@@ -56,7 +51,8 @@ public class DigitalItemHeaderHolder extends LinearLayout {
         LayoutInflater.from(context).inflate(
                 R.layout.view_holder_digital_category_item_header_digital_module, this, true
         );
-        ButterKnife.bind(this);
+        ivIcon = findViewById(R.id.iv_icon);
+        tvName = findViewById(R.id.tv_category_name);
     }
 
     @Override
@@ -85,4 +81,5 @@ public class DigitalItemHeaderHolder extends LinearLayout {
     public interface ActionListener {
         void onClickCategoryHeaderMenu(DigitalCategoryItemHeader data);
     }
+
 }

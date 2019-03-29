@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.widget.RemoteViews;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.var.TkpdCache;
 

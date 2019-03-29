@@ -1,5 +1,8 @@
 package com.tokopedia.inbox.rescenter.createreso.domain.model.createreso;
 
+import com.tokopedia.inbox.common.domain.model.GenerateHostDomain;
+import com.tokopedia.inbox.common.domain.model.UploadDomain;
+
 import java.util.List;
 
 import javax.annotation.Nullable;

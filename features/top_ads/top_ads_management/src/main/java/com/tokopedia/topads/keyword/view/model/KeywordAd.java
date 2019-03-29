@@ -3,33 +3,35 @@ package com.tokopedia.topads.keyword.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.base.list.seller.common.util.ItemType;
+import com.tokopedia.topads.common.view.adapter.TopAdsListAdapterTypeFactory;
 import com.tokopedia.topads.dashboard.view.model.Ad;
-import com.tokopedia.seller.base.view.adapter.ItemType;
 
 /**
  * Created by zulfikarrahman on 5/30/17.
  */
 
-public class KeywordAd implements Ad, Parcelable, ItemType {
+public class KeywordAd implements Ad, Parcelable, ItemType, Visitable<TopAdsListAdapterTypeFactory<KeywordAd>> {
     public static final int TYPE = 192929201;
     private String id;
-    private String groupId;
-    private String keywordTypeId;
-    private String groupName;
     private String keywordTag;
+    private String groupId;
+    private String groupName;
     private int status;
-    private int statusToogle;
     private String statusDesc;
+    private String keywordTypeId;
+    private String keywordTypeDesc;
+    private int statusToogle;
+    private String priceBidFmt;
+    private int groupBid;
     private String statAvgClick;
     private String statTotalSpent;
     private String statTotalImpression;
     private String statTotalClick;
     private String statTotalCtr;
     private String statTotalConversion;
-    private String priceBidFmt;
     private String labelPerClick;
-    private String keywordTypeDesc;
-    private int groupBid;
 
     public KeywordAd() {
     }
@@ -308,4 +310,9 @@ public class KeywordAd implements Ad, Parcelable, ItemType {
             return new KeywordAd[size];
         }
     };
+
+    @Override
+    public int type(TopAdsListAdapterTypeFactory<KeywordAd> typeFactory) {
+        return typeFactory.type(this);
+    }
 }

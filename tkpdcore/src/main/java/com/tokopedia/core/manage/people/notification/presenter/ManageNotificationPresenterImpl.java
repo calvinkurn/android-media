@@ -49,7 +49,6 @@ public class ManageNotificationPresenterImpl implements ManageNotificationPresen
                         viewListener.getActivity().getIntent().putExtra(STATUS_MESSAGE, status);
                         viewListener.getActivity().setResult(Activity.RESULT_OK,
                                 viewListener.getActivity().getIntent());
-                        viewListener.getActivity().finish();
                     }
 
                     @Override

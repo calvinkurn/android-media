@@ -6,7 +6,7 @@ import android.os.Parcelable;
 /**
  * Created by Nathaniel on 1/31/2017.
  */
-
+@Deprecated
 public class FilterTitleItem implements Parcelable {
 
     private String title;

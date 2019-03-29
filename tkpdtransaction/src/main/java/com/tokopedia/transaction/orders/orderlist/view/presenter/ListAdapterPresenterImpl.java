@@ -32,16 +32,16 @@ public class ListAdapterPresenterImpl extends BaseDaggerPresenter<ListAdapterCon
         if (actionButtons.size() == 2) {
             ActionButton leftActionButton = actionButtons.get(0);
             ActionButton rightActionButton = actionButtons.get(1);
-            view.setButtonData(View.VISIBLE, View.VISIBLE, leftActionButton.label(), rightActionButton.label(), leftActionButton.uri(), rightActionButton.uri(), leftActionButton.color(), rightActionButton.color());
+            view.setActionButtonData(leftActionButton, rightActionButton, View.VISIBLE, View.VISIBLE);
         } else if (actionButtons.size() == 1) {
             ActionButton actionButton = actionButtons.get(0);
             if (actionButton.buttonType().equals("primary")) {
-                view.setButtonData(View.VISIBLE, View.GONE, actionButton.label(), null, actionButton.uri(),null, actionButton.color(), null);
+                view.setActionButtonData(actionButton, null, View.VISIBLE, View.GONE);
             } else {
-                view.setButtonData(View.GONE, View.VISIBLE, null, actionButton.label(), null, actionButton.uri(), null, actionButton.color());
+                view.setActionButtonData(null, actionButton, View.GONE, View.VISIBLE);
             }
         } else {
-            view.setButtonData(View.GONE, View.GONE, null, null, null, null, null, null);
+            view.setActionButtonData(null, null, View.GONE, View.GONE);
         }
     }
 
@@ -53,18 +53,15 @@ public class ListAdapterPresenterImpl extends BaseDaggerPresenter<ListAdapterCon
     @Override
     public void setDotMenuVisibility(List<DotMenuList> dotMenuLists) {
         if (dotMenuLists != null) {
-            view.setDotMenuVisibility(dotMenuLists.size() > 0 ? View.VISIBLE : View.GONE);
+            view.setDotMenuVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void setViewData(Order order) {
         view.setStatus(order.statusStr());
-        if (order.status() == ORDER_CANCELLED || order.status() == ORDER_REFUNDED || order.status() == ORDER_FAILED) {
-            view.setFailStatusBgColor(true);
-        } else {
-            view.setFailStatusBgColor(false);
-        }
+            view.setFailStatusBgColor(order.statusColor());
+
         if (!order.conditionalInfo().text().equals("")) {
             ConditionalInfo conditionalInfo = order.conditionalInfo();
             view.setConditionalInfo(View.VISIBLE, conditionalInfo.text(), conditionalInfo.color());
@@ -79,6 +76,9 @@ public class ListAdapterPresenterImpl extends BaseDaggerPresenter<ListAdapterCon
         view.setDate(date);
 
         view.setCategoryAndTitle(order.categoryName(), order.title());
+        if (!order.getItemCount().equalsIgnoreCase("0") && !order.getItemCount().equalsIgnoreCase("1")) {
+            view.setItemCount(Integer.parseInt(order.getItemCount()) - 1);
+        }
         List<MetaData> metaDataList = order.metaData();
         for (MetaData metaData : metaDataList) {
             if ((order.status() == WAITING_THIRD_PARTY) || (order.status() == WAITING_TRANSFER) &&

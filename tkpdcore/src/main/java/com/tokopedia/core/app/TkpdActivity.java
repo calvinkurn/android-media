@@ -6,7 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
+import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 
 /**
@@ -17,7 +18,7 @@ import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
  * Extends one of BaseActivity from tkpd abstraction eg:BaseSimpleActivity, BaseStepperActivity, BaseTabActivity, etc
  */
 @Deprecated
-public abstract class TkpdActivity extends DrawerPresenterActivity implements
+public abstract class TkpdActivity extends BaseTemporaryDrawerActivity implements
         CartBadgeNotificationReceiver.ActionListener {
 
     private CartBadgeNotificationReceiver cartBadgeNotificationReceiver;
@@ -47,12 +48,6 @@ public abstract class TkpdActivity extends DrawerPresenterActivity implements
     }
 
     protected void RefreshDrawer() {
-    }
-
-    @Override
-    protected void onPause() {
-        MainApplication.setCurrentActivity(null);
-        super.onPause();
     }
 
     @Override

@@ -1,19 +1,22 @@
 package com.tokopedia.tkpd.home.favorite.view;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.tkpd.home.favorite.data.FavoriteDataRepository;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.AddFavoriteShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetAllDataFavoriteUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteShopUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetInitialDataPageUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetTopAdsShopUseCase;
-import com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUsecase;
+import com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUtil;
 import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
@@ -110,10 +113,12 @@ public class FavoritePresenterTest {
     private TopAdsShop mockTopAdsShop;
     @Mock
     private PagingHandler.PagingHandlerModel mockPagingHandler;
+    @Mock
+    private Resources resources;
 
     private GetTopAdsShopUseCase getTopAdsShopUseCase;
     private GetInitialDataPageUsecase getInitialDataPageUsecase;
-    private AddFavoriteShopUseCase addFavoriteShopUseCase;
+    private ToggleFavouriteShopUseCase toggleFavouriteShopUseCase;
     private GetAllDataFavoriteUseCase getAllDataFavoriteUseCase;
     private GetFavoriteShopUsecase getFavoriteShopUsecase;
 
@@ -132,7 +137,7 @@ public class FavoritePresenterTest {
         favoritePresenter = new FavoritePresenter(
                 getInitialDataPageUsecase,
                 getTopAdsShopUseCase,
-                addFavoriteShopUseCase,
+                toggleFavouriteShopUseCase,
                 getAllDataFavoriteUseCase,
                 getFavoriteShopUsecase,
                 favoriteMapper);
@@ -172,21 +177,24 @@ public class FavoritePresenterTest {
         getTopAdsShopUseCase
                 = new GetTopAdsShopUseCase(jobExecutor, postExecutionThread, repository);
 
-        GetWishlistUsecase getWishlistUsecase
-                = new GetWishlistUsecase(jobExecutor, postExecutionThread, repository);
+        GetWishlistUtil getWishlistUtil
+                = new GetWishlistUtil(repository);
 
-        addFavoriteShopUseCase
-                = new AddFavoriteShopUseCase(jobExecutor, postExecutionThread, repository);
+        toggleFavouriteShopUseCase
+                = new ToggleFavouriteShopUseCase(new GraphqlUseCase(), resources);
 
         getFavoriteShopUsecase
                 = new GetFavoriteShopUsecase(jobExecutor, postExecutionThread, repository);
 
         getAllDataFavoriteUseCase = new GetAllDataFavoriteUseCase(context,
-                jobExecutor, postExecutionThread, getFavoriteShopUsecase, getWishlistUsecase,
+                jobExecutor, postExecutionThread, getFavoriteShopUsecase, getWishlistUtil,
                 getTopAdsShopUseCase);
 
         getInitialDataPageUsecase = new GetInitialDataPageUsecase(context, jobExecutor, postExecutionThread,
-                getFavoriteShopUsecase, getWishlistUsecase, getTopAdsShopUseCase);
+                getFavoriteShopUsecase, getWishlistUtil, getTopAdsShopUseCase);
+
+        getInitialDataPageUsecase = new GetInitialDataPageUsecase(context, jobExecutor, postExecutionThread,
+                getFavoriteShopUsecase, getWishlistUtil, getTopAdsShopUseCase);
     }
 
 }

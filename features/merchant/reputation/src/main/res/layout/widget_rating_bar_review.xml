@@ -9,7 +9,7 @@
 
     <RatingBar
         android:id="@+id/product_rating"
-        style="@style/RatingBar.Small"
+        style="@style/RatingBar.Micro"
         android:layout_gravity="center_vertical"
         android:layout_width="wrap_content"
         android:layout_marginRight="@dimen/dp_5"
@@ -39,6 +39,8 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:id="@+id/counter_review"
             style="@style/TextView.Micro.BlackSecondary"
             tools:text="49"/>

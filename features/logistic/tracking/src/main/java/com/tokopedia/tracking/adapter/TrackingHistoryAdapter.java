@@ -2,8 +2,10 @@ package com.tokopedia.tracking.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,21 +32,24 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
         this.dateUtil = dateUtil;
     }
 
+    @NonNull
     @Override
-    public TrackingHistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TrackingHistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.adapter_trailing_bullet, parent, false);
+                .inflate(R.layout.adapter_tracking_history_view_holder, parent, false);
         return new TrackingHistoryViewHolder(parent.getContext(), view);
     }
 
     @Override
-    public void onBindViewHolder(TrackingHistoryViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull TrackingHistoryViewHolder holder, int position) {
 
-        holder.title.setText(dateUtil.getFormattedDate(trackingHistoryData.get(position).getTime()));
+        holder.title.setText(dateUtil.getFormattedDate(trackingHistoryData.get(position).getDate()));
+        holder.time.setText(dateUtil.getFormattedTime(trackingHistoryData.get(position).getTime()));
         setTitleColor(holder, position);
 
         holder.comment.setVisibility(View.GONE);
-        holder.description.setText(Html.fromHtml(trackingHistoryData.get(position).getStatus()));
+        holder.description.setText(!TextUtils.isEmpty(trackingHistoryData.get(position).getStatus()) ?
+                Html.fromHtml(trackingHistoryData.get(position).getStatus()) : "");
         holder.dot.setColorFilter(Color.parseColor(trackingHistoryData.get(position).getColor()));
         if (position == trackingHistoryData.size() - 1) {
             holder.dotTrail.setVisibility(View.GONE);
@@ -78,9 +83,9 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
 
         private TextView title;
 
-        private TextView description;
-
         private TextView time;
+
+        private TextView description;
 
         private ImageView dot;
 
@@ -95,9 +100,9 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
 
             title = itemView.findViewById(R.id.title);
 
-            description = itemView.findViewById(R.id.description);
-
             time = itemView.findViewById(R.id.date);
+
+            description = itemView.findViewById(R.id.description);
 
             dot = itemView.findViewById(R.id.dot_image);
 

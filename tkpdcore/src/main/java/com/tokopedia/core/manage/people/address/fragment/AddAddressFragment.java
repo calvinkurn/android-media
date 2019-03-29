@@ -1,5 +1,6 @@
 package com.tokopedia.core.manage.people.address.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -26,7 +27,9 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.model.LatLng;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.model.City;
@@ -34,6 +37,7 @@ import com.tokopedia.core.database.model.District;
 import com.tokopedia.core.database.model.Province;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.manage.people.address.fragment.adapter.ProvinceAdapter;
 import com.tokopedia.core.manage.people.address.fragment.adapter.RegencyAdapter;
 import com.tokopedia.core.manage.people.address.fragment.adapter.SubDistrictAdapter;
@@ -44,6 +48,9 @@ import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.manage.people.address.presenter.AddAddressPresenter;
 import com.tokopedia.core.manage.people.address.presenter.AddAddressPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
+import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsAddAddress;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,16 +58,19 @@ import java.util.List;
 
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EDIT_PARAM;
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EXTRA_ADDRESS;
+import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST;
+import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EXTRA_PLATFORM_PAGE;
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.IS_DISTRICT_RECOMMENDATION;
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.IS_EDIT;
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.KERO_TOKEN;
+import static com.tokopedia.core.manage.people.address.ManageAddressConstant.PLATFORM_MARKETPLACE_CART;
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.REQUEST_CODE;
 
 /**
  * Created by nisie on 9/6/16.
  */
 public class AddAddressFragment extends BasePresenterFragment<AddAddressPresenter>
-        implements AddAddressFragmentView {
+        implements AddAddressFragmentView, ITransactionAnalyticsAddAddress, GeoLocationUtils.GeoLocationListener {
 
     private static final int DISTRICT_RECOMMENDATION_REQUEST_CODE = 130715;
     private static final String ADDRESS = "district_recommendation_address";
@@ -115,6 +125,10 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     List<District> mDistricts;
 
     TkpdProgressDialog mProgressDialog;
+    private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
+
+    private String extraPlatformPage;
+    private boolean isFromMarketPlaceCartEmptyAddressFirst;
 
     public static AddAddressFragment createInstance(Bundle extras) {
         AddAddressFragment fragment = new AddAddressFragment();
@@ -163,6 +177,8 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     protected void setupArguments(Bundle arguments) {
         this.token = arguments.getParcelable(KERO_TOKEN);
         this.address = arguments.getParcelable(EDIT_PARAM);
+        this.extraPlatformPage = arguments.getString(EXTRA_PLATFORM_PAGE, "");
+        this.isFromMarketPlaceCartEmptyAddressFirst = arguments.getBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, false);
     }
 
     @Override
@@ -229,6 +245,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                     zipCodeLayout.setError(context.getString(R.string.error_field_required));
                 } else {
                     zipCodeLayout.setError(null);
+                    sendAnalyticsOnZipCodeInputFreeText(s.toString());
                 }
             }
         };
@@ -253,7 +270,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         districtLayout = view.findViewById(R.id.district_layout);
         districtEditText = view.findViewById(R.id.district);
         zipCodeLayout = view.findViewById(R.id.postal_code_layout);
-        zipCodeTextView = view.findViewById(R.id.postal_code);
+        zipCodeTextView = view.findViewById(R.id.autocomplete_postal_code);
 
         postCodeLayout = view.findViewById(R.id.post_code_layout);
         postCodeEditText = view.findViewById(R.id.post_code);
@@ -284,7 +301,8 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     }
 
     private void selectLayout() {
-        if (isDistrictRecommendation()) {
+        // TODO ATTENTION: when new checkout flow is fully released, please refactor (remove) this part immediately
+        if (isDistrictRecommendation() && token != null) {
             addressSpinerLayout.setVisibility(View.GONE);
             postCodeLayout.setVisibility(View.GONE);
             districtLayout.setVisibility(View.VISIBLE);
@@ -297,6 +315,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void setViewListener() {
         zipCodeLayout.setOnTouchListener(onZipCodeTouch());
@@ -307,13 +326,37 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         districtEditText.setOnClickListener(onCityDistrictClick());
         chooseLocation.setOnClickListener(onChooseLocation());
         locationEditText.setOnClickListener(onChooseLocation());
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isValidAddress()) {
-                    updateAddress();
-                    presenter.saveAddress();
-                }
+
+        addressTypeEditText.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP)
+                sendAnalyticsOnInputAddressAsClicked();
+            return false;
+        });
+
+        receiverNameEditText.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP)
+                sendAnalyticsOnInputNameClicked();
+            return false;
+        });
+
+        addressEditText.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP)
+                sendAnalyticsOnInputAddressClicked();
+            return false;
+        });
+
+        receiverPhoneEditText.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP)
+                sendAnalyticsOnInputPhoneClicked();
+            return false;
+        });
+
+
+        saveButton.setOnClickListener(view -> {
+            sendAnalyticsOnSubmitSaveAddressClicked();
+            if (isValidAddress()) {
+                updateAddress();
+                presenter.saveAddress();
             }
         });
 
@@ -330,7 +373,8 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                             address.setProvinceId(province.getProvinceId());
                         }
 
-                        if (!isEdit()) presenter.onProvinceSelected(pos);
+                        if (isEdit()) presenter.onEditProvinceSelected(pos);
+                        else presenter.onProvinceSelected(pos);
                     }
 
                     @Override
@@ -350,6 +394,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                     City city = cityList.get(pos - 1);
                     address.setCityName(city.getCityName());
                     address.setCityId(city.getCityId());
+                    presenter.onRegencySelected(pos);
                 }
 
                 if (!isEdit()) presenter.onRegencySelected(pos);
@@ -400,34 +445,51 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Moved to module router, this class isn't supposed to be used anymore
+                /*sendAnalyticsOnDistrictSelectionClicked();
                 Intent intent = ((TkpdCoreRouter) getActivity().getApplication())
-                        .getDistrictRecommendationIntent(getActivity(), token);
-                startActivityForResult(intent, DISTRICT_RECOMMENDATION_REQUEST_CODE);
+                        .getDistrictRecommendationIntent(
+                                getActivity(), token,
+                                getArguments().getString(EXTRA_PLATFORM_PAGE, "").equalsIgnoreCase(PLATFORM_MARKETPLACE_CART)
+                        );
+                startActivityForResult(intent, DISTRICT_RECOMMENDATION_REQUEST_CODE);*/
             }
         };
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private View.OnTouchListener onZipCodeTouch() {
-        return new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (!zipCodeTextView.isPopupShowing()) zipCodeTextView.showDropDown();
-                return false;
-            }
+        return (view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                sendAnalyticsOnZipCodeSelectionClicked();
+            if (!zipCodeTextView.isPopupShowing()) zipCodeTextView.showDropDown();
+            return false;
         };
     }
 
     private AdapterView.OnItemClickListener onZipCodeItemClick() {
-        return new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i == 0 && !Character.isDigit(zipCodeTextView.getText().toString().charAt(0))) {
-                    zipCodeTextView.setText("");
-                }
-
-                address.setPostalCode(zipCodeTextView.getText().toString());
+        return (adapterView, view, i, l) -> {
+            if (i == 0 && !Character.isDigit(zipCodeTextView.getText().toString().charAt(0))) {
+                zipCodeTextView.setText("");
             }
+
+            address.setPostalCode(zipCodeTextView.getText().toString());
+            sendAnalyticsOnZipCodeDropdownSelectionClicked();
         };
+    }
+
+    private void setPinpointAddress(Destination address) {
+        if (address.getLatitude() != null &&
+                address.getLongitude() != null &&
+                !address.getLatitude().equals("") &&
+                !address.getLongitude().equals("")
+                ) {
+            GeoLocationUtils.reverseGeoCodeParallel(
+                    getActivity(),
+                    address.getLatitude(),
+                    address.getLongitude(), this
+            );
+        }
     }
 
     public void initializeZipCodes() {
@@ -436,10 +498,10 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         if (!zipCodes.contains(header)) zipCodes.add(0, header);
 
         ArrayAdapter<String> zipCodeAdapter = new ArrayAdapter<>(
-                        context,
-                        R.layout.item_autocomplete_text_double_row,
-                        R.id.item,
-                        zipCodes);
+                context,
+                R.layout.item_autocomplete_text_double_row,
+                R.id.item,
+                zipCodes);
 
         zipCodeTextView.setAdapter(zipCodeAdapter);
     }
@@ -449,6 +511,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             @Override
             public void onClick(View view) {
                 openGeoLocation();
+                sendAnalyticsOnLocationSelectionClicked();
             }
         };
     }
@@ -476,10 +539,16 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                 locationPass.setLatitude(String.valueOf(MONAS_LATITUDE));
                 locationPass.setLongitude(String.valueOf(MONAS_LONGITUDE));
             }
-
-            Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass);
-            startActivityForResult(intent, REQUEST_CODE);
-
+            if (getArguments().getString(EXTRA_PLATFORM_PAGE, "")
+                    .equalsIgnoreCase(PLATFORM_MARKETPLACE_CART)) {
+                startActivityForResult(GeolocationActivity.createInstanceFromMarketplaceCart(
+                        getActivity(), locationPass), REQUEST_CODE
+                );
+            } else {
+                startActivityForResult(GeolocationActivity.createInstanceIntent(
+                        getActivity(), locationPass), REQUEST_CODE
+                );
+            }
         } else {
             CommonUtils.dumper("Google play services unavailable");
             Dialog dialog = availability.getErrorDialog(getActivity(), resultCode, 0);
@@ -523,9 +592,9 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                     DistrictRecommendationAddress address = bundle.getParcelable(ADDRESS);
                     if (address != null) {
                         List<String> compositeAddress = new ArrayList<>(Arrays.asList(
-                           address.getDistrictName(),
-                           address.getCityName(),
-                           address.getProvinceName()
+                                address.getDistrictName(),
+                                address.getCityName(),
+                                address.getProvinceName()
                         ));
                         String fullAddress = TextUtils.join(", ", compositeAddress);
                         districtEditText.setText(fullAddress);
@@ -547,6 +616,10 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     @Override
     protected void initialVar() {
+        if (getActivity().getApplication() instanceof AbstractionRouter) {
+            AnalyticTracker analyticTracker = ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
+            checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress(analyticTracker);
+        }
         if (isEdit() && address != null) {
             receiverNameEditText.setText(address.getReceiverName());
             addressTypeEditText.setText(address.getAddressName());
@@ -558,7 +631,9 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             )));
 
             zipCodeTextView.setText(address.getPostalCode());
+            postCodeEditText.setText(address.getPostalCode());
             receiverPhoneEditText.setText(address.getReceiverPhone());
+            setPinpointAddress(address);
         } else if (address == null) {
             address = new Destination();
         }
@@ -644,14 +719,40 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         presenter.detachView();
     }
 
+    @Override
+    protected String getScreenName() {
+        if (isAddAddressFromCartCheckoutMarketplace()) {
+            return isFromMarketPlaceCartEmptyAddressFirst()
+                    ? ConstantTransactionAnalytics.ScreenName.ADD_NEW_ADDRESS_PAGE_FROM_EMPTY_ADDRESS_CART
+                    : ConstantTransactionAnalytics.ScreenName.ADD_NEW_ADDRESS_PAGE;
+        }
+        return super.getScreenName();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        sendAnalyticsScreenName(getScreenName());
+    }
+
+    private boolean isAddAddressFromCartCheckoutMarketplace() {
+        return extraPlatformPage.equalsIgnoreCase(PLATFORM_MARKETPLACE_CART);
+    }
+
+    private boolean isFromMarketPlaceCartEmptyAddressFirst() {
+        return isFromMarketPlaceCartEmptyAddressFirst;
+    }
+
     public boolean isValidAddress() {
         boolean isValid = true;
 
         // Check password validity
         if (isEdit() && getPassword().length() == 0) {
-            passwordLayout.setError(getString(R.string.error_field_required));
+            String errorMessage = getString(R.string.error_field_required);
+            passwordLayout.setError(errorMessage);
             passwordLayout.requestFocus();
             isValid = false;
+            sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
         }
 
         // Check receiver phone validity
@@ -667,6 +768,8 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
             receiverPhoneLayout.setError(errorMessage);
             receiverPhoneLayout.requestFocus();
+            sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
+            sendAnalyticsOnErrorInputPhone();
             isValid = false;
         }
 
@@ -681,6 +784,8 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
             addressLayout.setError(errorMessage);
             addressLayout.requestFocus();
+            sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
+            sendAnalyticsOnErrorInputAddress();
             isValid = false;
         }
 
@@ -692,41 +797,61 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                 errorMessage = getString(R.string.error_max_128_character);
             }
 
-            receiverNameLayout.setError( errorMessage);
+            receiverNameLayout.setError(errorMessage);
             receiverNameLayout.requestFocus();
+            sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
+            sendAnalyticsOnErrorInputName();
             isValid = false;
         }
 
         if (TextUtils.isEmpty(addressTypeEditText.getText())) {
-            addressTypeLayout.setError(getString(R.string.error_field_required));
+            String errorMessage = getString(R.string.error_field_required);
+            addressTypeLayout.setError(errorMessage);
             addressTypeLayout.requestFocus();
+            sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
+            sendAnalyticsOnErrorInputAddressAs();
             isValid = false;
         }
 
         if (isDistrictRecommendation()) {
             if (TextUtils.isEmpty(districtEditText.getText())) {
-                districtLayout.setError(getString(R.string.error_field_required));
+                String errorMessage = getString(R.string.error_field_required);
+                districtLayout.setError(errorMessage);
                 districtLayout.requestFocus();
+                sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
+                sendAnalyticsOnErrorInputDistrict();
                 isValid = false;
             }
 
             if (TextUtils.isEmpty(zipCodeTextView.getText())) {
-                zipCodeLayout.setError(getString(R.string.error_field_required));
+                String errorMessage = getString(R.string.error_field_required);
+                zipCodeLayout.setError(errorMessage);
                 zipCodeLayout.requestFocus();
+                sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
+                sendAnalyticsOnErrorInputZipCode();
                 isValid = false;
             }
         } else {
             if (postCodeEditText.getText().length() == 0) {
-                postCodeLayout.setError(getString(R.string.error_field_required));
+                String errorMessage = getString(R.string.error_field_required);
+                postCodeLayout.setError(errorMessage);
                 postCodeLayout.requestFocus();
+                sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
+                sendAnalyticsOnErrorInputZipCode();
                 isValid = false;
             } else if (postCodeEditText.getText().length() < 5) {
-                postCodeLayout.setError(getString(R.string.error_min_5_character));
+                String errorMessage = getString(R.string.error_min_5_character);
+                postCodeLayout.setError(errorMessage);
                 postCodeLayout.requestFocus();
+                sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
+                sendAnalyticsOnErrorInputZipCode();
                 isValid = false;
             } else if (postCodeEditText.getText().length() > 10) {
-                postCodeLayout.setError(getString(R.string.error_max_post_code));
+                String errorMessage = getString(R.string.error_max_post_code);
+                postCodeLayout.setError(errorMessage);
                 postCodeLayout.requestFocus();
+                sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
+                sendAnalyticsOnErrorInputZipCode();
                 isValid = false;
             }
 
@@ -823,6 +948,19 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     }
 
     @Override
+    public void changeProvince(List<City> cities) {
+        progressRegency.setVisibility(View.GONE);
+        regencyTitle.setVisibility(View.VISIBLE);
+        spinnerRegency.setVisibility(View.VISIBLE);
+        regencyAdapter.setList(cities);
+        Destination addressModel = getArguments().getParcelable(EDIT_PARAM);
+        if (addressModel != null)
+            spinnerRegency
+                    .setSelection(regencyAdapter.getPositionFromName(addressModel.getCityName()));
+        this.mCities = new ArrayList<>(cities);
+    }
+
+    @Override
     public void showLoadingDistrict() {
         progressDistrict.setVisibility(View.VISIBLE);
         districtTitle.setVisibility(View.GONE);
@@ -839,9 +977,157 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         if (isEdit() && addressModel != null) {
             spinnerSubDistrict.setSelection(subDistrictAdapter.getPositionFromName(addressModel.getDistrictName()));
             updateAddress();
-//            if (subDistrictAdapter.getPositionFromName(addressModel.getDistrictName()) > 0)
-//                isEdit = false;
         }
         this.mDistricts = new ArrayList<>(districts);
+    }
+
+    @Override
+    public void errorSaveAddress() {
+        sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(false);
+    }
+
+    @Override
+    public void successSaveAddress() {
+        sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(true);
+    }
+
+    @Override
+    public void getGeoCode(String resultAddress) {
+        locationEditText.setText(resultAddress);
+    }
+
+    @Override
+    public void sendAnalyticsOnSubmitSaveAddressClicked() {
+        if (isAddAddressFromCartCheckoutMarketplace()) {
+            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickSimpanFromTambahAlamat();
+            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahAlamatFromTambah();
+        }
+    }
+
+    @Override
+    public void sendAnalyticsOnDistrictSelectionClicked() {
+        if (isAddAddressFromCartCheckoutMarketplace()) {
+            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickKotaAtauKecamatanPadaTambahAddress();
+        }
+    }
+
+    @Override
+    public void sendAnalyticsOnZipCodeSelectionClicked() {
+        if (isAddAddressFromCartCheckoutMarketplace()) {
+            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickKodePosPadaTambahAddress();
+        }
+    }
+
+    @Override
+    public void sendAnalyticsOnLocationSelectionClicked() {
+        if (isAddAddressFromCartCheckoutMarketplace()) {
+            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTandaiLokasiPadaTambahAddress();
+        }
+    }
+
+    @Override
+    public void sendAnalyticsOnZipCodeDropdownSelectionClicked() {
+        if (isAddAddressFromCartCheckoutMarketplace()) {
+            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickChecklistKodePosPAdaTambahAddress();
+        }
+    }
+
+    @Override
+    public void sendAnalyticsOnZipCodeInputFreeText(String zipCode) {
+        if (isAddAddressFromCartCheckoutMarketplace()) {
+            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickFillKodePosPadaTambahAddress(zipCode);
+        }
+    }
+
+    @Override
+    public void sendAnalyticsOnValidationErrorSaveAddress(String errorMessageValidation) {
+        if (isAddAddressFromCartCheckoutMarketplace()) {
+            checkoutAnalyticsChangeAddress.eventViewShippingCartChangeAddressViewValidationErrorNotFill(errorMessageValidation);
+        }
+    }
+
+    @Override
+    public void sendAnalyticsOnInputAddressAsClicked() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressClickAlamatSebagaiPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnInputAddressAsDropdownSelectionItemCliked() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressClickChecklistAlamatSebagaiPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnInputNameClicked() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressClickNamaPadaTambahAddress();
+
+    }
+
+    @Override
+    public void sendAnalyticsOnInputPhoneClicked() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressClickTeleponPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnInputAddressClicked() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressClickAlamatPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnErrorInputAddressAs() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnErrorInputName() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationNamaPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnErrorInputPhone() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationTeleponPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnErrorInputDistrict() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationKotaKecamatanPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnErrorInputZipCode() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationKodePosPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnErrorInputAddress() {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(boolean success) {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            if (success) {
+                checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruSuccess();
+                checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahSuccess();
+            } else {
+                checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruFailed();
+                checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahNotSuccess();
+            }
+    }
+
+    @Override
+    public void sendAnalyticsScreenName(String screenName) {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), screenName);
     }
 }

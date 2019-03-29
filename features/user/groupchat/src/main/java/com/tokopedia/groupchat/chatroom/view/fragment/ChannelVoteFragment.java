@@ -18,14 +18,13 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
@@ -40,7 +39,8 @@ import com.tokopedia.groupchat.chatroom.view.listener.ChannelVoteContract;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.presenter.ChannelVotePresenter;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
-import com.tokopedia.groupchat.common.design.CloseableBottomSheetDialog;
+import com.tokopedia.groupchat.common.design.ChannelCloseableBottomSheetDialog;
+import com.tokopedia.groupchat.common.design.GridVoteItemDecoration;
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration;
 import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
 import com.tokopedia.groupchat.common.di.component.GroupChatComponent;
@@ -48,8 +48,11 @@ import com.tokopedia.groupchat.vote.view.adapter.VoteAdapter;
 import com.tokopedia.groupchat.vote.view.adapter.typefactory.VoteTypeFactory;
 import com.tokopedia.groupchat.vote.view.adapter.typefactory.VoteTypeFactoryImpl;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
-import com.tokopedia.groupchat.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.vote.di.VoteModule;
+import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 import javax.inject.Inject;
 
@@ -81,12 +84,12 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     private ImageView iconVote;
     private View votedView;
     private TextView voteStatus;
-    private CloseableBottomSheetDialog channelInfoDialog;
+    private ChannelCloseableBottomSheetDialog channelInfoDialog;
 
     private VoteInfoViewModel voteInfoViewModel;
     private VoteAdapter voteAdapter;
     private ProgressBarWithTimer progressBarWithTimer;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private Snackbar snackBar;
     private boolean canVote = true;
 
@@ -103,8 +106,10 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
     @Override
     protected void initInjector() {
-        GroupChatComponent streamComponent = DaggerGroupChatComponent.builder().baseAppComponent(
-                ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent()).build();
+        GroupChatComponent streamComponent = DaggerGroupChatComponent.builder()
+                .voteModule(new VoteModule())
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                .build();
 
         DaggerChatroomComponent.builder()
                 .groupChatComponent(streamComponent)
@@ -116,7 +121,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+        userSession = new UserSession(getActivity());
     }
 
     @Nullable
@@ -124,7 +129,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_channel_vote, container, false);
 
-        channelInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
+        channelInfoDialog = ChannelCloseableBottomSheetDialog.createInstance(getActivity());
         channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
@@ -159,9 +164,13 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         progressBarWithTimer.setListener(this);
+        voteRecyclerView.setNestedScrollingEnabled(false);
         KeyboardHandler.DropKeyboard(getContext(), getView());
         Parcelable temp = getArguments().getParcelable(VOTE);
         showVoteLayout((VoteInfoViewModel) temp);
+        if (getActivity() instanceof GroupChatContract.View) {
+            ((GroupChatContract.View) getActivity()).showInfoDialog();
+        }
     }
 
     @Override
@@ -248,7 +257,14 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                 if (!TextUtils.isEmpty(voteInfoViewModel.getVoteInfoUrl())) {
                     ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
                             (getActivity(), voteInfoViewModel.getVoteInfoUrl());
+                    if(getActivity() instanceof GroupChatActivity) {
+                        analytics.eventActionClickVoteInfo
+                                (String.format("%s - %s"
+                                        , ((GroupChatActivity) getActivity()).getChannelInfoViewModel().getChannelId()
+                                        , voteInfoViewModel.getVoteInfoUrl()));
+                    }
                 }
+
             }
         });
 
@@ -318,11 +334,16 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                 || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE)) {
             canVote = false;
             boolean voted = voteInfoViewModel.isVoted();
-            presenter.sendVote(userSession, voteInfoViewModel.getPollId(), voted, element);
+            loading.setVisibility(View.VISIBLE);
+            getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            presenter.sendVote(userSession, voteInfoViewModel.getPollId(), voted, element
+                        , ((GroupChatActivity) getActivity()).getChannelInfoViewModel().getGroupChatToken());
 
             if (getActivity() != null
                     && getActivity() instanceof GroupChatContract.View
-                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null) {
+                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null
+                    && !voted) {
                 analytics.eventClickVote(
                         element.getType(),
                         ((GroupChatContract.View) getActivity()).
@@ -339,6 +360,8 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         title.setText(R.string.has_voted);
         channelInfoDialog.setContentView(view);
         channelInfoDialog.show();
+        loading.setVisibility(View.GONE);
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     @Override
@@ -351,12 +374,16 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                 channelInfoDialog.show();
             }
         }, 500);
+        loading.setVisibility(View.GONE);
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     @Override
-    public void onSuccessVote(VoteViewModel element, VoteStatisticViewModel voteStatisticViewModel) {
+    public void onSuccessVote(VoteViewModel element, VoteStatisticDomainModel voteStatisticViewModel) {
         canVote = true;
         if (voteInfoViewModel != null) {
+            loading.setVisibility(View.GONE);
+            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             voteAdapter.change(voteInfoViewModel, element, voteStatisticViewModel);
             voteInfoViewModel.setVoted(true);
             voteInfoViewModel.setParticipant(
@@ -374,6 +401,8 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     @Override
     public void onErrorVote(String errorMessage) {
         canVote = true;
+        loading.setVisibility(View.GONE);
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
@@ -398,11 +427,10 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_LOGIN) {
-            if (getActivity().getApplication() instanceof AbstractionRouter) {
-                userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
-            }
+            userSession = new UserSession(getActivity());
             if (getActivity() instanceof GroupChatActivity) {
                 ((GroupChatActivity) getActivity()).onSuccessLogin();
+                getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             }
         }
     }
@@ -412,14 +440,16 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         RecyclerView.ItemDecoration itemDecoration = null;
 
         if (voteRecyclerView != null && voteRecyclerView.getAdapter() != null) {
-            for (int i = 0; i < voteRecyclerView.getAdapter().getItemCount(); i++) {
-                voteRecyclerView.removeItemDecoration(voteRecyclerView.getItemDecorationAt(i));
+            int loop = voteRecyclerView.getItemDecorationCount();
+            while (voteRecyclerView.getItemDecorationCount() > 0) {
+                voteRecyclerView.removeItemDecorationAt(loop-1);
+                loop--;
             }
         }
 
         if (voteInfoViewModel.getVoteOptionType().equals(VoteViewModel.IMAGE_TYPE)) {
             voteLayoutManager = new GridLayoutManager(getActivity(), 2);
-            itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), 2);
+            itemDecoration = new GridVoteItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), (int) getActivity().getResources().getDimension(R.dimen.dp_16), 2, voteInfoViewModel.getListOption().size());
         } else {
             voteLayoutManager = new LinearLayoutManager(getActivity());
             itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_between), false);

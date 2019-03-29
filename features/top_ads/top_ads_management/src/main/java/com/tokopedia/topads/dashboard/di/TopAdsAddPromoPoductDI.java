@@ -11,7 +11,7 @@ import com.tokopedia.topads.dashboard.data.mapper.TopAdsDetailGroupMapper;
 import com.tokopedia.topads.dashboard.data.mapper.TopAdsSearchGroupMapper;
 import com.tokopedia.topads.dashboard.data.repository.TopAdsGroupAdsRepositoryImpl;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
 import com.tokopedia.topads.dashboard.domain.TopAdsGroupAdsRepository;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCheckExistGroupUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
@@ -24,13 +24,9 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsManageGroupPromoPrese
 
 public class TopAdsAddPromoPoductDI {
     public static TopAdsManageGroupPromoPresenter createPresenter(Context context) {
-        // Gson gson = new Gson();
-
-        JobExecutor threadExecutor = new JobExecutor();
-        UIThread postExecutionThread = new UIThread();
 
         TopAdsManagementService topAdsManagementService = new TopAdsManagementService(new SessionHandler(context));
-        TopAdsManagementApi topAdsManagementApi = topAdsManagementService.getApi();
+        TopAdsOldManagementApi topAdsManagementApi = topAdsManagementService.getApi();
 
         TopAdsSearchGroupMapper topAdsSearchGroupMapper = new TopAdsSearchGroupMapper();
         TopAdsDetailGroupMapper topAdsDetailGroupMapper = new TopAdsDetailGroupMapper();
@@ -42,8 +38,8 @@ public class TopAdsAddPromoPoductDI {
 
         TopAdsGroupAdsRepository topAdsGroupAdsRepository = new TopAdsGroupAdsRepositoryImpl(topAdsGroupAdFactory);
 
-        TopAdsSearchGroupAdsNameUseCase topAdsSearchGroupAdsNameUseCase = new TopAdsSearchGroupAdsNameUseCase(threadExecutor, postExecutionThread, topAdsGroupAdsRepository);
-        TopAdsCheckExistGroupUseCase topAdsCheckExistGroupUseCase = new TopAdsCheckExistGroupUseCase(threadExecutor, postExecutionThread, topAdsGroupAdsRepository);
+        TopAdsSearchGroupAdsNameUseCase topAdsSearchGroupAdsNameUseCase = new TopAdsSearchGroupAdsNameUseCase(topAdsGroupAdsRepository);
+        TopAdsCheckExistGroupUseCase topAdsCheckExistGroupUseCase = new TopAdsCheckExistGroupUseCase(topAdsGroupAdsRepository);
         return new TopAdsManageGroupPromoPresenterImpl(topAdsSearchGroupAdsNameUseCase, topAdsCheckExistGroupUseCase);
     }
 }

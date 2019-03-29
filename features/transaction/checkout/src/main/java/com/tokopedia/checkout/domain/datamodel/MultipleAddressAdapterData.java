@@ -12,22 +12,19 @@ import java.util.List;
 public class MultipleAddressAdapterData implements Parcelable {
 
     private String senderName;
-
     private String productImageUrl;
-
     private String productName;
-
     private String productPrice;
-
     private boolean isPreOrder;
-
     private boolean isFreeReturn;
-
     private boolean isCashBack;
-
+    private boolean isOfficialStore;
+    private boolean isGoldMerchant;
+    private String officialStoreLogoUrl;
+    private String goldMerchantLogoUrl;
     private String cashBackInfo;
-
     private List<MultipleAddressItemData> itemListData;
+    private String preOrderInfo;
 
     public MultipleAddressAdapterData() {
     }
@@ -40,8 +37,13 @@ public class MultipleAddressAdapterData implements Parcelable {
         isPreOrder = in.readByte() != 0;
         isFreeReturn = in.readByte() != 0;
         isCashBack = in.readByte() != 0;
+        isOfficialStore = in.readByte() != 0;
+        isGoldMerchant = in.readByte() != 0;
         cashBackInfo = in.readString();
+        officialStoreLogoUrl = in.readString();
+        goldMerchantLogoUrl = in.readString();
         itemListData = in.createTypedArrayList(MultipleAddressItemData.CREATOR);
+        preOrderInfo = in.readString();
     }
 
     @Override
@@ -53,8 +55,13 @@ public class MultipleAddressAdapterData implements Parcelable {
         dest.writeByte((byte) (isPreOrder ? 1 : 0));
         dest.writeByte((byte) (isFreeReturn ? 1 : 0));
         dest.writeByte((byte) (isCashBack ? 1 : 0));
+        dest.writeByte((byte) (isGoldMerchant ? 1 : 0));
+        dest.writeByte((byte) (isOfficialStore ? 1 : 0));
         dest.writeString(cashBackInfo);
+        dest.writeString(officialStoreLogoUrl);
+        dest.writeString(goldMerchantLogoUrl);
         dest.writeTypedList(itemListData);
+        dest.writeString(preOrderInfo);
     }
 
     @Override
@@ -142,7 +149,47 @@ public class MultipleAddressAdapterData implements Parcelable {
         return cashBackInfo;
     }
 
+    public String getPreOrderInfo() {
+        return preOrderInfo;
+    }
+
+    public void setPreOrderInfo(String preOrderInfo) {
+        this.preOrderInfo = preOrderInfo;
+    }
+
     public void setCashBackInfo(String cashBackInfo) {
         this.cashBackInfo = cashBackInfo;
+    }
+
+    public boolean isOfficialStore() {
+        return isOfficialStore;
+    }
+
+    public void setOfficialStore(boolean officialStore) {
+        isOfficialStore = officialStore;
+    }
+
+    public boolean isGoldMerchant() {
+        return isGoldMerchant;
+    }
+
+    public void setGoldMerchant(boolean goldMerchant) {
+        isGoldMerchant = goldMerchant;
+    }
+
+    public String getOfficialStoreLogoUrl() {
+        return officialStoreLogoUrl;
+    }
+
+    public void setOfficialStoreLogoUrl(String officialStoreLogoUrl) {
+        this.officialStoreLogoUrl = officialStoreLogoUrl;
+    }
+
+    public String getGoldMerchantLogoUrl() {
+        return goldMerchantLogoUrl;
+    }
+
+    public void setGoldMerchantLogoUrl(String goldMerchantLogoUrl) {
+        this.goldMerchantLogoUrl = goldMerchantLogoUrl;
     }
 }

@@ -8,13 +8,10 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.events.R;
@@ -114,15 +111,12 @@ public class SearchInputView extends BaseCustomView {
         if (!TextUtils.isEmpty(searchHint)) {
             searchTextView.setHint(searchHint);
         }
-        searchTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH && listener != null) {
-                    listener.onSearchSubmitted(textView.getText().toString());
-                    return true;
-                }
-                return false;
+        searchTextView.setOnEditorActionListener((textView, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH && listener != null) {
+                listener.onSearchSubmitted(textView.getText().toString());
+                return true;
             }
+            return false;
         });
         searchTextView.addTextChangedListener(new TextWatcher() {
             private Timer timer = new Timer();
@@ -170,7 +164,7 @@ public class SearchInputView extends BaseCustomView {
                 mainHandler.post(myRunnable);
             }
         });
-        closeImageButton.setOnClickListener(new View.OnClickListener() {
+        closeImageButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 searchTextView.setText("");

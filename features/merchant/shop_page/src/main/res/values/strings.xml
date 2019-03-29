@@ -12,12 +12,17 @@
     <string name="shop_page_label_already_favorite">Sudah Favorit</string>
     <string name="shop_page_label_featured_product">Produk Unggulan</string>
 
+    <string name="shop_page_header_total_followers"><![CDATA[<b>\u2022 %1s</b> Followers]]></string>
+    <string name="shop_page_header_total_follower"><![CDATA[<b>\u2022 %1s</b> Follower]]></string>
     <string name="shop_page_button_show_more_product">Lihat Produk Selengkapnya</string>
-    <string name="shop_page_header_shop_closed_info">Toko tutup sampai dengan %1$s</string>
-    <string name="shop_page_header_shop_in_moderation">Toko dalam status MODERASI</string>
+    <string name="shop_page_header_shop_closed_info">Toko tutup hingga %1$s</string>
+    <string name="shop_page_header_shop_in_moderation">Toko Anda sedang dimoderasi.</string>
+    <string name="shop_page_header_shop_in_permanent_moderation">Toko Anda sedang dimoderasi permanen.</string>
     <string name="shop_page_header_closed_reason">Alasan : %1$s</string>
-    <string name="shop_page_header_shop_not_active_title">Toko tidak aktif selama lebih dari 7 hari</string>
-    <string name="shop_page_header_shop_not_active_description">Untuk kenyamanan bertransaksi, kami menyarankan anda untuk memastikan terlebih dahulu toko dalam keadan aktif</string>
+    <string name="shop_page_header_shop_not_active_title">Toko Anda dalam status Tidak Aktif.</string>
+    <string name="shop_page_header_shop_not_active_title_buyer">Toko dalam status Tidak Aktif.</string>
+    <string name="shop_page_header_shop_not_active_description_buyer">Demi kenyamanan bertransaksi, kami menyarankan pembeli untuk memastikan terlebih dahulu bahwa toko yang dipilih berada dalam keadaan aktif.</string>
+    <string name="shop_page_header_shop_not_active_description_seller">Toko Anda sudah tidak aktif lebih dari 30 hari.</string>
 
     <string name="shop_page_bottom_sheet_reputation_title">Reputasi Toko</string>
     <string name="shop_page_bottom_sheet_product_quality_title">@string/shop_page_label_product_quality</string>
@@ -31,8 +36,10 @@
     <!-- Shop Info -->
     <string name="shop_info_title">Shop Info</string>
     <string name="shop_info_title_tab_product">Produk</string>
+    <string name="shop_info_title_tab_info">Info</string>
     <string name="shop_info_title_tab_review">Ulasan</string>
     <string name="shop_info_title_tab_discussion">Diskusi</string>
+    <string name="shop_info_title_tab_feed">Feed</string>
 
     <string name="shop_info_title_tab_shop_info">Informasi Toko</string>
     <string name="shop_info_title_tab_note">Catatan</string>
@@ -46,9 +53,14 @@
     <string name="shop_info_label_total_transaction">Total Transaksi</string>
     <string name="shop_info_label_product_sold">Produk Terjual</string>
     <string name="shop_info_label_total_review">Total Ulasan</string>
+    <string name="shop_info_content_total_review">%1$s Ulasan</string>
     <string name="shop_info_label_favourite">Favorit</string>
     <string name="shop_info_label_last_online">Terakhir Online</string>
     <string name="shop_info_label_open_since">Buka Sejak</string>
+    <string name="shop_info_label_open_since_v3">Buka Sejak %1$s</string>
+    <string name="shop_info_label_open_action">Buka Operational Toko</string>
+    <string name="shop_info_label_open_request">Request Buka Toko</string>
+    <string name="shop_info_label_see_how_to_open">Lihat cara Aktifkan Toko</string>
     <string name="shop_info_label_total_product">Total Produk</string>
     <string name="shop_info_label_total_etalase">Total Etalase</string>
     <string name="shop_info_label_physical_shop">Toko Fisik</string>
@@ -59,21 +71,29 @@
     <string name="shop_info_label_default_content">-</string>
     <string name="shop_info_label_choose_etalase">Pilih Etalase</string>
 
+    <string name="shop_note_empty_note_title_buyer">Toko ini belum memiliki catatan toko.</string>
+    <string name="shop_note_empty_note_title_seller">Toko Anda belum memiliki catatan toko.</string>
+
     <string name="shop_note_empty_note_title">Toko ini belum memiliki catatan</string>
-    <string name="shop_note_empty_note_title_owner">Catatan toko anda kosong</string>
-    <string name="shop_note_empty_note_content_owner">Tambah catatan seputar toko anda sekarang</string>
+    <string name="shop_note_empty_note_title_owner">Catatan Toko Anda kosong</string>
+    <string name="shop_note_empty_note_content_owner">Tambah catatan seputar Toko Anda sekarang</string>
     <string name="shop_note_empty_note_button_owner">Tambah Catatan</string>
 
     <string name="shop_product_discount_percentage_format">%1$s%% Off</string>
     <string name="shop_product_search_hint">Cari produk di toko ini</string>
+    <string name="shop_product_search_hint_2">Cari di toko %1$s</string>
     <string name="shop_product_manage_item_cashback">Cashback %1$d%%</string>
     <string name="shop_product_label_wholesale">Grosir</string>
     <string name="shop_product_label_po">PO</string>
     <string name="shop_product_limited_empty_product_title">Toko ini belum memiliki produk</string>
-    <string name="shop_product_limited_empty_product_title_owner">Toko anda belum memiliki produk</string>
+    <string name="shop_product_limited_empty_product_title_owner">Toko Anda belum memiliki produk</string>
+    <string name="shop_product_limited_empty_product_title_owner_at_etalase">Toko Anda belum memiliki produk di etalase ini</string>
     <string name="shop_product_limited_empty_product_content_owner">Tambah produk &amp; mulai berjualan sekarang &#x21;</string>
-    <string name="shop_product_empty_product_title">Tidak ada \"%1$s\" di etalase ini</string>
-    <string name="shop_product_empty_product_title_owner">Ubah kata pencarian anda atau pilih etalase lain</string>
+    <string name="shop_product_empty_product_title_etalase">Oops… Hasil pencarian Anda tidak ditemukan di etalase ini</string>
+    <string name="shop_product_empty_product_title_owner_etalase">Silakan lakukan pencarian dengan kata kunci / filter lain.</string>
+
+    <string name="shop_product_empty_product_title_no_etalase">Oops… Hasil pencarian Anda tidak ditemukan.</string>
+    <string name="shop_product_empty_product_title_owner_no_etalase">Silakan lakukan pencarian dengan kata kunci / filter lain.</string>
 
     <string name="shop_info_default_etalase">Pilih Etalase</string>
     <string name="shop_info_default_etalase_title">Etalase</string>
@@ -82,24 +102,45 @@
     <string name="shop_info_sort_label">Urutkan</string>
     <string name="shop_info_filter_all_showcase">Semua Etalase</string>
     <string name="shop_info_filter_menu_etalase_all">Semua Produk</string>
-    <string name="shop_info_label_share">Bagikan</string>
     <string name="shop_label_share_formatted">%1$s - %2$s | Tokopedia</string>
 
     <string name="dashboard_x_points">%1$s poin</string>
     <string name="total_point_format">(%1$s)</string>
 
     <string name="reputation_value_not_appear">Belum ada Nilai Reputasi</string>
-    <string name="favorited_shop_title">Yang Memfavoritkan</string>
+    <string name="favorited_shop_title">Followers Toko</string>
     <string name="shop_page_speed_shop_not_available">Belum Tersedia</string>
     <string name="reputation_point_format">%1$s poin</string>
-    <string name="shop_note_title">Catatan</string>
+    <string name="note_title">Catatan</string>
     <string name="shop_product_title">Produk</string>
     <string name="shop_sort_title">Urutkan</string>
     <string name="choose_etalase_label">Pilih Etalase</string>
     <string name="see_shop_information">Lihat Informasi Toko</string>
     <string name="see_label">Lihat</string>
-    <string name="shop_product_empty_title_desc">Tidak ada produk di etalase ini</string>
+    <string name="shop_product_empty_title_etalase_desc">Tidak ada produk di etalase ini</string>
+    <string name="shop_product_empty_title_desc">Tidak ada produk di toko ini</string>
     <string name="out_of_stock">Stok Kosong</string>
-
+    <string name="shop_page_label_view_more">Lihat Produk Selengkapnya</string>
+    <string name="official_store_label">Official Store</string>
+    <string name="shop_page_chat_label">Chat</string>
+    <string name="shop_page_label_description">Deskripsi Toko</string>
+    <string name="shop_info_label_manage_note">Atur</string>
+    <string name="shop_note_title">Catatan Toko</string>
+    <string name="shop_info_label_process_time">Waktu Proses</string>
+    <string name="read">Baca</string>
+    <string name="shop_page_label_follow">Follow</string>
+    <string name="shop_etalase">Etalase</string>
+    <string name="max_rating_value">/ 5</string>
+    <string name="shop_page_header_shop_in_moderation_desc">Toko ini menyalahi peraturan yang berlaku di Tokopedia.</string>
+    <string name="shop_page_header_shop_in_permanent_moderation_buyer">Toko dimoderasi permanen.</string>
+    <string name="shop_page_header_shop_in_moderation_buyer">Toko sedang dimoderasi.</string>
+    <string name="shop_page_header_shop_in_moderation_desc_buyer">Diharapkan untuk sementara tidak melakukan transaksi apapun dengan toko ini.</string>
+    <string name="shop_page_header_shop_see_more_info">Info Lanjut</string>
+    <string name="shop_product_empty_follower_title">Toko ini belum memiliki follower</string>
+    <string name="shop_product_my_empty_follower_title">Toko Anda belum memiliki follower</string>
+    <string name="shop_product_empty_product_title_desc">Jadi yang pertama untuk follow Toko %1$s dan temukan update tentang toko ini di feed Anda.</string>
+    <string name="search_keyword_at_tokopedia">Cari \"%1$s\" di Tokopedia</string>
+    <string name="tablayout_new_text">Baru</string>
+    <string name="x_product">%1$s Produk</string>
 
 </resources>

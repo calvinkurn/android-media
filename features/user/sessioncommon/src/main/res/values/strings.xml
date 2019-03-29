@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">sessioncommon</string>
+    <string name="default_request_error_forbidden_auth">Halaman tidak dapat diakses. Mohon
+        untuk menunggu beberapa saat lagi.</string>
+    <string name="default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
+
+    <string name="title_activity_forbidden">Peringatan</string>
+    <string name="title_activity_service">Persyaratan Layanan</string>
+    <string name="forbidden_title"><![CDATA[<b>Peringatan</b>]]></string>
+    <string name="forbidden_msg"><![CDATA[<p>Kami mendeteksi adanya aktivitas mencurigakan pada perangkat Anda yang melanggar <u><font color=\'#42b549\'>Persyaratan Layanan</font></u> Tokopedia.</p> <p>Anda bisa kembali menggunakan aplikasi Tokopedia setelah aktivitas tersebut dihentikan.</p>]]></string>
+    <string name="forbidden_button">Coba Lagi</string>
+</resources>

@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.home.favorite.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -21,12 +20,12 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.core.util.TopAdsUtil;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopItem;
+import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 
 import java.util.ArrayList;
@@ -45,6 +44,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
     private FavoriteClickListener favoriteClickListener;
     private Context context;
     private final String PATH_VIEW = "views";
+    private ImageLoader imageLoader;
 
     public TopAdsShopAdapter(FavoriteClickListener favoriteClickListener) {
         this.favoriteClickListener = favoriteClickListener;
@@ -60,6 +60,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
+        imageLoader = new ImageLoader(context);
         View itemLayoutView = LayoutInflater.from(context)
                 .inflate(R.layout.listview_reccommend_shop, parent, false);
         createScaleAnimation();
@@ -71,7 +72,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
         TopAdsShopItem shopItem = data.get(position);
         holder.shopName.setText(Html.fromHtml(shopItem.getShopName()));
         holder.shopLocation.setText(Html.fromHtml(shopItem.getShopLocation()));
-        ImageHandler.loadImageFit2(holder.getContext(), holder.shopIcon, shopItem.getShopImageUrl());
+        imageLoader.loadImage(shopItem.getShopImageUrl(), shopItem.getShopImageEcs(), holder.shopIcon);
         setShopCover(holder, shopItem.getShopCoverUrl(), shopItem.getShopCoverEcs());
         setFavorite(holder, shopItem);
         holder.mainContent.setOnClickListener(onShopClicked(shopItem));
@@ -88,8 +89,8 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
             Glide.with(context)
                     .load(ecs)
                     .dontAnimate()
-                    .placeholder(com.tokopedia.core.R.drawable.loading_page)
-                    .error(com.tokopedia.core.R.drawable.error_drawable)
+                    .placeholder(com.tokopedia.core2.R.drawable.loading_page)
+                    .error(com.tokopedia.core2.R.drawable.error_drawable)
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .override(375, 97)
@@ -150,7 +151,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
             public void onClick(View view) {
                 Context context = view.getContext();
                 TopAdsUtil.clickTopAdsAction(context, item.getShopClickUrl());
-                UnifyTracking.eventFavoriteViewRecommendation();
+                UnifyTracking.eventFavoriteViewRecommendation(view.getContext());
                 Intent intent = ShopPageActivity.createIntent(context, item.getShopId());
                 context.startActivity(intent);
             }

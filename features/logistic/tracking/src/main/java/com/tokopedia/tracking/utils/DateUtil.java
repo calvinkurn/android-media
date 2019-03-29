@@ -33,4 +33,22 @@ public class DateUtil {
             return unformattedTime;
         }
     }
+
+    public String getFormattedTime(String unformattedTime) {
+        String inputPattern = "HH:mm:ss";
+        String outputPattern = "HH:mm";
+
+        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern,
+                new Locale("in", "ID"));
+
+        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern,
+                new Locale("in", "ID"));
+
+        try {
+            Date date = inputFormat.parse(unformattedTime);
+            return outputFormat.format(date) + " WIB";
+        } catch (ParseException e) {
+            return unformattedTime;
+        }
+    }
 }

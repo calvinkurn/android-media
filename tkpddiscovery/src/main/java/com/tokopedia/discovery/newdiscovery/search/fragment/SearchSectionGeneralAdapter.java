@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.core.base.adapter.Visitable;
@@ -9,7 +10,10 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.RelatedSearchModel;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 
 import java.util.List;
 
@@ -78,7 +82,7 @@ public abstract class SearchSectionGeneralAdapter extends RecyclerView.Adapter<A
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
                 return BrowseProductRouter.GridType.GRID_3;
             default:
-                return BrowseProductRouter.GridType.GRID_1;
+                return BrowseProductRouter.GridType.GRID_2;
         }
     }
 
@@ -103,6 +107,12 @@ public abstract class SearchSectionGeneralAdapter extends RecyclerView.Adapter<A
         return false;
     }
 
+    public boolean isRelatedSearch(int position) {
+        if (checkDataSize(position))
+            return getItemList().get(position) instanceof RelatedSearchModel;
+        return false;
+    }
+
     public boolean isEmptyItem(int position) {
         return checkDataSize(position) && getItemList().get(position) instanceof EmptyModel;
     }
@@ -118,6 +128,34 @@ public abstract class SearchSectionGeneralAdapter extends RecyclerView.Adapter<A
     protected boolean checkDataSize(int position) {
         return getItemList() != null && getItemList().size() > 0
                 && position > -1 && position < getItemList().size();
+    }
+
+    public void showEmptyState(Context context, String query, boolean isFilterActive,
+                               FilterFlagSelectedModel filterFlagSelectedModel, String sectionTitle) {
+        clearData();
+        getItemList().add(mappingEmptySearch(context, query, isFilterActive, filterFlagSelectedModel, sectionTitle));
+        notifyDataSetChanged();
+    }
+
+    protected EmptySearchModel mappingEmptySearch(Context context, String query, boolean isFilterActive,
+                                                FilterFlagSelectedModel filterFlagSelectedModel, String sectionTitle) {
+        EmptySearchModel emptySearchModel = new EmptySearchModel();
+        emptySearchModel.setImageRes(R.drawable.ic_empty_search);
+        if (isFilterActive) {
+            emptySearchModel.setTitle(getEmptySearchTitle(context, sectionTitle));
+            emptySearchModel.setContent(String.format(context.getString(R.string.msg_empty_search_with_filter_2), query));
+            emptySearchModel.setFilterFlagSelectedModel(filterFlagSelectedModel);
+        } else {
+            emptySearchModel.setTitle(getEmptySearchTitle(context, sectionTitle));
+            emptySearchModel.setContent(String.format(context.getString(R.string.empty_search_content_template), query));
+            emptySearchModel.setButtonText(context.getString(R.string.empty_search_button_text));
+        }
+        return emptySearchModel;
+    }
+
+    private String getEmptySearchTitle(Context context, String sectionTitle) {
+        String templateText = context.getString(R.string.msg_empty_search_with_filter_1);
+        return String.format(templateText, sectionTitle);
     }
 
     public abstract List<Visitable> getItemList();

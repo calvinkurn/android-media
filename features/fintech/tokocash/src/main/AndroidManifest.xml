@@ -48,11 +48,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.PopupTransparent" />
         <activity
-            android:name=".historytokocash.presentation.activity.HelpHistoryDetailActivity"
-            android:label="@string/tokocash"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.PopupTransparent" />
-        <activity
             android:name=".historytokocash.presentation.activity.MoveToSaldoActivity"
             android:label="@string/tokocash"
             android:screenOrientation="portrait"
@@ -71,10 +66,16 @@
             android:name=".autosweepmf.view.activity.SetAutoSweepLimitActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.PopupTransparent" />
-
-        <receiver
-            android:name=".pendingcashback.receiver.TokocashPendingDataBroadcastReceiver"
-            android:enabled="true"/>
+        <activity
+            android:name=".ovoactivation.view.IntroOvoActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_header_ovo"
+            android:theme="@style/Theme.White.PopupTransparent" />
+        <activity
+            android:name=".ovoactivation.view.ActivationOvoActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_header_activation_ovo"
+            android:theme="@style/Theme.White.PopupTransparent" />
     </application>
 
 </manifest>

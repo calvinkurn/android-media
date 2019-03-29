@@ -4,7 +4,7 @@
         code
         message
         status
-   }
+    }
     offFlag
     sumToken
     sumTokenStr
@@ -24,15 +24,17 @@
     }
     home {
       emptyState{
-          title
-          buttonText
-          buttonApplink
-          buttonURL
-          backgroundImgUrl
-          imageUrl
-          version
+        title
+        buttonText
+        buttonURL
+        buttonApplink
+        backgroundImgUrl
+        seamlessImgUrl
+        imageUrl
+        version
       }
       countingMessage
+      tokenSourceMessage
       tokensUser {
         tokenUserID
         campaignID
@@ -44,14 +46,18 @@
           name
           version
           backgroundImgUrl
+          seamlessImgUrl
         }
         tokenAsset {
           name
           version
           floatingImgUrl
           smallImgUrl
+          smallImgv2Url
           spriteUrl
           imageUrls
+          imagev2Urls
+          tokenSourceUrl
         }
       }
     }

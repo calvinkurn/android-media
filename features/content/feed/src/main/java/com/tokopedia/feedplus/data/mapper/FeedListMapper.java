@@ -1,29 +1,47 @@
 package com.tokopedia.feedplus.data.mapper;
 
+import android.content.Context;
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
-import com.tkpdfeed.feeds.FeedQuery;
-import com.tokopedia.feedplus.domain.model.InspirationItemDomain;
-import com.tokopedia.feedplus.domain.model.TopPicksDomain;
+import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.feedplus.data.pojo.ContentFeedKol;
+import com.tokopedia.feedplus.data.pojo.Feed;
+import com.tokopedia.feedplus.data.pojo.FeedBanner;
+import com.tokopedia.feedplus.data.pojo.FeedContent;
+import com.tokopedia.feedplus.data.pojo.FeedKolRecommendedType;
+import com.tokopedia.feedplus.data.pojo.FeedKolType;
+import com.tokopedia.feedplus.data.pojo.FeedPolling;
+import com.tokopedia.feedplus.data.pojo.FeedQuery;
+import com.tokopedia.feedplus.data.pojo.FeedSource;
+import com.tokopedia.feedplus.data.pojo.Feeds;
+import com.tokopedia.feedplus.data.pojo.FeedsFavoriteCta;
+import com.tokopedia.feedplus.data.pojo.FeedsKolCta;
+import com.tokopedia.feedplus.data.pojo.KolRecommendedDataType;
+import com.tokopedia.feedplus.data.pojo.PollingOption;
+import com.tokopedia.feedplus.data.pojo.ProductFeedType;
+import com.tokopedia.feedplus.data.pojo.ShopDetail;
+import com.tokopedia.feedplus.data.pojo.TagsFeedKol;
+import com.tokopedia.feedplus.data.pojo.TopAd;
+import com.tokopedia.feedplus.data.pojo.Wholesale;
 import com.tokopedia.feedplus.domain.model.feed.ContentFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.DataFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.FavoriteCtaDomain;
 import com.tokopedia.feedplus.domain.model.feed.FeedDomain;
-import com.tokopedia.feedplus.domain.model.feed.InspirationDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolCtaDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolPostDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolRecommendationDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolRecommendationItemDomain;
 import com.tokopedia.feedplus.domain.model.feed.ProductFeedDomain;
-import com.tokopedia.feedplus.domain.model.feed.PromotionFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.ShopFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.SourceFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.WholesaleDomain;
-import com.tokopedia.feedplus.domain.model.officialstore.BadgeDomain;
-import com.tokopedia.feedplus.domain.model.officialstore.DataDomain;
-import com.tokopedia.feedplus.domain.model.officialstore.LabelDomain;
-import com.tokopedia.feedplus.domain.model.officialstore.OfficialStoreDomain;
-import com.tokopedia.feedplus.domain.model.officialstore.OfficialStoreProductDomain;
-import com.tokopedia.feedplus.domain.model.officialstore.ShopDomain;
+import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationItemViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
+import com.tokopedia.kol.common.util.TimeConverter;
 import com.tokopedia.topads.sdk.domain.model.Data;
 
 import org.json.JSONException;
@@ -32,42 +50,70 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import retrofit2.Response;
 import rx.functions.Func1;
 
 /**
  * @author ricoharisin .
  */
 
-public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
+public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>>, FeedDomain> {
+
+    private static final String ERROR_SERVER = "ERROR_SERVER";
+    private static final String ERROR_NETWORK = "ERROR_NETWORK";
+    private static final String ERROR_EMPTY_RESPONSE = "ERROR_EMPTY_RESPONSE";
+    private final Context context;
+
+    @Inject
+    public FeedListMapper(@ApplicationContext Context context) {
+        this.context = context;
+    }
+
     @Override
-    public FeedDomain call(FeedQuery.Data data) {
+    public FeedDomain call(Response<GraphqlResponse<FeedQuery>> feedQueryResponse) {
+        Feeds data = getDataOrError(feedQueryResponse);
         return convertToDataFeedDomain(data);
     }
 
+    private Feeds getDataOrError(Response<GraphqlResponse<FeedQuery>> feedQueryResponse) {
+        if (feedQueryResponse != null
+                && feedQueryResponse.body() != null
+                && feedQueryResponse.body().getData() != null) {
+            if (feedQueryResponse.isSuccessful()) {
+                FeedQuery feedQuery = feedQueryResponse.body().getData();
+                if (feedQuery.getFeed() != null) {
+                    return feedQuery.getFeed();
+                } else {
+                    throw new RuntimeException(ERROR_SERVER);
+                }
+            } else {
+                throw new RuntimeException(ERROR_NETWORK);
+            }
+        } else {
+            throw new RuntimeException(ERROR_EMPTY_RESPONSE);
+        }
+    }
+
     private ProductFeedDomain createProductFeedDomain(String cursor,
-                                                      FeedQuery.Data.Product product,
+                                                      ProductFeedType product,
                                                       List<WholesaleDomain> wholesaleDomains) {
         if (product == null) return null;
-        return new ProductFeedDomain(product.id(), product.name(), product.price(),
-                product.image(), product.image_single(), wholesaleDomains, product.freereturns(),
-                product.preorder(), product.cashback(), (String) product.url(),
-                product.productLink(), product.wishlist(),
-                product.rating(), String.valueOf(product.price_int()), cursor);
+        return new ProductFeedDomain(
+                product.getId(), product.getName(), product.getPrice(), product.getImage(),
+                product.getImageSingle(), wholesaleDomains, product.getFreereturns(),
+                product.getPreorder(), product.getCashback(), product.getUrl(),
+                product.getProductLink(), product.getWishlist(), product.getRating(),
+                String.valueOf(product.getPriceInt()), cursor
+        );
     }
 
-    private PromotionFeedDomain createPromotionFeedDomain(FeedQuery.Data.Promotion promotion) {
-        if (promotion == null) return null;
-        return new PromotionFeedDomain(promotion.id(), promotion.name(), promotion.type(),
-                promotion.thumbnail(), promotion.feature_image(), promotion.description(),
-                promotion.periode(), promotion.code(), promotion.url().toString(), promotion
-                .min_transcation());
+    private WholesaleDomain createWholesaleDomain(Wholesale wholesale) {
+        return new WholesaleDomain(wholesale.getQtyMinFmt());
     }
 
-    private WholesaleDomain createWholesaleDomain(FeedQuery.Data.Wholesale wholesale) {
-        return new WholesaleDomain(wholesale.qty_min_fmt());
-    }
-
-    private List<WholesaleDomain> convertToWholesaleDomain(List<FeedQuery.Data.Wholesale> wholesales) {
+    private List<WholesaleDomain> convertToWholesaleDomain(List<Wholesale> wholesales) {
         List<WholesaleDomain> wholesaleDomains = new ArrayList<>();
         if (wholesales != null) {
             for (int i = 0; i < wholesales.size(); i++) {
@@ -80,14 +126,15 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
 
     private List<ProductFeedDomain>
     convertToProductFeedDomain(String cursor,
-                               List<FeedQuery.Data.Product> products) {
+                               List<ProductFeedType> products) {
         List<ProductFeedDomain> productFeedDomains = new ArrayList<>();
         if (products != null) {
             for (int i = 0; i < products.size(); i++) {
 
-                FeedQuery.Data.Product product = products.get(i);
+                ProductFeedType product = products.get(i);
 
-                List<WholesaleDomain> wholesaleDomains = convertToWholesaleDomain(product.wholesale());
+                List<WholesaleDomain> wholesaleDomains =
+                        convertToWholesaleDomain(product.getWholesale());
 
                 productFeedDomains.add(createProductFeedDomain(cursor, product, wholesaleDomains));
             }
@@ -96,396 +143,397 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
         return productFeedDomains;
     }
 
-    private List<PromotionFeedDomain>
-    convertToPromotionFeedDomain(List<FeedQuery.Data.Promotion> promotions) {
-        List<PromotionFeedDomain> promotionFeedDomains = new ArrayList<>();
-        if (promotions != null) {
-            for (int i = 0; i < promotions.size(); i++) {
-                promotionFeedDomains.add(createPromotionFeedDomain(promotions.get(i)));
-            }
+    private ShopFeedDomain createShopFeedDomain(ShopDetail shop) {
+        if (shop == null) return null;
+        return new ShopFeedDomain(
+                shop.getId(), shop.getName(), shop.getAvatar(), shop.getIsOfficial(),
+                shop.getIsGold(), shop.getUrl(), shop.getShopLink(), shop.getShareLinkDescription(),
+                shop.getShareLinkURL()
+        );
+    }
+
+    private ContentFeedDomain createContentFeedDomain(FeedContent content,
+                                                      List<ProductFeedDomain> productFeedDomains,
+                                                      KolPostDomain kolPostDomain,
+                                                      KolRecommendationDomain kolRecommendations,
+                                                      FavoriteCtaDomain favoriteCtaDomain,
+                                                      KolCtaDomain kolCtaDomain,
+                                                      List<Data> topadsData,
+                                                      ProductCommunicationViewModel
+                                                              productCommunicationViewModel,
+                                                      PollViewModel pollViewModel) {
+
+        if (content == null) {
+            return null;
         }
 
-        return promotionFeedDomains;
-    }
-
-    private ShopFeedDomain createShopFeedDomain(FeedQuery.Data.Shop shop) {
-        if (shop == null) return null;
-        return new ShopFeedDomain(shop.id(), shop.name(), shop.avatar(), shop.isOfficial(),
-                shop.isGold(), (String) shop.url(), shop.shopLink(), shop.shareLinkDescription(),
-                shop.shareLinkURL());
-    }
-
-    private ContentFeedDomain
-    createContentFeedDomain(FeedQuery.Data.Content content,
-                            List<ProductFeedDomain> productFeedDomains,
-                            List<PromotionFeedDomain> promotionFeedDomains,
-                            List<OfficialStoreDomain> officialStoreDomains,
-                            List<TopPicksDomain> topPicksDomains,
-                            List<InspirationDomain> inspirationDomains,
-                            KolPostDomain kolPostDomain,
-                            KolRecommendationDomain kolRecommendations,
-                            FavoriteCtaDomain favoriteCtaDomain,
-                            KolCtaDomain kolCtaDomain,
-                            List<Data> topadsData) {
-        if (content == null) return null;
-        return new ContentFeedDomain(content.type(),
-                content.total_product() != null ? content.total_product() : 0,
+        return new ContentFeedDomain(
+                content.getType(),
+                content.getTotalProduct() != null ? content.getTotalProduct() : 0,
                 productFeedDomains,
-                promotionFeedDomains,
-                officialStoreDomains,
-                topPicksDomains,
-                inspirationDomains,
+                null,
+                null,
+                null,
+                null,
                 topadsData,
                 kolPostDomain,
                 kolRecommendations,
                 favoriteCtaDomain,
                 kolCtaDomain,
-                content.status_activity());
-    }
-
-    private SourceFeedDomain createSourceFeedDomain(
-            FeedQuery.Data.Source source, ShopFeedDomain shopFeedDomain) {
-        if (source == null) return null;
-        return new SourceFeedDomain(source.type(), shopFeedDomain);
-    }
-
-    private FeedDomain convertToDataFeedDomain(FeedQuery.Data data) {
-
-        return new FeedDomain(convertToFeedDomain(data),
-                data.feed().links().pagination().has_next_page());
-    }
-
-    private List<OfficialStoreDomain> convertToOfficialStoresFeedDomain(
-            List<FeedQuery.Data.Official_store> official_stores) {
-        List<OfficialStoreDomain> listStores = new ArrayList<>();
-        if (official_stores != null
-                && official_stores.size() == 1
-                && official_stores.get(0).products().size() == 4) {
-            for (FeedQuery.Data.Official_store officialStore : official_stores) {
-                listStores.add(new OfficialStoreDomain(
-                        officialStore.shop_id() != null ? officialStore.shop_id() : 0,
-                        officialStore.shop_apps_url() != null ? officialStore.shop_apps_url() : "",
-                        officialStore.shop_name() != null ? officialStore.shop_name() : "",
-                        officialStore.logo_url() != null ? officialStore.logo_url() : "",
-                        officialStore.microsite_url() != null ? officialStore.microsite_url() : "",
-                        officialStore.brand_img_url() != null ? officialStore.brand_img_url() : "",
-                        officialStore.is_owner() != null ? officialStore.is_owner() : false,
-                        officialStore.shop_tagline() != null ? officialStore.shop_tagline() : "",
-                        officialStore.is_new() != null ? officialStore.is_new() : false,
-                        officialStore.title() != null ? officialStore.title() : "",
-                        officialStore.mobile_img_url() != null ? officialStore.mobile_img_url() : "",
-                        officialStore.feed_hexa_color() != null ? officialStore.feed_hexa_color() : "",
-                        officialStore.redirect_url_app() != null ? officialStore
-                                .redirect_url_app() : "",
-                        convertToOfficialStoreProducts(officialStore.products())
-                ));
-            }
-        }
-        return listStores;
-    }
-
-    private List<OfficialStoreProductDomain> convertToOfficialStoreProducts(
-            List<FeedQuery.Data.Product1> products) {
-        List<OfficialStoreProductDomain> listProduct = new ArrayList<>();
-        if (products != null) {
-            for (FeedQuery.Data.Product1 product : products) {
-                listProduct.add(new OfficialStoreProductDomain(
-                        product.brand_id(),
-                        product.brand_logo(),
-                        convertToOfficialStoreProductData(product.data())
-                ));
-            }
-        }
-        return listProduct;
-    }
-
-    private DataDomain convertToOfficialStoreProductData(FeedQuery.Data.Data1 data) {
-        return new DataDomain(data.id(),
-                data.name(),
-                data.url_app(),
-                data.image_url(),
-                data.image_url_700(),
-                data.price(),
-                convertToOfficialStoreProductShopDomain(data.shop()),
-                data.original_price(),
-                data.discount_percentage(),
-                data.discount_expired(),
-                convertToOfficialStoreProductBadge(data.badges()),
-                convertToOfficialStoreProductLabel(data.labels()));
-    }
-
-    private List<LabelDomain> convertToOfficialStoreProductLabel(List<FeedQuery.Data.Label> labels) {
-        List<LabelDomain> listLabel = new ArrayList<>();
-        if (labels != null) {
-            for (FeedQuery.Data.Label label : labels) {
-                listLabel.add(new LabelDomain(
-                        label.title(),
-                        label.color()
-                ));
-            }
-        }
-        return listLabel;
-    }
-
-    private List<BadgeDomain> convertToOfficialStoreProductBadge(List<FeedQuery.Data.Badge> badges) {
-        List<BadgeDomain> listBadge = new ArrayList<>();
-        if (badges != null) {
-            for (FeedQuery.Data.Badge badge : badges) {
-                listBadge.add(new BadgeDomain(
-                        badge.title(),
-                        (String) badge.image_url()));
-            }
-        }
-        return listBadge;
-    }
-
-    private ShopDomain convertToOfficialStoreProductShopDomain(FeedQuery.Data.Shop1 shop) {
-        return new ShopDomain(shop.name(),
-                shop.url_app(),
-                shop.location()
+                productCommunicationViewModel,
+                pollViewModel,
+                content.getStatusActivity()
         );
     }
 
+    private SourceFeedDomain createSourceFeedDomain(FeedSource source,
+                                                    ShopFeedDomain shopFeedDomain) {
+        if (source == null) {
+            return null;
+        }
 
-    private List<DataFeedDomain> convertToFeedDomain(FeedQuery.Data data) {
-        List<FeedQuery.Data.Datum> datumList = data.feed().data();
+        return new SourceFeedDomain(source.getType(), shopFeedDomain);
+    }
+
+    private FeedDomain convertToDataFeedDomain(Feeds data) {
+        return new FeedDomain(
+                convertToFeedDomain(data),
+                data.getLinks().getPagination().getHasNextPage()
+        );
+    }
+
+    private List<DataFeedDomain> convertToFeedDomain(Feeds data) {
+        List<Feed> datumList = data.getData();
         List<DataFeedDomain> dataFeedDomains = new ArrayList<>();
         if (datumList != null) {
             for (int i = 0; i < datumList.size(); i++) {
-                FeedQuery.Data.Datum datum = datumList.get(i);
-                List<ProductFeedDomain> productFeedDomains = convertToProductFeedDomain(datum
-                        .cursor(), datum
-                        .content().products());
-                List<PromotionFeedDomain> promotionFeedDomains =
-                        convertToPromotionFeedDomain(datum.content().promotions());
-                List<OfficialStoreDomain> officialStoreDomains =
-                        convertToOfficialStoresFeedDomain(datum.content().official_store());
-                List<TopPicksDomain> topPicksDomains =
-                        convertToTopPicksDomain(datum.content().top_picks());
-                List<InspirationDomain> inspirationDomains = convertToInspirationDomain(datum
-                        .content().inspirasi());
-                ShopFeedDomain shopFeedDomain = createShopFeedDomain(datum.source().shop());
+                Feed datum = datumList.get(i);
+
+                List<ProductFeedDomain> productFeedDomains =
+                        convertToProductFeedDomain(
+                                datum.getCursor(),
+                                datum.getContent().getProducts()
+                        );
+
+                ShopFeedDomain shopFeedDomain = createShopFeedDomain(datum.getSource().getShop());
+
                 KolPostDomain kolPostDomain = createKolPostDomain(datum);
+
                 KolRecommendationDomain kolRecommendations
-                        = convertToKolRecommendationDomain(datum.content().kolrecommendation());
+                        = convertToKolRecommendationDomain(datum.getContent().getKolrecommendation());
+
                 FavoriteCtaDomain favoriteCta
-                        = convertToFavoriteCtaDomain(datum.content().favorite_cta());
-                KolCtaDomain kolCtaDomain = datum.content().kol_cta() != null ?
-                        convertToKolCtaDomain(datum.content().kol_cta()) :
-                        null;
-                List<Data> topadsData = datum.content().topads() != null ?
-                        convertToTopadsDomain(datum.content().topads()) : null;
+                        = convertToFavoriteCtaDomain(datum.getContent().getFavoriteCta());
+
+                KolCtaDomain kolCtaDomain = convertToKolCtaDomain(datum.getContent().getKolCta());
+
+                List<Data> topadsData = convertToTopadsDomain(datum.getContent().getTopads());
+
+                ProductCommunicationViewModel productCommunicationViewModel
+                        = convertToProductCommunicationViewModel(
+                        datum.getId(),
+                        datum.getContent().getBanner()
+                );
+
+                PollViewModel pollViewModel
+                        = convertToPollViewModel(
+                                datum.getId(),
+                                datum.getContent().getType(),
+                                datum.getContent().getPolling()
+                        );
+
                 ContentFeedDomain contentFeedDomain = createContentFeedDomain(
-                        datum.content(),
+                        datum.getContent(),
                         productFeedDomains,
-                        promotionFeedDomains,
-                        officialStoreDomains,
-                        topPicksDomains,
-                        inspirationDomains,
                         kolPostDomain,
                         kolRecommendations,
                         favoriteCta,
                         kolCtaDomain,
-                        topadsData
+                        topadsData,
+                        productCommunicationViewModel,
+                        pollViewModel
                 );
-                SourceFeedDomain sourceFeedDomain =
-                        createSourceFeedDomain(datum.source(), shopFeedDomain);
 
-                dataFeedDomains.add(createDataFeedDomain(datum,
-                        contentFeedDomain, sourceFeedDomain));
+                SourceFeedDomain sourceFeedDomain =
+                        createSourceFeedDomain(datum.getSource(), shopFeedDomain);
+
+                dataFeedDomains.add(
+                        createDataFeedDomain(datum, contentFeedDomain, sourceFeedDomain)
+                );
             }
         }
         return dataFeedDomains;
     }
 
-    private KolRecommendationDomain convertToKolRecommendationDomain(FeedQuery.Data.Kolrecommendation kolrecommendation) {
+    private KolRecommendationDomain convertToKolRecommendationDomain(KolRecommendedDataType
+                                                                             kolrecommendation) {
         if (kolrecommendation == null) {
             return null;
-        } else {
-            KolRecommendationDomain domain = new KolRecommendationDomain(kolrecommendation
-                    .headerTitle() == null ? "" : kolrecommendation.headerTitle(),
-                    kolrecommendation.exploreLink() == null ? "" : kolrecommendation.exploreLink(),
-                    kolrecommendation.exploreText() == null ? "" : kolrecommendation.exploreText(),
-                    convertToListKolRecommendation(kolrecommendation.kols()));
-            return domain;
         }
+
+        return new KolRecommendationDomain(
+                kolrecommendation.getHeaderTitle() == null ?
+                        "" : kolrecommendation.getHeaderTitle(),
+                kolrecommendation.getExploreLink() == null ?
+                        "" : kolrecommendation.getExploreLink(),
+                kolrecommendation.getExploreText() == null ?
+                        "" : kolrecommendation.getExploreText(),
+                convertToListKolRecommendation(kolrecommendation.getKols())
+        );
 
     }
 
-    private FavoriteCtaDomain convertToFavoriteCtaDomain(FeedQuery.Data.Favorite_cta favoriteCta) {
+    private FavoriteCtaDomain convertToFavoriteCtaDomain(FeedsFavoriteCta favoriteCta) {
         if (favoriteCta == null) {
             return null;
-        } else {
-            FavoriteCtaDomain domain = new FavoriteCtaDomain(favoriteCta
-                    .title_id() == null ? "" : favoriteCta.title_id(),
-                    favoriteCta.subtitle_id() == null ? "" : favoriteCta.subtitle_id());
-            return domain;
         }
+
+        return new FavoriteCtaDomain(
+                    favoriteCta.getTitleId() == null ? "" : favoriteCta.getTitleId(),
+                    favoriteCta.getSubtitleId() == null ? "" : favoriteCta.getSubtitleId()
+        );
     }
 
-    private List<KolRecommendationItemDomain> convertToListKolRecommendation(List<FeedQuery.Data.Kol> kolrecommendation) {
+    private List<KolRecommendationItemDomain> convertToListKolRecommendation(
+            List<FeedKolRecommendedType> kolrecommendation) {
+
         List<KolRecommendationItemDomain> list = new ArrayList<>();
         if (kolrecommendation != null) {
-            for (FeedQuery.Data.Kol recommendation : kolrecommendation) {
+            for (FeedKolRecommendedType recommendation : kolrecommendation) {
                 list.add(new KolRecommendationItemDomain(
-                        recommendation.userName() == null ? "" : recommendation.userName(),
-                        recommendation.userId() == null ? 0 : recommendation.userId(),
-                        recommendation.userPhoto() == null ? "" : recommendation.userPhoto(),
-                        recommendation.isFollowed() == null ? false : recommendation.isFollowed(),
-                        recommendation.info() == null ? "" : recommendation.info(),
-                        recommendation.url() == null ? "" : recommendation.url()
+                        recommendation.getUserName() == null ? "" : recommendation.getUserName(),
+                        recommendation.getUserId() == null ? 0 : recommendation.getUserId(),
+                        recommendation.getUserPhoto() == null ? "" : recommendation.getUserPhoto(),
+                        recommendation.getIsFollowed() == null ?
+                                false : recommendation.getIsFollowed(),
+                        recommendation.getInfo() == null ? "" : recommendation.getInfo(),
+                        recommendation.getUrl() == null ? "" : recommendation.getUrl()
                 ));
             }
         }
         return list;
     }
 
-    private KolPostDomain createKolPostDomain(FeedQuery.Data.Datum datum) {
-        if (datum.content().kolpost() != null) {
-            FeedQuery.Data.Kolpost kolpost = datum.content()
-                    .kolpost();
-            FeedQuery.Data.Content1 content = datum.content()
-                    .kolpost().content().get(0);
+    private KolPostDomain createKolPostDomain(Feed datum) {
+        if (datum.getContent().getKolpost() != null) {
+            FeedKolType kolpost = datum.getContent().getKolpost();
+
+            ContentFeedKol content = kolpost.getContent().get(0);
+
+            TagsFeedKol tags = content.getTags().get(0);
             return new KolPostDomain(
-                    kolpost.id() == null ? 0 : kolpost.id(),
-                    content.imageurl() == null ? "" : content.imageurl(),
-                    kolpost.description() == null ? "" : kolpost.description(),
-                    kolpost.commentCount() == null ? 0 : kolpost.commentCount(),
-                    kolpost.likeCount() == null ? 0 : kolpost.likeCount(),
-                    kolpost.isLiked() == null ? false : kolpost.isLiked(),
-                    kolpost.isFollowed() == null ? false : kolpost.isFollowed(),
-                    kolpost.createTime() == null ? "" : kolpost.createTime(),
-                    content.tags().get(0).price() == null ? "" : content.tags().get(0).price(),
-                    content.tags().get(0).link() == null ? "" : content.tags().get(0).link(),
-                    content.tags().get(0).url() == null ? "" : content.tags().get(0).url(),
-                    kolpost.userName() == null ? "" : kolpost.userName(),
-                    kolpost.userPhoto() == null ? "" : kolpost.userPhoto(),
-                    content.tags().get(0).type() == null ? "" : content.tags().get(0).type(),
-                    content.tags().get(0).caption() == null ? "" : content.tags().get(0).caption(),
-                    content.tags().get(0).id() == null ? 0 : content.tags().get(0).id(),
-                    kolpost.userInfo() == null ? "" : kolpost.userInfo(),
-                    kolpost.headerTitle() == null ? "" : kolpost.headerTitle(),
-                    kolpost.userUrl() == null ? "" : kolpost.userUrl(),
-                    kolpost.userId() == null ? 0 : kolpost.userId(),
-                    kolpost.showComment(),
-                    datum.content().type() == null ? "" : datum.content().type());
-        } else if (datum.content().followedkolpost() != null) {
-            FeedQuery.Data.Followedkolpost kolpost = datum.content()
-                    .followedkolpost();
-            FeedQuery.Data.Content2 content = datum.content()
-                    .followedkolpost().content().get(0);
+                    kolpost.getId() == null ? 0 : kolpost.getId(),
+                    content.getImageurl() == null ? "" : content.getImageurl(),
+                    content.getVideo() == null ? "" : content.getVideo(),
+                    content.getYoutube() == null ? "" : content.getYoutube(),
+                    content.getType() == null ? "" : content.getType(),
+                    kolpost.getDescription() == null ? "" : kolpost.getDescription(),
+                    kolpost.getCommentCount() == null ? 0 : kolpost.getCommentCount(),
+                    kolpost.getLikeCount() == null ? 0 : kolpost.getLikeCount(),
+                    kolpost.getIsLiked() == null ? false : kolpost.getIsLiked(),
+                    kolpost.getIsFollowed() == null ? false : kolpost.getIsFollowed(),
+                    kolpost.getCreateTime() == null ? "" : kolpost.getCreateTime(),
+                    tags.getPrice() == null ? "" : tags.getPrice(),
+                    tags.getLink() == null ? "" : tags.getLink(),
+                    tags.getUrl() == null ? "" : tags.getUrl(),
+                    kolpost.getUserName() == null ? "" : kolpost.getUserName(),
+                    kolpost.getUserPhoto() == null ? "" : kolpost.getUserPhoto(),
+                    tags.getType() == null ? "" : tags.getType(),
+                    tags.getCaption() == null ? "" : tags.getCaption(),
+                    tags.getId() == null ? 0 : tags.getId(),
+                    kolpost.getUserInfo() == null ? "" : kolpost.getUserInfo(),
+                    kolpost.getHeaderTitle() == null ? "" : kolpost.getHeaderTitle(),
+                    kolpost.getUserUrl() == null ? "" : kolpost.getUserUrl(),
+                    kolpost.getUserId() == null ? 0 : kolpost.getUserId(),
+                    kolpost.getShowComment() == null ? true : kolpost.getShowComment(),
+                    kolpost.getShowLike() == null ? true : kolpost.getShowLike(),
+                    datum.isAllowReport(),
+                    datum.getContent().getType() == null ? "" : datum.getContent().getType()
+            );
+
+        } else if (datum.getContent().getFollowedkolpost() != null) {
+            FeedKolType kolpost = datum.getContent().getFollowedkolpost();
+
+            ContentFeedKol content = kolpost.getContent().get(0);
+
+            TagsFeedKol tags = content.getTags().get(0);
             return new KolPostDomain(
-                    kolpost.id() == null ? 0 : kolpost.id(),
-                    content.imageurl() == null ? "" : content.imageurl(),
-                    kolpost.description() == null ? "" : kolpost.description(),
-                    kolpost.commentCount() == null ? 0 : kolpost.commentCount(),
-                    kolpost.likeCount() == null ? 0 : kolpost.likeCount(),
-                    kolpost.isLiked() == null ? false : kolpost.isLiked(),
-                    kolpost.isFollowed() == null ? false : kolpost.isFollowed(),
-                    kolpost.createTime() == null ? "" : kolpost.createTime(),
-                    content.tags().get(0).price() == null ? "" : content.tags().get(0).price(),
-                    content.tags().get(0).link() == null ? "" : content.tags().get(0).link(),
-                    content.tags().get(0).url() == null ? "" : content.tags().get(0).url(),
-                    kolpost.userName() == null ? "" : kolpost.userName(),
-                    kolpost.userPhoto() == null ? "" : kolpost.userPhoto(),
-                    content.tags().get(0).type() == null ? "" : content.tags().get(0).type(),
-                    content.tags().get(0).caption() == null ? "" : content.tags().get(0).caption(),
-                    content.tags().get(0).id() == null ? 0 : content.tags().get(0).id(),
-                    kolpost.userInfo() == null ? "" : kolpost.userInfo(),
-                    "",
-                    kolpost.userUrl() == null ? "" : kolpost.userUrl(),
-                    kolpost.userId() == null ? 0 : kolpost.userId(),
-                    kolpost.showComment(),
-                    datum.content().type() == null ? "" : datum.content().type());
+                    kolpost.getId() == null ? 0 : kolpost.getId(),
+                    content.getImageurl() == null ? "" : content.getImageurl(),
+                    content.getVideo() == null ? "" : content.getVideo(),
+                    content.getYoutube() == null ? "" : content.getYoutube(),
+                    content.getType() == null ? "" : content.getType(),
+                    kolpost.getDescription() == null ? "" : kolpost.getDescription(),
+                    kolpost.getCommentCount() == null ? 0 : kolpost.getCommentCount(),
+                    kolpost.getLikeCount() == null ? 0 : kolpost.getLikeCount(),
+                    kolpost.getIsLiked() == null ? false : kolpost.getIsLiked(),
+                    kolpost.getIsFollowed() == null ? false : kolpost.getIsFollowed(),
+                    kolpost.getCreateTime() == null ? "" : kolpost.getCreateTime(),
+                    tags.getPrice() == null ? "" : tags.getPrice(),
+                    tags.getLink() == null ? "" : tags.getLink(),
+                    tags.getUrl() == null ? "" : tags.getUrl(),
+                    kolpost.getUserName() == null ? "" : kolpost.getUserName(),
+                    kolpost.getUserPhoto() == null ? "" : kolpost.getUserPhoto(),
+                    tags.getType() == null ? "" : tags.getType(),
+                    tags.getCaption() == null ? "" : tags.getCaption(),
+                    tags.getId() == null ? 0 : tags.getId(),
+                    kolpost.getUserInfo() == null ? "" : kolpost.getUserInfo(),
+                    kolpost.getHeaderTitle() == null ? "" : kolpost.getHeaderTitle(),
+                    kolpost.getUserUrl() == null ? "" : kolpost.getUserUrl(),
+                    kolpost.getUserId() == null ? 0 : kolpost.getUserId(),
+                    kolpost.getShowComment() == null ? true : kolpost.getShowComment(),
+                    kolpost.getShowLike() == null ? true : kolpost.getShowLike(),
+                    datum.isAllowReport(),
+                    datum.getContent().getType() == null ? "" : datum.getContent().getType());
         } else {
             return null;
         }
     }
 
-    private List<InspirationDomain> convertToInspirationDomain(List<FeedQuery.Data.Inspirasi> inspirasi) {
-        List<InspirationDomain> listInspiration = new ArrayList<>();
-        if (inspirasi != null) {
-            for (FeedQuery.Data.Inspirasi inspiration : inspirasi) {
-                listInspiration.add(new InspirationDomain(
-                        inspiration.experiment_version(),
-                        inspiration.source(),
-                        inspiration.title(),
-                        inspiration.foreign_title(),
-                        inspiration.widget_url(),
-                        convertToInspirationItemDomainList(inspiration.recommendation())
-                ));
-            }
+    private KolCtaDomain convertToKolCtaDomain(FeedsKolCta kolCta) {
+        if (kolCta == null) {
+            return null;
         }
-        return listInspiration;
-    }
 
-    private List<InspirationItemDomain> convertToInspirationItemDomainList(List<FeedQuery.Data
-            .Recommendation> recommendations) {
-        List<InspirationItemDomain> listItemInspiration = new ArrayList<>();
-        if (recommendations != null) {
-            for (FeedQuery.Data.Recommendation recommendation : recommendations) {
-                listItemInspiration.add(new InspirationItemDomain(
-                        recommendation.id(),
-                        recommendation.name(),
-                        recommendation.url().toString(),
-                        recommendation.click_url(),
-                        recommendation.app_url(),
-                        recommendation.image_url().toString(),
-                        recommendation.price(),
-                        recommendation.recommendation_type(),
-                        String.valueOf(recommendation.price_int())
-                ));
-            }
-        }
-        return listItemInspiration;
-    }
-
-    private List<TopPicksDomain> convertToTopPicksDomain(List<FeedQuery.Data.Top_pick> top_picks) {
-        List<TopPicksDomain> listToppicks = new ArrayList<>();
-        if (top_picks != null) {
-            for (FeedQuery.Data.Top_pick topPick : top_picks) {
-                listToppicks.add(new TopPicksDomain(
-                                topPick.name(),
-                                topPick.url(),
-                                topPick.image_url(),
-                                topPick.image_landscape_url(),
-                                topPick.is_parent()
-                        )
-                );
-            }
-        }
-        return listToppicks;
-    }
-
-    private KolCtaDomain convertToKolCtaDomain(FeedQuery.Data.Kol_cta kol_cta) {
         return new KolCtaDomain(
-                kol_cta.img_header(),
-                kol_cta.click_applink(),
-                kol_cta.button_text(),
-                kol_cta.title(),
-                kol_cta.subtitle());
+                kolCta.getImgHeader(),
+                kolCta.getClickApplink(),
+                kolCta.getButtonText(),
+                kolCta.getTitle(),
+                kolCta.getSubtitle()
+        );
     }
 
-    private List<Data> convertToTopadsDomain(List<FeedQuery.Data.Topad> topads) {
+    private List<Data> convertToTopadsDomain(List<TopAd> topads) {
+        if (topads == null) {
+            return null;
+        }
+
         List<Data> list = new ArrayList<>();
-        if (topads != null) {
-            for (FeedQuery.Data.Topad topad : topads) {
-                try {
-                    list.add(new Data(new JSONObject(new Gson().toJson(topad, FeedQuery.Data
-                            .Topad.class))));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+        for (TopAd topad : topads) {
+            try {
+                list.add(new Data(new JSONObject(new Gson().toJson(topad, TopAd.class))));
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
         return list;
     }
 
-    private DataFeedDomain createDataFeedDomain(FeedQuery.Data.Datum datum,
+    private ProductCommunicationViewModel convertToProductCommunicationViewModel(
+            String activityId,
+            List<FeedBanner> bannerList) {
+        if (bannerList == null || bannerList.isEmpty()) {
+            return null;
+        }
+
+        List<ProductCommunicationItemViewModel> productCommunicationItems = new ArrayList<>();
+        for (FeedBanner banner : bannerList) {
+            String redirectUrl = "";
+
+            if (!TextUtils.isEmpty(banner.getClickApplink())) {
+                redirectUrl = banner.getClickApplink();
+            } else if (!TextUtils.isEmpty(banner.getClickUrl())) {
+                redirectUrl = banner.getClickUrl();
+            }
+
+            productCommunicationItems.add(
+                    new ProductCommunicationItemViewModel(
+                            Integer.valueOf(activityId),
+                            banner.getImgUrl() == null ? "" : banner.getImgUrl(),
+                            redirectUrl
+                    )
+            );
+        }
+
+        return new ProductCommunicationViewModel(productCommunicationItems);
+    }
+
+    private PollViewModel convertToPollViewModel(String activityId, String cardType,
+                                                 FeedPolling polling) {
+        if (polling == null) {
+            return null;
+        }
+
+        boolean voted = polling.getIsAnswered() == null ? false : polling.getIsAnswered();
+
+        List<PollOptionViewModel> optionViewModels = new ArrayList<>();
+        for (PollingOption option: polling.getOptions()) {
+            String weblink = option.getWeblink() == null ? "" : option.getWeblink();
+            String redirectLink = !TextUtils.isEmpty(option.getApplink()) ?
+                    option.getApplink() : weblink;
+
+            optionViewModels.add(
+                    new PollOptionViewModel(
+                            String.valueOf(
+                                    option.getOptionId() == null ? "" : option.getOptionId()
+                            ),
+                            option.getOption() == null ? "" : option.getOption(),
+                            option.getImageOption() == null ? "" : option.getImageOption(),
+                            redirectLink,
+                            String.valueOf(
+                                    option.getPercentage() == null ? 0 : option.getPercentage()
+                            ),
+                            checkIfSelected(
+                                    voted,
+                                    option.getIsSelected() == null ? false : option.getIsSelected()
+                            )
+                    )
+            );
+        }
+
+        boolean isLiked = polling.getRelation() != null
+                && polling.getRelation().getIsLiked() != null
+                && polling.getRelation().getIsLiked();
+
+        return new PollViewModel(
+                polling.getUserId() == null ? 0 : polling.getUserId(),
+                cardType,
+                polling.getTitle() == null ? "" : polling.getTitle(),
+                polling.getUserName() == null ? "" : polling.getUserName(),
+                polling.getUserPhoto() == null ? "" : polling.getUserPhoto(),
+                polling.getUserInfo() == null ? "" : polling.getUserInfo(),
+                polling.getUserUrl() == null ? "" : polling.getUserUrl(),
+                true,
+                polling.getQuestion() == null ? "" : polling.getQuestion(),
+                isLiked,
+                polling.getLikeCount() == null ? 0 : polling.getLikeCount(),
+                polling.getCommentCount() == null ? 0 : polling.getCommentCount(),
+                0,
+                TextUtils.isEmpty(activityId) ? 0 : Integer.valueOf(activityId),
+                TimeConverter.generateTime(context,
+                        polling.getCreateTime() == null ? "" : polling.getCreateTime()
+                ),
+                polling.getShowComment() == null ? true : polling.getShowComment(),
+                polling.getShowLike() == null ? true : polling.getShowLike(),
+                String.valueOf(polling.getPollId() == null ? 0 : polling.getPollId()),
+                String.valueOf(polling.getTotalVoter() == null ? 0 : polling.getTotalVoter()),
+                voted,
+                optionViewModels
+        );
+    }
+
+    private int checkIfSelected(boolean isAnswered, boolean isSelected) {
+        if (isAnswered && isSelected) {
+            return PollOptionViewModel.SELECTED;
+        } else if (isAnswered) {
+            return PollOptionViewModel.UNSELECTED;
+        } else {
+            return PollOptionViewModel.DEFAULT;
+        }
+    }
+
+    private DataFeedDomain createDataFeedDomain(Feed datum,
                                                 ContentFeedDomain contentFeedDomain,
                                                 SourceFeedDomain sourceFeedDomain) {
-        return new DataFeedDomain(datum.id(), datum.create_time(), datum.type(), datum.cursor(),
-                sourceFeedDomain, contentFeedDomain);
+        return new DataFeedDomain(
+                datum.getId(),
+                datum.getCreateTime(),
+                datum.getType(),
+                datum.getCursor(),
+                sourceFeedDomain,
+                contentFeedDomain
+        );
     }
 
 

@@ -15,9 +15,10 @@ import android.view.View;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.core.ForceUpdate;
 import com.tokopedia.core.MaintenancePage;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -27,11 +28,11 @@ import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.posapp.PosAppRouter;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -55,11 +56,9 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
 
 
-
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
     public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
-    public static final String FORCE_HOCKEYAPP = "com.tokopedia.tkpd.FORCE_HOCKEYAPP";
     private static final String TAG = "BaseActivity";
     private static final long DISMISS_TIME = 10000;
     protected Boolean isAllowFetchDepartmentView = false;
@@ -69,7 +68,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     protected GCMHandler gcmHandler;
 
     private Boolean isPause = false;
-    private boolean isDialogNotConnectionShown = false;
     private ErrorNetworkReceiver logoutNetworkReceiver;
     protected GlobalCacheManager globalCacheManager;
     private LocalCacheHandler cache;
@@ -88,47 +86,36 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         globalCacheManager = new GlobalCacheManager();
 
-        HockeyAppHelper.handleLogin(this);
         initShake();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        MainApplication.setActivityState(TkpdState.Application.ACTIVITY);
-        MainApplication.setActivityname(this.getClass().getSimpleName());
-        forceRotation();
-    }
-
-    protected void forceRotation() {
-        if (!MainApplication.isTablet()) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         unregisterForceLogoutReceiver();
-        MainApplication.setActivityState(0);
-        MainApplication.setActivityname(null);
         unregisterShake();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        forceRotation();
+    }
+
+    protected void forceRotation() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        MainApplication.setActivityState(TkpdState.Application.ACTIVITY);
-        MainApplication.setActivityname(this.getClass().getSimpleName());
-        cache = new LocalCacheHandler(this, TkpdCache.STATUS_UPDATE);
-        if (cache.getInt(TkpdCache.Key.STATUS) == TkpdState.UpdateState.MUST_UPDATE) {
-            Intent intent = new Intent(this, ForceUpdate.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(new Intent(this, ForceUpdate.class));
-            finish();
-        }
+//        cache = new LocalCacheHandler(this, TkpdCache.STATUS_UPDATE);
+//        if (cache.getInt(TkpdCache.Key.STATUS) == TkpdState.UpdateState.MUST_UPDATE) {
+//            Intent intent = new Intent(this, ForceUpdate.class);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(new Intent(this, ForceUpdate.class));
+//            finish();
+//        }
 
         initGTM();
         sendScreenAnalytics();
@@ -168,8 +155,10 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                 .map(new Func1<Boolean, Boolean>() {
                     @Override
                     public Boolean call(Boolean b) {
-                        TrackingUtils.eventPushUserID();
-                        TrackingUtils.eventOnline();
+                        TrackingUtils.eventPushUserID(BaseActivity.this,
+                                SessionHandler.getGTMLoginID(MainApplication.getAppContext()));
+                        TrackingUtils.eventOnline(BaseActivity.this,
+                                SessionHandler.getGTMLoginID(MainApplication.getAppContext()));
                         return true;
                     }
                 })
@@ -183,6 +172,8 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             Intent intent;
             if (GlobalConfig.isSellerApp()) {
                 intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeIntent(this);
+            } else if (GlobalConfig.isPosApp()) {
+                intent = ((TkpdCoreRouter) getApplication()).getLoginIntent(this);
             } else {
                 invalidateCategoryCache();
                 intent = HomeRouter.getHomeActivity(this);
@@ -199,7 +190,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         filter.addAction(FORCE_LOGOUT);
         filter.addAction(SERVER_ERROR);
         filter.addAction(TIMEZONE_ERROR);
-        if (!GlobalConfig.isAllowDebuggingTools()) filter.addAction(FORCE_HOCKEYAPP);
         LocalBroadcastManager.getInstance(this).registerReceiver(logoutNetworkReceiver, filter);
     }
 
@@ -261,9 +251,14 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                         sessionHandler.forceLogout();
                         try {
                             ((TkpdCoreRouter) getApplication()).onLogout(getApplicationComponent());
-                        } catch (Exception ex) {}
+                        } catch (Exception ex) {
+                        }
                         if (GlobalConfig.isSellerApp()) {
                             Intent intent = SellerRouter.getActivitySplashScreenActivity(getBaseContext());
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        } else if (GlobalConfig.isPosApp()) {
+                            Intent intent = PosAppRouter.getSplashScreenIntent(getBaseContext(), true);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         } else {
@@ -301,6 +296,10 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         return ((MainApplication) getApplication()).getAppComponent();
     }
 
+    public BaseAppComponent getBaseAppComponent() {
+        return ((MainApplication) getApplication()).getBaseAppComponent();
+    }
+
     protected void setGoldMerchant(ShopModel shopModel) {
         sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
     }
@@ -311,17 +310,17 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         }
     }
 
-    private void registerShake() {
+    protected void registerShake() {
         if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
             String screenName = getScreenName();
             if (screenName == null) {
                 screenName = this.getClass().getSimpleName();
             }
-            ((AbstractionRouter) getApplication()).registerShake(screenName);
+            ((AbstractionRouter) getApplication()).registerShake(screenName, this);
         }
     }
 
-    private void unregisterShake() {
+    protected void unregisterShake() {
         if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
             ((AbstractionRouter) getApplication()).unregisterShake();
         }

@@ -43,11 +43,10 @@
                 android:layout_toRightOf="@+id/gold_merchant"
                 android:layout_toEndOf="@+id/gold_merchant" />
 
-            <ImageView
+            <com.tokopedia.gm.resource.GMImageView
                 android:id="@id/gold_merchant"
                 android:layout_width="@dimen/feed_gold_badge"
                 android:layout_height="@dimen/feed_gold_badge"
-                android:background="@drawable/ic_gold"
                 android:layout_marginRight="@dimen/dp_3"
                 android:layout_alignBottom="@id/shop_name"
                 tools:ignore="RtlHardcoded" />

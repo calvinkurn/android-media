@@ -2,7 +2,6 @@ package com.tokopedia.core.util;
 
 import android.content.Context;
 
-import com.tokopedia.core.R;
 import com.tokopedia.core.drawer2.data.pojo.AbTag;
 import com.tokopedia.core.drawer2.data.pojo.Wallet;
 import com.tokopedia.core.drawer2.data.pojo.topcash.Action;
@@ -11,12 +10,8 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCashAction;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.var.TokoCashTypeDef;
 
 import java.util.ArrayList;
-
-import static com.tokopedia.core.gcm.Constants.Applinks.WALLET_ACTIVATION;
 
 /**
  * Created by nabillasabbaha on 11/13/17.
@@ -32,19 +27,9 @@ public class TokoCashUtil {
         return drawerTokoCash;
     }
 
-    private static HomeHeaderWalletAction convertToActionHomeHeader(TokoCashData tokoCashData) {
+    public static HomeHeaderWalletAction convertToActionHomeHeader(TokoCashData tokoCashData) {
         HomeHeaderWalletAction data = new HomeHeaderWalletAction();
         String appLinkBalance = tokoCashData.getmAppLinks();
-        if (appLinkBalance != null) {
-            if (!appLinkBalance.contains(Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY)) {
-                appLinkBalance = tokoCashData.getAction().getmVisibility() != null
-                        && tokoCashData.getAction().getmVisibility().equals("1")
-                        ? appLinkBalance + "?"
-                        + Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY + "=true"
-                        : appLinkBalance + "?"
-                        + Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY + "=false";
-            }
-        }
         data.setLabelTitle(tokoCashData.getText());
 
         data.setAppLinkBalance(appLinkBalance == null ? "" : appLinkBalance);
@@ -53,8 +38,7 @@ public class TokoCashUtil {
         data.setLabelActionButton(tokoCashData.getAction().getmText());
         data.setVisibleActionButton(tokoCashData.getAction().getmVisibility() != null
                 && tokoCashData.getAction().getmVisibility().equals("1"));
-        data.setTypeAction(tokoCashData.getLink() == TokoCashTypeDef.TOKOCASH_ACTIVE ? HomeHeaderWalletAction.TYPE_ACTION_TOP_UP
-                : HomeHeaderWalletAction.TYPE_ACTION_ACTIVATION);
+        data.setLinked(tokoCashData.getLink());
         data.setAppLinkActionButton(tokoCashData.getAction().getmAppLinks() == null ? ""
                 : tokoCashData.getAction().getmAppLinks());
         data.setRedirectUrlActionButton(tokoCashData.getAction().getRedirectUrl() == null ? ""
@@ -66,16 +50,6 @@ public class TokoCashUtil {
 
     private static DrawerWalletAction convertToActionDrawer(TokoCashData tokoCashData) {
         String appLinkBalance = tokoCashData.getmAppLinks();
-        if (appLinkBalance != null) {
-            if (!appLinkBalance.contains(Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY)) {
-                appLinkBalance = tokoCashData.getAction().getmVisibility() != null
-                        && tokoCashData.getAction().getmVisibility().equals("1")
-                        ? appLinkBalance + "?" +
-                        Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY + "=true"
-                        : appLinkBalance + "?" +
-                        Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY + "=false";
-            }
-        }
         DrawerWalletAction data = new DrawerWalletAction();
         data.setLabelTitle(tokoCashData.getText());
 
@@ -85,7 +59,7 @@ public class TokoCashUtil {
         data.setLabelActionButton(tokoCashData.getAction().getmText());
         data.setVisibleActionButton(tokoCashData.getAction().getmVisibility() != null
                 && tokoCashData.getAction().getmVisibility().equals("1"));
-        data.setTypeAction(tokoCashData.getLink() == TokoCashTypeDef.TOKOCASH_ACTIVE ? DrawerWalletAction.TYPE_ACTION_BALANCE
+        data.setTypeAction(tokoCashData.getLink() ? DrawerWalletAction.TYPE_ACTION_BALANCE
                 : DrawerWalletAction.TYPE_ACTION_ACTIVATION);
         data.setAppLinkActionButton(tokoCashData.getAction().getmAppLinks() == null ? ""
                 : tokoCashData.getAction().getmAppLinks());
@@ -112,16 +86,6 @@ public class TokoCashUtil {
     private static HomeHeaderWalletAction convertToActionHomeHeader(Wallet tokoCashData, Context context) {
         HomeHeaderWalletAction data = new HomeHeaderWalletAction();
         String appLinkBalance = tokoCashData.getApplinks();
-        if (appLinkBalance != null) {
-            if (!appLinkBalance.contains(Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY)) {
-                appLinkBalance = tokoCashData.getAction().getVisibility() != null
-                        && tokoCashData.getAction().getVisibility().equals("1")
-                        ? appLinkBalance + "?"
-                        + Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY + "=true"
-                        : appLinkBalance + "?"
-                        + Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY + "=false";
-            }
-        }
         data.setLabelTitle(tokoCashData.getText());
 
         data.setAppLinkBalance(appLinkBalance == null ? "" : appLinkBalance);
@@ -130,16 +94,15 @@ public class TokoCashUtil {
         data.setLabelActionButton(tokoCashData.getAction().getText());
         data.setVisibleActionButton(tokoCashData.getAction().getVisibility() != null
                 && tokoCashData.getAction().getVisibility().equals("1"));
-        data.setTypeAction(tokoCashData.getLinked() ? HomeHeaderWalletAction.TYPE_ACTION_TOP_UP
-                : HomeHeaderWalletAction.TYPE_ACTION_ACTIVATION);
+        data.setLinked(tokoCashData.getLinked());
 
         if (tokoCashData.getLinked()) {
             data.setAppLinkActionButton(tokoCashData.getAction().getApplinks() == null ? ""
                     : tokoCashData.getAction().getApplinks());
         } else {
-            data.setAppLinkActionButton(WALLET_ACTIVATION);
-            data.setLabelActionButton(context.getString(R.string.title_activation));
-            data.setLabelTitle(context.getString(R.string.label_tokocash));
+            data.setAppLinkActionButton(tokoCashData.getAction().getApplinks());
+            data.setLabelActionButton(tokoCashData.getAction().getText());
+            data.setLabelTitle(tokoCashData.getText());
         }
 
         data.setRedirectUrlActionButton(tokoCashData.getAction().getRedirectUrl() == null ? ""
@@ -160,16 +123,6 @@ public class TokoCashUtil {
 
     private static DrawerWalletAction convertToActionDrawer(Wallet tokoCashData, Context context) {
         String appLinkBalance = tokoCashData.getApplinks();
-        if (appLinkBalance != null) {
-            if (!appLinkBalance.contains(Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY)) {
-                appLinkBalance = tokoCashData.getAction().getVisibility() != null
-                        && tokoCashData.getAction().getVisibility().equals("1")
-                        ? appLinkBalance + "?" +
-                        Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY + "=true"
-                        : appLinkBalance + "?" +
-                        Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY + "=false";
-            }
-        }
         DrawerWalletAction data = new DrawerWalletAction();
         data.setLabelTitle(tokoCashData.getText());
 
@@ -190,9 +143,9 @@ public class TokoCashUtil {
             data.setAppLinkActionButton(tokoCashData.getAction().getApplinks() == null ? ""
                     : tokoCashData.getAction().getApplinks());
         } else {
-            data.setAppLinkActionButton(WALLET_ACTIVATION);
-            data.setLabelActionButton(context.getString(R.string.title_activation));
-            data.setLabelTitle(context.getString(R.string.label_tokocash));
+            data.setAppLinkActionButton(tokoCashData.getAction().getApplinks());
+            data.setLabelActionButton(tokoCashData.getAction().getText());
+            data.setLabelTitle(tokoCashData.getText());
         }
 
         return data;

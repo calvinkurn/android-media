@@ -23,6 +23,7 @@
         <activity
             android:name=".rescenter.create.activity.CreateResCenterActivity"
             android:label="@string/title_activity_create_reso_center"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
             android:name=".rescenter.edit.activity.EditResCenterActivity"
@@ -31,24 +32,6 @@
         <activity
             android:name=".rescenter.shipping.activity.InputShippingActivity"
             android:label="@string/title_activity_input_shipping"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".inboxchat.activity.SendMessageActivity"
-            android:label="@string/title_activity_send_message"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateVisible" />
-        <activity
-            android:name=".inboxchat.activity.InboxChatActivity"
-            android:label="@string/title_inbox_chat"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name=".inboxchat.activity.ChatRoomActivity"
-            android:label="@string/title_inbox_message"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-        <activity
-            android:name=".inboxtalk.activity.InboxTalkActivity"
-            android:label="@string/title_activity_inbox_talk"
             android:screenOrientation="portrait" />
         <activity
             android:name=".rescenter.player.VideoPlayerActivity"
@@ -82,47 +65,42 @@
         <activity
             android:name=".rescenter.createreso.view.activity.ProductProblemListActivity"
             android:label="@string/title_activity_product_problem"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
             android:name=".rescenter.createreso.view.activity.ProductProblemDetailActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".rescenter.createreso.view.activity.SolutionListActivity"
             android:label="@string/title_activity_solution_list"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
             android:name=".rescenter.createreso.view.activity.SolutionDetailActivity"
             android:label="@string/title_activity_solution_detail"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".rescenter.createreso.view.activity.AttachmentActivity"
             android:label="@string/title_activity_attachment"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".rescenter.createreso.view.activity.FreeReturnActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".rescenter.discussion.view.activity.ResCenterDiscussionActivity"
-            android:label="@string/title_activity_rescenter_discussion"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name=".inboxchat.activity.TimeMachineActivity"
-            android:label="@string/title_time_machine_message"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
             android:name=".rescenter.inboxv2.view.activity.ResoInboxActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".rescenter.inboxv2.view.activity.InboxFilterActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".rescenter.detailv2.view.activity.DetailResChatActivity"
             android:label="@string/title_activity_rescenter_discussion"
@@ -138,23 +116,7 @@
             android:label="@string/title_track_shipping"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name=".inboxchat.activity.ChatMarketingThumbnailActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name=".inboxchat.activity.TemplateChatActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".inboxchat.activity.EditTemplateChatActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".attachproduct.view.activity.AttachProductActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".attachinvoice.view.activity.AttachInvoiceActivity"
-            android:screenOrientation="portrait" />
+
         <!-- ======================================================= -->
         <!-- SERVICES REGISTRY -->
         <!-- ======================================================= -->
@@ -164,9 +126,6 @@
             android:exported="false" />
         <service
             android:name=".rescenter.create.service.CreateResCenterService"
-            android:exported="false" />
-        <service
-            android:name="com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService"
             android:exported="false" />
 
     </application>

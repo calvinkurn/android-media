@@ -5,6 +5,7 @@ import com.tokopedia.digital.common.data.source.StatusDataSource;
 import com.tokopedia.digital.widget.view.model.category.Category;
 import com.tokopedia.digital.widget.view.model.status.Status;
 
+import java.util.HashMap;
 import java.util.List;
 
 import rx.Observable;
@@ -30,8 +31,8 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
     }
 
     @Override
-    public Observable<List<Category>> getObservableCategoryList() {
-        return categoryListDataSource.getCategoryList();
+    public Observable<List<Category>> getObservableCategoryList(HashMap<String, Object> parameters) {
+        return categoryListDataSource.getCategoryList(parameters);
     }
 
 }

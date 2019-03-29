@@ -11,6 +11,8 @@ import com.tokopedia.digital.widget.view.model.status.Status;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,8 @@ import rx.functions.Func1;
 public class DigitalWidgetUseCase extends UseCase<List<Category>> {
 
     private static final String TAG = DigitalWidgetUseCase.class.getSimpleName();
+    private static final String PARAM_DEVICE_ID = "device_id";
+    private static final String DEFAULT_DEVICE_ID = "5";
 
     private Context context;
     private DigitalWidgetRepository digitalWidgetRepository;
@@ -37,16 +41,13 @@ public class DigitalWidgetUseCase extends UseCase<List<Category>> {
     @Override
     public Observable<List<Category>> createObservable(RequestParams requestParams) {
         return digitalWidgetRepository.getObservableStatus()
-                .flatMap(new Func1<Status, Observable<List<Category>>>() {
-                    @Override
-                    public Observable<List<Category>> call(Status status) {
-                        if (status.isMaintenance() || !isVersionMatch(status)) {
-                            // failed
-                            List<Category> categories = new ArrayList<>();
-                            return Observable.just(categories);
-                        } else {
-                            return digitalWidgetRepository.getObservableCategoryList();
-                        }
+                .flatMap((Func1<Status, Observable<List<Category>>>) status -> {
+                    if (status.isMaintenance() || !isVersionMatch(status)) {
+                        // failed
+                        List<Category> categories = new ArrayList<>();
+                        return Observable.just(categories);
+                    } else {
+                        return digitalWidgetRepository.getObservableCategoryList(requestParams.getParameters());
                     }
                 });
     }
@@ -67,4 +68,10 @@ public class DigitalWidgetUseCase extends UseCase<List<Category>> {
         return pInfo.versionCode;
     }
 
+    @Nullable
+    public RequestParams createRequest() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(PARAM_DEVICE_ID, DEFAULT_DEVICE_ID);
+        return requestParams;
+    }
 }

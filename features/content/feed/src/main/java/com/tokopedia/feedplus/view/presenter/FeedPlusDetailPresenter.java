@@ -1,15 +1,13 @@
 package com.tokopedia.feedplus.view.presenter;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.feedplus.domain.usecase.AddWishlistUseCase;
-import com.tokopedia.feedplus.domain.usecase.RemoveWishlistUseCase;
-import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsDetailUseCase;
-import com.tokopedia.feedplus.view.listener.WishlistListener;
-import com.tokopedia.feedplus.view.subscriber.AddWishlistSubscriber;
+import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.subscriber.FeedDetailSubscriber;
-import com.tokopedia.feedplus.view.subscriber.RemoveWishlistSubscriber;
+import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import javax.inject.Inject;
 
@@ -20,27 +18,28 @@ import javax.inject.Inject;
 public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.View>
         implements FeedPlusDetail.Presenter {
 
+
+    private final AddWishListUseCase addWishListUseCase;
+    private final RemoveWishListUseCase removeWishListUseCase;
+    private WishListActionListener wishListActionListener;
+
     private final GetFeedsDetailUseCase getFeedsDetailUseCase;
-    private final AddWishlistUseCase addWishlistUseCase;
-    private final RemoveWishlistUseCase removeWishlistUseCase;
-    private final SessionHandler sessionHandler;
-    private FeedPlusDetail.View viewListener;
-    private WishlistListener wishlistListener;
+    private final UserSessionInterface userSession;
+
 
     @Inject
-    FeedPlusDetailPresenter(GetFeedsDetailUseCase getFeedsDetailUseCase,
-                            AddWishlistUseCase addWishlistUseCase,
-                            RemoveWishlistUseCase removeWishlistUseCase,
-                            SessionHandler sessionHandler) {
+    public FeedPlusDetailPresenter(GetFeedsDetailUseCase getFeedsDetailUseCase,
+                            AddWishListUseCase addWishlistUseCase,
+                            RemoveWishListUseCase removeWishlistUseCase, UserSessionInterface userSession) {
         this.getFeedsDetailUseCase = getFeedsDetailUseCase;
-        this.addWishlistUseCase = addWishlistUseCase;
-        this.removeWishlistUseCase = removeWishlistUseCase;
-        this.sessionHandler = sessionHandler;
+        this.addWishListUseCase = addWishlistUseCase;
+        this.removeWishListUseCase = removeWishlistUseCase;
+        this.userSession = userSession;
     }
 
-    public void attachView(FeedPlusDetail.View view, WishlistListener wishlistListener) {
-        this.viewListener = view;
-        this.wishlistListener = wishlistListener;
+    @Override
+    public void attachView(FeedPlusDetail.View view, WishListActionListener wishlistListener) {
+        this.wishListActionListener = wishlistListener;
         super.attachView(view);
     }
 
@@ -48,33 +47,43 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
     public void detachView() {
         super.detachView();
         getFeedsDetailUseCase.unsubscribe();
-        addWishlistUseCase.unsubscribe();
-        removeWishlistUseCase.unsubscribe();
+        if (removeWishListUseCase != null) {
+            removeWishListUseCase.unsubscribe();
+        }
+
+        if (addWishListUseCase != null) {
+            addWishListUseCase.unsubscribe();
+        }
     }
 
+    @Override
     public void getFeedDetail(String detailId, int page) {
-        viewListener.showLoading();
+        if (page == 1) {
+            getView().showLoading();
+        } else {
+            getView().showLoadingMore();
+        }
+
         getFeedsDetailUseCase.execute(
-                getFeedsDetailUseCase.getFeedDetailParam(
-                        sessionHandler.getLoginID(),
-                        detailId,
-                        page),
-                new FeedDetailSubscriber(viewListener));
+                GetFeedsDetailUseCase.getFeedDetailParam(userSession.getUserId(), detailId, page),
+                new FeedDetailSubscriber(getView(), page)
+        );
     }
 
+    @Override
     public void addToWishlist(int adapterPosition, String productId) {
-        viewListener.showLoadingProgress();
-        addWishlistUseCase.execute(
-                AddWishlistUseCase.generateParam(productId, sessionHandler),
-                new AddWishlistSubscriber(wishlistListener, adapterPosition));
+        getView().showLoadingProgress();
+
+        addWishListUseCase.createObservable(productId,
+                userSession.getUserId(), wishListActionListener);
     }
 
 
     @Override
     public void removeFromWishlist(int adapterPosition, String productId) {
-        viewListener.showLoadingProgress();
-        removeWishlistUseCase.execute(
-                RemoveWishlistUseCase.generateParam(productId, sessionHandler),
-                new RemoveWishlistSubscriber(wishlistListener, adapterPosition));
+        getView().showLoadingProgress();
+
+        removeWishListUseCase.createObservable(productId,
+                userSession.getUserId(), wishListActionListener);
     }
 }

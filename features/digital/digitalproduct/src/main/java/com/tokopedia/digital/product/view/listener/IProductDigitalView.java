@@ -1,12 +1,15 @@
 package com.tokopedia.digital.product.view.listener;
 
 import android.app.Activity;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
-import com.tokopedia.digital.cart.listener.IBaseView;
+
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
+import com.tokopedia.digital.newcart.presentation.compoundview.listener.IBaseView;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
+import com.tokopedia.digital.product.view.model.GuideData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
+import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 
 import java.util.List;
@@ -20,6 +23,8 @@ public interface IProductDigitalView extends IBaseView {
     void renderBannerListData(String title, List<BannerData> bannerDataList);
 
     void renderOtherBannerListData(String title, List<BannerData> otherBannerDataList);
+
+    void renderGuideListData(List<GuideData> guideDataList);
 
     void renderStateSelectedAllData();
 
@@ -36,6 +41,8 @@ public interface IProductDigitalView extends IBaseView {
 
     void renderErrorNoConnectionProductDigitalData(String message);
 
+    void stopTrace();
+
     void renderErrorTimeoutConnectionProductDigitalData(String message);
 
     CategoryData getCategoryDataState();
@@ -43,6 +50,8 @@ public interface IProductDigitalView extends IBaseView {
     List<BannerData> getBannerDataListState();
 
     List<BannerData> getOtherBannerDataListState();
+
+    List<GuideData> getGuideDataListState();
 
     HistoryClientNumber getHistoryClientNumberState();
 
@@ -56,10 +65,10 @@ public interface IProductDigitalView extends IBaseView {
 
     void registerUssdReciever();
 
-    void renderPulsaBalance(PulsaBalance pulsaBalance,int selectedSim);
+    void renderPulsaBalance(PulsaBalance pulsaBalance, int selectedSim);
 
     void showPulsaBalanceError(String message);
-    
+
     void showMessageAlert(String message,String title);
 
     void renderCategory(BaseDigitalProductView digitalProductView, CategoryData categoryData, HistoryClientNumber historyClientNumber);
@@ -76,4 +85,13 @@ public interface IProductDigitalView extends IBaseView {
 
     boolean isDigitalSmartcardEnabled();
 
+    void renderPromoGuideTab(int tabCount, String firstTab);
+
+    void hidePromoGuideTab();
+
+    void showPromoGuideTab();
+
+    void goToCartPage(ProductDigitalData productDigitalData);
+
+    void showPromoContainer();
 }

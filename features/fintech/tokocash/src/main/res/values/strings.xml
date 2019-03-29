@@ -52,6 +52,7 @@
     <string name="limit_balance_tokocash">Limit: %s/bulan</string>
     <string name="label_instant_payment_digital">Bayar Instan</string>
     <string name="label_btn_buy_digital">Beli</string>
+    <string name="additional_info_move_to_saldo">Dana dapat dipindahkan ke Akun Bank, melalui halaman Saldo Tokopedia.</string>
 
     <!-- scan QR Payment -->
     <string name="title_input_nominal">Nominal Pembayaran</string>
@@ -96,6 +97,7 @@
     <string name="tokocash_toolbar_verification">Verifikasi Nomor Handphone</string>
     <string name="tokocash_toolbar_success_activation">Aktivasi TokoCash Berhasil</string>
     <string name="help_general_tokocash">Bantuan TokoCash</string>
+    <string name="title_otp">Masukkan Kode Verifikasi :</string>
 
 
     <!-- Auto Sweep Strings (MF=Mutual Fund)-->
@@ -122,5 +124,64 @@
     <string name="mf_action_goto_dashboard">Ke Dashboard Reksadana</string>
     <string name="mf_action_retry">Mencoba kembali</string>
     <string name="mf_error_min_auto_sweep_limit">Limit minimum</string>
+
+
+    <!-- Permission for Request Permission Util -->
+    <string name="dialog_cancel">BATAL</string>
+    <string name="permission_camera">Kamera</string>
+    <string name="permission_read_storage">Media penyimpanan</string>
+    <string name="permission_write_storage">Media penyimpanan</string>
+    <string name="permission_contacts">Kontak</string>
+    <string name="permission_location">Lokasi</string>
+    <string name="permission_accounts">Akun</string>
+    <string name="permission_phone">Telepon</string>
+
+    <string name="need_permission_camera">Aplikasi ini membutuhkan izin untuk mengakses Kamera. Perbolehkan?</string>
+    <string name="need_permission_storage">Aplikasi ini membutuhkan izin untuk mengakses Media Penyimpanan. Perbolehkan?</string>
+    <string name="need_permission_multi">Aplikasi ini membutuhkan beberapa izin. Perbolehkan?</string>
+    <string name="need_permission_contacts">Aplikasi ini membutuhkan izin untuk mengakses Kontak. Perbolehkan?</string>
+    <string name="need_permission_location">Aplikasi ini membutuhkan izin untuk mengakses Lokasi. Perbolehkan?</string>
+    <string name="need_permission_get_accounts">Aplikasi ini membutuhkan izin untuk mengakses akun. Perbolehkan?</string>
+    <string name="need_permission_SMS">Aplikasi ini membutuhkan izin membaca SMS Verifikasi untuk mempermudah verifikasi. Perbolehkan?</string>
+    <string name="need_permission_send_SMS">Aplikasi ini membutuhkan izin mengirim SMS. Perbolehkan?</string>
+    <string name="need_permission_Phone">need to add message for USSD call</string>
+
+    <string name="permission_camera_denied">Anda tidak memberikan izin akses untuk Kamera.</string>
+    <string name="permission_storage_denied">Anda tidak memberikan izin akses untuk Media Penyimpanan.</string>
+    <string name="permission_multi_denied">Anda tidak memberikan izin akses</string>
+    <string name="permission_contacts_denied">Anda tidak memberikan izin akses untuk Kontak.</string>
+    <string name="permission_location_denied">Anda tidak memberikan izin akses untuk Lokasi.</string>
+    <string name="permission_get_accounts_denied">Anda tidak memberikan izin akses untuk mengambil akun.</string>
+    <string name="permission_sms_denied">Anda tidak memberikan izin akses untuk membaca sms.</string>
+    <string name="permission_send_sms_denied">Anda tidak memberikan izin akses untuk mengirim sms.</string>
+    <string name="permission_phone_denied">Anda tidak memberikan izin akses untuk telepon.</string>
+
+    <string name="permission_camera_neverask">Anda tidak memberikan izin akses untuk Kamera. Anda bisa memberikan izin melalui Pengaturan.</string>
+    <string name="permission_storage_neverask">Anda tidak memberikan izin akses untuk Media Penyimpanan. Anda bisa memberikan izin melalui Pengaturan.</string>
+    <string name="permission_multi_neverask">Anda tidak memberikan izin akses. Anda bisa memberikan izin melalui Pengaturan.</string>
+    <string name="permission_contacts_neverask">Anda tidak memberikan izin akses untuk Kontak. Anda bisa memberikan izin melalui Pengaturan.</string>
+    <string name="permission_location_neverask">Anda tidak memberikan izin akses untuk Lokasi. Anda bisa memberikan izin melalui Pengaturan.</string>
+    <string name="permission_get_accounts_neverask">Anda tidak memberikan izin akses untuk mengambil akun. Anda bisa memberikan izin melalui Pengaturan.</string>
+    <string name="permission_sms_neverask">Anda tidak memberikan izin akses untuk membaca sms. Anda bisa memberikan izin melalui Pengaturan.</string>
+    <string name="permission_send_sms_neverask">Anda tidak memberikan izin akses untuk mengirim sms. Anda bisa memberikan izin melalui Pengaturan.</string>
+    <string name="permission_phone_neverask">Anda tidak memberikan izin akses untuk telepon. Anda bisa memberikan izin melalui Pengaturan.</string>
+
+    
+    <!-- OVO Activation-->
+    <string name="title_header_ovo">TokoCash to OVO</string>
+    <string name="title_header_activation_ovo">Aktivasi OVO</string>
+    <string name="announcement_ovo_title">TokoCash Kini Berpindah ke OVO</string>
+    <string name="announcement_activation_ovo_title">Aktivasi OVO Sekarang</string>
+    <string name="announcement_ovo_description">TokoCash sudah tidak bisa lagi digunakan, segera aktifkan OVO Anda untuk transaksi lebih cepat dan praktis!</string>
+    <string name="announcement_ovo_second_desc">Jangan khawatir, TokoCash Anda tetap aman &amp; akan otomatis berpindah ke OVO setelah aktivasi selesai.</string>
+    <string name="announcement_activaiton_ovo_description">Aktifkan OVO di akun Tokopedia Anda untuk kemudahan dan keuntungan yang lebih banyak!</string>
+    <string name="announcement_activation_ovo_second_desc">Dapatkan juga kenyamanan bertransaksi di semua merchant yang telah bekerja sama dengan OVO, dengan penawaran yang menarik.</string>
+    <string name="announcement_ovo_btn_activation">Aktifkan OVO Sekarang</string>
+    <string name="announcement_ovo_btn_learn_more">Pelajari Lebih Lanjut</string>
+    <string name="announcement_ovo_text_tnc">Lihat syarat dan ketentuan OVO di sini</string>
+    <string name="activation_ovo_title">Aktivasi OVO</string>
+    <string name="activation_ovo_desc">Akun OVO dengan nomor %s akan dibuat untuk Anda. \n\nJika ingin menggunakan akun OVO dengan nomor ponsel lain, silakan ubah nomor ponsel yang terdaftar di Tokopedia terlebih dahulu.</string>
+    <string name="activation_ovo_btn_activate">Buat Akun OVO Baru</string>
+    <string name="activation_ovo_btn_change_number">Ubah Nomor Ponsel Sekarang</string>
 
 </resources>

@@ -11,9 +11,11 @@ import java.util.List;
  */
 
 public class ProductDigitalData implements Parcelable {
+
     private CategoryData categoryData;
     private List<BannerData> bannerDataList = new ArrayList<>();
     private List<BannerData> otherBannerDataList = new ArrayList<>();
+    private List<GuideData> guideDataList = new ArrayList<>();
     private HistoryClientNumber historyClientNumber;
 
     private ProductDigitalData(Builder builder) {
@@ -21,8 +23,42 @@ public class ProductDigitalData implements Parcelable {
         setBannerDataList(builder.bannerDataList);
         setOtherBannerDataList(builder.otherBannerDataList);
         setHistoryClientNumber(builder.historyClientNumber);
+        setGuideDataList(builder.guideDataList);
     }
 
+    protected ProductDigitalData(Parcel in) {
+        categoryData = in.readParcelable(CategoryData.class.getClassLoader());
+        bannerDataList = in.createTypedArrayList(BannerData.CREATOR);
+        otherBannerDataList = in.createTypedArrayList(BannerData.CREATOR);
+        guideDataList = in.createTypedArrayList(GuideData.CREATOR);
+        historyClientNumber = in.readParcelable(HistoryClientNumber.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(categoryData, flags);
+        dest.writeTypedList(bannerDataList);
+        dest.writeTypedList(otherBannerDataList);
+        dest.writeTypedList(guideDataList);
+        dest.writeParcelable(historyClientNumber, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ProductDigitalData> CREATOR = new Creator<ProductDigitalData>() {
+        @Override
+        public ProductDigitalData createFromParcel(Parcel in) {
+            return new ProductDigitalData(in);
+        }
+
+        @Override
+        public ProductDigitalData[] newArray(int size) {
+            return new ProductDigitalData[size];
+        }
+    };
 
     public CategoryData getCategoryData() {
         return categoryData;
@@ -48,6 +84,14 @@ public class ProductDigitalData implements Parcelable {
         this.otherBannerDataList = otherBannerDataList;
     }
 
+    public List<GuideData> getGuideDataList() {
+        return guideDataList;
+    }
+
+    public void setGuideDataList(List<GuideData> guideDataList) {
+        this.guideDataList = guideDataList;
+    }
+
     public HistoryClientNumber getHistoryClientNumber() {
         return historyClientNumber;
     }
@@ -56,46 +100,14 @@ public class ProductDigitalData implements Parcelable {
         this.historyClientNumber = historyClientNumber;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.categoryData, flags);
-        dest.writeTypedList(this.bannerDataList);
-        dest.writeTypedList(this.otherBannerDataList);
-        dest.writeParcelable(this.historyClientNumber, flags);
-    }
-
     public ProductDigitalData() {
     }
-
-    protected ProductDigitalData(Parcel in) {
-        this.categoryData = in.readParcelable(CategoryData.class.getClassLoader());
-        this.bannerDataList = in.createTypedArrayList(BannerData.CREATOR);
-        this.otherBannerDataList = in.createTypedArrayList(BannerData.CREATOR);
-        this.historyClientNumber = in.readParcelable(HistoryClientNumber.class.getClassLoader());
-    }
-
-    public static final Creator<ProductDigitalData> CREATOR = new Creator<ProductDigitalData>() {
-        @Override
-        public ProductDigitalData createFromParcel(Parcel source) {
-            return new ProductDigitalData(source);
-        }
-
-        @Override
-        public ProductDigitalData[] newArray(int size) {
-            return new ProductDigitalData[size];
-        }
-    };
-
 
     public static final class Builder {
         private CategoryData categoryData;
         private List<BannerData> bannerDataList;
         private List<BannerData> otherBannerDataList;
+        private List<GuideData> guideDataList;
         private HistoryClientNumber historyClientNumber;
 
         public Builder() {
@@ -121,8 +133,14 @@ public class ProductDigitalData implements Parcelable {
             return this;
         }
 
+        public Builder guideDataList(List<GuideData> val) {
+            guideDataList = val;
+            return this;
+        }
+
         public ProductDigitalData build() {
             return new ProductDigitalData(this);
         }
     }
+
 }

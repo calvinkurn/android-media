@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">district_recommendation</string>
     <string name="title_activity_search_address">Tulis Kota/Kecamatan</string>
+
+    <string name="hint_district_recommendation_search">Tulis min 3 karakter</string>
+    <string name="message_advice_search_address">Untuk mempersingkat waktu, isi dengan kecamatan tujuan pengiriman</string>
+    <string name="message_search_address_no_result">Tidak menemukan data, harap mencari berdasarkan kota, kabupaten atau kecamatan Anda</string>
+    <string name="message_type_postal_code">Silakan ketik kode pos Anda jika tidak tercantum di sini</string>
+
 </resources>

@@ -19,6 +19,9 @@ public abstract class SearchSectionFragmentPresenterImpl<V extends SearchSection
 
     @Override
     public void requestDynamicFilter(HashMap<String, String> additionalParams) {
+        if (getView() == null) {
+            return;
+        }
         RequestParams params = getDynamicFilterParam();
         params = enrichWithFilterAndSortParams(params);
         params = enrichWithAdditionalParams(params, additionalParams);

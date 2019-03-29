@@ -1,8 +1,8 @@
 package com.tokopedia.kol;
 
 import android.app.Activity;
-
-import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber;
+import android.content.Context;
+import android.content.Intent;
 
 import okhttp3.Interceptor;
 
@@ -11,17 +11,13 @@ import okhttp3.Interceptor;
  */
 
 public interface KolRouter {
-    String getKolCommentArgsPosition();
-
-    String getKolCommentArgsTotalComment();
-
-    void doLikeKolPost(int id, LikeKolPostSubscriber likeKolPostSubscriber);
-
-    void doUnlikeKolPost(int id, LikeKolPostSubscriber likeKolPostSubscriber);
-
     void actionApplinkFromActivity(Activity activity, String linkUrl);
 
     void openRedirectUrl(Activity activity, String url);
 
     Interceptor getChuckInterceptor();
+
+    Intent getTopProfileIntent(Context context, String userId);
+
+    Intent getLoginIntent(Context context);
 }

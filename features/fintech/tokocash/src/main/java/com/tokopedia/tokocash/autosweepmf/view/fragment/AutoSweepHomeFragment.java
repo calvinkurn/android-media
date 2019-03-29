@@ -27,11 +27,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
+import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.autosweepmf.view.activity.SetAutoSweepLimitActivity;
 import com.tokopedia.tokocash.autosweepmf.view.contract.AutoSweepHomeContract;
 import com.tokopedia.tokocash.autosweepmf.view.model.AutoSweepDetail;
@@ -39,11 +39,9 @@ import com.tokopedia.tokocash.autosweepmf.view.model.AutoSweepLimit;
 import com.tokopedia.tokocash.autosweepmf.view.presenter.AutoSweepHomePagePresenter;
 import com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant;
 import com.tokopedia.tokocash.autosweepmf.view.util.MfUtils;
-import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.common.di.TokoCashComponent;
 
 import javax.inject.Inject;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Landing page for auto sweep features which can be added into any activity or fragment
@@ -300,7 +298,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
                 getArguments().getString(CommonConstant.EXTRA_AVAILABLE_TOKOCASH,
                         CommonConstant.NOT_AVAILABLE));
         extras.putLong(CommonConstant.EXTRA_AUTO_SWEEP_LIMIT, mValueAutoSweepLimit);
-        startActivity(SetAutoSweepLimitActivity.getCallingIntent(getApplicationContext(),
+        startActivity(SetAutoSweepLimitActivity.getCallingIntent(getActivityContext(),
                 extras));
     }
 
@@ -328,7 +326,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
 
     @Override
     public void openWebView(String url) {
-        Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(getActivityContext(), url);
+        Intent intent = ((TokoCashRouter) getActivity().getApplication()).getWebviewActivityWithIntent(getActivityContext(), url);
         startActivity(intent);
     }
 
@@ -357,7 +355,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
 
     @Override
     public Context getAppContext() {
-        return getApplicationContext();
+        return getActivityContext();
     }
 
     @Override

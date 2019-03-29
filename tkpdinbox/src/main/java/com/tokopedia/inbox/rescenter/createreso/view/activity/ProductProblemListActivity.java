@@ -1,16 +1,13 @@
 package com.tokopedia.inbox.rescenter.createreso.view.activity;
 
-import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
-import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemListActivityPresenter;
-import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemListActivityPresenterImpl;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.inbox.rescenter.createreso.view.fragment.ChooseProductAndProblemFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
 
 import java.util.ArrayList;
@@ -19,76 +16,28 @@ import java.util.ArrayList;
  * Created by yoasfs on 14/08/17.
  */
 
-public class ProductProblemListActivity extends BasePresenterActivity<ProductProblemListActivityPresenter> implements ProductProblemListActivityView, HasComponent {
+public class ProductProblemListActivity extends BaseSimpleActivity {
 
     private static final String KEY_PARAM_PASS_DATA = "pass_data";
     public static final String PROBLEM_RESULT_LIST_DATA = "problem_result_list_data";
 
-
-    ProductProblemListViewModel productProblemListViewModel;
-    ArrayList<ProblemResult> problemResultList = new ArrayList<>();
-
-    @Override
-    protected void setupURIPass(Uri data) {
-
+    public static Intent getInstance(Context context,
+                                     ProductProblemListViewModel productProblemListViewModel,
+                                     ArrayList<ComplaintResult> complaintResults) {
+        Intent intent = new Intent(context, ProductProblemListActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(KEY_PARAM_PASS_DATA, productProblemListViewModel);
+        bundle.putParcelableArrayList(PROBLEM_RESULT_LIST_DATA, complaintResults);
+        intent.putExtras(bundle);
+        return intent;
     }
 
     @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
+    protected Fragment getNewFragment() {
+        return ChooseProductAndProblemFragment.newInstance(
+                (ProductProblemListViewModel) getIntent().getExtras().getParcelable(KEY_PARAM_PASS_DATA),
+                getIntent().getExtras().getParcelableArrayList(PROBLEM_RESULT_LIST_DATA));
     }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-        productProblemListViewModel = (ProductProblemListViewModel) extras.get(KEY_PARAM_PASS_DATA);
-        problemResultList = extras.getParcelableArrayList(PROBLEM_RESULT_LIST_DATA);
-    }
-
-    @Override
-    protected void initialPresenter() {
-        presenter = new ProductProblemListActivityPresenterImpl(this, this);
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_product_problem;
-    }
-
-    @Override
-    protected void initView() {
-        presenter.initFragment(productProblemListViewModel, problemResultList);
-
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
-    public void inflateFragment(Fragment fragment, String TAG) {
-        if (getFragmentManager().findFragmentByTag(TAG) == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, fragment, TAG)
-                    .commit();
-        }
-    }
-
-    @Override
-    public Object getComponent() {
-        return getApplicationComponent();
-    }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

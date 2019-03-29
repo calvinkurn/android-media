@@ -2,6 +2,8 @@ package com.tokopedia.transactiondata.entity.response.cartlist;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.GoldMerchant;
+import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.OfficialStore;
 
 /**
  * @author anggaprasetiyo on 31/01/18.
@@ -16,13 +18,13 @@ public class Shop {
     private int userId;
     @SerializedName("shop_name")
     @Expose
-    private String shopName;
+    private String shopName = "";
     @SerializedName("shop_image")
     @Expose
-    private String shopImage;
+    private String shopImage = "";
     @SerializedName("shop_url")
     @Expose
-    private String shopUrl;
+    private String shopUrl = "";
     @SerializedName("shop_status")
     @Expose
     private int shopStatus;
@@ -43,25 +45,25 @@ public class Shop {
     private int addressId;
     @SerializedName("postal_code")
     @Expose
-    private String postalCode;
+    private String postalCode = "";
     @SerializedName("latitude")
     @Expose
-    private String latitude;
+    private String latitude = "";
     @SerializedName("longitude")
     @Expose
-    private String longitude;
+    private String longitude = "";
     @SerializedName("district_id")
     @Expose
     private int districtId;
     @SerializedName("district_name")
     @Expose
-    private String districtName;
+    private String districtName = "";
     @SerializedName("origin")
     @Expose
     private int origin;
     @SerializedName("address_street")
     @Expose
-    private String addressStreet;
+    private String addressStreet = "";
     @SerializedName("province_id")
     @Expose
     private int provinceId;
@@ -70,7 +72,13 @@ public class Shop {
     private int cityId;
     @SerializedName("city_name")
     @Expose
-    private String cityName;
+    private String cityName = "";
+    @SerializedName("gold_merchant")
+    @Expose
+    private GoldMerchant goldMerchant = new GoldMerchant();
+    @SerializedName("official_store")
+    @Expose
+    private OfficialStore officialStore = new OfficialStore();
 
     public int getShopId() {
         return shopId;
@@ -154,5 +162,13 @@ public class Shop {
 
     public String getCityName() {
         return cityName;
+    }
+
+    public GoldMerchant getGoldMerchant() {
+        return goldMerchant;
+    }
+
+    public OfficialStore getOfficialStore() {
+        return officialStore;
     }
 }

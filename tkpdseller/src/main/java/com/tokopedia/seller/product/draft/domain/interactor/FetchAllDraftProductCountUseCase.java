@@ -4,7 +4,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
+import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
 
 import javax.inject.Inject;
 

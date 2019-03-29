@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.comment.view.subscriber;
 
+import com.tokopedia.kol.common.network.GraphqlErrorException;
 import com.tokopedia.kol.common.network.GraphqlErrorHandler;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments;
@@ -26,9 +27,15 @@ public class GetKolCommentFirstTimeSubscriber extends rx.Subscriber<KolComments>
     @Override
     public void onError(Throwable e) {
         viewListener.removeLoading();
-        viewListener.onErrorGetCommentsFirstTime(
-                GraphqlErrorHandler.getErrorMessage(viewListener.getContext(), e)
-        );
+        if (e instanceof GraphqlErrorException) {
+            viewListener.onServerErrorGetCommentsFirstTime(
+                    GraphqlErrorHandler.getErrorMessage(viewListener.getContext(), e)
+            );
+        } else {
+            viewListener.onErrorGetCommentsFirstTime(
+                    GraphqlErrorHandler.getErrorMessage(viewListener.getContext(), e)
+            );
+        }
     }
 
     @Override

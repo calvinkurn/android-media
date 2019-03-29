@@ -5,15 +5,17 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.view.model.StateTypeBasedModel;
+import com.tokopedia.topads.common.view.adapter.TopAdsListAdapterTypeFactory;
 
 /**
  * Created by zulfikarrahman on 12/14/16.
  */
 
-public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable {
+public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable, Visitable<TopAdsListAdapterTypeFactory<GroupAd>> {
 
     public static final int TYPE = 19294123;
     @SerializedName("group_id")
@@ -386,4 +388,9 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable {
             return new GroupAd[size];
         }
     };
+
+    @Override
+    public int type(TopAdsListAdapterTypeFactory<GroupAd> typeFactory) {
+        return typeFactory.type(this);
+    }
 }

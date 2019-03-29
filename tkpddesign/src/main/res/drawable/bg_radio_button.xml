@@ -6,7 +6,7 @@
         android:state_pressed="true"/>
     <item
         android:drawable="@drawable/bg_checkbox_selected"
-        android:state_pressed="true"/>
+        android:state_pressed="true" />
     <item
         android:drawable="@drawable/bg_checkbox_selected"
         android:state_checked="true"/>

@@ -1,0 +1,17 @@
+{
+  "data": {
+    "kycStatus": {
+      "Message": [],
+      "Detail": {
+        "IsSuccess": 0,
+        "UserId": 0,
+        "ProjectId": 0,
+        "Status": 3,
+        "StatusName": "",
+        "CreateTime": "",
+        "CreateBy": 0,
+        "UpdateTime": ""
+      }
+    }
+  }
+}

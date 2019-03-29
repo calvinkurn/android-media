@@ -21,6 +21,12 @@ public class Order {
     @SerializedName("category")
     @Expose
     private String category;
+    @SerializedName("appLink")
+    @Expose
+    private String appLink;
+    @SerializedName("upstream")
+    @Expose
+    private String upstream;
     @SerializedName("id")
     @Expose
     private String id;
@@ -48,6 +54,9 @@ public class Order {
     @SerializedName("dotMenuList")
     @Expose
     private List<DotMenuList> dotMenuList;
+    @SerializedName("dotMenu")
+    @Expose
+    private List<DotMenuList> dotMenu;
     @SerializedName("actionButtons")
     @Expose
     private List<ActionButton> actionButtons;
@@ -60,17 +69,22 @@ public class Order {
     @SerializedName("items")
     @Expose
     private List<Item> items;
+    @SerializedName("beforeOrderId")
+    @Expose
+    private int orderId;
 
 
     public Order(ConditionalInfo conditionalInfo, PaymentData paymentData, String paymentID,
-                 String categoryName, String category, String id,
+                 String categoryName, String appLink, String upstream, String category, String id,
                  String createdAt, int status, String statusStr, String statusColor, String invoiceRefNum,
-                 String title, List<MetaData> metaData, List<DotMenuList> dotMenuList,
-                 List<ActionButton> actionButtons, String totalInvoices, String itemCount, List<Item> items) {
+                 String title, List<MetaData> metaData, List<DotMenuList> dotMenuList, List<DotMenuList> dotMenu,
+                 List<ActionButton> actionButtons, String totalInvoices, String itemCount, List<Item> items, int orderId) {
         this.conditionalInfo = conditionalInfo;
         this.paymentData = paymentData;
         this.paymentID = paymentID;
         this.categoryName = categoryName;
+        this.appLink = appLink;
+        this.upstream = upstream;
         this.category = category;
         this.id = id;
         this.createdAt = createdAt;
@@ -81,10 +95,12 @@ public class Order {
         this.title = title;
         this.metaData = metaData;
         this.dotMenuList = dotMenuList;
+        this.dotMenu = dotMenu;
         this.actionButtons = actionButtons;
         this.totalInvoices = totalInvoices;
         this.itemCount = itemCount;
         this.items = items;
+        this.orderId= orderId;
     }
 
     public ConditionalInfo conditionalInfo() {
@@ -101,6 +117,14 @@ public class Order {
 
     public String categoryName() {
         return categoryName;
+    }
+
+    public String getAppLink() {
+        return appLink;
+    }
+
+    public String getUpstream() {
+        return upstream;
     }
 
     public String category() {
@@ -143,6 +167,10 @@ public class Order {
         return dotMenuList;
     }
 
+    public List<DotMenuList> dotMenu() {
+        return dotMenu;
+    }
+
     public List<ActionButton> actionButtons() {
         return actionButtons;
     }
@@ -153,6 +181,18 @@ public class Order {
 
     public List<Item> items() {
         return items;
+    }
+
+    public String getItemCount() {
+        return itemCount;
+    }
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.tkpd.library.utils;
 import android.content.Context;
 import android.widget.ArrayAdapter;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import java.util.List;
 

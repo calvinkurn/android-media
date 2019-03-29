@@ -21,7 +21,7 @@ public class CustomViewQuickSingleFilterAdapter extends QuickSingleFilterAdapter
     @Override
     public CustomViewItemFilterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_quick_filter_view, parent, false);
+                .inflate(R.layout.item_custom_quick_filter_view, parent, false);
         return new CustomViewItemFilterViewHolder(view, actionListener);
     }
 }

@@ -1,5 +1,7 @@
 package com.tokopedia.shop.product.domain.model;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant;
@@ -15,7 +17,7 @@ public class ShopProductRequestModel {
 
     private String shopId;
     private String keyword;
-    private String etalaseId;
+    private String etalaseId = "";
     private int page;
     private int orderBy;
     private int perPage;
@@ -26,13 +28,18 @@ public class ShopProductRequestModel {
     private boolean officialStore;
 
     private boolean useAce;
+    public ShopProductRequestModel(String shopId, boolean isShopClosed, boolean isOfficialStore, int page, boolean useAce,
+                                   int itemPerPage){
+        this.shopId = shopId;
+        this.shopClosed = isShopClosed;
+        this.officialStore = isOfficialStore;
+        this.page =page;
+        this.useAce = useAce;
+        this.perPage = itemPerPage;
+    }
 
     public String getShopId() {
         return shopId;
-    }
-
-    public void setShopId(String shopId) {
-        this.shopId = shopId;
     }
 
     public String getKeyword() {
@@ -43,20 +50,20 @@ public class ShopProductRequestModel {
         this.keyword = keyword;
     }
 
-    public String getEtalaseId() {
+    public @NonNull String getEtalaseId() {
         return etalaseId;
     }
 
-    public void setEtalaseId(String etalaseId) {
-        this.etalaseId = etalaseId;
+    public void setEtalaseId(@Nullable String etalaseId) {
+        if (etalaseId == null) {
+            this.etalaseId = "";
+        } else {
+            this.etalaseId = etalaseId;
+        }
     }
 
     public int getPage() {
         return page;
-    }
-
-    public void setPage(int page) {
-        this.page = page;
     }
 
     public int getOrderBy() {
@@ -71,10 +78,6 @@ public class ShopProductRequestModel {
         return perPage;
     }
 
-    public void setPerPage(int perPage) {
-        this.perPage = perPage;
-    }
-
     public int getWholesale() {
         return wholesale;
     }
@@ -87,16 +90,8 @@ public class ShopProductRequestModel {
         return shopClosed;
     }
 
-    public void setShopClosed(boolean shopClosed) {
-        this.shopClosed = shopClosed;
-    }
-
     public boolean isOfficialStore() {
         return officialStore;
-    }
-
-    public void setOfficialStore(boolean officialStore) {
-        this.officialStore = officialStore;
     }
 
     public HashMap<String, String> getHashMap() {
@@ -123,6 +118,10 @@ public class ShopProductRequestModel {
             hashMap.put(ShopParamApiConstant.WHOLESALE, String.valueOf(wholesale));
         }
         return hashMap;
+    }
+
+    public boolean useTome(){
+        return isShopClosed() || !isUseAce();
     }
 
     public boolean isUseAce() {

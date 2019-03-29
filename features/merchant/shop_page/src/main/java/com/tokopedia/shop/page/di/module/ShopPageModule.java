@@ -2,104 +2,28 @@ package com.tokopedia.shop.page.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
-import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
-import com.tokopedia.reputation.common.data.interceptor.ReputationAuthInterceptor;
-import com.tokopedia.reputation.common.data.repository.ReputationCommonRepositoryImpl;
-import com.tokopedia.reputation.common.data.source.ReputationCommonDataSource;
-import com.tokopedia.reputation.common.data.source.cloud.ReputationCommonCloudDataSource;
-import com.tokopedia.reputation.common.data.source.cloud.api.ReputationCommonApi;
-import com.tokopedia.reputation.common.domain.interactor.GetReputationSpeedUseCase;
-import com.tokopedia.reputation.common.domain.repository.ReputationCommonRepository;
-import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoUseCase;
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
-import com.tokopedia.shop.etalase.domain.interactor.DeleteShopEtalaseUseCase;
+import com.tokopedia.reputation.common.domain.interactor.DeleteReputationSpeedDailyCacheUseCase;
+import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase;
 import com.tokopedia.shop.note.domain.interactor.DeleteShopNoteUseCase;
-import com.tokopedia.shop.page.di.ShopInfoReputationSpeedQualifier;
 import com.tokopedia.shop.page.di.scope.ShopPageScope;
-import com.tokopedia.shop.page.domain.interactor.ToggleFavouriteShopAndDeleteCacheUseCase;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductAceUseCase;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductTomeUseCase;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Retrofit;
 
 @ShopPageScope
 @Module
 public class ShopPageModule {
 
-    @Provides
-    public ReputationAuthInterceptor provideReputationAuthInterceptor(@ApplicationContext Context context,
-                                                                      AbstractionRouter abstractionRouter,
-                                                                      UserSession userSession) {
-        return new ReputationAuthInterceptor(context, abstractionRouter, userSession);
-    }
-
-    @ShopInfoReputationSpeedQualifier
-    @Provides
-    public OkHttpClient provideOkHttpClient(ReputationAuthInterceptor reputationAuthInterceptor,
-                                            @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                            HeaderErrorResponseInterceptor errorResponseInterceptor,
-                                            CacheApiInterceptor cacheApiInterceptor) {
-        return new OkHttpClient.Builder()
-                .addInterceptor(cacheApiInterceptor)
-                .addInterceptor(reputationAuthInterceptor)
-                .addInterceptor(errorResponseInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .build();
-    }
-
-    @ShopInfoReputationSpeedQualifier
     @ShopPageScope
     @Provides
-    public Retrofit provideRetrofit(@ShopInfoReputationSpeedQualifier OkHttpClient okHttpClient,
-                                    Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(ReputationCommonUrl.BASE_URL).client(okHttpClient).build();
-    }
-
-    @ShopPageScope
-    @Provides
-    public ReputationCommonApi provideReputationCommonApi(@ShopInfoReputationSpeedQualifier Retrofit retrofit) {
-        return retrofit.create(ReputationCommonApi.class);
-    }
-
-    @ShopPageScope
-    @Provides
-    public ReputationCommonCloudDataSource provideReputationCommonCloudDataSource(ReputationCommonApi reputationCommonApi) {
-        return new ReputationCommonCloudDataSource(reputationCommonApi);
-    }
-
-    @ShopPageScope
-    @Provides
-    public ReputationCommonDataSource provideReputationCommonDataSource(ReputationCommonCloudDataSource reputationCommonCloudDataSource) {
-        return new ReputationCommonDataSource(reputationCommonCloudDataSource);
-    }
-
-    @ShopPageScope
-    @Provides
-    public ReputationCommonRepository provideReputationCommonRepository(ReputationCommonDataSource reputationCommonDataSource) {
-        return new ReputationCommonRepositoryImpl(reputationCommonDataSource);
-    }
-
-    @ShopPageScope
-    @Provides
-    public GetReputationSpeedUseCase provideGetFeatureProductListUseCase(ReputationCommonRepository reputationCommonRepository) {
-        return new GetReputationSpeedUseCase(reputationCommonRepository);
-    }
-
-    @ShopPageScope
-    @Provides
-    public DeleteShopInfoUseCase provideDeleteShopInfoUseCase() {
-        return new DeleteShopInfoUseCase();
+    public DeleteShopInfoCacheUseCase provideDeleteShopInfoUseCase() {
+        return new DeleteShopInfoCacheUseCase();
     }
 
     @ShopPageScope
@@ -122,21 +46,19 @@ public class ShopPageModule {
 
     @ShopPageScope
     @Provides
-    public DeleteShopEtalaseUseCase provideDeleteShopEtalaseUseCase() {
-        return new DeleteShopEtalaseUseCase();
-    }
-
-    @ShopPageScope
-    @Provides
     public DeleteShopNoteUseCase provideDeleteShopNoteUseCase() {
         return new DeleteShopNoteUseCase();
     }
 
     @ShopPageScope
     @Provides
-    public ToggleFavouriteShopAndDeleteCacheUseCase provideToggleFavouriteShopAndDeleteCacheUseCase(
-            ToggleFavouriteShopUseCase toggleFavouriteShopUseCase,
-            DeleteShopInfoUseCase deleteShopInfoUseCase) {
-        return new ToggleFavouriteShopAndDeleteCacheUseCase(toggleFavouriteShopUseCase, deleteShopInfoUseCase);
+    public DeleteReputationSpeedDailyCacheUseCase provideDeleteReputationSpeedDailyCacheUseCase() {
+        return new DeleteReputationSpeedDailyCacheUseCase();
+    }
+
+    @ShopPageScope
+    @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

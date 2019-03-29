@@ -49,6 +49,8 @@ public class PromoCodeCartListData implements Parcelable {
         private String gatewayId;
         private String token;
         private String messageSuccess;
+        private String titleDescription;
+        private String state;
 
         public String getCode() {
             return code;
@@ -146,6 +148,25 @@ public class PromoCodeCartListData implements Parcelable {
             this.messageSuccess = messageSuccess;
         }
 
+        public DataVoucher() {
+        }
+
+        public void setTitleDescription(String titleDescription) {
+            this.titleDescription = titleDescription;
+        }
+
+        public String getTitleDescription() {
+            return titleDescription;
+        }
+
+        public void setState(String state) {
+            this.state = state;
+        }
+
+        public String getState() {
+            return state;
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -165,9 +186,8 @@ public class PromoCodeCartListData implements Parcelable {
             dest.writeString(this.gatewayId);
             dest.writeString(this.token);
             dest.writeString(this.messageSuccess);
-        }
-
-        public DataVoucher() {
+            dest.writeString(this.titleDescription);
+            dest.writeString(this.state);
         }
 
         protected DataVoucher(Parcel in) {
@@ -183,9 +203,11 @@ public class PromoCodeCartListData implements Parcelable {
             this.gatewayId = in.readString();
             this.token = in.readString();
             this.messageSuccess = in.readString();
+            this.titleDescription = in.readString();
+            this.state = in.readString();
         }
 
-        public static final Parcelable.Creator<DataVoucher> CREATOR = new Parcelable.Creator<DataVoucher>() {
+        public static final Creator<DataVoucher> CREATOR = new Creator<DataVoucher>() {
             @Override
             public DataVoucher createFromParcel(Parcel source) {
                 return new DataVoucher(source);

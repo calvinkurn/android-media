@@ -4,7 +4,6 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@color/white"
               android:orientation="vertical">
 
     <LinearLayout
@@ -12,16 +11,17 @@
         android:layout_height="wrap_content"
         android:minHeight="72dp"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_16"
         android:paddingLeft="@dimen/padding_activity"
         android:paddingRight="@dimen/padding_activity"
-        android:paddingTop="@dimen/padding_activity">
+        android:paddingTop="@dimen/dp_8">
 
         <com.tokopedia.core.customView.RoundedCornerImageView
             android:id="@+id/user_avatar"
-            android:layout_width="@dimen/detail_reputation_avatar"
-            android:layout_height="@dimen/detail_reputation_avatar"
-            tools:src="@color/black_38"/>
+            android:layout_width="@dimen/user_avatar"
+            android:layout_height="@dimen/user_avatar"
+            android:layout_marginRight="@dimen/dp_10"
+            tools:src="@drawable/ic_share_black_24dp"/>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -36,12 +36,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:fontFamily="sans-serif"
                 android:lineSpacingExtra="8sp"
+                style="@style/TextView.Small.Bold"
                 android:maxLines="1"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="normal"
                 tools:text="Pretty Sugar Shop"
                 />
 
@@ -51,7 +48,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_5"
                 android:visibility="gone"
-                app:usv_show_tooltip="true"/>
+                app:usv_show_tooltip="true"
+                android:layout_marginTop="@dimen/dp_4"/>
 
             <com.tokopedia.design.reputation.ShopReputationView
                 android:id="@+id/shop_reputation"
@@ -59,39 +57,30 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_5"
                 android:visibility="gone"
-                app:srv_show_tooltip="true"/>
+                app:srv_show_tooltip="true"
+                android:layout_marginTop="@dimen/dp_4"/>
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/favorite_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_40"
             android:layout_gravity="center_vertical"
             android:background="@drawable/green_button_rounded"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:visibility="gone"
+            android:padding="@dimen/dp_12"
             tools:visibility="visible">
-
-            <ImageView
-                android:id="@+id/favorite_icon"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="@dimen/dp_10"
-                android:padding="@dimen/dp_3"
-                tools:src="@drawable/ic_done_24dp"/>
 
             <TextView
                 android:id="@+id/favorite_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:fontFamily="sans-serif-medium"
                 android:gravity="center_vertical"
                 android:textColor="@color/white"
-                android:textSize="13sp"
-                android:textStyle="normal"
+                style="@style/TextView.Micro"
                 tools:text="@string/already_favorite"
 
                 />
@@ -101,7 +90,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/dp_half"
         android:background="@color/grey_300"
         />
 
@@ -120,6 +109,8 @@
             android:layout_gravity="center"
             android:background="@color/red_deadline"
             android:gravity="center"
+            android:paddingTop="@dimen/dp_3"
+            android:paddingBottom="@dimen/dp_3"
             >
 
             <ImageView
@@ -137,17 +128,14 @@
                 android:layout_marginLeft="@dimen/dp_5"
                 android:layout_toRightOf="@id/icon_deadline"
                 android:gravity="center_vertical"
-                android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black_38"
-                android:textSize="@dimen/text_size_xxsmall"
-                android:textStyle="normal"
+                style="@style/TextView.Micro.BlackSecondary"
                 tools:text="Batas memberikan penilaian 3 hari lagi"/>
 
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/dp_half"
             android:background="@color/grey_300"
             />
     </LinearLayout>
@@ -168,6 +156,8 @@
             android:layout_gravity="center"
             android:background="@color/grey_200"
             android:gravity="center"
+            android:paddingTop="@dimen/dp_3"
+            android:paddingBottom="@dimen/dp_3"
             >
 
             <ImageView
@@ -185,17 +175,14 @@
                 android:gravity="center_vertical"
                 android:layout_marginLeft="@dimen/dp_5"
                 android:layout_toRightOf="@id/icon_locked"
-                android:fontFamily="sans-serif-medium"
                 android:text="@string/locked_reputation"
-                android:textColor="@color/black_38"
-                android:textSize="@dimen/text_size_xxsmall"
-                android:textStyle="normal"/>
+                style="@style/TextView.Micro.BlackSecondary"/>
 
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/dp_half"
             android:background="@color/grey_300"
             />
     </LinearLayout>
@@ -215,10 +202,9 @@
             android:fontFamily="sans-serif"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="6sp"
-            android:textColor="@color/black_54"
-            android:textSize="@dimen/fontvs"
-            android:textStyle="normal"
+            style="@style/TextView.Small"
             tools:text="Bagaimana pen"
+            android:layout_marginTop="@dimen/dp_8"
             />
 
         <TextView
@@ -226,13 +212,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="7sp"
             android:text="@string/change"
-            android:textColor="@color/medium_green"
-            android:textSize="14sp"
-
-            android:textStyle="normal"
+            style="@style/TextView.Small.Green"
+            android:layout_marginTop="@dimen/dp_8"
             />
     </RelativeLayout>
 
@@ -244,8 +227,10 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/dp_half"
         android:background="@color/grey_300"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         />
 
     <RelativeLayout
@@ -253,7 +238,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:padding="@dimen/dp_5">
+        android:padding="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/dp_4">
 
         <TextView
             android:id="@+id/opponent_smiley_text"
@@ -261,13 +248,11 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dp_5"
-            android:fontFamily="sans-serif"
             android:gravity="center_vertical"
             android:lineSpacingExtra="6sp"
-            android:textColor="@color/black_38"
-            android:textSize="@dimen/text_size_xsmall"
-            android:textStyle="normal"
+            style="@style/TextView.Micro.BlackSecondary"
             tools:text="Penjual Belum Menilai"
+            android:layout_marginTop="@dimen/dp_4"
             />
 
         <ImageView
@@ -281,10 +266,4 @@
             android:gravity="center_vertical"
             tools:src="@drawable/ic_smiley_empty"/>
     </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_300"
-        />
 </LinearLayout>

@@ -15,7 +15,6 @@ public class TrackAnalytics {
 
     public static void sendEvent(String eventName, Map<String, Object> data, Context context) {
         sendEventToFirebase(eventName, data, context);
-
     }
 
     private static void sendEventToFirebase(String eventName, Map<String, Object> data, Context context) {

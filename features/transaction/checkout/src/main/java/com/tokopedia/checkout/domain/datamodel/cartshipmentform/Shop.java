@@ -17,6 +17,7 @@ public class Shop implements Parcelable {
     private boolean isGoldBadge;
     private boolean isOfficial;
     private boolean isFreeReturns;
+    private String shopBadge;
     private int addressId;
     private String postalCode;
     private String latitude;
@@ -197,6 +198,14 @@ public class Shop implements Parcelable {
         return cityName;
     }
 
+    public String getShopBadge() {
+        return shopBadge;
+    }
+
+    public void setShopBadge(String shopBadge) {
+        this.shopBadge = shopBadge;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -225,6 +234,7 @@ public class Shop implements Parcelable {
         dest.writeInt(this.provinceId);
         dest.writeInt(this.cityId);
         dest.writeString(this.cityName);
+        dest.writeString(this.shopBadge);
     }
 
     public Shop() {
@@ -252,6 +262,7 @@ public class Shop implements Parcelable {
         this.provinceId = in.readInt();
         this.cityId = in.readInt();
         this.cityName = in.readString();
+        this.shopBadge = in.readString();
     }
 
     public static final Parcelable.Creator<Shop> CREATOR = new Parcelable.Creator<Shop>() {

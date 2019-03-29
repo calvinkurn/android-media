@@ -3,13 +3,13 @@ package com.tokopedia.events.view.presenter;
 import android.content.Intent;
 import android.util.Log;
 
-import com.tkpd.library.ui.widget.TouchViewPager;
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.domain.GetEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetProductRatingUseCase;
@@ -17,17 +17,22 @@ import com.tokopedia.events.domain.GetUserLikesUseCase;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.LikeUpdateResultDomain;
 import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
+import com.tokopedia.events.domain.scanTicketUsecase.CheckScanOptionUseCase;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.activity.EventFavouriteActivity;
 import com.tokopedia.events.view.activity.EventSearchActivity;
 import com.tokopedia.events.view.activity.EventsHomeActivity;
+import com.tokopedia.events.view.activity.ScanQRCodeActivity;
+import com.tokopedia.events.view.contractor.EventBaseContract;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.contractor.EventsContract.AdapterCallbacks;
+import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +42,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -45,44 +49,52 @@ import rx.schedulers.Schedulers;
 import static com.tokopedia.events.view.utils.Utils.Constants.EXTRA_EVENT_CALENDAR;
 import static com.tokopedia.events.view.utils.Utils.Constants.FAQURL;
 import static com.tokopedia.events.view.utils.Utils.Constants.PROMOURL;
-import static com.tokopedia.events.view.utils.Utils.Constants.TRANSATIONSURL;
 
 /**
  * Created by ashwanityagi on 06/11/17.
  */
 
-public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
-        implements EventsContract.Presenter {
+public class EventHomePresenter extends BaseDaggerPresenter<EventBaseContract.EventBaseView>
+        implements EventsContract.EventHomePresenter {
 
     private GetEventsListRequestUseCase getEventsListRequestUsecase;
     private PostUpdateEventLikesUseCase postUpdateEventLikesUseCase;
     private GetUserLikesUseCase getUserLikesUseCase;
-    private GetProductRatingUseCase getProductRatingUseCase;
     private CategoryViewModel carousel;
     private List<CategoryViewModel> categoryViewModels;
-    private List<CategoryItemsViewModel> likedEvents;
+    private ArrayList<Integer> likedEventsLocal;
     private TouchViewPager mTouchViewPager;
     private int currentPage, totalPages;
     private List<AdapterCallbacks> adapterCallbacks;
     private boolean showFavAfterLogin = false;
-    Subscription subscription;
+    private boolean showOMS = false;
+    private EventsContract.EventHomeView mView;
+    private EventsAnalytics eventsAnalytics;
 
-
-    @Inject
 
     public EventHomePresenter(GetEventsListRequestUseCase getEventsListRequestUsecase,
-                              PostUpdateEventLikesUseCase eventLikesUseCase,
-                              GetUserLikesUseCase likesUseCase,
-                              GetProductRatingUseCase ratingUseCase) {
+                       PostUpdateEventLikesUseCase eventLikesUseCase,
+                       GetUserLikesUseCase likesUseCase,
+                       GetProductRatingUseCase ratingUseCase, EventsAnalytics eventsAnalytics) {
         this.getEventsListRequestUsecase = getEventsListRequestUsecase;
         this.postUpdateEventLikesUseCase = eventLikesUseCase;
         this.getUserLikesUseCase = likesUseCase;
-        this.getProductRatingUseCase = ratingUseCase;
         adapterCallbacks = new ArrayList<>();
+        this.eventsAnalytics = eventsAnalytics;
     }
 
     @Override
-    public void initialize() {
+    public boolean onClickOptionMenu(int id) {
+        return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode) {
 
     }
 
@@ -95,7 +107,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     public void startBannerSlide(TouchViewPager viewPager) {
         this.mTouchViewPager = viewPager;
         currentPage = viewPager.getCurrentItem();
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_IMPRESSION, carousel.getItems().get(currentPage).getTitle() +
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_IMPRESSION, carousel.getItems().get(currentPage).getTitle() +
                 " - " + currentPage);
         carousel.getItems().get(currentPage).setTrack(true);
         try {
@@ -105,6 +117,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             totalPages = viewPager.getChildCount();
         }
         Observable.interval(5000, 5000, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Long>() {
                     @Override
@@ -133,7 +146,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     public void onBannerSlide(int page) {
         currentPage = page;
         if (!carousel.getItems().get(currentPage).isTrack()) {
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_IMPRESSION, carousel.getItems().get(currentPage).getTitle() +
+            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_IMPRESSION, carousel.getItems().get(currentPage).getTitle() +
                     " - " + currentPage);
             carousel.getItems().get(currentPage).setTrack(true);
         }
@@ -144,40 +157,60 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
         if (id == R.id.action_menu_search) {
             ArrayList<CategoryItemsViewModel> searchViewModelList = (ArrayList<CategoryItemsViewModel>) Utils.getSingletonInstance()
                     .getTopEvents();
-            Intent searchIntent = EventSearchActivity.getCallingIntent(getView().getActivity());
+            for (CategoryItemsViewModel model : searchViewModelList) {
+                if (Utils.getSingletonInstance().containsLikedEvent(model.getId())) {
+                    if (!model.isLiked()) {
+                        model.setLiked(true);
+                        model.setLikes();
+                    }
+                } else {
+                    if (model.isLiked()) {
+                        model.setLiked(false);
+                        model.setLikes();
+                    }
+                }
+            }
+            Intent searchIntent = EventSearchActivity.getCallingIntent(mView.getActivity());
             searchIntent.putParcelableArrayListExtra("TOPEVENTS", searchViewModelList);
-            getView().navigateToActivityRequest(searchIntent,
+            mView.navigateToActivityRequest(searchIntent,
                     EventsHomeActivity.REQUEST_CODE_EVENTSEARCHACTIVITY);
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_SEARCH, "");
+            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_SEARCH, "");
             return true;
         } else if (id == R.id.action_promo) {
             startGeneralWebView(PROMOURL);
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_PROMO, "");
+            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_PROMO, "");
             return true;
         } else if (id == R.id.action_booked_history) {
-            startGeneralWebView(TRANSATIONSURL);
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_DAFTAR_TRANSAKSI, "");
+            if (Utils.getUserSession(mView.getActivity()).isLoggedIn())
+                RouteManager.route(mView.getActivity(), ApplinkConst.EVENTS_ORDER);
+            else {
+                showOMS = true;
+                Intent intent = ((EventModuleRouter) mView.getActivity().getApplication()).
+                        getLoginIntent(mView.getActivity());
+                mView.navigateToActivityRequest(intent, 1099);
+            }
+            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_DAFTAR_TRANSAKSI, "");
             return true;
         } else if (id == R.id.action_faq) {
             startGeneralWebView(FAQURL);
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BANTUAN, "");
+            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BANTUAN, "");
 
             return true;
         } else if (id == R.id.action_menu_fav) {
             getFavouriteItemsAndShow();
             return true;
         } else {
-            getView().getActivity().onBackPressed();
+            mView.getActivity().onBackPressed();
             return true;
         }
     }
 
     @Override
     public void showEventDetails(CategoryItemsViewModel model) {
-        Intent detailsIntent = new Intent(getView().getActivity(), EventDetailsActivity.class);
+        Intent detailsIntent = new Intent(mView.getActivity(), EventDetailsActivity.class);
         detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
         detailsIntent.putExtra(Utils.Constants.HOMEDATA, model);
-        getView().getActivity().startActivity(detailsIntent);
+        mView.getActivity().startActivity(detailsIntent);
     }
 
     @Override
@@ -199,17 +232,19 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                 Log.d("UPDATEEVENTLIKE", "onNext");
                 if (likeUpdateResultDomain.isLiked() && model.isLiked()) {
                     model.setLikes();
+                    Utils.getSingletonInstance().addLikedEvent(model.getId());
                 } else if (!likeUpdateResultDomain.isLiked() && !model.isLiked()) {
                     model.setLikes();
+                    Utils.getSingletonInstance().removeLikedEvent(model.getId());
                 }
                 for (AdapterCallbacks callbacks : adapterCallbacks)
                     callbacks.notifyDatasetChanged(position);
             }
         };
-        if (SessionHandler.isV4Login(getView().getActivity())) {
-            Utils.getSingletonInstance().setEventLike(getView().getActivity(), model, postUpdateEventLikesUseCase, subscriber);
+        if (Utils.getUserSession(mView.getActivity()).isLoggedIn()) {
+            Utils.getSingletonInstance().setEventLike(mView.getActivity(), model, postUpdateEventLikesUseCase, subscriber);
         } else {
-            getView().showLoginSnackbar("Please Login to like or share events");
+            mView.showLoginSnackbar("Please Login to like or share events");
         }
 
 
@@ -217,71 +252,72 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
 
     @Override
     public void shareEvent(CategoryItemsViewModel model) {
-        Utils.getSingletonInstance().shareEvent(getView().getActivity(), model.getTitle(), model.getSeoUrl());
+        Utils.getSingletonInstance().shareEvent(mView.getActivity(), model.getTitle(), model.getSeoUrl());
     }
 
     @Override
     public void onActivityResult(int requestCode) {
         if (requestCode == 1099) {
-            if (SessionHandler.isV4Login(getView().getActivity())) {
-                getView().hideProgressBar();
-                getView().showMessage(getView().getActivity().getResources()
-                        .getString(R.string.like_share_events));
+            if (Utils.getUserSession(mView.getActivity()).isLoggedIn()) {
+                mView.hideProgressBar();
                 if (showFavAfterLogin) {
                     showFavAfterLogin = false;
                     getFavouriteItemsAndShow();
+                } else if (showOMS) {
+                    RouteManager.route(mView.getActivity(), ApplinkConst.EVENTS_ORDER);
+                    showOMS = false;
                 }
             } else {
-                getView().hideProgressBar();
+                mView.hideProgressBar();
             }
         }
     }
 
     @Override
     public void onClickEventCalendar() {
-        Intent searchIntent = EventSearchActivity.getCallingIntent(getView().getActivity());
+        ArrayList<CategoryItemsViewModel> searchViewModelList = (ArrayList<CategoryItemsViewModel>) Utils.getSingletonInstance()
+                .getTopEvents();
+        Intent searchIntent = EventSearchActivity.getCallingIntent(mView.getActivity());
         searchIntent.putExtra(EXTRA_EVENT_CALENDAR, true);
-        getView().navigateToActivityRequest(searchIntent, 1010);
+        searchIntent.putParcelableArrayListExtra("TOPEVENTS", searchViewModelList);
+        mView.navigateToActivityRequest(searchIntent, 1010);
     }
 
     @Override
-    public void setupCallback(EventsContract.AdapterCallbacks callbacks) {
+    public void setupCallback(AdapterCallbacks callbacks) {
         this.adapterCallbacks.add(callbacks);
     }
 
     public void getEventsList() {
-        getView().showProgressBar();
-        getEventsListRequestUsecase.getExecuteObservableAsync(getView().getParams())
-                .concatMap(new Func1<List<EventsCategoryDomain>, Observable<List<Integer>>>() {
-                    @Override
-                    public Observable<List<Integer>> call(List<EventsCategoryDomain> eventsCategoryDomains) {
-                        categoryViewModels = Utils.getSingletonInstance()
-                                .convertIntoCategoryListVeiwModel(eventsCategoryDomains);
-                        if (SessionHandler.isV4Login(getView().getActivity()))
-                            return getUserLikesUseCase.getExecuteObservable(RequestParams.create())
-                                    .subscribeOn(Schedulers.newThread())
-                                    .observeOn(AndroidSchedulers.mainThread());
-                        else {
-                            List<Integer> empty = new ArrayList<>();
-                            return Observable.just(empty);
-                        }
+        mView.showProgressBar();
+        getEventsListRequestUsecase.getExecuteObservable(RequestParams.EMPTY)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .concatMap((Func1<List<EventsCategoryDomain>, Observable<List<Integer>>>) eventsCategoryDomains -> {
+                    categoryViewModels = Utils.getSingletonInstance()
+                            .convertIntoCategoryListVeiwModel(eventsCategoryDomains);
+                    UserSession userSession = new UserSession(mView.getActivity());
+                    if (userSession.isLoggedIn())
+                        return getUserLikesUseCase.getExecuteObservable(RequestParams.create())
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread());
+                    else {
+                        List<Integer> empty = new ArrayList<>();
+                        return Observable.just(empty);
                     }
-                }).flatMap(new Func1<List<Integer>, Observable<List<CategoryViewModel>>>() {
-            @Override
-            public Observable<List<CategoryViewModel>> call(List<Integer> integers) {
-                if (!integers.isEmpty() || integers.size() > 0)
-                    for (Integer id : integers) {
-                        for (CategoryViewModel category : categoryViewModels) {
-                            for (CategoryItemsViewModel itemsViewModel : category.getItems()) {
-                                if (itemsViewModel.getId() == id) {
-                                    itemsViewModel.setLiked(true);
-                                    itemsViewModel.setWasLiked(true);
-                                }
+                }).flatMap((Func1<List<Integer>, Observable<List<CategoryViewModel>>>) integers -> {
+            if (!integers.isEmpty() || integers.size() > 0)
+                for (Integer id : integers) {
+                    for (CategoryViewModel category : categoryViewModels) {
+                        for (CategoryItemsViewModel itemsViewModel : category.getItems()) {
+                            if (itemsViewModel.getId() == id) {
+                                itemsViewModel.setLiked(true);
+                                itemsViewModel.setWasLiked(true);
                             }
                         }
                     }
-                return Observable.just(categoryViewModels);
-            }
+                }
+            return Observable.just(categoryViewModels);
         }).subscribe(new Subscriber<List<CategoryViewModel>>() {
             @Override
             public void onCompleted() {
@@ -292,21 +328,16 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             public void onError(Throwable e) {
                 CommonUtils.dumper("enter error");
                 e.printStackTrace();
-                getView().hideProgressBar();
-                NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        getEventsList();
-                    }
-                });
+                mView.hideProgressBar();
+                NetworkErrorHelper.showEmptyState(mView.getActivity(), mView.getRootView(), () -> getEventsList());
             }
 
             @Override
             public void onNext(List<CategoryViewModel> categoryViewModels) {
-                getView().hideProgressBar();
+                mView.hideProgressBar();
                 getCarousel(categoryViewModels);
-                getView().renderCategoryList(categoryViewModels);
-                getView().showSearchButton();
+                mView.renderCategoryList(categoryViewModels);
+                mView.showSearchButton();
                 CommonUtils.dumper("enter onNext");
             }
         });
@@ -329,11 +360,11 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                 || categoryItemsViewModel.getUrl().contains("docs.google.com")) {
             startGeneralWebView(categoryItemsViewModel.getUrl());
         } else {
-            Intent intent = new Intent(getView().getActivity(), EventDetailsActivity.class);
+            Intent intent = new Intent(mView.getActivity(), EventDetailsActivity.class);
             intent.putExtra("homedata", categoryItemsViewModel);
-            getView().getActivity().startActivity(intent);
+            mView.getActivity().startActivity(intent);
         }
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_CLICK,
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_CLICK,
                 categoryItemsViewModel.getTitle() + "-" + String.valueOf(currentPage));
     }
 
@@ -347,9 +378,9 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     }
 
     private void startGeneralWebView(String url) {
-        if (getView().getActivity().getApplication() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) getView().getActivity().getApplication())
-                    .actionOpenGeneralWebView(getView().getActivity(), url);
+        if (mView.getActivity().getApplication() instanceof EventModuleRouter) {
+            ((EventModuleRouter) mView.getActivity().getApplication())
+                    .actionOpenGeneralWebView(mView.getActivity(), url);
         }
     }
 
@@ -360,26 +391,23 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     }
 
     private void getFavouriteItemsAndShow() {
-        if (SessionHandler.isV4Login(getView().getActivity())) {
+        if (Utils.getUserSession(mView.getActivity()).isLoggedIn()) {
             getUserLikesUseCase.getExecuteObservable(RequestParams.create())
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .flatMap(new Func1<List<Integer>, Observable<List<CategoryItemsViewModel>>>() {
-                        @Override
-                        public Observable<List<CategoryItemsViewModel>> call(List<Integer> integers) {
-                            List<CategoryItemsViewModel> favouritesItems = new ArrayList<>();
-                            for (Integer id : integers) {
-                                for (CategoryViewModel category : categoryViewModels) {
-                                    for (CategoryItemsViewModel itemsViewModel : category.getItems()) {
-                                        if (itemsViewModel.getId() == id) {
-                                            itemsViewModel.setLiked(true);
-                                            favouritesItems.add(itemsViewModel);
-                                        }
+                    .flatMap((Func1<List<Integer>, Observable<List<CategoryItemsViewModel>>>) integers -> {
+                        List<CategoryItemsViewModel> favouritesItems = new ArrayList<>();
+                        for (Integer id : integers) {
+                            for (CategoryViewModel category : categoryViewModels) {
+                                for (CategoryItemsViewModel itemsViewModel : category.getItems()) {
+                                    if (itemsViewModel.getId() == id) {
+                                        itemsViewModel.setLiked(true);
+                                        favouritesItems.add(itemsViewModel);
                                     }
                                 }
                             }
-                            return Observable.just(favouritesItems);
                         }
+                        return Observable.just(favouritesItems);
                     }).subscribe(new Subscriber<List<CategoryItemsViewModel>>() {
                 @Override
                 public void onCompleted() {
@@ -390,26 +418,28 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                 public void onError(Throwable e) {
                     CommonUtils.dumper("enter error");
                     e.printStackTrace();
-                    getView().hideProgressBar();
-                    NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            getFavouriteItemsAndShow();
-                        }
-                    });
+                    mView.hideProgressBar();
+                    NetworkErrorHelper.showEmptyState(mView.getActivity(), mView.getRootView(), () -> getFavouriteItemsAndShow());
                 }
 
                 @Override
                 public void onNext(List<CategoryItemsViewModel> categoryItemsViewModels) {
                     ArrayList<CategoryItemsViewModel> favItems = (ArrayList<CategoryItemsViewModel>) categoryItemsViewModels;
-                    Intent openFavIntent = new Intent(getView().getActivity(), EventFavouriteActivity.class);
+                    Intent openFavIntent = new Intent(mView.getActivity(), EventFavouriteActivity.class);
                     openFavIntent.putParcelableArrayListExtra(Utils.Constants.FAVOURITEDATA, favItems);
-                    getView().navigateToActivityRequest(openFavIntent, 0);
+                    mView.navigateToActivityRequest(openFavIntent, 0);
                 }
             });
         } else {
-            getView().showLoginSnackbar("Please Login to see your liked events");
+            mView.showLoginSnackbar("Please Login to see your liked events");
             showFavAfterLogin = true;
         }
+    }
+
+    @Override
+    public void attachView(EventBaseContract.EventBaseView view) {
+        super.attachView(view);
+        mView = (EventsContract.EventHomeView) view;
+        getEventsList();
     }
 }

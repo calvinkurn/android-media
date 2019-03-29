@@ -1,7 +1,9 @@
 package com.tokopedia.design.base;
 
+import android.app.Activity;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.IntDef;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -14,13 +16,21 @@ import android.widget.TextView;
  */
 
 public class BaseToaster {
+
+    public static final int LENGTH_SHORT = Snackbar.LENGTH_SHORT;
+    public static final int LENGTH_LONG = Snackbar.LENGTH_LONG;
+    public static final int LENGTH_INDEFINITE = Snackbar.LENGTH_INDEFINITE;
+
+    @IntDef({LENGTH_INDEFINITE, LENGTH_SHORT, LENGTH_LONG})
+    public @interface Duration {}
+
     protected static class Builder {
         private View view;
         private Snackbar snackbar;
         private TextView snackbarTextView;
         private Button snackbarActionButton;
 
-        public Builder(View view, String snackbarText, @Snackbar.Duration int duration) {
+        public Builder(View view, String snackbarText, @Duration int duration) {
             this.view = view;
             snackbar = Snackbar.make(view, snackbarText, duration);
             snackbarTextView = snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
@@ -57,5 +67,9 @@ public class BaseToaster {
         public Snackbar build() {
             return snackbar;
         }
+    }
+
+    public static View getContentView(Activity activity) {
+        return activity.findViewById(android.R.id.content);
     }
 }

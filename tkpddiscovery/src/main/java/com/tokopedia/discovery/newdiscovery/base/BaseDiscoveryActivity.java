@@ -1,7 +1,8 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -11,11 +12,17 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
+import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
+
+import org.json.JSONArray;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by hangnadi on 9/26/17.
@@ -35,6 +42,8 @@ public class BaseDiscoveryActivity
     private boolean forceSearch;
     private boolean requestOfficialStoreBanner;
     private int activeTabPosition;
+
+    private Boolean isPause = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,20 +107,81 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleResponseHotlist(String url, String query) {
-        startActivity(HotlistActivity.createInstanceUsingURL(this, url, query));
+        startActivity(HotlistActivity.createInstanceUsingURL(this, url, query, isPausing()));
         finish();
+    }
+
+    @Override
+    public void onHandleApplink(String applink) {
+        if (getApplicationContext() instanceof DiscoveryRouter
+                && ((DiscoveryRouter) getApplicationContext()).isSupportApplink(applink)) {
+            openApplink(applink);
+        } else {
+            openWebViewURL(applink, this);
+        }
+        finish();
+    }
+
+    public void openApplink(String applink) {
+        if (!TextUtils.isEmpty(applink)) {
+            ((DiscoveryRouter) getApplicationContext())
+                    .goToApplinkActivity(this, applink);
+        }
+    }
+
+    public void openWebViewURL(String url, Context context) {
+        if (!TextUtils.isEmpty(url) && context != null) {
+            ((DiscoveryRouter) getApplication())
+                    .actionOpenGeneralWebView(
+                            this,
+                            url);
+        }
     }
 
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
-        TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
+
+        JSONArray afProdIds = new JSONArray();
+        HashMap<String, String> category = new HashMap<String, String>();
+        ArrayList<String> prodIdArray = new ArrayList<>();
+
+        if (productViewModel.getProductList().size() > 0) {
+            for (int i = 0; i < productViewModel.getProductList().size(); i++) {
+                if (i < 3) {
+                    prodIdArray.add(productViewModel.getProductList().get(i).getProductID());
+                    afProdIds.put(productViewModel.getProductList().get(i).getProductID());
+                } else {
+                    break;
+                }
+                category.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
+
+            }
+        }
+        TrackingUtils.eventAppsFlyerViewListingSearch(this,afProdIds,productViewModel.getQuery(),prodIdArray);
+        TrackingUtils.sendMoEngageSearchAttempt(this, productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
         finish();
-        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
+        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop(), isPausing());
     }
 
     @Override
     public void onHandleImageResponseSearch(ProductViewModel productViewModel) {
-        TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
+        JSONArray afProdIds = new JSONArray();
+        HashMap<String, String> category = new HashMap<String, String>();
+        ArrayList<String> prodIdArray = new ArrayList<>();
+
+        if (productViewModel.getProductList().size() > 0) {
+            for (int i = 0; i < productViewModel.getProductList().size(); i++) {
+                if (i < 3) {
+                    prodIdArray.add(productViewModel.getProductList().get(i).getProductID());
+                    afProdIds.put(productViewModel.getProductList().get(i).getProductID());
+                } else {
+                    break;
+                }
+                category.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
+            }
+        }
+        TrackingUtils.eventAppsFlyerViewListingSearch(this, afProdIds,productViewModel.getQuery(),prodIdArray);
+        TrackingUtils.sendMoEngageSearchAttempt(this, productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
         ImageSearchActivity.moveTo(this, productViewModel);
         finish();
     }
@@ -122,7 +192,7 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleResponseIntermediary(String departmentId) {
-        IntermediaryActivity.moveTo(this, departmentId);
+        IntermediaryActivity.moveTo(this, departmentId, isPausing());
         overridePendingTransition(0, 0);
         finish();
     }
@@ -130,7 +200,7 @@ public class BaseDiscoveryActivity
     @Override
     public void onHandleResponseCatalog(String url) {
         URLParser urlParser = new URLParser(url);
-        startActivity(DetailProductRouter.getCatalogDetailActivity(this, urlParser.getHotAlias()));
+        startActivity(DetailProductRouter.getCatalogDetailActivity(this, urlParser.getHotAlias(), isPausing()));
         finish();
     }
 
@@ -171,6 +241,11 @@ public class BaseDiscoveryActivity
     }
 
     @Override
+    public void showImageNotSupportedError() {
+
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(KEY_FORCE_SEARCH, isForceSearch());
@@ -188,4 +263,19 @@ public class BaseDiscoveryActivity
         setActiveTabPosition(savedInstanceState.getInt(KEY_TAB_POSITION));
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isPause = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isPause = false;
+    }
+
+    public Boolean isPausing() {
+        return isPause;
+    }
 }

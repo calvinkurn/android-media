@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.create.listener;
 
-import android.app.Fragment;
+
+import android.support.v4.app.Fragment;
 
 import com.tokopedia.inbox.rescenter.create.model.passdata.ActionParameterPassData;
 

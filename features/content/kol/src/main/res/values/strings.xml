@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">TkpdContent</string>
+    <string name="action_share">Share</string>
     <string name="action_like">Like</string>
     <string name="action_follow_english">Follow</string>
     <string name="read_more_english">Read More</string>
@@ -11,6 +12,12 @@
     <string name="post_time_hours_ago">\u0020jam yang lalu</string>
     <string name="post_time_hour">\u0020pukul\u0020</string>
     <string name="post_time_yesterday_at">Kemarin pukul\u0020</string>
+    <string name="explore_more_button">Explore More</string>
+    <string name="kol_delete_post">Hapus Post</string>
+    <string name="kol_delete_post_desc">Setelah dihapus, kamu tidak akan bisa melihat post ini lagi.</string>
+    <string name="kol_post_deleted">Post berhasil dihapus</string>
+    <string name="kol_error_delete">Terjadi kesalahan saat menghapus post.</string>
+    <string name="kol_edit_post">Edit Post</string>
 
     <!--Kol Comment-->
     <string name="title_comment_kol">Comments</string>
@@ -26,6 +33,40 @@
     <string name="title_following_kol">Following</string>
     <string name="string_follow_empty">Kamu belum \nmengikuti influencer</string>
     <string name="string_follow_empty_button">Explore Influencer</string>
+    <string name="title_image_picker">Image Picker</string>
+    <string name="title_image_editor">Image Editor</string>
+    <string name="title_create_post">Create Post</string>
 
-    <string name="explore_more_button">Explore More</string>
+    <!--Kol Post Detail-->
+    <string name="title_kol_post_detail">Post Detail</string>
+    <string name="add_your_comment">Masukan komen kamu</string>
+    <string name="see_all_comment">Lihat Semua Comments (%d)</string>
+    <string name="post_detail_follow_success_toast">Cek Feeds mu sekarang untuk melihat update TopProfile ini</string>
+    <string name="post_detail_follow_success_check_now">Cek Sekarang</string>
+
+    <!--Kol Post-->
+    <string name="title_post">Pilih gambar</string>
+    <string name="empty_own_feed_title">Feed Tokomu Kosong</string>
+    <string name="empty_own_feed_subtitle">Post sesuatu untuk follower tokomu, yuk!</string>
+    <string name="empty_own_feed_button">Mulai Buat Post</string>
+    <string name="kol_post_something">Post sesuatu untuk follower tokomu, yuk!</string>
+    <string name="kol_create_post">Buat Post</string>
+    <string name="kol_add_image">Tambah Gambar</string>
+    <string name="kol_add_photo">Tambah Foto</string>
+
+    <!--Report-->
+    <string name="title_kol_report">Laporan Konten</string>
+    <string name="kol_help_understand">Bantu Kami Memahami Apa yang Terjadi. Apa yang salah dari konten tersebut?</string>
+    <string name="kol_reason_here">Isi alasan di sini</string>
+    <string name="kol_reason_type_spam" translatable="false">spam</string>
+    <string name="kol_reason_type_abuse" translatable="false">abuse</string>
+    <string name="kol_reason_type_inappropriate" translatable="false">inappropriate image</string>
+    <string name="kol_reason_type_others" translatable="false">custom</string>
+    <string name="kol_reason_desc_spam">Ini adalah spam</string>
+    <string name="kol_reason_desc_abuse">Mengandung SARA, kekerasan, diskriminasi, vulgar, ancaman dan pelanggaran nilai/norma sosial</string>
+    <string name="kol_reason_desc_inappropriate">Mengandung pornografi</string>
+    <string name="kol_reason_desc_others">Lainnya</string>
+    <string name="kol_report">Laporkan</string>
+    <string name="kol_report_error">Tidak dapat melaporkan konten, silakan coba lagi</string>
+    <string name="kol_duplicate">Laporanmu sedang diproses</string>
 </resources>

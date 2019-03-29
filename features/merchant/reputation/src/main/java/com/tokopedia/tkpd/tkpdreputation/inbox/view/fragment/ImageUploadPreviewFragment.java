@@ -28,11 +28,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.ImageUploadPreviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.ImageUploadPreviewFragmentView;
@@ -44,17 +49,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
 
 /**
  * Created by Nisie on 2/12/16.
  */
-@RuntimePermissions
 public class ImageUploadPreviewFragment extends
         BasePresenterFragment<ImageUploadFragmentPresenter>
         implements ImageUploadPreviewFragmentView {
@@ -63,6 +65,8 @@ public class ImageUploadPreviewFragment extends
     private static final int MAX_CHAR = 128;
     private static final String ARGS_IMAGE_LIST = "ARGS_IMAGE_LIST";
     private static final String ARGS_CAMERA_FILELOC = "ARGS_CAMERA_FILELOC";
+    public static final int REQUEST_CODE_IMAGE_REVIEW = 532;
+    public static final int MAX_IMAGE_LIMIT = 5;
 
     ViewPager previewImage;
     TextView submitButton;
@@ -74,10 +78,10 @@ public class ImageUploadPreviewFragment extends
     PreviewImageViewPagerAdapter viewPagerAdapter;
     int currentPosition = 0;
 
-    public static Fragment createInstance(String fileLoc, boolean isUpdate, int position) {
+    public static Fragment createInstance(ArrayList<String> fileLoc, boolean isUpdate, int position) {
         ImageUploadPreviewFragment fragment = new ImageUploadPreviewFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(ImageUploadHandler.FILELOC, fileLoc);
+        bundle.putStringArrayList(ImageUploadHandler.FILELOC, fileLoc);
         bundle.putBoolean(ImageUploadPreviewActivity.IS_UPDATE, isUpdate);
         bundle.putInt(ImageUploadPreviewActivity.ARGS_POSITION, position);
         fragment.setArguments(bundle);
@@ -215,23 +219,7 @@ public class ImageUploadPreviewFragment extends
                         if (adapter.getList().size() != 0) {
                             adapter.getList().get(currentPosition).setDescription(description.getText().toString());
                         }
-                        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
-                        myAlertDialog.setMessage(getActivity().getString(R.string.dialog_upload_option));
-                        myAlertDialog.setPositiveButton(getActivity().getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                ImageUploadPreviewFragmentPermissionsDispatcher.actionImagePickerWithCheck(ImageUploadPreviewFragment.this);
-                            }
-                        });
-                        myAlertDialog.setNegativeButton(getActivity().getString(R.string.title_camera), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                ImageUploadPreviewFragmentPermissionsDispatcher.actionCameraWithCheck(ImageUploadPreviewFragment.this);
-                            }
-                        });
-                        Dialog dialog = myAlertDialog.create();
-                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                        dialog.show();
+                        openImagePicker();
                     }
                 };
             }
@@ -253,14 +241,18 @@ public class ImageUploadPreviewFragment extends
         };
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void actionCamera() {
-        presenter.openCamera();
-    }
-
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void actionImagePicker() {
-        presenter.openImageGallery();
+    private void openImagePicker() {
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(com.tokopedia.tkpd.tkpdreputation.R.string.choose_image),
+                new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
+                null
+                ,new ImagePickerMultipleSelectionBuilder(
+                new ArrayList<>(),
+                null,
+                R.string.empty_desc,
+                MAX_IMAGE_LIMIT - adapter.getList().size()));
+        Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
+        startActivityForResult(intent, REQUEST_CODE_IMAGE_REVIEW);
     }
 
     @Override
@@ -413,70 +405,6 @@ public class ImageUploadPreviewFragment extends
             previewImage.setAdapter(null);
             previewImage.setAdapter(this);
         }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ImageUploadPreviewFragmentPermissionsDispatcher.onRequestPermissionsResult(
-                ImageUploadPreviewFragment.this, requestCode, grantResults);
-
-    }
-
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showRationaleForStorageAndCamera(final PermissionRequest request) {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
-    }
-
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showRationaleForStorage(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied(Manifest.permission.CAMERA)
-    void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.CAMERA)
-    void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showDeniedForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
-    }
-
-    @OnNeverAskAgain({Manifest.permission.
-            CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showNeverAskForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 
     @Override

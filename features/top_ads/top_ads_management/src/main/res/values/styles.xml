@@ -25,4 +25,23 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginBottom">16dp</item>
     </style>
+
+    <style name="RadioButton.TopAds">
+        <item name="android:textSize">@dimen/sp_14</item>
+        <item name="android:padding">@dimen/dp_8</item>
+        <item name="android:lineSpacingExtra">@dimen/sp_2</item>
+    </style>
+
+    <style name="LabelLayout.TopAdsLabelView">
+        <item name="android:minHeight">@dimen/dp_64</item>
+        <item name="content_text_size">@dimen/sp_14</item>
+        <item name="lv_image_width">@dimen/dp_28</item>
+        <item name="lv_image_margin_right">@dimen/dp_24</item>
+        <item name="title_text_size">@dimen/sp_14</item>
+        <item name="lv_sub_title_text_size">@dimen/sp_14</item>
+    </style>
+
+    <style name="LabelLayout.TopAdsLabelView.BorderBottom">
+        <item name="android:background">@drawable/bg_border_bottom</item>
+    </style>
 </resources>

@@ -2,6 +2,7 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.vie
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -10,17 +11,19 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.customwidget.FlowLayout;
-import com.tokopedia.core.helper.IndicatorViewHelper;
+import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.BadgeItem;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.LabelItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.tkpdpdp.customview.RatingView;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
+import com.tokopedia.topads.sdk.domain.model.Category;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.topads.sdk.view.ImpressedImageView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,13 +33,11 @@ import java.util.List;
 public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.listview_product_item_grid;
+    public static final int LAYOUT = R.layout.search_result_product_item_grid;
 
-    private ImageView productImage;
+    protected ImpressedImageView productImage;
     private TextView title;
     private TextView price;
-    private FlowLayout labelContainer;
-    private TextView shopName;
     private TextView location;
     private LinearLayout badgesContainer;
     private ImageView wishlistButton;
@@ -45,16 +46,20 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
     private ImageView rating;
     private TextView reviewCount;
     private LinearLayout ratingReviewContainer;
-    private ItemClickListener itemClickListener;
-    private Context context;
+    private ProductListener productListener;
+    protected Context context;
+    private TextView topLabel;
+    private TextView bottomLabel;
+    private TextView newLabel;
+    private String searchQuery;
+    private RelativeLayout topadsIcon;
 
-    public GridProductItemViewHolder(View itemView, ItemClickListener itemClickListener) {
+    public GridProductItemViewHolder(View itemView, ProductListener productListener, String searchQuery) {
         super(itemView);
-        productImage = (ImageView) itemView.findViewById(R.id.product_image);
+        this.searchQuery = searchQuery;
+        productImage = itemView.findViewById(R.id.product_image);
         title = (TextView) itemView.findViewById(R.id.title);
         price = (TextView) itemView.findViewById(R.id.price);
-        labelContainer = (FlowLayout) itemView.findViewById(R.id.label_container);
-        shopName = (TextView) itemView.findViewById(R.id.shop_name);
         location = (TextView) itemView.findViewById(R.id.location);
         badgesContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
         wishlistButton = (ImageView) itemView.findViewById(R.id.wishlist_button);
@@ -63,22 +68,55 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         rating = (ImageView) itemView.findViewById(R.id.rating);
         reviewCount = (TextView) itemView.findViewById(R.id.review_count);
         ratingReviewContainer = (LinearLayout) itemView.findViewById(R.id.rating_review_container);
+        topLabel = itemView.findViewById(R.id.topLabel);
+        bottomLabel = itemView.findViewById(R.id.bottomLabel);
+        newLabel = itemView.findViewById(R.id.new_label);
+        topadsIcon = itemView.findViewById(R.id.topads_icon);
         context = itemView.getContext();
-        this.itemClickListener = itemClickListener;
+        this.productListener = productListener;
     }
 
     @Override
     public void bind(final ProductItem productItem) {
+        if (!TextUtils.isEmpty(productItem.getTopLabel())) {
+            topLabel.setText(productItem.getTopLabel());
+            topLabel.setVisibility(View.VISIBLE);
+        } else {
+            topLabel.setVisibility(View.GONE);
+        }
+        if (!TextUtils.isEmpty(productItem.getBottomLabel())) {
+            bottomLabel.setText(productItem.getBottomLabel());
+            bottomLabel.setVisibility(View.VISIBLE);
+        } else {
+            bottomLabel.setVisibility(View.GONE);
+        }
         title.setText(MethodChecker.fromHtml(productItem.getProductName()));
-        price.setText(productItem.getPrice());
-        if (productItem.getShopCity() != null)
-            location.setText(MethodChecker.fromHtml(productItem.getShopCity()));
-        else
-            location.setVisibility(View.INVISIBLE);
+        String priceText = !TextUtils.isEmpty(productItem.getPriceRange()) ?
+                productItem.getPriceRange() : productItem.getPrice();
+        price.setText(priceText);
+        if (productItem.getShopCity() != null && !productItem.getShopCity().isEmpty()) {
+            if (isBadgesExist(productItem)) {
+                location.setText(" \u2022 " + MethodChecker.fromHtml(productItem.getShopCity()));
+            } else {
+                location.setText(MethodChecker.fromHtml(productItem.getShopCity()));
+            }
+            location.setVisibility(View.VISIBLE);
+        } else {
+            location.setVisibility(View.GONE);
+        }
 
-        shopName.setText(MethodChecker.fromHtml(productItem.getShopName()));
-        ImageHandler.loadImageSourceSize(context, productImage, productItem.getImageUrl());
-
+        setImageProduct(productItem);
+        if (productItem.isTopAds()) {
+            topadsIcon.setVisibility(View.VISIBLE);
+        } else {
+            topadsIcon.setVisibility(View.GONE);
+        }
+        productImage.setViewHintListener(productItem, new ImpressedImageView.ViewHintListener() {
+            @Override
+            public void onViewHint() {
+                productListener.onProductImpressed(productItem, getAdapterPosition());
+            }
+        });
         wishlistButtonContainer.setVisibility(View.VISIBLE);
         wishlistButton.setBackgroundResource(R.drawable.ic_wishlist);
 
@@ -94,47 +132,74 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             @Override
             public void onClick(View v) {
                 if (productItem.isWishlistButtonEnabled()) {
-                    itemClickListener.onWishlistButtonClicked(productItem, getAdapterPosition());
+                    productListener.onWishlistButtonClicked(productItem);
                 }
+            }
+        });
+
+        container.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                productListener.onLongClick(productItem, getAdapterPosition());
+                return true;
             }
         });
 
         container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemClickListener.onItemClicked(productItem, getAdapterPosition());
+                productListener.onItemClicked(productItem, getAdapterPosition());
             }
         });
 
-        if (productItem.getRating()!=0) {
+        if (productItem.getRating() != 0) {
             ratingReviewContainer.setVisibility(View.VISIBLE);
             rating.setImageResource(
-                    RatingView.getRatingDrawable(Math.round(productItem.getRating()))
-            );
+                    RatingView.getRatingDrawable((productItem.isTopAds())
+                            ? getStarCount(productItem.getRating())
+                            : Math.round(productItem.getRating())
+                    ));
             reviewCount.setText("(" + productItem.getCountReview() + ")");
         } else {
             ratingReviewContainer.setVisibility(View.GONE);
         }
-
+        if (productItem.isNew()) {
+            newLabel.setVisibility(View.VISIBLE);
+        } else {
+            newLabel.setVisibility(View.GONE);
+        }
         renderBadges(productItem.getBadgesList());
-        renderLabels(productItem.getLabelList());
     }
 
-    protected void renderLabels(List<LabelItem> labelList) {
-        List<String> titles = new ArrayList<>();
-        List<String> colors = new ArrayList<>();
-        for (int i = 0; i < labelList.size(); i++) {
-            titles.add(labelList.get(i).getTitle());
-            colors.add(labelList.get(i).getColor());
+    private int getStarCount(int rating) {
+        return Math.round(rating / 20f);
+    }
+
+    private boolean isBadgesExist(ProductItem productItem) {
+        List<BadgeItem> badgesList = productItem.getBadgesList();
+        if (badgesList == null || badgesList.isEmpty()) {
+            return false;
         }
-        IndicatorViewHelper.renderLabelsViewV2(context, labelContainer, titles, colors);
+
+        for (BadgeItem badgeItem : badgesList) {
+            if (badgeItem.isShown()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected void renderBadges(List<BadgeItem> badgesList) {
-        List<String> badgesImageUrl = new ArrayList<>();
-        for (BadgeItem model : badgesList) {
-            badgesImageUrl.add(model.getImageUrl());
+        badgesContainer.removeAllViews();
+        for (BadgeItem badgeItem : badgesList) {
+            if (badgeItem.isShown()) {
+                LuckyShopImage.loadImage(context, badgeItem.getImageUrl(), badgesContainer);
+            }
         }
-        IndicatorViewHelper.renderBadgesViewV2(context, badgesContainer, badgesImageUrl);
     }
+
+    public void setImageProduct(ProductItem productItem) {
+        ImageHandler.loadImageSourceSize(context, productImage, productItem.getImageUrl());
+    }
+
 }

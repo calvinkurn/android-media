@@ -10,6 +10,7 @@ import android.os.Parcelable;
 public class BadgeItem implements Parcelable {
     private String imageUrl;
     private String title;
+    private boolean isShown;
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
@@ -27,6 +28,23 @@ public class BadgeItem implements Parcelable {
         return title;
     }
 
+    public boolean isShown() {
+        return isShown;
+    }
+
+    public void setShown(boolean shown) {
+        isShown = shown;
+    }
+
+    public BadgeItem() {
+    }
+
+    public BadgeItem(String imageUrl, String title, boolean isShown) {
+        this.imageUrl = imageUrl;
+        this.title = title;
+        this.isShown = isShown;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -36,17 +54,16 @@ public class BadgeItem implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.imageUrl);
         dest.writeString(this.title);
-    }
-
-    public BadgeItem() {
+        dest.writeByte(this.isShown ? (byte) 1 : (byte) 0);
     }
 
     protected BadgeItem(Parcel in) {
         this.imageUrl = in.readString();
         this.title = in.readString();
+        this.isShown = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<BadgeItem> CREATOR = new Parcelable.Creator<BadgeItem>() {
+    public static final Creator<BadgeItem> CREATOR = new Creator<BadgeItem>() {
         @Override
         public BadgeItem createFromParcel(Parcel source) {
             return new BadgeItem(source);

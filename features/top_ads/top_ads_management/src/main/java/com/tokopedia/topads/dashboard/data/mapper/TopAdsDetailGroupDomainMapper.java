@@ -1,6 +1,6 @@
 package com.tokopedia.topads.dashboard.data.mapper;
 
-import com.tokopedia.seller.common.data.response.DataResponse;
+import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
 import com.tokopedia.topads.dashboard.data.model.response.DataResponseCreateGroup;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
 

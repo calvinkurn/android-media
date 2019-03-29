@@ -1,5 +1,6 @@
 package com.tokopedia.events.view.adapter;
 
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -33,9 +34,8 @@ public class CategoryFragmentPagerAdapter extends FragmentStatePagerAdapter {
             }
         }
         fragmentArrayList = new ArrayList<>();
-        Fragment fragment = null;
         for (int i = 0; i < this.categoryList.size(); i++)
-            fragmentArrayList.add(fragment);
+            fragmentArrayList.add(null);
     }
 
     @Override
@@ -44,12 +44,14 @@ public class CategoryFragmentPagerAdapter extends FragmentStatePagerAdapter {
         try {
             fragment = fragmentArrayList.get(position);
             if (fragment == null) {
-                fragment = CategoryFragment.newInstance(categoryList.get(position), position);
+                fragment = CategoryFragment.newInstance(categoryList.get(position),
+                        String.valueOf(categoryList.get(position).getCategoryId()));
                 fragmentArrayList.remove(position);
                 fragmentArrayList.add(position, fragment);
             }
         } catch (IndexOutOfBoundsException e) {
-            CategoryFragment categoryFragment = (CategoryFragment) CategoryFragment.newInstance(categoryList.get(position), position);
+            CategoryFragment categoryFragment = (CategoryFragment) CategoryFragment.newInstance(categoryList.get(position),
+                    String.valueOf(categoryList.get(position).getCategoryId()));
             fragmentArrayList.add(position, categoryFragment);
             fragment = fragmentArrayList.get(position);
         }
@@ -67,7 +69,7 @@ public class CategoryFragmentPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
-    public int getItemPosition(Object object) {
+    public int getItemPosition(@NonNull Object object) {
         return PagerAdapter.POSITION_UNCHANGED;
     }
 }

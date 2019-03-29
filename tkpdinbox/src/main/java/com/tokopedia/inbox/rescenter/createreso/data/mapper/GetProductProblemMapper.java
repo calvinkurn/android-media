@@ -1,7 +1,5 @@
 package com.tokopedia.inbox.rescenter.createreso.data.mapper;
 
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.AmountResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.OrderDetailResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.OrderProductResponse;
@@ -26,9 +24,13 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.Ship
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.StatusDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.StatusInfoDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.StatusTroubleDomain;
+import com.tokopedia.inbox.rescenter.network.ErrorMessageException;
+import com.tokopedia.inbox.rescenter.network.ResolutionResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -37,14 +39,14 @@ import rx.functions.Func1;
  * Created by yoasfs on 16/08/17.
  */
 
-public class GetProductProblemMapper implements Func1<Response<TkpdResponse>, ProductProblemResponseDomain> {
+public class GetProductProblemMapper implements Func1<Response<ResolutionResponse<ProductProblemListResponse>>, ProductProblemResponseDomain> {
 
-    @Override
-    public ProductProblemResponseDomain call(Response<TkpdResponse> response) {
-        return mappingResponse(response);
+    @Inject
+    public GetProductProblemMapper() {
     }
 
-    private ProductProblemResponseDomain mappingResponse(Response<TkpdResponse> response) {
+    @Override
+    public ProductProblemResponseDomain call(Response<ResolutionResponse<ProductProblemListResponse>> response) {
         if (response.isSuccessful()) {
             if (response.body().isNullData()) {
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
@@ -56,8 +58,8 @@ public class GetProductProblemMapper implements Func1<Response<TkpdResponse>, Pr
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }
-        ProductProblemListResponse productProblemListResponse = response.body().convertDataObj(
-                ProductProblemListResponse.class);
+        ProductProblemListResponse productProblemListResponse = response.body().getData();
+
         return new ProductProblemResponseDomain(
                 mappingProductProblemListDomain(
                         productProblemListResponse.getProductProblemResponseList()));

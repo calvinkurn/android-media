@@ -1,9 +1,14 @@
 package com.tokopedia.tkpdpdp.listener;
 
+import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.view.View;
 
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.listener.ViewListener;
@@ -11,13 +16,24 @@ import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
+import com.tokopedia.core.product.model.productdetail.mosthelpful.ReviewImageAttachment;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
-import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.gallery.viewmodel.ImageReviewItem;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.tkpdpdp.courier.CourierViewData;
+import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
+import com.tokopedia.tkpdpdp.revamp.ProductViewData;
+import com.tokopedia.tkpdpdp.viewmodel.AffiliateInfoViewModel;
+import com.tokopedia.transaction.common.sharedata.AddToCartResult;
+import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import model.TradeInParams;
 
 /**
  * @author ANGGA on 11/2/2015.
@@ -25,8 +41,21 @@ import java.util.List;
 public interface ProductDetailView extends ViewListener {
 
     String SOURCE_BUTTON_BUY_PDP = "BUTTON_BUY_PDP";
+    String SOURCE_BUTTON_CART_PDP = "BUTTON_CART_PDP";
+    String SOURCE_BUTTON_TRADEIN= "BUTTON_TRADE_IN";
     String SOURCE_BUTTON_BUY_VARIANT = "BUTTON_BUY_VARIANT";
+    String SOURCE_BUTTON_CART_VARIANT = "SOURCE_BUTTON_CART_VARIANT";
+    String SOURCE_BUTTON_CHAT_PDP = "SOURCE_BUTTON_CHAT_PDP";
 
+    void onByMeClicked(AffiliateInfoViewModel affiliate, boolean isRegularPdp);
+
+    void renderAffiliateButton(AffiliateInfoViewModel affiliate);
+
+    void onWishlistCountLoaded(String wishlistCountText);
+
+    void onImageReviewLoaded(List<ImageReviewItem> data);
+
+    void onProductInfoShortClicked(Intent intent);
     /**
      * Saat salah satu kategori product di klik.
      *
@@ -121,22 +150,28 @@ public interface ProductDetailView extends ViewListener {
      *
      * @param data  data yang dikirim
      */
-    void onProductShareClicked(@NonNull ShareData data);
+    void onProductShareClicked(@NonNull ProductDetailData data);
 
     /**
      * Pada saat rating product diklik
      */
     void onProductRatingClicked(String productId, String shopId, String productName);
 
+    @Deprecated
     void onCourierClicked(@NonNull Bundle bundle);
+
+    void onCourierClicked(@NonNull String productId,
+                          @Nullable ArrayList<CourierViewData> arrayList);
 
     void onWholesaleClicked(@NonNull Bundle bundle);
 
-    void onVariantClicked(@NonNull Bundle bundle);
+    void openVariantPage(int source);
 
     void onInstallmentClicked(@NonNull Bundle bundle);
 
     void onDescriptionClicked(@NonNull Bundle bundle);
+
+    void onDescriptionClicked(@NonNull Intent intent);
 
     /**
      * Pada saat ada error pada toko
@@ -158,8 +193,9 @@ public interface ProductDetailView extends ViewListener {
      * user dalam keadaan login
      *
      * @param data model yang dikirim
+     * @param source button mana yg mentrigger
      */
-    void onProductBuySessionLogin(@NonNull ProductCartPass data);
+    void onProductBuySessionLogin(@NonNull ProductCartPass data, String source);
 
     /**
      * Pada saat tombol beli di klik
@@ -180,8 +216,9 @@ public interface ProductDetailView extends ViewListener {
      * ngisi/mengupdate UI dari full data product detail yang diterima
      *
      * @param successResult data product detail
+     * @param viewData
      */
-    void onProductDetailLoaded(@NonNull ProductDetailData successResult);
+    void onProductDetailLoaded(@NonNull ProductDetailData successResult, ProductViewData viewData);
 
     /**
      * Megisi/mengupdate UI dengan data product lainnya yang diterima
@@ -283,8 +320,6 @@ public interface ProductDetailView extends ViewListener {
 
     void showSuccessWishlistSnackBar();
 
-    void showPromoWidget(PromoAttributes promoAttributes);
-
     void onPromoWidgetCopied();
 
     void showProductCampaign();
@@ -313,11 +348,47 @@ public interface ProductDetailView extends ViewListener {
 
     void restoreIsAppBarCollapsed(boolean isAppBarCollapsed);
 
+    void loadPromo();
+
     boolean isSellerApp();
 
-    void renderAddToCartSuccess(String message);
+    void renderAddToCartSuccess(AddToCartResult addToCartResult);
+
+    void renderAddToCartSuccessOpenCheckout(AddToCartResult addToCartResult);
+
+    void openLoginPage();
+
+    int generateStateVariant(String source);
 
     void updateButtonBuyListener();
 
     void trackingEnhanceProductDetail();
+
+    Context getActivityContext();
+
+    void refreshData();
+
+    void onSuccesLoadRateEstimation(RatesModel ratesModel);
+
+    void onErrorLoadRateEstimation();
+
+    void moveToEstimationDetail();
+
+    void showErrorAffiliate(String message);
+
+    void showPromoWidget(PromoAttributes promoAttributes);
+
+    boolean isFromExploreAffiliate();
+
+    void onImageFromBuyerClick(int viewType, String reviewId);
+
+    void onMostHelpfulImageClicked(List<ReviewImageAttachment> data, int position);
+
+    void checkTradeIn(TradeInParams tradeInParams);
+
+    void navigateToOneClickShipment();
+
+    void navigateToExpressCheckout();
+
+    String getDeviceId();
 }

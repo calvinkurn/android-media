@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.thankyou.di.module;
 
 import android.content.Context;
 
-import com.apollographql.apollo.ApolloClient;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -12,7 +11,6 @@ import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.thankyou.data.factory.ThanksTrackerFactory;
 import com.tokopedia.tkpd.thankyou.data.mapper.DigitalTrackerMapper;
-import com.tokopedia.tkpd.thankyou.data.mapper.MarketplaceTrackerMapper;
 import com.tokopedia.tkpd.thankyou.data.repository.ThanksTrackerRepository;
 import com.tokopedia.tkpd.thankyou.data.repository.ThanksTrackerRepositoryImpl;
 import com.tokopedia.tkpd.thankyou.data.source.DigitalTrackerCloudSource;
@@ -69,16 +67,9 @@ public class ThanksTrackerModule {
 
     @Provides
     @ThanksTrackerScope
-    MarketplaceTrackerMapper provideMarketplaceTrackerMapper(SessionHandler sessionHandler) {
-        return new MarketplaceTrackerMapper(sessionHandler);
-    }
-
-    @Provides
-    @ThanksTrackerScope
     ThanksTrackerFactory provideThanksAnalyticsFactory(DigitalTrackerApi digitalTrackerApi,
                                                        DigitalTrackerMapper digitalTrackerMapper,
                                                        MarketplaceTrackerApi marketplaceTrackerApi,
-                                                       MarketplaceTrackerMapper marketplaceTrackerMapper,
                                                        @ApplicationContext Context context,
                                                        Gson gson,
                                                        SessionHandler sessionHandler,
@@ -87,7 +78,6 @@ public class ThanksTrackerModule {
                 digitalTrackerApi,
                 digitalTrackerMapper,
                 marketplaceTrackerApi,
-                marketplaceTrackerMapper,
                 context,
                 gson,
                 sessionHandler,
@@ -109,8 +99,8 @@ public class ThanksTrackerModule {
 
     @Provides
     @ThanksTrackerScope
-    ThanksTracker.Presenter provideThanksAnalyticsPresenter(ThankYouPageTrackerUseCase thankYouPageTrackerUseCase,
+    ThanksTracker.Presenter provideThanksAnalyticsPresenter(@ApplicationContext Context context, ThankYouPageTrackerUseCase thankYouPageTrackerUseCase,
                                                             Gson gson) {
-        return new ThanksTrackerPresenter(thankYouPageTrackerUseCase, gson);
+        return new ThanksTrackerPresenter(context, thankYouPageTrackerUseCase, gson);
     }
 }

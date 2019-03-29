@@ -11,8 +11,8 @@ import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.structure.container.ForeignKeyContainer;
-import com.tokopedia.core.database.DatabaseConstant;
 import com.tokopedia.core.database.DbFlowDatabase;
+import com.tokopedia.core.database.DatabaseConstant;
 
 /**
  * Created by Toped18 on 8/2/2016.

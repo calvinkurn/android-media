@@ -1,12 +1,13 @@
 package com.tokopedia.payment.fingerprint.domain;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -20,17 +21,19 @@ public class GetPostDataOtpUseCase extends UseCase<HashMap<String, String>> {
 
     public static final String TRANSACTION_ID = "transaction_id";
     private FingerprintRepository fingerprintRepository;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
-    public GetPostDataOtpUseCase(FingerprintRepository fingerprintRepository, UserSession userSession) {
+    public GetPostDataOtpUseCase(FingerprintRepository fingerprintRepository, UserSessionInterface userSession) {
         this.fingerprintRepository = fingerprintRepository;
         this.userSession = userSession;
     }
 
     @Override
     public Observable<HashMap<String, String>> createObservable(final RequestParams requestParams) {
-        TKPDMapParam<String, String> params = AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), new TKPDMapParam<String, String>());
+        Map<String, String> params = AuthUtil.generateParamsNetwork(
+                userSession.getUserId(), userSession.getDeviceId(), new TKPDMapParam<>()
+        );
         requestParams.putAllString(params);
         return fingerprintRepository.getPostDataOtp(requestParams.getString(TRANSACTION_ID, ""));
     }

@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationItemDomain;

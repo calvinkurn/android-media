@@ -3,7 +3,7 @@ package com.tokopedia.transaction.purchase.presenter;
 import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.drawer2.data.factory.NotificationSourceFactory;
@@ -71,10 +71,10 @@ public class TxSummaryPresenterImpl implements TxSummaryPresenter {
     @Override
     public void getNotificationPurcase(Context context) {
         List<Integer> countList = new ArrayList<>();
-        countList.add(cacheHandler.getInt(DrawerNotification.CACHE_PURCHASE_PAYMENT_CONF, 0));
-        countList.add(cacheHandler.getInt(DrawerNotification.CACHE_PURCHASE_PAYMENT_CONFIRM, 0));
-        countList.add(cacheHandler.getInt(DrawerNotification.CACHE_PURCHASE_ORDER_STATUS, 0));
-        countList.add(cacheHandler.getInt(DrawerNotification.CACHE_PURCHASE_DELIVERY_CONFIRM, 0));
+        countList.add(cacheHandler.getInt(DrawerNotification.CACHE_PURCHASE_CONFIRMED, 0));
+        countList.add(cacheHandler.getInt(DrawerNotification.CACHE_PURCHASE_PROCESSED, 0));
+        countList.add(cacheHandler.getInt(DrawerNotification.CACHE_PURCHASE_SHIPPED, 0));
+        countList.add(cacheHandler.getInt(DrawerNotification.CACHE_PURCHASE_DELIVERED, 0));
         countList.add(cacheHandler.getInt(DrawerNotification.CACHE_PURCHASE_REORDER, 0));
 
         List<TxSummaryItem> summaryItemList = new ArrayList<>();
@@ -100,10 +100,10 @@ public class TxSummaryPresenterImpl implements TxSummaryPresenter {
             public void onNext(NotificationModel notificationModel) {
                 NotificationData data = notificationModel.getNotificationData();
                 List<Integer> countList = new ArrayList<>();
-                countList.add(data.getPurchase().getPurchasePaymentConf());
-                countList.add(data.getPurchase().getPurchasePaymentConfirm());
-                countList.add(data.getPurchase().getPurchaseOrderStatus());
-                countList.add(data.getPurchase().getPurchaseDeliveryConfirm());
+                countList.add(data.getBuyerOrder().getConfirmed());
+                countList.add(data.getBuyerOrder().getProcessed());
+                countList.add(data.getBuyerOrder().getShipped());
+                countList.add(data.getBuyerOrder().getArriveAtDestination());
                 countList.add(data.getPurchase().getPurchaseReorder());
 
                 List<TxSummaryItem> summaryItemList = new ArrayList<>();
@@ -116,21 +116,27 @@ public class TxSummaryPresenterImpl implements TxSummaryPresenter {
 
     private void setSummaryData(Context context, List<Integer> countList, List<TxSummaryItem> summaryItemList) {
         summaryItemList.add(new TxSummaryItem(
-                TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION,
-                context.getString(R.string.payment_status),
-                context.getString(R.string.payment_status_desc),
+                TransactionPurchaseRouter.TAB_POSITION_PURCHASE_CONFIRMED,
+                context.getString(com.tokopedia.transaction.R.string.tkpdtransaction_label_tx_confirmed),
+            "",
+                countList.get(0)
+        ));
+        summaryItemList.add(new TxSummaryItem(
+                TransactionPurchaseRouter.TAB_POSITION_PURCHASE_PROCESSED,
+                context.getString(com.tokopedia.transaction.R.string.tkpdtransaction_label_tx_processed),
+                "",
                 countList.get(1)
         ));
         summaryItemList.add(new TxSummaryItem(
-                TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER,
-                context.getString(R.string.order_status),
-                context.getString(R.string.order_status_desc),
+                TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SHIPPED,
+                context.getString(com.tokopedia.transaction.R.string.tkpdtransaction_label_tx_shipped),
+                "",
                 countList.get(2)
         ));
         summaryItemList.add(new TxSummaryItem(
-                TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER,
-                context.getString(R.string.delivery_confirm),
-                context.getString(R.string.title_receive_confirmation_dashboard_desc),
+                TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVERED,
+                context.getString(com.tokopedia.transaction.R.string.tkpdtransaction_label_tx_delivered),
+                "",
                 countList.get(3)
         ));
         summaryItemList.add(new TxSummaryItem(

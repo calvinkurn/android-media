@@ -294,7 +294,11 @@ public class RangeInputView extends BaseCustomView {
 
     private int getValueFromPosition(float x) {
         float valueStopPosition = (x - seekBarLeftOffset) / seekBarRange * (VALUE_STOP_COUNT - 1);
-        return valueList[Math.round(valueStopPosition)];
+        int index = Math.round(valueStopPosition);
+        if (index < 0 || index > VALUE_STOP_COUNT - 1) {
+            return 0;
+        }
+        return valueList[index];
     }
 
     @Override
@@ -395,6 +399,7 @@ public class RangeInputView extends BaseCustomView {
     public interface GestureListener {
         void onButtonRelease(int minValue, int maxValue);
         void onButtonPressed(int minValue, int maxValue);
+        void onValueEditedFromTextInput(int minValue, int maxValue);
     }
 
     private class MinInputListener extends InputTextFocusChangeListener {
@@ -444,9 +449,16 @@ public class RangeInputView extends BaseCustomView {
             if (!TextUtils.isEmpty(editable.toString())) {
                 inputValue = Integer.parseInt(StringUtils.omitNonNumeric(editable.toString()));
             }
+            int lastMinValue = minValue;
+            int lastMaxValue = maxValue;
             updateValue(inputValue);
             refreshInputText();
             refreshButtonPosition();
+            if (minValue != lastMinValue || maxValue != lastMaxValue) {
+                if (gestureListener != null) {
+                    gestureListener.onValueEditedFromTextInput(minValue, maxValue);
+                }
+            }
         }
 
         abstract void updateValue(int newValue);

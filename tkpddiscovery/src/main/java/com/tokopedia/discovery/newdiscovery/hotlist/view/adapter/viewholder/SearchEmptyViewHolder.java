@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.HotlistListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.SearchEmptyViewModel;
 
 /**
@@ -19,12 +19,12 @@ public class SearchEmptyViewHolder extends AbstractViewHolder<SearchEmptyViewMod
     public static final int LAYOUT = R.layout.design_error_empty_search;
 
     private final Context context;
-    private final ItemClickListener mItemClickListener;
+    private final HotlistListener mHotlistListener;
 
-    public SearchEmptyViewHolder(View itemView, ItemClickListener mItemClickListener) {
+    public SearchEmptyViewHolder(View itemView, HotlistListener mHotlistListener) {
         super(itemView);
         this.context = itemView.getContext();
-        this.mItemClickListener = mItemClickListener;
+        this.mHotlistListener = mHotlistListener;
     }
 
     @Override

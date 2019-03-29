@@ -22,6 +22,9 @@ import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.apiservices.drawer.DrawerService;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.user.session.UserSession;
 
 import rx.Observable;
 
@@ -47,8 +50,11 @@ public class DrawerInjector {
         JobExecutor jobExecutor = new JobExecutor();
         PostExecutionThread uiThread = new UIThread();
 
+        NetworkRouter networkRouter = (NetworkRouter) context.getApplicationContext();
+        UserSession userSession = new UserSession(context);
+
         UserAttributesRepository userAttributesRepository = new UserAttributesRepositoryImpl(
-                new UserAttributesFactory(new DrawerService(), drawerCache)
+                new UserAttributesFactory(new DrawerService(context, userSession, networkRouter), drawerCache)
         );
 
         GetUserAttributesUseCase getUserAttributesUseCase = new GetUserAttributesUseCase(jobExecutor,

@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.thankyou.data.factory;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.thankyou.data.mapper.DigitalTrackerMapper;
@@ -32,7 +32,6 @@ public class ThanksTrackerFactory {
     public ThanksTrackerFactory(DigitalTrackerApi digitalTrackerApi,
                                 DigitalTrackerMapper digitalTrackerMapper,
                                 MarketplaceTrackerApi marketplaceTrackerApi,
-                                MarketplaceTrackerMapper marketplaceTrackerMapper,
                                 Context context,
                                 Gson gson,
                                 SessionHandler sessionHandler,
@@ -54,7 +53,7 @@ public class ThanksTrackerFactory {
             if (platform.equals(ThanksTrackerConst.Platform.DIGITAL)) {
                 return new DigitalTrackerCloudSource(params, digitalTrackerApi, digitalTrackerMapper, gson, sessionHandler, gcmHandler);
             } else if (platform.equals(ThanksTrackerConst.Platform.MARKETPLACE)) {
-                return new MarketplaceTrackerCloudSource(params, marketplaceTrackerApi, marketplaceTrackerMapper, context);
+                return new MarketplaceTrackerCloudSource(params, marketplaceTrackerApi, sessionHandler, context);
             }
         }
 

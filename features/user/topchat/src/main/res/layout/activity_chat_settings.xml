@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/chat_personal_cardview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/white"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/cl_personalView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_24"
+                android:paddingBottom="@dimen/dp_16">
+
+                <ImageView
+                    android:id="@+id/chat_personal_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:src="@drawable/chat_personal_img"
+                    app:layout_constraintLeft_toLeftOf="parent" />
+
+                <TextView
+                    android:id="@+id/chat_personal_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_12"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:lineSpacingExtra="2sp"
+                    android:text="@string/chat_personal_text"
+                    android:textStyle="bold"
+                    android:textColor="@color/black_70"
+                    android:textSize="16sp"
+                    app:layout_constraintLeft_toRightOf="@+id/chat_personal_img" />
+
+                <Switch
+                    android:id="@+id/chat_personal_switch"
+                    style="@style/Switch"
+                    android:padding="@dimen/dp_4"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/chat_personal_information_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:lineSpacingExtra="6sp"
+                    android:text="@string/chat_personal_info_text"
+                    android:textColor="#85000000"
+                    android:textSize="14sp"
+                    android:lines="2"
+                    android:ellipsize="end"
+                    app:layout_constraintLeft_toLeftOf="@+id/chat_personal_text"
+                    app:layout_constraintRight_toLeftOf="@+id/chat_personal_switch"
+                    app:layout_constraintTop_toBottomOf="@+id/chat_personal_text" />
+
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/chat_personal_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_24"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:background="@drawable/chat_info_bg"
+                    android:paddingBottom="@dimen/dp_16"
+                    android:paddingTop="@dimen/dp_16"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/chat_personal_information_text">
+
+                    <ImageView
+                        android:id="@+id/chat_personal_info_img"
+                        android:layout_width="@dimen/dp_36"
+                        android:layout_height="@dimen/dp_36"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:src="@drawable/ic_chat_info"
+                        android:elevation="@dimen/dp_4"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <TextView
+                        android:id="@+id/chat_personal_info"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:lineSpacingExtra="4sp"
+                        android:text="@string/chat_personal_blocked_validity"
+                        android:textColor="@color/black_54"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/chat_personal_info_img"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.constraint.ConstraintLayout>
+
+
+            </android.support.constraint.ConstraintLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/chat_promotional_cardview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            tools:visibility="visible"
+            android:visibility="gone">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/cl_promotionView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_24"
+                android:paddingBottom="@dimen/dp_16">
+
+                <ImageView
+                    android:id="@+id/chat_promotion_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:src="@drawable/chat_promo_img"
+                    app:layout_constraintLeft_toLeftOf="parent" />
+
+                <TextView
+                    android:id="@+id/chat_promotion_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_12"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:lineSpacingExtra="2sp"
+                    android:text="@string/chat_promotion_text"
+                    android:textStyle="bold"
+                    android:textColor="@color/black_70"
+                    android:textSize="16sp"
+                    app:layout_constraintLeft_toRightOf="@+id/chat_promotion_img" />
+
+                <Switch
+                    android:id="@+id/chat_promotion_switch"
+                    style="@style/Switch"
+                    android:padding="@dimen/dp_4"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/chat_information_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:lineSpacingExtra="6sp"
+                    android:text="@string/chat_information_text"
+                    android:textColor="#85000000"
+                    android:textSize="14sp"
+                    app:layout_constraintLeft_toLeftOf="@+id/chat_promotion_text"
+                    app:layout_constraintRight_toLeftOf="@+id/chat_promotion_switch"
+                    app:layout_constraintTop_toBottomOf="@+id/chat_promotion_text" />
+
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/chat_promotion_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_24"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:background="@drawable/chat_info_bg"
+                    android:paddingBottom="@dimen/dp_16"
+                    android:paddingTop="@dimen/dp_16"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/chat_information_text">
+
+                    <ImageView
+                        android:id="@+id/chat_promotion_info_img"
+                        android:layout_width="@dimen/dp_36"
+                        android:layout_height="@dimen/dp_36"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:src="@drawable/ic_chat_info"
+                        android:elevation="@dimen/dp_4"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <TextView
+                        android:id="@+id/chat_promotion_info"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:lineSpacingExtra="4sp"
+                        android:text="@string/chat_promotion_blocked_validity"
+                        android:textColor="@color/black_54"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/chat_promotion_info_img"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.constraint.ConstraintLayout>
+
+
+            </android.support.constraint.ConstraintLayout>
+
+
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_38"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/prog_bar"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+
+</FrameLayout>

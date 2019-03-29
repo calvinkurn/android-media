@@ -365,8 +365,12 @@ public class Animation {
 		long currentTime = System.currentTimeMillis();
 		mCurrentGlobalDuration = currentTime - mGlobalInitTime;
 		for (int i = 0; i < nEntries; i++) {
-			diff = currentTime - mInitTime[i];
-			mCurrentDuration[i] = diff < 0 ? 0 : diff;
+			long initTime = 0;
+			if (mInitTime != null && mInitTime.length > 0 && mInitTime.length > i) {
+				initTime = mInitTime[i];
+				diff = currentTime - initTime;
+				mCurrentDuration[i] = diff < 0 ? 0 : diff;
+			}
 		}
 
 		// In case current duration slightly goes over the

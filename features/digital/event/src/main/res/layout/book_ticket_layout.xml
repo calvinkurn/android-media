@@ -196,7 +196,7 @@
             android:layout_below="@+id/total"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:textColor="@color/price_pdp"
+            android:textColor="@color/red_800"
             android:textSize="@dimen/sp_12"
             android:textStyle="bold"
             tools:text="TOTAL:" />
@@ -220,6 +220,7 @@
         android:layout_marginTop="?attr/actionBarSize"
         android:background="@color/black_12"
         android:clickable="true"
+        android:elevation="@dimen/dp_4"
         android:focusable="true"
         android:visibility="gone">
 
@@ -236,7 +237,7 @@
         android:orientation="vertical">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/app_bar"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/white"

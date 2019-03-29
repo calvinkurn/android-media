@@ -6,6 +6,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,17 +21,20 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.gallery.GalleryActivity;
-import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.design.text.TkpdTextInputLayout;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+import com.tokopedia.imagepicker.picker.main.builder.VideoPickerBuilder;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.imagepicker.picker.main.view.VideoPickerActivity;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.adapter.AttachmentAdapter;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.AttachmentAdapterListener;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.AttachmentFragmentListener;
@@ -41,12 +46,19 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.Attach
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
 
 /**
  * Created by yoasfs on 30/08/17.
@@ -56,9 +68,11 @@ import permissions.dispatcher.RuntimePermissions;
 public class AttachmentFragment extends BaseDaggerFragment implements AttachmentFragmentListener.View, AttachmentAdapterListener {
 
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
-    private static final int REQUEST_CODE_GALLERY = 1243;
+    private static final int REQUEST_CODE_VIDEO = 1243;
     private static final int COUNT_MAX_ATTACHMENT = 5;
     private static final int COUNT_MIN_STRING = 30;
+    private static final int REQUEST_CODE_IMAGE_REPUTATION = 3479;
+    public static final int MAX_VIDEO_SIZE_IN_KB = 20000;
 
     private TkpdTextInputLayout tilInformation;
     private EditText etInformation;
@@ -71,20 +85,10 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     private ImageUploadHandler uploadImageDialog;
 
 
-    public static AttachmentFragment newInstance(ResultViewModel resultViewModel) {
+    public static AttachmentFragment newInstance(Bundle bundle) {
         AttachmentFragment fragment = new AttachmentFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(RESULT_VIEW_MODEL_DATA, resultViewModel);
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        uploadImageDialog = ImageUploadHandler.createInstance(this);
-        presenter = new AttachmentFragmentPresenter(getActivity(), this, uploadImageDialog);
-        presenter.attachView(this);
-        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
@@ -159,50 +163,54 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
+    public void onViewStateRestored(@Nullable Bundle savedState) {
+        super.onViewStateRestored(savedState);
+        if (savedState != null) {
+            resultViewModel = savedState.getParcelable(RESULT_VIEW_MODEL_DATA);
+            presenter.initResultViewModel(resultViewModel);
+        }
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
         resultViewModel.message.remark = etInformation.getText().toString();
-        state.putParcelable(RESULT_VIEW_MODEL_DATA, resultViewModel);
+        outState.putParcelable(RESULT_VIEW_MODEL_DATA, resultViewModel);
     }
 
-    @Override
-    public void onRestoreState(Bundle savedState) {
-        resultViewModel = savedState.getParcelable(RESULT_VIEW_MODEL_DATA);
-        presenter.initResultViewModel(resultViewModel);
-    }
 
     @Override
-    protected void setupArguments(Bundle arguments) {
-        resultViewModel = arguments.getParcelable(RESULT_VIEW_MODEL_DATA);
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_attachment;
-    }
-
-    @Override
-    protected void initView(View view) {
-        setupUI(view);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_attachment, container, false);
         tilInformation = (TkpdTextInputLayout) view.findViewById(R.id.til_information);
         etInformation = (EditText) view.findViewById(R.id.et_information);
         btnContinue = (Button) view.findViewById(R.id.btn_upload);
         rvAttachment = (RecyclerView) view.findViewById(R.id.rv_attachment);
-        adapter = new AttachmentAdapter(context, COUNT_MAX_ATTACHMENT, this);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setupArguments(getArguments());
+        initView();
+        setViewListener();
+    }
+
+    private void setupArguments(Bundle arguments) {
+        resultViewModel = arguments.getParcelable(RESULT_VIEW_MODEL_DATA);
+    }
+
+    private void initView() {
+        adapter = new AttachmentAdapter(getActivity(), COUNT_MAX_ATTACHMENT, this);
 
         buttonDisabled(btnContinue);
-        rvAttachment.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        rvAttachment.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         rvAttachment.setAdapter(adapter);
-        tilInformation.setHint(context.getResources().getString(R.string.string_information));
+        tilInformation.setHint(getActivity().getResources().getString(R.string.string_information));
+        uploadImageDialog = ImageUploadHandler.createInstance(this);
+        presenter = new AttachmentFragmentPresenter(getActivity(), this, uploadImageDialog);
+        presenter.attachView(this);
         presenter.initResultViewModel(resultViewModel);
 
     }
@@ -217,7 +225,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     public void updateView(Attachment attachment) {
         boolean isComplete = true;
         if (attachment.information.length() < COUNT_MIN_STRING) {
-            tilInformation.setError(context.getResources().getString(R.string.string_min_30_char));
+            tilInformation.setError(getActivity().getResources().getString(R.string.string_min_30_char));
             isComplete = false;
         } else {
             tilInformation.hideErrorSuccess();
@@ -241,19 +249,18 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     public void buttonSelected(Button button) {
         button.setClickable(true);
         button.setEnabled(true);
-        button.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_enable));
-        button.setTextColor(ContextCompat.getColor(context, R.color.white));
+        button.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_enable));
+        button.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
     }
 
     public void buttonDisabled(Button button) {
         button.setClickable(false);
         button.setEnabled(false);
-        button.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_disable));
-        button.setTextColor(ContextCompat.getColor(context, R.color.black_38));
+        button.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_disable));
+        button.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_38));
     }
 
-    @Override
-    protected void setViewListener() {
+    private void setViewListener() {
         etInformation.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -275,7 +282,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
             @Override
             public void onClick(View view) {
                 presenter.btnContinueClicked();
-                UnifyTracking.eventCreateResoStep3Continue();
+                UnifyTracking.eventCreateResoStep3Continue(getActivity());
             }
         });
     }
@@ -283,17 +290,18 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     @Override
     public void onAddAttachmentClicked() {
         if (adapter.getList().size() < COUNT_MAX_ATTACHMENT) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage(context.getString(R.string.dialog_upload_option));
-            builder.setPositiveButton(context.getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(getActivity().getString(R.string.dialog_upload_option));
+            builder.setPositiveButton(getActivity().getString(R.string.title_video), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    AttachmentFragmentPermissionsDispatcher.actionImagePickerWithCheck(AttachmentFragment.this);
+                    actionVideoPicker();
                 }
-            }).setNegativeButton(context.getString(R.string.title_camera), new DialogInterface.OnClickListener() {
+            }).setNegativeButton(getActivity().getString(R.string.title_image), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    AttachmentFragmentPermissionsDispatcher.actionCameraWithCheck(AttachmentFragment.this);
+                    openImagePicker();
                 }
             });
 
@@ -304,6 +312,16 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.max_upload_detail_res_center));
         }
 
+    }
+
+    private void openImagePicker() {
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+                new int[]{TYPE_GALLERY, TYPE_CAMERA}, com.tokopedia.imagepicker.picker.gallery.type.GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
+                null
+                , null);
+        Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
+        startActivityForResult(intent, REQUEST_CODE_IMAGE_REPUTATION);
     }
 
     @Override
@@ -329,26 +347,25 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
         uploadImageDialog.actionCamera();
     }
 
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void actionImagePicker() {
-        if (TrackingUtils.getGtmString(AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
-            startActivityForResult(
-                    GalleryActivity.createIntent(getActivity(), GalleryType.ofAll()),
-                    REQUEST_CODE_GALLERY
-            );
-        } else {
-            uploadImageDialog.actionImagePicker();
-        }
+    public void actionVideoPicker() {
+        VideoPickerBuilder builder = new VideoPickerBuilder(getString(R.string.choose_video), MAX_VIDEO_SIZE_IN_KB,
+                0, null);
+        startActivityForResult(
+                VideoPickerActivity.getIntent(getActivity(), builder),
+                REQUEST_CODE_VIDEO
+        );
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case ImageUploadHandler.REQUEST_CODE:
-                presenter.handleDefaultOldUploadImageHandlerResult(resultCode, data);
+            case REQUEST_CODE_IMAGE_REPUTATION:
+                presenter.handleImageResult(resultCode, data);
                 break;
-            case REQUEST_CODE_GALLERY:
-                presenter.handleNewGalleryResult(resultCode, data);
+            case REQUEST_CODE_VIDEO:
+                presenter.handleVideoResult(resultCode, data);
                 break;
             default:
                 break;

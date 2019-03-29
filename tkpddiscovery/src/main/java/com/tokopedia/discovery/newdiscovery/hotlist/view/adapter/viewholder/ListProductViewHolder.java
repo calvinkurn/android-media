@@ -2,6 +2,7 @@ package com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.viewholder;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -9,20 +10,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.HotlistPageTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.customwidget.FlowLayout;
-import com.tokopedia.core.helper.IndicatorViewHelper;
+import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.HotlistListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistProductViewModel;
 import com.tokopedia.tkpdpdp.customview.RatingView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,56 +29,67 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
 
     protected TextView title;
     protected TextView price;
-    protected TextView shopName;
     protected TextView location;
     protected TextView reviewCount;
     protected ImageView productImage;
     protected ImageView rating;
     protected ImageView wishlistButton;
-    protected FlowLayout labelContainer;
     protected RelativeLayout wishlistButtonContainer;
     protected LinearLayout badgesContainer;
     protected LinearLayout ratingReviewContainer;
     protected View container;
+    protected TextView topLabel;
+    protected TextView bottomLabel;
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.listview_hotlist_product;
+    public static final int LAYOUT = R.layout.search_result_product_item_list;
 
-    private final Context context;
-    private final ItemClickListener mItemClickListener;
+    protected Context context;
+    protected HotlistListener mHotlistListener;
 
-    public ListProductViewHolder(View parent, ItemClickListener mItemClickListener) {
+    public ListProductViewHolder(View parent, HotlistListener mHotlistListener) {
         super(parent);
         context = parent.getContext();
-        this.mItemClickListener = mItemClickListener;
+        this.mHotlistListener = mHotlistListener;
         title = (TextView) parent.findViewById(R.id.title);
         price = (TextView) parent.findViewById(R.id.price);
-        shopName = (TextView) parent.findViewById(R.id.shop_name);
         location = (TextView) parent.findViewById(R.id.location);
         reviewCount = (TextView) parent.findViewById(R.id.review_count);
         productImage = (ImageView) parent.findViewById(R.id.product_image);
         rating = (ImageView) parent.findViewById(R.id.rating);
         wishlistButton = (ImageView) parent.findViewById(R.id.wishlist_button);
-        labelContainer = (FlowLayout) parent.findViewById(R.id.label_container);
         wishlistButtonContainer = (RelativeLayout) parent.findViewById(R.id.wishlist_button_container);
         badgesContainer = (LinearLayout) parent.findViewById(R.id.badges_container);
         ratingReviewContainer = (LinearLayout) parent.findViewById(R.id.rating_review_container);
         container = parent.findViewById(R.id.container);
+        topLabel = itemView.findViewById(R.id.topLabel);
+        bottomLabel = itemView.findViewById(R.id.bottomLabel);
     }
 
     @Override
     public void bind(final HotlistProductViewModel element) {
-
+        if (!TextUtils.isEmpty(element.getTopLabel())) {
+            topLabel.setText(element.getTopLabel());
+            topLabel.setVisibility(View.VISIBLE);
+        } else {
+            topLabel.setVisibility(View.GONE);
+        }
+        if (!TextUtils.isEmpty(element.getBottomLabel())) {
+            bottomLabel.setText(element.getBottomLabel());
+            bottomLabel.setVisibility(View.VISIBLE);
+        } else {
+            bottomLabel.setVisibility(View.GONE);
+        }
         title.setText(MethodChecker.fromHtml(element.getProductName()));
-        shopName.setText(MethodChecker.fromHtml(element.getShopName()));
 
-        price.setText(element.getPrice());
+        String priceText = !TextUtils.isEmpty(element.getPriceRange()) ?
+                element.getPriceRange() : element.getPrice();
+        price.setText(priceText);
 
         renderWishlistButton(element.isWishlist());
-        renderShopLocation(element.getShopCity());
-        renderProductImage(element.getImageUrl());
+        renderShopLocation(element);
+        renderProductImage(element);
         renderBadges(element.getBadgesList());
-        renderLabels(element.getLabelList());
         renderRating(element.getRating(), element.getCountReview());
 
         wishlistButtonContainer.setVisibility(View.VISIBLE);
@@ -103,12 +109,13 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
     }
 
     protected void onProductClicked(HotlistProductViewModel element) {
-        mItemClickListener.onProductClicked(element, getAdapterPosition());
+        mHotlistListener.onProductClicked(element, getAdapterPosition());
     }
 
     protected void onWishlistButtonClick(HotlistProductViewModel element) {
         if (element.isWishlistButtonEnabled()) {
-            mItemClickListener.onWishlistClicked(element.getProductID(), element.isWishlist());
+            mHotlistListener.onWishlistClicked(getAdapterPosition(),
+                    element.getProductName(), element.getProductID(), element.isWishlist());
         }
     }
 
@@ -132,35 +139,43 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
         }
     }
 
-    protected void renderProductImage(String imageUrl) {
-        ImageHandler.loadImageSourceSize(context, productImage, imageUrl);
+    protected void renderProductImage(HotlistProductViewModel productItem) {
+        ImageHandler.loadImageSourceSize(context, productImage, productItem.getImageUrl());
     }
 
-    protected void renderShopLocation(String shopCity) {
-        if (shopCity != null && !shopCity.isEmpty()) {
+    protected void renderShopLocation(HotlistProductViewModel element) {
+        if (!TextUtils.isEmpty(element.getShopCity())) {
+            if (isBadgesExist(element)) {
+                location.setText(" \u2022 " + MethodChecker.fromHtml(element.getShopCity()));
+            } else {
+                location.setText(MethodChecker.fromHtml(element.getShopCity()));
+            }
             location.setVisibility(View.VISIBLE);
-            location.setText(MethodChecker.fromHtml(shopCity));
         } else {
             location.setVisibility(View.INVISIBLE);
         }
     }
 
-    protected void renderLabels(List<HotlistProductViewModel.LabelModel> labelList) {
-        List<String> titles = new ArrayList<>();
-        List<String> colors = new ArrayList<>();
-        for (int i = 0; i < labelList.size(); i++) {
-            titles.add(labelList.get(i).getTitle());
-            colors.add(labelList.get(i).getColor());
+    private boolean isBadgesExist(HotlistProductViewModel element) {
+        List<HotlistProductViewModel.BadgeModel> badgesList = element.getBadgesList();
+        if (badgesList == null || badgesList.isEmpty()) {
+            return false;
         }
-        IndicatorViewHelper.renderLabelsViewV2(context, labelContainer, titles, colors);
+
+        for (HotlistProductViewModel.BadgeModel badgeItem : badgesList) {
+            if (badgeItem.isShown()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected void renderBadges(List<HotlistProductViewModel.BadgeModel> badgesList) {
-        List<String> badgesImageUrl = new ArrayList<>();
-        for (HotlistProductViewModel.BadgeModel model : badgesList) {
-            badgesImageUrl.add(model.getImageUrl());
+        badgesContainer.removeAllViews();
+        for (HotlistProductViewModel.BadgeModel badgeItem : badgesList) {
+            if (badgeItem.isShown()) {
+                LuckyShopImage.loadImage(context, badgeItem.getImageUrl(), badgesContainer);
+            }
         }
-        IndicatorViewHelper.renderBadgesViewV2(context, badgesContainer, badgesImageUrl);
     }
-
 }

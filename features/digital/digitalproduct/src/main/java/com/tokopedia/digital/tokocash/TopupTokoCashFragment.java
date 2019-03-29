@@ -13,24 +13,21 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.util.VersionInfo;
+import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Product;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
-import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
-import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
-import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
-import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
-import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
+import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
+import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.model.CategoryData;
-import com.tokopedia.digital.product.view.model.Operator;
-import com.tokopedia.digital.product.view.model.Product;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by nabillasabbaha on 2/28/18.
@@ -40,9 +37,9 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
 
     private static final String SAVED_CATEGORY_DATA = "saved_category_data";
     private static final String SAVED_PRODUCT_DATA = "saved_product_data";
+    private static final int REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER = 1001;
 
     private TopUpTokoCashView topUpTokoCashView;
-    private TopupTokoCashPresenter presenter;
     private ProgressBar progressBar;
 
     private String categoryId;
@@ -50,6 +47,10 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
     private CategoryData categoryData;
     private Product selectedProduct;
 
+    @Inject
+    TopupTokoCashPresenter presenter;
+    @Inject
+    DigitalAnalytics digitalAnalytics;
 
     public static TopupTokoCashFragment newInstance() {
         TopupTokoCashFragment fragment = new TopupTokoCashFragment();
@@ -68,18 +69,8 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        DigitalGqlApiService digitalGqlEndpointService = new DigitalGqlApiService();
-        CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
-                digitalGqlEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
-        );
-        IDigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(
-                categoryDetailDataSource);
 
-        GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(
-                getActivity(), digitalCategoryRepository
-        );
-
-        presenter = new TopupTokoCashPresenter(getCategoryByIdUseCase, this);
+        presenter.attachView(this);
 
         if (savedInstanceState == null) {
             showLoading();
@@ -98,7 +89,8 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
 
     @Override
     protected void initInjector() {
-
+        DigitalProductComponentInstance.getDigitalProductComponent(getActivity().getApplication())
+                .inject(this);
     }
 
     @Override
@@ -121,16 +113,19 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
         return new TopUpTokoCashView.ActionListener() {
             @Override
             public void onDigitalChooserClicked(List<Product> productList, String productText) {
+                digitalAnalytics.eventSelectProductOnNativePage(categoryData.getName(), categoryData.getName());
                 startActivityForResult(
                         DigitalChooserActivity.newInstanceProductChooser(
                                 getActivity(), categoryId, operatorId, productText
                         ),
-                        IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
+                        REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
                 );
             }
 
             @Override
-            public void onProcessAddToCart(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct) {
+            public void onProcessAddToCart(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct, boolean instantCheckoutChecked) {
+                String isInstant = instantCheckoutChecked ? "instant" : "no instant";
+                digitalAnalytics.eventClickBuyOnNative(categoryData.getName(), isInstant);
                 presenter.processAddToCartProduct(preCheckoutProduct);
             }
         };
@@ -167,12 +162,13 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
 
     @Override
     public String getVersionInfoApplication() {
-        return VersionInfo.getVersionInfo(getActivity());
+        return GlobalConfig.VERSION_NAME;
     }
 
     @Override
     public String getUserLoginId() {
-        return SessionHandler.getLoginID(getActivity());
+        UserSession userSession = new UserSession(getActivity());
+        return userSession.getUserId();
     }
 
     @Override
@@ -195,7 +191,7 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
+            case REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     selectedProduct = data.getParcelableExtra(
                             DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA);
@@ -204,15 +200,17 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
                             selectedProduct);
                 }
                 break;
-            case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
-                if (data != null && data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
-                    String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
-                    if (!TextUtils.isEmpty(message)) {
-                        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-                    }
-                }
-                break;
         }
+
+        if (requestCode ==
+                DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL())
+            if (data != null && data.hasExtra(DigitalRouter.Companion.getEXTRA_MESSAGE())) {
+                String message = data.getStringExtra(DigitalRouter.Companion.getEXTRA_MESSAGE());
+                if (!TextUtils.isEmpty(message)) {
+                    Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                }
+            }
+
     }
 
     @Override
@@ -220,4 +218,5 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
         super.onDestroy();
         presenter.destroyView();
     }
+
 }

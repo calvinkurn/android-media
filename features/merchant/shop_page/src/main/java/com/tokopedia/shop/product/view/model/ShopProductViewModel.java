@@ -1,13 +1,28 @@
 package com.tokopedia.shop.product.view.model;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
+import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductBadge;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductLabel;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
+
+import java.util.List;
 
 /**
  * Created by nathan on 2/6/18.
  */
 
-public abstract class ShopProductViewModel<T> implements Visitable<T> {
+public class ShopProductViewModel implements BaseShopProductViewModel {
+
+    private static final String BADGE_FREE_RETURN = "Free Return";
+    private static final String LABEL_CASHBACK = "Cashback";
+    private static final String LABEL_PERCENTAGE = "%";
+
+    @Override
+    public int type(ShopProductAdapterTypeFactory typeFactory) {
+        return typeFactory.type(this);
+    }
 
     private String id;
     private String name;
@@ -27,9 +42,61 @@ public abstract class ShopProductViewModel<T> implements Visitable<T> {
     private String productUrl;
     private boolean showWishList;
     private boolean isSoldOut;
-    private int positionTracking;
 
     public ShopProductViewModel() {
+    }
+
+    public ShopProductViewModel (ShopProduct shopProduct) {
+        setId(shopProduct.getProductId());
+        setName(shopProduct.getProductName());
+        setDisplayedPrice(shopProduct.getProductPrice());
+        setImageUrl(shopProduct.getProductImage());
+        setImageUrl300(shopProduct.getProductImage300());
+        setImageUrl700(shopProduct.getProductImage700());
+        setProductUrl(shopProduct.getProductUrl());
+        // shopProductViewModel.setRating(); Api not support
+        setPo(TextApiUtils.isValueTrue(shopProduct.getProductPreorder()));
+        setTotalReview(shopProduct.getProductReviewCount());
+        setWholesale(TextApiUtils.isValueTrue(shopProduct.getProductWholesale()));
+        if (shopProduct.getBadges() != null && shopProduct.getBadges().size() > 0) {
+            for (ShopProductBadge badge : shopProduct.getBadges()) {
+                if (BADGE_FREE_RETURN.equalsIgnoreCase(badge.getTitle())) {
+                    setFreeReturn(true);
+                    break;
+                }
+            }
+        }
+        List<ShopProductLabel> shopProductLabelList = shopProduct.getLabels();
+        if (shopProductLabelList != null) {
+            for (ShopProductLabel shopProductLabel : shopProductLabelList) {
+                if (shopProductLabel.getTitle().startsWith(LABEL_CASHBACK)) {
+                    String cashbackText = shopProductLabel.getTitle();
+                    cashbackText = cashbackText.replace(LABEL_CASHBACK, "");
+                    cashbackText = cashbackText.replace(LABEL_PERCENTAGE, "");
+                    double cashbackPercentage = Double.parseDouble(cashbackText.trim());
+                    setCashback(cashbackPercentage);
+                    break;
+                }
+            }
+        }
+        setSoldOut(shopProduct.isSoldOutStatus());
+    }
+
+    public ShopProductViewModel(GMFeaturedProduct gmFeaturedProduct) {
+        setId(gmFeaturedProduct.getProductId());
+        setName(gmFeaturedProduct.getName());
+        setDisplayedPrice(gmFeaturedProduct.getPrice());
+        setImageUrl(gmFeaturedProduct.getImageUri());
+        setProductUrl(gmFeaturedProduct.getUri());
+
+        setTotalReview(gmFeaturedProduct.getTotalReview());
+        setRating(gmFeaturedProduct.getRating());
+        if (gmFeaturedProduct.getCashbackDetail() != null) {
+            setCashback(gmFeaturedProduct.getCashbackDetail().getCashbackPercent());
+        }
+        setWholesale(gmFeaturedProduct.isWholesale());
+        setPo(gmFeaturedProduct.isPreorder());
+        setFreeReturn(gmFeaturedProduct.isReturnable());
     }
 
     public String getOriginalPrice() {
@@ -176,11 +243,5 @@ public abstract class ShopProductViewModel<T> implements Visitable<T> {
         isSoldOut = soldOut;
     }
 
-    public int getPositionTracking() {
-        return positionTracking;
-    }
 
-    public void setPositionTracking(int positionTracking) {
-        this.positionTracking = positionTracking;
-    }
 }

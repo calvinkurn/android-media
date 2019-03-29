@@ -15,7 +15,7 @@ import android.text.style.ReplacementSpan;
 import android.text.style.StyleSpan;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 
 /**

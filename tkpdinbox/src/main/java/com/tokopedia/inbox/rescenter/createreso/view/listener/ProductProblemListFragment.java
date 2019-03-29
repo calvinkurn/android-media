@@ -1,9 +1,9 @@
 package com.tokopedia.inbox.rescenter.createreso.view.listener;
 
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
@@ -20,18 +20,18 @@ public interface ProductProblemListFragment {
 
         void populateProblemAndProduct(ProductProblemListViewModel productProblemViewModelList);
 
-        void onProblemResultListUpdated(List<ProblemResult> problemResults);
+        void onProblemResultListUpdated(List<ComplaintResult> problemResults);
 
         void enableBottomButton();
 
         void disableBottomButton();
 
-        void saveData(ArrayList<ProblemResult> problemResults);
+        void saveData(ArrayList<ComplaintResult> problemResults);
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void loadProblemAndProduct(ProductProblemListViewModel productProblemViewModelList, List<ProblemResult> problemResultList);
+        void loadProblemAndProduct(ProductProblemListViewModel productProblemViewModelList, List<ComplaintResult> complaintResults);
 
         void addOrRemoveStringProblem(ProductProblemViewModel productProblemViewModel);
 
@@ -39,7 +39,7 @@ public interface ProductProblemListFragment {
 
         void removeProblemResult(ProductProblemViewModel productProblemViewModel);
 
-        void processResultData(ProblemResult problemResult, int resultStepCode);
+        void processResultData(ComplaintResult complaintResult, int resultStepCode);
 
         void buttonContinueClicked();
     }

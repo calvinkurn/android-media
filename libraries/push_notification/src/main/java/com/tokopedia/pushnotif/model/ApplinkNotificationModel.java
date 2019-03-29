@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class ApplinkNotificationModel {
 
+    private String title;
     private String desc;
     private int tkpCode;
     private String applinks;
@@ -123,4 +124,11 @@ public class ApplinkNotificationModel {
         this.additionalProperties.put(name, value);
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }

@@ -1,0 +1,84 @@
+<resources>
+    <string name="app_name">flashsale_management</string>
+
+    <string name="fm_flash_sale">Flash Sale</string>
+    <string name="fm_upcoming_flash_sale">Upcoming Flash Sale</string>
+    <string name="fm_my_flash_sale">My Flash Sale</string>
+
+    <string name="fm_campaign_list_search_empty_title">Oops… Pencarian tidak ditemukan</string>
+    <string name="fm_campaign_list_search_empty_content">Lihat semua Flash Sale</string>
+
+    <string name="fm_campaign_list_upcoming_empty_title">Belum ada yang dapat Anda ikuti</string>
+    <string name="fm_campaign_list_upcoming_empty_content">Pelajari lebih lanjut</string>
+    <string name="flashsale_search_hint">Cari flash sale</string>
+    <string name="label_flash_sale_info">Info Flash Sale</string>
+    <string name="label_product_list">Daftar Produk</string>
+    <string name="label_period">Periode Berlangsung</string>
+    <string name="title_campaign_product_selection_end">Proses seleksi produk selesai</string>
+    <string name="desc_campaign_product_selection_end">Lihat status produk Anda pada Daftar Produk</string>
+    <string name="label_discount_range">Kisaran Harga Diskon</string>
+    <string name="label_discount">Diskon</string>
+    <string name="label_rating">Rating</string>
+    <string name="label_limit_request">Batas Pengajuan</string>
+    <string name="label_min_stock">Min Stok</string>
+    <string name="label_stock">Stok</string>
+    <string name="label_sold_x_from_x">Terjual %1$d dari %2$d</string>
+    <string name="label_min_cashback">Min Cashback</string>
+    <string name="label_notes">Catatan Lainnya</string>
+    <string name="range_format">%1$s-%2$s</string>
+    <string name="submission_count_format">%1$d produk</string>
+    <string name="no_eligible_product_in_this_flash_sale">Sayang sekali, tidak ada produk yang diterima pada Flash Sale ini</string>
+    <string name="no_not_submitted_product_in_this_flash_sale">Tidak ada produk yang belum didaftarkan</string>
+    <string name="no_worry_you_can_join_next_flash_sale">Namun Anda tidak perlu kecewa, karena toko Anda berkesempatan mengikuti Flash Sale lainnya.</string>
+    <string name="flash_sale_registered">Terdaftar</string>
+    <string name="flash_sale_not_registered">Belum Didaftarkan</string>
+    <string name="flash_sale_waiting">Menunggu</string>
+    <string name="flash_sale_accepted">Diterima</string>
+    <string name="flash_sale_reserve">Diajukan</string>
+    <string name="flash_sale_rejected">Ditolak</string>
+    <string name="register_flash_sale">Daftar Flash Sale</string>
+    <string name="flash_sale_list">Daftar Flash Sale</string>
+    <string name="with_click_button_you_agree_with_tnc"><![CDATA[Dengan klik tombol, Anda telah menyetujui Syarat & Ketentuan]]></string>
+    <string name="flash_sale_term_and_condition"><![CDATA[Syarat & Ketentuan]]></string>
+    <string name="flash_sale_reserve_product">Ajukan Produk</string>
+    <string name="flash_sale_cancel_reserve">Batalkan Pengajuan</string>
+    <string name="flash_sale_resubmit_product">Daftarkan Kembali</string>
+    <string name="x_percent_off">%1$s%% OFF</string>
+    <string name="flash_sale_canceled">Dibatalkan</string>
+    <string name="flash_sale_update_submission">Perbarui Pengajuan</string>
+    <string name="shop_criteria_title">Kriteria Toko</string>
+    <string name="label_shop_type">Tipe Toko</string>
+    <string name="label_shop_reputation">Reputasi Toko</string>
+    <string name="label_minimum">Minimal</string>
+    <string name="label_shop_success_transaction">Transaksi Sukses</string>
+    <string name="label_shop_courrier">Kurir</string>
+    <string name="description_title">Deskripsi</string>
+    <string name="promo_title">Info Promosi</string>
+    <string name="label_min_transaction">Minimum Transaksi</string>
+    <string name="tnc_title"><![CDATA[Syarat & Ketentuan]]></string>
+    <string name="label_see_full">Lihat Selengkapnya</string>
+    <string name="flash_sale_register_for_category">Pendaftaran untuk kategori</string>
+    <string name="final_price">Harga Akhir</string>
+    <string name="flash_sale_rp">Rp\u00A0</string>
+    <string name="price_criteria_above_x">Kisaran harga di atas %1$s</string>
+    <string name="price_criteria_between_x_and_x">Kisaran harga %1$s - %2$s</string>
+    <string name="price_discount_above_x">Kisaran diskon di atas %1$s%%</string>
+    <string name="price_discount_below_x">Kisaran diskon di bawah %1$s%%</string>
+    <string name="price_discount_between_x_and_x">Kisaran diskon %1$s%% - %2$s%%</string>
+    <string name="price_criteria_below_x">Kisaran harga di bawah %1$s</string>
+    <string name="flash_sale_no_discount">-%</string>
+    <string name="flash_sale_x_percent">%1$s%%</string>
+    <string name="flash_sale_min_stock_x">Minimal stok %1$d</string>
+    <string name="flash_sale_html_process_web_view"><![CDATA[<html><head><style type="text/css">body{font-size:14px; padding:16px; margin:0;color:#808080;} img{display: inline;max-width: 100%% ]]>!<![CDATA[important ;height:auto ]]>!<![CDATA[important;} ol,ul{padding-left:24px} ul>li, ol>li{padding-left:0; margin-left:0; margin-bottom:3px;}</style></head><body>]]>%1$s<![CDATA[</body></html>]]></string>
+    <string name="html_process_web_view_no_padding"><![CDATA[<html><head><style type="text/css">body{font-size:14px; padding-top:24px; margin:0;color:#808080;} img{display: inline;max-width: 100%% ]]>!<![CDATA[important ;height:auto ]]>!<![CDATA[important;} ol,ul{padding-left:24px} ul>li, ol>li{padding-left:0; margin-left:0; margin-bottom:3px;}</style></head><body>]]>%1$s<![CDATA[</body></html>]]></string>
+
+    <string name="have_not_joined_flashsale_title">Anda belum pernah mengikuti Flash Sale</string>
+    <string name="join_flashsale_title">Ikuti Flash Sale dan Nikmati Banyak Keuntungan</string>
+    <string name="benefit_flashsale_1">Tokomu akan dilirik oleh lebih banyak pembeli</string>
+    <string name="benefit_flashsale_2">Meningkatkan skor produk dan reputasi toko</string>
+    <string name="benefit_flashsale_3">Mempercepat peningkatan penjualan</string>
+    <string name="benefit_flashsale_4">Efektif untuk mempromosikan produk terbaik dari toko Anda</string>
+    <string name="benefit_flashsale_5">Produk tampil di halaman khusus yang banyak dikunjungi</string>
+    <string name="flash_sale_undo_cancel">Undo Pembatalan</string>
+    <string name="sorry_flash_sale_is_canceled">Mohon maaf, Flash Sale ini dibatalkan</string>
+</resources>

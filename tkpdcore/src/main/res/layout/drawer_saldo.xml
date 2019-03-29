@@ -1,8 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/grey_100"
     android:orientation="vertical"
     android:visibility="visible">
@@ -148,9 +148,9 @@
                 android:layout_alignTop="@+id/top_cash_value"
                 android:layout_marginEnd="@dimen/margin_med"
                 android:layout_marginRight="@dimen/margin_med"
-                app:srcCompat="@drawable/ic_new_action_refresh"
                 android:tint="@color/tkpd_main_green"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_new_action_refresh" />
 
 
         </RelativeLayout>
@@ -212,6 +212,47 @@
                 android:layout_marginLeft="@dimen/margin_med"
                 android:layout_marginRight="@dimen/margin_med"
                 android:layout_marginStart="@dimen/margin_med" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/drawer_tokocard"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/drawer_item_height"
+            android:background="@drawable/selectable_background_tokopedia">
+
+            <ImageView
+                android:id="@+id/icon_tokocard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginStart="@dimen/margin_small"
+                app:srcCompat="@drawable/ic_logo_toppoint" />
+
+            <TextView
+                android:id="@+id/textViewTokoCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_toEndOf="@id/icon_tokocard"
+                android:layout_toRightOf="@id/icon_tokocard"
+                android:fontFamily="sans-serif"
+                android:text="@string/label_tokocard"
+                android:textColor="@color/black_54"
+                android:textStyle="normal" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_toRightOf="@id/textViewTokoCard"
+                app:srcCompat="@drawable/ic_beta" />
 
 
         </RelativeLayout>

@@ -2,32 +2,30 @@ package com.tokopedia.topads.dashboard.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.network.apiservices.product.apis.PromoTopAdsApi;
-import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
+import com.tokopedia.topads.common.data.api.TopAdsManagementApi;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
+import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
+import com.tokopedia.topads.dashboard.di.scope.TopAdsManagementScope;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
-import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsRemoveSourceTaggingUseCase;
 import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsGroupAdFactory;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsProductAdFactory;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsShopAdFactory;
-import com.tokopedia.topads.dashboard.data.repository.TopAdsCheckProductPromoRepositoryImpl;
+import com.tokopedia.topads.common.data.repository.TopAdsCheckProductPromoRepositoryImpl;
 import com.tokopedia.topads.dashboard.data.repository.TopAdsGroupAdsRepositoryImpl;
 import com.tokopedia.topads.dashboard.data.repository.TopAdsProductAdsRepositoryImpl;
 import com.tokopedia.topads.dashboard.data.repository.TopAdsSearchProductRepositoryImpl;
 import com.tokopedia.topads.dashboard.data.repository.TopAdsShopAdsRepositoryImpl;
-import com.tokopedia.topads.dashboard.data.source.TopAdsCheckProductPromoDataSource;
+import com.tokopedia.topads.common.data.source.TopAdsCheckProductPromoDataSource;
 import com.tokopedia.topads.dashboard.data.source.cloud.CloudTopAdsSearchProductDataSource;
-import com.tokopedia.topads.dashboard.data.source.cloud.TopAdsCheckProductPromoDataSourceCloud;
+import com.tokopedia.topads.common.data.source.cloud.TopAdsCheckProductPromoDataSourceCloud;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
-import com.tokopedia.topads.dashboard.di.scope.TopAdsDashboardScope;
-import com.tokopedia.topads.dashboard.domain.TopAdsCheckProductPromoRepository;
+import com.tokopedia.topads.common.domain.repository.TopAdsCheckProductPromoRepository;
 import com.tokopedia.topads.dashboard.domain.TopAdsGroupAdsRepository;
 import com.tokopedia.topads.dashboard.domain.TopAdsProductAdsRepository;
 import com.tokopedia.topads.dashboard.domain.TopAdsSearchProductRepository;
@@ -66,10 +64,10 @@ import retrofit2.Retrofit;
  * Created by zulfikarrahman on 8/13/17.
  */
 
-@TopAdsDashboardScope
+@TopAdsManagementScope
 @Module
 public class TopAdsCreatePromoModule {
-    @TopAdsDashboardScope
+    @TopAdsManagementScope
     @Provides
     TopAdsDetailNewGroupPresenter providePresenterNewGroup(TopAdsCreateNewGroupUseCase topAdsCreateNewGroupUseCase,
                                                            TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase,
@@ -83,13 +81,13 @@ public class TopAdsCreatePromoModule {
                 topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase);
     }
 
-    @TopAdsDashboardScope
+    @TopAdsManagementScope
     @Provides
     TopAdsGetProductDetailPresenter provideTopAdsGetProductDetailPresenter(TopAdsProductListUseCase topAdsProductListUseCase){
         return new TopAdsGetProductDetailPresenterImpl(topAdsProductListUseCase);
     }
 
-    @TopAdsDashboardScope
+    @TopAdsManagementScope
     @Provides
     TopAdsDetailNewProductPresenter provideTopAdsDetailProductPresenter(TopAdsGetDetailProductUseCase topAdsGetDetailProductUseCase,
                                                                         TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase,
@@ -102,7 +100,7 @@ public class TopAdsCreatePromoModule {
                 topAdsGetSourceTaggingUseCase);
     }
 
-    @TopAdsDashboardScope
+    @TopAdsManagementScope
     @Provides
     TopAdsDetailNewShopPresenter provideTopAdsDetailShopPresenter(TopAdsGetDetailShopUseCase topAdsGetDetailShopUseCase,
                                                                      TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase,
@@ -114,7 +112,7 @@ public class TopAdsCreatePromoModule {
                 topAdsProductListUseCase, topAdsGetSourceTaggingUseCase);
     }
 
-    @TopAdsDashboardScope
+    @TopAdsManagementScope
     @Provides
     TopAdsDetailEditProductPresenter provideTopadsDetailEditProductPresenter(TopAdsGetDetailProductUseCase topAdsGetDetailProductUseCase,
                                                                              TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase,
@@ -125,7 +123,7 @@ public class TopAdsCreatePromoModule {
                 topAdsSaveDetailProductUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase);
     }
 
-    @TopAdsDashboardScope
+    @TopAdsManagementScope
     @Provides
     TopAdsDetailEditGroupPresenter provideTopadsDetailEditGroupPresenter(TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase,
                                                                            TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase,
@@ -136,7 +134,7 @@ public class TopAdsCreatePromoModule {
                 topAdsProductListUseCase, topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase);
     }
 
-    @TopAdsDashboardScope
+    @TopAdsManagementScope
     @Provides
     TopAdsDetailEditShopPresenter provideTopAdsDetailEditShopPresenter(TopAdsGetDetailShopUseCase topAdsGetDetailShopUseCase,
                                                                           TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase,
@@ -146,80 +144,74 @@ public class TopAdsCreatePromoModule {
                 topAdsProductListUseCase, topAdsGetSourceTaggingUseCase);
     }
 
-    @TopAdsDashboardScope
+    @TopAdsManagementScope
     @Provides
     TopAdsShopAdsRepository provideTopAdsShopRepository(TopAdsShopAdFactory topAdsShopAdFactory) {
         return new TopAdsShopAdsRepositoryImpl(topAdsShopAdFactory);
     }
 
-    @TopAdsDashboardScope
+    @TopAdsManagementScope
     @Provides
     TopAdsGroupAdsRepository provideTopAdsGroupRepository(TopAdsGroupAdFactory topAdsGroupAdFactory) {
         return new TopAdsGroupAdsRepositoryImpl(topAdsGroupAdFactory);
     }
 
-    @TopAdsDashboardScope
+    @TopAdsManagementScope
     @Provides
-    TopAdsManagementApi provideTopAdsManagementApi(@TopAdsQualifier Retrofit retrofit) {
-        return retrofit.create(TopAdsManagementApi.class);
+    TopAdsOldManagementApi provideTopAdsManagementApi(@TopAdsManagementQualifier Retrofit retrofit) {
+        return retrofit.create(TopAdsOldManagementApi.class);
     }
 
-    @TopAdsDashboardScope
+    @TopAdsManagementScope
     @Provides
     TopAdsProductAdsRepository provideTopAdsProductRepository(TopAdsProductAdFactory topAdsProductAdFactory) {
         return new TopAdsProductAdsRepositoryImpl(topAdsProductAdFactory);
     }
 
-    @TopAdsDashboardScope
+    @TopAdsManagementScope
     @Provides
     TopAdsSearchProductRepository provideTopAdsSearchProductRepository(@ApplicationContext Context context,
                                                                        CloudTopAdsSearchProductDataSource cloudTopAdsSearchProductDataSource) {
         return new TopAdsSearchProductRepositoryImpl(context, cloudTopAdsSearchProductDataSource);
     }
 
-    @TopAdsDashboardScope
+    @TopAdsManagementScope
     @Provides
     TopAdsManagementService provideTopAdsManagementService(@ApplicationContext Context context) {
         return new TopAdsManagementService(new SessionHandler(context));
     }
 
-    @TopAdsDashboardScope
+    @TopAdsManagementScope
     @Provides
-    public PromoTopAdsApi providePromoTopAdsApi(@TopAdsQualifier Retrofit retrofit){
-        return retrofit.create(PromoTopAdsApi.class);
+    public TopAdsCheckProductPromoDataSourceCloud provideTopAdsCheckProductPromoDataSourceCloud(TopAdsManagementApi topAdsManagementApi){
+        return new TopAdsCheckProductPromoDataSourceCloud(topAdsManagementApi);
     }
 
-    @TopAdsDashboardScope
-    @Provides
-    public TopAdsCheckProductPromoDataSourceCloud provideTopAdsCheckProductPromoDataSourceCloud(PromoTopAdsApi promoTopAdsApi){
-        return new TopAdsCheckProductPromoDataSourceCloud(promoTopAdsApi);
-    }
-
-    @TopAdsDashboardScope
+    @TopAdsManagementScope
     @Provides
     public TopAdsCheckProductPromoDataSource provideTopAdsCheckProductPromoDataSource(TopAdsCheckProductPromoDataSourceCloud dataSourceCloud){
         return new TopAdsCheckProductPromoDataSource(dataSourceCloud);
     }
 
-    @TopAdsDashboardScope
+    @TopAdsManagementScope
     @Provides
     public TopAdsCheckProductPromoRepository provideGetProductSellingPromoTopAdsRepository(TopAdsCheckProductPromoDataSource dataSource){
         return new TopAdsCheckProductPromoRepositoryImpl(dataSource);
     }
 
-    @TopAdsDashboardScope
+    @TopAdsManagementScope
     @Provides
     public TopAdsSourceTaggingLocal provideTopAdsSourceTracking(@ApplicationContext Context context){
         return new TopAdsSourceTaggingLocal(context);
     }
 
-    @TopAdsDashboardScope
+    @TopAdsManagementScope
     @Provides
     public TopAdsSourceTaggingDataSource provideTopAdsSourceTaggingDataSource(TopAdsSourceTaggingLocal topAdsSourceTaggingLocal){
         return new TopAdsSourceTaggingDataSource(topAdsSourceTaggingLocal);
     }
 
-    @TopAdsDashboardScope
+    @TopAdsManagementScope
     @Provides
     public TopAdsSourceTaggingRepository provideTopAdsSourceTaggingRepository(TopAdsSourceTaggingDataSource dataSource){
         return new TopAdsSourceTaggingRepositoryImpl(dataSource);

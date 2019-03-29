@@ -1,0 +1,55 @@
+query get_chat_replies($msgId: Int!, $page: Int!) {
+  chatReplies(msgId: $msgId, page: $page) {
+    block {
+      blockedUntil
+      isBlocked
+      isPromoBlocked
+    }
+    hasNext
+    textareaReply
+    contacts {
+      role
+      userId
+      shopId
+      interlocutor
+      name
+      tag
+      thumbnail
+      domain
+      status {
+        timestamp
+        isOnline
+      }
+    }
+    list {
+      date
+      chats {
+        time
+        replies {
+          msgId
+          replyId
+          senderId
+          senderName
+          role
+          msg
+          replyTime
+          status
+          attachmentID
+          isOpposite
+          isHighlight
+          isRead
+          blastId
+          attachment {
+            id
+            type
+            attributes
+            fallback {
+              message
+              html
+            }
+          }
+        }
+      }
+    }
+  }
+}

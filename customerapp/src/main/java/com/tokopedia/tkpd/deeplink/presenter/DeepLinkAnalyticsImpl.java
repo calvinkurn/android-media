@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.deeplink.presenter;
 
+import android.app.Activity;
 import android.net.Uri;
 
 import com.tokopedia.core.analytics.AppScreen;
@@ -20,16 +21,16 @@ public class DeepLinkAnalyticsImpl implements DeepLinkAnalyticsPresenter {
     }
 
     @Override
-    public void sendCampaignGTM(String campaignUri, String screenName) {
-        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(Uri.parse(campaignUri));
+    public void sendCampaignGTM(Activity activity, String campaignUri, String screenName) {
+        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUri));
         campaign.setScreenName(screenName);
-        UnifyTracking.eventCampaign(campaign);
-        UnifyTracking.eventCampaign(campaignUri);
+        UnifyTracking.eventCampaign(activity, campaign);
+        UnifyTracking.eventCampaign(activity, campaignUri);
     }
 
-    public void processUTM(Uri applink){
+    public void processUTM(Activity activity, Uri applink){
         if(DeeplinkUTMUtils.isValidCampaignUrl(applink)){
-            sendCampaignGTM(applink.toString(), AppScreen.SCREEN_DEEPLINK_APPLINKHANDLER);
+            sendCampaignGTM(activity, applink.toString(), AppScreen.SCREEN_DEEPLINK_APPLINKHANDLER);
         }
     }
 

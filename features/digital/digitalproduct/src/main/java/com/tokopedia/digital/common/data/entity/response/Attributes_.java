@@ -18,6 +18,13 @@ public class Attributes_ {
     @SerializedName("detail_compact")
     @Expose
     private String detailCompact;
+    @SerializedName("detail_url")
+    @Expose
+    private String detailUrl;
+    @SerializedName("detail_url_text")
+    @Expose
+    private String detailUrlText;
+
     @SerializedName("info")
     @Expose
     private String info;
@@ -44,6 +51,14 @@ public class Attributes_ {
 
     public String getDetailCompact() {
         return detailCompact;
+    }
+
+    public String getDetailUrl() {
+        return detailUrl;
+    }
+
+    public String getDetailUrlText() {
+        return detailUrlText;
     }
 
     public String getInfo() {

@@ -24,10 +24,10 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.response.Error;
 import com.tokopedia.core.network.retrofit.response.TextErrorObject;
-import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseStepperFragment;
+import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordAddComponent;
 import com.tokopedia.topads.keyword.di.module.TopAdsKeywordAddModule;
@@ -220,16 +220,16 @@ public class TopAdsKeywordAddFragment extends TopAdsBaseStepperFragment<TopAdsKe
 
         switch (keywordType){
             case KeywordTypeDef.KEYWORD_TYPE_NEGATIVE_EXACT:
-                UnifyTracking.eventTopAdsProductNewKeyword(AppEventTracking.EventLabel.KEYWORD_TYPE_EXACT);
+                UnifyTracking.eventTopAdsProductNewKeyword(getActivity(), AppEventTracking.EventLabel.KEYWORD_TYPE_EXACT);
                 break;
             case KeywordTypeDef.KEYWORD_TYPE_NEGATIVE_PHRASE:
-                UnifyTracking.eventTopAdsProductNewKeyword(AppEventTracking.EventLabel.KEYWORD_TYPE_PHRASE);
+                UnifyTracking.eventTopAdsProductNewKeyword(getActivity(), AppEventTracking.EventLabel.KEYWORD_TYPE_PHRASE);
                 break;
             case KeywordTypeDef.KEYWORD_TYPE_EXACT:
-                UnifyTracking.eventTopAdsProductNewKeywordNegatif(AppEventTracking.EventLabel.KEYWORD_TYPE_EXACT);
+                UnifyTracking.eventTopAdsProductNewKeywordNegatif(getActivity(), AppEventTracking.EventLabel.KEYWORD_TYPE_EXACT);
                 break;
             case KeywordTypeDef.KEYWORD_TYPE_PHRASE:
-                UnifyTracking.eventTopAdsProductNewKeywordNegatif(AppEventTracking.EventLabel.KEYWORD_TYPE_PHRASE);
+                UnifyTracking.eventTopAdsProductNewKeywordNegatif(getActivity(), AppEventTracking.EventLabel.KEYWORD_TYPE_PHRASE);
                 break;
         }
     }

@@ -1,10 +1,9 @@
 package com.tokopedia.discovery.newdynamicfilter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,14 +15,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.search.EmptySearchResultView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
-
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -150,7 +147,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
             @Override
             public void onClick(View v) {
                 if (isUsingTracking) {
-                    SearchTracking.eventSearchResultApplyFilterDetail(pageTitle);
+                    SearchTracking.eventSearchResultApplyFilterDetail(getActivityContext(), pageTitle);
                 }
                 applyFilter();
             }
@@ -160,7 +157,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     @Override
     public void onBackPressed() {
         if (isUsingTracking) {
-            SearchTracking.eventSearchResultBackFromFilterDetail(pageTitle);
+            SearchTracking.eventSearchResultBackFromFilterDetail(this, pageTitle);
         }
         super.onBackPressed();
     }
@@ -237,7 +234,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
         option.setInputState(Boolean.toString(isChecked));
         hideKeyboard();
         if (isUsingTracking) {
-            SearchTracking.eventSearchResultFilterJourney(pageTitle, option.getName(), true, isChecked);
+            SearchTracking.eventSearchResultFilterJourney(this, pageTitle, option.getName(), true, isChecked);
         }
     }
 
@@ -332,5 +329,9 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
         if (subscription != null) {
             subscription.unsubscribe();
         }
+    }
+
+    private Context getActivityContext() {
+        return this;
     }
 }

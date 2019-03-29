@@ -15,6 +15,6 @@ public class TopAdsNewProductListExistingGroupEditFragment extends TopAdsNewProd
     @Override
     protected void goToNextPage() {
         super.goToNextPage();
-        UnifyTracking.eventTopadsEditGroupPromoAddProduct();
+        UnifyTracking.eventTopadsEditGroupPromoAddProduct(getActivity());
     }
 }

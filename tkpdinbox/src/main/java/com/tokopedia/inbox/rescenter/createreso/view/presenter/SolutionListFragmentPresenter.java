@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.view.presenter;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetAppealSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetEditSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetSolutionUseCase;
@@ -97,15 +97,11 @@ public class SolutionListFragmentPresenter
         editAppealSolutionModel.solution = solutionViewModel.getId();
         if (editAppealSolutionModel.isEdit) {
             postEditSolutionUseCase.execute(PostEditSolutionUseCase.
-                            postEditSolutionUseCaseParamsWithoutRefund(
-                                    editAppealSolutionModel.resolutionId,
-                                    editAppealSolutionModel.solution),
+                            postEditSolution(editAppealSolutionModel),
                     new EditSolutionWithoutRefundSubscriber(mainView));
         } else {
             postAppealSolutionUseCase.execute(PostAppealSolutionUseCase.
-                            postAppealSolutionUseCaseParamsWithoutRefund(
-                                    editAppealSolutionModel.resolutionId,
-                                    editAppealSolutionModel.solution),
+                            postAppealSolution(editAppealSolutionModel),
                     new AppealSolutionWithoutRefundSubscriber(mainView));
         }
     }

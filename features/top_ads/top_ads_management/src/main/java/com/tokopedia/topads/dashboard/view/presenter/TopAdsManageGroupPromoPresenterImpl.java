@@ -2,7 +2,7 @@ package com.tokopedia.topads.dashboard.view.presenter;
 
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCheckExistGroupUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
@@ -19,8 +19,7 @@ import rx.android.schedulers.AndroidSchedulers;
 /**
  * Created by zulfikarrahman on 2/16/17.
  */
-public class TopAdsManageGroupPromoPresenterImpl<T extends TopAdsManageGroupPromoView> extends BaseDaggerPresenter<T>
-        implements TopAdsManageGroupPromoPresenter<T> {
+public class TopAdsManageGroupPromoPresenterImpl<T extends TopAdsManageGroupPromoView> extends BaseDaggerPresenter<T> implements TopAdsManageGroupPromoPresenter<T> {
 
     public static final int TIME_DELAY = 300;
     private final TopAdsSearchGroupAdsNameUseCase topAdsSearchGroupAdsNameUseCase;

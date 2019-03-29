@@ -168,7 +168,7 @@ public class Form implements Parcelable {
         this.status = in.readInt();
     }
 
-    public static final Parcelable.Creator<Form> CREATOR = new Parcelable.Creator<Form>() {
+    public static final Creator<Form> CREATOR = new Creator<Form>() {
         @Override
         public Form createFromParcel(Parcel source) {
             return new Form(source);

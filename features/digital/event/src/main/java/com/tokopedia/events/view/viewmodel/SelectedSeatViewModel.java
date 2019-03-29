@@ -26,6 +26,8 @@ public class SelectedSeatViewModel implements Parcelable {
 
     private List<String> actualSeatNos;
 
+    private List<String> seatNos;
+
     private String areaId;
 
 
@@ -85,6 +87,18 @@ public class SelectedSeatViewModel implements Parcelable {
         this.actualSeatNos = actualSeatNos;
     }
 
+    public List<String> getSeatNos() {
+        return seatNos;
+    }
+
+    public void setSeatNos(List<String> seatNos) {
+        this.seatNos = seatNos;
+    }
+
+    public static Creator<SelectedSeatViewModel> getCREATOR() {
+        return CREATOR;
+    }
+
     public String getAreaId() {
         return areaId;
     }
@@ -110,6 +124,7 @@ public class SelectedSeatViewModel implements Parcelable {
         dest.writeStringList(this.seatRowIds);
         dest.writeStringList(this.physicalRowIds);
         dest.writeStringList(this.actualSeatNos);
+        dest.writeStringList(this.seatNos);
         dest.writeString(this.areaId);
     }
 
@@ -121,6 +136,7 @@ public class SelectedSeatViewModel implements Parcelable {
         this.seatRowIds = in.createStringArrayList();
         this.physicalRowIds = in.createStringArrayList();
         this.actualSeatNos = in.createStringArrayList();
+        this.seatNos = in.createStringArrayList();
         this.areaId = in.readString();
     }
 

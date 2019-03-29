@@ -1,7 +1,7 @@
 package com.tokopedia.tokocash.historytokocash.presentation.contract;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tokocash.historytokocash.presentation.model.HeaderHistory;
 import com.tokopedia.tokocash.historytokocash.presentation.model.TokoCashHistoryData;
 import com.tokopedia.usecase.RequestParams;
@@ -33,6 +33,10 @@ public interface TokoCashHistoryContract {
         void hideWaitingTransaction();
 
         RequestParams getHistoryTokoCashParam(boolean isWaitingTransaction, int page);
+
+        void navigatePageToActivateTokocash();
+
+        void navigateToLoginPage();
     }
 
     interface Presenter extends CustomerPresenter<View> {

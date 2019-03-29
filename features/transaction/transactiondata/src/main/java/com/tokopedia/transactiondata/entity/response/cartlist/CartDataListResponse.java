@@ -2,6 +2,8 @@ package com.tokopedia.transactiondata.entity.response.cartlist;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.Donation;
+import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.ShopGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,19 +28,29 @@ public class CartDataListResponse {
     private int maxCharNote;
     @SerializedName("messages")
     @Expose
-    private Messages messages;
+    private Messages messages = new Messages();
     @SerializedName("promo_suggestion")
     @Expose
-    private PromoSuggestion promoSuggestion;
-    @SerializedName("cart_list")
-    @Expose
-    private List<CartList> cartList = new ArrayList<>();
-    @SerializedName("default_promo_dialog_tab")
-    @Expose
-    private String defaultPromoDialogTab;
+    private PromoSuggestion promoSuggestion = new PromoSuggestion();
     @SerializedName("autoapply")
     @Expose
-    private AutoApply autoApply;
+    private AutoApply autoApply = new AutoApply();
+    @SerializedName("default_promo_dialog_tab")
+    @Expose
+    private String defaultPromoDialogTab = "";
+    @SerializedName("shop_group")
+    @Expose
+    private List<ShopGroup> shopGroups = new ArrayList<>();
+    @SerializedName("donation")
+    @Expose
+    private Donation donation = new Donation();
+    @SerializedName("autoapply_v2")
+    @Expose
+    private AutoapplyV2 autoapplyV2 = new AutoapplyV2();
+
+    public AutoapplyV2 getAutoapplyV2() {
+        return autoapplyV2;
+    }
 
     public int getIsCouponActive() {
         return isCouponActive;
@@ -64,15 +76,19 @@ public class CartDataListResponse {
         return promoSuggestion;
     }
 
-    public List<CartList> getCartList() {
-        return cartList;
-    }
-
     public String getDefaultPromoDialogTab() {
         return defaultPromoDialogTab;
     }
 
     public AutoApply getAutoApply() {
         return autoApply;
+    }
+
+    public List<ShopGroup> getShopGroups() {
+        return shopGroups;
+    }
+
+    public Donation getDonation() {
+        return donation;
     }
 }

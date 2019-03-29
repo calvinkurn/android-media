@@ -13,7 +13,10 @@ import com.tokopedia.discovery.newdiscovery.di.module.AttributeModule;
 import com.tokopedia.discovery.newdiscovery.di.module.BannerModule;
 import com.tokopedia.discovery.newdiscovery.di.module.CatalogModule;
 import com.tokopedia.discovery.newdiscovery.di.module.ProductModule;
+import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -28,8 +31,7 @@ import dagger.Provides;
         AttributeModule.class,
         ImageSearchModule.class,
         CatalogModule.class,
-        CategoryHeaderModule.class,
-        ImageSearchModule.class
+        CategoryHeaderModule.class
 })
 public class CategoryModule {
 
@@ -46,5 +48,4 @@ public class CategoryModule {
                                                GetImageSearchUseCase getImageSearchUseCase) {
         return new CategoryPresenter(context, getProductUseCase, getImageSearchUseCase);
     }
-
 }

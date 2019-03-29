@@ -1,0 +1,54 @@
+query Notification($cursor: String) {
+  status
+  userShopInfo {
+    info {
+      shop_id
+    }
+  }
+
+  notifications{
+  	total_notif
+  	total_cart
+    inbox {
+      talk
+      ticket
+      review
+    }
+    chat {
+      unreads
+    }
+    resolutionAs {
+      buyer
+      seller
+    }
+    sellerInfo {
+      notification
+    }
+    buyerOrderStatus {
+      confirmed
+      processed
+      shipped
+      arriveAtDestination
+    }
+    sellerOrderStatus {
+      newOrder
+      readyToShip
+      shipped
+      arriveAtDestination
+    }
+  }
+
+  notifcenter_unread {
+    notif_unread
+  }
+
+  feed_last_feeds(cursor:$cursor){
+      error
+      content
+      newFeeds
+    }
+
+  homeFlag {
+    isOSBottomNav
+  }
+}

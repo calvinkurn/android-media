@@ -5,11 +5,17 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.inbox.rescenter.detail.model.actionresponsedata.UploadResCenterImageData;
 import com.tokopedia.inbox.rescenter.shipping.model.NewUploadResCenterImageData;
 
+import java.util.Map;
+
 import okhttp3.RequestBody;
 import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.PartMap;
+import retrofit2.http.QueryMap;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -49,20 +55,9 @@ public interface UploadImageResCenter {
     );
 
     @Multipart
-    @POST("/upload/attachment")
+    @POST("")
     Observable<NewUploadResCenterImageData> uploadImageNew(
-            @Header("Content-MD5") String contentMD5,
-            @Header("Date") String date,
-            @Header("Authorization") String authorization,
-            @Header("X-Method") String xMethod,
-            @Part("user_id") RequestBody userId,
-            @Part("device_id") RequestBody deviceId,
-            @Part("hash") RequestBody hash,
-            @Part("device_time") RequestBody deviceTime,
-            @Part("fileToUpload\"; filename=\"image.jpg") RequestBody imageFile,
-            @Part("id") RequestBody imageId,
-            @Part("token") RequestBody token,
-            @Part("web_service") RequestBody web_service
-
-    );
+            @Url String url,
+            @PartMap Map<String, RequestBody> params,
+            @Part("fileToUpload\"; filename=\"image.jpg") RequestBody imageFile);
 }

@@ -6,41 +6,39 @@ import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
-import com.tokopedia.digital.product.view.model.Product;
 
 import java.util.List;
-
-import butterknife.BindView;
 
 /**
  * @author anggaprasetiyo on 5/8/17.
  */
 public class DigitalProductChooserView extends BaseDigitalChooserView<Product> {
 
-    @BindView(R2.id.tv_label_chooser)
-    TextView tvLabel;
-    @BindView(R2.id.tv_operator_product_name)
-    TextView tvNameProduct;
-    @BindView(R2.id.tv_error_chooser)
-    TextView tvErrorProduct;
-    @BindView(R2.id.layout_product)
-    RelativeLayout layoutProduct;
+    private TextView tvLabel;
+    private TextView tvNameProduct;
+    private TextView tvErrorProduct;
+    private RelativeLayout layoutProduct;
 
-    @SuppressWarnings("ButterKnifeInjectNotCalled")
     public DigitalProductChooserView(Context context) {
         super(context);
     }
 
-    @SuppressWarnings("ButterKnifeInjectNotCalled")
     public DigitalProductChooserView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    @SuppressWarnings("ButterKnifeInjectNotCalled")
     public DigitalProductChooserView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    protected void onCreateView() {
+        tvLabel = findViewById(R.id.tv_label_chooser);
+        tvNameProduct = findViewById(R.id.tv_operator_product_name);
+        tvErrorProduct = findViewById(R.id.tv_error_chooser);
+        layoutProduct = findViewById(R.id.layout_product);
     }
 
     @Override
@@ -103,16 +101,13 @@ public class DigitalProductChooserView extends BaseDigitalChooserView<Product> {
     private void invalidateContentView() {
         if (dataSelected != null) {
             tvNameProduct.setText(dataSelected.getDesc());
-            switch (dataSelected.getStatus()) {
-                case Product.STATUS_OUT_OF_STOCK:
-                    tvErrorProduct.setVisibility(VISIBLE);
-                    tvErrorProduct.setText(
-                            R.string.error_message_product_out_of_stock_digital_module
-                    );
-                    break;
-                default:
-                    tvErrorProduct.setVisibility(GONE);
-                    break;
+            if (dataSelected.getStatus() == Product.Companion.getSTATUS_OUT_OF_STOCK()) {
+                tvErrorProduct.setVisibility(VISIBLE);
+                tvErrorProduct.setText(
+                        R.string.error_message_product_out_of_stock_digital_module
+                );
+            } else {
+                tvErrorProduct.setVisibility(GONE);
             }
         }
     }

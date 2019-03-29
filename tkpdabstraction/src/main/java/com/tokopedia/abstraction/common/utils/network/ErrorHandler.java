@@ -15,7 +15,7 @@ import java.net.UnknownHostException;
 public class ErrorHandler {
 
     public static String getErrorMessage(final Context context, Throwable e) {
-        if(context == null){
+        if (context == null || e == null) {
             return "Terjadi kesalahan. Ulangi beberapa saat lagi";
         }
 
@@ -29,21 +29,25 @@ public class ErrorHandler {
                 e.getLocalizedMessage() != null &&
                 !e.getLocalizedMessage().equals("") &&
                 e.getLocalizedMessage().length() <= 3) {
-            int code = Integer.parseInt(e.getLocalizedMessage());
-            switch (code) {
-                case ResponseStatus.SC_REQUEST_TIMEOUT:
-                case ResponseStatus.SC_GATEWAY_TIMEOUT:
-                    return context.getString(R.string.default_request_error_timeout);
-                case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
-                    return context.getString(R.string.default_request_error_internal_server);
-                case ResponseStatus.SC_FORBIDDEN:
-                    return context.getString(R.string.default_request_error_forbidden_auth);
-                case ResponseStatus.SC_BAD_GATEWAY:
-                    return context.getString(R.string.default_request_error_bad_request);
-                case ResponseStatus.SC_BAD_REQUEST:
-                    return context.getString(R.string.default_request_error_bad_request);
-                default:
-                    return context.getString(R.string.default_request_error_unknown);
+            try {
+                int code = Integer.parseInt(e.getLocalizedMessage());
+                switch (code) {
+                    case ResponseStatus.SC_REQUEST_TIMEOUT:
+                    case ResponseStatus.SC_GATEWAY_TIMEOUT:
+                        return context.getString(R.string.default_request_error_timeout);
+                    case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
+                        return context.getString(R.string.default_request_error_internal_server);
+                    case ResponseStatus.SC_FORBIDDEN:
+                        return context.getString(R.string.default_request_error_forbidden_auth);
+                    case ResponseStatus.SC_BAD_GATEWAY:
+                        return context.getString(R.string.default_request_error_bad_request);
+                    case ResponseStatus.SC_BAD_REQUEST:
+                        return context.getString(R.string.default_request_error_bad_request);
+                    default:
+                        return context.getString(R.string.default_request_error_unknown);
+                }
+            } catch (NumberFormatException e1) {
+                return context.getString(R.string.default_request_error_unknown);
             }
         } else if (e instanceof MessageErrorException && !TextUtils.isEmpty(e.getMessage())) {
             return e.getMessage();

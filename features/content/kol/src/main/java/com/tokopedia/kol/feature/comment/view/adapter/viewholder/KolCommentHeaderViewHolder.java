@@ -1,7 +1,10 @@
 package com.tokopedia.kol.feature.comment.view.adapter.viewholder;
 
+import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -9,6 +12,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.common.util.UrlUtil;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
@@ -27,6 +31,7 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
 
     private static final String SPACE = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
     private final KolComment.View viewListener;
+    private final Context context;
 
     private TextView comment;
     private TextView time;
@@ -38,6 +43,7 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
     public KolCommentHeaderViewHolder(View itemView, KolComment.View viewListener) {
         super(itemView);
         this.viewListener = viewListener;
+        this.context = itemView.getContext();
         avatar = itemView.findViewById(R.id.avatar);
         time = itemView.findViewById(R.id.time);
         comment = itemView.findViewById(R.id.comment);
@@ -51,16 +57,20 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
         ImageHandler.loadImageCircle2(avatar.getContext(), avatar, element.getAvatarUrl());
         time.setText(element.getTime());
 
-        avatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!TextUtils.isEmpty(element.getUrl()))
-                    viewListener.onGoToProfile(element.getUrl());
+        avatar.setOnClickListener(v -> {
+            if (!TextUtils.isEmpty(element.getUrl())) {
+                viewListener.openRedirectUrl(element.getUrl());
             }
         });
 
         badge.setVisibility(View.VISIBLE);
-        UrlUtil.setTextWithClickableTokopediaUrl(comment, SPACE + getCommentText(element));
+        if (!TextUtils.isEmpty(element.getTagsLink())) {
+            UrlUtil.setTextWithClickableTokopediaUrl(comment,
+                    SPACE + getCommentText(element),
+                    getUrlClickableSpan(element));
+        } else {
+            UrlUtil.setTextWithClickableTokopediaUrl(comment, SPACE + getCommentText(element));
+        }
 
         if (element.isCanLoadMore())
             loadMore.setVisibility(View.VISIBLE);
@@ -72,15 +82,12 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
         else
             progressBar.setVisibility(View.GONE);
 
-        loadMore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                element.setCanLoadMore(false);
-                element.setLoading(true);
-                progressBar.setVisibility(View.VISIBLE);
-                loadMore.setVisibility(View.GONE);
-                viewListener.loadMoreComments();
-            }
+        loadMore.setOnClickListener(v -> {
+            element.setCanLoadMore(false);
+            element.setLoading(true);
+            progressBar.setVisibility(View.VISIBLE);
+            loadMore.setVisibility(View.GONE);
+            viewListener.loadMoreComments();
         });
 
     }
@@ -88,5 +95,21 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
     private String getCommentText(KolCommentViewModel element) {
         return "<b>" + element.getName() + "</b>" + " "
                 + element.getReview().replaceAll("(\r\n|\n)", "<br />");
+    }
+
+    private ClickableSpan getUrlClickableSpan(KolCommentHeaderViewModel element) {
+        return new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                viewListener.openRedirectUrl(element.getTagsLink());
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(true);
+                ds.setColor(MethodChecker.getColor(context, R.color.tkpd_main_green));
+            }
+        };
     }
 }

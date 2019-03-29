@@ -27,6 +27,25 @@ public class Summary {
     @SerializedName("total_price")
     @Expose
     private String totalPrice;
+    @SerializedName("total_purchase_protection_quantity")
+    @Expose
+    private int totalProtectionItem;
+    @SerializedName("total_purchase_protection_fee")
+    @Expose
+    private String totalProtectionFee;
+    @SerializedName("is_order_cod")
+    @Expose
+    private Boolean isOrderCod;
+    @SerializedName("cod_fee")
+    @Expose
+    private String codFee;
+    @SerializedName("warehouse_id")
+    @Expose
+    private int warehouseId;
+    @SerializedName("fulfill_by")
+    @Expose
+    private int fulfillBy;
+
 
     public String getItemsPrice() {
         return itemsPrice;
@@ -84,4 +103,51 @@ public class Summary {
         this.totalPrice = totalPrice;
     }
 
+    public int getTotalProtectionItem() {
+        return totalProtectionItem;
+    }
+
+    public void setTotalProtectionItem(int totalProtectionItem) {
+        this.totalProtectionItem = totalProtectionItem;
+    }
+
+    public String getTotalProtectionFee() {
+        return totalProtectionFee;
+    }
+
+    public void setTotalProtectionFee(String totalProtectionFee) {
+        this.totalProtectionFee = totalProtectionFee;
+    }
+
+    public Boolean getOrderCod() {
+        return isOrderCod;
+    }
+
+    public void setOrderCod(Boolean orderCod) {
+        isOrderCod = orderCod;
+    }
+
+    public String getCodFee() {
+        return codFee;
+    }
+
+    public void setCodFee(String codFee) {
+        this.codFee = codFee;
+    }
+
+    public int getWarehouseId() {
+        return warehouseId;
+    }
+
+    public void setWarehouseId(int warehouseId) {
+        this.warehouseId = warehouseId;
+    }
+
+    public int getFulfillBy() {
+        return fulfillBy;
+    }
+
+    public void setFulfillBy(int fulfillBy) {
+        this.fulfillBy = fulfillBy;
+    }
 }

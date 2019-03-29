@@ -2,6 +2,8 @@ package com.tokopedia.design.text.watcher;
 
 import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.tokopedia.design.intdef.CurrencyEnum;
@@ -14,7 +16,10 @@ import com.tokopedia.design.utils.StringUtils;
  */
 public class CurrencyTextWatcher extends AfterTextWatcher {
 
+    public static final int DEFAULT_MAX_LENGTH = 13; // 9.999.999.999 is max for default
+
     private String defaultValue;
+    private int maxLength = DEFAULT_MAX_LENGTH;
     private EditText editText;
     private boolean useCommaForThousand;
 
@@ -37,6 +42,15 @@ public class CurrencyTextWatcher extends AfterTextWatcher {
     }
 
     private OnNumberChangeListener onNumberChangeListener;
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    public void setMaxLength(int maxLength) {
+        this.maxLength = maxLength;
+    }
+
     public interface OnNumberChangeListener {
         void onNumberChanged(double value);
     }
@@ -60,14 +74,19 @@ public class CurrencyTextWatcher extends AfterTextWatcher {
     @Override
     public void afterTextChanged(Editable s) {
         String sString = s.toString();
+
+        if (sString.length() >= maxLength + prefixLength) {
+            sString = sString.substring(0, maxLength + prefixLength );
+        }
+
         double doubleValue = StringUtils.convertToNumeric(sString, useCommaForThousand);
-        if (onNumberChangeListener!= null) {
+        if (onNumberChangeListener != null) {
             onNumberChangeListener.onNumberChanged(doubleValue);
         }
         editText.removeTextChangedListener(this);
         if (doubleValue == 0) {
             editText.setText(String.format(format, defaultValue));
-            editText.setSelection(defaultValue.length());
+            editText.setSelection(editText.getText().length());
         } else {
             int selectionStart = editText.getSelectionStart() - prefixLength;
             if (selectionStart < 0) {

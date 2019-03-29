@@ -12,9 +12,10 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
 /**
@@ -109,8 +110,6 @@ public abstract class TActivity extends BaseActivity {
         return true;
     }
 
-
-
     public void inflateView(int layoutId) {
         if (parentView != null) getLayoutInflater().inflate(layoutId, parentView);
     }
@@ -119,28 +118,31 @@ public abstract class TActivity extends BaseActivity {
         getSupportActionBar().hide();
     }
 
-    private void setLightToolbarStyle() {
+    protected void setLightToolbarStyle() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
-            toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
+            toolbar.setBackgroundResource(R.color.white);
         } else {
             toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
         }
         Drawable drawable = ContextCompat.getDrawable(this, R.drawable.ic_toolbar_overflow_level_two_black);
-        drawable.setBounds(5, 5, 5, 5);
+        if (drawable != null)
+            drawable.setBounds(5, 5, 5, 5);
+
         toolbar.setOverflowIcon(drawable);
 
         if (getSupportActionBar() != null)
             getSupportActionBar().setHomeAsUpIndicator(
-                    com.tokopedia.core.R.drawable.ic_webview_back_button
+                    com.tokopedia.core2.R.drawable.ic_webview_back_button
             );
 
-        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
-        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core2.R.style.WebViewToolbarText);
+        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core2.R.style
                 .WebViewToolbarSubtitleText);
     }
 
+    // for global nav purpose
     protected boolean isLightToolbarThemes() {
-        return false;
+        return GlobalConfig.isCustomerApp();
     }
 }

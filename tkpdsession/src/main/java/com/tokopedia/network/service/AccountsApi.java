@@ -3,7 +3,6 @@ package com.tokopedia.network.service;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.network.SessionUrl;
-import com.tokopedia.session.changephonenumber.data.model.ValidateOtpStatusData;
 
 import java.util.Map;
 
@@ -121,14 +120,6 @@ public interface AccountsApi {
     Observable<Response<TkpdResponse>> getWarning(@QueryMap TKPDMapParam<String, Object> params);
 
     @FormUrlEncoded
-    @POST(SessionUrl.ChangeMSISDN.SEND_EMAIL)
-    Observable<Response<TkpdResponse>> sendEmail(@FieldMap TKPDMapParam<String, Object> params);
-
-    @FormUrlEncoded
-    @POST(SessionUrl.ChangeMSISDN.VALIDATE_EMAIL_CODE)
-    Observable<Response<TkpdResponse>> validateEmailCode(@FieldMap TKPDMapParam<String, Object> params);
-
-    @FormUrlEncoded
     @POST(SessionUrl.ChangeMSISDN.VALIDATE)
     Observable<Response<TkpdResponse>> validateNumber(@FieldMap TKPDMapParam<String, Object> params);
 
@@ -175,8 +166,8 @@ public interface AccountsApi {
     Observable<Response<TkpdResponse>> addPassword(@FieldMap Map<String,
             Object> parameters);
 
-    @GET(SessionUrl.OTP.VALIDATE_OTP_STATUS)
-    Observable<Response<ValidateOtpStatusData>> validateOtpStatus(@QueryMap Map<String, Object>
-                                                                 parameters);
-
+    @FormUrlEncoded
+    @POST(SessionUrl.Register.PATH_REGISTER_VALIDATION)
+    Observable<Response<TkpdResponse>> validateRegister(@FieldMap Map<String, Object>
+                                                                          parameters);
 }

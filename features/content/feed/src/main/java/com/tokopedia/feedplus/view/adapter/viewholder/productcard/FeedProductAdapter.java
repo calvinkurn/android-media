@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.view.adapter.viewholder.productcard;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,28 +11,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.feedplus.R;
-import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import static com.tokopedia.core.gcm.Constants.Applinks.SHOP;
 
 /**
  * @author by nisie on 5/16/17.
  */
 
 public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.ViewHolder> {
-
-    private static final String SHOP_ID_BRACKETS = "{shop_id}";
 
     private static final int MAX_FEED_SIZE = 6;
     private static final int MAX_FEED_SIZE_SMALL = 3;
@@ -68,24 +61,16 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             int extraProduct = (activityCardViewModel.getTotalProduct() - LAST_FEED_POSITION);
             showBlackScreen(holder, extraProduct);
 
-            holder.container.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    goToFeedDetail();
-                }
-            });
+            holder.container.setOnClickListener(goToFeedDetail());
+            holder.productLayout.setOnClickListener(goToFeedDetail());
         } else if (list.size() < MAX_FEED_SIZE
                 && list.size() > MAX_FEED_SIZE_SMALL
                 && position == LAST_FEED_POSITION_SMALL) {
             int extraProduct = (activityCardViewModel.getTotalProduct() - LAST_FEED_POSITION_SMALL);
             showBlackScreen(holder, extraProduct);
 
-            holder.container.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    goToFeedDetail();
-                }
-            });
+            holder.container.setOnClickListener(goToFeedDetail());
+            holder.productLayout.setOnClickListener(goToFeedDetail());
         } else {
             holder.extraProduct.setBackground(null);
             holder.extraProduct.setVisibility(View.GONE);
@@ -95,12 +80,12 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             holder.productPrice.setVisibility(View.VISIBLE);
             holder.productPrice.setText(list.get(position).getPrice());
 
-            holder.container.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    goToProductDetail(list, holder.getAdapterPosition());
-                }
-            });
+            holder.container.setOnClickListener(
+                    goToProductDetail(list, holder.getAdapterPosition())
+            );
+            holder.productLayout.setOnClickListener(
+                    goToProductDetail(list, holder.getAdapterPosition())
+            );
         }
 
         setProductNamePadding(holder);
@@ -153,49 +138,37 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
         holder.productPrice.setVisibility(View.GONE);
     }
 
-    private void goToFeedDetail() {
-        viewListener.onGoToFeedDetail(
+    private View.OnClickListener goToFeedDetail() {
+        return v -> viewListener.onGoToFeedDetail(
                 activityCardViewModel.getPage(),
                 activityCardViewModel.getRowNumber(), activityCardViewModel.getFeedId()
         );
     }
 
-    private void goToProductDetail(ArrayList<ProductFeedViewModel> list, int position) {
-        viewListener.onGoToProductDetailFromProductUpload(
-                activityCardViewModel.getRowNumber(),
-                activityCardViewModel.getPositionFeedCard(),
-                list.get(position).getPage(),
-                position,
-                String.valueOf(list.get(position).getProductId()),
-                list.get(position).getImageSourceSingle(),
-                list.get(position).getName(),
-                list.get(position).getPrice(),
-                list.get(position).getPriceInt(),
-                list.get(position).getUrl(),
-                activityCardViewModel.getEventLabel()
-        );
+    private View.OnClickListener goToProductDetail(ArrayList<ProductFeedViewModel> list,
+                                                   int position) {
+        return v -> {
+            viewListener.onGoToProductDetailFromProductUpload(
+                    activityCardViewModel.getRowNumber(),
+                    activityCardViewModel.getPositionFeedCard(),
+                    list.get(position).getPage(),
+                    position,
+                    String.valueOf(list.get(position).getProductId()),
+                    list.get(position).getImageSourceSingle(),
+                    list.get(position).getName(),
+                    list.get(position).getPrice(),
+                    list.get(position).getPriceInt(),
+                    list.get(position).getUrl(),
+                    activityCardViewModel.getEventLabel()
+            );
 
-        doTrackingEnhancedEcommerce();
-    }
+            viewListener.eventTrackingEEGoToProduct(activityCardViewModel.getHeader().getShopId(),
+                    activityCardViewModel.getFeedId(),
+                    activityCardViewModel.getTotalProduct(),
+                    this.positionInFeed,
+                    "-");
 
-    private void doTrackingEnhancedEcommerce() {
-        String loginIdString = SessionHandler.getLoginID(viewListener.getActivity());
-        int loginIdInt = loginIdString.isEmpty() ? 0 : Integer.valueOf(loginIdString);
-
-        String shopId = String.valueOf(activityCardViewModel.getHeader().getShopId());
-        List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
-        list.add(new FeedEnhancedTracking.Promotion(
-                activityCardViewModel.getHeader().getShopId(),
-                FeedEnhancedTracking.Promotion.createContentNameProductUpload(
-                        activityCardViewModel.getTotalProduct()),
-                String.valueOf(activityCardViewModel.getTotalProduct()),
-                this.positionInFeed,
-                "-",
-                activityCardViewModel.getHeader().getShopId(),
-                SHOP.replace(SHOP_ID_BRACKETS, shopId)
-        ));
-        TrackingUtils.eventTrackingEnhancedEcommerce(
-                FeedEnhancedTracking.getClickTracking(list, loginIdInt));
+        };
     }
 
     private void setProductNamePadding(ViewHolder holder) {
@@ -219,26 +192,28 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
 
         }
 
-        paddingSide = (int) resources.getDimension(R.dimen.new_margin_small);
+        paddingSide = (int) resources.getDimension(R.dimen.dp_2);
         holder.productName.setPadding(paddingSide, paddingTop, paddingSide, 0);
         holder.productPrice.setPadding(paddingSide, 0, paddingSide, paddingBottom);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public View container;
-        public TextView productName;
-        public ImageView productImage;
+        private View container;
+        private TextView productName;
+        private CardView productLayout;
+        private ImageView productImage;
         private TextView productPrice;
-        public TextView extraProduct;
+        private TextView extraProduct;
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
             container = itemLayoutView;
-            productName = (TextView) itemView.findViewById(R.id.title);
-            extraProduct = (TextView) itemView.findViewById(R.id.extra_product);
-            productImage = (ImageView) itemView.findViewById(R.id.product_image);
-            productPrice = (TextView) itemView.findViewById(R.id.price);
+            productName = itemView.findViewById(R.id.title);
+            extraProduct = itemView.findViewById(R.id.extra_product);
+            productImage = itemView.findViewById(R.id.product_image);
+            productLayout = itemView.findViewById(R.id.product_layout);
+            productPrice = itemView.findViewById(R.id.price);
         }
     }
 }

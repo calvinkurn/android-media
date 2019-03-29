@@ -1,7 +1,7 @@
 package com.tokopedia.core.drawer2.view.subscriber;
 
 import com.tkpd.library.utils.network.MessageErrorException;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.drawer2.data.pojo.deposit.DepositData;
 import com.tokopedia.core.drawer2.data.pojo.deposit.DepositModel;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;

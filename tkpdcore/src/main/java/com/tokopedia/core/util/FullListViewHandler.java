@@ -6,7 +6,7 @@ import android.widget.ListView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ViewHelper;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 public class FullListViewHandler {
 	

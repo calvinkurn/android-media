@@ -7,13 +7,13 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
-import com.tokopedia.otp.common.network.AccountsAuthorizationInterceptor;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.otp.common.network.AuthorizationBearerInterceptor;
 import com.tokopedia.otp.common.network.OtpErrorInterceptor;
 import com.tokopedia.otp.common.network.OtpErrorResponse;
 import com.tokopedia.otp.common.network.WSErrorResponse;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -36,26 +36,21 @@ public class OtpNetModule {
 
     @OtpScope
     @Provides
-    public AccountsAuthorizationInterceptor provideAccountsAuthorizationInterceptor(UserSession
-                                                                                            userSession) {
-        return new AccountsAuthorizationInterceptor(userSession);
-    }
-
-    @OtpScope
-    @Provides
     public ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
         return new ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
     }
 
     @OtpScope
     @Provides
-    public FingerprintInterceptor provideFingerprintInterceptor() {
-        return new FingerprintInterceptor();
+    public FingerprintInterceptor provideFingerprintInterceptor(@ApplicationContext Context context,
+                                                                UserSessionInterface userSession) {
+        return new FingerprintInterceptor((NetworkRouter) context, userSession);
     }
 
     @OtpScope
     @Provides
-    public AuthorizationBearerInterceptor provideAuthorizationBearerInterceptor(UserSession userSession) {
+    public AuthorizationBearerInterceptor provideAuthorizationBearerInterceptor(UserSessionInterface
+                                                                                        userSession) {
         return new AuthorizationBearerInterceptor(userSession);
     }
 

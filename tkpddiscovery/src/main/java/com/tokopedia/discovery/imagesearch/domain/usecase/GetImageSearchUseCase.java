@@ -16,12 +16,14 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.entity.wishlist.WishlistCheckResult;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.data.mapper.ImageProductMapper;
 import com.tokopedia.discovery.imagesearch.network.apiservice.ImageSearchService;
+import com.tokopedia.discovery.imagesearch.search.exception.ImageNotSupportedException;
 import com.tokopedia.discovery.newdiscovery.domain.model.ProductModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -51,24 +53,33 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
     private ImageProductMapper productMapper;
     private ImageSearchService imageSearchService;
     private Context context;
+    private UserSessionInterface userSession;
 
-    private final int MAX_WIDTH = 600;
-    private final int MAX_HEIGHT = 600;
+    private final int OPTIMUM_WIDTH = 300;
+    private final int OPTIMUM_HEIGHT = 300;
+
+    private final int MAX_WIDTH = 1280;
+    private final int MAX_HEIGHT = 720;
+
     private final static String pageSize = "100";
     private final static String pageOffset = "0";
 
     private String imagePath;
+    private final int MIN_WIDTH = 200;
+    private final int MIN_HEIGHT = 200;
 
     public GetImageSearchUseCase(Context context, ThreadExecutor threadExecutor,
                                  PostExecutionThread postExecutionThread,
                                  ImageSearchService imageSearchService,
                                  ImageProductMapper imageProductMapper,
-                                 MojitoApi service) {
+                                 MojitoApi service,
+                                 UserSessionInterface userSession) {
         super(threadExecutor, postExecutionThread);
         this.context = context;
         this.service = service;
         this.imageSearchService = imageSearchService;
         this.productMapper = imageProductMapper;
+        this.userSession = userSession;
     }
 
     private static String initializeSearchRequestParamForGql() {
@@ -83,10 +94,25 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
                     Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                     try {
                         if (myBitmap == null) {
-                            myBitmap = ImageHandler.getBitmapFromUri(context, Uri.parse(imagePath), MAX_WIDTH, MAX_HEIGHT);
+                            myBitmap = ImageHandler.getBitmapFromUri(context, Uri.parse(imagePath),
+                                    OPTIMUM_WIDTH, OPTIMUM_HEIGHT);
                         }
 
-                        myBitmap = ImageHandler.resizeImage(myBitmap, MAX_WIDTH, MAX_HEIGHT);
+                        if (myBitmap.getWidth() < MIN_WIDTH ||
+                                myBitmap.getHeight() < MIN_HEIGHT) {
+
+                            throw new ImageNotSupportedException();
+
+                        } else if (myBitmap.getWidth() > OPTIMUM_WIDTH ||
+                                myBitmap.getHeight() > OPTIMUM_HEIGHT) {
+                            myBitmap = ImageHandler.resizeImage(myBitmap, OPTIMUM_WIDTH, OPTIMUM_HEIGHT);
+                        }
+
+                        if (myBitmap.getHeight() > MAX_HEIGHT ||
+                                myBitmap.getWidth() > MAX_WIDTH) {
+                            throw new ImageNotSupportedException();
+                        }
+
                         myBitmap = ImageHandler.RotatedBitmap(myBitmap, imagePath);
                     } catch (IOException exception) {
                         exception.printStackTrace();
@@ -163,10 +189,7 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
     }
 
     private String getUserId() {
-        SessionHandler sessionHandler = new SessionHandler(context);
-        return sessionHandler.isV4Login() ?
-                sessionHandler.getLoginID() :
-                "";
+        return userSession.isLoggedIn() ? userSession.getUserId() : "";
     }
 
     public void setImagePath(String imagePath) {

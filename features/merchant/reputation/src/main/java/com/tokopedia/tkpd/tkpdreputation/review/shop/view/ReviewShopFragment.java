@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DividerItemDecoration;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +16,15 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.imagepreview.ImagePreviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
@@ -97,8 +102,9 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        VerticalRecyclerView recyclerView = view.findViewById(R.id.recycler_view);
-        recyclerView.clearItemDecoration();
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.divider_vertical_product_review));
+        getRecyclerView(view).addItemDecoration(dividerItemDecoration);
     }
 
     @Override
@@ -155,23 +161,19 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
 
 
     @Override
-    public void goToPreviewImage(int position, ArrayList<ImageUpload> list) {
-        if (MainApplication.getAppContext() instanceof PdpRouter) {
-            ArrayList<String> listLocation = new ArrayList<>();
-            ArrayList<String> listDesc = new ArrayList<>();
+    public void goToPreviewImage(int position, ArrayList<ImageUpload> list, ReviewProductModelContent element) {
+        ArrayList<String> listLocation = new ArrayList<>();
+        ArrayList<String> listDesc = new ArrayList<>();
 
-            for (ImageUpload image : list) {
-                listLocation.add(image.getPicSrcLarge());
-                listDesc.add(image.getDescription());
-            }
-
-            ((PdpRouter) MainApplication.getAppContext()).openImagePreview(
-                    getActivity(),
-                    listLocation,
-                    listDesc,
-                    position
-            );
+        for (ImageUpload image : list) {
+            listLocation.add(image.getPicSrcLarge());
+            listDesc.add(image.getDescription());
         }
+
+        startActivity(ImagePreviewActivity.getCallingIntent(getActivity(),
+                listLocation,
+                listDesc,
+                position));
     }
 
     @Override
@@ -242,7 +244,8 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     }
 
     @Override
-    public void onErrorPostLikeDislike(Throwable e) {
+    public void onErrorPostLikeDislike(Throwable e, String reviewId, int likeStatus) {
+        ((ReviewProductAdapter) getAdapter()).updateLikeStatusError(reviewId, likeStatus);
         NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(e));
     }
 
@@ -255,10 +258,9 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     @Override
     public void onGoToDetailProduct(String productId, int adapterPosition) {
         onGoToDetailProductTracking(productId, adapterPosition);
-        ProductPass productPass = ProductPass.Builder.aProductPass()
-                .setProductId(productId)
-                .build();
-        ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productPass);
+        if (getContext()!= null) {
+            RouteManager.route(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        }
     }
 
     protected void onGoToDetailProductTracking(String productId, int adapterPosition) {

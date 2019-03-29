@@ -13,7 +13,6 @@
             style="@style/EditText"
             android:layout_width="match_parent"
             android:inputType="number"
-            android:maxLength="@integer/product_max_counter_length"
             android:text="@string/product_default_counter_text"/>
 
     </android.support.design.widget.TextInputLayout>

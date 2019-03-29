@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TextView.TitleBig.Bold"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/msg_has_no_shop"/>
+
+    <TextView
+        style="@style/TextView.Small.BlackDisabled"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="@dimen/dp_4"
+        android:text="@string/msg_desc_has_no_shop"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TextView.TitleMedium.Bold"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/top_features"/>
+
+    <com.tokopedia.home.account.presentation.view.InfoCardView
+        android:id="@+id/topads_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8" />
+
+    <com.tokopedia.home.account.presentation.view.InfoCardView
+        android:id="@+id/gm_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8" />
+
+    <com.tokopedia.home.account.presentation.view.InfoCardView
+        android:id="@+id/seller_center_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8" />
+
+    <Button
+        android:id="@+id/btn_open_shop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Button.Submit.Green"
+        android:text="@string/open_shop"/>
+
+    <TextView
+        android:id="@+id/btn_learn_more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/learn_more"
+        android:gravity="center"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:textColor="@color/tkpd_main_green"/>
+
+</LinearLayout>

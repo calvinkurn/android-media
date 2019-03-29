@@ -8,6 +8,8 @@ import java.util.List;
 
 public class TrackingViewModel {
 
+    public static int ORDER_STATUS_WAITING = 501;
+
     private int change;
 
     private int noHistory;

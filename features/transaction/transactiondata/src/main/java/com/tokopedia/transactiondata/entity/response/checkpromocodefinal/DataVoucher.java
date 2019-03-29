@@ -24,6 +24,9 @@ public class DataVoucher {
     @SerializedName("voucher_promo_desc")
     @Expose
     private String voucherPromoDesc;
+    @SerializedName("is_coupon")
+    @Expose
+    private int isCoupon;
 
     public String getVoucherAmountIdr() {
         return voucherAmountIdr;
@@ -43,5 +46,9 @@ public class DataVoucher {
 
     public String getVoucherPromoDesc() {
         return voucherPromoDesc;
+    }
+
+    public int getIsCoupon() {
+        return isCoupon;
     }
 }

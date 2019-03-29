@@ -43,8 +43,7 @@
         <TextView
             android:id="@+id/market_insight_gmsubscribe_text"
             style="@style/TextView.Small.Green"
-            android:layout_centerInParent="true"
-            android:text="@string/gm_statistic_upgrade_to_gold_merchant" />
+            android:layout_centerInParent="true"/>
     </RelativeLayout>
 
 </LinearLayout>

@@ -9,10 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.tokopedia.base.list.seller.view.adapter.viewholder.BaseMultipleCheckViewHolder;
+import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantOption;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.seller.common.utils.CircleTransform;
-import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantOption;
 
 /**
  * @author normansyahputa on 5/26/17.

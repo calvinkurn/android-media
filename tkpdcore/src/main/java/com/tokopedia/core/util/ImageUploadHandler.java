@@ -12,8 +12,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -44,6 +42,15 @@ public class ImageUploadHandler {
         uploadimage.context = fragment.getActivity();
         return uploadimage;
     }
+    public static ImageUploadHandler createInstance(android.support.v4.app.Fragment fragment) {
+        ImageUploadHandler uploadimage = new ImageUploadHandler();
+        uploadimage.fragmentv4 = fragment;
+        uploadimage.context = fragment.getActivity();
+        return uploadimage;
+    }
+
+
+
 
     public class Model {
         public String cameraFileLoc;
@@ -54,13 +61,10 @@ public class ImageUploadHandler {
 
     private Activity activity;
     private Fragment fragment;
+
+    private android.support.v4.app.Fragment fragmentv4;
     private Context context;
     private Model model = new Model();
-
-    public void actionImagePicker() {
-        Intent imageGallery = new Intent(context, GalleryBrowser.class);
-        startActivity(imageGallery, ImageGallery.TOKOPEDIA_GALLERY);
-    }
 
     public void actionCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -68,23 +72,11 @@ public class ImageUploadHandler {
         startActivity(intent, REQUEST_CODE);
     }
 
-    public String actionCamera2() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, getOutputMediaFileUri());
-        startActivity(intent, REQUEST_CODE);
-        return model.cameraFileLoc;
-    }
-
-    public Intent getCameraIntent() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, getOutputMediaFileUri());
-        return intent;
-    }
-
-
     private void startActivity(Intent intent, int code) {
         if (activity != null)
             activity.startActivityForResult(intent, code);
+        else if(fragmentv4 != null)
+            fragmentv4.startActivityForResult(intent,code);
         else
             fragment.startActivityForResult(intent, code);
     }

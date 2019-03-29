@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder;
 
@@ -65,6 +66,8 @@ public class BaseAdapterTypeFactory implements AdapterTypeFactory {
             creatViewHolder = new EmptyResultViewHolder(parent);
         } else if (type == EmptyViewHolder.LAYOUT) {
             creatViewHolder = new EmptyViewHolder(parent);
+        } else if (type == HideViewHolder.LAYOUT){
+            creatViewHolder = new HideViewHolder(parent);
         } else {
             throw TypeNotSupportedException.create("Layout not supported");
         }

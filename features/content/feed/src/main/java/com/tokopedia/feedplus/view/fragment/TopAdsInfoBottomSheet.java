@@ -1,7 +1,6 @@
 package com.tokopedia.feedplus.view.fragment;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.BottomSheetBehavior;
@@ -18,7 +17,7 @@ import com.tokopedia.feedplus.R;
 
 public class TopAdsInfoBottomSheet {
 
-    public static String ADS_URL = "https://www.tokopedia.com/iklan?source=tooltip&medium=android";
+    public static String ADS_URL = "https://seller.tokopedia.com/edu/about-topads/iklan/?source=tooltip&medium=android";
 
     public static final String TAG = "TAIBS";
     private BottomSheetDialog dialog;
@@ -39,36 +38,24 @@ public class TopAdsInfoBottomSheet {
     }
 
     public void setView(final Context context) {
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialogInterface) {
-                BottomSheetDialog dialog = (BottomSheetDialog) dialogInterface;
-                FrameLayout frameLayout = (FrameLayout)
-                        dialog.findViewById(com.tokopedia.core.R.id.design_bottom_sheet);
-                if (frameLayout != null) {
-                    BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(frameLayout);
-                    behavior.setHideable(false);
-                }
+        dialog.setOnShowListener(dialogInterface -> {
+            BottomSheetDialog dialog = (BottomSheetDialog) dialogInterface;
+            FrameLayout frameLayout = dialog.findViewById(R.id.design_bottom_sheet);
+            if (frameLayout != null) {
+                BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(frameLayout);
+                behavior.setHideable(false);
             }
         });
 
-        moreButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dismissDialog();
+        moreButton.setOnClickListener(view -> {
+            dismissDialog();
 
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(ADS_URL));
-                context.startActivity(intent);
-            }
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(ADS_URL));
+            context.startActivity(intent);
         });
 
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dismissDialog();
-            }
-        });
+        closeButton.setOnClickListener(view -> dismissDialog());
     }
 
     public void show() {

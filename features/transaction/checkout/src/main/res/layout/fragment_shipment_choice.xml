@@ -44,11 +44,18 @@
 
     </android.support.v7.widget.Toolbar>
 
+    <View
+        android:id="@+id/v_toolbar_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_below="@+id/toolbar"
+        android:background="@color/grey_300" />
+
     <LinearLayout
         android:id="@+id/ll_shipment_info_ticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
+        android:layout_below="@+id/v_toolbar_separator"
         android:layout_marginBottom="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"

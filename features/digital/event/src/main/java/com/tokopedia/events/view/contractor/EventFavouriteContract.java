@@ -1,10 +1,5 @@
 package com.tokopedia.events.view.contractor;
 
-import android.app.Activity;
-import android.content.Intent;
-
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
 import java.util.List;
@@ -14,30 +9,18 @@ import java.util.List;
  */
 
 public class EventFavouriteContract {
-    public interface EventFavouriteView extends CustomerView {
-        void showMessage(String message);
-
-        Activity getActivity();
-
-        void navigateToActivityRequest(Intent intent, int requestCode);
-
+    public interface EventFavouriteView extends EventBaseContract.EventBaseView {
         void renderFavourites(List<CategoryItemsViewModel> categoryItemsViewModels);
-
-        void showProgressBar();
-
-        void hideProgressBar();
-
-        android.view.View getRootView();
 
         void toggleEmptyLayout(int visibility);
 
     }
 
-    public interface Presenter extends CustomerPresenter<EventFavouriteContract.EventFavouriteView> {
+    public interface EventFavoritePresenter extends EventBaseContract.EventBasePresenter {
 
         public String getSCREEN_NAME();
 
-        void setEventLike(CategoryItemsViewModel model, int position);
+        void removeEventLike(CategoryItemsViewModel model, int position);
 
         void shareEvent(CategoryItemsViewModel model);
     }

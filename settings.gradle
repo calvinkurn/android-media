@@ -7,41 +7,18 @@ buildCache {
     remote(HttpBuildCache) {
         url = "${ci_url}"
         push = isCiServer
-        allowUntrustedServer = true
+//        allowUntrustedServer = true
         credentials {
             username = "${ci_username}"
             password = "${ci_password}"
         }
     }
 }
-
-
-apply from: "features/settings-features.gradle"
-apply from: "libraries/settings-libraries.gradle"
-
-include 'customerapp'
-include 'tkpdhome'
-include 'tkpdloyalty'
-include 'tkpdride'
-include 'tkpdfeed'
-include 'tkpdcore'
-include 'tkpdinbox'
-include 'tkpddiscovery'
-include 'tkpdtransaction'
-include 'tkpdsession'
-include 'tkpdtopadssdk'
-include 'tkpdpdp'
-include 'tkpddesign'
-include 'sellerapp'
-include 'tkpdseller'
-include 'tkpdtokocash'
-include 'tkpdabstraction'
-include 'tkpdflight'
-include 'tkpdcontent'
-include 'tkpdstream'
-include 'tkpdshop'
-include 'tkpdshop-common'
-include 'tkpdgm-common'
-include 'tkpdreputation-common'
-include 'tkpdwishlist-common'
-include 'tkpdtransaction-common'
+apply from: "buildconfig/appcompile/compile-libraries.gradle"
+//apply from: "buildconfig/appcompile/compile-libraries-no-op.gradle"
+apply from: "buildconfig/appcompile/compile-customerapp.gradle"
+//apply from: "buildconfig/appcompile/compile-customerapp-no-op.gradle"
+apply from: "buildconfig/appcompile/compile-sellerapp.gradle"
+//apply from: "buildconfig/appcompile/compile-sellerapp-no-op.gradle"
+apply from: "buildconfig/appcompile/compile-mitrapp.gradle"
+apply from: "buildconfig/appcompile/compile-posapp.gradle"

@@ -58,7 +58,7 @@ public class TopAdsNewScheduleShopFragment extends TopAdsNewScheduleFragment<Top
             stepperModel = new TopAdsCreatePromoShopModel();
         }
         stepperModel.setDetailShopScheduleViewModel(detailAd);
-        if(getActivity() != null && getActivity() instanceof TopAdsCreatePromoShopActivity){
+        if(getActivity() != null && getActivity() instanceof TopAdsCreatePromoShopActivity && ((TopAdsCreatePromoShopActivity) getActivity()).getShopAd() != null){
             String shopId = ((TopAdsCreatePromoShopActivity) getActivity()).getShopAd().getShopId();
             stepperModel.getTopAdsDetailShopViewModel().setShopId(Long.valueOf(shopId));
         }
@@ -68,9 +68,9 @@ public class TopAdsNewScheduleShopFragment extends TopAdsNewScheduleFragment<Top
 
     private void trackerScheduleShop() {
         if(detailAd.isScheduled()){
-            UnifyTracking.eventTopAdsShopAddPromoShowTime(AppEventTracking.EventLabel.SHOWTIME_SETUP);
+            UnifyTracking.eventTopAdsShopAddPromoShowTime(getActivity(), AppEventTracking.EventLabel.SHOWTIME_SETUP);
         }else{
-            UnifyTracking.eventTopAdsShopAddPromoShowTime(AppEventTracking.EventLabel.SHOWTIME_AUTO);
+            UnifyTracking.eventTopAdsShopAddPromoShowTime(getActivity(), AppEventTracking.EventLabel.SHOWTIME_AUTO);
         }
     }
 

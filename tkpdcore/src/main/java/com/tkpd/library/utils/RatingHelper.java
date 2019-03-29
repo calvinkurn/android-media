@@ -1,6 +1,6 @@
 package com.tkpd.library.utils;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 /**
  * Created by henrypriyono on 8/24/17.

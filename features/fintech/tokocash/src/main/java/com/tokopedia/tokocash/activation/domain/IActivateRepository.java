@@ -15,4 +15,6 @@ public interface IActivateRepository {
     Observable<ActivateTokoCashData> requestOTPWallet();
 
     Observable<ActivateTokoCashData> linkedWalletToTokoCash(HashMap<String, String> mapParam);
+
+    Observable<String> getRefreshWalletToken();
 }

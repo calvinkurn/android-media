@@ -23,8 +23,9 @@ import static com.tokopedia.core.var.TkpdCache.PRODUCT_DETAIL;
 
 /**
  * @author Angga.Prasetiyo on 02/11/2015.
+ * Use WholesaleActivity in Product Detail Module
  */
-
+@Deprecated
 public class WholesaleActivity extends TActivity {
     public static final String KEY_WHOLESALE_DATA = "WHOLESALE_DATA";
 
@@ -64,7 +65,7 @@ public class WholesaleActivity extends TActivity {
         if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             if (!localCacheHandler.getBoolean(STATE_ORIENTATION_CHANGED).booleanValue()) {
                 String productId = getIntent().getParcelableExtra(EXTRA_PRODUCT_ID);
-                UnifyTracking.eventPDPOrientationChanged(productId);
+                UnifyTracking.eventPDPOrientationChanged(this, productId);
                 localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED,Boolean.TRUE);
                 localCacheHandler.applyEditor();
             }
@@ -79,7 +80,7 @@ public class WholesaleActivity extends TActivity {
                     @Override
                     public void onClick(View v) {
                         finish();
-                        WholesaleActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+                        WholesaleActivity.this.overridePendingTransition(0,com.tokopedia.core2.R.anim.push_down);
                     }
                 });
         setUpByConfiguration(getResources().getConfiguration());
@@ -108,6 +109,6 @@ public class WholesaleActivity extends TActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        WholesaleActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+        WholesaleActivity.this.overridePendingTransition(0,com.tokopedia.core2.R.anim.push_down);
     }
 }

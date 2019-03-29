@@ -1,23 +1,24 @@
 package com.tokopedia.inbox.rescenter.createreso.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.inbox.common.domain.model.GenerateHostDomain;
+import com.tokopedia.inbox.common.domain.model.UploadDomain;
+import com.tokopedia.inbox.common.domain.usecase.GenerateHostUseCase;
+import com.tokopedia.inbox.common.domain.usecase.UploadImageUseCase;
+import com.tokopedia.inbox.common.domain.usecase.UploadVideoUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoRequestDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateSubmitDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateValidateDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.GenerateHostDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.UploadDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.CreateSubmitUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.CreateValidateUseCase;
-import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.GenerateHostUseCase;
-import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.UploadUseCase;
-import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.UploadVideoUseCase;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.AttachmentViewModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -35,17 +36,15 @@ public class CreateResoWithAttachmentUseCase extends UseCase<CreateSubmitDomain>
 
     private CreateValidateUseCase createValidateUseCase;
     private GenerateHostUseCase generateHostUseCase;
-    private UploadUseCase uploadUseCase;
+    private UploadImageUseCase uploadUseCase;
     private CreateSubmitUseCase createSubmitUseCase;
 
-    public CreateResoWithAttachmentUseCase(ThreadExecutor threadExecutor,
-                                           PostExecutionThread postExecutionThread,
-                                           CreateValidateUseCase createValidateUseCase,
+    @Inject
+    public CreateResoWithAttachmentUseCase(CreateValidateUseCase createValidateUseCase,
                                            GenerateHostUseCase generateHostUseCase,
-                                           UploadUseCase uploadUseCase,
+                                           UploadImageUseCase uploadUseCase,
                                            CreateSubmitUseCase createSubmitUseCase,
                                            UploadVideoUseCase uploadVideoUseCase) {
-        super(threadExecutor, postExecutionThread);
         this.createValidateUseCase = createValidateUseCase;
         this.generateHostUseCase = generateHostUseCase;
         this.uploadUseCase = uploadUseCase;
@@ -77,34 +76,22 @@ public class CreateResoWithAttachmentUseCase extends UseCase<CreateSubmitDomain>
 
     private Func1<CreateValidateDomain, Observable<CreateResoRequestDomain>>
     addValidateResultToRequestModel(final CreateResoRequestDomain createResoRequestDomain) {
-        return new Func1<CreateValidateDomain, Observable<CreateResoRequestDomain>>() {
-            @Override
-            public Observable<CreateResoRequestDomain> call(
-                    CreateValidateDomain createValidateDomain) {
-                createResoRequestDomain.setCreateValidateDomain(createValidateDomain);
-                return Observable.just(createResoRequestDomain);
-            }
+        return createValidateDomain -> {
+            createResoRequestDomain.setCreateValidateDomain(createValidateDomain);
+            return Observable.just(createResoRequestDomain);
         };
     }
 
     private Func1<CreateResoRequestDomain, Observable<GenerateHostDomain>>
     getObservableGenerateHost(final RequestParams param) {
-        return new Func1<CreateResoRequestDomain, Observable<GenerateHostDomain>>() {
-            @Override
-            public Observable<GenerateHostDomain> call(CreateResoRequestDomain createResoRequestDomain) {
-                return generateHostUseCase.createObservable(param);
-            }
-        };
+        return createResoRequestDomain -> generateHostUseCase.createObservable(param);
     }
 
     private Func1<GenerateHostDomain, Observable<CreateResoRequestDomain>>
     addGenerateHostResultToRequestModel(final CreateResoRequestDomain createResoRequestDomain) {
-        return new Func1<GenerateHostDomain, Observable<CreateResoRequestDomain>>() {
-            @Override
-            public Observable<CreateResoRequestDomain> call(GenerateHostDomain generateHostDomain) {
-                createResoRequestDomain.setGenerateHostDomain(generateHostDomain);
-                return Observable.just(createResoRequestDomain);
-            }
+        return generateHostDomain -> {
+            createResoRequestDomain.setGenerateHostDomain(generateHostDomain);
+            return Observable.just(createResoRequestDomain);
         };
     }
 
@@ -114,75 +101,56 @@ public class CreateResoWithAttachmentUseCase extends UseCase<CreateSubmitDomain>
 
     private Func1<CreateResoRequestDomain, Observable<List<UploadDomain>>>
     getObservableUploadAttachment(final List<AttachmentViewModel> attachmentList) {
-        return new Func1<CreateResoRequestDomain, Observable<List<UploadDomain>>>() {
-            @Override
-            public Observable<List<UploadDomain>> call(final CreateResoRequestDomain createResoRequestDomain) {
+        return createResoRequestDomain -> {
+            if (attachmentList != null && attachmentList.size() !=0) {
                 return Observable.from(attachmentList)
-                        .flatMap(new Func1<AttachmentViewModel, Observable<UploadDomain>>() {
-                            @Override
-                            public Observable<UploadDomain> call(AttachmentViewModel attachmentViewModel) {
-                                if (attachmentViewModel.isImage()) {
-                                    return uploadUseCase.createObservable(
-                                            UploadUseCase.getParam(
-                                                    createResoRequestDomain,
-                                                    attachmentViewModel.getAttachmentId(),
-                                                    attachmentViewModel.getFileLoc()
-                                            ));
-                                } else {
-                                    return uploadVideoUseCase.createObservable(
-                                            UploadUseCase.getParam(
-                                                    createResoRequestDomain,
-                                                    attachmentViewModel.getAttachmentId(),
-                                                    attachmentViewModel.getFileLoc()
-                                            ));
-                                }
+                        .flatMap((Func1<AttachmentViewModel, Observable<UploadDomain>>) attachmentViewModel -> {
+                            if (attachmentViewModel.isImage()) {
+                                return uploadUseCase.createObservable(
+                                        UploadImageUseCase.getParam(
+                                                createResoRequestDomain,
+                                                attachmentViewModel.getAttachmentId(),
+                                                attachmentViewModel.getFileLoc()
+                                        ));
+                            } else {
+                                return uploadVideoUseCase.createObservable(
+                                        UploadImageUseCase.getParam(
+                                                createResoRequestDomain,
+                                                attachmentViewModel.getAttachmentId(),
+                                                attachmentViewModel.getFileLoc()
+                                        ));
                             }
                         }).toList();
+            } else {
+                return Observable.just(new ArrayList<>());
             }
         };
     }
 
     private Func1<List<UploadDomain>, Observable<CreateResoRequestDomain>>
     addListAttachmentUploadToRequestModel(final CreateResoRequestDomain createResoRequestDomain) {
-        return new Func1<List<UploadDomain>, Observable<CreateResoRequestDomain>>() {
-            @Override
-            public Observable<CreateResoRequestDomain> call(List<UploadDomain> uploadImageDomains) {
-                createResoRequestDomain.setUploadDomain(uploadImageDomains);
-                return Observable.just(createResoRequestDomain);
-            }
+        return uploadImageDomains -> {
+            createResoRequestDomain.setUploadDomain(uploadImageDomains);
+            return Observable.just(createResoRequestDomain);
         };
     }
 
     private Func1<CreateResoRequestDomain, Observable<CreateSubmitDomain>>
     getObservableCreateSubmitReso(CreateResoRequestDomain createResoRequestDomain) {
-        return new Func1<CreateResoRequestDomain, Observable<CreateSubmitDomain>>() {
-            @Override
-            public Observable<CreateSubmitDomain> call(CreateResoRequestDomain createResoRequestDomain) {
-                return createSubmitUseCase.createObservable(
-                        CreateSubmitUseCase.createResoSubmitParams(createResoRequestDomain));
-            }
-        };
+        return createResoRequestDomain1 -> createSubmitUseCase.createObservable(
+                CreateSubmitUseCase.createResoSubmitParams(createResoRequestDomain1));
     }
 
     private Func1<CreateSubmitDomain, Observable<CreateResoRequestDomain>>
     addCreateSubmitToRequestModel(final CreateResoRequestDomain createResoRequestDomain) {
-        return new Func1<CreateSubmitDomain, Observable<CreateResoRequestDomain>>() {
-            @Override
-            public Observable<CreateResoRequestDomain> call(CreateSubmitDomain createSubmitDomain) {
-                createResoRequestDomain.setCreateSubmitDomain(createSubmitDomain);
-                return Observable.just(createResoRequestDomain);
-            }
+        return createSubmitDomain -> {
+            createResoRequestDomain.setCreateSubmitDomain(createSubmitDomain);
+            return Observable.just(createResoRequestDomain);
         };
     }
 
     private Func1<CreateResoRequestDomain, Observable<CreateSubmitDomain>> mappingResultToDomain() {
-        return new Func1<CreateResoRequestDomain, Observable<CreateSubmitDomain>>() {
-            @Override
-            public Observable<CreateSubmitDomain> call(
-                    CreateResoRequestDomain createResoRequestDomain) {
-                return Observable.just(createResoRequestDomain.getCreateSubmitDomain());
-            }
-        };
+        return createResoRequestDomain -> Observable.just(createResoRequestDomain.getCreateSubmitDomain());
     }
 
     public RequestParams createResoWithAttachmentRequestParams(ResultViewModel resultViewModel) {

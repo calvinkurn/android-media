@@ -31,6 +31,8 @@ interface FavoriteContract {
 
         void hideRefreshLoading();
 
+        void stopTracePerformanceMonitoring();
+
         boolean isLoading();
 
         void showLoadMoreLoading();

@@ -1,7 +1,7 @@
 package com.tokopedia.core.customadapter;
 
 import com.tokopedia.core.customView.SimpleListView;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import android.content.Context;
 import android.util.AttributeSet;

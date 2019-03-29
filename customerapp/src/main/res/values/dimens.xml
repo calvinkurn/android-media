@@ -14,6 +14,10 @@
     <dimen name="home_channel_sprint_sale_countdown_width">88dp</dimen>
     <dimen name="home_channel_sprint_sale_countdown_height">24dp</dimen>
     <dimen name="home_channel_3_image_size">104dp</dimen>
-    <dimen name="count_down_item_size">24dp</dimen>
     <dimen name="discount_background_radius">16dp</dimen>
+
+    <dimen name="space_nob_s">30dp</dimen>
+    <dimen name="margin_side_button_nob">40dp</dimen>
+    <dimen name="margin_bottom_button_nob">8dp</dimen>
+    <dimen name="padding_button_nob">16dp</dimen>
 </resources>

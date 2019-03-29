@@ -5,7 +5,8 @@
         <activity
             android:name=".view.TrackingPageActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
+            android:theme="@style/Theme.White"
+            android:label="@string/label_tracking_activity"/>
         <activity
             android:name=".view.SimpleWebViewActivity"
             android:screenOrientation="portrait"

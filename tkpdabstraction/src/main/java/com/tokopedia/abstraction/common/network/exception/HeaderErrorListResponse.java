@@ -30,6 +30,6 @@ public class HeaderErrorListResponse extends BaseResponseError {
 
     @Override
     public IOException createException() {
-        return new MessageErrorException(TextUtils.join("\n",header.getMessages()));
+        return new MessageErrorException(TextUtils.join("\n",header.getMessages()), header.getErrorCode());
     }
 }

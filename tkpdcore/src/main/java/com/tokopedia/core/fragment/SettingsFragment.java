@@ -3,9 +3,6 @@ package com.tokopedia.core.fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -14,13 +11,13 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
-import android.text.TextUtils;
 
 import com.tkpd.library.ui.utilities.CustomCheckBoxPreference;
-import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdBasePreferenceFragment;
 import com.tokopedia.core.gcm.Constants;
 
@@ -46,7 +43,9 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
     private static Context context;
     private CustomCheckBoxPreference optionVibrate;
     private CustomCheckBoxPreference optionPromo;
+    private CustomCheckBoxPreference optionShakeShake;
     public static final String SETTING_NOTIFICATION_VIBRATE = "notifications_new_message_vibrate";
+    public static final String SETTING_NOTIFICATION_SHAKE_SHAKE = Constants.Settings.NOTIFICATION_SHAKE_SHAKE;
 
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
@@ -82,8 +81,13 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
         // Add 'general' preferences.
         addPreferencesFromResource(R.xml.pref_notification);
 
-        bindPreferenceSummaryToValue(findPreference(Constants.Settings.NOTIFICATION_RINGTONE));
-
+        optionShakeShake = (CustomCheckBoxPreference) findPreference(SETTING_NOTIFICATION_SHAKE_SHAKE);
+        optionShakeShake.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                return true;
+            }
+        });
         optionVibrate = (CustomCheckBoxPreference) findPreference(Constants.Settings.NOTIFICATION_VIBRATE);
         optionVibrate.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
@@ -100,6 +104,7 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
         optionPromo = (CustomCheckBoxPreference) findPreference(Constants.Settings.NOTIFICATION_PROMO);
         optionPromo.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
     }
+
 
     /** {@inheritDoc} */
     /*@Override
@@ -135,7 +140,7 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
 		if (!isSimplePreferences(context)) {
 			loadHeadersFromResource(R.xml.pref_headers, target);
 		}
-		
+
 	}*/
 
     /**
@@ -157,67 +162,25 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
                         .setSummary(index >= 0 ? listPreference.getEntries()[index]
                                 : null);
 
-            } else if (preference instanceof RingtonePreference) {
-                // For ringtone preferences, look up the correct display value
-                // using RingtoneManager.
-                if (TextUtils.isEmpty(stringValue)) {
-                    // Empty values correspond to 'silent' (no ringtone).
-                    preference.setSummary(R.string.pref_ringtone_silent);
-
-                } else {
-                    Ringtone ringtone = RingtoneManager.getRingtone(
-                            preference.getContext(), Uri.parse(stringValue));
-
-                    if (ringtone == null) {
-                        // Clear the summary if there was a lookup error.
-                        preference.setSummary(null);
-                    } else {
-                        // Set the summary to reflect the new ringtone display
-                        // name.
-                        String name = ringtone
-                                .getTitle(preference.getContext());
-                        preference.setSummary(name);
-                    }
-                }
-
             } else {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
                 if (!preference.getKey().equals(Constants.Settings.NOTIFICATION_PROMO))
                     preference.setSummary(stringValue);
+
+                if(value instanceof Boolean) {
+                    TrackingUtils.setMoEngagePushPreference(MainApplication.getAppContext(), (Boolean) value);
+                }
             }
 
             return true;
         }
     };
 
-    /**
-     * Binds a preference's summary to its value. More specifically, when the
-     * preference's value is changed, its summary (line of text below the
-     * preference title) is updated to reflect the value. The summary is also
-     * immediately updated upon calling this method. The exact display format is
-     * dependent on the type of preference.
-     *
-     * @see #sBindPreferenceSummaryToValueListener
-     */
-    private static void bindPreferenceSummaryToValue(Preference preference) {
-        // Set the listener to watch for value changes.
-        preference
-                .setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
-
-        // Trigger the listener immediately with the preference's
-        // current value.
-        sBindPreferenceSummaryToValueListener.onPreferenceChange(
-                preference,
-                PreferenceManager.getDefaultSharedPreferences(
-                        preference.getContext()).getString(preference.getKey(),
-                        ""));
-    }
-
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() != null) {
-            ScreenTracking.screen(getScreenName());
+            ScreenTracking.screen(MainApplication.getAppContext(), getScreenName());
         }
         super.setUserVisibleHint(isVisibleToUser);
     }

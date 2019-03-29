@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">tkpdcustomer</string>
     <!--Feed-->
+    <string name="tab_explore">Explore</string>
+    <string name="tab_my_feed">My Feed</string>
     <string name="inspiration_header">Inspired by your ,%1$s.</string>
     <string name="official_store_header">Produk Terbaik Official Store.</string>
     <string name="favorite">Favoritkan</string>
@@ -34,7 +36,7 @@
     <string name="see_all_promo">Lihat Semua\nPromo</string>
     <string name="return_to_feed">Kembali ke Feed</string>
     <string name="recent_view">Terakhir Dilihat</string>
-    <string name="you_have_new_feed">Feed baru</string>
+    <string name="you_have_new_feed">Post Terbaru</string>
     <string name="share_gplus">Google+</string>
     <string name="share_fb">Facebook</string>
     <string name="share_twitter">Twitter</string>
@@ -53,6 +55,8 @@
     <string name="comment">Comment</string>
     <string name="failed_to_follow">Gagal follow </string>
     <string name="failed_to_unfollow">Gagal unfollow </string>
+    <string name="shop_success_follow"> berhasil difollow</string>
+    <string name="shop_success_unfollow"> dihapus dari toko yang difollow</string>
     <string name="see_other_product">Lihat %s Produk Lainnya</string>
 
     <string name="feed_empty_title">Feed masih kosong</string>
@@ -62,4 +66,20 @@
     <string name="react_native_explore_page_title">Explore</string>
     <string name="react_native_content_detail_title">Post Detail</string>
 
+    <string name="cta_refresh_feed">Refresh</string>
+    <string name="total_voter">%s telah memilih</string>
+
+    <string name="string_btn_whitelist">Buat Post</string>
+
+    <string name="feed_content_reported">Konten berhasil dilaporkan</string>
+    <string name="feed_see_shop">Lihat Toko</string>
+    <string name="feed_see_profile">Lihat Profil</string>
+    <string name="feed_report">Laporkan</string>
+    <string name="feed_delete">Hapus</string>
+    <string name="feed_cancel">Batal</string>
+    <string name="feed_non_login_title">Mau tahu update terbaru Toko dan Konten kesayanganmu?</string>
+    <string name="feed_after_post">Post sedang diunggah. Cek proses unggah di notifikasi.</string>
+    <string name="post_personal">Post Pribadi</string>
+    <string name="post_shop">Post Toko</string>
+    <string name="create_post_as">Buat Sebagai</string>
 </resources>

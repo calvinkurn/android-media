@@ -2,15 +2,11 @@ package com.tokopedia.discovery.autocomplete.usecase;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.autocomplete.repository.AutoCompleteRepository;
 import com.tokopedia.discovery.search.domain.model.SearchData;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.List;
 
@@ -28,15 +24,14 @@ public class AutoCompleteUseCase extends UseCase<List<SearchData>> {
     public static final String DEFAULT_SOURCE = "searchbar";
     public static final String DEFAULT_COUNT = "5";
     private static final String DEVICE_ID = "device_id";
+    private static final String KEY_IS_OFFICIAL = "official";
 
     private final AutoCompleteRepository autoCompleteRepository;
 
     public AutoCompleteUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
             AutoCompleteRepository autoCompleteRepository
     ) {
-        super(threadExecutor, postExecutionThread);
+        super();
         this.autoCompleteRepository = autoCompleteRepository;
     }
 
@@ -46,6 +41,10 @@ public class AutoCompleteUseCase extends UseCase<List<SearchData>> {
     }
 
     public static RequestParams getParams(String query, String registrationId, String userId) {
+        return getParams(query, false, registrationId, userId);
+    }
+
+    public static RequestParams getParams(String query, boolean isOfficial, String registrationId, String userId) {
         RequestParams params = RequestParams.create();
         params.putString(KEY_DEVICE, DEFAULT_DEVICE);
         params.putString(KEY_SOURCE, DEFAULT_SOURCE);
@@ -58,6 +57,7 @@ public class AutoCompleteUseCase extends UseCase<List<SearchData>> {
         params.putString(KEY_UNIQUE_ID, uniqueId);
         params.putString(DEVICE_ID, registrationId);
         params.putString(KEY_QUERY, (query.isEmpty() ? "" : query));
+        params.putBoolean(KEY_IS_OFFICIAL, isOfficial);
         return params;
     }
 }

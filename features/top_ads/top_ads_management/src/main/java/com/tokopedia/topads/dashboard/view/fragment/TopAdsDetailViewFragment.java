@@ -18,13 +18,13 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.LabelView;
-import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.BulkAction;
+import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailViewPresenter;
@@ -134,23 +134,27 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
 
     @Override
     public void onTurnOffAdSuccess(BulkAction dataResponseActionAds) {
-        loadData();
-        setResultAdDetailChanged();
-        snackbarRetry.hideRetrySnackbar();
+        if (isAdded()) {
+            loadData();
+            setResultAdDetailChanged();
+            snackbarRetry.hideRetrySnackbar();
+        }
     }
 
     @Override
     public void onTurnOffAdError() {
-        setStatusSwitch(!status.isChecked());
-        hideLoading();
-        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                setStatusSwitch(false);
-                turnOffAd();
-            }
-        });
-        snackbarRetry.showRetrySnackbar();
+        if (isAdded()) {
+            setStatusSwitch(!status.isChecked());
+            hideLoading();
+            snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    setStatusSwitch(false);
+                    turnOffAd();
+                }
+            });
+            snackbarRetry.showRetrySnackbar();
+        }
     }
 
     @Override

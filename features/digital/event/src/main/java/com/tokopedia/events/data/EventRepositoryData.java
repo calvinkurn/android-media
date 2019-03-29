@@ -1,7 +1,6 @@
 package com.tokopedia.events.data;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.LikeUpdateResponse;
@@ -22,7 +21,10 @@ import com.tokopedia.events.domain.model.ProductRatingDomain;
 import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -36,13 +38,14 @@ public class EventRepositoryData implements EventRepository {
 
     private EventsDataStoreFactory eventsDataStoreFactory;
 
+    @Inject
     public EventRepositoryData(EventsDataStoreFactory eventsDataStoreFactory) {
         this.eventsDataStoreFactory = eventsDataStoreFactory;
 
     }
 
     @Override
-    public Observable<List<EventsCategoryDomain>> getEvents(TKPDMapParam<String, Object> params) {
+    public Observable<List<EventsCategoryDomain>> getEvents(HashMap<String, Object> params) {
 
         return eventsDataStoreFactory
                 .createCloudDataStore()
@@ -50,7 +53,7 @@ public class EventRepositoryData implements EventRepository {
     }
 
     @Override
-    public Observable<SearchDomainModel> getSearchEvents(TKPDMapParam<String, Object> params) {
+    public Observable<SearchDomainModel> getSearchEvents(HashMap<String, Object> params) {
         return eventsDataStoreFactory
                 .createCloudDataStore()
                 .getSearchEvents(params).map(new SearchResponseMapper());
@@ -64,7 +67,7 @@ public class EventRepositoryData implements EventRepository {
     }
 
     @Override
-    public Observable<List<EventLocationDomain>> getEventsLocationList(TKPDMapParam<String, Object> params) {
+    public Observable<List<EventLocationDomain>> getEventsLocationList(HashMap<String, Object> params) {
         return eventsDataStoreFactory
                 .createCloudDataStore()
                 .getEventsLocationList(params).map(new Func1<EventLocationEntity, List<EventLocationDomain>>() {
@@ -114,19 +117,16 @@ public class EventRepositoryData implements EventRepository {
     public Observable<CouponModel> postCouponInit(JsonObject requestBody) {
         return eventsDataStoreFactory
                 .createCloudDataStore()
-                .postCouponInit(requestBody).map(new Func1<VerifyCartResponse, CouponModel>() {
-                    @Override
-                    public CouponModel call(VerifyCartResponse verifyCartResponse) {
-                        CouponModel result = new CouponModel();
-                        result.setPromocode(verifyCartResponse.getCart().getPromocode());
-                        result.setPromocodeCashback(verifyCartResponse.getCart().getPromocodeCashback());
-                        result.setPromocodeDiscount(verifyCartResponse.getCart().getPromocodeDiscount());
-                        result.setPromocodeFailureMessage(verifyCartResponse.getCart().getPromocodeFailureMessage());
-                        result.setPromocodeSuccessMessage(verifyCartResponse.getCart().getPromocodeSuccessMessage());
-                        result.setPromocodeStatus(verifyCartResponse.getCart().getPromocodeStatus());
-                        result.setPromocodeIsCoupon(verifyCartResponse.getCart().isPromocodeIsCoupon());
-                        return result;
-                    }
+                .postCouponInit(requestBody).map(verifyCartResponse -> {
+                    CouponModel result = new CouponModel();
+                    result.setPromocode(verifyCartResponse.getCart().getPromocode());
+                    result.setPromocodeCashback(verifyCartResponse.getCart().getPromocodeCashback());
+                    result.setPromocodeDiscount(verifyCartResponse.getCart().getPromocodeDiscount());
+                    result.setPromocodeFailureMessage(verifyCartResponse.getCart().getPromocodeFailureMessage());
+                    result.setPromocodeSuccessMessage(verifyCartResponse.getCart().getPromocodeSuccessMessage());
+                    result.setPromocodeStatus(verifyCartResponse.getCart().getPromocodeStatus());
+                    result.setPromocodeIsCoupon(verifyCartResponse.getCart().isPromocodeIsCoupon());
+                    return result;
                 });
     }
 

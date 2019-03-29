@@ -1,11 +1,11 @@
 package com.tokopedia.groupchat.chatroom.di;
 
 import com.tokopedia.groupchat.chatroom.data.ChatroomApi;
-import com.tokopedia.groupchat.common.data.VoteApi;
-import com.tokopedia.groupchat.common.di.qualifier.GroupChatQualifier;
-import com.tokopedia.groupchat.common.di.qualifier.VoteQualifier;
-
 import com.tokopedia.groupchat.common.data.GroupChatUrl;
+import com.tokopedia.groupchat.common.di.qualifier.GcpQualifier;
+import com.tokopedia.groupchat.common.di.qualifier.GroupChatQualifier;
+import com.tokopedia.vote.domain.source.VotingSource;
+import com.tokopedia.vote.domain.usecase.SendVoteUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -36,15 +36,23 @@ public class ChatroomModule {
 
     @ChatroomScope
     @Provides
-    @VoteQualifier
-    public Retrofit provideVoteRetrofit(Retrofit.Builder retrofitBuilder,
-                                        OkHttpClient okHttpClient) {
-        return retrofitBuilder.baseUrl(GroupChatUrl.BASE_URL).client(okHttpClient).build();
+    @GcpQualifier
+    public Retrofit provideChatroomGCPRetrofit(Retrofit.Builder retrofitBuilder,
+                                            OkHttpClient okHttpClient) {
+        return retrofitBuilder.baseUrl(GroupChatUrl.BASE_GCP_URL).client(okHttpClient).build();
     }
 
     @ChatroomScope
     @Provides
-    public VoteApi provideVoteApi(@VoteQualifier Retrofit retrofit) {
-        return retrofit.create(VoteApi.class);
+    @GcpQualifier
+    public ChatroomApi provideChatroomGCPApi(@GcpQualifier Retrofit retrofit) {
+        return retrofit.create(ChatroomApi.class);
+    }
+
+
+    @ChatroomScope
+    @Provides
+    public SendVoteUseCase provideSendVoteUseCase(VotingSource votingSource){
+        return new SendVoteUseCase(votingSource);
     }
 }

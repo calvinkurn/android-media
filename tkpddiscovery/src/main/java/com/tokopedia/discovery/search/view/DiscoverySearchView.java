@@ -33,14 +33,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.component.EditTextCompat;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AnimationUtil;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -96,6 +96,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private SearchViewListener mSearchViewListener;
     private AppCompatActivity activity;
     private boolean finishOnClose = false;
+    private boolean isOfficial = false;
     private SavedState mSavedState;
     private boolean submit = false;
 
@@ -267,7 +268,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         allowVoiceSearch = true;
 
         remoteConfig = new FirebaseRemoteConfigImpl(getContext());
-        setImageSearch(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH,
+        setImageSearch(remoteConfig.getBoolean(RemoteConfigKey.SHOW_IMAGE_SEARCH,
                 false));
 
         showVoice(true);
@@ -304,13 +305,15 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s != null) {
+                    String keyword = s.toString();
+
                     if (copyText) {
-                        s = s.subSequence(0, s.length() - 1);
+                        keyword = keyword.trim();
                         copyText = false;
                     }
-                    mUserQuery = s;
+                    mUserQuery = keyword;
                     if (queryListener != null) {
-                        queryListener.onQueryChanged(s.toString());
+                        queryListener.onQueryChanged(keyword);
                     }
                 }
             }
@@ -362,7 +365,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             showCaseObjectList.add(new ShowCaseObject(
                     mImageSearchButton,
                     mContext.getResources().getString(R.string.on_board_title),
-                    remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_SEARCH_ONBOARD_DESC,
+                    remoteConfig.getString(RemoteConfigKey.IMAGE_SEARCH_ONBOARD_DESC,
                             mContext.getResources().getString(R.string.on_board_desc)),
                     ShowCaseContentPosition.UNDEFINED,
                     R.color.tkpd_main_green));
@@ -455,14 +458,14 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mOldQueryText = newText.toString();
 
         if (mSuggestionFragment != null) {
-            mSuggestionFragment.search(newText.toString());
+            mSuggestionFragment.search(newText.toString(), isOfficial);
         }
     }
 
     private void onSubmitQuery() {
         CharSequence query = mSearchSrcTextView.getText();
         if (query != null && TextUtils.getTrimmedLength(query) > 0) {
-            if (mOnQueryChangeListener == null || !mOnQueryChangeListener.onQueryTextSubmit(query.toString())) {
+            if (mOnQueryChangeListener == null || !mOnQueryChangeListener.onQueryTextSubmit(query.toString(), isOfficial)) {
                 closeSearch();
                 mSearchSrcTextView.setText(null);
             }
@@ -684,16 +687,13 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         showSearch(true);
     }
 
+    public void showSearch(boolean finishOnClose, boolean animate, boolean isOfficial) {
+        this.isOfficial = isOfficial;
+        showSearch(finishOnClose, animate);
+    }
+
     public void showSearch(boolean finishOnClose, boolean animate) {
         this.finishOnClose = finishOnClose;
-        if (finishOnClose) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    showKeyboard(mSearchSrcTextView);
-                }
-            }, 500);
-        }
         showSearch(animate);
         initShowCase();
     }
@@ -727,8 +727,9 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
         //Request Focus
         mSearchSrcTextView.setText(lastQuery);
-        mSearchSrcTextView.requestFocus();
-        mSearchSrcTextView.setSelection(mSearchSrcTextView.getText().length());
+        searchTextViewRequestFocus();
+        searchTextViewSetCursorSelectionAtTextEnd();
+
         if (animate) {
             setVisibleWithAnimation();
 
@@ -740,6 +741,14 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         }
 
         mIsSearchOpen = true;
+    }
+
+    public void searchTextViewRequestFocus() {
+        mSearchSrcTextView.requestFocus();
+    }
+
+    public void searchTextViewSetCursorSelectionAtTextEnd() {
+        mSearchSrcTextView.setSelection(mSearchSrcTextView.getText().length());
     }
 
     public void showSearch(boolean animate, int tab) {
@@ -819,6 +828,10 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
     public String getLastQuery() {
         return lastQuery;
+    }
+
+    public boolean getIsOfficial() {
+        return isOfficial;
     }
 
     /**
@@ -961,7 +974,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
          * @return true if the query has been handled by the listener, false to let the
          * SearchView perform the default action.
          */
-        boolean onQueryTextSubmit(String query);
+        boolean onQueryTextSubmit(String query, boolean isOfficial);
 
         /**
          * Called when the query text is changed by the user.

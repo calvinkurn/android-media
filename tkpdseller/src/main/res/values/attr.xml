@@ -41,18 +41,6 @@
         <attr name="vlv_content_text_size" format="dimension"/>
     </declare-styleable>
 
-    <declare-styleable name="DatePickerLabelView">
-        <attr name="date_picker_title" format="string"/>
-        <attr name="date_picker_content" format="string"/>
-        <attr name="date_picker_content_color" format="color"/>
-    </declare-styleable>
-
-    <declare-styleable name="DatePeriodView">
-        <attr name="date_period_title" format="string" />
-        <attr name="date_period_content" format="string" />
-        <attr name="date_period_selected" format="boolean" />
-    </declare-styleable>
-
     <declare-styleable name="CircleProgress">
         <attr name="circle_progress" format="integer" />
         <attr name="circle_max" format="integer" />
@@ -133,13 +121,6 @@
 
     <declare-styleable name="ReputationView">
         <attr name="default_layout" format="integer" />
-    </declare-styleable>
-
-    <!--gm subscribe home attr-->
-    <declare-styleable name="GMFeatureHomeView">
-        <attr name="feature_img" format="reference" />
-        <attr name="feature_title" format="string" />
-        <attr name="feature_desc" format="string" />
     </declare-styleable>
 
     <attr name="bottomSheetBuilderBackgroundColor" format="color" />

@@ -1,15 +1,24 @@
 package com.tokopedia.inbox.rescenter.inboxv2.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.common.ResolutionRouter;
+import com.tokopedia.inbox.common.ResolutionUrl;
+import com.tokopedia.inbox.common.applink.ApplinkConstant;
 import com.tokopedia.inbox.rescenter.inboxv2.view.fragment.ResoInboxFragment;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+
+import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_WEBVIEW_RESO_ENABLED_TOGGLE;
 
 /**
  * Created by yfsx on 24/01/18.
@@ -20,22 +29,59 @@ public class ResoInboxActivity extends BasePresenterActivity implements HasCompo
     public static final String PARAM_IS_SELLER = "is_seller";
     public static final String PARAM_HEADER_TEXT = "header_text";
 
+    @DeepLink(ApplinkConstant.RESCENTER_BUYER)
+    public static Intent newApplinkBuyerInstance(Context context, Bundle bundle) {
+        return newBuyerInstance(context).putExtras(bundle);
+    }
+
+    @DeepLink(ApplinkConstant.RESCENTER_SELLER)
+    public static Intent newApplinkSellerInstance(Context context, Bundle bundle) {
+        return newSellerInstance(context).putExtras(bundle);
+    }
+
     public static Intent newSellerInstance(Context context) {
-        Intent intent = new Intent(context, ResoInboxActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(PARAM_IS_SELLER, true);
-        bundle.putString(PARAM_HEADER_TEXT, "Komplain Sebagai Penjual");
-        intent.putExtras(bundle);
+        Intent intent = null;
+        if (isToggleResoEnabled(context)) {
+            intent = getApplinkIntent(context, ResolutionUrl.RESO_INBOX_SELLER);
+        }
+
+        if (intent == null) {
+            intent = new Intent(context, ResoInboxActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(PARAM_IS_SELLER, true);
+            bundle.putString(PARAM_HEADER_TEXT, "Komplain Sebagai Penjual");
+            intent.putExtras(bundle);
+        }
         return intent;
     }
 
     public static Intent newBuyerInstance(Context context) {
-        Intent intent = new Intent(context, ResoInboxActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(PARAM_IS_SELLER, false);
-        bundle.putString(PARAM_HEADER_TEXT, "Komplain Sebagai Pembeli");
-        intent.putExtras(bundle);
+        Intent intent = null;
+        if (isToggleResoEnabled(context)) {
+            intent = getApplinkIntent(context, ResolutionUrl.RESO_INBOX_BUYER);
+        }
+
+        if (intent == null) {
+            intent = new Intent(context, ResoInboxActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(PARAM_IS_SELLER, false);
+            bundle.putString(PARAM_HEADER_TEXT, "Komplain Sebagai Pembeli");
+            intent.putExtras(bundle);
+        }
         return intent;
+    }
+
+    private static boolean isToggleResoEnabled(Context context) {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        return remoteConfig.getBoolean(APP_WEBVIEW_RESO_ENABLED_TOGGLE);
+    }
+
+    private static Intent getApplinkIntent(Context context, String url) {
+        if (context.getApplicationContext() instanceof ResolutionRouter) {
+            return ((ResolutionRouter)context.getApplicationContext()).getApplinkIntent(context,
+                    ResolutionUrl.RESO_APPLINK + url);
+        }
+        return null;
     }
 
     @Override
@@ -69,12 +115,12 @@ public class ResoInboxActivity extends BasePresenterActivity implements HasCompo
         Fragment fragment = ResoInboxFragment.getFragmentInstance(getIntent().getExtras());
         if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(com.tokopedia.core.R.id.container,
+                    .replace(com.tokopedia.core2.R.id.container,
                             getSupportFragmentManager().findFragmentByTag(TAG))
                     .commit();
         } else {
             getSupportFragmentManager().beginTransaction()
-                    .add(com.tokopedia.core.R.id.container, fragment, TAG)
+                    .add(com.tokopedia.core2.R.id.container, fragment, TAG)
                     .commit();
         }
     }

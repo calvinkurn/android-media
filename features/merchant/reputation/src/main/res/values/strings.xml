@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">tkpdreputation</string>
-    <string name="title_tab_waiting_review">MENUNGGU DIULAS</string>
-    <string name="title_tab_my_review">ULASAN SAYA</string>
-    <string name="title_tab_buyer_review">ULASAN PEMBELI</string>
+    <string name="title_tab_waiting_review">Menunggu Diulas</string>
+    <string name="title_tab_my_review">Ulasan Saya</string>
+    <string name="title_tab_buyer_review">Ulasan Pembeli</string>
     <string name="empty_inbox_reputation">Reputasi kosong</string>
     <string name="deadline_prefix">Batas memberikan penilaian</string>
     <string name="deadline_suffix">hari lagi</string>
@@ -14,8 +14,8 @@
     <string name="anonym">Anonim</string>
     <string name="hint_anonym">Profil ditampilkan sebagai</string>
     <string name="submit_review">Kirim</string>
-    <string name="favorite_button">Favoritkan</string>
-    <string name="already_favorite">Sudah Favorit</string>
+    <string name="favorite_button">Follow</string>
+    <string name="already_favorite">\u2713</string>
     <string name="title_activity_detail_review">Detail Ulasan</string>
     <string name="seller">Penjual</string>
     <string name="filter_time">Waktu</string>
@@ -30,6 +30,7 @@
     <string name="filter_no_reputation">Belum Dinilai</string>
     <string name="by">Oleh</string>
     <string name="give_review">Beri Ulasan</string>
+    <string name="review_product">Ulas Produk</string>
     <string name="menu_edit">Ubah</string>
     <string name="menu_skip">Lewati</string>
     <string name="reply">Balas</string>
@@ -46,7 +47,7 @@
     <string name="upload_product_image">Upload Gambar Produk</string>
     <string name="upload_product_info">Anda dapat mengupload 5 gambar dengan format .JPG, .JPEG, .PNG. Maksimal ukuran gambar 10 MB</string>
     <string name="review">Ulasan</string>
-    <string name="rating_title_0">Belum ada nilai</string>
+    <string name="rating_title_0">Beri Peringkat</string>
     <string name="rating_title_1">Sangat Buruk</string>
     <string name="rating_title_2">Buruk</string>
     <string name="rating_title_3">Cukup</string>
@@ -68,7 +69,7 @@
     <string name="success_edit_review">Ulasan telah diubah</string>
     <string name="success_send_review">Sukses mengirim ulasan</string>
     <string name="success_skip_review">Ulasan telah dilewati</string>
-    <string name="title_reputation_history">Penalti Reputasi</string>
+    <string name="title_reputation_history">Penalti dan Reward</string>
     <string name="more_to_complete">Selengkapnya</string>
     <string name="tips1_title">Kesesuaian dengan deskripsi</string>
     <string name="tips1_tips">Ukuran dan warna sesuai dengan foto dan deskripsi produk yang dijual</string>
@@ -108,8 +109,8 @@
     <string name="hint_write_reply">Tulis balasan...</string>
     <string name="inbox_reputation_seller_empty_title">Belum ada ulasan dari pembeli.\nPastikan Produk Anda sudah terjual.</string>
     <string name="see_my_shop">Lihat Toko Saya</string>
-    <string name="query_hint_review_buyer">Invoice / Nama Penjual / Nama Produk</string>
-    <string name="query_hint_review_seller">Invoice / Nama Pembeli / Nama Produk</string>
+    <string name="query_hint_review_buyer">Cari toko atau invoice</string>
+    <string name="query_hint_review_seller">Cari toko atau invoice</string>
     <string name="product_is_banned">Produk telah diban</string>
     <string name="product_review_label_rating_comparison">/ 5</string>
     <string name="product_review_label_helpful_review">Ulasan Paling Membantu</string>
@@ -123,4 +124,8 @@
     <string name="product_review_label_by">Oleh</string>
     <string name="review_shop_label_show_more_review">Lihat Ulasan Selengkapnya</string>
     <string name="review_shop_empty_list_content">Belum ada ulasan yang diberikan untuk toko ini</string>
+    <string name="hint_review_edittext">Tulis ulasan produk</string>
+    <string name="review_min_character">Minimal 30 karakter</string>
+    <string name="review_label_all">Semua</string>
+    <string name="review_label_with_photo">Dengan Foto</string>
 </resources>

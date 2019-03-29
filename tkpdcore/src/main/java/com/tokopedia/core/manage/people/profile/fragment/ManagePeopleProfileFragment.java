@@ -1,8 +1,6 @@
 package com.tokopedia.core.manage.people.profile.fragment;
 
-import android.Manifest;
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
@@ -11,16 +9,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
-import android.view.Window;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
@@ -38,25 +30,35 @@ import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileFra
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.NetworkErrorHelper.RetryClickedListener;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
+
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_ROTATE;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-@RuntimePermissions
 public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeopleProfileFragmentPresenter>
         implements ManagePeopleProfileFragmentView {
 
@@ -70,6 +72,8 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     public static final int REQUEST_ADD_EMAIL = 1001;
     public static final int REQUEST_CHANGE_NAME = 1002;
+
+    public static final int REQUEST_CODE_PROFILE_PICTURE = 1202;
 
 
     @BindView(R2.id.layout_main)
@@ -258,42 +262,22 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public void showUploadDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(context.getString(R.string.dialog_upload_option));
-        builder.setPositiveButton(context.getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                ManagePeopleProfileFragmentPermissionsDispatcher.actionImagePickerWithCheck(ManagePeopleProfileFragment.this);
-
-            }
-        }).setNegativeButton(context.getString(R.string.title_camera), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                ManagePeopleProfileFragmentPermissionsDispatcher.actionCameraWithCheck(ManagePeopleProfileFragment.this);
-            }
-        });
-
-        Dialog dialog = builder.create();
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.show();
-    }
-
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void actionImagePicker() {
-        uploadDialog.openImagePicker();
-
-    }
-
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void actionCamera() {
-        uploadDialog.openCamera();
-
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_profile_picture),
+                new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
+                new ImagePickerEditorBuilder(
+                        new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
+                        false,
+                        null)
+                , null);
+        Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
+        startActivityForResult(intent, REQUEST_CODE_PROFILE_PICTURE);
     }
 
     @Override
     public void showEmailVerificationDialog(String userEmail) {
-        UserSession session = ((AbstractionRouter)getActivity().getApplicationContext()).getSession();
-        if (session.isHasPassword()) {
+        UserSessionInterface userSession = new UserSession(getActivity());
+        if (userSession.hasPassword()) {
             DialogFragment fragment = EmailVerificationDialogFragment.createInstance(userEmail,
                     new EmailVerificationDialogFragment.EmailChangeConfirmationListener() {
                         @Override
@@ -334,9 +318,10 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     private void intentToAddPassword(Context context) {
         context.startActivity(
-                ((TkpdCoreRouter)context.getApplicationContext())
+                ((TkpdCoreRouter) context.getApplicationContext())
                         .getAddPasswordIntent(context));
     }
+
     @Override
     public void showPhoneVerificationDialog(String userPhone) {
         SessionHandler.setPhoneNumber(userPhone);
@@ -355,7 +340,7 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
                 getProfileData().getDataUser().setUserPhone(SessionHandler.getPhoneNumber());
                 renderData();
                 NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.success_change_phone_number));
-                UnifyTracking.eventSuccessChangePhoneNumber();
+                UnifyTracking.eventSuccessChangePhoneNumber(getActivity());
             }
 
             if (resultCode == RESULT_EMAIL_SENT) {
@@ -364,27 +349,17 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
         } else if (requestCode == REQUEST_ADD_EMAIL || requestCode == REQUEST_CHANGE_NAME) {
             if (resultCode == Activity.RESULT_OK)
                 presenter.setOnFirstTimeLaunch(getActivity());
-        } else if (resultCode == Activity.RESULT_OK || resultCode == GalleryBrowser.RESULT_CODE) {
-            if (requestCode == REQUEST_VERIFY_PHONE &&
-                    SessionHandler.isMsisdnVerified()) {
-                getProfileData().getDataUser().setUserPhone(SessionHandler.getPhoneNumber());
-                renderData();
-            } else {
-                uploadDialog.onResult(
-                        requestCode,
-                        resultCode,
-                        data,
-                        new UploadImageDialog.UploadImageDialogListener() {
-                            @Override
-                            public void onSuccess(String data) {
-                                presenter.setOnUserFinishPickImage(data);
-                            }
-
-                            @Override
-                            public void onFailed() {
-                                showSnackBarView(getActivity().getString(R.string.error_gallery_valid));
-                            }
-                        });
+        } else if (resultCode == Activity.RESULT_OK &&
+                requestCode == REQUEST_VERIFY_PHONE &&
+                SessionHandler.isMsisdnVerified()) {
+            getProfileData().getDataUser().setUserPhone(SessionHandler.getPhoneNumber());
+            renderData();
+        } else if (requestCode == REQUEST_CODE_PROFILE_PICTURE){
+            if (resultCode == Activity.RESULT_OK && data!= null) {
+                ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+                if (imageUrlOrPathList!= null && imageUrlOrPathList.size() > 0) {
+                    presenter.setOnUserFinishPickImage(imageUrlOrPathList.get(0));
+                }
             }
         }
     }
@@ -503,69 +478,6 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ManagePeopleProfileFragmentPermissionsDispatcher.onRequestPermissionsResult(
-                ManagePeopleProfileFragment.this, requestCode, grantResults);
-
-    }
-
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showRationaleForStorageAndCamera(final PermissionRequest request) {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
-    }
-
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showRationaleForStorage(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied(Manifest.permission.CAMERA)
-    void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.CAMERA)
-    void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showDeniedForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
-    }
-
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showNeverAskForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
-    }
-
-    @Override
     public void setActivityResultSuccess() {
         getActivity().setResult(Activity.RESULT_OK);
     }
@@ -577,15 +489,18 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public void startChangePhoneNumber() {
-        startActivityForResult(
-                ((TkpdCoreRouter) getActivity().getApplicationContext())
-                        .getChangePhoneNumberIntent(
-                                getActivity(),
-                                profileData.getDataUser().getUserEmail(),
-                                profileData.getDataUser().getUserPhone()
-                        ),
-                REQUEST_CHANGE_PHONE_NUMBER
-        );
+        if (getActivity() != null && getActivity().getApplicationContext() != null
+                && getActivity().getApplicationContext() instanceof TkpdCoreRouter) {
+            startActivityForResult(
+                    ((TkpdCoreRouter) getActivity().getApplicationContext())
+                            .getChangePhoneNumberIntent(
+                                    getActivity(),
+                                    profileData.getDataUser().getUserEmail(),
+                                    profileData.getDataUser().getUserPhone()
+                            ),
+                    REQUEST_CHANGE_PHONE_NUMBER
+            );
+        }
     }
 
     @Override
@@ -617,14 +532,14 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     @Override
     public void startAddEmailActivity() {
         startActivityForResult(
-                ((TkpdCoreRouter)getActivity().getApplicationContext())
+                ((TkpdCoreRouter) getActivity().getApplicationContext())
                         .getAddEmailIntent(getActivity()), REQUEST_ADD_EMAIL);
     }
 
     @Override
     public void startChangeNameActivity() {
         startActivityForResult(
-                ((TkpdCoreRouter)getActivity().getApplicationContext())
+                ((TkpdCoreRouter) getActivity().getApplicationContext())
                         .getChangeNameIntent(getActivity()), REQUEST_CHANGE_NAME);
     }
 

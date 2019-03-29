@@ -8,7 +8,7 @@ import com.tokopedia.otp.cotp.domain.mapper.RequestOtpMapper;
 import com.tokopedia.otp.cotp.domain.mapper.ValidateOtpMapper;
 import com.tokopedia.otp.cotp.view.viewmodel.RequestOtpViewModel;
 import com.tokopedia.otp.cotp.view.viewmodel.ValidateOtpDomain;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,7 +33,7 @@ public class OtpSource {
     private final RequestOtpMapper requestOTPMapper;
 
     @Inject
-    UserSession userSession;
+    UserSessionInterface userSession;
 
     @Inject
     public OtpSource(@CotpScope CotpApi otpApi,
@@ -48,7 +48,7 @@ public class OtpSource {
     public Observable<RequestOtpViewModel> requestOtp(HashMap<String, Object> parameters) {
         return otpApi
                 .requestOtp(
-                        new SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).format(new Date()),
+                        new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH).format(new Date()),
                         parameters.get(RequestOtpUseCase.PARAM_USER_ID).toString(),
                         parameters)
                 .map(requestOTPMapper);
@@ -73,7 +73,7 @@ public class OtpSource {
     public Observable<RequestOtpViewModel> requestOtpWithEmail(HashMap<String, Object> parameters) {
         return otpApi
                 .requestOtpEmail(
-                        new SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).format(new Date()),
+                        new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH).format(new Date()),
                         parameters.get(RequestOtpUseCase.PARAM_USER_ID).toString(),
                         parameters)
                 .map(requestOTPMapper);

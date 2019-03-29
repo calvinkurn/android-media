@@ -3,6 +3,8 @@ package com.tokopedia.transactiondata.entity.response.shippingaddressform;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.transactiondata.entity.response.cartlist.FreeReturns;
+import com.tokopedia.transactiondata.entity.response.cartlist.WholesalePrice;
+import com.tokopedia.transactiondata.entity.response.variantdata.ProductVariantData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,9 +104,38 @@ public class Product {
     @SerializedName("product_catalog_id")
     @Expose
     private int productCatalogId;
+    @SerializedName("purchase_protection_plan_data")
+    @Expose
+    private PurchaseProtectionPlanData purchaseProtectionPlanData;
     @SerializedName("free_returns")
     @Expose
     private FreeReturns freeReturns;
+    @SerializedName("ProductCategory")
+    @Expose
+    private String productCategory;
+    @SerializedName("product_tracker_data")
+    @Expose
+    private ProductTrackerData productTrackerData;
+    @SerializedName("product_preorder")
+    @Expose
+    private ProductPreorder productPreorder;
+    @SerializedName("product_variants")
+    @Expose
+    private ProductVariantData productVariantData;
+    @SerializedName("wholesale_price")
+    @Expose
+    private List<WholesalePrice> wholesalePrice;
+    @SerializedName("trade_in_info")
+    @Expose
+    private TradeInInfo tradeInInfo;
+
+    public String getProductCategory() {
+        return productCategory;
+    }
+
+    public ProductTrackerData getProductTrackerData() {
+        return productTrackerData;
+    }
 
     public List<String> getErrors() {
         return errors;
@@ -228,5 +259,25 @@ public class Product {
 
     public long getCartId() {
         return cartId;
+    }
+
+    public ProductPreorder getProductPreorder() {
+        return productPreorder;
+    }
+
+    public PurchaseProtectionPlanData getPurchaseProtectionPlanData() {
+        return purchaseProtectionPlanData;
+    }
+
+    public ProductVariantData getProductVariantData() {
+        return productVariantData;
+    }
+
+    public List<WholesalePrice> getWholesalePrice() {
+        return wholesalePrice;
+    }
+
+    public TradeInInfo getTradeInInfo() {
+        return tradeInInfo;
     }
 }

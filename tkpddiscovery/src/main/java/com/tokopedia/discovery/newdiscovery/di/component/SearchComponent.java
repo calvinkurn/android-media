@@ -1,11 +1,11 @@
 package com.tokopedia.discovery.newdiscovery.di.component;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.discovery.imagesearch.di.module.ImageSearchModule;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchActivity;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchPresenter;
 import com.tokopedia.discovery.imagesearch.search.fragment.ImageSearchProductListFragment;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenterImpl;
+import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryCatalogFragment;
 import com.tokopedia.discovery.newdiscovery.di.module.SearchModule;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
@@ -23,7 +23,7 @@ import dagger.Component;
  */
 
 @SearchScope
-@Component(modules = {SearchModule.class, ImageSearchModule.class}, dependencies = AppComponent.class)
+@Component(modules = SearchModule.class, dependencies = AppComponent.class)
 public interface SearchComponent {
     void inject(SearchActivity searchActivity);
 
@@ -38,6 +38,8 @@ public interface SearchComponent {
     void inject(ImageProductListPresenterImpl imageProductListPresenter);
 
     void inject(CatalogFragment catalogFragment);
+
+    void inject(CategoryCatalogFragment catalogFragment);
 
     void inject(CatalogPresenter presenter);
 

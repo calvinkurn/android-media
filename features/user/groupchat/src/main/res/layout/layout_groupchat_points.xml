@@ -9,6 +9,7 @@
     android:layout_marginLeft="@dimen/space_med"
     android:layout_marginRight="@dimen/space_med"
     android:elevation="0dp"
+    app:cardElevation="0dp"
     app:cardCornerRadius="@dimen/space_mini">
 
     <android.support.constraint.ConstraintLayout

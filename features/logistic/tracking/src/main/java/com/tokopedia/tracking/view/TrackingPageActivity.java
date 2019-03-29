@@ -41,4 +41,9 @@ public class TrackingPageActivity extends BaseSimpleActivity {
                 getIntent().getExtras().getString(ORDER_ID_KEY, ""),
                 getIntent().getExtras().getString(URL_LIVE_TRACKING, ""));
     }
+
+    @Override
+    protected boolean isShowCloseButton() {
+        return true;
+    }
 }

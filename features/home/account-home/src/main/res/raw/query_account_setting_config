@@ -1,0 +1,9 @@
+query AccountSettingConfig($type: Int!) {
+  accountSettingConfig(type: $type) {
+    dataDiri
+    daftarAlamat
+    dokumenDataDiri
+    tokopediaCorner
+    ubahKataSandi
+  }
+}

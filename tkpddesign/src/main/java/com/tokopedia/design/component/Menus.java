@@ -2,9 +2,11 @@ package com.tokopedia.design.component;
 
 import android.content.Context;
 import android.support.annotation.ArrayRes;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,6 +88,18 @@ public class Menus extends BaseBottomSheetView {
     private MenusAdapter menusAdapter;
 
     @Override
+    public void setTitle(int titleId) {
+        super.setTitle(titleId);
+        menusAdapter.setTitle(this.getContext().getString(titleId));
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        super.setTitle(title);
+        menusAdapter.setTitle(title == null ? null : title.toString());
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.widget_menu;
     }
@@ -103,6 +117,7 @@ public class Menus extends BaseBottomSheetView {
 
     private class MenusAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+        private int TYPE_HEADER = 0;
         private int TYPE_FOOTER = 1;
         private int TYPE_ITEM = 2;
 
@@ -110,17 +125,19 @@ public class Menus extends BaseBottomSheetView {
 
         private OnItemMenuClickListener onItemMenuClickListener;
         private String btnActionText;
+        private String title;
         private View.OnClickListener btnActionClickListener;
 
         public class ViewHolder extends RecyclerView.ViewHolder {
 
             public TextView title;
-            public ImageView icon;
+            public ImageView icon, iconEnd;
 
             public ViewHolder(View view) {
                 super(view);
                 title = view.findViewById(R.id.tv_title_menu);
                 icon = view.findViewById(R.id.iv_icon_menu);
+                iconEnd = view.findViewById(R.id.iv_icon_menu_end);
             }
         }
 
@@ -134,6 +151,18 @@ public class Menus extends BaseBottomSheetView {
             }
         }
 
+        private class HeaderViewHolder extends RecyclerView.ViewHolder {
+
+            private TextView tvTitle;
+            private View buttonCLose;
+
+            HeaderViewHolder(View view) {
+                super(view);
+                tvTitle = view.findViewById(R.id.tv_title);
+                buttonCLose = view.findViewById(R.id.btn_close);
+            }
+        }
+
         private MenusAdapter() {
             itemMenusList = new ArrayList<>();
         }
@@ -143,6 +172,9 @@ public class Menus extends BaseBottomSheetView {
             if (viewType == TYPE_ITEM) {
                 View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_menu_item, parent, false);
                 return new ViewHolder(itemView);
+            } else if (viewType == TYPE_HEADER) {
+                View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_menu_item_title, parent, false);
+                return new HeaderViewHolder(itemView);
             } else if (viewType == TYPE_FOOTER) {
                 View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_menu_item_action, parent, false);
                 return new FooterViewHolder(itemView);
@@ -155,14 +187,29 @@ public class Menus extends BaseBottomSheetView {
                 final FooterViewHolder footer = (FooterViewHolder) viewHolder;
                 footer.button.setOnClickListener(btnActionClickListener);
                 footer.button.setText(btnActionText);
+            } else if (viewHolder instanceof HeaderViewHolder) {
+                final HeaderViewHolder header = (HeaderViewHolder) viewHolder;
+                header.buttonCLose.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dismiss();
+                    }
+                });
+                header.tvTitle.setText(title);
             } else if (viewHolder instanceof ViewHolder) {
-                final ItemMenus itemMenus = itemMenusList.get(i);
+                final ItemMenus itemMenus = itemMenusList.get(i - headerCount());
                 final ViewHolder holder = (ViewHolder) viewHolder;
-                if (itemMenus.icon != 0) {
+                 if (itemMenus.icon > 0) {
                     holder.icon.setImageResource(itemMenus.icon);
                     holder.icon.setVisibility(View.VISIBLE);
                 } else {
                     holder.icon.setVisibility(View.GONE);
+                }
+                if (itemMenus.iconEnd > 0) {
+                    holder.iconEnd.setImageResource(itemMenus.iconEnd);
+                    holder.iconEnd.setVisibility(View.VISIBLE);
+                } else {
+                    holder.iconEnd.setVisibility(View.GONE);
                 }
                 holder.title.setText(itemMenus.title);
 
@@ -180,6 +227,10 @@ public class Menus extends BaseBottomSheetView {
             this.btnActionText = btnActionText;
         }
 
+        private void setTitle(String title) {
+            this.title = title;
+        }
+
         private void setOnActionClickListener(View.OnClickListener listener) {
             this.btnActionClickListener = listener;
         }
@@ -188,14 +239,33 @@ public class Menus extends BaseBottomSheetView {
             this.onItemMenuClickListener = onItemMenuClickListener;
         }
 
+        private boolean hasFooter() {
+            return !TextUtils.isEmpty(btnActionText);
+        }
+
+        private int footerCount() {
+            return hasFooter() ? 1 : 0;
+        }
+
+        private int headerCount() {
+            return hasTitle() ? 1 : 0;
+        }
+
+        private boolean hasTitle() {
+            return !TextUtils.isEmpty(title);
+        }
+
         @Override
         public int getItemCount() {
-            return itemMenusList.size() + 1;
+            return itemMenusList.size() + footerCount() + headerCount();
         }
 
         @Override
         public int getItemViewType(int position) {
-            if (position == itemMenusList.size()) {
+            if (hasTitle() && position == 0) {
+                return TYPE_HEADER;
+            }
+            if (hasFooter() && position == (itemMenusList.size() + headerCount())) {
                 return TYPE_FOOTER;
             }
             return TYPE_ITEM;
@@ -206,6 +276,7 @@ public class Menus extends BaseBottomSheetView {
 
         public String title;
         public int icon;
+        public @DrawableRes  int iconEnd;
 
         public ItemMenus(String title) {
             this.title = title;

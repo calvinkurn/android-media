@@ -1,1 +1,160 @@
-query ($orderCategory: OrderCategory, $orderId: String) { orderDetails(orderCategory: $orderCategory, orderId: $orderId) { status {  statusLabel   statusText   iconUrl      textColor backgroundColor      fontSize     __typename } conditionalInfo {     text     color {        border        background        __typename } __typename    } title { label value textColor backgroundColor imageUrl  __typename }  invoice {   invoiceRefNum   invoiceUrl     __typename     }    orderToken {    label value    QRCodeUrl   __typename                }                detail {                 label                  value                  textColor                  backgroundColor                  imageUrl                  __typename                }                additionalInfo {                  label                  value                  textColor                 backgroundColor                  imageUrl                  __typename               }               pricing {                  label                  value                  textColor                 backgroundColor                imageUrl                  __typename                }                paymentData {                  label                  value                  textColor                  backgroundColor                  imageUrl                  __typename                }                contactUs {                  helpText                  helpUrl                  __typename                }                actionButtons {                  label                  buttonType                  uri                  mappingUri                  weight                  __typename                }             __typename }   }
+query OMSDETAILS($orderCategoryStr: String, $upstream:String, $orderId: String, $detail: Int, $action: Int) {
+  orderDetails(orderCategoryStr: $orderCategoryStr,upstream:$upstream,orderId: $orderId, details: $detail, actions: $action) {
+    status {
+      status
+      statusText
+      statusLabel
+      iconUrl
+      textColor
+      backgroundColor
+      fontSize
+    }
+    title {
+      label
+      value
+      textColor
+      backgroundColor
+      imageUrl
+    }
+    invoice {
+      invoiceRefNum
+      invoiceUrl
+    }
+    items {
+      categoryID
+      id
+      imageUrl
+      category
+      title
+      quantity
+      price
+      promotionAmount
+      metaData
+      actionButtons {
+        label
+        buttonType
+        uri
+        mappingUri
+        weight
+        key
+        method
+        uriWeb
+        value
+        name
+        control
+        header
+        color{
+          textColor
+          border
+          background
+        }
+        body {
+          appURL
+          webURL
+          method
+          body
+        }
+      }
+      tapActions {
+        label
+        weight
+        control
+        header
+        buttonType
+        value
+        method
+        key
+        name
+        color {
+          textColor
+          border
+          background
+        }
+        body {
+          appURL
+          method
+          body
+        }
+      }
+    }
+    pricing {
+      label
+      value
+      textColor
+      backgroundColor
+      imageUrl
+    }
+    detail {
+      label
+      value
+    }
+    paymentData {
+      label
+      value
+      textColor
+      backgroundColor
+      imageUrl
+    }
+    actionButtons {
+      label
+      buttonType
+      uri
+      mappingUri
+      weight
+      key
+      method
+      uriWeb
+      value
+      name
+      control
+      header
+      color {
+        textColor
+        border
+        background
+      }
+      body {
+        appURL
+        webURL
+        method
+        body
+      }
+    }
+    conditionalInfo {
+      text
+      color {
+        border
+        background
+      }
+    }
+    contactUs {
+      helpText
+      helpUrl
+    }
+    paymentMethod {
+      label
+      value
+    }
+    payMethod{
+      label
+      value
+    }
+    beforeOrderId
+    resolutionId
+    driverDetails {
+      name
+      phone
+      photo
+      licenseNumber
+      trackingURL
+    }
+    promoCode
+    additionalInfo {
+      label
+      value
+      label
+      textColor
+      backgroundColor
+    }
+  }
+}

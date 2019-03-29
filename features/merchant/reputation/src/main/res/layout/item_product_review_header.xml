@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_marginTop="@dimen/dp_8"
     android:layout_height="wrap_content">
 
     <TextView
@@ -11,7 +10,6 @@
         tools:text="Semua Ulasan"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_8"
-        android:paddingTop="@dimen/dp_8"
-        style="@style/TextView.Title.Bold.BlackSecondary"/>
+        android:lineSpacingExtra="@dimen/sp_8"
+        style="@style/TextView.Title.Bold"/>
 </LinearLayout>

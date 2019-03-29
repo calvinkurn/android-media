@@ -14,12 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.R;
@@ -35,6 +33,7 @@ import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
 import com.tokopedia.groupchat.common.di.component.GroupChatComponent;
+import com.tokopedia.groupchat.room.view.activity.PlayActivity;
 
 import javax.inject.Inject;
 
@@ -56,8 +55,6 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     @Inject
     GroupChatAnalytics analytics;
-
-    UserSession userSession;
 
     SwipeRefreshLayout swipeRefreshLayout;
     private String lastCursor;
@@ -87,17 +84,6 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
                 .build().inject(this);
 
         presenter.attachView(this);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
-        if (userSession != null && !userSession.isLoggedIn()) {
-            startActivityForResult(((GroupChatModuleRouter) getActivity().getApplicationContext())
-                    .getLoginIntent(getActivity()), REQUEST_LOGIN);
-        }
     }
 
     @Nullable
@@ -235,8 +221,8 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     private void goToChannel(ChannelViewModel channelViewModel, int position) {
         analytics.eventClickGroupChatList(channelViewModel.getChannelUrl());
-        startActivityForResult(GroupChatActivity.getCallingIntent(getActivity(),
-                channelViewModel, position),
+        startActivityForResult(PlayActivity.getCallingIntent(getActivity(),
+                    channelViewModel, position),
                 REQUEST_OPEN_GROUPCHAT);
     }
 
@@ -276,7 +262,9 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     }
 
     private void updateTotalView(int position, String totalView) {
-        if (position != DEFAULT_NO_POSITION && !TextUtils.isEmpty(totalView)) {
+        if (position != DEFAULT_NO_POSITION
+                && position < getAdapter().getData().size()
+                && !TextUtils.isEmpty(totalView)) {
             getAdapter().getData().get(position).setTotalView(totalView);
             getAdapter().notifyItemChanged(position);
         }

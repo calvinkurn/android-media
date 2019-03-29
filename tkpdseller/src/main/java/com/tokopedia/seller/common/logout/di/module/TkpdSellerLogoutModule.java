@@ -14,15 +14,15 @@ import com.tokopedia.core.common.category.domain.CategoryRepository;
 import com.tokopedia.core.common.category.domain.interactor.ClearCategoryCacheUseCase;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
+import com.tokopedia.product.manage.item.main.draft.data.repository.ProductDraftRepositoryImpl;
+import com.tokopedia.product.manage.item.main.draft.data.source.ProductDraftDataSource;
+import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
 import com.tokopedia.seller.common.logout.di.scope.TkpdSellerLogoutScope;
-import com.tokopedia.seller.product.draft.data.repository.ProductDraftRepositoryImpl;
-import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
-import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
-import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
-import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
+import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -44,8 +44,8 @@ public class TkpdSellerLogoutModule {
 
     @TkpdSellerLogoutScope
     @Provides
-    ClearCategoryCacheUseCase provideClearCategoryCacheUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, CategoryRepository categoryRepository){
-        return new ClearCategoryCacheUseCase(threadExecutor, postExecutionThread, categoryRepository);
+    ClearCategoryCacheUseCase provideClearCategoryCacheUseCase(CategoryRepository categoryRepository){
+        return new ClearCategoryCacheUseCase(categoryRepository);
     }
 
     @TkpdSellerLogoutScope

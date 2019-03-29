@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.datepicker.range.model.DatePickerViewModel;
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.R;
@@ -27,8 +29,6 @@ import com.tokopedia.gm.statistic.view.listener.GMStatisticTransactionView;
 import com.tokopedia.gm.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionPresenter;
-import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
-import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.common.widget.LabelView;
 
@@ -78,7 +78,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
         gmStatisticProductListText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventClickGMStatProductSoldTransaction();
+                UnifyTracking.eventClickGMStatProductSoldTransaction(getActivity());
 
                 Intent intent = new Intent(getActivity(), GMStatisticTransactionTableActivity.class);
                 startActivity(intent);
@@ -191,9 +191,9 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == DatePickerConstant.REQUEST_CODE_DATE && intent != null) {
             if (isCompareDate()) {
-                UnifyTracking.eventClickGMStatDatePickerWCompareTransaction();
+                UnifyTracking.eventClickGMStatDatePickerWCompareTransaction(getActivity());
             } else {
-                UnifyTracking.eventClickGMStatDatePickerWOCompareTransaction();
+                UnifyTracking.eventClickGMStatDatePickerWOCompareTransaction(getActivity());
             }
         }
     }

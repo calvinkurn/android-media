@@ -4,6 +4,8 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
 import com.tokopedia.tokocash.historytokocash.presentation.contract.TokoCashHistoryContract;
 import com.tokopedia.tokocash.historytokocash.presentation.model.TokoCashHistoryData;
+import com.tokopedia.tokocash.network.exception.UserInactivateTokoCashException;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -16,11 +18,14 @@ import rx.Subscriber;
 public class TokoCashHistoryPresenter extends BaseDaggerPresenter<TokoCashHistoryContract.View> implements TokoCashHistoryContract.Presenter {
 
     private final GetHistoryDataUseCase getHistoryDataUseCase;
+    private UserSessionInterface userSession;
     private int page = 1;
 
     @Inject
-    public TokoCashHistoryPresenter(GetHistoryDataUseCase getHistoryDataUseCase) {
+    public TokoCashHistoryPresenter(GetHistoryDataUseCase getHistoryDataUseCase,
+                                    UserSessionInterface userSession) {
         this.getHistoryDataUseCase = getHistoryDataUseCase;
+        this.userSession = userSession;
     }
 
     @Override
@@ -35,7 +40,8 @@ public class TokoCashHistoryPresenter extends BaseDaggerPresenter<TokoCashHistor
 
                     @Override
                     public void onError(Throwable e) {
-                        getView().hideWaitingTransaction();
+                        if (isViewAttached())
+                            getView().hideWaitingTransaction();
                     }
 
                     @Override
@@ -44,43 +50,54 @@ public class TokoCashHistoryPresenter extends BaseDaggerPresenter<TokoCashHistor
                             getView().renderWaitingTransaction(tokoCashHistoryData);
                         else
                             getView().hideWaitingTransaction();
+
                     }
                 });
     }
 
     @Override
     public void getInitHistoryTokoCash() {
-        page = 1;
-        getHistoryDataUseCase.execute(getView().getHistoryTokoCashParam(false, page),
-                new Subscriber<TokoCashHistoryData>() {
-                    @Override
-                    public void onCompleted() {
+        if (userSession.isLoggedIn()) {
+            page = 1;
+            getHistoryDataUseCase.execute(getView().getHistoryTokoCashParam(false, page),
+                    new Subscriber<TokoCashHistoryData>() {
+                        @Override
+                        public void onCompleted() {
 
-                    }
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        getView().hideLoading();
-                        getView().renderEmptyPage(e);
-                    }
-
-                    @Override
-                    public void onNext(TokoCashHistoryData tokoCashHistoryData) {
-                        getView().hideLoading();
-                        if (tokoCashHistoryData.getItemHistoryList().size() == 0 && !tokoCashHistoryData.isNext_uri()) {
-                            getView().renderDataTokoCashHistory(tokoCashHistoryData, true);
-                            getView().renderEmptyTokoCashHistory(tokoCashHistoryData.getHeaderHistory());
-                        } else {
-                            if (tokoCashHistoryData.getItemHistoryList().size() > 0) {
-                                getView().renderDataTokoCashHistory(tokoCashHistoryData, true);
-                                getView().setHasNextPage(tokoCashHistoryData.isNext_uri());
-                                if (tokoCashHistoryData.isNext_uri()) page++;
-                            } else {
-                                getView().renderEmptyTokoCashHistory(tokoCashHistoryData.getHeaderHistory());
+                        @Override
+                        public void onError(Throwable e) {
+                            if (isViewAttached()) {
+                                if (e instanceof UserInactivateTokoCashException) {
+                                    getView().navigatePageToActivateTokocash();
+                                } else {
+                                    getView().hideLoading();
+                                    getView().renderEmptyPage(e);
+                                }
                             }
                         }
-                    }
-                });
+
+                        @Override
+                        public void onNext(TokoCashHistoryData tokoCashHistoryData) {
+                            getView().hideLoading();
+                            if (tokoCashHistoryData.getItemHistoryList().size() == 0 && !tokoCashHistoryData.isNext_uri()) {
+                                getView().renderDataTokoCashHistory(tokoCashHistoryData, true);
+                                getView().renderEmptyTokoCashHistory(tokoCashHistoryData.getHeaderHistory());
+                            } else {
+                                if (tokoCashHistoryData.getItemHistoryList().size() > 0) {
+                                    getView().renderDataTokoCashHistory(tokoCashHistoryData, true);
+                                    getView().setHasNextPage(tokoCashHistoryData.isNext_uri());
+                                    if (tokoCashHistoryData.isNext_uri()) page++;
+                                } else {
+                                    getView().renderEmptyTokoCashHistory(tokoCashHistoryData.getHeaderHistory());
+                                }
+                            }
+                        }
+                    });
+        } else {
+            getView().navigateToLoginPage();
+        }
     }
 
     @Override
@@ -94,7 +111,8 @@ public class TokoCashHistoryPresenter extends BaseDaggerPresenter<TokoCashHistor
 
                     @Override
                     public void onError(Throwable e) {
-                        getView().renderErrorMessage(e);
+                        if (isViewAttached())
+                            getView().renderErrorMessage(e);
                     }
 
                     @Override
@@ -110,6 +128,7 @@ public class TokoCashHistoryPresenter extends BaseDaggerPresenter<TokoCashHistor
 
     @Override
     public void onDestroyPresenter() {
+        detachView();
         if (getHistoryDataUseCase != null) getHistoryDataUseCase.unsubscribe();
     }
 }

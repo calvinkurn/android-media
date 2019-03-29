@@ -8,12 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.feedplus.R;
+import com.tokopedia.feedplus.view.analytics.FeedAnalytics;
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
@@ -30,10 +28,12 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
         .ViewHolder> {
 
     private final FeedPlus.View.Kol kolViewListener;
+    private final FeedAnalytics analytics;
     private KolRecommendationViewModel data;
 
-    public KolRecommendationAdapter(FeedPlus.View.Kol kolViewListener) {
+    public KolRecommendationAdapter(FeedPlus.View.Kol kolViewListener, FeedAnalytics analytics) {
         this.kolViewListener = kolViewListener;
+        this.analytics = analytics;
         ArrayList<KolRecommendItemViewModel> list = new ArrayList<>();
         this.data = new KolRecommendationViewModel("", "", "", list);
     }
@@ -79,15 +79,18 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
                 public void onClick(View v) {
                     KolRecommendItemViewModel kolItem = data.getListRecommend().get(getAdapterPosition());
                     if (kolItem.isFollowed()) {
-                        UnifyTracking.eventKolRecommendationUnfollowClick(kolItem.getLabel(), kolItem.getName());
-                        kolViewListener.onUnfollowKolFromRecommendationClicked(data.getPage(),
+                        analytics.eventKolRecommendationUnfollowClick(kolItem.getLabel(), kolItem.getName());
+                        kolViewListener.onUnfollowKolFromRecommendationClicked(
                                 data.getRowNumber(),
                                 kolItem.getId(),
-                                getAdapterPosition());
+                                getAdapterPosition()
+                        );
                         kolItem.setFollowed(false);
                         notifyItemChanged(getAdapterPosition());
                     } else {
-                        UnifyTracking.eventKolRecommendationFollowClick(kolItem.getLabel(), kolItem.getName());
+                        String userId = kolViewListener.getUserSession().getUserId();
+
+                        analytics.eventKolRecommendationFollowClick(kolItem.getLabel(), kolItem.getName());
 
                         List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
                         KolRecommendItemViewModel recItem = data.getListRecommend().get(getAdapterPosition());
@@ -99,15 +102,16 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
                                 recItem.getLabel().equals("") ? "-" : recItem.getLabel(),
                                 recItem.getId(),
                                 recItem.getUrl().equals("") ? "-" : recItem.getUrl()));
-                        TrackingUtils.eventTrackingEnhancedEcommerce(FeedEnhancedTracking
+                        analytics.eventTrackingEnhancedEcommerce(FeedEnhancedTracking
                                 .getClickTracking(list,
-                                        Integer.parseInt(SessionHandler.getLoginID(avatar.getContext()))
+                                        Integer.parseInt(userId)
                                 ));
 
-                        kolViewListener.onFollowKolFromRecommendationClicked(data.getPage(),
+                        kolViewListener.onFollowKolFromRecommendationClicked(
                                 data.getRowNumber(),
                                 kolItem.getId(),
-                                getAdapterPosition());
+                                getAdapterPosition()
+                        );
                         kolItem.setFollowed(true);
                         notifyItemChanged(getAdapterPosition());
                     }
@@ -119,7 +123,7 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
 
     private void navigateToProfilePage(int adapterPosition) {
         KolRecommendItemViewModel kolItem = data.getListRecommend().get(adapterPosition);
-        UnifyTracking.eventKolRecommendationGoToProfileClick(kolItem.getLabel(), kolItem.getName());
+        analytics.eventKolRecommendationGoToProfileClick(kolItem.getLabel(), kolItem.getName());
         kolViewListener.onGoToKolProfileFromRecommendation(data.getRowNumber(),
                 adapterPosition,
                 String.valueOf(kolItem.getId()));
@@ -169,6 +173,9 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
                 marginLayoutParams.leftMargin = (int) resources.getDimension(R.dimen.dp_16);
             } else if (position == getItemCount() - 1) {
                 marginLayoutParams.rightMargin = (int) resources.getDimension(R.dimen.dp_16);
+            } else {
+                marginLayoutParams.leftMargin = 0;
+                marginLayoutParams.rightMargin = (int) resources.getDimension(R.dimen.dp_10);
             }
         }
     }

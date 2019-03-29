@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.groupchat.common.di.scope.GroupChatScope;
+import com.tokopedia.vote.di.VoteModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -16,7 +17,7 @@ import dagger.Provides;
  */
 
 @GroupChatScope
-@Module(includes = {GroupChatNetModule.class})
+@Module(includes = {GroupChatNetModule.class, VoteModule.class})
 public class GroupChatModule {
 
     @GroupChatScope

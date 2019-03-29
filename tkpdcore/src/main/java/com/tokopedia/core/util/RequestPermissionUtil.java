@@ -9,7 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import java.util.List;
 
@@ -17,7 +17,9 @@ import permissions.dispatcher.PermissionRequest;
 
 /**
  * Created by Nisie on 8/5/16.
+ * Deprecated. Use from tkpdabstraction instead.
  */
+@Deprecated
 public class RequestPermissionUtil {
 
     public static void onPermissionDenied(Context context, List<String> listPermission) {
@@ -82,6 +84,7 @@ public class RequestPermissionUtil {
                 Toast.makeText(context, R.string.permission_get_accounts_denied, Toast.LENGTH_LONG).show();
                 break;
             case Manifest.permission.READ_SMS:
+            case Manifest.permission.RECEIVE_SMS:
                 Toast.makeText(context, R.string.permission_sms_denied, Toast.LENGTH_LONG).show();
                 break;
             case Manifest.permission.SEND_SMS:
@@ -118,6 +121,7 @@ public class RequestPermissionUtil {
                 Toast.makeText(context, R.string.permission_get_accounts_neverask, Toast.LENGTH_LONG).show();
                 break;
             case Manifest.permission.READ_SMS:
+            case Manifest.permission.RECEIVE_SMS:
                 Toast.makeText(context, R.string.permission_sms_neverask, Toast.LENGTH_LONG).show();
                 break;
             case Manifest.permission.SEND_SMS:
@@ -195,6 +199,7 @@ public class RequestPermissionUtil {
             case Manifest.permission.GET_ACCOUNTS:
                 return R.string.need_permission_get_accounts;
             case Manifest.permission.READ_SMS:
+            case Manifest.permission.RECEIVE_SMS:
                 return R.string.need_permission_SMS;
             case Manifest.permission.SEND_SMS:
                 return R.string.need_permission_send_SMS;

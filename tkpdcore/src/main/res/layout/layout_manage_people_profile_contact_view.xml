@@ -192,7 +192,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/phone"
-                android:hint="@string/title_email_input"
                 android:focusable="false"
                 android:enabled="false"
                 android:textSize="@dimen/text_size_l_medium"

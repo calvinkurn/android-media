@@ -1,12 +1,15 @@
 package com.tokopedia.topads.keyword.domain.model.keywordadd;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
 
 /**
  * @author Hendry on 5/26/2017.
  */
 
-public class AddKeywordDomainModelDatum {
+public class AddKeywordDomainModelDatum implements Parcelable {
     private String keywordTag;
     @KeywordTypeDef
     private int keyWordTypeId;
@@ -28,6 +31,26 @@ public class AddKeywordDomainModelDatum {
         this.shopId = shopId;
         this.source = source;
     }
+
+    protected AddKeywordDomainModelDatum(Parcel in) {
+        keywordTag = in.readString();
+        keyWordTypeId = in.readInt();
+        groupId = in.readString();
+        shopId = in.readString();
+        source = in.readString();
+    }
+
+    public static final Creator<AddKeywordDomainModelDatum> CREATOR = new Creator<AddKeywordDomainModelDatum>() {
+        @Override
+        public AddKeywordDomainModelDatum createFromParcel(Parcel in) {
+            return new AddKeywordDomainModelDatum(in);
+        }
+
+        @Override
+        public AddKeywordDomainModelDatum[] newArray(int size) {
+            return new AddKeywordDomainModelDatum[size];
+        }
+    };
 
     public String getShopId() {
         return shopId;
@@ -67,5 +90,19 @@ public class AddKeywordDomainModelDatum {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(keywordTag);
+        parcel.writeInt(keyWordTypeId);
+        parcel.writeString(groupId);
+        parcel.writeString(shopId);
+        parcel.writeString(source);
     }
 }

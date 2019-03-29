@@ -1,6 +1,6 @@
 package com.tokopedia.digital.product.view.adapter;
 
-import android.app.Fragment;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -10,47 +10,43 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
-import com.tokopedia.digital.product.view.fragment.DigitalProductFragment;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.BannerTitle;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * @author anggaprasetiyo on 5/2/17.
  */
 
 public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
     private static final int TYPE_HOLDER_BANNER_ITEM =
             R.layout.view_holder_banner_item_digital_module;
     private static final int TYPE_HOLDER_TITLE =
             R.layout.view_holder_banner_title_digital_module;
 
     private List<Object> dataList = new ArrayList<>();
-    private Fragment hostFragment;
+    private Context context;
     private ActionListener actionListener;
 
-    public BannerAdapter(DigitalProductFragment digitalProductFragment) {
-        this.actionListener = digitalProductFragment;
-        this.hostFragment = digitalProductFragment;
+    public BannerAdapter(Context context, ActionListener actionListener) {
+        this.actionListener = actionListener;
+        this.context = context;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_HOLDER_TITLE) {
             return new BannerTitleHolder(LayoutInflater.from(
-                    hostFragment.getActivity()).inflate(viewType, parent, false
+                    context).inflate(viewType, parent, false
             ));
         } else if (viewType == TYPE_HOLDER_BANNER_ITEM) {
             return new BannerItemHolder(LayoutInflater.from(
-                    hostFragment.getActivity()).inflate(viewType, parent, false
+                    context).inflate(viewType, parent, false
             ));
         } else {
             return null;
@@ -66,26 +62,26 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             BannerItemHolder bannerItemHolder = (BannerItemHolder) holder;
             if (bannerData.isVoucherCodeCopied()) {
                 bannerItemHolder.mainContainer.setBackgroundDrawable(
-                        hostFragment.getResources().getDrawable(
+                        context.getResources().getDrawable(
                                 R.drawable.digital_bg_banner_selected
                         )
                 );
-                bannerItemHolder.tvVoucherCode.setBackgroundColor(hostFragment
+                bannerItemHolder.tvVoucherCode.setBackgroundColor(context
                         .getResources()
                         .getColor(R.color.digital_voucher_copied_color));
-                bannerItemHolder.tvVoucherCode.setTextColor(hostFragment
+                bannerItemHolder.tvVoucherCode.setTextColor(context
                         .getResources()
                         .getColor(android.R.color.white));
             } else {
                 bannerItemHolder.mainContainer.setBackgroundDrawable(
-                        hostFragment.getResources().getDrawable(
+                        context.getResources().getDrawable(
                                 R.drawable.digital_bg_banner_item
                         )
                 );
-                bannerItemHolder.tvVoucherCode.setTextColor(hostFragment
+                bannerItemHolder.tvVoucherCode.setTextColor(context
                         .getResources()
                         .getColor(R.color.digital_voucher_copied_color));
-                bannerItemHolder.tvVoucherCode.setBackgroundColor(hostFragment
+                bannerItemHolder.tvVoucherCode.setBackgroundColor(context
                         .getResources()
                         .getColor(android.R.color.transparent));
             }
@@ -149,7 +145,7 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public void addBannerDataListAndTitle(List<BannerData> bannerDataList, String title) {
-        if (bannerDataList.isEmpty()) return;
+        if (bannerDataList == null || bannerDataList.isEmpty()) return;
         dataList.add(new BannerTitle(title));
         for (int i = 0; i < bannerDataList.size(); i++) {
             BannerData bannerData = bannerDataList.get(i);
@@ -164,31 +160,30 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     static class BannerItemHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R2.id.main_container)
-        LinearLayout mainContainer;
-        @BindView(R2.id.tv_desc_banner)
-        TextView tvDescBanner;
-        @BindView(R2.id.tv_voucher_code)
-        TextView tvVoucherCode;
-        @BindView(R2.id.btn_copy)
-        TextView btnCopy;
-        @BindView(R2.id.holder_voucher)
-        LinearLayout holderVoucherCode;
+        private LinearLayout mainContainer;
+        private TextView tvDescBanner;
+        private TextView tvVoucherCode;
+        private TextView btnCopy;
+        private LinearLayout holderVoucherCode;
 
         BannerItemHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+
+            mainContainer = itemView.findViewById(R.id.main_container);
+            tvDescBanner = itemView.findViewById(R.id.tv_desc_banner);
+            tvVoucherCode = itemView.findViewById(R.id.tv_voucher_code);
+            btnCopy = itemView.findViewById(R.id.btn_copy);
+            holderVoucherCode = itemView.findViewById(R.id.holder_voucher);
         }
     }
 
     static class BannerTitleHolder extends RecyclerView.ViewHolder {
-        @BindView(R2.id.tv_title)
-        TextView tvTitle;
+        private TextView tvTitle;
 
         BannerTitleHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+
+            tvTitle = itemView.findViewById(R.id.tv_title);
         }
     }
 
@@ -197,4 +192,5 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         void onBannerItemClicked(BannerData bannerData);
     }
+
 }

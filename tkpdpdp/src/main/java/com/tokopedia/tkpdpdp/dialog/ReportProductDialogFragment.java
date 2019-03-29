@@ -86,7 +86,7 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
                 | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        View view = inflater.inflate(com.tokopedia.core.R.layout.dialog_report_product, container);
+        View view = inflater.inflate(com.tokopedia.core2.R.layout.dialog_report_product, container);
         initview(view);
         setContent();
         return view;
@@ -181,14 +181,14 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
             return true;
         } else {
             wrapper.setErrorEnabled(true);
-            wrapper.setError(getString(com.tokopedia.core.R.string.empty_desc));
+            wrapper.setError(getString(com.tokopedia.core2.R.string.empty_desc));
             return false;
         }
     }
 
 
     private void setRedirect(String item, boolean status, String link) {
-        String string = getResources().getString(com.tokopedia.core.R.string.redirect_report_product);
+        String string = getResources().getString(com.tokopedia.core2.R.string.redirect_report_product);
 
         String caseReplace = "kasus";
         SpannableString stringNoResult = new SpannableString(string.replace(caseReplace, item));
@@ -220,7 +220,7 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
             @Override
             public void updateDrawState(TextPaint ds) {
                 ds.setUnderlineText(false);
-                ds.setColor(ContextCompat.getColor(getActivity(), com.tokopedia.core.R.color.blue_link));
+                ds.setColor(ContextCompat.getColor(getActivity(), com.tokopedia.core2.R.color.blue_link));
             }
         };
     }
@@ -290,7 +290,7 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
             reportTypeValue.add(reportType.getReportId());
         }
         this.reportTypeList = reportTypeList;
-        reportTypeName = new ArrayAdapter<>(getActivity(), com.tokopedia.core.R.layout.spinner_item, reportNameList);
+        reportTypeName = new ArrayAdapter<>(getActivity(), com.tokopedia.core2.R.layout.spinner_item, reportNameList);
         reportTypeSpinner.setAdapter(reportTypeName);
         if (recentBundle != null) {
             ReportProductPass pass = (ReportProductPass) recentBundle.get(ReportProductPass.TAG);

@@ -3,9 +3,9 @@ package com.tokopedia.topads.keyword.view.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.topads.R;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.topads.keyword.view.adapter.viewholder.TopAdsKeywordViewHolder;
+import com.tokopedia.topads.keyword.view.adapter.viewholder.TopAdsOldKeywordViewHolder;
 import com.tokopedia.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.topads.keyword.view.model.NegativeKeywordAd;
 
@@ -20,7 +20,7 @@ public class TopAdsKeywordAdapter<T extends KeywordAd> extends BaseListAdapter<T
         switch (viewType) {
             case KeywordAd.TYPE:
             case NegativeKeywordAd.TYPE:
-                return new TopAdsKeywordViewHolder(getLayoutView(parent, R.layout.item_top_ads_keyword_main));
+                return new TopAdsOldKeywordViewHolder(getLayoutView(parent, R.layout.item_top_ads_keyword_main));
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }

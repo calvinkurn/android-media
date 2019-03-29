@@ -18,6 +18,8 @@ public class OrderDetails {
     @SerializedName("conditionalInfo")
     @Expose
     private ConditionalInfo conditionalInfo;
+    @SerializedName("flag")
+    private Flags flags;
     @SerializedName("title")
     @Expose
     private List<Title> title;
@@ -36,6 +38,15 @@ public class OrderDetails {
     @SerializedName("pricing")
     @Expose
     private List<Pricing> pricing;
+
+    @SerializedName("paymentMethod")
+    @Expose
+    private PaymentMethod paymentMethod;
+
+    @SerializedName("payMethod")
+    @Expose
+    private List<PayMethod> payMethods;
+
     @SerializedName("paymentData")
     @Expose
     private PaymentData paymentData;
@@ -45,8 +56,25 @@ public class OrderDetails {
     @SerializedName("actionButtons")
     @Expose
     private List<ActionButton> actionButtons;
+    @SerializedName("items")
+    @Expose
+    private List<Items> items;
 
-    public OrderDetails(Status status, ConditionalInfo conditionalInfo, List<Title> title, Invoice invoice, OrderToken orderToken, List<Detail> detail, List<AdditionalInfo> additionalInfo, List<Pricing> pricing, PaymentData paymentData, ContactUs contactUs, List<ActionButton> actionButtons) {
+    @SerializedName("driverDetails")
+    @Expose
+    private DriverDetails driverDetails;
+
+    @SerializedName("dropShipper")
+    @Expose
+    private DropShipper dropShipper;
+
+    @SerializedName("shopDetails")
+    @Expose
+    private ShopInfo shopInfo;
+
+
+
+    public OrderDetails(Status status, ConditionalInfo conditionalInfo, List<Title> title, Invoice invoice, OrderToken orderToken, List<Detail> detail, List<AdditionalInfo> additionalInfo, List<Pricing> pricing, PaymentMethod paymentMethod, List<PayMethod> payMethods, PaymentData paymentData, ContactUs contactUs, List<ActionButton> actionButtons, List<Items> items, DriverDetails driverDetails, DropShipper dropShipper, ShopInfo shopInfo) {
         this.status = status;
         this.conditionalInfo = conditionalInfo;
         this.title = title;
@@ -55,9 +83,15 @@ public class OrderDetails {
         this.detail = detail;
         this.additionalInfo = additionalInfo;
         this.pricing = pricing;
+        this.paymentMethod = paymentMethod;
+        this.payMethods = payMethods;
         this.paymentData = paymentData;
         this.contactUs = contactUs;
         this.actionButtons = actionButtons;
+        this.items = items;
+        this.driverDetails = driverDetails;
+        this.dropShipper = dropShipper;
+        this.shopInfo = shopInfo;
     }
 
     public Status status() {
@@ -92,6 +126,14 @@ public class OrderDetails {
         return pricing;
     }
 
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public List<PayMethod> getPayMethods() {
+        return payMethods;
+    }
+
     public PaymentData paymentData() {
         return paymentData;
     }
@@ -102,6 +144,30 @@ public class OrderDetails {
 
     public List<ActionButton> actionButtons() {
         return actionButtons;
+    }
+
+    public List<Items> getItems() {
+        return items;
+    }
+
+    public DriverDetails getDriverDetails() {
+        return driverDetails;
+    }
+
+    public DropShipper getDropShipper() {
+        return dropShipper;
+    }
+
+    public ShopInfo getShopInfo() {
+        return shopInfo;
+    }
+
+    public Flags getFlags() {
+        return flags;
+    }
+
+    public void setFlags(Flags flags) {
+        this.flags = flags;
     }
 
     @Override
@@ -115,9 +181,15 @@ public class OrderDetails {
                 + "detail="+detail +","
                 + "additionalInfo="+additionalInfo +","
                 + "pricing="+pricing +","
+                + "paymentMethod="+paymentMethod +","
+                + "paymethods="+payMethods +","
                 + "paymentData="+paymentData +","
                 + "contactUs="+contactUs +","
-                + "actionButtons="+actionButtons
+                + "actionButtons="+actionButtons + ","
+                + "items="+items + ","
+                + "driverDetails="+driverDetails +","
+                + "dropShipper="+dropShipper + ","
+                + "shopInfo="+shopInfo
                 + "}]";
     }
 }

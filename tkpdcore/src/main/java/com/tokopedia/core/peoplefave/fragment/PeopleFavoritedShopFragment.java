@@ -2,10 +2,10 @@ package com.tokopedia.core.peoplefave.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,9 +13,9 @@ import android.view.View;
 import android.view.Window;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
-import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
+import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.peoplefave.customadapter.PeopleFavoritedShopAdapter;
@@ -34,7 +34,7 @@ import butterknife.BindView;
  * Created by hangnadi on 10/11/16.
  */
 
-public class PeopleFavoritedShopFragment extends BasePresenterFragment<PeopleFavoritedShopFragmentPresenter>
+public class PeopleFavoritedShopFragment extends BasePresenterFragmentV4<PeopleFavoritedShopFragmentPresenter>
     implements PeopleFavoritedShopFragmentView {
 
     private static final String TAG = PeopleFavoritedShopFragmentView.class.getSimpleName();

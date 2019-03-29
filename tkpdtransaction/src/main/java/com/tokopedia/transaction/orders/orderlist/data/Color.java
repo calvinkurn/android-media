@@ -6,28 +6,37 @@ import com.google.gson.annotations.SerializedName;
 public class Color {
     @SerializedName("border")
     @Expose
-        private String border;
+    private String border;
     @SerializedName("background")
     @Expose
-        private String background;
-
-        public Color(String border, String background) {
-            this.border = border;
-            this.background = background;
-        }
-        public String border(){
-            return border;
-        }
-
-        public String background(){
-            return background;
-        }
-        @Override
-        public String toString() {
-            return "Color{"
-                    + "border=" + border + ", "
-                    + "background=" + background
-
-                    + "}";
-        }
+    private String background;
+    @SerializedName("textColor")
+    @Expose
+    private String textColor;
+    public Color(String border, String background, String textColor) {
+        this.border = border;
+        this.background = background;
+        this.textColor = textColor;
     }
+    public String border(){
+        return border;
+    }
+
+    public String background(){
+        return background;
+    }
+
+    public String textColor() {
+        return textColor;
+    }
+
+    @Override
+    public String toString() {
+        return "Color{"
+                + "border=" + border + ", "
+                + "background=" + background + ", "
+                + "textColor="+textColor
+
+                + "}";
+    }
+}

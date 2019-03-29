@@ -19,6 +19,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.model.PagingHandler;
@@ -68,7 +69,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     private static final String CACHE_SEEN_OPPORTUNITY = "CACHE_SEEN_OPPORTUNITY";
     private static final String HAS_SEEN_OPPORTUNITY = "HAS_SEEN_OPPORTUNITY";
 
-    private static final String EXTRA_QUERY = "EXTRA_QUERY";
+    public static final String EXTRA_QUERY = "EXTRA_QUERY";
 
     private static final String ARGS_FILTER_DATA = "ARGS_FILTER_DATA";
     private static final String ARGS_PARAM = "ARGS_PARAM";
@@ -215,11 +216,11 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     protected void initialListener(Activity activity) {
-        if (activity != null && activity instanceof BaseActivity) {
+        if (activity != null && activity.getApplication() instanceof MainApplication) {
             opportunityComponent = DaggerOpportunityComponent
                     .builder()
                     .opportunityModule(new OpportunityModule())
-                    .appComponent(((BaseActivity) activity).getApplicationComponent())
+                    .appComponent(((MainApplication) activity.getApplication()).getAppComponent())
                     .build();
         }
     }
@@ -326,6 +327,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                 resetOpportunityList();
 
                 UnifyTracking.eventOpportunity(
+                        getActivity(),
                         OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY,
                         OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
                         AppEventTracking.Action.SUBMIT,
@@ -374,6 +376,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         setPaging(viewModel.getPagingHandlerModel());
 
         UnifyTracking.eventOpportunity(
+                getActivity(),
                 OpportunityTrackingEventLabel.EventName.LOAD_OPPORTUNITY_PRODUCT,
                 OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
                 AppEventTracking.Action.LOAD,
@@ -542,7 +545,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ScreenTracking.screen(getScreenName());
+        ScreenTracking.screen(MainApplication.getAppContext(), getScreenName());
 
         if (requestCode == REQUEST_CODE_OPPORTUNITY_DETAIL
                 && resultCode == OpportunityDetailFragment.RESULT_DELETED
@@ -630,7 +633,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && getActivity() != null) {
-            ScreenTracking.screen(getScreenName());
+            ScreenTracking.screen(MainApplication.getAppContext(),getScreenName());
 
             startShowCase();
         }

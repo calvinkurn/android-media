@@ -2,10 +2,10 @@ package com.tokopedia.topads.dashboard.view.presenter;
 
 import android.content.Context;
 
+import com.tokopedia.base.list.seller.view.listener.BaseListViewListener;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.dashboard.view.model.Ad;
-import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 
 /**
  * Created by zulfikarrahman on 11/24/16.

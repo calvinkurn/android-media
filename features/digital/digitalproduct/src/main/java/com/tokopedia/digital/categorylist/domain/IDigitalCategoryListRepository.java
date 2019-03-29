@@ -12,5 +12,5 @@ import rx.Observable;
 
 public interface IDigitalCategoryListRepository {
 
-    Observable<List<DigitalCategoryItemData>> getDigitalCategoryItemDataList();
+    Observable<List<DigitalCategoryItemData>> getDigitalCategoryItemDataList(String deviceVersion);
 }

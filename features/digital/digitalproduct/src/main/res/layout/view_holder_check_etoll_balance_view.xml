@@ -1,66 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_16"
-    android:background="@color/white"
-    android:weightSum="3"
-    android:orientation="horizontal">
+    android:background="@color/white">
 
-    <FrameLayout
-        android:layout_weight="2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_16"
+        android:weightSum="3"
+        android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:id="@+id/text_label_note"
-            tools:visibility="gone"
+        <FrameLayout
+            android:layout_weight="2"
+            android:layout_gravity="center_vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:id="@+id/text_label_note"
+                android:layout_gravity="center_vertical"
+                tools:visibility="gone"
+                android:layout_height="wrap_content"
+                tools:text="Silahkan cek sisa saldo Anda"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/view_remaining_balance"
+                tools:visibility="visible"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/text_card_number"
+                    tools:text="No. Kartu 6032 9860 5038 2497"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/text_remaining_balance"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_18"
+                    android:textStyle="bold"
+                    tools:text="Rp. 590.000"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/grey_500"
+                    android:id="@+id/text_date"
+                    tools:text="12 Mei 2018, 06:50"/>
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <android.support.v7.widget.AppCompatButton
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            tools:text="Silahkan cek sisa saldo Anda"/>
+            style="@style/Button.Secondary.Green"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:id="@+id/button_feature"
+            android:text="@string/emoney_button_check_balance"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/view_remaining_balance"
-            tools:visibility="visible"
-            android:orientation="vertical">
+    </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/text_card_number"
-                tools:text="No. Kartu 6032 9860 5038 2497"/>
+    <View
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/grey_250" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/text_remaining_balance"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_18"
-                android:textStyle="bold"
-                tools:text="Rp. 590.000"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/grey_500"
-                android:id="@+id/text_date"
-                tools:text="12 Mei 2018, 06:50"/>
-
-        </LinearLayout>
-
-    </FrameLayout>
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:gravity="center|end"
-        android:layout_weight="1"
-        android:id="@+id/button_feature"
-        android:textColor="@color/green_300"
-        android:textStyle="bold"
-        android:text="@string/emoney_button_check_balance"/>
-
-</LinearLayout>
+</RelativeLayout>

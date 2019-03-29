@@ -8,6 +8,10 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.Headers;
 import okhttp3.MediaType;
@@ -33,6 +37,10 @@ public class CacheApiUtils {
     private static final String SEPARATOR_PATH_URL = "/";
     private static final String PREFIX_UNUSED_REQUEST_PARAM_REGEX = "[?&]";
     private static final String SUFFIX_UNUSED_REQUEST_PARAM_REGEX = ".*?(?=&|\\?|$)";
+    private static final String BRACE_OPEN = "\\{";
+    private static final String BRACE_CLOSE = "\\}";
+    private static final String DYNAMIC_LINK_KEY_REGEX = BRACE_OPEN + "(.*?)" + BRACE_CLOSE;
+
     private static final int MAX_BUFFER_SIZE = 64;
     private static final int MAX_BYTE_READ_SAMPLE = 16;
     private static final String CONTENT_ENCODING_PARAM = "Content-Encoding";
@@ -206,5 +214,12 @@ public class CacheApiUtils {
         } else {
             return input;
         }
+    }
+
+    public static String getConvertedRegexBracePath(String dynamicPath) {
+        String dynamicPathRegex = dynamicPath.replaceAll(DYNAMIC_LINK_KEY_REGEX, "\\\\w+");
+        dynamicPathRegex = dynamicPathRegex.replaceAll(BRACE_OPEN, "");
+        dynamicPathRegex = dynamicPathRegex.replaceAll(BRACE_CLOSE, "");
+        return dynamicPathRegex;
     }
 }

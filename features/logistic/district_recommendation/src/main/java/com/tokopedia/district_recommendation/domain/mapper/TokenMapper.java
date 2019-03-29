@@ -11,7 +11,7 @@ public class TokenMapper {
 
     }
 
-    public Token convertTokenModel(com.tokopedia.core.manage.people.address.model.Token token) {
+    public Token convertTokenModel(com.tokopedia.logisticdata.data.entity.address.Token token) {
         Token tokenModel = new Token();
         tokenModel.setUnixTime(token.getUt());
         tokenModel.setDistrictRecommendation(token.getDistrictRecommendation());

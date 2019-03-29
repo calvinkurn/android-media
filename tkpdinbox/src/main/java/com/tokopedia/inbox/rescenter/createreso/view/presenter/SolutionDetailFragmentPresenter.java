@@ -1,7 +1,8 @@
 package com.tokopedia.inbox.rescenter.createreso.view.presenter;
 
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.PostAppealSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.PostEditSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionDetailFragmentListener;
@@ -9,7 +10,15 @@ import com.tokopedia.inbox.rescenter.createreso.view.subscriber.AppealSolutionWi
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.EditSolutionWithRefundSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.OngkirCheckboxSolutionModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.OngkirSolutionModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.ProductSolutionModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionComplaintModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -21,12 +30,10 @@ public class SolutionDetailFragmentPresenter
         extends BaseDaggerPresenter<SolutionDetailFragmentListener.View>
         implements SolutionDetailFragmentListener.Presenter {
 
-    SolutionDetailFragmentListener.View mainView;
-    SolutionViewModel solutionViewModel;
-    ResultViewModel resultViewModel;
-    EditAppealSolutionModel editAppealSolutionModel;
-    PostEditSolutionUseCase postEditSolutionUseCase;
-    PostAppealSolutionUseCase postAppealSolutionUseCase;
+    private SolutionDetailFragmentListener.View mainView;
+    private SolutionViewModel solutionViewModel;
+    private PostEditSolutionUseCase postEditSolutionUseCase;
+    private PostAppealSolutionUseCase postAppealSolutionUseCase;
 
     @Inject
     public SolutionDetailFragmentPresenter(PostEditSolutionUseCase postEditSolutionUseCase,
@@ -43,57 +50,45 @@ public class SolutionDetailFragmentPresenter
     }
 
     @Override
-    public void initResultViewModel(ResultViewModel resultViewModel, SolutionViewModel solutionViewModel) {
+    public void initData(SolutionViewModel solutionViewModel,
+                         SolutionResponseViewModel solutionResponseViewModel) {
         this.solutionViewModel = solutionViewModel;
-        this.resultViewModel = resultViewModel;
-        mainView.updateAmountError("Maksimal " + solutionViewModel.getAmount().getIdr());
-        mainView.updateBottomButton(resultViewModel.refundAmount);
+        updateList(solutionResponseViewModel.getComplaints());
     }
 
-    @Override
-    public void initEditAppealSolutionModel(EditAppealSolutionModel editAppealSolutionModel, SolutionViewModel solutionViewModel) {
-        this.editAppealSolutionModel = editAppealSolutionModel;
-        this.solutionViewModel = solutionViewModel;
-        mainView.updateAmountError("Maksimal " + solutionViewModel.getAmount().getIdr());
-        mainView.updateBottomButton(editAppealSolutionModel.refundAmount);
-    }
-
-    @Override
-    public void onAmountChanged(String amount) {
-        if (!amount.equals("")) {
-            int intAmount = Integer.parseInt(amount);
-            if (intAmount > solutionViewModel.getAmount().getInteger()) {
-                if (resultViewModel != null) {
-                    resultViewModel.refundAmount = solutionViewModel.getAmount().getInteger();
-                } else {
-                    editAppealSolutionModel.refundAmount = solutionViewModel.getAmount().getInteger();
-                }
-                mainView.updatePriceEditText(String.valueOf(solutionViewModel.getAmount().getInteger()));
+    private void updateList(List<SolutionComplaintModel> modelList) {
+        boolean isSingleItem = modelList.size() == 1;
+        List<Visitable> itemList = new ArrayList<>();
+        for (SolutionComplaintModel model : modelList) {
+            if (model.getShipping() == null) {
+                itemList.add(new ProductSolutionModel(
+                        model.getProblem(),
+                        model.getShipping(),
+                        model.getProduct(),
+                        model.getOrder()));
             } else {
-                if (resultViewModel != null) {
-                    resultViewModel.refundAmount = intAmount;
+                if (model.getShipping().isChecked()) {
+                    itemList.add(new OngkirSolutionModel(
+                            model.getProblem(),
+                            model.getShipping(),
+                            model.getProduct(),
+                            model.getOrder(),
+                            isSingleItem));
                 } else {
-                    editAppealSolutionModel.refundAmount = intAmount;
+                    itemList.add(new OngkirCheckboxSolutionModel(
+                            model.getProblem(),
+                            model.getShipping(),
+                            model.getProduct(),
+                            model.getOrder(),
+                            isSingleItem));
                 }
             }
-        } else {
-            if (resultViewModel != null) {
-                resultViewModel.refundAmount = 0;
-            } else {
-                editAppealSolutionModel.refundAmount = 0;
-            }
-            mainView.updatePriceEditText(String.valueOf(0));
         }
-
-        if (resultViewModel != null) {
-            mainView.updateBottomButton(resultViewModel.refundAmount);
-        } else {
-            mainView.updateBottomButton(editAppealSolutionModel.refundAmount);
-        }
+        mainView.initDataToList(itemList);
     }
 
     @Override
-    public void onContinueButtonClicked() {
+    public void onContinueButtonClicked(ResultViewModel resultViewModel, EditAppealSolutionModel editAppealSolutionModel) {
         if (resultViewModel != null) {
             resultViewModel.solution = solutionViewModel.getId();
             resultViewModel.solutionName = solutionViewModel.getSolutionName();
@@ -106,19 +101,14 @@ public class SolutionDetailFragmentPresenter
     }
 
     @Override
-    public void submitEditAppeal() {
+    public void submitEditAppeal(EditAppealSolutionModel editAppealSolutionModel) {
         if (editAppealSolutionModel.isEdit) {
             postEditSolutionUseCase.execute(PostEditSolutionUseCase.
-                            postEditSolutionUseCaseParams(editAppealSolutionModel.resolutionId,
-                                    editAppealSolutionModel.solution,
-                                    editAppealSolutionModel.refundAmount),
+                            postEditSolution(editAppealSolutionModel),
                     new EditSolutionWithRefundSubscriber(mainView));
         } else {
             postAppealSolutionUseCase.execute(PostAppealSolutionUseCase.
-                            postAppealSolutionUseCaseParams(
-                                    editAppealSolutionModel.resolutionId,
-                                    editAppealSolutionModel.solution,
-                                    editAppealSolutionModel.refundAmount),
+                            postAppealSolution(editAppealSolutionModel),
                     new AppealSolutionWithRefundSubscriber(mainView));
         }
     }

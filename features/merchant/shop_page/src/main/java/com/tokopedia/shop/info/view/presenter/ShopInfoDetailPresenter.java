@@ -1,8 +1,8 @@
 package com.tokopedia.shop.info.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.shop.info.view.listener.ShopInfoDetailView;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -12,10 +12,10 @@ import javax.inject.Inject;
 
 public class ShopInfoDetailPresenter extends BaseDaggerPresenter<ShopInfoDetailView> {
 
-    private final UserSession userSession;
+    private final UserSessionInterface userSession;
 
     @Inject
-    public ShopInfoDetailPresenter(UserSession userSession) {
+    public ShopInfoDetailPresenter(UserSessionInterface userSession) {
         this.userSession = userSession;
     }
 

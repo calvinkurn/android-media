@@ -43,7 +43,7 @@ public class SubConfig implements Parcelable {
 		this.name = in.readString();
 	}
 
-	public static final Parcelable.Creator<SubConfig> CREATOR = new Parcelable.Creator<SubConfig>() {
+	public static final Creator<SubConfig> CREATOR = new Creator<SubConfig>() {
 		@Override
 		public SubConfig createFromParcel(Parcel source) {
 			return new SubConfig(source);

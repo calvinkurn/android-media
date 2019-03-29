@@ -28,6 +28,7 @@ import com.tokopedia.seller.common.utils.MenuTintUtils;
  * Created by nathan on 7/11/17.
  */
 
+@Deprecated
 abstract class BaseToolbarActivity extends BaseActivity {
 
     private final static int TOOLBAR_ELEVATION = 10;
@@ -59,11 +60,11 @@ abstract class BaseToolbarActivity extends BaseActivity {
          */
         if (isToolbarWhite()) {
             setToolbarColorWhite();
-            toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarText_SansSerifMedium);
-            toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarSubtitleText_SansSerifMedium);
+            toolbar.setTitleTextAppearance(this, com.tokopedia.core2.R.style.ToolbarText_SansSerifMedium);
+            toolbar.setSubtitleTextAppearance(this, com.tokopedia.core2.R.style.ToolbarSubtitleText_SansSerifMedium);
         } else {
-            toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarText);
-            toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarSubtitleText);
+            toolbar.setTitleTextAppearance(this, com.tokopedia.core2.R.style.ToolbarText);
+            toolbar.setSubtitleTextAppearance(this, com.tokopedia.core2.R.style.ToolbarSubtitleText);
         }
         if (getSupportActionBar() != null && isShowCloseButton()) {
             getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, closeButtonDrawable()));

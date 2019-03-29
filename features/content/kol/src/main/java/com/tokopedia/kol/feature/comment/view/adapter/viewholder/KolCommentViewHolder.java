@@ -6,14 +6,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
-
-import javax.inject.Inject;
 
 /**
  * @author by nisie on 10/31/17.
@@ -21,13 +18,9 @@ import javax.inject.Inject;
 
 public class KolCommentViewHolder extends AbstractViewHolder<KolCommentViewModel> {
 
-
-    @Inject
-    UserSession userSession;
-
     public static final int LAYOUT = R.layout.kol_comment_item;
     private static final String SPACE = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-    private final KolComment.View viewListener;
+    private final KolComment.View.ViewHolder viewListener;
 
     private View mainView;
     private TextView comment;
@@ -35,7 +28,7 @@ public class KolCommentViewHolder extends AbstractViewHolder<KolCommentViewModel
     private ImageView avatar;
     private ImageView badge;
 
-    public KolCommentViewHolder(View itemView, final KolComment.View viewListener) {
+    public KolCommentViewHolder(View itemView, final KolComment.View.ViewHolder viewListener) {
         super(itemView);
         this.viewListener = viewListener;
         avatar = itemView.findViewById(R.id.avatar);

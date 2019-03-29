@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Random;
 
 import rx.Observable;
-import rx.functions.Func3;
+import rx.functions.Func2;
 
 /**
  * @author Kulomady on 2/9/17.
@@ -28,7 +28,7 @@ import rx.functions.Func3;
 public class GetAllDataFavoriteUseCase extends UseCase<DataFavorite> {
 
     private final GetFavoriteShopUsecase getFavoriteShopUsecase;
-    private final GetWishlistUsecase getWishlistUsecase;
+    private final GetWishlistUtil getWishlistUtil;
     private final GetTopAdsShopUseCase getTopAdsShopUseCase;
     private final Context context;
     private final CacheHandler cacheHandler;
@@ -37,12 +37,12 @@ public class GetAllDataFavoriteUseCase extends UseCase<DataFavorite> {
     public GetAllDataFavoriteUseCase(Context context, ThreadExecutor threadExecutor,
                                      PostExecutionThread postExecutionThread,
                                      GetFavoriteShopUsecase getFavoriteShopUsecase,
-                                     GetWishlistUsecase getWishlistUsecase,
+                                     GetWishlistUtil getWishlistUtil,
                                      GetTopAdsShopUseCase GetTopAdsShopUseCase) {
         super(threadExecutor, postExecutionThread);
         this.context = context;
         this.getFavoriteShopUsecase = getFavoriteShopUsecase;
-        this.getWishlistUsecase = getWishlistUsecase;
+        this.getWishlistUtil = getWishlistUtil;
         this.getTopAdsShopUseCase = GetTopAdsShopUseCase;
         this.cacheHandler = new CacheHandler(context, CacheHandler.TOP_ADS_CACHE);
         random = new Random();
@@ -51,34 +51,29 @@ public class GetAllDataFavoriteUseCase extends UseCase<DataFavorite> {
 
     @Override
     public Observable<DataFavorite> createObservable(RequestParams requestParams) {
-        return Observable.zip(getWishlist(), getTopAdsShop(), getFavoriteShopList(),
-                new Func3<DomainWishlist, TopAdsShop, FavoriteShop, DataFavorite>() {
+        return Observable.zip(getTopAdsShop(), getFavoriteShopList(),
+                new Func2<TopAdsShop, FavoriteShop, DataFavorite>() {
 
             @Override
-            public DataFavorite call(DomainWishlist domainWishlist,
-                                     TopAdsShop adsShop, FavoriteShop favoriteShop) {
+            public DataFavorite call(TopAdsShop adsShop, FavoriteShop favoriteShop) {
 
-                return validateDataFavorite(domainWishlist, adsShop, favoriteShop);
+                return validateDataFavorite(adsShop, favoriteShop);
             }
         });
     }
 
     @NonNull
-    private DataFavorite validateDataFavorite(DomainWishlist domainWishlist,
-                                              TopAdsShop adsShop,
+    private DataFavorite validateDataFavorite(TopAdsShop adsShop,
                                               FavoriteShop favoriteShop) {
 
-        if (domainWishlist.isNetworkError()
-                && adsShop.isNetworkError()
+        if (adsShop.isNetworkError()
                 && favoriteShop.isNetworkError()
-                && domainWishlist.getData() == null
                 && adsShop.getTopAdsShopItemList() == null
                 && favoriteShop.getData() == null) {
             throw new RuntimeException("all network error");
         }
 
         DataFavorite dataFavorite = new DataFavorite();
-        dataFavorite.setWishListData(domainWishlist);
         dataFavorite.setTopAdsShop(adsShop);
         dataFavorite.setFavoriteShop(favoriteShop);
         return dataFavorite;
@@ -97,9 +92,9 @@ public class GetAllDataFavoriteUseCase extends UseCase<DataFavorite> {
     }
 
     private Observable<DomainWishlist> getWishlist() {
-        RequestParams defaultParams = GetWishlistUsecase.getDefaultParams();
-        defaultParams.putBoolean(GetWishlistUsecase.KEY_IS_FORCE_REFRESH, true);
-        return getWishlistUsecase.createObservable(defaultParams);
+        RequestParams defaultParams = GetWishlistUtil.getDefaultParams();
+        defaultParams.putBoolean(GetWishlistUtil.KEY_IS_FORCE_REFRESH, true);
+        return getWishlistUtil.getWishListData(defaultParams);
     }
 
     private Observable<FavoriteShop> getFavoriteShopList(){

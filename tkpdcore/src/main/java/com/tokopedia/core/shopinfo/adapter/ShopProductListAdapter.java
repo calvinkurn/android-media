@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.shopinfo.models.etalasemodel.EtalaseAdapterModel;

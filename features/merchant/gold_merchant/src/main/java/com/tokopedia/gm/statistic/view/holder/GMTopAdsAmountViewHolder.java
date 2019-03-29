@@ -41,7 +41,7 @@ public class GMTopAdsAmountViewHolder implements GMStatisticViewHolder {
             @Override
             public void onClick(View view) {
                 if (onTopAdsViewHolderListener != null) {
-                    UnifyTracking.eventClickGMStatManageTopAds();
+                    UnifyTracking.eventClickGMStatManageTopAds(view.getContext());
                     onTopAdsViewHolderListener.onManageTopAdsClicked();
                 }
             }

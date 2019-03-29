@@ -3,7 +3,6 @@ package com.tokopedia.shop.product.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
@@ -18,9 +17,6 @@ import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopWSApi;
-import com.tokopedia.shop.etalase.data.repository.ShopEtalaseRepositoryImpl;
-import com.tokopedia.shop.etalase.data.source.cloud.ShopEtalaseCloudDataSource;
-import com.tokopedia.shop.etalase.domain.repository.ShopEtalaseRepository;
 import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl;
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource;
 import com.tokopedia.shop.product.data.source.cloud.api.ShopOfficialStoreApi;
@@ -33,7 +29,8 @@ import com.tokopedia.shop.product.domain.interactor.DeleteShopProductAceUseCase;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductTomeUseCase;
 import com.tokopedia.shop.product.domain.interactor.GetProductCampaignsUseCase;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
-import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.constant.WishListCommonUrl;
 import com.tokopedia.wishlist.common.data.interceptor.WishListAuthInterceptor;
 import com.tokopedia.wishlist.common.data.repository.WishListCommonRepositoryImpl;
@@ -41,10 +38,10 @@ import com.tokopedia.wishlist.common.data.source.WishListCommonDataSource;
 import com.tokopedia.wishlist.common.data.source.cloud.WishListCommonCloudDataSource;
 import com.tokopedia.wishlist.common.data.source.cloud.api.WishListCommonApi;
 import com.tokopedia.wishlist.common.data.source.cloud.mapper.WishListProductListMapper;
-import com.tokopedia.wishlist.common.domain.interactor.AddToWishListUseCase;
 import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase;
-import com.tokopedia.wishlist.common.domain.interactor.RemoveFromWishListUseCase;
 import com.tokopedia.wishlist.common.domain.repository.WishListCommonRepository;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -58,9 +55,8 @@ public class ShopProductModule {
 
     @Provides
     public GMAuthInterceptor provideGMAuthInterceptor(@ApplicationContext Context context,
-                                                      AbstractionRouter abstractionRouter,
-                                                      UserSession userSession) {
-        return new GMAuthInterceptor(context, abstractionRouter, userSession);
+                                                      AbstractionRouter abstractionRouter) {
+        return new GMAuthInterceptor(context, abstractionRouter);
     }
 
     @ShopProductGMFeaturedQualifier
@@ -118,9 +114,8 @@ public class ShopProductModule {
     // WishList
     @Provides
     public WishListAuthInterceptor provideWishListAuthInterceptor(@ApplicationContext Context context,
-                                                                  AbstractionRouter abstractionRouter,
-                                                                  UserSession userSession) {
-        return new WishListAuthInterceptor(context, abstractionRouter, userSession);
+                                                                  AbstractionRouter abstractionRouter) {
+        return new WishListAuthInterceptor(context, abstractionRouter);
     }
 
     @ShopProductWishListFeaturedQualifier
@@ -181,30 +176,29 @@ public class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    public AddToWishListUseCase provideAddToWishListUseCase(WishListCommonRepository wishListCommonRepository) {
-        return new AddToWishListUseCase(wishListCommonRepository);
+    public AddWishListUseCase provideAddToWishListUseCase(@ApplicationContext Context context) {
+        return new AddWishListUseCase(context);
     }
 
     @ShopProductScope
     @Provides
-    public RemoveFromWishListUseCase provideRemoveFromWishListUseCase(WishListCommonRepository wishListCommonRepository) {
-        return new RemoveFromWishListUseCase(wishListCommonRepository);
+    public RemoveWishListUseCase provideRemoveFromWishListUseCase(@ApplicationContext Context context) {
+        return new RemoveWishListUseCase(context);
     }
 
     // Product
     @Provides
     public ShopOfficialStoreAuthInterceptor provideShopOfficialStoreAuthInterceptor(@ApplicationContext Context context,
-                                                                           AbstractionRouter abstractionRouter,
-                                                                           UserSession userSession) {
-        return new ShopOfficialStoreAuthInterceptor(context, abstractionRouter, userSession);
+                                                                                    AbstractionRouter abstractionRouter) {
+        return new ShopOfficialStoreAuthInterceptor(context, abstractionRouter);
     }
 
     @ShopProductQualifier
     @Provides
     public OkHttpClient provideOfficialStoreOkHttpClient(ShopOfficialStoreAuthInterceptor shopOfficialStoreAuthInterceptor,
-                                                    @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                                    HeaderErrorResponseInterceptor errorResponseInterceptor,
-                                                    CacheApiInterceptor cacheApiInterceptor) {
+                                                         @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
+                                                         HeaderErrorResponseInterceptor errorResponseInterceptor,
+                                                         CacheApiInterceptor cacheApiInterceptor) {
         return new OkHttpClient.Builder()
                 .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(shopOfficialStoreAuthInterceptor)
@@ -234,12 +228,6 @@ public class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    public ShopProductMapper provideShopProductMapper() {
-        return new ShopProductMapper();
-    }
-
-    @ShopProductScope
-    @Provides
     public DeleteShopProductTomeUseCase provideDeleteShopProductTomeUseCase() {
         return new DeleteShopProductTomeUseCase();
     }
@@ -252,19 +240,13 @@ public class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    public ShopEtalaseCloudDataSource provideShopEtalaseCloudDataSource(ShopWSApi shopWSApi) {
-        return new ShopEtalaseCloudDataSource(shopWSApi);
-    }
-
-    @ShopProductScope
-    @Provides
-    public ShopEtalaseRepository provideShopEtalaseRepository(ShopEtalaseCloudDataSource shopEtalaseDataSource) {
-        return new ShopEtalaseRepositoryImpl(shopEtalaseDataSource);
-    }
-
-    @ShopProductScope
-    @Provides
     public GetProductCampaignsUseCase provideGetProductCampaignsUseCase(ShopProductRepository wishListCommonRepository) {
         return new GetProductCampaignsUseCase(wishListCommonRepository);
+    }
+
+    @ShopProductScope
+    @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

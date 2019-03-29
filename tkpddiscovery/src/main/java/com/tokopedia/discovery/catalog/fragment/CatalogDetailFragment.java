@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,13 +15,12 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.view.ExpandableTextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.viewpagerindicator.LinePageIndicator;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core2.R;
 import com.tokopedia.discovery.catalog.adapter.CatalogImageAdapter;
 import com.tokopedia.discovery.catalog.adapter.CatalogSpecAdapterHelper;
 import com.tokopedia.discovery.catalog.listener.CatalogImageTouchListener;
@@ -33,13 +31,11 @@ import com.tokopedia.discovery.catalog.model.CatalogReview;
 import com.tokopedia.discovery.catalog.model.CatalogSpec;
 import com.tokopedia.discovery.catalog.presenter.CatalogDetailPresenter;
 import com.tokopedia.discovery.catalog.presenter.ICatalogDetailPresenter;
+import com.tokopedia.linker.model.LinkerData;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.OnClick;
 
 /**
  * @author anggaprasetiyo on 10/17/16.
@@ -54,45 +50,29 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
     private static final String STATE_CATALOG_SPEC_LIST = "STATE_CATALOG_SPEC_LIST";
     private static final String STATE_CATALOG_SHARE_DATA = "STATE_CATALOG_SHARE_DATA";
 
-    @BindView(R2.id.holder_btn_buy)
-    View holderCatalogBtnBuy;
-    @BindView(R2.id.btn_buy)
-    TextView btnBuy;
-    @BindView(R2.id.holder_header_info)
-    View holderCatalogHeaderInfo;
-    @BindView(R2.id.tv_catalog_name)
-    TextView tvCatalogName;
-    @BindView(R2.id.tv_catalog_price)
-    TextView tvCatalogPrice;
-    @BindView(R2.id.holder_catalog_desc)
-    View holderCatalogDesc;
-    @BindView(R2.id.expand_text_catalog_desc)
-    ExpandableTextView tvCatalogDesc;
-    @BindView(R2.id.holder_catalog_image)
-    View holderCatalogImage;
-    @BindView(R2.id.vp_catalog_image)
-    ViewPager vpCatalogImage;
-    @BindView(R2.id.indicator)
-    LinePageIndicator indicator;
-    @BindView(R2.id.holder_catalog_review)
-    View holderReview;
-    @BindView(R2.id.tv_review_desc)
-    TextView tvReviewDesc;
-    @BindView(R2.id.tv_review_name)
-    TextView tvReviewName;
-    @BindView(R2.id.tv_review_score)
-    TextView tvReviewScore;
-    @BindView(R2.id.iv_review_logo)
-    ImageView ivReviewLogo;
-    @BindView(R2.id.holder_catalog_spec)
-    View holderCatalogSpec;
-    @BindView(R2.id.catalog_spec_list)
-    RecyclerView rvCatalogSpec;
+    private View holderCatalogBtnBuy;
+    private TextView btnBuy;
+    private View holderCatalogHeaderInfo;
+    private TextView tvCatalogName;
+    private TextView tvCatalogPrice;
+    private View holderCatalogDesc;
+    private ExpandableTextView tvCatalogDesc;
+    private View holderCatalogImage;
+    private ViewPager vpCatalogImage;
+    private LinePageIndicator indicator;
+    private View holderReview;
+    private TextView tvReviewDesc;
+    private TextView tvReviewName;
+    private TextView tvReviewScore;
+    private ImageView ivReviewLogo;
+    private View holderCatalogSpec;
+    private RecyclerView rvCatalogSpec;
+
     private String catalogId;
     private ICatalogActionFragment catalogActionFragment;
     private TkpdProgressDialog progressDialog;
 
-    private ShareData stateShareData;
+    private LinkerData stateShareData;
     private CatalogInfo stateCatalogInfo;
     private CatalogReview stateCatalogReview;
     private List<CatalogImage> stateCatalogImageList;
@@ -167,6 +147,23 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
 
     @Override
     protected void initView(View view) {
+        holderCatalogBtnBuy = view.findViewById(R.id.holder_btn_buy);
+        btnBuy = view.findViewById(R.id.btn_buy);
+        holderCatalogHeaderInfo = view.findViewById(R.id.holder_header_info);
+        tvCatalogName = view.findViewById(R.id.tv_catalog_name);
+        tvCatalogPrice = view.findViewById(R.id.tv_catalog_price);
+        holderCatalogDesc = view.findViewById(R.id.holder_catalog_desc);
+        tvCatalogDesc = view.findViewById(R.id.expand_text_catalog_desc);
+        holderCatalogImage = view.findViewById(R.id.holder_catalog_image);
+        vpCatalogImage = view.findViewById(R.id.vp_catalog_image);
+        indicator = view.findViewById(R.id.indicator);
+        holderReview = view.findViewById(R.id.holder_catalog_review);
+        tvReviewDesc = view.findViewById(R.id.tv_review_desc);
+        tvReviewName = view.findViewById(R.id.tv_review_name);
+        tvReviewScore = view.findViewById(R.id.tv_review_score);
+        ivReviewLogo = view.findViewById(R.id.iv_review_logo);
+        holderCatalogSpec = view.findViewById(R.id.holder_catalog_spec);
+        rvCatalogSpec = view.findViewById(R.id.catalog_spec_list);
         progressDialog = new TkpdProgressDialog(getActivity(),
                 TkpdProgressDialog.MAIN_PROGRESS, getView());
         progressDialog.setLoadingViewId(R.id.include_loading);
@@ -174,7 +171,13 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
 
     @Override
     protected void setViewListener() {
-
+        btnBuy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (catalogActionFragment != null)
+                    catalogActionFragment.navigateToCatalogProductList(catalogId);
+            }
+        });
     }
 
     @Override
@@ -289,7 +292,7 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
     }
 
     @Override
-    public void renderCatalogShareData(ShareData shareData) {
+    public void renderCatalogShareData(LinkerData shareData) {
         this.stateShareData = shareData;
         if (catalogActionFragment != null)
             catalogActionFragment.deliverCatalogShareData(stateShareData);
@@ -346,12 +349,6 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
         holderCatalogSpec.setVisibility(View.GONE);
         holderCatalogImage.setVisibility(View.GONE);
         holderReview.setVisibility(View.GONE);
-    }
-
-    @OnClick(R2.id.btn_buy)
-    void actionBuy() {
-        if (catalogActionFragment != null)
-            catalogActionFragment.navigateToCatalogProductList(catalogId);
     }
 
     private void saveStateData(Bundle state) {

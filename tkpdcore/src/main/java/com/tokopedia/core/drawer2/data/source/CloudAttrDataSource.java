@@ -36,7 +36,7 @@ public class CloudAttrDataSource {
     public CloudAttrDataSource(DrawerService drawerService, LocalCacheHandler drawerCache) {
         this.drawerService = drawerService;
         this.drawerCache = drawerCache;
-        analyticsCacheHandler = new AnalyticsCacheHandler();
+        analyticsCacheHandler = new AnalyticsCacheHandler(new GlobalCacheManager());
     }
 
     public Observable<UserData> getConsumerUserAttributes(RequestParams requestParams) {

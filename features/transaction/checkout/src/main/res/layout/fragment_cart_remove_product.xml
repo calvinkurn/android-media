@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="-8dp"
-        android:background="@drawable/bg_shadow"
+        android:background="@drawable/bg_checkout_shadow"
         android:visibility="visible"
         tools:visibility="visible">
 

@@ -14,6 +14,7 @@ import java.util.List;
 
 public class HistoryNotification {
 
+    private static final int HISTORY_NOTIFICATION_LIMIT = 5;
 
     public static void storeNotification(String senderName, String message, int notificationType, int notificationId) {
         HistoryNotificationDB historyNotificationDB = new HistoryNotificationDB();
@@ -28,6 +29,7 @@ public class HistoryNotification {
         return SQLite.select().from(HistoryNotificationDB.class)
                 .where(HistoryNotificationDB_Table.notification_type.eq(notificationType))
                 .orderBy(HistoryNotificationDB_Table.id, false)
+                .limit(HISTORY_NOTIFICATION_LIMIT)
                 .queryList();
 
     }

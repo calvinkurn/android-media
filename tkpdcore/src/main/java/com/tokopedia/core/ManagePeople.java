@@ -10,27 +10,35 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
 import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
-import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
 import com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity;
-import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core2.R;
+import com.tokopedia.transaction.common.TransactionRouter;
 
 import java.util.ArrayList;
 
+/**
+ * Moved to AccountSettingActivity
+ */
+@Deprecated
 public class ManagePeople extends TkpdActivity {
 
-    private static int REQUEST_CHANGE_PASSWORD = 1234;
+    private static int REQUEST_ADD_PASSWORD = 1234;
+    private static final int REQUEST_CHANGE_PASSWORD = 123;
+
 
     private TextView ManageProfile;
     private TextView ManageAddress;
@@ -45,10 +53,10 @@ public class ManagePeople extends TkpdActivity {
     private ArrayList<Integer> ResID = new ArrayList<Integer>();
     private SessionHandler sessionHandler;
 
-	@Override
-	public String getScreenName() {
-		return AppScreen.SCREEN_MANAGE_PEOPLE;
-	}
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_MANAGE_PEOPLE;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +67,7 @@ public class ManagePeople extends TkpdActivity {
         lvAdapter = new SimpleListTabViewAdapter(ManagePeople.this, Name, ResID);
         lvManage.setAdapter(lvAdapter);
         sessionHandler = new SessionHandler(getApplicationContext());
-        if(GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isSellerApp()) {
             Name.add(getString(R.string.title_personal_profile));
             Name.add(getString(R.string.title_address));
             Name.add(getString(R.string.title_bank));
@@ -116,6 +124,11 @@ public class ManagePeople extends TkpdActivity {
                     datas.putExtras(bundles);
                     setResult(resultCode, datas);
                     break;
+                case REQUEST_CHANGE_PASSWORD:
+                    com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+                            .showGreenCloseSnackbar(getActivity(), getString(R.string
+                                    .message_success_change_password));
+                    break;
                 default:
                     break;
             }
@@ -144,7 +157,8 @@ public class ManagePeople extends TkpdActivity {
                         break;
                     case 2:
                         if (sessionHandler.isHasPassword()) {
-                            intent = new Intent(getActivity(), ManagePeopleBankActivity.class);
+                            intent = ((TkpdCoreRouter) MainApplication.getAppContext())
+                                    .getSettingBankIntent(getActivity());
                             startActivity(intent);
                         } else {
                             showNoPasswordDialog();
@@ -163,8 +177,8 @@ public class ManagePeople extends TkpdActivity {
                         break;
                     case 5:
                         if (sessionHandler.isHasPassword()) {
-                            intent = new Intent(getActivity(), ManagePasswordActivity.class);
-                            startActivity(intent);
+                            intent = RouteManager.getIntent(getActivity(), ApplinkConst.CHANGE_PASSWORD);
+                            startActivityForResult(intent, REQUEST_CHANGE_PASSWORD);
                         } else {
                             intentToAddPassword();
                         }
@@ -191,7 +205,8 @@ public class ManagePeople extends TkpdActivity {
                         break;
                     case 2:
                         if (sessionHandler.isHasPassword()) {
-                            intent = new Intent(getActivity(), ManagePeopleBankActivity.class);
+                            intent = ((TkpdCoreRouter) MainApplication.getAppContext())
+                                    .getSettingBankIntent(getActivity());
                             startActivity(intent);
                         } else {
                             showNoPasswordDialog();
@@ -209,8 +224,8 @@ public class ManagePeople extends TkpdActivity {
                         break;
                     case 5:
                         if (sessionHandler.isHasPassword()) {
-                            intent = new Intent(ManagePeople.this, ManagePasswordActivity.class);
-                            startActivity(intent);
+                            intent = RouteManager.getIntent(getActivity(), ApplinkConst.CHANGE_PASSWORD);
+                            startActivityForResult(intent, REQUEST_CHANGE_PASSWORD);
                         } else {
                             intentToAddPassword();
                         }
@@ -220,10 +235,11 @@ public class ManagePeople extends TkpdActivity {
             }
         };
     }
+
     private void intentToAddPassword() {
         startActivityForResult(
-                ((TkpdCoreRouter)getActivity().getApplicationContext())
-                        .getAddPasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
+                ((TkpdCoreRouter) getActivity().getApplicationContext())
+                        .getAddPasswordIntent(getActivity()), REQUEST_ADD_PASSWORD);
     }
 
     private void showNoPasswordDialog() {

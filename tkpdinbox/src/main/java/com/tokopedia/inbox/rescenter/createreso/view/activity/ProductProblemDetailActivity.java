@@ -1,93 +1,40 @@
 package com.tokopedia.inbox.rescenter.createreso.view.activity;
 
-import android.app.Fragment;
-import android.net.Uri;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
-import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemDetailActivityPresenter;
-import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemDetailActivityPresenterImpl;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.inbox.rescenter.createreso.view.fragment.ProductProblemDetailFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
 /**
  * Created by yoasfs on 14/08/17.
  */
 
-public class ProductProblemDetailActivity
-        extends BasePresenterActivity<ProductProblemDetailActivityPresenter>
-        implements ProductProblemDetailActivityView, HasComponent {
+public class ProductProblemDetailActivity extends BaseSimpleActivity {
 
     public static final String PRODUCT_PROBLEM_DATA = "product_problem_data";
     public static final String PROBLEM_RESULT_DATA = "problem_result_data";
 
-    ProblemResult problemResult;
-    ProductProblemViewModel productProblemViewModel;
-
-    @Override
-    protected void setupURIPass(Uri data) {
-
+    public static Intent getInstance(Context context, ProductProblemViewModel productProblemViewModel, ComplaintResult problemResult) {
+        Intent intent = new Intent(context, ProductProblemDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(PRODUCT_PROBLEM_DATA, productProblemViewModel);
+        bundle.putParcelable(PROBLEM_RESULT_DATA, problemResult);
+        intent.putExtras(bundle);
+        return intent;
     }
 
     @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
+    protected Fragment getNewFragment() {
+        return ProductProblemDetailFragment.newInstance(
+                (ProductProblemViewModel) getIntent().getExtras().getParcelable(PRODUCT_PROBLEM_DATA),
+                (ComplaintResult) getIntent().getExtras().getParcelable(PROBLEM_RESULT_DATA));
     }
 
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-        productProblemViewModel = (ProductProblemViewModel) extras.get(PRODUCT_PROBLEM_DATA);
-        problemResult = (ProblemResult) extras.get(PROBLEM_RESULT_DATA);
-    }
-
-    @Override
-    protected void initialPresenter() {
-        presenter = new ProductProblemDetailActivityPresenterImpl(this, this);
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_product_problem;
-    }
-
-    @Override
-    protected void initView() {
-        setTitle(productProblemViewModel.getOrder().getProduct().getName());
-        toolbar.setTitle(productProblemViewModel.getOrder().getProduct().getName());
-        presenter.initFragment(productProblemViewModel, problemResult);
-
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
-    public void inflateFragment(Fragment fragment, String TAG) {
-        if (getFragmentManager().findFragmentByTag(TAG) == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, fragment, TAG)
-                    .commit();
-        }
-    }
-
-    @Override
-    public Object getComponent() {
-        return getApplicationComponent();
-    }
 
 
 }

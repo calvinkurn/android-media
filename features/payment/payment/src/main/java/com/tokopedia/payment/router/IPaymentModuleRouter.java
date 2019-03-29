@@ -1,6 +1,5 @@
 package com.tokopedia.payment.router;
 
-import android.app.Activity;
 import android.content.Intent;
 
 import java.util.Map;
@@ -11,15 +10,7 @@ import java.util.Map;
 
 public interface IPaymentModuleRouter {
 
-    String getSchemeAppLinkCancelPayment();
-
-    boolean isSupportedDelegateDeepLink(String appLinkScheme);
-
-    Intent getIntentDeepLinkHandlerActivity();
-
     String getBaseUrlDomainPayment();
-
-    void actionAppLinkPaymentModule(Activity activity, String appLinkScheme);
 
     String getGeneratedOverrideRedirectUrlPayment(String originUrl);
 

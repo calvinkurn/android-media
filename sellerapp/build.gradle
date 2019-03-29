@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: 'io.hansel.preprocessor'
 
 def getDpiId(String density) {
 
@@ -14,8 +15,8 @@ def getAPKArchiveFolder(variant) {
 }
 
 def allowSplit() {
-    return gradle.startParameter.taskNames.contains("assembleRelease") &&
-            !project.hasProperty('tkpdBuildType');
+    return gradle.startParameter.taskNames.contains("assembleLiveProdRelease") &&
+            (project.hasProperty('tkpdBuildType') && tkpdBuildType == "productionsplit")
 }
 
 def allowDistribution() {
@@ -47,6 +48,10 @@ def renameAPKFile(variant, density, versionCode) {
     return fileName;
 }
 
+def devMode() {
+    return !project.hasProperty('tkpdBuildType')
+}
+
 def archiveAPK(variant, output) {
 
     String density = output.getFilter(com.android.build.OutputFile.DENSITY);
@@ -61,10 +66,13 @@ def archiveAPK(variant, output) {
 
 buildscript {
     repositories {
+        mavenCentral()
         maven { url 'https://maven.fabric.io/public' }
+        maven { url 'https://hansel.io/maven' }
     }
     dependencies {
         classpath 'io.fabric.tools:gradle:1.+'
+        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
@@ -72,8 +80,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 1000404;
-        defaultVersionName = "1.0.4";
+        defaultVersionCode = 1320404;
+        defaultVersionName = "1.3.2";
     }
 
     packagingOptions {
@@ -119,9 +127,13 @@ android {
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles 'proguard-rules.txt'
+            ext.enableHansel=false
         }
         release {
-            signingConfig signingConfigs.debug
+            if (devMode()) {
+                signingConfig signingConfigs.debug
+            }
+            ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
@@ -192,30 +204,40 @@ android {
     }
 
     configurations.all {
-        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
+        resolutionStrategy.force 'com.android.support:multidex:1.0.3'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
         resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
     }
 
-    // Specifies two flavor dimensions.
-    flavorDimensions "tier"
+    // Specifies 4 flavor dimensions.
+    flavorDimensions "tier", "client"
 
     productFlavors {
         staging {
-
+            dimension "tier"
         }
-
         live {
-
+            dimension "tier"
+        }
+        dev {
+            dimension "client"
+        }
+        prod {
+            dimension "client"
         }
     }
-
-
 }
 
 repositories {
     flatDir {
         dirs 'libs'
+    }
+}
+
+afterEvaluate {
+    dependencies {
+        liveDevImplementation rootProject.ext.instabugDependencies.instabug
+        stagingDevImplementation rootProject.ext.instabugDependencies.instabug
     }
 }
 
@@ -228,11 +250,31 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.datePickerRange)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.baseListSeller)
+    implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
+    implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.trackinterface)
 
+    implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.mitraToppers)
+    implementation project(rootProject.ext.features.goldMerchantCommon)
+    implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.goldMerchant)
+    implementation project(rootProject.ext.features.goldMerchantSubscribe)
+    implementation project(rootProject.ext.features.topAdsDashboard)
+    implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.topAdsManagement)
     implementation project(rootProject.ext.features.seller)
     implementation project(rootProject.ext.features.session)
@@ -241,19 +283,60 @@ dependencies {
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.transaction)
+    implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
-    implementation project(rootProject.ext.features.districtRecommendation)
+    implementation project(rootProject.ext.features.logout)
+    implementation project(rootProject.ext.features.userIdentification)
+    implementation project(rootProject.ext.features.userIdentificationCommon)
+    implementation project(rootProject.ext.features.logisticdistrictrecommendation)
+    implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.features.logisticuploadawb)
+    implementation project(rootProject.ext.features.logisticdata)
+    implementation project(rootProject.ext.features.logisticgeolocation)
     implementation project(rootProject.ext.features.tracking)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.config)
+    implementation project(rootProject.ext.features.topchat)
+    implementation project(rootProject.ext.features.chatbot)
+    implementation project(rootProject.ext.features.chatcommon)
+    implementation project(rootProject.ext.features.settingbank)
+    implementation project(rootProject.ext.features.changepassword)
+    implementation project(rootProject.ext.features.attachproduct)
+    implementation project(rootProject.ext.features.talk)
+    implementation project(rootProject.ext.features.productDetailRevamp)
+    implementation project(rootProject.ext.features.productManageItem)
+    implementation project(rootProject.ext.features.productDraftDatabase)
+    implementation project(rootProject.ext.features.productManageList)
+    implementation project(rootProject.ext.features.broadcastMessage)
+    implementation project(rootProject.ext.features.broadcastMessageCommon)
+    implementation project(rootProject.ext.features.kol)
+    implementation project(rootProject.ext.features.kolCommon)
+    implementation project(rootProject.ext.features.flashsaleManagement)
+    implementation project(rootProject.ext.features.flashsaleManagementCommon)
+    implementation project(rootProject.ext.features.merchantVoucher)
+    implementation project(rootProject.ext.features.categoryCommon)
 
     implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.digitalproduct)
+    implementation project(rootProject.ext.features.shopOpen)
+    implementation project(rootProject.ext.features.shopSettings)
+    implementation project(rootProject.ext.features.withdraw)
+    implementation project(rootProject.ext.features.paymentSetting)
 
+    implementation project(rootProject.ext.features.changePhoneNumber)
+    implementation project(rootProject.ext.features.phoneVerification)
+    implementation project(rootProject.ext.features.updateinactivephone)
+    implementation project(rootProject.ext.features.loginregister)
+    implementation project(rootProject.ext.features.sessioncommon)
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
@@ -275,8 +358,8 @@ dependencies {
     }
 
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.playServicesDependencies.remoteConfig
-    implementation rootProject.ext.playServicesDependencies.firebase
+    implementation rootProject.ext.firebase.config
+    implementation rootProject.ext.firebase.messaging
 
     implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation rootProject.ext.supportLibDependencies.appCompactV7
@@ -291,6 +374,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.scannerZxing
+    implementation rootProject.ext.miscDependencies.multiDex
 
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
@@ -298,9 +382,6 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.fingerprint)
 
-    implementation(rootProject.ext.miscDependencies.trueCaller) {
-        exclude group: 'com.android.support'
-    }
     implementation(rootProject.ext.miscDependencies.imagecropper) {
         exclude group: "com.android.support"
     }
@@ -314,6 +395,7 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
+
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }

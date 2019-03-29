@@ -124,6 +124,11 @@ public class HotlistAdapter extends SearchSectionGeneralAdapter {
 
     public void setTotalData(int totalData) {
         this.totalData = totalData;
+        if(getItemCount()>0){
+            if(getItemList().get(0) instanceof HotlistHeaderViewModel){
+                ((HotlistHeaderViewModel) getItemList().get(0)).setTotalData(totalData);
+            }
+        }
     }
 
     public int getTotalData() {

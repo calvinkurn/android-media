@@ -21,11 +21,16 @@ import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core2.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Moved to com.tokopedia.home.account.presentation.activity.GeneralSettingActivity
+ */
 @SuppressLint("ValidFragment")
+@Deprecated
 public class ManageGeneral extends TkpdActivity implements NotificationReceivedListener {
     private static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
     public final static int TAB_POSITION_MANAGE_PROFILE = 0;
@@ -146,14 +151,6 @@ public class ManageGeneral extends TkpdActivity implements NotificationReceivedL
     @Override
     public void onGetNotif(Bundle data) {
 
-    }
-
-    @Override
-    protected void onResume() {
-        //[START] this is for set current activity
-        MainApplication.setCurrentActivity(this);
-        //[END] this is for set current activity
-        super.onResume();
     }
 
     @Override

@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/mf_margin_xsmall"
         android:layout_marginStart="@dimen/mf_margin_xsmall"
-        android:background="@drawable/bg_rounded_corners_red"
+        android:background="@drawable/autosweep_bg_rounded_corners_red"
         android:gravity="center"
         android:padding="@dimen/mf_padding_xxsmall"
         android:text="@string/mf_label_new"
@@ -66,7 +66,7 @@
         app:drawableRightCompat="@drawable/ic_arrow_right_default"
         android:paddingEnd="@dimen/mf_padding_medium"
         android:paddingRight="@dimen/mf_padding_medium"
-        android:textColor="@color/black_87"
+        android:textColor="@color/colorSheetText"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/text_limit_tokocash" />
@@ -124,7 +124,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/mf_height_line_separator"
         android:layout_marginTop="@dimen/mf_margin_medium"
-        android:background="@color/white_four"
+        android:background="@color/white_two"
         app:layout_constraintTop_toBottomOf="@+id/container_warning" />
 
     <Button

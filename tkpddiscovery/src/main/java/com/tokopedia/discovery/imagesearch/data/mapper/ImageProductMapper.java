@@ -4,11 +4,8 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.core.network.entity.discovery.ImageSearchProductResponse;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
-import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.newdiscovery.data.mapper.ProductMapper;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
-
-import javax.inject.Inject;
 
 import rx.functions.Func1;
 

@@ -2,8 +2,8 @@ package com.tokopedia.seller.product.variant.view.fragment;
 
 import android.text.TextUtils;
 
-import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
+import com.tokopedia.product.manage.item.main.base.data.model.VariantPictureViewModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 
 import java.util.ArrayList;
 import java.util.List;

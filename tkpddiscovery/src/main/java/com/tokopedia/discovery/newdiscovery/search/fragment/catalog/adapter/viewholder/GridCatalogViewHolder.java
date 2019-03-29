@@ -11,7 +11,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.CatalogViewModel;
 
 /**
@@ -31,12 +31,12 @@ public class GridCatalogViewHolder extends AbstractViewHolder<CatalogViewModel> 
     protected LinearLayout badgesContainer;
 
     protected final Context context;
-    protected final ItemClickListener listener;
+    protected final CatalogListener listener;
 
-    public GridCatalogViewHolder(View itemView, ItemClickListener mItemClickListener) {
+    public GridCatalogViewHolder(View itemView, CatalogListener mCatalogListener) {
         super(itemView);
         context = itemView.getContext();
-        this.listener = mItemClickListener;
+        this.listener = mCatalogListener;
         this.catalogImage = (SquareImageView) itemView.findViewById(R.id.product_image);
         this.catalogTitle = (TextView) itemView.findViewById(R.id.title);
         this.catalogPrice = (TextView) itemView.findViewById(R.id.price);
@@ -47,7 +47,7 @@ public class GridCatalogViewHolder extends AbstractViewHolder<CatalogViewModel> 
 
     @Override
     public void bind(final CatalogViewModel element) {
-        ImageHandler.loadImageThumbs(context, catalogImage, element.getImage());
+        setCatalogImage(element);
         catalogSeller.setText(element.getProductCounter() + " " + context.getString(R.string.title_total_prods));
         catalogTitle.setText(MethodChecker.fromHtml(element.getName()));
         catalogPrice.setText(element.getPrice());
@@ -57,5 +57,9 @@ public class GridCatalogViewHolder extends AbstractViewHolder<CatalogViewModel> 
                 listener.setOnCatalogClicked(element.getID(), element.getName());
             }
         });
+    }
+
+    public void setCatalogImage(CatalogViewModel catalog) {
+        ImageHandler.loadImageThumbs(context, catalogImage, catalog.getImage());
     }
 }

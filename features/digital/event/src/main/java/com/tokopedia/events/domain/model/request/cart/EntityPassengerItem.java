@@ -155,7 +155,7 @@ public class EntityPassengerItem implements Parcelable {
 		this.required = in.readString();
 	}
 
-	public static final Parcelable.Creator<EntityPassengerItem> CREATOR = new Parcelable.Creator<EntityPassengerItem>() {
+	public static final Creator<EntityPassengerItem> CREATOR = new Creator<EntityPassengerItem>() {
 		@Override
 		public EntityPassengerItem createFromParcel(Parcel source) {
 			return new EntityPassengerItem(source);

@@ -129,6 +129,7 @@
             android:layout_height="match_parent"
             android:overScrollMode="never"
             android:scrollbars="none"
+            android:nestedScrollingEnabled="false"
             tools:itemCount="2"
             tools:listitem="@layout/vote_option_image" />
 
@@ -147,7 +148,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_alignTop="@+id/vote_participant"
-                app:srcCompat="@drawable/ic_info_green"/>
+                app:srcCompat="@drawable/ic_info_green_groupchat"/>
 
 
             <TextView

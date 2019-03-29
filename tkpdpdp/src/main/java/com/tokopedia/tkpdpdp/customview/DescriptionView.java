@@ -103,7 +103,7 @@ public class DescriptionView extends BaseView<ProductDetailData, ProductDetailVi
         public void onClick(View v) {
             if (!isExpand) {
                 renderExpand();
-                UnifyTracking.eventPDPExpandDescription();
+                UnifyTracking.eventPDPExpandDescription(DescriptionView.this.getContext());
             } else {
                 renderCollapse();
             }

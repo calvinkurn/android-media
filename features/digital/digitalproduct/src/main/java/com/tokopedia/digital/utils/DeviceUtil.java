@@ -12,20 +12,15 @@ import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.text.TextUtils;
 
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.product.view.model.Operator;
-import com.tokopedia.digital.product.view.model.Validation;
-import com.tokopedia.digital.utils.data.RequestBodyAppsFlyer;
-import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
+import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyAppsFlyer;
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
+import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Validation;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.user.session.UserSession;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -47,7 +42,7 @@ public class DeviceUtil {
                 for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses();
                      enumIpAddr.hasMoreElements(); ) {
                     InetAddress inetAddress = enumIpAddr.nextElement();
-                    if (!inetAddress.isLoopbackAddress()) {
+                    if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
                         return inetAddress.getHostAddress();
                     }
                 }
@@ -103,17 +98,17 @@ public class DeviceUtil {
 
     public static RequestBodyIdentifier getDigitalIdentifierParam(Context context) {
         RequestBodyIdentifier requestBodyIdentifier = new RequestBodyIdentifier();
-        requestBodyIdentifier.setDeviceToken(GCMHandler.getRegistrationId(context));
-        requestBodyIdentifier.setUserId(SessionHandler.getLoginID(context));
+        UserSession userSession = new UserSession(context);
+        requestBodyIdentifier.setDeviceToken(userSession.getDeviceId());
+        requestBodyIdentifier.setUserId(userSession.getUserId());
         requestBodyIdentifier.setOsType("1");
         return requestBodyIdentifier;
     }
 
-    public static RequestBodyAppsFlyer getAppsFlyerIdentifierParam() {
-        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
+    public static RequestBodyAppsFlyer getAppsFlyerIdentifierParam(String afUniqueId, String adsId) {
         RequestBodyAppsFlyer requestBodyAppsFlyer = new RequestBodyAppsFlyer();
-        requestBodyAppsFlyer.setAppsflyerId(TrackingUtils.getAfUniqueId());
-        requestBodyAppsFlyer.setDeviceId(analHandler.getAdsId());
+        requestBodyAppsFlyer.setAppsflyerId(afUniqueId);
+        requestBodyAppsFlyer.setDeviceId(adsId);
         return requestBodyAppsFlyer;
     }
 

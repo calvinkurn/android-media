@@ -27,6 +27,8 @@ import java.util.Map;
  */
 public interface ProductDetailPresenter {
 
+    void initGetRateEstimationUseCase();
+
     void processDataPass(@NonNull ProductPass productPass);
 
     void processToProductInfo(@NonNull Context context, @NonNull Bundle bundle);
@@ -34,6 +36,8 @@ public interface ProductDetailPresenter {
     void processToBrowseProduct(@NonNull Context context, @NonNull Bundle bundle);
 
     void processToCreateShop(@NonNull Context context);
+
+    void getCostEstimation(@NonNull Context context, float productWeight, String shopDomain);
 
     void processToShopInfo(@NonNull Context context, @NonNull Bundle bundle);
 
@@ -54,6 +58,8 @@ public interface ProductDetailPresenter {
     void processToLogin(@NonNull Context context, @NonNull Bundle bundle);
 
     void processToCart(@NonNull Activity context, @NonNull ProductCartPass data);
+
+    void processToShippingTradeIn(Activity context, Intent shippingIntent, ProductCartPass data);
 
     void sendAnalytics(@NonNull ProductDetailData successResult);
 
@@ -122,4 +128,10 @@ public interface ProductDetailPresenter {
     void initTopAdsSourceTaggingUseCase(Context context);
 
     void saveSource(String source);
+
+    void requestAffiliateProductData(ProductDetailData productDetailData);
+
+    void getPromoWidget(final @NonNull Context context, @NonNull ProductDetailData productDetailData);
+
+    void checkExpressCheckoutProfile(Activity activity);
 }

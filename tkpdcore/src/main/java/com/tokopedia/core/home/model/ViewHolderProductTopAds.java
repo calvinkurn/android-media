@@ -13,6 +13,6 @@ public class ViewHolderProductTopAds extends RecyclerView.ViewHolder {
     public ViewHolderProductTopAds(View itemLayoutView) {
         super(itemLayoutView);
         listTopAdProduct = (RecyclerView) itemLayoutView
-                .findViewById(com.tokopedia.core.R.id.top_ads_recycler_view);
+                .findViewById(com.tokopedia.core2.R.id.top_ads_recycler_view);
     }
 }

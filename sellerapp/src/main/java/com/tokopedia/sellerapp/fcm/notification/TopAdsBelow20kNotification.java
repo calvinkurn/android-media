@@ -37,7 +37,7 @@ public class TopAdsBelow20kNotification extends BaseNotification {
         mNotificationPass.title = data.getString(ARG_NOTIFICATION_TITLE, mContext.getString(R.string.title_push_notif_general));
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-        UnifyTracking.eventPushNotifLowTopadsReceived();
+        UnifyTracking.eventPushNotifLowTopadsReceived(mContext);
     }
 
     @Override

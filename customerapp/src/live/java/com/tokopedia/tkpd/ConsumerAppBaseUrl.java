@@ -8,6 +8,8 @@ package com.tokopedia.tkpd;
 public class ConsumerAppBaseUrl {
 
     public static final String BASE_TOKOPEDIA_WEBSITE = "https://www.tokopedia.com/";
+    public static final String BASE_INSTANT_LOAN_URL = "https://www.tokopedia.com/";
+    public static final String BASE_TOKOPEDIA_GQL = "https://gql.tokopedia.com";
     public static final String BASE_DOMAIN = "https://ws.tokopedia.com/";
     public static final String BASE_API_DOMAIN = "https://api.tokopedia.com/";
     public static final String BASE_ACE_DOMAIN = "https://ace.tokopedia.com/";
@@ -36,7 +38,9 @@ public class ConsumerAppBaseUrl {
     public static final String PAYMENT_DOMAIN = "https://payment.tokopedia.com/";
     public static final String GALADRIEL = "https://galadriel.tokopedia.com/";
     public static final String CHAT_DOMAIN = "https://chat.tokopedia.com";
+    public static final String PLAY_DOMAIN = "https://groupchat.tokopedia.com";
     public static final String CHAT_WEBSOCKET_DOMAIN = "wss://chat.tokopedia.com";
+    public static final String GROUP_CHAT_WEBSOCKET_DOMAIN = "wss://groupchat.tokopedia.com";
     public static final String MAPS_DOMAIN = "https://gw.tokopedia.com/";
     public static final String BASE_WALLET = "https://www.tokocash.com/";
     public static final String EVENT_DOMAIN = "https://booking.tokopedia.com/";
@@ -48,4 +52,16 @@ public class ConsumerAppBaseUrl {
     public static final String GAMIFICATION_BASE_URL = "https://gql.tokopedia.com/";
     public static final String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com";
     public static final String TOP_PAY_DOMAIN = "https://pay.tokopedia.id";
+    public static final String OMS_DOMAIN = "https://omscart.tokopedia.com/";
+    public static final String DEALS_DOMAIN = "https://booking.tokopedia.com/";
+    public static final String CHANGE_PHONE_DOMAIN = BASE_MOBILE_DOMAIN;
+    public static final String KAI_WEB_DOMAIN = "https://tiket.tokopedia.com/";
+    public static final String TOKOCARD_BASE_DOMAIN = "https://www.tokopedia.com/tokocard/";
+    public static final String LOGISTIC_BASE_DOMAIN = "https://gw.tokopedia.com/";
+    public static final String CART_BASE_DOMAIN = "https://api.tokopedia.com/";
+    public static final String TRANSACTION_BASE_DOMAIN = "https://ws.tokopedia.com/";
+    public static final String CAMPAIGN_MANAGEMENT_DOMAIN = "https://imt.tokopedia.com/";
+    public static final String CM_TOKEN_UPDATE = "https://imt.tokopedia.com/api/v1/user/add";
+    public static final String LAKU6_BASE_URL = "https://www.laku6.com";
+
 }

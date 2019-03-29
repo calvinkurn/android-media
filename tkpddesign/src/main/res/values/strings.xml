@@ -1,7 +1,25 @@
 <resources>
     <string name="app_name">Design</string>
+
+    <!-- GENERAL ACTION -->
+    <string name="label_manage">Atur</string>
+    <string name="label_change">Ubah</string>
+    <string name="label_edit">Edit</string>
+    <string name="label_save">Simpan</string>
+    <string name="label_open">Buka</string>
+    <string name="label_close">Tutup</string>
+    <string name="label_cancel">Batal</string>
+    <string name="label_yes">Ya</string>
+    <string name="label_login_button">Masuk</string>
+
+    <string name="label_browse_file">Browse File</string>
+    <string name="label_see_all">Lihat Semua</string>
+
+    <string name="label_share">Bagikan</string>
+
     <string name="product_default_counter_text">0</string>
     <string name="text_ticker_action_close">Tutup</string>
+    <string name="search_hint_default">Cari</string>
     <string name="search_input_hint">Cari Event/Lokasi</string>
     <string name="top_ads_range_date_text">%1$s - %2$s</string>
 
@@ -37,5 +55,21 @@
     <string name="no_reputation_yet">Belum ada nilai reputasi</string>
     <string name="label_send_to_pick_up_booth">Kirim ke Gerai Pengambilan</string>
     <string name="label_edit_pickup">Ubah Gerai</string>
+    <string name="empty_search_result_default">Pencarian tidak ditemukan</string>
+
+    <string name="edit">Ubah</string>
+    <string name="label_filter">Filter</string>
+
+    <string name="button_cancel">Batal</string>
+    <string name="button_delete">Hapus</string>
+    <string name="button_send">Kirim</string>
+
+    <string name="label_official_store">Official Store</string>
+    <string name="label_gold_merchant">Gold Merchant</string>
+    <string name="label_regular_merchant">Regular Merchant</string>
+    <string name="title_delete">Hapus</string>
+
+    <string name="intro_seller_saldo_finish_string">Selesai</string>
+    <string name="tokopedia_domain" translatable="false">www.tokopedia.com</string>
 
 </resources>

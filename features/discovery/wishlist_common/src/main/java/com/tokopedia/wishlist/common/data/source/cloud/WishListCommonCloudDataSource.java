@@ -27,21 +27,4 @@ public class WishListCommonCloudDataSource {
         return wishListCommonApi.getWishList(userId, WishListProductListMapper.convertCommaValue(productIdList));
     }
 
-    public Observable<Boolean> addToWishList(String userId, String productId) {
-        return wishListCommonApi.addToWishList(userId, productId).flatMap(new Func1<Response<Void>, Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call(Response<Void> response) {
-                return Observable.just(true);
-            }
-        });
-    }
-
-    public Observable<Boolean> removeFromWishList(String userId, String productId) {
-        return wishListCommonApi.removeFromWishList(userId, productId).flatMap(new Func1<Response<Void>, Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call(Response<Void> response) {
-                return Observable.just(true);
-            }
-        });
-    }
 }

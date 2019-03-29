@@ -18,21 +18,21 @@ public interface HomeTokoCashContract {
 
         void hideProgressLoading();
 
-        void showToastMessage(String message);
-
         void showErrorMessage();
 
         void renderBalanceTokoCash(BalanceTokoCash balanceTokoCash);
 
         void showEmptyPage(Throwable throwable);
 
-        void navigateToActivityRequest(Intent intent, int requestCode);
-
         void addAutoSweepFragment(Bundle bundle);
+
+        void navigatePageToActivateTokocash();
+
+        void navigateToLoginPage();
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void processGetCategoryTopUp();
+        void getHistoryTokocashForRefreshingTokenWallet();
 
         void processGetBalanceTokoCash();
 

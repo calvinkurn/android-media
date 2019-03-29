@@ -28,7 +28,7 @@
                     android:id="@+id/image_issuer"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
-                    android:padding="@dimen/dp_16"
+                    android:padding="@dimen/dp_6"
                     android:layout_weight="1"
                     tools:src="@drawable/emoney"/>
 
@@ -44,17 +44,22 @@
                     android:layout_weight="2"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <com.elyeproj.loaderviewlibrary.LoaderTextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:width_weight="0.5"
+                        app:corners="16"
+                        android:id="@+id/text_label_card_number"
                         android:textSize="@dimen/sp_12"
                         android:text="@string/emoney_card_info_label_card_number"
                         android:layout_marginBottom="@dimen/dp_4" />
 
-                    <TextView
+                    <com.elyeproj.loaderviewlibrary.LoaderTextView
                         android:id="@+id/text_card_number"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:width_weight="1.0"
+                        app:corners="16"
                         android:textSize="@dimen/sp_14"
                         android:textStyle="bold"
                         android:textColor="@color/black"
@@ -75,13 +80,6 @@
                 android:padding="@dimen/dp_16"
                 android:layout_marginTop="0.1dp">
 
-                <ProgressBar
-                    android:layout_gravity="center"
-                    android:id="@+id/progress_bar"
-                    android:visibility="gone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -89,25 +87,35 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.elyeproj.loaderviewlibrary.LoaderTextView
+                        android:id="@+id/text_label_balance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
+                        app:width_weight="1"
+                        app:height_weight="1"
+                        app:corners="16"
                         android:layout_marginBottom="@dimen/dp_6"
-                        android:text="@string/emoney_card_info_label_your_balance"/>
+                        android:text="@string/emoney_card_info_label_card_balance"/>
 
-                    <TextView
+                    <com.elyeproj.loaderviewlibrary.LoaderTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
+                        app:width_weight="1"
+                        app:height_weight="1"
+                        app:corners="16"
                         android:layout_marginBottom="@dimen/dp_8"
                         android:id="@+id/text_remaining_balance"
                         android:textColor="@color/green_400"
                         android:textSize="@dimen/sp_32"
                         tools:text="Rp 800.000"/>
 
-                    <TextView
+                    <com.elyeproj.loaderviewlibrary.LoaderTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/text_date"
+                        app:corners="16"
                         tools:text="12 Mei 2018, 06:50"/>
 
                 </LinearLayout>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_passenger"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/dp_15"
+    android:paddingTop="@dimen/dp_20">
+
+    <TextView
+        android:id="@+id/passenger_name"
+        android:layout_width="match_parent"
+        android:layout_toLeftOf="@+id/img_delete"
+        style="@style/TextView.Small.BlackPrimary"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:layout_alignTop="@+id/img_edit"
+        android:layout_alignBottom="@+id/img_edit"
+        android:gravity="center_vertical"
+        tools:text="Ny Isyana Sarasvati" />
+
+    <TextView
+        android:id="@+id/passenger_status"
+        style="@style/TextView.Micro.BlackDisabled"
+        android:layout_below="@+id/passenger_name"
+        android:text="(Utama)" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/img_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/dp_5"
+        android:layout_alignTop="@+id/passenger_name"
+        android:layout_alignBottom="@+id/passenger_status"
+        android:layout_toLeftOf="@+id/img_edit"
+        app:srcCompat="@drawable/ic_travel_delete"
+        android:visibility="visible"/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/img_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/dp_16"
+        app:srcCompat="@drawable/ic_travel_edit"
+        android:visibility="visible"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/white_two"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_below="@+id/passenger_status"/>
+
+</RelativeLayout>

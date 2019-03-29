@@ -1,6 +1,6 @@
 package com.tokopedia.tracking.mapper;
 
-import com.tokopedia.tracking.entity.TrackingResponse;
+import com.tokopedia.logisticdata.data.entity.trackingshipment.TrackingResponse;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
 
 /**

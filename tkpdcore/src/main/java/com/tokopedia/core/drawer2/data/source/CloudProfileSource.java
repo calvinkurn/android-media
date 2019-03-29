@@ -62,8 +62,10 @@ public class CloudProfileSource {
 
 
                     if (profileModel.getProfileData().getShopInfo() != null &&
-                            profileModel.getProfileData().getShopInfo().getShopId() != null)
+                            profileModel.getProfileData().getShopInfo().getShopId() != null) {
                         sessionHandler.setShopId(profileModel.getProfileData().getShopInfo().getShopId());
+                        sessionHandler.setShopName(profileModel.getProfileData().getShopInfo().getShopName());
+                    }
                     if (profileModel.getProfileData().getShopInfo() != null &&
                             profileModel.getProfileData().getShopInfo().getShopDomain() != null)
                         sessionHandler.setShopDomain(context, profileModel.getProfileData().getShopInfo().getShopDomain());

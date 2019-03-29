@@ -6,5 +6,5 @@ package com.tokopedia.groupchat.channel.data;
 
 class ChannelUrl {
 
-    static final String GET_ALL_CHANNEL = "/gcn/api/v1/channels";
+    static final String GET_ALL_CHANNEL = "/gcn/api/v2/channels";
 }

@@ -1,17 +1,29 @@
 package com.tokopedia.events.di;
 
-import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.events.di.scope.EventScope;
-import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
-import com.tokopedia.events.view.activity.EventBookTicketActivity;
-import com.tokopedia.events.view.activity.EventDetailsActivity;
-import com.tokopedia.events.view.activity.EventFavouriteActivity;
-import com.tokopedia.events.view.activity.EventLocationActivity;
-import com.tokopedia.events.view.activity.EventSearchActivity;
-import com.tokopedia.events.view.activity.EventsHomeActivity;
-import com.tokopedia.events.view.activity.ReviewTicketActivity;
-import com.tokopedia.events.view.activity.SeatSelectionActivity;
-import com.tokopedia.events.view.fragment.FragmentAddTickets;
+import com.tokopedia.events.view.contractor.EventBookTicketContract;
+import com.tokopedia.events.view.contractor.EventFavouriteContract;
+import com.tokopedia.events.view.contractor.EventFilterContract;
+import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
+import com.tokopedia.events.view.contractor.EventSearchContract;
+import com.tokopedia.events.view.contractor.EventsContract;
+import com.tokopedia.events.view.contractor.EventsDetailsContract;
+import com.tokopedia.events.view.contractor.EventsLocationContract;
+import com.tokopedia.events.view.contractor.ScanCodeContract;
+import com.tokopedia.events.view.contractor.SeatSelectionContract;
+import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
+import com.tokopedia.events.view.presenter.EventFavouritePresenter;
+import com.tokopedia.events.view.presenter.EventHomePresenter;
+import com.tokopedia.events.view.presenter.EventLocationsPresenter;
+import com.tokopedia.events.view.presenter.EventReviewTicketPresenter;
+import com.tokopedia.events.view.presenter.EventSearchPresenter;
+import com.tokopedia.events.view.presenter.EventsDetailsPresenter;
+import com.tokopedia.events.view.presenter.SeatSelectionPresenter;
+import com.tokopedia.events.view.utils.VerifyCartWrapper;
+
+import com.tokopedia.oms.di.OmsModule;
+import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 
 import dagger.Component;
 
@@ -20,26 +32,28 @@ import dagger.Component;
  */
 
 @EventScope
-@Component(modules = EventModule.class, dependencies = AppComponent.class)
+@Component(modules = {EventModule.class, OmsModule.class}, dependencies = BaseAppComponent.class)
 public interface EventComponent {
+
+    VerifyCartWrapper getVerifyCartWrapper();
 
     PostVerifyCartUseCase getPostVerifyCartUseCase();
 
-    void inject(EventsHomeActivity activity);
+    EventFilterContract.EventFilterPresenter getEventFilterPresenter();
 
-    void inject(EventLocationActivity activity);
+    EventBookTicketContract.BookTicketPresenter getEventBookTicketPresenter();
 
-    void inject(EventDetailsActivity activity);
+    EventsDetailsContract.EventDetailPresenter getEventDetailsPresenter();
 
-    void inject(EventBookTicketActivity activity);
+    EventFavouriteContract.EventFavoritePresenter getEventFavoritePresenter();
 
-    void inject(ReviewTicketActivity activity);
+    EventSearchContract.EventSearchPresenter getEventSearchPresenter();
 
-    void inject(FragmentAddTickets fragment);
+    EventsContract.EventHomePresenter getEventHomePresenter();
 
-    void inject(EventSearchActivity activity);
+    EventReviewTicketsContractor.EventReviewTicketPresenter getReviewTicketPresenter();
 
-    void inject(SeatSelectionActivity activity);
+    SeatSelectionContract.SeatSelectionPresenter getSeatSelectionPresenter();
 
-    void inject(EventFavouriteActivity activity);
+    ScanCodeContract.ScanPresenter getScanCodePresenter();
 }

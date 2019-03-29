@@ -4,10 +4,14 @@ package com.tokopedia.shop.common.data.source.cloud.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import com.tokopedia.shop.common.constant.ShopStatusDef;
+
 import java.util.List;
 
 public class ShopInfoDetail {
 
+    public static final String IS_OFFICIAL_TYPE = "1";
+    public static final String GOLD_MERCHANT_VALUE = "1";
     @SerializedName("badges")
     @Expose
     private List<Object> badges = null;
@@ -185,6 +189,10 @@ public class ShopInfoDetail {
         }
     }
 
+    public boolean isOpen(){
+        return shopStatus == ShopStatusDef.OPEN;
+    }
+
     public void setShopDescription(String shopDescription) {
         this.shopDescription = shopDescription;
     }
@@ -265,6 +273,10 @@ public class ShopInfoDetail {
         return shopIsGold;
     }
 
+    public boolean isGoldMerchant(){
+        return GOLD_MERCHANT_VALUE.equals(shopIsGold);
+    }
+
     public void setShopIsGold(String shopIsGold) {
         this.shopIsGold = shopIsGold;
     }
@@ -279,6 +291,10 @@ public class ShopInfoDetail {
 
     public String getShopIsOfficial() {
         return shopIsOfficial;
+    }
+
+    public boolean isShopOfficial(){
+        return IS_OFFICIAL_TYPE.equalsIgnoreCase(shopIsOfficial);
     }
 
     public void setShopIsOfficial(String shopIsOfficial) {

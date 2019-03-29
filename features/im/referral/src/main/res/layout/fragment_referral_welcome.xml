@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ScrollView
+        android:id="@+id/scrallview_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/referral_line"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_10">
+
+            <ImageView
+                android:id="@+id/img_app_share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                app:srcCompat="@drawable/welcome_image" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8"
+                android:text="Selamat!"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_24"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tv_referral_subheader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8"
+                android:gravity="center_horizontal"
+                android:text="@string/referral_welcome_desc"
+                android:textSize="@dimen/dp_14" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_39"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:id="@+id/img_profile"
+                    android:layout_width="@dimen/dp_35"
+                    android:layout_height="@dimen/dp_35"
+                    android:layout_marginRight="@dimen/margin_small"
+                    android:src="@drawable/ic_group_referral" />
+
+                <TextView
+                    android:id="@+id/referral_daftar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/img_profile"
+                    android:text="1. Daftar"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/dp_14" />
+
+                <ImageView
+                    android:id="@+id/img_cart"
+                    android:layout_width="@dimen/dp_35"
+                    android:layout_height="@dimen/dp_35"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/margin_small"
+                    android:layout_toLeftOf="@+id/referral_transaction"
+                    android:src="@drawable/ic_cart_circle" />
+
+                <TextView
+                    android:id="@+id/referral_transaction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:text="2. Transaksi Pertama"
+                    android:paddingRight="@dimen/dp_40"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/dp_14" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/referral_code_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_20"
+                android:background="@drawable/shape_referral_code_copy"
+                android:padding="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_24">
+
+                <TextView
+                    android:id="@+id/txtv_referral_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_toLeftOf="@+id/btn_copy"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center_horizontal"
+                    android:paddingBottom="@dimen/padding_small"
+                    android:paddingLeft="@dimen/padding_small"
+                    android:paddingRight="@dimen/padding_small"
+                    android:paddingTop="@dimen/padding_small"
+                    android:textColor="@color/orange_red"
+                    android:textSize="@dimen/sp_14"
+                    android:textStyle="bold" />
+
+
+                <TextView
+                    android:id="@+id/btn_copy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/txtv_referral_code"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@id/txtv_referral_code"
+                    android:background="@drawable/rounded_corner_right"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/margin_xlarge"
+                    android:paddingRight="@dimen/margin_large"
+                    android:text="@string/menu_copy"
+                    android:textColor="@color/font_black_primary_70"
+                    android:textSize="@dimen/sp_14"
+                    android:textStyle="bold"/>
+
+
+                <ImageView
+                    android:id="@+id/img_check"
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_20"
+                    android:layout_alignBottom="@+id/btn_copy"
+                    android:layout_marginBottom="@dimen/padding_small"
+                    android:layout_marginLeft="@dimen/margin_sm"
+                    android:layout_toRightOf="@+id/txtv_referral_code"
+                    android:src="@drawable/checked_thin"
+                    android:tint="@color/green_250"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+
+            <TextView
+                android:id="@+id/btn_referral_explore"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_corners"
+                android:gravity="center_horizontal|center_vertical"
+                android:padding="@dimen/dp_15"
+                android:text="@string/app_share_explore_btn_label"
+                android:textColor="@color/white"
+                android:textSize="@dimen/fonts" />
+        </LinearLayout>
+    </ScrollView>
+
+    <View
+        android:id="@+id/referral_line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_above="@+id/ll_referral_help_link"
+        android:background="@color/grey_hint"></View>
+
+    <LinearLayout
+        android:id="@+id/ll_referral_help_link"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_referral_help_link"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/gray_background"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/dp_12"
+            android:paddingLeft="@dimen/dp_32"
+            android:paddingRight="@dimen/dp_32"
+            android:paddingTop="@dimen/dp_12"
+            android:text="@string/cashback_enter_tokocash"
+            android:textSize="@dimen/sp_12" />
+    </LinearLayout>
+</RelativeLayout>

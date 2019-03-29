@@ -9,7 +9,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
-import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -32,7 +31,6 @@ public class CartResponse {
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public static CartResponse factory(String strResponse) throws IOException {
-        Log.d("CARTAPI SUCCESS = ", strResponse);
         CartResponse cartResponse = new CartResponse();
         JsonElement jsonElement = new JsonParser().parse(strResponse);
         JsonObject jsonResponse = jsonElement.getAsJsonObject();
@@ -46,15 +44,15 @@ public class CartResponse {
                 && (cartHeaderResponse != null && cartHeaderResponse.getErrorCode() != null
                 && cartHeaderResponse.getMessage() != null)) {
             if (!TextUtils.isEmpty(cartHeaderResponse.getMessageFormatted()))
-                throw new ResponseErrorException(cartHeaderResponse.getMessageFormatted());
+                throw new CartResponseErrorException(cartHeaderResponse.getMessageFormatted());
             else
-                throw new ResponseErrorException();
+                throw new CartResponseErrorException();
         } else if (jsonResponse.has(KEY_DATA) && jsonResponse.get(KEY_DATA).isJsonObject()) {
             strData = jsonResponse.get(KEY_DATA).getAsJsonObject().toString();
         } else if (jsonResponse.has(KEY_DATA) && jsonResponse.get(KEY_DATA).isJsonArray()) {
             strData = jsonResponse.get(KEY_DATA).getAsJsonArray().toString();
         } else {
-            throw new ResponseDataNullException(DEFAULT_ERROR_MESSAGE_DATA_NULL);
+            throw new CartResponseDataNullException(DEFAULT_ERROR_MESSAGE_DATA_NULL);
         }
         cartResponse.setJsonElementData(jsonResponse.get(KEY_DATA));
         cartResponse.setStrData(strData);

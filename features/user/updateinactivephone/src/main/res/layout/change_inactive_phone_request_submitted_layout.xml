@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:elevation="@dimen/dp_4"
+        android:gravity="top"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <LinearLayout
+        android:id="@+id/parent_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dp_24"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingEnd="@dimen/dp_39"
+        android:paddingLeft="@dimen/dp_39"
+        android:paddingRight="@dimen/dp_39"
+        android:paddingStart="@dimen/dp_39">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/request_submitted" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_32"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/submission_sent"
+            android:textAlignment="center"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="normal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_9"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="@dimen/dp_6"
+            android:text="@string/submission_sent_desc"
+            android:textAlignment="center"
+            android:textColor="@color/black_54"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="normal" />
+
+        <View
+            android:layout_width="@dimen/dp_112"
+            android:layout_height="@dimen/dp_1"
+            android:layout_marginTop="@dimen/dp_18"
+            android:background="@color/grey_hint" />
+
+        <TextView
+            android:id="@+id/duplicate_request_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_18"
+            android:fontFamily="sans-serif"
+            android:text="@string/duplicate_submission_desc"
+            android:textAlignment="center"
+            android:textColor="@color/black_54"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="normal"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/first_request_submission_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_18"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="@string/new_request_submission_desc"
+                android:textAlignment="center"
+                android:textColor="@color/black_54"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/value_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginBottom="@dimen/dp_12"
+                android:fontFamily="sans-serif"
+                android:textAlignment="center"
+                android:textColor="@color/black_70"
+                android:textSize="13sp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="@string/email_label"
+                android:textAlignment="center"
+                android:textColor="@color/black_54"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/value_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_12"
+                android:fontFamily="sans-serif"
+                android:textAlignment="center"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/sp_13"
+                android:textStyle="normal" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button_return_to_home"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dp_32"
+            android:background="@drawable/green_button_rounded"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:textAllCaps="false"
+            android:text="@string/goto_home"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_medium"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</LinearLayout>

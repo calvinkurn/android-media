@@ -12,7 +12,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailView;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailItemData;
+import com.tokopedia.transaction.common.data.order.OrderDetailItemData;
 
 import java.util.List;
 

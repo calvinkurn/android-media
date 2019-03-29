@@ -1,9 +1,9 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product;
 
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.HashMap;
 
@@ -17,15 +17,12 @@ public interface ProductListPresenter extends SearchSectionFragmentPresenter<Pro
 
     void loadData(SearchParameter searchParameter, boolean isForceSearch, HashMap<String, String> additionalParams);
 
-    void handleWishlistButtonClicked(ProductItem productItem, int adapterPosition);
+    void handleWishlistButtonClicked(final ProductItem productItem);
 
-    void attachView(ProductListFragmentView viewListener, WishlistActionListener wishlistActionListener);
-
-    void loadGuidedSearch(String keyword);
-
-    void requestQuickFilter(HashMap<String, String> paramMap);
+    void attachView(ProductListFragmentView viewListener, WishListActionListener wishlistActionListener);
 
     void setIsUsingFilterV4(boolean isUsingFilterV4);
+
 }
 
 

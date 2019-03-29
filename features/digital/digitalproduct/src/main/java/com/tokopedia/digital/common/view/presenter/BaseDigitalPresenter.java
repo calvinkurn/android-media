@@ -1,51 +1,54 @@
 package com.tokopedia.digital.common.view.presenter;
 
 import android.content.ContentResolver;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 
-import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
+import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.model.ContactData;
+import com.tokopedia.digital.product.view.model.ProductDigitalData;
+import com.tokopedia.user.session.UserSession;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by nabillasabbaha on 8/8/17.
  * Modified by rizkyfadillah at 10/6/17.
  */
 
-public abstract class BaseDigitalPresenter implements IBaseDigitalPresenter {
+public abstract class BaseDigitalPresenter<T extends CustomerView> extends BaseDaggerPresenter<T> implements IBaseDigitalPresenter {
 
     private final String IDN_CALLING_CODE = "62";
     private final String IDN_CALLING_CODE_WITH_PLUS = "+62";
 
-    private final Context context;
-
     private LocalCacheHandler localCacheHandlerLastClientNumber;
-    private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
+    private UserSession userSession;
 
-    public BaseDigitalPresenter(Context context, LocalCacheHandler localCacheHandlerLastClientNumber) {
-        this.context = context;
+    public BaseDigitalPresenter(LocalCacheHandler localCacheHandlerLastClientNumber, UserSession userSession) {
         this.localCacheHandlerLastClientNumber = localCacheHandlerLastClientNumber;
+        this.userSession = userSession;
     }
 
     @Override
     public void storeLastClientNumberTyped(String categoryId, String operatorId, String clientNumber,
                                            String productId) {
         localCacheHandlerLastClientNumber.putString(
-                TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, clientNumber
+                DigitalCache.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, clientNumber
         );
         localCacheHandlerLastClientNumber.putString(
-                TkpdCache.Key.DIGITAL_OPERATOR_ID_CATEGORY + categoryId,
+                DigitalCache.DIGITAL_OPERATOR_ID_CATEGORY + categoryId,
                 operatorId
         );
         localCacheHandlerLastClientNumber.putString(
-                TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId,
+                DigitalCache.DIGITAL_PRODUCT_ID_CATEGORY + categoryId,
                 productId
         );
         localCacheHandlerLastClientNumber.applyEditor();
@@ -54,19 +57,19 @@ public abstract class BaseDigitalPresenter implements IBaseDigitalPresenter {
     @Override
     public String getLastOperatorSelected(String categoryId) {
         return localCacheHandlerLastClientNumber.getString(
-                TkpdCache.Key.DIGITAL_OPERATOR_ID_CATEGORY + categoryId, "");
+                DigitalCache.DIGITAL_OPERATOR_ID_CATEGORY + categoryId, "");
     }
 
     @Override
     public String getLastClientNumberTyped(String categoryId) {
         return localCacheHandlerLastClientNumber.getString(
-                TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, "");
+                DigitalCache.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, "");
     }
 
     @Override
     public String getLastProductSelected(String categoryId) {
         return localCacheHandlerLastClientNumber.getString(
-                TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId, "");
+                DigitalCache.DIGITAL_PRODUCT_ID_CATEGORY + categoryId, "");
     }
 
     @Override
@@ -131,7 +134,7 @@ public abstract class BaseDigitalPresenter implements IBaseDigitalPresenter {
     @NonNull
     private String generateATokenRechargeCheckout(String userLoginId) {
         String timeMillis = String.valueOf(System.currentTimeMillis());
-        String token = AuthUtil.md5(timeMillis);
+        String token = md5(timeMillis);
         return userLoginId + "_" + (token.isEmpty() ? timeMillis : token);
     }
 
@@ -143,7 +146,7 @@ public abstract class BaseDigitalPresenter implements IBaseDigitalPresenter {
     ) {
         String clientNumber = preCheckoutProduct.getClientNumber();
         return new DigitalCheckoutPassData.Builder()
-                .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                .action(DigitalCheckoutPassData.Companion.getDEFAULT_ACTION())
                 .categoryId(preCheckoutProduct.getCategoryId())
                 .clientNumber(clientNumber)
                 .instantCheckout(preCheckoutProduct.isInstantCheckout() ? "1" : "0")
@@ -153,10 +156,53 @@ public abstract class BaseDigitalPresenter implements IBaseDigitalPresenter {
                 .utmCampaign((preCheckoutProduct.getCategoryName()))
                 .utmContent(versionInfoApplication)
                 .idemPotencyKey(generateATokenRechargeCheckout(userLoginId))
-                .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-                .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+                .utmSource(DigitalCheckoutPassData.Companion.getUTM_SOURCE_ANDROID())
+                .utmMedium(DigitalCheckoutPassData.Companion.getUTM_MEDIUM_WIDGET())
                 .voucherCodeCopied(preCheckoutProduct.getVoucherCodeCopied())
                 .build();
+    }
+
+    @Override
+    public DigitalCheckoutPassData generateCheckoutPassData2(
+            ProductDigitalData productDigitalData,
+            String categoryId,
+            String operatorId,
+            String productId,
+            String clientNumber,
+            String versionInfoApplication,
+            String userLoginId
+    ) {
+        return new DigitalCheckoutPassData.Builder()
+                .action(DigitalCheckoutPassData.Companion.getDEFAULT_ACTION())
+                .categoryId(categoryId)
+                .clientNumber(clientNumber)
+                .instantCheckout("0")
+                .isPromo("0")
+                .operatorId(operatorId)
+                .productId(productId)
+                .utmCampaign((productDigitalData.getCategoryData().getName()))
+                .utmContent(versionInfoApplication)
+                .idemPotencyKey(generateATokenRechargeCheckout(userLoginId))
+                .utmSource(DigitalCheckoutPassData.Companion.getUTM_SOURCE_ANDROID())
+                .utmMedium(DigitalCheckoutPassData.Companion.getUTM_MEDIUM_WIDGET())
+                .voucherCodeCopied("")
+                .build();
+    }
+
+    private String md5(String s) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            digest.update(s.getBytes());
+            byte[] messageDigest = digest.digest();
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : messageDigest) {
+                hexString.append(String.format("%02x", b & 0xff));
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
 }

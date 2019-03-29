@@ -19,6 +19,7 @@ import com.tokopedia.otp.cotp.di.DaggerCotpComponent;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment;
 import com.tokopedia.otp.cotp.view.fragment.VerificationFragment;
+import com.tokopedia.otp.cotp.view.viewlistener.Verification;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
@@ -37,22 +38,21 @@ public class VerificationActivity extends BaseSimpleActivity {
 
     public static final String PARAM_REQUEST_OTP_MODE = "fragmentType";
 
-    private static final String FIRST_FRAGMENT_TAG = "first";
-    private static final String CHOOSE_FRAGMENT_TAG = "choose";
-    private static final String IS_SHOW_CHOOSE_METHOD = "is_show_choose_method";
-    private static final String REGEX_MASK_PHONE_NUMBER =
+    protected static final String FIRST_FRAGMENT_TAG = "first";
+    protected static final String CHOOSE_FRAGMENT_TAG = "choose";
+    protected static final String IS_SHOW_CHOOSE_METHOD = "is_show_choose_method";
+    protected static final String REGEX_MASK_PHONE_NUMBER =
             "(0...|62...|\\+62...)(\\d{3,4})(\\d{3,4})(\\d{0,4})";
 
-    private VerificationPassModel passModel;
+    protected VerificationPassModel passModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initInjector();
-        initView();
     }
 
-    private void initInjector() {
+    protected void initInjector() {
         OtpComponent otpComponent = DaggerOtpComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getApplication())
                         .getBaseAppComponent()).build();
@@ -65,17 +65,17 @@ public class VerificationActivity extends BaseSimpleActivity {
 
     @Override
     protected void setupFragment(Bundle savedInstance) {
-
+        setupPassdata();
+        inflateFragment();
     }
 
-    private void initView() {
-
-        setupPassdata();
-
+    @Override
+    protected void inflateFragment() {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         Fragment fragment;
 
         if (passModel.canUseOtherMethod()
+                && getIntent().getExtras()!= null
                 && getIntent().getExtras().getBoolean(IS_SHOW_CHOOSE_METHOD, true)) {
             fragment = ChooseVerificationMethodFragment.createInstance(passModel);
             fragmentTransaction.add(R.id.parent_view, fragment, FIRST_FRAGMENT_TAG);
@@ -89,10 +89,9 @@ public class VerificationActivity extends BaseSimpleActivity {
         }
 
         fragmentTransaction.commit();
-
     }
 
-    private void setupPassdata() {
+    protected void setupPassdata() {
         VerificationPassModel tempPassModel = getIntent().getParcelableExtra(PASS_MODEL);
         if (tempPassModel != null) {
             passModel = tempPassModel;
@@ -102,7 +101,7 @@ public class VerificationActivity extends BaseSimpleActivity {
         }
     }
 
-    private Fragment getDefaultFragment(String mode, VerificationPassModel passModel) {
+    protected Fragment getDefaultFragment(String mode, VerificationPassModel passModel) {
         Fragment fragment;
         switch (mode) {
             case RequestOtpUseCase.MODE_SMS: {
@@ -162,7 +161,7 @@ public class VerificationActivity extends BaseSimpleActivity {
         }
     }
 
-    private VerificationViewModel createSmsBundle(String phoneNumber, int otpType) {
+    protected VerificationViewModel createSmsBundle(String phoneNumber, int otpType) {
 
         return new VerificationViewModel(
                 passModel.getPhoneNumber(),
@@ -190,7 +189,7 @@ public class VerificationActivity extends BaseSimpleActivity {
         );
     }
 
-    private VerificationViewModel createDynamicBundle(MethodItem methodItem) {
+    protected VerificationViewModel createDynamicBundle(MethodItem methodItem) {
 
 
         return new VerificationViewModel(
@@ -217,7 +216,7 @@ public class VerificationActivity extends BaseSimpleActivity {
             final Matcher matcher = pattern.matcher(phoneNumber);
             String masked = matcher.replaceAll("$1-$2-$3-$4");
 
-            if(masked.endsWith("-")){
+            if (masked.endsWith("-")) {
                 masked = masked.substring(0, masked.length() - 1);
             }
             return masked;
@@ -248,6 +247,13 @@ public class VerificationActivity extends BaseSimpleActivity {
             getSupportFragmentManager().popBackStack();
         } else {
             finish();
+        }
+
+        if (getSupportFragmentManager().findFragmentById(R.id.parent_view) instanceof
+                VerificationFragment) {
+
+            ((Verification.View) getSupportFragmentManager().findFragmentById(R.id.parent_view))
+                    .trackOnBackPressed();
         }
     }
 

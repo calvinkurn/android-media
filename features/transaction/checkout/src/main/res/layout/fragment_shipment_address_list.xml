@@ -9,7 +9,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_shadow">
+        android:background="@color/white">
 
         <RelativeLayout
             android:id="@+id/rl_content"
@@ -45,7 +45,8 @@
                 android:background="@color/white"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <ImageView
                     android:layout_width="match_parent"

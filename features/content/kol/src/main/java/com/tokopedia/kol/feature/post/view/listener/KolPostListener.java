@@ -6,9 +6,9 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.kol.KolRouter;
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public interface KolPostListener {
 
         AbstractionRouter getAbstractionRouter();
 
-        UserSession getUserSession();
+        UserSessionInterface getUserSession();
 
         void showLoading();
 
@@ -38,28 +38,54 @@ public interface KolPostListener {
 
         void updateCursor(String lastCursor);
 
-        void onLikeKolSuccess(int rowNumber);
+        void onSuccessDeletePost(int rowNumber);
 
-        void onLikeKolError(String message);
+        void onErrorDeletePost(String message, int rowNumber, int id);
+
+        interface Like {
+            Context getContext();
+
+            void onLikeKolSuccess(int rowNumber);
+
+            void onLikeKolError(String message);
+        }
 
         interface ViewHolder {
-            UserSession getUserSession();
+            Context getContext();
+
+            UserSessionInterface getUserSession();
 
             AbstractionRouter getAbstractionRouter();
 
-            void onGoToKolProfile(int page, int rowNumber, String userId, int postId);
+            void onGoToKolProfile(int rowNumber, String userId, int postId);
 
-            void onOpenKolTooltip(int page, int rowNumber, String url);
+            void onGoToKolProfileUsingApplink(int rowNumber, String applink);
 
-            void onFollowKolClicked(int page, int rowNumber, int id);
+            void onOpenKolTooltip(int rowNumber, String uniqueTrackingId, String url);
 
-            void onUnfollowKolClicked(int page, int rowNumber, int id);
+            void trackContentClick(boolean hasMultipleContent, String activityId,
+                                   String activityType, String position);
 
-            void onLikeKolClicked(int page, int rowNumber, int id);
+            void trackTooltipClick(boolean hasMultipleContent, String activityId,
+                                   String activityType, String position);
 
-            void onUnlikeKolClicked(int page, int adapterPosition, int id);
+            void onFollowKolClicked(int rowNumber, int id);
 
-            void onGoToKolComment(int page, int rowNumber, KolPostViewModel kolPostViewModel);
+            void onUnfollowKolClicked(int rowNumber, int id);
+
+            void onLikeKolClicked(int rowNumber, int id, boolean hasMultipleContent,
+                                  String activityType);
+
+            void onUnlikeKolClicked(int rowNumber, int id, boolean hasMultipleContent,
+                                    String activityType);
+
+            void onGoToKolComment(int rowNumber, int id, boolean hasMultipleContent,
+                                  String activityType);
+
+            void onEditClicked(boolean hasMultipleContent, String activityId,
+                               String activityType);
+
+            void onMenuClicked(int rowNumber, BaseKolViewModel element);
         }
     }
 
@@ -74,8 +100,10 @@ public interface KolPostListener {
 
         void unfollowKol(int id, int rowNumber, View kolListener);
 
-        void likeKol(int id, int rowNumber, View kolListener);
+        void likeKol(int id, int rowNumber, View.Like likeListener);
 
-        void unlikeKol(int id, int rowNumber, View kolListener);
+        void unlikeKol(int id, int rowNumber, View.Like likeListener);
+
+        void deletePost(int rowNumber, int id);
     }
 }

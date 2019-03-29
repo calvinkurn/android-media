@@ -10,13 +10,13 @@
         android:id="@+id/vDevider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/devider" />
+        android:background="@color/grey_300" />
 
     <TextView
         android:id="@+id/tvAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_detail"
+        android:padding="@dimen/dp_16"
         tools:text="DKI Jakarta, Jakarta Barat, Palmerah" />
 
 </LinearLayout>

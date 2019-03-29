@@ -7,7 +7,7 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.apiservices.shop.apis.model.openshopdistrict.OpenShopDistrictServiceModel;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
+import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.logistic.data.source.cloud.api.WSLogisticApi;
 import com.tokopedia.seller.logistic.model.CouriersModel;
 

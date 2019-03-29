@@ -9,19 +9,21 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.discovery.catalog.fragment.CatalogDetailFragment;
 import com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment;
+import com.tokopedia.linker.model.LinkerData;
 
 /**
  * @author anggaprasetiyo on 10/17/16.
@@ -33,7 +35,7 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
     private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
 
     String catalogId;
-    private ShareData shareData;
+    private LinkerData shareData;
 
 
     @DeepLink(Constants.Applinks.DISCOVERY_CATALOG)
@@ -104,7 +106,7 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
     }
 
     @Override
-    public void deliverCatalogShareData(ShareData shareData) {
+    public void deliverCatalogShareData(LinkerData shareData) {
         this.shareData = shareData;
     }
 
@@ -133,6 +135,14 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         shareData = savedInstanceState.getParcelable(STATE_CATALOG_SHARE_DATA);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getIntent().getBooleanExtra(DetailProductRouter.EXTRA_ACTIVITY_PAUSED, false)) {
+            moveTaskToBack(true);
+        }
     }
 
     @Override

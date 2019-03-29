@@ -25,14 +25,16 @@ public class YoutubeViewHolder extends RelativeLayout {
     private RelativeLayout mainView;
     private ProgressBar loadingBar;
     private String videoUrl;
+    private String videoTitle;
     private YouTubeThumbnailLoader youTubeThumbnailLoader;
     private final String departmentId;
 
-    public YoutubeViewHolder(Context context, String videoUrl, String departmentId,YouTubeThumbnailLoadInProcess youTubeThumbnailLoadInProcess) {
+    public YoutubeViewHolder(Context context, String videoUrl, String videotitle,String departmentId,YouTubeThumbnailLoadInProcess youTubeThumbnailLoadInProcess) {
         super(context);
         this.videoUrl = videoUrl;
         this.departmentId = departmentId;
         this.youTubeThumbnailLoadInProcess = youTubeThumbnailLoadInProcess;
+        this.videoTitle = videotitle;
         initView(context, videoUrl);
     }
 
@@ -46,7 +48,7 @@ public class YoutubeViewHolder extends RelativeLayout {
         youTubeThumbnailView.setMinimumWidth(mainView.getWidth());
         loadingBar = (ProgressBar) findViewById(R.id.youtube_thumbnail_loading_bar);
         youTubeThumbnailView.initialize(getContext().getApplicationContext()
-                        .getString(com.tokopedia.core.R.string.GOOGLE_API_KEY),
+                        .getString(com.tokopedia.core2.R.string.GOOGLE_API_KEY),
                 thumbnailInitializedListener(youtubeVideoId));
         if(youTubeThumbnailLoadInProcess != null)
             youTubeThumbnailLoadInProcess.onIntializationStart();
@@ -96,7 +98,8 @@ public class YoutubeViewHolder extends RelativeLayout {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventVideoIntermediary(departmentId,videoUrl);
+                UnifyTracking.eventVideoIntermediary(v.getContext(),departmentId,videoUrl);
+                youTubeThumbnailLoadInProcess.clickVideo(videoTitle);
                 Intent intent = new Intent(getContext(), YoutubeIntermediaryActivity.class);
                 intent.putExtra(YoutubeIntermediaryActivity.EXTRA_YOUTUBE_VIDEO_URL, videoUrl);
                 getContext().startActivity(intent);
@@ -108,8 +111,17 @@ public class YoutubeViewHolder extends RelativeLayout {
         youTubeThumbnailLoader.release();
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (youTubeThumbnailLoader != null){
+            youTubeThumbnailLoader.release();
+        }
+    }
+
     public interface YouTubeThumbnailLoadInProcess {
         public void onIntializationStart();
         public void onIntializationComplete();
+        void clickVideo(String title);
     }
 }

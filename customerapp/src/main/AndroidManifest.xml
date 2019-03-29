@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.tokopedia.tkpd">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.tkpd">
 
     <uses-sdk tools:overrideLibrary="com.tokopedia.core"/>
 
@@ -22,22 +22,28 @@
         android:name="android.permission.WRITE_CONTACTS"
         tools:node="remove"/>
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
     <application
         android:name=".ConsumerMainApplication"
         android:allowBackup="true"
-        android:icon="@drawable/qc_launcher"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
         android:theme="@style/Theme.Tokopedia3"
         tools:replace="name, label">
         <meta-data
+            android:name="com.google.android.gms.ads.AD_MANAGER_APP"
+            android:value="true"/>
+        <meta-data
             android:name="android.support.VERSION"
             android:value="26.1.0"
             tools:replace="android:value"/>
-        <meta-data
-            android:name="net.hockeyapp.android.appIdentifier"
-            android:value="528b17702bf941a581f15e188677306b "/>
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4"
@@ -66,7 +72,7 @@
             tools:replace="android:value"/>
         <meta-data
             android:name="NOTIFICATION_LARGE_ICON"
-            android:value="@drawable/qc_launcher"
+            android:value="@mipmap/ic_launcher"
             tools:replace="android:value"/>
         <meta-data
             android:name="HANSEL_APP_ID"
@@ -74,12 +80,14 @@
         <meta-data
             android:name="HANSEL_APP_KEY"
             android:value="8CDH74MC9EZLPFIHNNJPT39ERKS5BODETYX2LBFQ83ECSV86WY"/>
-
-
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
         <activity
             android:name=".ConsumerSplashScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.Tokopedia3.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -98,12 +106,16 @@
                 <data
                     android:host="tokopedia.link"
                     android:scheme="https"/>
+                <data
+                    android:host="exclusive.tokopedia.net"
+                    android:scheme="https"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".deeplink.activity.DeepLinkActivity"
             android:hardwareAccelerated="true"
             android:label="@string/title_activity_deep_link"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -116,37 +128,19 @@
                     android:pathPattern=".*"
                     android:scheme="https"/>
                 <data
-                    android:host="www.tokopedia.com"
+                    android:host="m.tokopedia.com"
                     android:pathPattern=".*"
-                    android:scheme="tkpd"/>
+                    android:scheme="https"/>
                 <data
                     android:host="tokopedia.com"
                     android:pathPattern=".*"
                     android:scheme="https"/>
                 <data
-                    android:host="m.tokopedia.com"
-                    android:pathPattern=".*"
-                    android:scheme="https"/>
-                <data
-                    android:host="www.tokopedia.com"
-                    android:pathPrefix="/reset.pl"
-                    android:scheme="https"/>
-                <data
-                    android:host="m.tokopedia.com"
-                    android:pathPrefix="/reset.pl"
-                    android:scheme="https"/>
-                <data
-                    android:host="www.tokopedia.com"
-                    android:pathPrefix="/activation.pl"
-                    android:scheme="https"/>
-                <data
-                    android:host="m.tokopedia.com"
-                    android:pathPrefix="/activation.pl"
-                    android:scheme="https"/>
-                <data
                     android:host="tokopedia.onelink.me"
                     android:scheme="https"/>
+
             </intent-filter>
+            
         </activity>
 
         <meta-data
@@ -161,9 +155,6 @@
         <meta-data
             android:name="APPSFLYER_KEY"
             android:value="@string/key_appsflyer"/>
-        <meta-data
-            android:name="com.truecaller.android.sdk.PartnerKey"
-            android:value="@string/key_truecaller_main_app"/>
 
         <activity
             android:name=".home.ParentIndexHome"
@@ -175,6 +166,13 @@
                 android:name="APPS_HOME"
                 android:value="true"/>
         </activity>
+        <activity android:name="com.tokopedia.navigation.presentation.activity.MainParentActivity"
+            android:exported="true"
+            android:label="Tokopedia"
+            android:launchMode="singleTask"
+            android:theme="@style/TokopediaTransparentStatus"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".home.SimpleHomeActivity"
             android:label="@string/title_activity_simple_home"
@@ -228,9 +226,6 @@
             android:label="@string/title_activity_deep_link"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".home.ReactNativeOfficialStoreActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".home.ReactNativeDiscoveryActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -263,7 +258,7 @@
         <activity
             android:name=".tokocash.datepicker.DatePickerTokoCashActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
+            android:theme="@style/Theme.White" />
         <activity android:name=".campaign.view.activity.ShakeShakeAudioCampaignActivity"
             android:launchMode="singleTop"
             android:theme="@style/DialogTheme"/>
@@ -276,7 +271,6 @@
 
 
         <activity android:name=".campaign.view.activity.ShakeDetectCampaignActivity"
-            android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Translucent"/>
 
@@ -292,10 +286,57 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".home.ReactNativeBrandListOsActivity"
+            android:name="com.tokopedia.saldodetails.activity.SaldoDepositActivity"
+            android:label="@string/title_activity_people_deposit"
+            android:theme="@style/Theme.White"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name="com.tokopedia.saldodetails.activity.SaldoIntroActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_header_saldo_intro"
+            android:theme="@style/Theme.White.PopupTransparent" />
 
+        <activity
+            android:name="com.tokopedia.digital.product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="android.nfc.action.TECH_DISCOVERED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/nfc_tech_filter" />
+        </activity>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.tokopedia.tkpd.provider"
+            android:grantUriPermissions="true"
+            android:exported="false"
+            tools:replace="android:authorities">
+            <meta-data
+                tools:replace="android:resource"
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
+
+        <activity
+            android:name=".home.TkpdYoutubeVideoActivity"
+            android:screenOrientation="sensor"/>
+
+        <receiver
+            android:name="com.tokopedia.tkpd.utils.NotificationBroadcast">
+            <intent-filter>
+                <action android:name="com.tokopedia.tkpd.utils.delete" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name="com.tokopedia.tkpd.onboarding.NewOnboardingActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

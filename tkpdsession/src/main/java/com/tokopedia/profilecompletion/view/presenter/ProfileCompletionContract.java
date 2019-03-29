@@ -3,6 +3,7 @@ package com.tokopedia.profilecompletion.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.profilecompletion.view.viewmodel.ProfileCompletionViewModel;
+import com.tokopedia.user.session.UserSession;
 
 /**
  * Created by stevenfredian on 6/22/17.
@@ -33,6 +34,8 @@ public interface ProfileCompletionContract extends CustomerView {
         Presenter getPresenter();
 
         android.view.View getView();
+
+        UserSession getUserSession();
     }
 
     interface Presenter extends CustomerPresenter<View>{

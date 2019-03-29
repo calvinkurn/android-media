@@ -51,4 +51,21 @@ public class ReviewProductAdapter<T extends ReviewProductModel, F extends Review
             i++;
         }
     }
+
+    public void updateLikeStatusError(String reviewId, int likeStatus) {
+        int i = 0;
+        for (Iterator<T> it = getData().iterator(); it.hasNext(); ) {
+            ReviewProductModel productReviewModel = it.next();
+            if(productReviewModel instanceof ReviewProductModelContent) {
+                ReviewProductModelContent productReviewModelContent = (ReviewProductModelContent)productReviewModel;
+                if (productReviewModelContent.getReviewId().equalsIgnoreCase(reviewId)) {
+                    productReviewModelContent.setLikeStatus(!(likeStatus == LIKE_STATUS_ACTIVE));
+                    productReviewModelContent.setTotalLike(productReviewModelContent.totalLike > 0 ?  productReviewModelContent.totalLike - 1 : 0);
+                    notifyItemChanged(i);
+                    return;
+                }
+            }
+            i++;
+        }
+    }
 }

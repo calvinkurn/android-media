@@ -11,12 +11,11 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
-import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.common.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.ThankYouMoveToSaldoActivity;
 import com.tokopedia.tokocash.historytokocash.presentation.contract.MoveToSaldoContract;
 import com.tokopedia.tokocash.historytokocash.presentation.model.WalletToDepositData;
@@ -49,7 +48,6 @@ public class MoveToSaldoFragment extends BaseDaggerFragment implements MoveToSal
     private ActionListener actionListener;
     private WalletToDepositData stateWalletToDepositData;
     private WalletToDepositPassData statePassData;
-    private TkpdProgressDialog progressDialogNormal;
 
     @Inject
     MoveToSaldoPresenter presenter;
@@ -73,7 +71,6 @@ public class MoveToSaldoFragment extends BaseDaggerFragment implements MoveToSal
         btnCancel = view.findViewById(R.id.btn_negative);
         btnProcess = view.findViewById(R.id.btn_positive);
 
-        progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         return view;
     }
 
@@ -144,13 +141,12 @@ public class MoveToSaldoFragment extends BaseDaggerFragment implements MoveToSal
 
     @Override
     public void showProgressLoading() {
-        progressDialogNormal.showDialog();
+        mainProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgressLoading() {
-        if (progressDialogNormal.isProgress())
-            progressDialogNormal.dismiss();
+        mainProgressBar.setVisibility(View.GONE);
     }
 
     private void renderInitializePage(final WalletToDepositData walletToDepositData) {

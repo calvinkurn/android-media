@@ -37,6 +37,7 @@ import com.tokopedia.profilecompletion.view.util.ProgressBarAnimation;
 import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.profilecompletion.view.viewmodel.ProfileCompletionViewModel;
 import com.tokopedia.session.R;
+import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
@@ -62,6 +63,8 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     FragmentTransaction transaction;
     @Inject
     ProfileCompletionPresenter presenter;
+    @Inject
+    UserSession userSession;
     private ProgressBarAnimation animation;
     private ProfileCompletionViewModel data;
     private String filled;
@@ -279,6 +282,10 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         return "";
     }
 
+    @Override
+    public UserSession getUserSession() {
+        return this.userSession;
+    }
 
     @Override
     public void skipView(String tag) {

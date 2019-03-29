@@ -1,7 +1,8 @@
 package com.tokopedia.tracking.mapper;
 
-import com.tokopedia.tracking.entity.TrackOrder;
-import com.tokopedia.tracking.entity.TrackingResponse;
+import com.tokopedia.logisticdata.data.entity.trackingshipment.Detail;
+import com.tokopedia.logisticdata.data.entity.trackingshipment.TrackOrder;
+import com.tokopedia.logisticdata.data.entity.trackingshipment.TrackingResponse;
 import com.tokopedia.tracking.viewmodel.TrackingHistoryViewModel;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
 
@@ -19,27 +20,52 @@ public class TrackingPageMapper implements ITrackingPageMapper {
         TrackingViewModel model = new TrackingViewModel();
         TrackOrder order = trackingResponse.getTrackOrder();
         model.setInvalid(switchInteger(order.getInvalid()));
-        model.setBuyerAddress(order.getDetail().getReceiverCity());
-        model.setBuyerName(order.getDetail().getReceiverName());
-        model.setDeliveryDate(order.getDetail().getSendDate());
         model.setReferenceNumber(order.getShippingRefNum());
-        model.setSellerStore(order.getDetail().getShipperName());
-        model.setSellerAddress(order.getDetail().getShipperCity());
-        model.setServiceCode(order.getDetail().getServiceCode());
+
+        Detail detailOrder = order.getDetail();
+        model.setBuyerAddress(
+                detailOrder == null || order.getDetail().getReceiverCity() == null ?
+                        "" : order.getDetail().getReceiverCity()
+        );
+        model.setBuyerName(
+                detailOrder == null || order.getDetail().getReceiverName() == null ?
+                        "" : order.getDetail().getReceiverName()
+        );
+        model.setDeliveryDate(
+                detailOrder == null || order.getDetail().getSendDate() == null ?
+                        "" : order.getDetail().getSendDate()
+        );
+        model.setSellerStore(
+                detailOrder == null || order.getDetail().getShipperName() == null ?
+                        "" : order.getDetail().getShipperName()
+        );
+        model.setSellerAddress(
+                detailOrder == null || order.getDetail().getShipperCity() == null ?
+                        "" : order.getDetail().getShipperCity()
+        );
+        model.setServiceCode(
+                detailOrder == null || order.getDetail().getServiceCode() == null ?
+                        "" : order.getDetail().getServiceCode()
+        );
+
         model.setChange(order.getChange());
         model.setStatus(order.getStatus());
+        model.setStatusNumber(order.getOrderStatus());
 
         List<TrackingHistoryViewModel> trackingHistoryViewModels = new ArrayList<>();
-        for (int i = 0; i < order.getTrackHistory().size(); i++) {
-            TrackingHistoryViewModel historyViewModel = new TrackingHistoryViewModel();
-            historyViewModel.setCity(order.getTrackHistory().get(i).getCity());
-            historyViewModel.setStatus(order.getTrackHistory().get(i).getStatus());
-            historyViewModel.setTime(order.getTrackHistory().get(i).getDate());
-            splitDate(historyViewModel, order, i);
-            historyViewModel.setTitle(order.getTrackHistory().get(i).getStatus());
-            trackingHistoryViewModels.add(historyViewModel);
-            if (i == 0) historyViewModel.setColor("#42b549");
-            else historyViewModel.setColor("#9B9B9B");
+        if (order.getTrackHistory() != null && !order.getTrackHistory().isEmpty()) {
+            for (int i = 0; i < order.getTrackHistory().size(); i++) {
+                TrackingHistoryViewModel historyViewModel = new TrackingHistoryViewModel();
+                historyViewModel.setCity(order.getTrackHistory().get(i).getCity());
+                historyViewModel.setStatus(order.getTrackHistory().get(i).getStatus());
+                historyViewModel.setDate(order.getTrackHistory().get(i).getDate());
+                historyViewModel.setTime(order.getTrackHistory().get(i).getTime());
+                splitDate(historyViewModel, order, i);
+                historyViewModel.setTitle(order.getTrackHistory().get(i).getStatus());
+                trackingHistoryViewModels.add(historyViewModel);
+                if (i == 0) historyViewModel.setColor("#42b549");
+                else historyViewModel.setColor("#9B9B9B");
+            }
         }
         model.setHistoryList(trackingHistoryViewModels);
         return model;

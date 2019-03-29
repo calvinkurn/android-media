@@ -3,24 +3,35 @@ package com.tokopedia.checkout.view.di.module;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
-import com.tokopedia.checkout.R;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.ResetCartGetShipmentFormUseCase;
-import com.tokopedia.checkout.domain.usecase.UpdateCartGetShipmentAddressFormUseCase;
-import com.tokopedia.checkout.view.adapter.CartListAdapter;
+import com.tokopedia.checkout.domain.usecase.UpdateAndReloadCartUseCase;
+import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.di.scope.CartListScope;
-import com.tokopedia.checkout.view.view.cartlist.CartFragment;
-import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
-import com.tokopedia.checkout.view.view.cartlist.CartListPresenter;
-import com.tokopedia.checkout.view.view.cartlist.ICartListPresenter;
-import com.tokopedia.checkout.view.view.cartlist.ICartListView;
+import com.tokopedia.checkout.view.feature.cartlist.CartFragment;
+import com.tokopedia.checkout.view.feature.cartlist.CartItemDecoration;
+import com.tokopedia.checkout.view.feature.cartlist.CartListPresenter;
+import com.tokopedia.checkout.view.feature.cartlist.ICartListPresenter;
+import com.tokopedia.checkout.view.feature.cartlist.ICartListView;
+import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
+import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
+import com.tokopedia.checkout.view.feature.shipment.di.ShipmentScope;
+import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutRouter;
+import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
+import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
+import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
+import com.tokopedia.checkout.view.feature.shipment.di.ShipmentScope;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -30,15 +41,17 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-@Module(includes = {ConverterDataModule.class, TrackingAnalyticsModule.class})
+@Module(includes = {ConverterDataModule.class, TrackingAnalyticsModule.class, PromoCheckoutModule.class})
 public class CartListModule {
 
     private final ICartListView cartListView;
-    private final CartListAdapter.ActionListener cartListActionListener;
+    private final CartAdapter.ActionListener cartActionListener;
+    private final CartItemAdapter.ActionListener cartItemActionListener;
 
     public CartListModule(CartFragment cartFragment) {
         this.cartListView = cartFragment;
-        this.cartListActionListener = cartFragment;
+        this.cartActionListener = cartFragment;
+        this.cartItemActionListener = cartFragment;
     }
 
     @Provides
@@ -49,38 +62,78 @@ public class CartListModule {
 
     @Provides
     @CartListScope
+    AddWishListUseCase providesAddWishListUseCase() {
+        return new AddWishListUseCase(cartListView.getActivity());
+    }
+
+    @Provides
+    @CartListScope
+    RemoveWishListUseCase providesTkpdRemoveWishListUseCase() {
+        return new RemoveWishListUseCase(cartListView.getActivity());
+    }
+
+    @Provides
+    @CartListScope
+    UserSessionInterface provideUserSessionInterface() {
+        return new UserSession(cartListView.getActivity());
+    }
+
+    @Provides
+    @CartListScope
+    TopAdsGqlUseCase topAdsUseCase(Context context){
+        return new TopAdsGqlUseCase(context);
+    }
+
+    @Provides
+    @CartListScope
     ICartListPresenter provideICartListPresenter(GetCartListUseCase getCartListUseCase,
                                                  DeleteCartUseCase deleteCartUseCase,
                                                  DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
-                                                 UpdateCartGetShipmentAddressFormUseCase updateCartGetShipmentAddressFormUseCase,
-                                                 GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
+                                                 UpdateCartUseCase updateCartUseCase,
                                                  ResetCartGetCartListUseCase resetCartGetCartListUseCase,
-                                                 ResetCartGetShipmentFormUseCase resetCartGetShipmentFormUseCase,
                                                  CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                                                  CompositeSubscription compositeSubscription,
                                                  CartApiRequestParamGenerator cartApiRequestParamGenerator,
-                                                 CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase) {
+                                                 CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
+                                                 AddWishListUseCase addWishListUseCase,
+                                                 RemoveWishListUseCase removeWishListUseCase,
+                                                 UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
+                                                 UserSessionInterface userSessionInterface,
+                                                 TopAdsGqlUseCase topAdsGqlUseCase) {
         return new CartListPresenter(
-                cartListView, getCartListUseCase, deleteCartUseCase,
-                deleteCartGetCartListUseCase, updateCartGetShipmentAddressFormUseCase,
-                getShipmentAddressFormUseCase, resetCartGetCartListUseCase,
-                resetCartGetShipmentFormUseCase, checkPromoCodeCartListUseCase, compositeSubscription,
-                cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase
-        );
+                cartListView, getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
+                updateCartUseCase, resetCartGetCartListUseCase, checkPromoCodeCartListUseCase,
+                compositeSubscription, cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase,
+                addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                userSessionInterface, topAdsGqlUseCase);
     }
 
     @Provides
     @CartListScope
-    RecyclerView.ItemDecoration provideCartItemDecoration(Context context) {
-        return new CartItemDecoration(
-                (int) context.getResources().getDimension(R.dimen.new_margin_med),
-                false, 0);
+    RecyclerView.ItemDecoration provideCartItemDecoration() {
+        return new CartItemDecoration();
     }
 
     @Provides
     @CartListScope
-    CartListAdapter provideCartListAdapter() {
-        return new CartListAdapter(cartListActionListener);
+    CartAdapter provideCartListAdapter() {
+        return new CartAdapter(cartActionListener, cartItemActionListener);
     }
 
+    @Provides
+    @CartListScope
+    @ApplicationContext
+    Context provideContextAbstraction(Context context){
+        return context;
+    }
+
+    @Provides
+    @CartListScope
+    TrackingPromoCheckoutUtil provideTrackingPromo(@ApplicationContext Context context) {
+        if(context instanceof TrackingPromoCheckoutRouter){
+            return new TrackingPromoCheckoutUtil((TrackingPromoCheckoutRouter)context);
+        }else{
+            return new TrackingPromoCheckoutUtil(null);
+        }
+    }
 }

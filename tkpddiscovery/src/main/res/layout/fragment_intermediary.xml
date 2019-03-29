@@ -108,7 +108,7 @@
         </LinearLayout>
 
 
-        <com.tokopedia.topads.sdk.view.TopAdsBannerView
+        <com.tokopedia.topads.sdk.widget.TopAdsBannerView
             android:id="@id/top_ads_banner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -204,6 +204,13 @@
                         android:textSize="@dimen/text_size_large"
                         android:text="@string/title_official_store" />
 
+                    <TextView
+                        android:id="@id/see_all_official_brand_button"
+                        style="@style/TextView.Small.Green"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:text="@string/see_all" />
+
                 </RelativeLayout>
 
 
@@ -219,7 +226,7 @@
 
         </android.support.v7.widget.CardView>
 
-        <com.tokopedia.topads.sdk.view.TopAdsView
+        <com.tokopedia.topads.sdk.widget.TopAdsView
             android:id="@id/top_ads_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

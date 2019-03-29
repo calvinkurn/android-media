@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.reputation.common.data.source.cloud.ReputationCommonCloudDataSource;
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeedList;
+import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeedV2;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -26,5 +27,10 @@ public class ReputationCommonDataSource {
                 return Observable.just(dataResponseResponse.body().getData().getSpeed());
             }
         });
+    }
+
+    public Observable<ReputationSpeedV2> getStatisticSpeedDaily(String shopId) {
+        return reputationCommonCloudDataSource.getStatisticSpeedDaily(shopId)
+                .map(dataResponseResponse -> dataResponseResponse.body().getData());
     }
 }

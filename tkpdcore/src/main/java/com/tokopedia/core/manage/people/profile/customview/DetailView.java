@@ -1,6 +1,5 @@
 package com.tokopedia.core.manage.people.profile.customview;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
@@ -12,7 +11,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.manage.people.profile.model.DataUser;
 import com.tokopedia.core.manage.people.profile.model.Profile;
 import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileFragmentPresenter;
@@ -95,26 +94,32 @@ public class DetailView extends BaseView<Profile, ManagePeopleProfileFragmentPre
 
     private void renderBirthDate(DataUser dataUser) {
         birthDate.setText(generateDate(dataUser.getBirthDay(), dataUser.getBirthMonth(), dataUser.getBirthYear()));
-        birthDate.setOnClickListener(new BirthDateClick(dataUser));
+        birthDate.setOnClickListener(new BirthDateClick(getContext(), dataUser, birthDate));
     }
 
-    private StringBuilder generateDate(String birthDay, String birthMonth, String birthYear) {
-        return new StringBuilder().append(getBirthDay(birthDay)).append("/").append(getBirthMonth(birthMonth)).append("/").append(getBirthYear(birthYear));
+    private static StringBuilder generateDate(String birthDay,
+                                              String birthMonth,
+                                              String birthYear) {
+        return new StringBuilder().append(getBirthDay(birthDay))
+                .append("/")
+                .append(getBirthMonth(birthMonth))
+                .append("/")
+                .append(getBirthYear(birthYear));
     }
 
-    private boolean isValid(String param) {
+    private static boolean isValid(String param) {
         return param != null && !param.isEmpty();
     }
 
-    private int getBirthDay(String birthDay) {
+    private static int getBirthDay(String birthDay) {
         return isValid(birthDay) ? Integer.parseInt(birthDay) : 1;
     }
 
-    private int getBirthMonth(String birthMonth) {
+    private static int getBirthMonth(String birthMonth) {
         return isValid(birthMonth) ? Integer.parseInt(birthMonth) : 1;
     }
 
-    private int getBirthYear(String birthYear) {
+    private static int getBirthYear(String birthYear) {
         return isValid(birthYear) ? Integer.parseInt(birthYear) : 1989;
     }
 
@@ -123,19 +128,23 @@ public class DetailView extends BaseView<Profile, ManagePeopleProfileFragmentPre
         this.presenter = presenter;
     }
 
-    private class BirthDateClick implements OnClickListener {
+    private static class BirthDateClick implements OnClickListener {
 
+        private final Context context;
         private final DataUser dataUser;
+        private final EditText birthDate;
 
-        public BirthDateClick(DataUser dataUser) {
+        public BirthDateClick(Context context, DataUser dataUser, EditText birthDate) {
+            this.context = context;
             this.dataUser = dataUser;
+            this.birthDate = birthDate;
         }
 
         @Override
         public void onClick(View view) {
             DatePickerUtil datePicker =
                     new DatePickerUtil(
-                            CommonUtils.getActivity(getContext()),
+                            CommonUtils.getActivity(context),
                             getBirthDay(dataUser.getBirthDay()),
                             getBirthMonth(dataUser.getBirthMonth()),
                             getBirthYear(dataUser.getBirthYear())
@@ -143,18 +152,13 @@ public class DetailView extends BaseView<Profile, ManagePeopleProfileFragmentPre
             datePicker.SetMaxYear(2002);
             datePicker.SetMinYear(1936);
             datePicker.SetShowToday(false);
-            datePicker.DatePickerCalendar(new DatePickerUtil.onDateSelectedListener() {
-                @Override
-                public void onDateSelected(int year, int month, int dayOfMonth) {
-                    birthDate.setText(
-                            generateDate(
-                                    checkNumber(dayOfMonth),
-                                    checkNumber(month),
-                                    checkNumber(year)
-                            )
-                    );
-                }
-            });
+            datePicker.DatePickerCalendar((year, month, dayOfMonth) -> birthDate.setText(
+                    generateDate(
+                            checkNumber(dayOfMonth),
+                            checkNumber(month),
+                            checkNumber(year)
+                    )
+            ));
         }
 
         public String checkNumber(int number) {

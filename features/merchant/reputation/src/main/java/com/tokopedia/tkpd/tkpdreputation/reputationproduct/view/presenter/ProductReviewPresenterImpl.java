@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.presenter;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.ActReviewPass;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.pojo.ActResult;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.ActReputationRetrofitInteractor;

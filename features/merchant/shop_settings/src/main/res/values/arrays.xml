@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="shop_address_menu_more">
+        <item>@string/label_change</item>
+        <item>@string/title_delete</item>
+    </string-array>
+
+    <string-array name="shop_note_menu_more">
+        <item>@string/label_change</item>
+        <item>@string/title_delete</item>
+    </string-array>
+
+    <string-array name="shop_etalase_menu_more_change_delete">
+        <item>@string/label_change</item>
+        <item>@string/title_delete</item>
+    </string-array>
+
+    <string-array name="shop_etalase_menu_more_change">
+        <item>@string/label_change</item>
+    </string-array>
+
+    <string-array name="shop_note_type">
+        <item>@string/shop_note</item>
+        <item>@string/shop_return_terms</item>
+    </string-array>
+
+    <string name="shop_note">Catatan Toko</string>
+    <string name="shop_return_terms">Kebijakan Pengembalian Produk</string>
+</resources>

@@ -48,8 +48,18 @@ public class MakeLoginUseCase extends UseCase<MakeLoginDomain> {
         return params;
     }
 
-    private static TKPDMapParam<String, Object> convert(HashMap<String, Object> params){
+    public static TKPDMapParam<String, Object> convert(HashMap<String, Object> params){
         TKPDMapParam<String, Object> newParams = new TKPDMapParam<>();
+        for(Iterator<String> key = params.keySet().iterator(); key.hasNext(); ){
+            String next = key.next();
+            newParams.put(next, params.get(next));
+        }
+        return newParams;
+    }
+
+    public static com.tokopedia.core.network.retrofit.utils.TKPDMapParam<String, Object> oldConvert(HashMap<String, Object> params){
+        com.tokopedia.core.network.retrofit.utils.TKPDMapParam<String, Object> newParams
+                = new com.tokopedia.core.network.retrofit.utils.TKPDMapParam<>();
         for(Iterator<String> key = params.keySet().iterator(); key.hasNext(); ){
             String next = key.next();
             newParams.put(next, params.get(next));

@@ -1,6 +1,5 @@
 package com.tokopedia.topads.keyword.di.component;
 
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.keyword.di.module.TopAdsKeywordNewChooseGroupModule;
 import com.tokopedia.topads.keyword.di.scope.TopAdsKeywordScope;
@@ -16,7 +15,8 @@ import dagger.Component;
 @TopAdsKeywordScope
 @Component(modules = TopAdsKeywordNewChooseGroupModule.class, dependencies = TopAdsComponent.class)
 public interface TopAdsKeywordNewChooseGroupComponent {
-    void inject(TopAdsKeywordNewChooseGroupFragment topAdsKeywordNewChooseGroupFragment);
 
     void inject(TopAdsKeywordGroupsFragment topAdsKeywordGroupsFragment);
+
+    void inject(TopAdsKeywordNewChooseGroupFragment topAdsKeywordNewChooseGroupFragment);
 }

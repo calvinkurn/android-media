@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DividerItemDecoration;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +17,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -23,6 +25,7 @@ import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem;
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterView;
+import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
@@ -127,8 +130,45 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.divider_vertical_product_review));
+        getRecyclerView(view).addItemDecoration(dividerItemDecoration);
+    }
+
     private void setupFilterView() {
         List<QuickFilterItem> quickFilterItemList = new ArrayList<>();
+        CustomViewQuickFilterItem allFilterItem = new CustomViewQuickFilterItem();
+        allFilterItem.setType(getString(R.string.review_label_all));
+        ReviewProductItemFilterView productReviewItemFilterViewAll = new ReviewProductItemFilterView(getActivity());
+        productReviewItemFilterViewAll.setActive(false);
+        productReviewItemFilterViewAll.setAll(true);
+        allFilterItem.setDefaultView(productReviewItemFilterViewAll);
+        ReviewProductItemFilterView productReviewItemFilterViewAllActive = new ReviewProductItemFilterView(getActivity());
+        productReviewItemFilterViewAllActive.setActive(true);
+        productReviewItemFilterViewAllActive.setAll(true);
+        allFilterItem.setSelectedView(productReviewItemFilterViewAllActive);
+        allFilterItem.setSelected(true);
+
+        quickFilterItemList.add(allFilterItem);
+
+        ReviewProductItemFilterView productReviewItemFilterViewWithPhoto = new ReviewProductItemFilterView(getActivity());
+        productReviewItemFilterViewWithPhoto.setActive(false);
+        productReviewItemFilterViewWithPhoto.setWithPhoto(true);
+
+        ReviewProductItemFilterView productReviewItemFilterViewWithPhotoActive = new ReviewProductItemFilterView(getActivity());
+        productReviewItemFilterViewWithPhotoActive.setActive(true);
+        productReviewItemFilterViewWithPhotoActive.setWithPhoto(true);
+
+        CustomViewQuickFilterItem imageFilterItem = new CustomViewQuickFilterItem();
+        imageFilterItem.setType(getString(R.string.review_label_with_photo));
+        imageFilterItem.setDefaultView(productReviewItemFilterViewWithPhoto);
+        imageFilterItem.setSelectedView(productReviewItemFilterViewWithPhotoActive);
+
+        quickFilterItemList.add(imageFilterItem);
+
         for (int i = 1; i <= TOTAL_FILTER_ITEM; i++) {
             CustomViewQuickFilterItem quickFilterItem = new CustomViewQuickFilterItem();
             quickFilterItem.setType(String.valueOf(i));
@@ -148,18 +188,43 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
         customViewQuickFilterView.setListener(new QuickSingleFilterView.ActionListener() {
             @Override
             public void selectFilter(String typeFilter) {
+                if (getActivity().getApplicationContext() instanceof PdpRouter) {
+                    PdpRouter pdpRouter = (PdpRouter) getActivity().getApplicationContext();
+                    pdpRouter.eventClickFilterReview(
+                            getContext(),
+                            addSuffixIfNeeded(typeFilter),
+                            productId
+                            );
+                }
                 loadInitialData();
             }
         });
     }
 
+    private String addSuffixIfNeeded(String typeFilter) {
+        if (!TextUtils.isEmpty(typeFilter) && TextUtils.isDigitsOnly(typeFilter)) {
+            return typeFilter + " star(s)";
+        } else {
+            return typeFilter;
+        }
+    }
+
     @Override
     public void loadData(int page) {
-        if (page <= INITIAL_PAGE && !customViewQuickFilterView.isAnyItemSelected()) {
+        boolean isWithPhoto = false;
+        if (page <= INITIAL_PAGE && customViewQuickFilterView.getSelectedFilter().equals(getString(R.string.review_label_all))) {
             productReviewPresenter.getRatingReview(productId);
             productReviewPresenter.getHelpfulReview(productId);
         }
-        productReviewPresenter.getProductReview(productId, page, customViewQuickFilterView.getSelectedFilter());
+        String filter = customViewQuickFilterView.getSelectedFilter();
+        if(filter.equals(getString(R.string.review_label_with_photo))){
+            filter = "";
+            isWithPhoto = true;
+        } else if (filter.equals(getString(R.string.review_label_all))){
+            filter = "";
+            isWithPhoto = false;
+        }
+        productReviewPresenter.getProductReview(productId, page, filter, isWithPhoto);
     }
 
     @Override
@@ -188,7 +253,7 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
     }
 
     @Override
-    public void goToPreviewImage(int position, ArrayList<ImageUpload> list) {
+    public void goToPreviewImage(int position, ArrayList<ImageUpload> list, ReviewProductModelContent element) {
         if (MainApplication.getAppContext() instanceof PdpRouter) {
             ArrayList<String> listLocation = new ArrayList<>();
             ArrayList<String> listDesc = new ArrayList<>();
@@ -201,8 +266,13 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
             ((PdpRouter) MainApplication.getAppContext()).openImagePreview(
                     getActivity(),
                     listLocation,
-                    listDesc,
                     position
+            );
+
+            ((PdpRouter) MainApplication.getAppContext()).eventImageClickOnReview(
+                    getActivity(),
+                    element.getProductId(),
+                    element.getReviewId()
             );
         }
     }
@@ -233,7 +303,7 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
 
     @Override
     public void onGetListReviewProduct(List<ReviewProductModel> map, boolean isHasNextPage) {
-        if (isLoadingInitialData && !customViewQuickFilterView.isAnyItemSelected()) {
+        if (isLoadingInitialData && customViewQuickFilterView.getSelectedFilter().equals(getString(R.string.review_label_all))) {
             map.add(0, new ReviewProductModelTitleHeader(getString(R.string.product_review_label_all_review)));
             if (listReviewHelpful != null) {
                 for (int i = 0; i < listReviewHelpful.size(); i++) {
@@ -319,7 +389,8 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
     }
 
     @Override
-    public void onErrorPostLikeDislike(Throwable e) {
+    public void onErrorPostLikeDislike(Throwable e, String reviewId, int likeStatus) {
+        ((ReviewProductAdapter) getAdapter()).updateLikeStatusError(reviewId, likeStatus);
         NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(e));
     }
 

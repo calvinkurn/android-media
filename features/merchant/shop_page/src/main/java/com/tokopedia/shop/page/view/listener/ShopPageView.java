@@ -21,4 +21,8 @@ public interface ShopPageView extends CustomerView {
     void onSuccessToggleFavourite(boolean successValue);
 
     void onErrorToggleFavourite(Throwable e);
+
+    void onSuccessGetFeedWhitelist(Boolean isWhitelist, String createPostUrl);
+
+    void stopPerformanceMonitor();
 }

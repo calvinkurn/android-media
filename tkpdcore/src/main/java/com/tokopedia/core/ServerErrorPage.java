@@ -6,6 +6,7 @@ import com.tokopedia.core.app.TActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import com.tokopedia.core2.R;
 
 public class ServerErrorPage extends TActivity {
 

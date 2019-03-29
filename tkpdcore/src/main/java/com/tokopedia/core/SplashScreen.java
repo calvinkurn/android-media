@@ -9,33 +9,36 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.data.DataManagerImpl;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
+import com.tokopedia.linker.model.LinkerDeeplinkData;
+import com.tokopedia.linker.model.LinkerDeeplinkResult;
+import com.tokopedia.linker.model.LinkerError;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.PasswordGenerator.PGListener;
 import com.tokopedia.core.util.SessionHandler;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import io.branch.referral.Branch;
-import io.branch.referral.BranchError;
 
 
 /**
@@ -45,8 +48,7 @@ import io.branch.referral.BranchError;
  * <p>
  * fetch some data from server in order to worked around.
  */
-public class SplashScreen extends AppCompatActivity implements DownloadResultReceiver.Receiver {
-
+public class SplashScreen extends AppCompatActivity implements DownloadResultReceiver.Receiver{
 
     public static final int TIME_DELAY = 300;
     public static final String IS_LOADING = "IS_LOADING";
@@ -64,8 +66,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-        setContentView(R.layout.activity_splash);
 
         mReceiver = new DownloadResultReceiver(new Handler());
         mReceiver.setReceiver(this);
@@ -99,10 +99,11 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     @Override
     protected void onStart() {
         super.onStart();
-        handleBranchDefferedDeeplink();
+        getBranchDefferedDeeplink();
+        moveToHome();
     }
 
-    private void moveToHome() {
+    protected void moveToHome() {
 //        new android.os.Handler().postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
@@ -207,36 +208,38 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         }
     }
 
-    private void handleBranchDefferedDeeplink() {
-        Branch branch = Branch.getInstance();
-        if (branch == null) {
-            moveToHome();
-        } else {
-            branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
-            branch.initSession(new Branch.BranchReferralInitListener() {
-                @Override
-                public void onInitFinished(JSONObject referringParams, BranchError error) {
-                    if (error == null) {
-                        try {
-                            BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams,SplashScreen.this);
+    private void getBranchDefferedDeeplink() {
+        LinkerDeeplinkData linkerDeeplinkData = new LinkerDeeplinkData();
+        linkerDeeplinkData.setClientId(TrackingUtils.getClientID(this));
+        linkerDeeplinkData.setReferrable(this.getIntent().getData());
+        linkerDeeplinkData.setActivity(this);
 
-                            String deeplink = referringParams.getString("$android_deeplink_path");
-                            Uri uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
+        LinkerManager.getInstance().handleDefferedDeeplink(LinkerUtils.createDeeplinkRequest(0,
+                linkerDeeplinkData, new DefferedDeeplinkCallback() {
+                    @Override
+                    public void onDeeplinkSuccess(LinkerDeeplinkResult linkerDefferedDeeplinkData) {
+                        PersistentCacheManager persistentCacheManager = new PersistentCacheManager(getApplicationContext(), TkpdCache.CACHE_PROMO_CODE);
+                        persistentCacheManager.put(TkpdCache.Key.KEY_CACHE_PROMO_CODE, linkerDefferedDeeplinkData.getPromoCode() != null ?
+                                linkerDefferedDeeplinkData.getPromoCode() : "");
+                        String deeplink = linkerDefferedDeeplinkData.getDeeplink();
+                        if (!TextUtils.isEmpty(deeplink)) {
+                            Uri uri;
+                            if (deeplink.startsWith(Constants.Schemes.APPLINKS + "://")) {
+                                uri = Uri.parse(deeplink);
+                            } else {
+                                uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
+                            }
                             Intent intent = new Intent(Intent.ACTION_VIEW);
                             intent.setData(uri);
                             startActivity(intent);
                             finish();
-
-                        } catch (JSONException e) {
-                            moveToHome();
-
                         }
-                    } else {
-                        moveToHome();
                     }
-                }
-            }, this.getIntent().getData(), this);
-        }
-    }
 
+
+                    @Override
+                    public void onError(LinkerError linkerError) {
+                    }
+                }, this));
+    }
 }

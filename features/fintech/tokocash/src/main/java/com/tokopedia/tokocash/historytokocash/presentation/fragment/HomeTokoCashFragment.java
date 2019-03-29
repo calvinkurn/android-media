@@ -1,16 +1,15 @@
 package com.tokopedia.tokocash.historytokocash.presentation.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -19,13 +18,14 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.TokoCashRouter;
+import com.tokopedia.tokocash.activation.presentation.activity.ActivateTokoCashActivity;
 import com.tokopedia.tokocash.autosweepmf.view.fragment.AutoSweepHomeFragment;
-import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
+import com.tokopedia.tokocash.common.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.compoundview.BalanceTokoCashView;
 import com.tokopedia.tokocash.historytokocash.presentation.compoundview.ReceivedTokoCashView;
 import com.tokopedia.tokocash.historytokocash.presentation.contract.HomeTokoCashContract;
 import com.tokopedia.tokocash.historytokocash.presentation.presenter.HomeTokoCashPresenter;
-import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 
 import javax.inject.Inject;
 
@@ -37,8 +37,10 @@ import static com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant.EXTRA_
 public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeTokoCashContract.View {
 
     public static final String EXTRA_TOP_UP_AVAILABLE = "EXTRA_TOP_UP_AVAILABLE";
+    private static final int REQUEST_CODE_LOGIN = 1007;
 
     private RelativeLayout mainContent;
+    private LinearLayout mainHome;
     private ProgressBar progressLoading;
 
     private BalanceTokoCashView balanceTokoCashView;
@@ -69,6 +71,7 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
         mainContent = view.findViewById(R.id.main_content);
         progressLoading = view.findViewById(R.id.pb_main_loading);
         topupFrameLayout = view.findViewById(R.id.topup_tokocash_layout);
+        mainHome = view.findViewById(R.id.main_home);
         return view;
     }
 
@@ -77,7 +80,7 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
         super.onViewCreated(view, savedInstanceState);
         this.topUpAvailable = getArguments().getBoolean(EXTRA_TOP_UP_AVAILABLE, true);
         bottomSheetTokoCashView = new BottomSheetView(getActivity());
-        presenter.processGetBalanceTokoCash();
+        presenter.getHistoryTokocashForRefreshingTokenWallet();
 
         if (savedInstanceState == null) {
             if (getActivity().getApplication() != null && getActivity().getApplication() instanceof TokoCashRouter) {
@@ -102,20 +105,15 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
     @Override
     public void showProgressLoading() {
         progressLoading.setVisibility(View.VISIBLE);
-        mainContent.setVisibility(View.GONE);
+        mainHome.setVisibility(View.GONE);
     }
 
     @Override
     public void hideProgressLoading() {
         if (progressLoading.getVisibility() == View.VISIBLE) {
             progressLoading.setVisibility(View.GONE);
-            mainContent.setVisibility(View.VISIBLE);
+            mainHome.setVisibility(View.VISIBLE);
         }
-    }
-
-    @Override
-    public void showToastMessage(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -167,17 +165,25 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
     }
 
     @Override
-    public void navigateToActivityRequest(Intent intent, int requestCode) {
-        startActivityForResult(intent, requestCode);
-    }
-
-    @Override
     public void addAutoSweepFragment(Bundle bundle) {
         getChildFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_autosweepmf, AutoSweepHomeFragment.newInstance(bundle))
                 .commit();
+    }
 
+    @Override
+    public void navigatePageToActivateTokocash() {
+        startActivity(ActivateTokoCashActivity.newInstance(getActivity()));
+        getActivity().finish();
+    }
+
+    @Override
+    public void navigateToLoginPage() {
+        if (getActivity().getApplication() != null && getActivity().getApplication() instanceof TokoCashRouter) {
+            startActivityForResult(((TokoCashRouter) getActivity().getApplication()).getLoginIntent(), REQUEST_CODE_LOGIN);
+            getActivity().finish();
+        }
     }
 
     @Override

@@ -2,14 +2,14 @@ package com.tokopedia.topads.keyword.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.network.di.qualifier.TomeQualifier;
-import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
-import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
-import com.tokopedia.topads.keyword.data.repository.TopAdsKeywordRepositoryImpl;
+import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
+import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
+import com.tokopedia.seller.shop.common.di.ShopQualifier;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
+import com.tokopedia.topads.keyword.data.repository.TopAdsOldKeywordRepositoryImpl;
 import com.tokopedia.topads.keyword.data.source.KeywordDashboardDataSouce;
 import com.tokopedia.topads.keyword.data.source.cloud.api.KeywordApi;
 import com.tokopedia.topads.keyword.di.scope.TopAdsKeywordScope;
@@ -17,7 +17,6 @@ import com.tokopedia.topads.keyword.domain.TopAdsKeywordRepository;
 import com.tokopedia.topads.keyword.domain.interactor.EditTopAdsKeywordDetailUseCase;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordEditDetailPresenter;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordEditDetailPresenterImpl;
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
@@ -46,18 +45,18 @@ public class TopAdsKeywordEditDetailModule {
     @TopAdsKeywordScope
     @Provides
     TopAdsKeywordRepository provideTopAdsKeywordRepository(KeywordDashboardDataSouce keywordDashboardDataSouce, ShopInfoRepository shopInfoRepository){
-        return new TopAdsKeywordRepositoryImpl(keywordDashboardDataSouce, shopInfoRepository);
+        return new TopAdsOldKeywordRepositoryImpl(keywordDashboardDataSouce, shopInfoRepository);
     }
 
     @TopAdsKeywordScope
     @Provides
-    TomeProductApi provideTomeApi(@TomeQualifier Retrofit retrofit){
+    TomeProductApi provideTomeApi(@ShopQualifier Retrofit retrofit){
         return retrofit.create(TomeProductApi.class);
     }
 
     @TopAdsKeywordScope
     @Provides
-    KeywordApi provideKeywordApi(@TopAdsQualifier Retrofit retrofit){
+    KeywordApi provideKeywordApi(@TopAdsManagementQualifier Retrofit retrofit){
         return retrofit.create(KeywordApi.class);
     }
 

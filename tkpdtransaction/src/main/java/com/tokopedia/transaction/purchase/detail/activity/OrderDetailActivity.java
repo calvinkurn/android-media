@@ -24,10 +24,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -37,12 +41,16 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.design.component.Tooltip;
+import com.tokopedia.logisticinputreceiptshipment.view.confirmshipment.ConfirmShippingActivity;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.purchase.constant.OrderShipmentTypeDef;
+import com.tokopedia.transaction.common.TransactionRouter;
+import com.tokopedia.transaction.common.data.order.OrderDetailData;
+import com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef;
+import com.tokopedia.transaction.common.listener.ToolbarChangeListener;
 import com.tokopedia.transaction.purchase.detail.adapter.OrderItemAdapter;
 import com.tokopedia.transaction.purchase.detail.customview.OrderDetailButtonLayout;
 import com.tokopedia.transaction.purchase.detail.di.DaggerOrderDetailComponent;
@@ -57,14 +65,18 @@ import com.tokopedia.transaction.purchase.detail.fragment.CancelShipmentFragment
 import com.tokopedia.transaction.purchase.detail.fragment.ChangeAwbFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RequestPickupFragment;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
+import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.BookingCodeData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
 import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
+import com.tokopedia.transaction.purchase.utils.OrderDetailAnalytics;
+import com.tokopedia.transaction.purchase.utils.OrderDetailConstant;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -77,16 +89,18 @@ import static com.tokopedia.transaction.purchase.detail.fragment.RequestPickupFr
  */
 
 public class OrderDetailActivity extends TActivity
-        implements OrderDetailView {
+        implements OrderDetailView, ToolbarChangeListener {
 
     public static final int REQUEST_CODE_ORDER_DETAIL = 111;
     private static final String VALIDATION_FRAGMENT_TAG = "validation_fragments";
     private static final String REJECT_ORDER_FRAGMENT_TAG = "reject_order_fragment_teg";
     private static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
     private static final String EXTRA_USER_MODE = "EXTRA_USER_MODE";
+    private static final String PARAM_ORDER_ID = "order_id";
     private static final int CONFIRM_SHIPMENT_REQUEST_CODE = 16;
     private static final int BUYER_MODE = 1;
     private static final int SELLER_MODE = 2;
+    private OrderDetailAnalytics orderDetailAnalytics;
 
     @Inject
     OrderDetailPresenterImpl presenter;
@@ -94,6 +108,12 @@ public class OrderDetailActivity extends TActivity
     private TkpdProgressDialog mainProgressDialog;
 
     private TkpdProgressDialog smallProgressDialog;
+
+    @DeepLink({ApplinkConst.PURCHASE_ORDER_DETAIL})
+    public static Intent createInstance(Context context, Bundle bundle) {
+        String orderId = bundle.getString(PARAM_ORDER_ID, "0");
+        return createInstance(context, orderId);
+    }
 
     public static Intent createInstance(Context context, String orderId) {
         Intent intent = new Intent(context, OrderDetailActivity.class);
@@ -122,6 +142,8 @@ public class OrderDetailActivity extends TActivity
         initInjector();
         presenter.setMainViewListener(this);
         presenter.fetchData(this, getExtraOrderId(), getExtraUserMode());
+        orderDetailAnalytics =
+                new OrderDetailAnalytics(this);
     }
 
     private void initInjector() {
@@ -140,11 +162,51 @@ public class OrderDetailActivity extends TActivity
         setItemListView(data);
         setAwbLayout(data);
         setInvoiceView(data);
+        setBookingCode(data);
         setDescriptionView(data);
+        setCodView(data);
+        setProtectionView(data);
         setPriceView(data);
         setButtonView(data);
         setPickupPointView(data);
         setUploadAwb(data);
+        setFulfillment(data);
+    }
+
+    private void setFulfillment(OrderDetailData data) {
+        View fulfill = findViewById(R.id.layout_fulfillment);
+        if (data.isFulfillment()) {
+            fulfill.setVisibility(View.VISIBLE);
+            fulfill.setOnClickListener(view -> {
+                Context context = view.getContext();
+                Tooltip tooltip = new Tooltip(context);
+                tooltip.setTitle(getString(R.string.tooltip_fulfillment_title));
+                tooltip.setDesc(getString(R.string.tooltip_fulfillment_desc));
+                tooltip.setTextButton(getString(R.string.understand));
+                tooltip.setIcon(R.drawable.ic_logistic_som_tokocabang_normal);
+                tooltip.getBtnAction().setOnClickListener(view1 -> tooltip.dismiss());
+                tooltip.show();
+            });
+        } else fulfill.setVisibility(View.GONE);
+    }
+
+    private void setBookingCode(OrderDetailData data) {
+        ViewGroup layout = findViewById(R.id.booking_code_layout);
+        if (data.getBookingCode() != null && getExtraUserMode() == SELLER_MODE) {
+            TextView text = findViewById(R.id.booking_code);
+            text.setText(data.getBookingCode());
+            BookingCodeData codeData = new BookingCodeData(
+                    data.getBookingCode(), data.getBarcodeType(), data.getBookingCodeMessage()
+            );
+            layout.setOnClickListener(view -> {
+                orderDetailAnalytics.sendAnalyticsClickShipping(
+                        OrderDetailConstant.VALUE_CLICK_BUTTON_DETAIL,
+                        OrderDetailConstant.VALUE_EMPTY);
+                startActivity(BookingCodeActivity.createInstance(this, codeData));
+            });
+        } else {
+            layout.setVisibility(View.GONE);
+        }
     }
 
     private void setUploadAwb(final OrderDetailData data) {
@@ -327,6 +389,30 @@ public class OrderDetailActivity extends TActivity
         totalPayment.setText(data.getTotalPayment());
     }
 
+    private void setCodView(OrderDetailData data) {
+        View codLayout = findViewById(R.id.layout_cod);
+        TextView codFee = findViewById(R.id.textview_cod_fee);
+
+        codLayout.setVisibility(data.isHavingCod() ? View.VISIBLE : View.GONE);
+        codFee.setText(data.getCodFee());
+    }
+
+    private void setProtectionView(OrderDetailData data) {
+        View protectionLayout = findViewById(R.id.layout_protection);
+        TextView protectionLabel = findViewById(R.id.protection_label);
+        TextView protectionFee = findViewById(R.id.protection_price);
+
+        if (data.getTotalProtectionItem() == 0 || data.getTotalProtectionFee() == null) {
+            protectionLayout.setVisibility(View.GONE);
+            return;
+        }
+
+        String protectionLabelStr = String.format(Locale.US,
+                getString(R.string.protection_count_label), data.getTotalProtectionItem());
+        protectionLabel.setText(protectionLabelStr);
+        protectionFee.setText(data.getTotalProtectionFee());
+    }
+
 
     private void setButtonView(OrderDetailData data) {
         OrderDetailButtonLayout buttonLayout = findViewById(R.id.button_layout);
@@ -344,7 +430,7 @@ public class OrderDetailActivity extends TActivity
         ViewGroup invoiceLayout = findViewById(R.id.invoice_layout);
         TextView invoiceNumber = findViewById(R.id.invoice_number);
         invoiceNumber.setText(data.getInvoiceNumber());
-        invoiceLayout.setOnClickListener(onInvoiceClickedListener(data));
+        invoiceLayout.setOnClickListener(onInvoiceClickedListener(data, getExtraUserMode() == SELLER_MODE));
     }
 
     private void setDescriptionView(OrderDetailData data) {
@@ -366,7 +452,9 @@ public class OrderDetailActivity extends TActivity
     private void setShopInfo(OrderDetailData data) {
         ViewGroup descriptionSellerLayout = findViewById(R.id.seller_description_layout);
         TextView descriptionShopName = findViewById(R.id.description_shop_name);
-        descriptionShopName.setText(data.getShopName());
+        descriptionShopName.setText(
+                MethodChecker.fromHtml(data.getShopName())
+        );
         descriptionSellerLayout.setVisibility(View.VISIBLE);
     }
 
@@ -495,18 +583,22 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void goToProductInfo(ProductPass productPass) {
-        Intent intent = ProductDetailRouter
-                .createInstanceProductDetailInfoActivity(this, productPass);
+        Intent intent = getProductIntent(productPass.getProductId());
         startActivity(intent);
+
+    }
+
+    private Intent getProductIntent(String productId){
+        return RouteManager.getIntent(this,ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
     }
 
     @Override
     public void trackShipment(String orderId, String trackingUrl) {
         String routingAppLink;
-        routingAppLink = ApplinkConst.ORDER_TRACKING;
+        routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", orderId);
+
         Uri.Builder uriBuilder = new Uri.Builder();
-        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_ORDER_ID, orderId)
-                .appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
+        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
         routingAppLink += uriBuilder.toString();
         RouteManager.route(this, routingAppLink);
     }
@@ -637,7 +729,6 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onChangeCourier(OrderDetailData data) {
-        //TODO Check Again Later
         Intent intent = ConfirmShippingActivity.createChangeCourierInstance(this, data);
         startActivityForResult(intent, CONFIRM_SHIPMENT_REQUEST_CODE);
     }
@@ -716,6 +807,11 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
+    public void showSnackbarWithCloseButton(String errorMessage) {
+        NetworkErrorHelper.showCloseSnackbar(this, errorMessage);
+    }
+
+    @Override
     public void dismissSellerActionFragment() {
         //Alternative 1 refresh activity
         /*getFragmentManager().beginTransaction()
@@ -774,6 +870,25 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
+    public void onSuccessBuyAgain(String message, OrderDetailData data) {
+        showSnackbar(message);
+        orderDetailAnalytics.sendAnalyticBuyAgain(data);
+    }
+
+    @Override
+    public boolean isToggleBuyAgainOn() {
+        if (getApplication() instanceof ITransactionOrderDetailRouter) {
+            return  ((ITransactionOrderDetailRouter) getApplication()).isToggleBuyAgainOn();
+        }
+        return true;
+    }
+
+    @Override
+    public void onErrorBuyAgain(Throwable e) {
+        showSnackbarWithCloseButton(ErrorHandler.getErrorMessage(this, e));
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CONFIRM_SHIPMENT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
@@ -796,11 +911,11 @@ public class OrderDetailActivity extends TActivity
         presenter.onDestroyed();
     }
 
-    private View.OnClickListener onInvoiceClickedListener(final OrderDetailData data) {
+    private View.OnClickListener onInvoiceClickedListener(final OrderDetailData data, final boolean seller) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.processInvoice(OrderDetailActivity.this, data);
+                presenter.processInvoice(OrderDetailActivity.this, data, seller);
             }
         };
     }

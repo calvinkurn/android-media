@@ -1,13 +1,12 @@
 package com.tokopedia.events.view.contractor;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.support.v4.app.Fragment;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.events.view.adapter.AddTicketAdapter;
+import com.tokopedia.events.view.fragment.FragmentAddTickets;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
+import com.tokopedia.events.view.viewmodel.LocationDateModel;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SchedulesViewModel;
 
@@ -19,32 +18,17 @@ import java.util.List;
 
 public class EventBookTicketContract {
 
-    public interface EventBookTicketView extends CustomerView {
-        void showMessage(String message);
-
-        Activity getActivity();
-
-        void navigateToActivityRequest(Intent intent, int requestCode);
+    public interface EventBookTicketView extends EventBaseContract.EventBaseView {
 
         void renderFromDetails(EventsDetailsViewModel homedata);
-
-        RequestParams getParams();
-
-        void setHolder(int resID, String label, ImageTextViewHolder holder);
 
         void showPayButton(int ticketQuantity, int price, String type);
 
         void hidePayButton();
 
-        void showProgressBar();
-
-        void hideProgressBar();
-
         void renderSeatmap(String url);
 
         void hideSeatmap();
-
-        android.view.View getRootView();
 
         int getButtonLayoutHeight();
 
@@ -53,21 +37,24 @@ public class EventBookTicketContract {
         void setLocationDate(String location, String date, SchedulesViewModel datas);
     }
 
-    public interface Presenter extends CustomerPresenter<EventBookTicketContract.EventBookTicketView> {
-
-        void initialize();
-
-        void onDestroy();
-
-
-        void getTicketDetails();
+    public interface BookTicketPresenter extends EventBaseContract.EventBasePresenter {
 
         void validateSelection();
 
-        void onActivityResult(int requestCode);
-
         void payTicketsClick(String title);
 
-        public String getSCREEN_NAME();
+        String getSCREEN_NAME();
+
+        List<LocationDateModel> getLocationDateModels();
+
+        void onClickLocationDate(LocationDateModel model, int index);
+
+        void addTickets(int index, PackageViewModel packageVM, AddTicketAdapter.TicketViewHolder ticketViewHolder);
+
+        void removeTickets();
+
+        void resetViewHolders();
+
+        void setChildFragment(FragmentAddTickets fragment);
     }
 }

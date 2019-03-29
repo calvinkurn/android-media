@@ -130,6 +130,41 @@ public class VerificationViewModel implements Parcelable {
         return canUseOtherMethod;
     }
 
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setOtpType(int otpType) {
+        this.otpType = otpType;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void setAppScreen(String appScreen) {
+        this.appScreen = appScreen;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
+    public void setIconResId(int iconResId) {
+        this.iconResId = iconResId;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setCanUseOtherMethod(boolean canUseOtherMethod) {
+        this.canUseOtherMethod = canUseOtherMethod;
+    }
 
     @Override
     public int describeContents() {

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="merchant_scallop_position_left_weight">6</integer>
+    <integer name="merchant_scallop_position_right_weight">4</integer>
+</resources>

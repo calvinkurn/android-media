@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="line_chart_height">200dp</dimen>
+    <dimen name="viewpager_statistics_height">250dp</dimen>
+</resources>

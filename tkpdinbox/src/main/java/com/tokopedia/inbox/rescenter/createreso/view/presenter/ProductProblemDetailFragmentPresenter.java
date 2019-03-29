@@ -2,9 +2,10 @@ package com.tokopedia.inbox.rescenter.createreso.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemDetailFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemDetailFragmentListener;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusInfoViewModel;
@@ -22,15 +23,15 @@ import java.util.List;
  */
 
 public class ProductProblemDetailFragmentPresenter
-        extends BaseDaggerPresenter<ProductProblemDetailFragment.View>
-        implements ProductProblemDetailFragment.Presenter {
+        extends BaseDaggerPresenter<ProductProblemDetailFragmentListener.View>
+        implements ProductProblemDetailFragmentListener.Presenter {
 
     public static final int RESULT_SAVE = 2001;
     public static final int RESULT_SAVE_AND_CHOOSE_OTHER = 2002;
 
     private Context context;
-    private ProductProblemDetailFragment.View mainView;
-    private ProblemResult problemResult;
+    private ProductProblemDetailFragmentListener.View mainView;
+    private ComplaintResult complaintResult;
     private ProductProblemViewModel productProblemViewModel;
     private HashMap<String, Integer> troubleHashMap = new HashMap<>();
     private int currentTroublePos = 0;
@@ -38,29 +39,30 @@ public class ProductProblemDetailFragmentPresenter
 
     public ProductProblemDetailFragmentPresenter(Context context) {
         this.context = context;
-        problemResult = new ProblemResult();
+        complaintResult = new ComplaintResult();
     }
 
     @Override
-    public void attachView(ProductProblemDetailFragment.View view) {
+    public void attachView(ProductProblemDetailFragmentListener.View view) {
         this.mainView = view;
         super.attachView(view);
     }
 
     @Override
-    public void populateData(ProductProblemViewModel productProblemViewModel, ProblemResult problemResult) {
+    public void populateData(ProductProblemViewModel productProblemViewModel, ComplaintResult complaintResult) {
         this.productProblemViewModel = productProblemViewModel;
-        if (problemResult != null) {
-            updateProblemResult(problemResult);
+        if (complaintResult != null) {
+            updateProblemResult(complaintResult);
         } else {
             initProblemResult(productProblemViewModel);
         }
         mainView.populateDataToScreen(productProblemViewModel);
     }
 
-    public void updateProblemResult(ProblemResult problemResult) {
+    private void updateProblemResult(ComplaintResult complaintResult) {
+        this.complaintResult = complaintResult;
+        ProblemResult problemResult = complaintResult.problem;
         isEditData = true;
-        this.problemResult = problemResult;
         currentTroublePos = problemResult.trouble;
         mainView.updateArriveStatusButton(problemResult.isDelivered, problemResult.canShowInfo);
         mainView.updatePlusMinusButton(problemResult.quantity,
@@ -70,35 +72,36 @@ public class ProductProblemDetailFragmentPresenter
 
     }
 
-    public void initProblemResult(ProductProblemViewModel productProblemViewModel) {
-        problemResult.type = productProblemViewModel.getProblem().getType();
-        problemResult.isDelivered = true;
+    private void initProblemResult(ProductProblemViewModel productProblemViewModel) {
+        complaintResult.problem.type = productProblemViewModel.getProblem().getType();
+        complaintResult.problem.isDelivered = true;
         //init with first trouble item of delivered status
-        updateSpinner(problemResult.isDelivered);
+        updateSpinner(complaintResult.problem.isDelivered);
         getCanShowNotArrived();
-        problemResult.trouble = 0;
-        problemResult.remark = "";
-        problemResult.id = productProblemViewModel.getOrder().getDetail().getId();
-        problemResult.quantity = productProblemViewModel.getOrder().getProduct().getQuantity();
-        problemResult.name = productProblemViewModel.getProblem().getName();
-        problemResult.order.detail.id = productProblemViewModel.getOrder().getDetail().getId();
-        mainView.updateArriveStatusButton(problemResult.isDelivered, problemResult.canShowInfo);
-        mainView.updatePlusMinusButton(problemResult.quantity,
+        complaintResult.problem.trouble = 0;
+        complaintResult.problem.remark = "";
+        complaintResult.problem.amount = 0;
+        complaintResult.problem.id = productProblemViewModel.getOrder().getDetail().getId();
+        complaintResult.problem.quantity = productProblemViewModel.getOrder().getProduct().getQuantity();
+        complaintResult.problem.name = productProblemViewModel.getProblem().getName();
+        complaintResult.order.detail.id = productProblemViewModel.getOrder().getDetail().getId();
+        mainView.updateArriveStatusButton(complaintResult.problem.isDelivered, complaintResult.problem.canShowInfo);
+        mainView.updatePlusMinusButton(complaintResult.problem.quantity,
                 productProblemViewModel.getOrder().getProduct().getQuantity());
     }
 
     @Override
     public void btnArrivedClicked() {
-        problemResult.isDelivered = true;
+        complaintResult.problem.isDelivered = true;
         updateSpinner(true);
-        mainView.updateArriveStatusButton(problemResult.isDelivered, problemResult.canShowInfo);
+        mainView.updateArriveStatusButton(complaintResult.problem.isDelivered, complaintResult.problem.canShowInfo);
     }
 
     @Override
     public void btnNotArrivedClicked() {
-        problemResult.isDelivered = false;
+        complaintResult.problem.isDelivered = false;
         updateSpinner(false);
-        mainView.updateArriveStatusButton(problemResult.isDelivered, problemResult.canShowInfo);
+        mainView.updateArriveStatusButton(complaintResult.problem.isDelivered, complaintResult.problem.canShowInfo);
     }
 
 
@@ -125,27 +128,27 @@ public class ProductProblemDetailFragmentPresenter
                     troubleStringArray[i] = statusTroubleViewModel.getName();
                     i++;
                 }
-                problemResult.trouble = statusViewModel.getTrouble().get(0).getId();
+                complaintResult.problem.trouble = statusViewModel.getTrouble().get(0).getId();
                 if (!isEditData && isDelivered) {
-                    problemResult.trouble = 0;
+                    complaintResult.problem.trouble = 0;
                 }
                 mainView.populateReasonSpinner(troubleStringArray, pos);
             }
         }
     }
 
-    public void getCanShowNotArrived() {
+    private void getCanShowNotArrived() {
         for (StatusViewModel statusViewModel : productProblemViewModel.getStatusList()) {
             if (!statusViewModel.isDelivered()) {
                 StatusInfoViewModel statusInfoViewModel = statusViewModel.getInfo();
-                problemResult.canShowInfo = statusInfoViewModel.isShow();
+                complaintResult.problem.canShowInfo = statusInfoViewModel.isShow();
             }
         }
     }
 
     @Override
     public void updateTroubleValue(String trouble) {
-        problemResult.trouble = troubleHashMap.get(trouble);
+        complaintResult.problem.trouble = troubleHashMap.get(trouble);
         validateMainButton();
     }
 
@@ -153,9 +156,9 @@ public class ProductProblemDetailFragmentPresenter
     public void updateComplainReason(String reason) {
         if (reason.length() < 30) {
             mainView.updateComplainReasonView(false, context.getResources().getString(R.string.string_min_30_char));
-            problemResult.remark = "";
+            complaintResult.problem.remark = "";
         } else {
-            problemResult.remark = reason;
+            complaintResult.problem.remark = reason;
             mainView.updateComplainReasonView(true, "");
         }
         validateMainButton();
@@ -176,19 +179,19 @@ public class ProductProblemDetailFragmentPresenter
         updatePlusMinusView(-1);
     }
 
-    public void updatePlusMinusView(int diff) {
-        problemResult.quantity += diff;
-        mainView.updatePlusMinusButton(problemResult.quantity,
+    private void updatePlusMinusView(int diff) {
+        complaintResult.problem.quantity += diff;
+        mainView.updatePlusMinusButton(complaintResult.problem.quantity,
                 productProblemViewModel.getOrder().getProduct().getQuantity());
     }
 
-    public void validateMainButton() {
-        mainView.updateBottomMainButton(problemResult.trouble != 0 && !problemResult.remark.equals(""));
+    private void validateMainButton() {
+        mainView.updateBottomMainButton(complaintResult.problem.trouble != 0 && !complaintResult.problem.remark.equals(""));
     }
 
     @Override
     public void btnSaveClicked(boolean isSaveAndChooseOtherButton) {
-        mainView.saveData(problemResult, isSaveAndChooseOtherButton ?
+        mainView.saveData(complaintResult, isSaveAndChooseOtherButton ?
                 RESULT_SAVE_AND_CHOOSE_OTHER :
                 RESULT_SAVE);
     }
@@ -219,6 +222,6 @@ public class ProductProblemDetailFragmentPresenter
 
     @Override
     public void onDisableInfoView() {
-        problemResult.canShowInfo = false;
+        complaintResult.problem.canShowInfo = false;
     }
 }

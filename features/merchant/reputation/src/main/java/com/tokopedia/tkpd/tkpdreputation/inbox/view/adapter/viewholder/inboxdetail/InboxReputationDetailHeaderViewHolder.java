@@ -10,8 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.reputation.UserReputationView;
@@ -45,7 +45,6 @@ public class InboxReputationDetailHeaderViewHolder extends
     TextView promptMessage;
     View favoriteButton;
     TextView favoriteText;
-    ImageView favoriteIcon;
     TextView changeButton;
     RecyclerView smiley;
     TextView opponentSmileyText;
@@ -72,7 +71,6 @@ public class InboxReputationDetailHeaderViewHolder extends
         promptMessage = (TextView) itemView.findViewById(R.id.prompt_text);
         favoriteButton = itemView.findViewById(R.id.favorite_button);
         favoriteText = (TextView) itemView.findViewById(R.id.favorite_text);
-        favoriteIcon = (ImageView) itemView.findViewById(R.id.favorite_icon);
         changeButton = (TextView) itemView.findViewById(R.id.change_button);
         smiley = (RecyclerView) itemView.findViewById(R.id.smiley);
         opponentSmileyText = (TextView) itemView.findViewById(R.id.opponent_smiley_text);
@@ -88,7 +86,7 @@ public class InboxReputationDetailHeaderViewHolder extends
 
     @Override
     public void bind(final InboxReputationDetailHeaderViewModel element) {
-        ImageHandler.LoadImage(userAvatar, element.getAvatarImage());
+        ImageHandler.loadImageCircle2(userAvatar.getContext(), userAvatar, element.getAvatarImage());
         userAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -194,14 +192,12 @@ public class InboxReputationDetailHeaderViewHolder extends
         if (revieweeBadgeSellerViewModel.getIsFavorited() == 1) {
             MethodChecker.setBackground(favoriteButton, MethodChecker.getDrawable(favoriteButton
                     .getContext(), R.drawable.white_button_rounded));
-            ImageHandler.loadImageWithIdWithoutPlaceholder(favoriteIcon, R.drawable.ic_done_24dp);
             favoriteText.setTextColor(MethodChecker.getColor(favoriteText.getContext(), R.color
                     .grey_500));
             favoriteText.setText(R.string.already_favorite);
         } else {
             MethodChecker.setBackground(favoriteButton, MethodChecker.getDrawable(favoriteButton
                     .getContext(), R.drawable.green_button_rounded));
-            ImageHandler.loadImageWithIdWithoutPlaceholder(favoriteIcon, R.drawable.ic_new_action_plus);
             favoriteText.setTextColor(MethodChecker.getColor(favoriteText.getContext(), R.color
                     .white));
             favoriteText.setText(R.string.favorite_button);

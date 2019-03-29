@@ -33,9 +33,14 @@ public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
     public static final int OTP_TYPE_SECURITY_QUESTION = 13;
     public static final int OTP_TYPE_PHONE_NUMBER_VERIFICATION = 11;
     public static final int OTP_TYPE_CHANGE_PHONE_NUMBER = 20;
+    public static final int OTP_TYPE_LOGIN_PHONE_NUMBER = 112;
     public static final int OTP_TYPE_REGISTER_PHONE_NUMBER = 116;
     public static final int OTP_TYPE_CHECKOUT_DIGITAL = 16;
+    public static final int OTP_TYPE_ADD_BANK_ACCOUNT = 12;
     public static final int OTP_TYPE_VERIFY_USER_CHANGE_PHONE_NUMBER = 200;
+    public static final int OTP_TYPE_VERIFY_AUTH_CREDIT_CARD = 122;
+    public static final int OTP_TYPE_TOKOCASH = -1;
+
     private static final String TYPE_ANDROID = "1";
 
     private final OtpSource otpSource;

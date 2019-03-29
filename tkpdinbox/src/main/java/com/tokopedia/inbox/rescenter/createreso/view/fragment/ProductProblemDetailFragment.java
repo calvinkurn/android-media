@@ -2,9 +2,10 @@ package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,15 +21,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemDetailFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemDetailFragmentPresenter;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 import com.tokopedia.inbox.rescenter.utils.TimeTickerUtil;
 
@@ -36,7 +38,8 @@ import com.tokopedia.inbox.rescenter.utils.TimeTickerUtil;
  * Created by yoasfs on 21/08/17.
  */
 
-public class ProductProblemDetailFragment extends BaseDaggerFragment implements com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemDetailFragment.View {
+public class ProductProblemDetailFragment extends BaseDaggerFragment implements
+        ProductProblemDetailFragmentListener.View {
 
     public static final String PRODUCT_PROBLEM_DATA = "product_problem_data";
     public static final String PROBLEM_RESULT_DATA = "problem_result_data";
@@ -45,7 +48,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     public static final int FREE_RETURN = 3;
 
     ProductProblemViewModel productProblemViewModel;
-    ProblemResult problemResult;
+    ComplaintResult complaintResult;
 
     ImageView ivProductImage, btnInfo, btnPlus, btnMinus;
     TextView tvProductName, tvProductPrice, tvQty, tvStatus;
@@ -62,11 +65,11 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     ProductProblemDetailFragmentPresenter presenter;
     Dialog dialog;
 
-    public static ProductProblemDetailFragment newInstance(ProductProblemViewModel productProblemViewModel, ProblemResult problemResult) {
+    public static ProductProblemDetailFragment newInstance(ProductProblemViewModel productProblemViewModel, ComplaintResult complaintResult) {
         ProductProblemDetailFragment fragment = new ProductProblemDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(PRODUCT_PROBLEM_DATA, productProblemViewModel);
-        bundle.putParcelable(PROBLEM_RESULT_DATA, problemResult);
+        bundle.putParcelable(PROBLEM_RESULT_DATA, complaintResult);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -77,47 +80,8 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        presenter = new ProductProblemDetailFragmentPresenter(getActivity());
-        presenter.attachView(this);
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-        productProblemViewModel = arguments.getParcelable(PRODUCT_PROBLEM_DATA);
-        problemResult = arguments.getParcelable(PROBLEM_RESULT_DATA);
-
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_product_problem_detail;
-    }
-
-    @Override
-    protected void initView(View view) {
-        setupUI(view);
+        View view = inflater.inflate(R.layout.fragment_product_problem_detail, container, false);
         ivProductImage = (ImageView) view.findViewById(R.id.iv_product_image);
         tvProductName = (TextView) view.findViewById(R.id.tv_product_name);
         tvProductPrice = (TextView) view.findViewById(R.id.tv_product_price);
@@ -136,43 +100,44 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
         llFreeReturn = (LinearLayout) view.findViewById(R.id.ll_free_return);
         llButton = (LinearLayout) view.findViewById(R.id.ll_button);
         tvStatus = (TextView) view.findViewById(R.id.tv_status);
-
-        stvProblem.setHint(getActivity().getResources().getString(R.string.string_choose_problem));
-        tilComplainReason.setHint(getActivity().getResources().getString(R.string.string_complain_reason));
-
-        buttonDisabled(btnSaveAndChooseOther);
-        buttonDisabled(btnSave);
-        if (problemResult != null) {
-            buttonBottomSelected(btnSaveAndChooseOther);
-            buttonCanSelected(btnSave);
-        }
-
-        presenter.populateData(productProblemViewModel, problemResult);
-
+        presenter = new ProductProblemDetailFragmentPresenter(getActivity());
+        presenter.attachView(this);
+        return view;
     }
 
     @Override
-    protected void setViewListener() {
-        btnArrived.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.btnArrivedClicked();
-            }
-        });
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setupArguments(getArguments());
+        initView();
+        setViewListener();
+    }
 
-        btnNotArrived.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.btnNotArrivedClicked();
-            }
-        });
+    private void setupArguments(Bundle arguments) {
+        productProblemViewModel = arguments.getParcelable(PRODUCT_PROBLEM_DATA);
+        complaintResult = arguments.getParcelable(PROBLEM_RESULT_DATA);
 
-        stvProblem.setOnItemChangeListener(new SpinnerTextView.OnItemChangeListener() {
-            @Override
-            public void onItemChanged(int position, String entry, String value) {
-                presenter.updateTroubleValue(value);
-            }
-        });
+    }
+
+    private void initView() {
+        stvProblem.setHint(getActivity().getResources().getString(R.string.string_choose_problem));
+        tilComplainReason.setHint(getActivity().getResources().getString(R.string.string_complain_reason));
+        buttonDisabled(btnSaveAndChooseOther);
+        buttonDisabled(btnSave);
+        if (complaintResult != null) {
+            buttonBottomSelected(btnSaveAndChooseOther);
+            buttonCanSelected(btnSave);
+        }
+        presenter.populateData(productProblemViewModel, complaintResult);
+
+    }
+
+    private void setViewListener() {
+        btnArrived.setOnClickListener(view -> presenter.btnArrivedClicked());
+
+        btnNotArrived.setOnClickListener(view -> presenter.btnNotArrivedClicked());
+
+        stvProblem.setOnItemChangeListener((position, entry, value) -> presenter.updateTroubleValue(value));
 
         etComplainReason.addTextChangedListener(new TextWatcher() {
             @Override
@@ -191,49 +156,23 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
             }
         });
 
-        btnPlus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.increaseQty();
-            }
+        btnPlus.setOnClickListener(view -> presenter.increaseQty());
+
+        btnMinus.setOnClickListener(view -> presenter.decreaseQty());
+
+        btnSave.setOnClickListener(view -> {
+            presenter.btnSaveClicked(false);
+            UnifyTracking.eventCreateResoStep1Save(getActivity());
         });
 
-        btnMinus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.decreaseQty();
-            }
+        btnSaveAndChooseOther.setOnClickListener(view -> {
+            presenter.btnSaveClicked(true);
+            UnifyTracking.eventCreateResoStep1SaveAndChooseOther(getActivity());
         });
 
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.btnSaveClicked(false);
-                UnifyTracking.eventCreateResoStep1Save();
-            }
-        });
+        btnCancel.setOnClickListener(view -> getActivity().finish());
 
-        btnSaveAndChooseOther.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.btnSaveClicked(true);
-                UnifyTracking.eventCreateResoStep1SaveAndChooseOther();
-            }
-        });
-
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().finish();
-            }
-        });
-
-        btnInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.btnInfoClicked();
-            }
-        });
+        btnInfo.setOnClickListener(view -> presenter.btnInfoClicked());
     }
 
     @Override
@@ -283,14 +222,14 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
         button.setClickable(true);
         button.setEnabled(true);
         button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_disable1));
-        button.setTextColor(MethodChecker.getColor(context, R.color.green_btn));
+        button.setTextColor(MethodChecker.getColor(getActivity(), R.color.green_btn));
     }
 
     public void buttonSelected(Button button) {
         button.setClickable(false);
         button.setEnabled(false);
         button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_enable));
-        button.setTextColor(MethodChecker.getColor(context, R.color.white));
+        button.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
     }
 
     public void buttonBottomSelected(Button button) {
@@ -335,16 +274,16 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     public void updatePlusMinusButton(int currentValue, int maxValue) {
         tvQty.setText(String.valueOf(currentValue));
         btnPlus.setEnabled(true);
-        btnPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_plus_enable));
+        btnPlus.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_plus_enable));
         btnMinus.setEnabled(true);
-        btnMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_minus_enable));
+        btnMinus.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_minus_enable));
         if (currentValue == 1) {
             btnMinus.setEnabled(false);
-            btnMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_minus_disable));
+            btnMinus.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_minus_disable));
         }
         if (currentValue == maxValue) {
             btnPlus.setEnabled(false);
-            btnPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_plus_disable));
+            btnPlus.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_plus_disable));
         }
     }
 
@@ -373,29 +312,14 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
                 setProductAlreadyArrive();
             }
             tvCourierInfo.setText(
-                    context.getResources().getString(R.string.string_shipping_name)
+                    getActivity().getResources().getString(R.string.string_shipping_name)
                             .replace(
-                                    context.getResources().getString(R.string.string_shipping_name_identifier),
+                                    getActivity().getResources().getString(R.string.string_shipping_name_identifier),
                                     shippingName));
-            btnClose.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dialog.dismiss();
-                }
-            });
+            btnClose.setOnClickListener(view -> dialog.dismiss());
 
-            ivClose.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dialog.dismiss();
-                }
-            });
-            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    timeTickerUtil.destroy();
-                }
-            });
+            ivClose.setOnClickListener(view -> dialog.dismiss());
+            dialog.setOnDismissListener(dialog -> timeTickerUtil.destroy());
 
             dialog.show();
         } else if (MethodChecker.isTimezoneNotAutomatic()) {
@@ -430,9 +354,10 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     }
 
     @Override
-    public void saveData(ProblemResult problemResult, int resultStepCode) {
+    public void saveData(ComplaintResult complaintResult, int resultStepCode) {
         Intent output = new Intent();
-        output.putExtra(RESULT_DATA, problemResult);
+        complaintResult.problem.amount = 0;
+        output.putExtra(RESULT_DATA, complaintResult);
         output.putExtra(RESULT_STEP_CODE, resultStepCode);
         getActivity().setResult(Activity.RESULT_OK, output);
         getActivity().finish();

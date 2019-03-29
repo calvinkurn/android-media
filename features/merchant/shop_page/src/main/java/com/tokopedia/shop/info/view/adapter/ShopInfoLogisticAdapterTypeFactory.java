@@ -15,12 +15,12 @@ public class ShopInfoLogisticAdapterTypeFactory extends BaseAdapterTypeFactory i
 
     @Override
     public int type(ShopInfoLogisticViewModel viewModel) {
-        return ShopInfoLogisticViewHolder.LAYOUT;
+        return ShopInfoLogisticViewHolder.getLAYOUT();
     }
 
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
-        if (type == ShopInfoLogisticViewHolder.LAYOUT) {
+        if (type == ShopInfoLogisticViewHolder.getLAYOUT()) {
             return new ShopInfoLogisticViewHolder(parent);
         } else {
             return super.createViewHolder(parent, type);

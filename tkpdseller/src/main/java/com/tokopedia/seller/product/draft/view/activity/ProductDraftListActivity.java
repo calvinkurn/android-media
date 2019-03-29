@@ -7,59 +7,52 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.instoped.model.InstagramMediaModel;
+import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
+import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAddActivity;
+import com.tokopedia.seller.product.draft.view.model.InstagramMediaModel;
 import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftSaveBulkComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftSaveBulkModule;
 import com.tokopedia.seller.product.draft.view.fragment.ProductDraftListFragment;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftSaveBulkView;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftSaveBulkPresenter;
 import com.tokopedia.seller.product.draft.view.presenter.ResolutionImageException;
-import com.tokopedia.seller.product.edit.view.activity.ProductDraftAddActivity;
-import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-/**
- * Created by User on 6/19/2017.
- */
-
-public class ProductDraftListActivity extends DrawerPresenterActivity
+@DeepLink(ApplinkConst.PRODUCT_DRAFT)
+public class ProductDraftListActivity extends BaseTemporaryDrawerActivity
         implements HasComponent<ProductComponent>, ProductDraftSaveBulkView,
         ProductDraftListFragment.OnProductDraftListFragmentListener {
     public static final String TAG = ProductDraftListActivity.class.getSimpleName();
+
+    public static final boolean DEFAULT_NEED_COMPRESS_TKPD = true;
 
     private static final String INSTAGRAM_MEDIA_LIST = "insta_media_list";
     private static final String LOCAL_PATH_IMAGE_LIST = "loca_img_list";
     private static final String DESC_IMAGE_LIST = "desc_img_list";
     private static final String HAS_SAVED_INSTA_TO_DRAFT = "saved_insta_to_draft";
-
+    @Inject
+    ProductDraftSaveBulkPresenter productDraftSaveBulkPresenter;
     private TkpdProgressDialog progressDialog;
     private boolean hasSaveInstagramToDraft;
 
-    @Inject
-    ProductDraftSaveBulkPresenter productDraftSaveBulkPresenter;
-
     public static void startInstagramSaveBulkFromLocal(Context context, ArrayList<String> instagramLocalPaths, ArrayList<String> instagramDescList) {
         Intent intent = createInstanceFromLocalPaths(context, instagramLocalPaths, instagramDescList);
-        context.startActivity(intent);
-    }
-
-    public static void startInstagramSaveBulk(Context context, ArrayList<InstagramMediaModel> instagramMediaModelList) {
-        Intent intent = createInstance(context, instagramMediaModelList);
         context.startActivity(intent);
     }
 
@@ -105,7 +98,7 @@ public class ProductDraftListActivity extends DrawerPresenterActivity
                 }
                 ImageDownloadHelper imageDownloadHelper = new ImageDownloadHelper(this);
                 imageDownloadHelper.convertHttpPathToLocalPath(standardResoImageUrlList,
-                        ProductManageSellerFragment.DEFAULT_NEED_COMPRESS_TKPD,
+                        DEFAULT_NEED_COMPRESS_TKPD,
                         new ImageDownloadHelper.OnImageDownloadListener() {
                             @Override
                             public void onError(Throwable e) {
@@ -245,7 +238,7 @@ public class ProductDraftListActivity extends DrawerPresenterActivity
         hideProgressDialog();
         hasSaveInstagramToDraft = true;
         if (draftProductIdList.size() == 1) {
-            ProductDraftAddActivity.start(this, draftProductIdList.get(0));
+            startActivity(ProductDraftAddActivity.Companion.createInstance(this, draftProductIdList.get(0)));
         } else {
             CommonUtils.UniversalToast(this, getString(R.string.product_draft_instagram_save_success,
                     draftProductIdList.size()));

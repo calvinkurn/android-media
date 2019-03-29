@@ -1,22 +1,24 @@
 package com.tokopedia.digital.categorylist.view.activity;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.digital.R;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryListFragment;
+
+import static com.tokopedia.digital.applink.DigitalApplinkConstant.DIGITAL;
+import static com.tokopedia.digital.applink.DigitalApplinkConstant.DIGITAL_CATEGORY;
+import static com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryListFragment.PARAM_IS_COUPON_ACTIVE;
 
 /**
  * @author anggaprasetiyo on 7/3/17.
  */
 
-public class DigitalCategoryListActivity extends BasePresenterActivity {
+public class DigitalCategoryListActivity extends BaseSimpleActivity {
+
+    public static final String KEY_IS_COUPON_APPLIED_APPLINK = "is_coupon_applied";
 
     @Override
     public String getScreenName() {
@@ -24,13 +26,30 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
     }
 
     @SuppressWarnings("unused")
-    @DeepLink({Constants.Applinks.DIGITAL_CATEGORY, Constants.Applinks.DIGITAL})
+    @DeepLink({DIGITAL_CATEGORY, DIGITAL})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
-        return DigitalCategoryListActivity.newInstance(context);
+        int isCouponApplied = 0;
+        if (extras.containsKey(KEY_IS_COUPON_APPLIED_APPLINK)) {
+            isCouponApplied = Integer.parseInt(extras.getString(KEY_IS_COUPON_APPLIED_APPLINK));
+        }
+        return DigitalCategoryListActivity.newInstance(context, isCouponApplied);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        unregisterShake();
     }
 
     public static Intent newInstance(Context context) {
         return new Intent(context, DigitalCategoryListActivity.class);
+    }
+
+    public static Intent newInstance(Context context, int isCouponApplied) {
+        Intent intent = new Intent(context, DigitalCategoryListActivity.class);
+        intent.putExtra(PARAM_IS_COUPON_ACTIVE, isCouponApplied);
+        return intent;
     }
 
     public static Intent newInstance(Context context, Bundle bundle) {
@@ -45,60 +64,21 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
     }
 
     @Override
-    protected void setupURIPass(Uri data) {
+    protected android.support.v4.app.Fragment getNewFragment() {
+        DigitalCategoryListFragment digitalCategoryListFragment = DigitalCategoryListFragment.newInstance();
 
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_digital_category_list_digital_module;
-    }
-
-    @Override
-    protected void initView() {
-
-    }
-
-    @Override
-    protected void setViewListener() {
-        Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
-        if (fragment == null || !(fragment instanceof DigitalCategoryListFragment)) {
-            DigitalCategoryListFragment digitalCategoryListFragment;
-
-
-            if (getIntent() != null) {
-                boolean isFromAppShortCut = getIntent().getBooleanExtra(Constants.FROM_APP_SHORTCUTS, false);
+        if (getIntent() != null) {
+            if (getIntent().hasExtra(DigitalCategoryListFragment.FROM_APP_SHORTCUTS)) {
+                boolean isFromAppShortCut = getIntent().getBooleanExtra(DigitalCategoryListFragment.FROM_APP_SHORTCUTS, false);
                 digitalCategoryListFragment = DigitalCategoryListFragment.newInstance(isFromAppShortCut);
-            } else {
-                digitalCategoryListFragment = DigitalCategoryListFragment.newInstance();
             }
 
-            getFragmentManager().beginTransaction().replace(R.id.container,
-                    digitalCategoryListFragment).commit();
+            if (getIntent().hasExtra(PARAM_IS_COUPON_ACTIVE)) {
+                digitalCategoryListFragment = DigitalCategoryListFragment.newInstance(
+                        getIntent().getIntExtra(PARAM_IS_COUPON_ACTIVE, 0)
+                );
+            }
         }
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
+        return digitalCategoryListFragment;
     }
 }

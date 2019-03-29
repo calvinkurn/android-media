@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
@@ -14,7 +13,7 @@ import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.note.di.component.DaggerShopNoteComponent;
 import com.tokopedia.shop.note.di.module.ShopNoteModule;
 import com.tokopedia.shop.note.view.activity.ShopNoteDetailActivity;
-import com.tokopedia.shop.note.view.adapter.ShopNoteAdapterTypeFactory;
+import com.tokopedia.shop.note.view.adapter.OldShopNoteAdapterTypeFactory;
 import com.tokopedia.shop.note.view.listener.ShopNoteListView;
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel;
 import com.tokopedia.shop.note.view.presenter.ShopNoteListPresenter;
@@ -25,7 +24,7 @@ import javax.inject.Inject;
  * Created by nathan on 2/5/18.
  */
 
-public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, ShopNoteAdapterTypeFactory> implements ShopNoteListView, EmptyViewHolder.Callback {
+public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, OldShopNoteAdapterTypeFactory> implements ShopNoteListView, EmptyViewHolder.Callback {
 
     public static ShopNoteListFragment createInstance() {
         ShopNoteListFragment shopNoteListFragment = new ShopNoteListFragment();
@@ -34,8 +33,7 @@ public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, Sh
 
     @Inject
     ShopNoteListPresenter shopNoteListPresenter;
-    @Inject
-    ShopPageTracking shopPageTracking;
+
     private ShopInfo shopInfo;
 
     @Override
@@ -45,8 +43,8 @@ public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, Sh
     }
 
     @Override
-    protected ShopNoteAdapterTypeFactory getAdapterTypeFactory() {
-        return new ShopNoteAdapterTypeFactory(this);
+    protected OldShopNoteAdapterTypeFactory getAdapterTypeFactory() {
+        return new OldShopNoteAdapterTypeFactory(this);
     }
 
     @Override
@@ -76,10 +74,6 @@ public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, Sh
 
     @Override
     public void onItemClicked(ShopNoteViewModel shopNoteViewModel) {
-        if(shopInfo != null) {
-            shopPageTracking.eventClickNoteList(shopNoteViewModel.getPosition(), shopInfo.getInfo().getShopId(),
-                    shopNoteListPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
-        }
         startActivity(ShopNoteDetailActivity.createIntent(getActivity(), Long.toString(shopNoteViewModel.getShopNoteId())));
     }
 
@@ -90,10 +84,6 @@ public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, Sh
 
     @Override
     public void onEmptyButtonClicked() {
-        if(shopInfo != null) {
-            shopPageTracking.eventClickAddNote(shopInfo.getInfo().getShopId(),
-                    shopNoteListPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()));
-        }
         ((ShopModuleRouter) getActivity().getApplication()).goToEditShopNote(getActivity());
     }
 

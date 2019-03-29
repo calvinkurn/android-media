@@ -115,7 +115,7 @@ public class ReactNetworkingConfiguration {
                 this.authorizationMode = "none";
             }
             if (this.url == null) {
-                throw new RuntimeException("Url must nnot empty");
+                throw new RuntimeException("Url must not empty");
             }
             return new ReactNetworkingConfiguration(url, stringMapParams, method, encoding, stringMapHeader, authorizationMode);
         }

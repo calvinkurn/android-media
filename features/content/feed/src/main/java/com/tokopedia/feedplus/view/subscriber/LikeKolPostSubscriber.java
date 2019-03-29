@@ -1,9 +1,7 @@
 package com.tokopedia.feedplus.view.subscriber;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.feedplus.R;
-import com.tokopedia.feedplus.domain.model.LikeKolDomain;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 
 import rx.Subscriber;
@@ -12,7 +10,7 @@ import rx.Subscriber;
  * @author by nisie on 11/3/17.
  */
 
-public class LikeKolPostSubscriber extends Subscriber<LikeKolDomain> {
+public class LikeKolPostSubscriber extends Subscriber<Boolean> {
     private final FeedPlus.View view;
     private final FeedPlus.View.Kol kolListener;
     private final int rowNumber;
@@ -30,18 +28,16 @@ public class LikeKolPostSubscriber extends Subscriber<LikeKolDomain> {
 
     @Override
     public void onError(Throwable e) {
-        view.finishLoadingProgress();
-        kolListener.onErrorLikeDislikeKolPost(ErrorHandler.getErrorMessage(e));
+        kolListener.onErrorLikeDislikeKolPost(ErrorHandler.getErrorMessage(view.getContext(), e));
 
     }
 
     @Override
-    public void onNext(LikeKolDomain likeKolDomain) {
-        view.finishLoadingProgress();
-        if (likeKolDomain.isSuccess()) {
+    public void onNext(Boolean likeSuccess) {
+        if (likeSuccess) {
             kolListener.onSuccessLikeDislikeKolPost(rowNumber);
         } else {
-            kolListener.onErrorLikeDislikeKolPost(MainApplication.getAppContext().getString(R
+            kolListener.onErrorLikeDislikeKolPost(view.getContext().getString(R
                     .string.default_request_error_unknown));
         }
     }

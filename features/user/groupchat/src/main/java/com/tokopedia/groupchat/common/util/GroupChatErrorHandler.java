@@ -4,12 +4,13 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.gson.JsonSyntaxException;
-import com.sendbird.android.SendBirdException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.common.network.ErrorNetworkException;
+import com.tokopedia.vote.network.VoteErrorException;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
@@ -18,78 +19,6 @@ import java.net.UnknownHostException;
  */
 
 public class GroupChatErrorHandler {
-    private static final int ERR_INVALID_INITIALIZATION = 800100;
-    private static final int ERR_CONNECTION_REQUIRED = 800101;
-    private static final int ERR_INVALID_PARAMETER = 800110;
-    private static final int ERR_NETWORK = 800120;
-    private static final int ERR_NETWORK_ROUTING_ERROR = 800121;
-    private static final int ERR_MALFORMED_DATA = 800130;
-    private static final int ERR_MALFORMED_ERROR_DATA = 800140;
-    private static final int ERR_WRONG_CHANNEL_TYPE = 800150;
-    private static final int ERR_MARK_AS_READ_RATE_LIMIT_EXCEEDED = 800160;
-    private static final int ERR_QUERY_IN_PROGRESS = 800170;
-    private static final int ERR_ACK_TIMEOUT = 800180;
-    private static final int ERR_LOGIN_TIMEOUT = 800190;
-    private static final int ERR_WEBSOCKET_CONNECTION_CLOSED = 800200;
-    private static final int ERR_WEBSOCKET_CONNECTION_FAILED = 800210;
-    private static final int ERR_REQUEST_FAILED = 800220;
-
-    public static final int CHANNEL_NOT_FOUND = 400201;
-    public static final int USER_IS_BANNED = 900100;
-    public static final int WORD_IS_BANNED = 900060;
-    public static final int USER_SENT_SPAM = 900200;
-    public static final int CHANNEL_NOT_BELONG_TO_USER = 900020;
-
-
-    public static String getSendBirdErrorMessage(Context context, SendBirdException e, boolean withCode) {
-        switch (e.getCode()) {
-            case ERR_INVALID_INITIALIZATION:
-            case ERR_WRONG_CHANNEL_TYPE:
-            case ERR_QUERY_IN_PROGRESS:
-            case ERR_INVALID_PARAMETER:
-            case ERR_MARK_AS_READ_RATE_LIMIT_EXCEEDED:
-                return formattedString(context.getString(R.string
-                                .sendbird_error_retry),
-                        e.getCode(), withCode);
-            case ERR_CONNECTION_REQUIRED:
-            case ERR_NETWORK:
-            case ERR_WEBSOCKET_CONNECTION_CLOSED:
-            case ERR_REQUEST_FAILED:
-                return formattedString(context.getString(R.string
-                                .sendbird_error_network),
-                        e.getCode(), withCode);
-            case ERR_NETWORK_ROUTING_ERROR:
-            case ERR_MALFORMED_DATA:
-            case ERR_MALFORMED_ERROR_DATA:
-            case ERR_WEBSOCKET_CONNECTION_FAILED:
-                return formattedString(context.getString(R.string
-                                .sendbird_error_server),
-                        e.getCode(), withCode);
-            case ERR_ACK_TIMEOUT:
-            case ERR_LOGIN_TIMEOUT:
-                return formattedString(context.getString(R.string
-                                .default_request_error_timeout),
-                        e.getCode(), withCode);
-            case CHANNEL_NOT_FOUND:
-                return formattedString(context.getString(R.string.channel_not_found_message), e
-                        .getCode(), withCode);
-            case USER_IS_BANNED:
-                return formattedString(context.getString(R.string.user_is_banned),
-                        e.getCode(), withCode);
-            case WORD_IS_BANNED:
-                return formattedString(context.getString(R.string.word_is_blocked), e.getCode(),
-                        withCode);
-            case USER_SENT_SPAM:
-                return formattedString(context.getString(R.string.you_are_blocked_because_spam), e
-                        .getCode(), withCode);
-            case CHANNEL_NOT_BELONG_TO_USER:
-                return formattedString(context.getString(R.string.channel_not_belong_to_user), e
-                        .getCode(), withCode);
-            default:
-                return formattedString(context.getString(R.string.default_sendbird_error),
-                        GroupChatErrorCode.UNKNOWN, withCode);
-        }
-    }
 
     private static String formattedString(String errorMessage, String code, boolean withCode) {
         if (withCode)
@@ -119,9 +48,22 @@ public class GroupChatErrorHandler {
                 && !TextUtils.isEmpty(e.getMessage())) {
             return formattedString(e.getMessage(),
                     GroupChatErrorCode.WS_ERROR, withCode);
+        } else if (e instanceof VoteErrorException
+                && !TextUtils.isEmpty(e.getMessage())
+                && !TextUtils.isEmpty(((VoteErrorException) e).getErrorCode())) {
+            return formattedString(e.getMessage(),
+                    ((VoteErrorException) e).getErrorCode(), withCode);
+        } else if (e instanceof VoteErrorException
+                && !TextUtils.isEmpty(e.getMessage())) {
+            return formattedString(e.getMessage(),
+                    GroupChatErrorCode.WS_ERROR, withCode);
+        } else if (e instanceof ConnectException){
+            return formattedString(context.getString(R.string.msg_no_connection_trouble)
+                    , getErrorCode(e), withCode);
         } else {
             return formattedString(ErrorHandler.getErrorMessage(context, e), getErrorCode(e),
                     withCode);
+
         }
     }
 

@@ -24,8 +24,16 @@ public interface CartApi {
     @POST(TransactionDataApiUrl.Cart.PATH_ADD_TO_CART)
     Observable<Response<CartResponse>> postAddToCart(@FieldMap Map<String, String> params);
 
-    @GET(TransactionDataApiUrl.Cart.PATH_CART_LIST)
-    Observable<Response<CartResponse>> getCartList(@QueryMap Map<String, String> params);
+    @FormUrlEncoded
+    @POST(TransactionDataApiUrl.Cart.PATH_ADD_TO_CART_ONE_CLICK_SHIPMENT)
+    Observable<Response<CartResponse>> postAddToCartOneClickShipment(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TransactionDataApiUrl.Cart.PATH_CART_LIST_MULTIPLE_ADDRESS)
+    Observable<Response<CartResponse>> getCartList(@FieldMap Map<String, String> params);
+
+    @GET(TransactionDataApiUrl.Cart.PATH_SHOP_GROUP_LIST)
+    Observable<Response<CartResponse>> getShopGroupList(@QueryMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST(TransactionDataApiUrl.Cart.PATH_REMOVE_FROM_CART)
@@ -41,6 +49,9 @@ public interface CartApi {
 
     @GET(TransactionDataApiUrl.Cart.PATH_SHIPMENT_ADDRESS_FORM_DIRECT)
     Observable<Response<CartResponse>> getShipmentAddressForm(@QueryMap Map<String, String> params);
+
+    @GET(TransactionDataApiUrl.Cart.PATH_SHIPMENT_ADDRESS_ONE_CLICK_CHECKOUT)
+    Observable<Response<CartResponse>> getShipmentAddressFormOneClickCheckout(@QueryMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST(TransactionDataApiUrl.Cart.PATH_CHECKOUT)
@@ -72,5 +83,9 @@ public interface CartApi {
 //    public static final String PATH_UPDATE_STATE_BY_PAYMENT = "api/" + VERSION + "/update_state_by_payment";
 //    public static final String PATH_NOTIFICATION_COUNTER = "api/" + VERSION + "/counter";
 //    public static final String PATH_SAVE_PICKUP_STORE_POINT = "api/" + VERSION + "/save_pickup_store_point";
+
+    @FormUrlEncoded
+    @POST(TransactionDataApiUrl.Cart.PATH_SAVE_SHIPMENT)
+    Observable<Response<CartResponse>> postSaveShipmentState(@FieldMap Map<String, String> params);
 
 }

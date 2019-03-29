@@ -1,6 +1,6 @@
 package com.tokopedia.seller.seller.info.view.model;
 
-import com.tokopedia.seller.base.view.adapter.ItemType;
+import com.tokopedia.base.list.seller.common.util.ItemType;
 
 /**
  * Created by normansyahputa on 11/30/17.

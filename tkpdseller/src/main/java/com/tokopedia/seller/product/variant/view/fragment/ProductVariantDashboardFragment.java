@@ -21,20 +21,21 @@ import android.widget.ImageView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
+import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
+import com.tokopedia.product.manage.item.common.util.ProductVariantConstant;
+import com.tokopedia.product.manage.item.common.util.StockTypeDef;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
+import com.tokopedia.product.manage.item.main.base.data.model.VariantPictureViewModel;
+import com.tokopedia.product.manage.item.utils.ProductPriceRangeUtils;
+import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant;
+import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.common.widget.LabelView;
-import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.constant.StockTypeDef;
-import com.tokopedia.seller.product.edit.utils.ProductPriceRangeUtils;
-import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
-import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
-import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
-import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDetailLevel1ListActivity;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDetailLevelLeafActivity;
@@ -49,8 +50,6 @@ import java.util.List;
 
 import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity.EXTRA_HAS_ORIGINAL_VARIANT_LV1;
 import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity.EXTRA_HAS_ORIGINAL_VARIANT_LV2;
-import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity.EXTRA_PRODUCT_SIZECHART;
-import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity.EXTRA_PRODUCT_VARIANT_SELECTION;
 
 /**
  * Created by hendry on 4/3/17.
@@ -80,6 +79,7 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
     private int defaultStockType;
     private boolean isOfficialStore;
     private boolean needRetainImage;
+    private boolean hasWholesale;
     private String defaultSku;
 
     private int indexOptionParentSizeChart = -1;
@@ -114,14 +114,15 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
         defaultStockType = activityIntent.getIntExtra(ProductVariantDashboardActivity.EXTRA_STOCK_TYPE, 0);
         isOfficialStore = activityIntent.getBooleanExtra(ProductVariantDashboardActivity.EXTRA_IS_OFFICIAL_STORE, false);
         needRetainImage = activityIntent.getBooleanExtra(ProductVariantDashboardActivity.EXTRA_NEED_RETAIN_IMAGE, false);
+        hasWholesale = activityIntent.getBooleanExtra(ProductVariantDashboardActivity.EXTRA_HAS_WHOLESALE, false);
         defaultSku = activityIntent.getStringExtra(ProductVariantDashboardActivity.EXTRA_DEFAULT_SKU);
 
         if (savedInstanceState == null) {
-            productVariantViewModel = activityIntent.getParcelableExtra(EXTRA_PRODUCT_VARIANT_SELECTION);
-            productSizeChart = activityIntent.getParcelableExtra(EXTRA_PRODUCT_SIZECHART);
+            productVariantViewModel = activityIntent.getParcelableExtra(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION);
+            productSizeChart = activityIntent.getParcelableExtra(ProductExtraConstant.EXTRA_PRODUCT_SIZECHART);
         } else {
-            productVariantViewModel = savedInstanceState.getParcelable(ProductVariantDashboardActivity.EXTRA_PRODUCT_VARIANT_SELECTION);
-            productSizeChart = savedInstanceState.getParcelable(EXTRA_PRODUCT_SIZECHART);
+            productVariantViewModel = savedInstanceState.getParcelable(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION);
+            productSizeChart = savedInstanceState.getParcelable(ProductExtraConstant.EXTRA_PRODUCT_SIZECHART);
         }
         if (productVariantByCatModelList != null) {
             for (int i = 0, sizei = productVariantByCatModelList.size(); i < sizei; i++) {
@@ -324,14 +325,14 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
                     productVariantViewModel.getVariantOptionParent(0).getName(),
                     productVariantViewModel.getVariantOptionParent(1).getName(),
                     currencyType, defaultStockType, isOfficialStore,
-                    needRetainImage);
+                    needRetainImage, hasWholesale);
         } else {
             ProductVariantDetailLevelLeafActivity.start(getContext(), this,
                     productVariantDashboardViewModel.getProductVariantCombinationViewModelList().get(0),
                     productVariantDashboardViewModel.getProductVariantOptionChildLv1(),
                     productVariantViewModel.getVariantOptionParent(0).getName(),
                     currencyType, defaultStockType, isOfficialStore,
-                    needRetainImage);
+                    needRetainImage, hasWholesale);
         }
     }
 
@@ -655,8 +656,8 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel);
-        outState.putParcelable(EXTRA_PRODUCT_SIZECHART, productSizeChart);
+        outState.putParcelable(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel);
+        outState.putParcelable(ProductExtraConstant.EXTRA_PRODUCT_SIZECHART, productSizeChart);
     }
 
     @TargetApi(23)

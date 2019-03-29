@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.datepicker.range">
+
+    <application>
+        <activity
+            android:name="com.tokopedia.datepicker.range.view.activity.DatePickerActivity"
+            android:label="@string/title_date_setting"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+    </application>
+
+</manifest>

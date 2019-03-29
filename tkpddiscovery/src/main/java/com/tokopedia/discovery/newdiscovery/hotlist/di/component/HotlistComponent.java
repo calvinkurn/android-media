@@ -1,9 +1,9 @@
 package com.tokopedia.discovery.newdiscovery.hotlist.di.component;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.module.HotlistModule;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.scope.HotlistScope;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.fragment.HotlistFragment;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistFragmentPresenter;
 

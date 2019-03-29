@@ -5,6 +5,9 @@ package com.tokopedia.digital.product.view.listener;
  */
 
 public interface IUssdUpdateListener {
+
     void onReceivedUssdData(String result);
+
     void onUssdDataError(String errorMessage);
+
 }

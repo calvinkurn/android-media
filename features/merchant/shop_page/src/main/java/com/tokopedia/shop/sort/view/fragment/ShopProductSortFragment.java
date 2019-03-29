@@ -9,17 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.shop.R;
-import com.tokopedia.shop.analytic.ShopPageTracking;
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort;
 import com.tokopedia.shop.sort.di.component.DaggerShopProductSortComponent;
-import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.sort.di.module.ShopProductSortModule;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 import com.tokopedia.shop.sort.view.adapter.ShopProductSortAdapterTypeFactory;
-import com.tokopedia.shop.sort.view.listener.ShopProductSortListView;
 import com.tokopedia.shop.sort.view.listener.ShopProductSortFragmentListener;
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel;
 import com.tokopedia.shop.sort.view.presenter.ShopProductSortPresenter;
@@ -32,29 +26,25 @@ import javax.inject.Inject;
  * Created by normansyahputa on 2/23/18.
  */
 
-public class ShopProductSortFragment extends BaseListFragment<ShopProductSortModel, ShopProductSortAdapterTypeFactory> implements ShopProductSortListView {
+public class ShopProductSortFragment extends BaseListFragment<ShopProductSortModel, ShopProductSortAdapterTypeFactory> {
 
     @Inject
     ShopProductSortPresenter shopProductFilterPresenter;
-    @Inject
-    ShopPageTracking shopPageTracking;
+
     private String sortName;
-    private String shopId;
-    private ShopInfo shopInfo;
     private ShopProductSortFragmentListener shopFilterFragmentListener;
 
-    public static ShopProductSortFragment createInstance(String sortName, String shopId) {
+    public static ShopProductSortFragment createInstance(String sortName) {
         ShopProductSortFragment fragment = new ShopProductSortFragment();
         Bundle arguments = new Bundle();
         arguments.putString(ShopProductSortActivity.SORT_NAME, sortName);
-        arguments.putString(ShopProductSortActivity.SHOP_ID, shopId);
         fragment.setArguments(arguments);
         return fragment;
     }
 
     @Override
     public void loadData(int i) {
-        shopProductFilterPresenter.getShopInfo(shopId);
+        shopProductFilterPresenter.getShopFilterList();
     }
 
     @Override
@@ -80,12 +70,6 @@ public class ShopProductSortFragment extends BaseListFragment<ShopProductSortMod
     }
 
     @Override
-    public void onSuccessGetShopInfo(ShopInfo shopInfo) {
-        this.shopInfo = shopInfo;
-        shopProductFilterPresenter.getShopFilterList();
-    }
-
-    @Override
     public void renderList(@NonNull List<ShopProductSortModel> list, boolean hasNextPage) {
         if (sortName != null) {
             for (int i = 0; i < list.size(); i++) {
@@ -102,7 +86,6 @@ public class ShopProductSortFragment extends BaseListFragment<ShopProductSortMod
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (getArguments() != null && savedInstanceState == null) {
             sortName = getArguments().getString(ShopProductSortActivity.SORT_NAME);
-            shopId = getArguments().getString(ShopProductSortActivity.SHOP_ID);
         }
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -129,10 +112,6 @@ public class ShopProductSortFragment extends BaseListFragment<ShopProductSortMod
 
     @Override
     public void onItemClicked(ShopProductSortModel filterModel) {
-        if(shopInfo != null) {
-            shopPageTracking.eventClickChooseSort(getString(R.string.shop_info_title_tab_product), filterModel.getName(), "",
-                    shopProductFilterPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
-        }
         shopFilterFragmentListener.select(filterModel.getKey(), filterModel.getValue());
     }
 }

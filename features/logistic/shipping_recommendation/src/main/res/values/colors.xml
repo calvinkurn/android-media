@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="font_disabled">#33000000</color>
+    <color name="text_courier_error_red">#d50000</color>
+
+</resources>

@@ -1,40 +1,37 @@
 package com.tokopedia.digital.product.view.fragment;
 
-import android.app.Activity;
-import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
-import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
-import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
-import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
-import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
-import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
-import com.tokopedia.digital.product.domain.interactor.GetProductsByOperatorIdUseCase;
+import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.view.adapter.ProductChooserAdapter;
-import com.tokopedia.digital.product.view.listener.IProductChooserView;
-import com.tokopedia.digital.product.view.model.Product;
-import com.tokopedia.digital.product.view.presenter.IProductChooserPresenter;
+import com.tokopedia.digital.product.view.presenter.ProductChooserContract;
 import com.tokopedia.digital.product.view.presenter.ProductChooserPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
+import javax.inject.Inject;
+
 import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 5/8/17.
  */
-public class DigitalChooserProductFragment extends BasePresenterFragment<IProductChooserPresenter>
-        implements ProductChooserAdapter.ActionListener, IProductChooserView {
+public class DigitalChooserProductFragment extends BaseDaggerFragment
+        implements ProductChooserAdapter.ActionListener, ProductChooserContract.View {
 
     private static final String ARG_PARAM_EXTRA_CATEGORY_ID = "ARG_PARAM_EXTRA_CATEGORY_ID";
     private static final String ARG_PARAM_EXTRA_OPERATOR_ID = "ARG_PARAM_EXTRA_OPERATOR_ID";
@@ -44,10 +41,8 @@ public class DigitalChooserProductFragment extends BasePresenterFragment<IProduc
     private static final String EXTRA_STATE_PRODUCT_STYLE_VIEW =
             "EXTRA_STATE_PRODUCT_STYLE_VIEW";
 
-    @BindView(R2.id.rv_list_chooser)
-    RecyclerView rvProductList;
-    @BindView(R2.id.pb_main_loading)
-    ProgressBar pbMainLoading;
+    private RecyclerView rvProductList;
+    private ProgressBar pbMainLoading;
 
     private CompositeSubscription compositeSubscription;
 
@@ -59,6 +54,9 @@ public class DigitalChooserProductFragment extends BasePresenterFragment<IProduc
     private ProductChooserAdapter productChooserAdapter;
 
     private ActionListener actionListener;
+
+    @Inject
+    ProductChooserPresenter presenter;
 
     public interface ActionListener {
         void onProductItemSelected(Product product);
@@ -75,92 +73,65 @@ public class DigitalChooserProductFragment extends BasePresenterFragment<IProduc
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(EXTRA_STATE_PRODUCT_STYLE_VIEW, productStyleView);
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
-        presenter.getProductsByCategoryIdAndOperatorId(categoryId, operatorId);
+    protected void initInjector() {
+        DigitalProductComponentInstance.getDigitalProductComponent(getActivity().getApplication())
+                .inject(this);
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_chooser_operator_digital_module, container, false);
+        initView(view);
+        initialVar();
+        return view;
     }
 
     @Override
-    public void onSaveState(Bundle state) {
-        state.putString(EXTRA_STATE_PRODUCT_STYLE_VIEW, productStyleView);
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
-    public void onRestoreState(Bundle savedState) {
-        productStyleView = savedState.getString(EXTRA_STATE_PRODUCT_STYLE_VIEW);
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+        actionListener = (ActionListener) context;
     }
 
     @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-        if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
-
-        DigitalGqlApiService digitalEndpointService = new DigitalGqlApiService();
-
-        CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
-                digitalEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
-        );
-
-        DigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(categoryDetailDataSource);
-
-        GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(
-                getActivity(), digitalCategoryRepository
-        );
-
-        GetProductsByOperatorIdUseCase getProductsByOperatorIdUseCase = new GetProductsByOperatorIdUseCase(
-                getCategoryByIdUseCase
-        );
-
-        presenter = new ProductChooserPresenter(this, getProductsByOperatorIdUseCase);
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-        actionListener = (ActionListener) activity;
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Bundle arguments = getArguments();
         categoryId = arguments.getString(ARG_PARAM_EXTRA_CATEGORY_ID);
         operatorId = arguments.getString(ARG_PARAM_EXTRA_OPERATOR_ID);
         productStyleView = arguments.getString(ARG_PARAM_EXTRA_PRODUCT_STYLE_VIEW);
+        if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
+        if (savedInstanceState != null){
+            productStyleView = savedInstanceState.getString(EXTRA_STATE_PRODUCT_STYLE_VIEW);
+        }
+        presenter.attachView(this);
+        presenter.getProductsByCategoryIdAndOperatorId(categoryId, operatorId);
     }
 
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_chooser_operator_digital_module;
-    }
-
-    @Override
     protected void initView(View view) {
+        rvProductList = view.findViewById(R.id.rv_list_chooser);
+        pbMainLoading = view.findViewById(R.id.pb_main_loading);
+
         rvProductList.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initialVar() {
+    private void initialVar() {
         productChooserAdapter = new ProductChooserAdapter(
                 this, productListData, this
         );
 
         rvProductList.setAdapter(productChooserAdapter);
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override

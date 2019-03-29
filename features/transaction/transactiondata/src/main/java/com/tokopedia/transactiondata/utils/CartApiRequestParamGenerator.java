@@ -10,10 +10,14 @@ public class CartApiRequestParamGenerator {
 
     private final String PARAM_VALUE_LANG_ID = "id";
 
+    private final String PARAM_CART_IDS = "cart_ids";
 
-    public TKPDMapParam<String, String> generateParamMapGetCartList() {
+    public TKPDMapParam<String, String> generateParamMapGetCartList(String cartId) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put(PARAM_KEY_LANG, PARAM_VALUE_LANG_ID);
+        if (cartId != null) {
+            param.put(PARAM_CART_IDS, cartId);
+        }
         return param;
     }
 }

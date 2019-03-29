@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_16">
+
+    <TextView
+        android:id="@+id/tv_group_code_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_16"
+        tools:ignore="RelativeOverlap"
+        tools:text="CREDIT CARD BANK BRI" />
+
+    <ImageView
+        android:id="@+id/iv_chevron_icon"
+        android:layout_width="@dimen/chevron_size"
+        android:layout_height="@dimen/chevron_size"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:padding="@dimen/dp_8"
+        android:src="@drawable/ic_arrow_down_grey"
+        tools:ignore="ContentDescription" />
+
+    <RelativeLayout
+        android:id="@+id/rl_detail_group_code_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_group_code_title">
+
+        <TextView
+            android:id="@+id/tv_group_code_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:textSize="@dimen/sp_14"
+            tools:text="Kode 1 untuk LG G6 Plus &amp; Kode 2 untuk LG Q6 Plus" />
+
+        <RelativeLayout
+            android:id="@+id/rl_group_code_info_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_group_code_description"
+            android:layout_marginTop="@dimen/dp_16">
+
+            <ImageView
+                android:id="@+id/iv_promo_code_icon"
+                android:layout_width="@dimen/promo_code_icon_width"
+                android:layout_height="@dimen/promo_code_icon_height"
+                android:layout_alignTop="@+id/tv_promo_code_label"
+                app:srcCompat="@drawable/ic_coupon_promo"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/tv_promo_code_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_toEndOf="@id/iv_promo_code_icon"
+                android:layout_toRightOf="@id/iv_promo_code_icon"
+                android:text="@string/label_promo_code_loyalty_module"
+                android:textColor="@color/grey_600"
+                android:textSize="@dimen/sp_14"
+                tools:ignore="SmallSp" />
+
+            <ImageView
+                android:id="@+id/iv_tooltip_info"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_12"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginStart="@dimen/dp_5"
+                android:layout_toEndOf="@id/tv_promo_code_label"
+                android:layout_toRightOf="@id/tv_promo_code_label"
+                app:srcCompat="@drawable/info_icon"
+                tools:ignore="ContentDescription" />
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_single_code_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/rl_group_code_info_layout" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/thin_line"
+        android:layout_below="@id/rl_detail_group_code_layout"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/grey_200"
+        android:paddingBottom="@dimen/dp_20" />
+</RelativeLayout>

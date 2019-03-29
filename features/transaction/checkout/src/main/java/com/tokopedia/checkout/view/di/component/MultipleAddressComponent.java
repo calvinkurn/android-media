@@ -2,7 +2,7 @@ package com.tokopedia.checkout.view.di.component;
 
 import com.tokopedia.checkout.view.di.module.MultipleAddressModule;
 import com.tokopedia.checkout.view.di.scope.MultipleAddressScope;
-import com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFragment;
+import com.tokopedia.checkout.view.feature.multipleaddressform.MultipleAddressFragment;
 
 import dagger.Component;
 

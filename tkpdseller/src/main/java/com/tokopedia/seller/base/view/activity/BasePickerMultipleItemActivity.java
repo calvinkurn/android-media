@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.ItemPickerType;
+import com.tokopedia.product.manage.item.common.util.ItemPickerType;
 import com.tokopedia.seller.base.view.listener.BasePickerItemCacheList;
 import com.tokopedia.seller.base.view.listener.BasePickerItemSearchList;
 import com.tokopedia.seller.base.view.listener.BasePickerMultipleItem;
@@ -24,7 +24,7 @@ import com.tokopedia.seller.base.view.listener.BasePickerMultipleItem;
 /**
  * Created by nathan on 8/2/17.
  */
-
+@Deprecated
 public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> extends BaseToolbarActivity implements BasePickerMultipleItem<T> {
 
     private static final int ARROW_DEGREE = 180;

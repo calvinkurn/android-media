@@ -3,26 +3,19 @@ package com.tokopedia.checkout.view.di.module;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.data.repository.AddressRepository;
 import com.tokopedia.checkout.data.repository.AddressRepositoryImpl;
-import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
-import com.tokopedia.transactiondata.apiservice.CartApi;
-import com.tokopedia.transactiondata.apiservice.CartApiInterceptor;
-import com.tokopedia.transactiondata.apiservice.CartResponseConverter;
-import com.tokopedia.transactiondata.apiservice.TxActApi;
-import com.tokopedia.transactiondata.repository.CartRepository;
-import com.tokopedia.transactiondata.repository.ICartRepository;
-import com.tokopedia.transactiondata.repository.ITopPayRepository;
-import com.tokopedia.transactiondata.repository.TopPayRepository;
+import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
+import com.tokopedia.checkout.data.repository.PeopleAddressRepositoryImpl;
+import com.tokopedia.checkout.domain.usecase.GetAddressWithCornerUseCase;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.qualifier.CartApiInterceptorQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartApiOkHttpClientQualifier;
@@ -36,7 +29,8 @@ import com.tokopedia.checkout.view.di.qualifier.CartQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartTxActApiInterceptorQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartTxActApiRetrofitQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartTxActOkHttpClientQualifier;
-import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.apiservice.RatesApi;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 import com.tokopedia.logisticdata.data.repository.RatesRepository;
@@ -54,6 +48,7 @@ import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -70,6 +65,9 @@ public class DataModule {
     private static final int NET_CONNECT_TIMEOUT = 60;
     private static final int NET_RETRY = 0;
 
+    public DataModule() {
+    }
+
     @Provides
     @CartQualifier
     OkHttpRetryPolicy provideOkHttpRetryPolicy() {
@@ -80,39 +78,36 @@ public class DataModule {
 
     @Provides
     @CartChuckApiInterceptorQualifier
-    ChuckInterceptor provideChuckInterceptor(ICheckoutModuleRouter cartCheckoutModuleRouter) {
+    Interceptor provideChuckInterceptor(ICheckoutModuleRouter cartCheckoutModuleRouter) {
         return cartCheckoutModuleRouter.checkoutModuleRouterGetCartCheckoutChuckInterceptor();
     }
 
     @Provides
     @CartFingerPrintApiInterceptorQualifier
-    FingerprintInterceptor fingerprintInterceptor(ICheckoutModuleRouter cartCheckoutModuleRouter) {
+    Interceptor fingerprintInterceptor(ICheckoutModuleRouter cartCheckoutModuleRouter) {
         return cartCheckoutModuleRouter.checkoutModuleRouterGetCartCheckoutFingerPrintInterceptor();
     }
 
     @Provides
     @CartApiInterceptorQualifier
     CartApiInterceptor getCartApiInterceptor(@ApplicationContext Context context,
-                                             UserSession userSession,
                                              AbstractionRouter abstractionRouter) {
-        return new CartApiInterceptor(context, abstractionRouter, userSession, TransactionDataApiUrl.Cart.HMAC_KEY);
+        return new CartApiInterceptor(context, abstractionRouter, TransactionDataApiUrl.Cart.HMAC_KEY);
     }
 
 
     @Provides
     @CartKeroRatesApiInterceptorQualifier
     TkpdAuthInterceptor provideKeroRatesInterceptor(@ApplicationContext Context context,
-                                                    UserSession userSession,
                                                     AbstractionRouter abstractionRouter) {
-        return new TkpdAuthInterceptor(context, abstractionRouter, userSession);
+        return new TkpdAuthInterceptor(context, abstractionRouter);
     }
 
     @Provides
     @CartTxActApiInterceptorQualifier
     TkpdAuthInterceptor provideTxActInterceptor(@ApplicationContext Context context,
-                                                UserSession userSession,
                                                 AbstractionRouter abstractionRouter) {
-        return new TkpdAuthInterceptor(context, abstractionRouter, userSession);
+        return new TkpdAuthInterceptor(context, abstractionRouter);
     }
 
 
@@ -121,8 +116,8 @@ public class DataModule {
     OkHttpClient provideCartApiOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                             @CartApiInterceptorQualifier CartApiInterceptor cartApiInterceptor,
                                             @CartQualifier OkHttpRetryPolicy okHttpRetryPolicy,
-                                            @CartFingerPrintApiInterceptorQualifier FingerprintInterceptor fingerprintInterceptor,
-                                            @CartChuckApiInterceptorQualifier ChuckInterceptor chuckInterceptor) {
+                                            @CartFingerPrintApiInterceptorQualifier Interceptor fingerprintInterceptor,
+                                            @CartChuckApiInterceptorQualifier Interceptor chuckInterceptor) {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
@@ -143,8 +138,8 @@ public class DataModule {
     OkHttpClient provideKeroRatesApiOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                                  @CartKeroRatesApiInterceptorQualifier TkpdAuthInterceptor keroRatesInterceptor,
                                                  @CartQualifier OkHttpRetryPolicy okHttpRetryPolicy,
-                                                 @CartFingerPrintApiInterceptorQualifier FingerprintInterceptor fingerprintInterceptor,
-                                                 @CartChuckApiInterceptorQualifier ChuckInterceptor chuckInterceptor) {
+                                                 @CartFingerPrintApiInterceptorQualifier Interceptor fingerprintInterceptor,
+                                                 @CartChuckApiInterceptorQualifier Interceptor chuckInterceptor) {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
@@ -164,8 +159,8 @@ public class DataModule {
     OkHttpClient provideTxActApiOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                              @CartTxActApiInterceptorQualifier TkpdAuthInterceptor txActInterceptor,
                                              @CartQualifier OkHttpRetryPolicy okHttpRetryPolicy,
-                                             @CartFingerPrintApiInterceptorQualifier FingerprintInterceptor fingerprintInterceptor,
-                                             @CartChuckApiInterceptorQualifier ChuckInterceptor chuckInterceptor) {
+                                             @CartFingerPrintApiInterceptorQualifier Interceptor fingerprintInterceptor,
+                                             @CartChuckApiInterceptorQualifier Interceptor chuckInterceptor) {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
@@ -270,6 +265,22 @@ public class DataModule {
     @Provides
     AddressRepository provideAddressRepository(@CartQualifier PeopleActApi peopleActApi) {
         return new AddressRepositoryImpl(peopleActApi);
+    }
+
+    @Provides
+    AddressModelMapper providePeopleAddressMapper() {
+        return new AddressModelMapper();
+    }
+
+    @Provides
+    PeopleAddressRepository providePeopleAddressRepository(@CartQualifier PeopleActApi peopleActApi,
+                                                           GetAddressWithCornerUseCase addressWithCornerUseCase) {
+        return new PeopleAddressRepositoryImpl(peopleActApi, addressWithCornerUseCase);
+    }
+
+    @Provides
+    GetAddressWithCornerUseCase provideGetAddressWithCornerUsecase(@ApplicationScope Context context) {
+        return new GetAddressWithCornerUseCase(context, new GraphqlUseCase());
     }
 
 }

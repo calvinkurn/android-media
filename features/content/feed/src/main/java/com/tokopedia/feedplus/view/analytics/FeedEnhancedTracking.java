@@ -87,6 +87,9 @@ public class FeedEnhancedTracking {
         private static final String PRODUCT_UPLOAD = "product_upload";
         private static final String SINGLE = "single";
         private static final String MULTIPLE = "multiple";
+        private static final String ANNOUNCEMENT = "announcement";
+        private static final String VOTE = "vote";
+        private static final String BANNER = "banner";
         private static String PROFILE = "profile";
 
         public static final String TRACKING_NONE = "none";
@@ -158,6 +161,19 @@ public class FeedEnhancedTracking {
                 return String.format("/%s - %s - %s", CONTENT_FEED, PRODUCT_UPLOAD, MULTIPLE);
             }
             return "";
+        }
+
+        public static String createContentNameVote() {
+            return String.format("/%s - %s - %s", CONTENT_FEED, ANNOUNCEMENT, VOTE);
+        }
+
+        public static String createContentNameBanner() {
+            return String.format("/%s - %s - %s", CONTENT_FEED, ANNOUNCEMENT, BANNER);
+        }
+
+        public static String createContentNameAnnouncement(String tagsType, String cardType) {
+            return String.format("/%s - %s - %s - %s", CONTENT_FEED, ANNOUNCEMENT, cardType,
+                    tagsType);
         }
 
         public static String createContentName(String tagsType, String cardType) {

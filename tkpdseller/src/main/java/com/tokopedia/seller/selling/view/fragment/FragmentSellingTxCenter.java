@@ -10,7 +10,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.customadapter.ListViewPeopleTransactionSummary;
@@ -159,7 +160,7 @@ public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implem
 
         if(getActivity()!= null) {
             presenter.fetchArguments(getArguments());
-            ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_CENTER);
+            ScreenTracking.screen(MainApplication.getAppContext(),AppScreen.SCREEN_TX_SHOP_CENTER);
             super.setUserVisibleHint(isVisibleToUser);
             presenter.setLocalyticFlow(getActivity());
         }

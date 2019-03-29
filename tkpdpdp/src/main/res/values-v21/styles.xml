@@ -12,8 +12,7 @@
         <item name="actionModeBackground">@color/tkpd_main_green</item>
         <item name="android:actionModeBackground">@color/tkpd_main_green</item>
         <item name="android:actionModeSplitBackground">@color/green_500</item>
-        <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Tokopedia
-        </item>
+        <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Tokopedia</item>
         <item name="android:windowBackground">@color/tkpd_bg_color_grery</item>
         <item name="android:colorBackground">@color/tkpd_bg_color_grery</item>
         <!-- Remove shadow from action bar -->
@@ -24,9 +23,10 @@
         </item>
         <item name="android:textAppearanceSmallPopupMenu">@style/myPopupMenuTextAppearanceSmall
         </item>
-        <item name="android:homeAsUpIndicator">@drawable/ic_new_action_back</item>
-        <item name="android:actionOverflowButtonStyle">@style/OverFlow</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_back_pdp_light</item>
+        <item name="android:actionOverflowButtonStyle">@style/PdpOverflow</item>
         <item name="android:colorPrimary">@color/tkpd_dark_green</item>
+        <item name="android:colorAccent">@color/tkpd_dark_green</item>
         <item name="android:statusBarColor">@color/green_500</item>
         <!--<item name="android:alertDialogTheme">@style/CoolDialog2</item>-->
         <item name="windowActionModeOverlay">true</item>
@@ -37,6 +37,15 @@
         <item name="actionModeStyle">@style/CustomActionMode</item>
         <item name="android:spinnerStyle">@style/Widget.AppCompat.Spinner.Underlined</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <style name="Transparent" parent="Theme.Tokopedia3">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="PdpOverflow" parent="@android:style/Widget.Holo.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_overflow_pdp_light</item>
     </style>
 
     <style name="CustomAlertDialogStyle" parent="android:Theme.Material.Light.Dialog.Alert">
@@ -104,6 +113,11 @@
         <item name="android:background">@drawable/selector_favorite_pdp</item>
         <item name="android:focusable">true</item>
         <item name="android:clickable">true</item>
+    </style>
+
+    <style name="CollapsingToolbarLayoutExpandedTextStyle" parent="AppTheme">
+        <item name="android:textColor">@android:color/transparent</item>
+        <item name="android:textSize">0sp</item>
     </style>
 
 

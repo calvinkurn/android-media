@@ -1,12 +1,15 @@
 package com.tokopedia.tkpd;
 
 import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
@@ -24,14 +27,22 @@ import android.support.test.espresso.intent.Checks;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.espresso.util.HumanReadables;
+import android.support.test.uiautomator.UiDevice;
+import android.support.test.uiautomator.UiObject;
+import android.support.test.uiautomator.UiObjectNotFoundException;
+import android.support.test.uiautomator.UiSelector;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.tokopedia.session.google.GoogleSignInActivity;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -44,20 +55,23 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 
 import okhttp3.mockwebserver.MockResponse;
 
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.AllOf.allOf;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by normansyahputa on 8/22/16.
@@ -230,6 +244,147 @@ public class Utils {
                 .setResponseCode(403)
                 .setBody(response);
         return mockResponse;
+    }
+
+    public static Matcher<View> nthChildOf(final Matcher<View> parentMatcher, final int childPosition) {
+        return new TypeSafeMatcher<View>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with " + childPosition + " child view of type parentMatcher");
+            }
+
+            @Override
+            public boolean matchesSafely(View view) {
+                if (!(view.getParent() instanceof ViewGroup)) {
+                    return parentMatcher.matches(view.getParent());
+                }
+
+                ViewGroup group = (ViewGroup) view.getParent();
+                return parentMatcher.matches(view.getParent()) && group.getChildAt(childPosition).equals(view);
+            }
+        };
+    }
+
+    public static void snackbarMatcher(String text) {
+        assert text != null;
+        onView(allOf(withId(android.support.design.R.id.snackbar_text), withText(text)))
+                .check(matches(isDisplayed()));
+    }
+
+    public static void snackbarAnyMatcher() {
+        onView(allOf(withId(android.support.design.R.id.snackbar_text)))
+                .check(matches(isDisplayed()));
+    }
+
+    public static void changeScreenOrientation(final Activity activity) {
+        int orientation = activity.getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } else {
+            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+        if (Settings.System.getInt(activity.getContentResolver(),
+                Settings.System.ACCELEROMETER_ROTATION, 0) == 1) {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                }
+            }, 4000);
+        }
+    }
+
+    public static Instrumentation.ActivityResult mockGoogleActivityResult(String email, String name, String googleAccountToken) {
+        Intent resultData = new Intent();
+        Bundle bundle = new Bundle();
+        GoogleSignInAccount account = mock(GoogleSignInAccount.class);
+        if (!TextUtils.isEmpty(email))
+            when(account.getEmail()).thenReturn(email);
+        if (!TextUtils.isEmpty(name))
+            when(account.getDisplayName()).thenReturn(name);
+        bundle.putParcelable(GoogleSignInActivity.KEY_GOOGLE_ACCOUNT, account);
+        bundle.putString(GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN, googleAccountToken);
+
+        resultData.putExtras(bundle);
+        return new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+    }
+
+    public static void allowPermissionsIfNeeded(String permissionNeeded) throws Exception {
+        if (Build.VERSION.SDK_INT >= 23) {
+            UiDevice device = UiDevice.getInstance(getInstrumentation());
+            UiObject allowPermissions = device.findObject(new UiSelector().text("OK"));
+            if (allowPermissions.exists()) {
+                try {
+                    allowPermissions.click();
+                } catch (UiObjectNotFoundException e) {
+                    Log.e(Utils.class.getName(), "There is no permissions dialog to interact with ");
+                }
+            }
+            Thread.sleep(10000);
+            PermissionGranter.allowPermissionsIfNeeded(permissionNeeded);
+        }
+    }
+
+    /**
+     * get private filed in this specific object
+     *
+     * @param targetClass
+     * @param instance    the filed owner
+     * @param fieldName
+     * @param <T>
+     * @return field if success, null otherwise.
+     */
+    public static <T> T getField(Class targetClass, Object instance, String fieldName) {
+        try {
+            Field field = targetClass.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            return (T) field.get(instance);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * change the field value
+     *
+     * @param targetClass
+     * @param instance    the filed owner
+     * @param fieldName
+     * @param value
+     */
+    public static void setField(Class targetClass, Object instance, String fieldName, Object value) {
+        try {
+            Field field = targetClass.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(instance, value);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ViewAction withCustomConstraints(final ViewAction action, final Matcher<View> constraints) {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return constraints;
+            }
+
+            @Override
+            public String getDescription() {
+                return action.getDescription();
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                action.perform(uiController, view);
+            }
+        };
     }
 
     public static class RecyclerViewTestUtils {
@@ -491,55 +646,6 @@ public class Utils {
                 description.appendText(resourceName);
                 description.appendText("]");
             }
-        }
-    }
-
-    public static Matcher<View> nthChildOf(final Matcher<View> parentMatcher, final int childPosition) {
-        return new TypeSafeMatcher<View>() {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("with "+childPosition+" child view of type parentMatcher");
-            }
-
-            @Override
-            public boolean matchesSafely(View view) {
-                if (!(view.getParent() instanceof ViewGroup)) {
-                    return parentMatcher.matches(view.getParent());
-                }
-
-                ViewGroup group = (ViewGroup) view.getParent();
-                return parentMatcher.matches(view.getParent()) && group.getChildAt(childPosition).equals(view);
-            }
-        };
-    }
-
-    public static void snackbarMatcher(String text){
-        assert  text != null;
-        onView(allOf(withId(android.support.design.R.id.snackbar_text), withText(text)))
-                .check(matches(isDisplayed()));
-    }
-
-    public static void snackbarAnyMatcher(){
-        onView(allOf(withId(android.support.design.R.id.snackbar_text)))
-                .check(matches(isDisplayed()));
-    }
-
-    public static void changeScreenOrientation(final Activity activity) {
-        int orientation = activity.getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        } else {
-            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }
-        if (Settings.System.getInt(activity.getContentResolver(),
-                Settings.System.ACCELEROMETER_ROTATION, 0) == 1) {
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-                }
-            }, 4000);
         }
     }
 

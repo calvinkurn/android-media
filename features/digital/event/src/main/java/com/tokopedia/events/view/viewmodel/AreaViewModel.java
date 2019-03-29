@@ -92,7 +92,7 @@ public class AreaViewModel implements Parcelable {
         this.seatReservedCount = in.readInt();
     }
 
-    public static final Parcelable.Creator<AreaViewModel> CREATOR = new Parcelable.Creator<AreaViewModel>() {
+    public static final Creator<AreaViewModel> CREATOR = new Creator<AreaViewModel>() {
         @Override
         public AreaViewModel createFromParcel(Parcel source) {
             return new AreaViewModel(source);

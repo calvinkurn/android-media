@@ -18,6 +18,9 @@ import android.view.View;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -32,7 +35,6 @@ import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
 import com.tokopedia.core.product.listener.FragmentDetailParent;
 import com.tokopedia.core.product.listener.ReportFragmentListener;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -41,6 +43,7 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepository;
 import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepositoryImpl;
@@ -55,9 +58,11 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
+
 /**
  * @author by Angga.Prasetiyo on 14/12/2015.
- *         modified Alvarisi
+ * modified Alvarisi
  */
 public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> implements
         DeepLinkView, DeepLinkWebViewHandleListener,
@@ -88,6 +93,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         super.onCreate(savedInstanceState);
         startAnalytics().subscribe(getObserver());
         isAllowFetchDepartmentView = true;
+        presenter.sendAuthenticatedEvent(uriData, getScreenName());
     }
 
     @Override
@@ -133,10 +139,10 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
-    public void shareProductInfo(@NonNull ShareData shareData) {
+    public void shareProductInfo(@NonNull LinkerData shareData) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_view,
-                        ProductShareFragment.newInstance(shareData,false),
+                        ProductShareFragment.newInstance(shareData, false),
                         ProductShareFragment.class.getSimpleName())
                 .addToBackStack(null)
                 .commit();
@@ -150,9 +156,9 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     public void actionChangeToolbarWithBackToNative() {
         isNeedToUseToolbarWithOptions = true;
-        getSupportActionBar().setHomeAsUpIndicator(com.tokopedia.core.R.drawable.ic_webview_back_button);
-        toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
-        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
+        getSupportActionBar().setHomeAsUpIndicator(com.tokopedia.core2.R.drawable.ic_webview_back_button);
+        toolbar.setBackgroundResource(com.tokopedia.core2.R.color.white);
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core2.R.style.WebViewToolbarText);
         setSupportActionBar(toolbar);
         invalidateOptionsMenu();
     }
@@ -198,7 +204,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         NetworkErrorHelper.showEmptyState(this, mainView, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.processDeepLinkAction(uriData);
+                presenter.processDeepLinkAction(DeepLinkActivity.this, uriData);
             }
         });
     }
@@ -210,14 +216,14 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     public void finishLoading() {
-        if(progressDialog != null && progressDialog.isProgress()) progressDialog.dismiss();
+        if (progressDialog != null && progressDialog.isProgress()) progressDialog.dismiss();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (isNeedToUseToolbarWithOptions){
+        if (isNeedToUseToolbarWithOptions) {
             MenuInflater inflater = getMenuInflater();
-            inflater.inflate(com.tokopedia.core.R.menu.menu_web_view, menu);
+            inflater.inflate(com.tokopedia.core2.R.menu.menu_web_view, menu);
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -235,7 +241,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     public void jumpOtherProductDetail(ProductPass productPass) {
         if (getApplication() instanceof PdpRouter) {
-            ((PdpRouter) getApplication()).goToProductDetail(this, productPass);
+            RouteManager.route(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productPass.getProductId());
         }
     }
 
@@ -275,10 +281,10 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         if (id == android.R.id.home) {
             onBackPressed();
             return true;
-        } else if (id == com.tokopedia.core.R.id.menu_home) {
+        } else if (id == com.tokopedia.core2.R.id.menu_home) {
             onBackPressed();
             return true;
-        } else if (id == com.tokopedia.core.R.id.menu_help) {
+        } else if (id == com.tokopedia.core2.R.id.menu_help) {
             Intent intent = InboxRouter.getContactUsActivityIntent(this);
             startActivity(intent);
         }
@@ -317,11 +323,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
                 presenter.actionGotUrlFromApplink(uriData);
             } else {
                 presenter.checkUriLogin(uriData);
-                if (presenter.isLandingPageWebView(uriData)) {
-                    presenter.processDeepLinkAction(uriData);
-                } else {
-                    presenter.processDeepLinkAction(uriData);
-                }
+                presenter.processDeepLinkAction(DeepLinkActivity.this, uriData);
             }
         }
     }
@@ -366,7 +368,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
-    public void deliverCatalogShareData(ShareData shareData) {
+    public void deliverCatalogShareData(LinkerData shareData) {
 
     }
 

@@ -165,8 +165,10 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
     private static List<String> mappingProductImage(List<ProductResponse> responseList) {
         List<String> dataList = new ArrayList<>();
         for (ProductResponse response : responseList) {
-            String data = response.getImages().get(0).getThumb();
-            dataList.add(data);
+            if (response.getImages().size() != 0) {
+                String data = response.getImages().get(0).getThumb();
+                dataList.add(data);
+            }
         }
         return dataList;
     }

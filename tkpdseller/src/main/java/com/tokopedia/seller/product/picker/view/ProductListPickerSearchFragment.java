@@ -4,15 +4,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import com.tokopedia.core.customadapter.NoResultDataBinder;
+import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
+import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
+import com.tokopedia.base.list.seller.view.emptydatabinder.EmptyDataBinder;
+import com.tokopedia.base.list.seller.view.fragment.BaseSearchListFragment;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
-import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
-import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.base.view.listener.BasePickerItemSearchList;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
-import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.picker.common.ProductListPickerConstant;
 import com.tokopedia.seller.product.picker.di.DaggerProductListComponent;
 import com.tokopedia.seller.product.picker.di.ProductListModule;
@@ -20,7 +19,6 @@ import com.tokopedia.seller.product.picker.view.adapter.ProductListPickerSearchA
 import com.tokopedia.seller.product.picker.view.listener.ProductListPickerMultipleItem;
 import com.tokopedia.seller.product.picker.view.listener.ProductListPickerSearchView;
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
-import com.tokopedia.seller.product.picker.view.model.ProductListSellerModelView;
 import com.tokopedia.seller.product.picker.view.presenter.ProductListPickerSearchPresenter;
 
 import java.util.List;

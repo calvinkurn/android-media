@@ -3,7 +3,7 @@ package com.tokopedia.checkout.domain.datamodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.transaction.common.data.pickuppoint.Store;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 /**
  * Created by kris on 1/24/18. Tokopedia
@@ -11,6 +11,7 @@ import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
 public class MultipleAddressItemData implements Parcelable {
 
+    private RecipientAddressModel recipientAddressModel;
     private int cartPosition;
     private int addressPosition;
     private String cartId = "";
@@ -21,22 +22,6 @@ public class MultipleAddressItemData implements Parcelable {
     private int productRawWeight;
     private String productQty = "";
     private String productNotes = "";
-    private String addressId = "";
-    private String addressTitle = "";
-    private String addressReceiverName = "";
-    private String addressProvinceName = "";
-    private String addressPostalCode = "";
-    private String addressCityName = "";
-    private String addressStreet = "";
-    private String addressCountryName = "";
-    private String recipientPhoneNumber = "";
-    private String destinationDistrictId = "";
-    private String destinationDistrictName = "";
-    private String cityId = "";
-    private String provinceId = "";
-    private String tokenPickup = "";
-    private String unixTime = "";
-    private Store store;
     private int maxQuantity;
     private int minQuantity;
     private String errorCheckoutPriceLimit;
@@ -48,9 +33,80 @@ public class MultipleAddressItemData implements Parcelable {
     private String errorProductMaxQuantity;
     private String errorProductMinQuantity;
     private int maxRemark;
+    private boolean stateNotesOpen;
 
     public MultipleAddressItemData() {
     }
+
+    protected MultipleAddressItemData(Parcel in) {
+        recipientAddressModel = in.readParcelable(RecipientAddressModel.class.getClassLoader());
+        cartPosition = in.readInt();
+        addressPosition = in.readInt();
+        cartId = in.readString();
+        addressStatus = in.readInt();
+        parentId = in.readString();
+        productId = in.readString();
+        productWeightFmt = in.readString();
+        productRawWeight = in.readInt();
+        productQty = in.readString();
+        productNotes = in.readString();
+        maxQuantity = in.readInt();
+        minQuantity = in.readInt();
+        errorCheckoutPriceLimit = in.readString();
+        errorFieldBetween = in.readString();
+        errorFieldMaxChar = in.readString();
+        errorFieldRequired = in.readString();
+        errorProductAvailableStock = in.readString();
+        errorProductAvailableStockDetail = in.readString();
+        errorProductMaxQuantity = in.readString();
+        errorProductMinQuantity = in.readString();
+        maxRemark = in.readInt();
+        stateNotesOpen = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(recipientAddressModel, flags);
+        dest.writeInt(cartPosition);
+        dest.writeInt(addressPosition);
+        dest.writeString(cartId);
+        dest.writeInt(addressStatus);
+        dest.writeString(parentId);
+        dest.writeString(productId);
+        dest.writeString(productWeightFmt);
+        dest.writeInt(productRawWeight);
+        dest.writeString(productQty);
+        dest.writeString(productNotes);
+        dest.writeInt(maxQuantity);
+        dest.writeInt(minQuantity);
+        dest.writeString(errorCheckoutPriceLimit);
+        dest.writeString(errorFieldBetween);
+        dest.writeString(errorFieldMaxChar);
+        dest.writeString(errorFieldRequired);
+        dest.writeString(errorProductAvailableStock);
+        dest.writeString(errorProductAvailableStockDetail);
+        dest.writeString(errorProductMaxQuantity);
+        dest.writeString(errorProductMinQuantity);
+        dest.writeInt(maxRemark);
+        dest.writeByte((byte) (stateNotesOpen ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<MultipleAddressItemData> CREATOR = new Creator<MultipleAddressItemData>() {
+        @Override
+        public MultipleAddressItemData createFromParcel(Parcel in) {
+            return new MultipleAddressItemData(in);
+        }
+
+        @Override
+        public MultipleAddressItemData[] newArray(int size) {
+            return new MultipleAddressItemData[size];
+        }
+    };
 
     public void setCartPosition(int cartPosition) {
         this.cartPosition = cartPosition;
@@ -122,118 +178,6 @@ public class MultipleAddressItemData implements Parcelable {
 
     public void setProductNotes(String productNotes) {
         this.productNotes = productNotes;
-    }
-
-    public String getAddressId() {
-        return addressId;
-    }
-
-    public void setAddressId(String addressId) {
-        this.addressId = addressId;
-    }
-
-    public String getAddressTitle() {
-        return addressTitle;
-    }
-
-    public void setAddressTitle(String addressTitle) {
-        this.addressTitle = addressTitle;
-    }
-
-    public String getAddressReceiverName() {
-        return addressReceiverName;
-    }
-
-    public void setAddressReceiverName(String addressReceiverName) {
-        this.addressReceiverName = addressReceiverName;
-    }
-
-    public String getAddressProvinceName() {
-        return addressProvinceName;
-    }
-
-    public void setAddressProvinceName(String addressProvinceName) {
-        this.addressProvinceName = addressProvinceName;
-    }
-
-    public String getAddressPostalCode() {
-        return addressPostalCode;
-    }
-
-    public void setAddressPostalCode(String addressPostalCode) {
-        this.addressPostalCode = addressPostalCode;
-    }
-
-    public String getAddressCityName() {
-        return addressCityName;
-    }
-
-    public void setAddressCityName(String addressCityName) {
-        this.addressCityName = addressCityName;
-    }
-
-    public String getAddressStreet() {
-        return addressStreet;
-    }
-
-    public void setAddressStreet(String addressStreet) {
-        this.addressStreet = addressStreet;
-    }
-
-    public String getAddressCountryName() {
-        return addressCountryName;
-    }
-
-    public void setAddressCountryName(String addressCountryName) {
-        this.addressCountryName = addressCountryName;
-    }
-
-    public String getRecipientPhoneNumber() {
-        return recipientPhoneNumber;
-    }
-
-    public void setRecipientPhoneNumber(String recipientPhoneNumber) {
-        this.recipientPhoneNumber = recipientPhoneNumber;
-    }
-
-    public String getDestinationDistrictId() {
-        return destinationDistrictId;
-    }
-
-    public void setDestinationDistrictId(String destinationDistrictId) {
-        this.destinationDistrictId = destinationDistrictId;
-    }
-
-    public String getDestinationDistrictName() {
-        return destinationDistrictName;
-    }
-
-    public void setDestinationDistrictName(String destinationDistrictName) {
-        this.destinationDistrictName = destinationDistrictName;
-    }
-
-    public String getTokenPickup() {
-        return tokenPickup;
-    }
-
-    public void setTokenPickup(String tokenPickup) {
-        this.tokenPickup = tokenPickup;
-    }
-
-    public String getUnixTime() {
-        return unixTime;
-    }
-
-    public void setUnixTime(String unixTime) {
-        this.unixTime = unixTime;
-    }
-
-    public Store getStore() {
-        return store;
-    }
-
-    public void setStore(Store store) {
-        this.store = store;
     }
 
     public int getMaxQuantity() {
@@ -332,117 +276,20 @@ public class MultipleAddressItemData implements Parcelable {
         this.maxRemark = maxRemark;
     }
 
-    public String getCityId() {
-        return cityId;
+    public boolean isStateNotesOpen() {
+        return stateNotesOpen;
     }
 
-    public void setCityId(String cityId) {
-        this.cityId = cityId;
+    public void setStateNotesOpen(boolean stateNotesOpen) {
+        this.stateNotesOpen = stateNotesOpen;
     }
 
-    public String getProvinceId() {
-        return provinceId;
+    public RecipientAddressModel getRecipientAddressModel() {
+        return recipientAddressModel;
     }
 
-    public void setProvinceId(String provinceId) {
-        this.provinceId = provinceId;
+    public void setRecipientAddressModel(RecipientAddressModel recipientAddressModel) {
+        this.recipientAddressModel = recipientAddressModel;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.cartPosition);
-        dest.writeInt(this.addressPosition);
-        dest.writeString(this.cartId);
-        dest.writeInt(this.addressStatus);
-        dest.writeString(this.parentId);
-        dest.writeString(this.productId);
-        dest.writeString(this.productWeightFmt);
-        dest.writeInt(this.productRawWeight);
-        dest.writeString(this.productQty);
-        dest.writeString(this.productNotes);
-        dest.writeString(this.addressId);
-        dest.writeString(this.addressTitle);
-        dest.writeString(this.addressReceiverName);
-        dest.writeString(this.addressProvinceName);
-        dest.writeString(this.addressPostalCode);
-        dest.writeString(this.addressCityName);
-        dest.writeString(this.addressStreet);
-        dest.writeString(this.addressCountryName);
-        dest.writeString(this.recipientPhoneNumber);
-        dest.writeString(this.destinationDistrictId);
-        dest.writeString(this.destinationDistrictName);
-        dest.writeString(this.tokenPickup);
-        dest.writeString(this.unixTime);
-        dest.writeParcelable(this.store, flags);
-        dest.writeInt(this.maxQuantity);
-        dest.writeInt(this.minQuantity);
-        dest.writeString(this.errorCheckoutPriceLimit);
-        dest.writeString(this.errorFieldBetween);
-        dest.writeString(this.errorFieldMaxChar);
-        dest.writeString(this.errorFieldRequired);
-        dest.writeString(this.errorProductAvailableStock);
-        dest.writeString(this.errorProductAvailableStockDetail);
-        dest.writeString(this.errorProductMaxQuantity);
-        dest.writeString(this.errorProductMinQuantity);
-        dest.writeInt(this.maxRemark);
-        dest.writeString(this.cityId);
-        dest.writeString(this.provinceId);
-    }
-
-    protected MultipleAddressItemData(Parcel in) {
-        this.cartPosition = in.readInt();
-        this.addressPosition = in.readInt();
-        this.cartId = in.readString();
-        this.addressStatus = in.readInt();
-        this.parentId = in.readString();
-        this.productId = in.readString();
-        this.productWeightFmt = in.readString();
-        this.productRawWeight = in.readInt();
-        this.productQty = in.readString();
-        this.productNotes = in.readString();
-        this.addressId = in.readString();
-        this.addressTitle = in.readString();
-        this.addressReceiverName = in.readString();
-        this.addressProvinceName = in.readString();
-        this.addressPostalCode = in.readString();
-        this.addressCityName = in.readString();
-        this.addressStreet = in.readString();
-        this.addressCountryName = in.readString();
-        this.recipientPhoneNumber = in.readString();
-        this.destinationDistrictId = in.readString();
-        this.destinationDistrictName = in.readString();
-        this.tokenPickup = in.readString();
-        this.unixTime = in.readString();
-        this.store = in.readParcelable(Store.class.getClassLoader());
-        this.maxQuantity = in.readInt();
-        this.minQuantity = in.readInt();
-        this.errorCheckoutPriceLimit = in.readString();
-        this.errorFieldBetween = in.readString();
-        this.errorFieldMaxChar = in.readString();
-        this.errorFieldRequired = in.readString();
-        this.errorProductAvailableStock = in.readString();
-        this.errorProductAvailableStockDetail = in.readString();
-        this.errorProductMaxQuantity = in.readString();
-        this.errorProductMinQuantity = in.readString();
-        this.maxRemark = in.readInt();
-        this.cityId = in.readString();
-        this.provinceId = in.readString();
-    }
-
-    public static final Creator<MultipleAddressItemData> CREATOR = new Creator<MultipleAddressItemData>() {
-        @Override
-        public MultipleAddressItemData createFromParcel(Parcel source) {
-            return new MultipleAddressItemData(source);
-        }
-
-        @Override
-        public MultipleAddressItemData[] newArray(int size) {
-            return new MultipleAddressItemData[size];
-        }
-    };
 }

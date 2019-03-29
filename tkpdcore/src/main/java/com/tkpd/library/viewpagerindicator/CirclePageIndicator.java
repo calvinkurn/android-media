@@ -34,7 +34,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 import static android.widget.LinearLayout.HORIZONTAL;
@@ -345,7 +345,9 @@ public class CirclePageIndicator extends View implements PageIndicator {
 
                 mIsDragging = false;
                 mActivePointerId = INVALID_POINTER;
-                if (mViewPager.isFakeDragging()) mViewPager.endFakeDrag();
+                try {
+                    if (mViewPager.isFakeDragging()) mViewPager.endFakeDrag();
+                }catch ( Exception ex){}
                 break;
 
             case MotionEventCompat.ACTION_POINTER_DOWN: {

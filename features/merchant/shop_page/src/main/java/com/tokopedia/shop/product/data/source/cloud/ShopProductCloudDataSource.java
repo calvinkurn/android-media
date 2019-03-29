@@ -34,9 +34,11 @@ public class ShopProductCloudDataSource {
     }
 
     public Observable<Response<DataResponse<PagingList<ShopProduct>>>> getShopProductList(ShopProductRequestModel shopProductRequestModel) {
-        String baseUrl = ShopUrl.BASE_ACE_URL;
-        if (shopProductRequestModel.isShopClosed() || !shopProductRequestModel.isUseAce()) {
+        String baseUrl;
+        if (shopProductRequestModel.useTome()) {
             baseUrl = ShopCommonUrl.BASE_URL;
+        } else {
+            baseUrl = ShopUrl.BASE_ACE_URL;
         }
         return shopApi.getShopProductList(baseUrl + ShopUrl.SHOP_PRODUCT_PATH, shopProductRequestModel.getHashMap());
     }

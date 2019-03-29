@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem;
 
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -9,10 +10,15 @@ import com.google.gson.annotations.SerializedName;
 
 public class ShippingResponse {
     @SerializedName("id")
+    @Expose
     private int id;
+
     @SerializedName("name")
+    @Expose
     private String name;
+
     @SerializedName("detail")
+    @Expose
     private ShippingDetailResponse detail;
 
     public int getId() {

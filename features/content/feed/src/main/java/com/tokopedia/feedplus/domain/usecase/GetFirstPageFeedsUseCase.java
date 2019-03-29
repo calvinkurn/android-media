@@ -1,10 +1,10 @@
 package com.tokopedia.feedplus.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.feedplus.data.repository.FeedRepository;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
+import com.tokopedia.usecase.RequestParams;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -14,13 +14,12 @@ import rx.Observable;
 
 public class GetFirstPageFeedsUseCase extends GetFeedsUseCase {
 
-    GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase;
+    private GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase;
 
-    public GetFirstPageFeedsUseCase(ThreadExecutor threadExecutor,
-                                    PostExecutionThread postExecutionThread,
-                                    FeedRepository feedRepository,
+    @Inject
+    public GetFirstPageFeedsUseCase(FeedRepository feedRepository,
                                     GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase) {
-        super(threadExecutor, postExecutionThread, feedRepository);
+        super(feedRepository);
         this.getFirstPageFeedsCloudUseCase = getFirstPageFeedsCloudUseCase;
     }
 

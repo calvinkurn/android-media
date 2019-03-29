@@ -3,6 +3,7 @@ package com.tokopedia.reputation.common.data.source.cloud;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.reputation.common.data.source.cloud.api.ReputationCommonApi;
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeedList;
+import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeedV2;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -21,5 +22,9 @@ public class ReputationCommonCloudDataSource {
 
     public Observable<Response<DataResponse<ReputationSpeedList>>> getStatisticSpeed(String shopId) {
         return gmCommonApi.getStatisticSpeed(shopId);
+    }
+
+    public Observable<Response<DataResponse<ReputationSpeedV2>>> getStatisticSpeedDaily(String shopId) {
+        return gmCommonApi.getStatisticSpeedDaily(shopId);
     }
 }

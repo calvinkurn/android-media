@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_item_ticket"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
+    android:longClickable="true">
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/checkbox_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_ticket_status"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_25"
+        android:background="@drawable/rounded_rect_yellow"
+        android:gravity="center"
+        android:paddingBottom="@dimen/dp_4"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_4"
+        android:textColor="@color/yellow_100"
+        android:textSize="@dimen/sp_11"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Dalam Proses" />
+
+    <TextView
+        android:id="@+id/tv_ticket_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_16"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toStartOf="@+id/tv_ticket_status"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/checkbox_delete"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginStart="@dimen/dp_16"
+        tools:text="Cicilan terkena biaya kjcuyjyyonvuigugvhddvvvvcewcwcwewcewcweceecwecdvdkjbkjbkjbksv" />
+
+    <TextView
+        android:id="@+id/tv_ticket_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_8"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintEnd_toStartOf="@id/tv_ticket_status"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/checkbox_delete"
+        app:layout_constraintTop_toBottomOf="@+id/tv_ticket_title"
+        app:layout_goneMarginStart="@dimen/dp_16"
+        tools:text="Hai Zunio, terima kasih telah melavveveve" />
+
+    <TextView
+        android:id="@+id/tv_ticket_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_6"
+        android:fontFamily="sans-serif"
+        android:paddingBottom="@dimen/dp_16"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/sp_10"
+        android:textStyle="normal"
+        app:layout_constraintStart_toEndOf="@+id/checkbox_delete"
+        app:layout_constraintTop_toBottomOf="@id/tv_ticket_desc"
+        app:layout_goneMarginStart="@dimen/dp_16"
+        tools:text="Kemarin" />
+
+
+
+        <TextView
+            android:id="@+id/tv_priority_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_10"
+            android:textStyle="normal"
+            android:text="Prioritas"
+            android:visibility="gone"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:gravity="center"
+            android:drawablePadding="@dimen/dp_4"
+            android:drawableLeft="@drawable/priority_label_img"
+            app:layout_constraintTop_toBottomOf="@id/tv_ticket_desc"
+            app:layout_constraintLeft_toRightOf="@+id/tv_ticket_date"/>
+
+</android.support.constraint.ConstraintLayout>

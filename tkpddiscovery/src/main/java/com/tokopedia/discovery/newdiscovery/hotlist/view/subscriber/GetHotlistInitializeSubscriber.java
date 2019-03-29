@@ -4,6 +4,7 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
 import com.tokopedia.discovery.newdiscovery.domain.model.BadgeModel;
@@ -74,8 +75,11 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
         view.setQueryModel(hotlistModel.getBanner().getHotlistQueryModel());
         view.setDisableTopads(hotlistModel.getBanner().isDisableTopads());
         view.setShareUrl(hotlistModel.getShareURL());
-
-        HotlistHeaderViewModel header = mappingHotlistHeader(hotlistModel.getBanner(), hotlistModel.getAttribute().getHastTags());
+        view.loadImageHeader(hotlistModel.getBanner().getBannerImage());
+        view.setTitleHeader(hotlistModel.getBanner().getHotlistTitle());
+        view.setDescription(hotlistModel.getBanner().getBannerDesc());
+        HotlistHeaderViewModel header = mappingHotlistHeader(hotlistModel.getBanner(),
+                hotlistModel.getAttribute().getHastTags(), hotlistModel.getTotalData());
 
         view.clearLastProductTracker(page == 1);
 
@@ -143,6 +147,7 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
             model.setLabelList(mappingLabels(domain.getLabelList()));
             model.setCountReview(Integer.toString(domain.getCountReview()));
             model.setGoldMerchant(domain.isGoldMerchant());
+            model.setProductUrl(domain.getProductUrl());
             model.setImageUrl(domain.getImageUrl());
             model.setImageUrl700(domain.getImageUrl700());
             model.setPrice(domain.getPrice());
@@ -162,6 +167,10 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
             model.setOriginalPrice(domain.getOriginalPrice());
             model.setDiscountPercentage(domain.getDiscountPercentage());
             model.setOfficial(domain.isOfficial());
+            model.setPriceRange(domain.getPriceRange());
+            model.setTopLabel(domain.getTopLabel());
+            model.setBottomLabel(domain.getBottomLabel());
+            model.setCategoryBreadcrumb(domain.getCategoryBreadcrumb());
 
             list.add(model);
         }
@@ -175,6 +184,7 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
             HotlistProductViewModel.BadgeModel viewModel = new HotlistProductViewModel.BadgeModel();
             viewModel.setImageUrl(domain.getImageUrl());
             viewModel.setTitle(domain.getTitle());
+            viewModel.setShown(domain.isShown());
             list.add(viewModel);
         }
         return list;
@@ -191,16 +201,17 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
         return list;
     }
 
-    private HotlistHeaderViewModel mappingHotlistHeader(HotlistBannerModel banner, List<HotlistHashtagModel> hashTags) {
+    private HotlistHeaderViewModel mappingHotlistHeader(HotlistBannerModel banner, List<HotlistHashtagModel> hashTags, double totalData) {
         HotlistHeaderViewModel headerViewModel = new HotlistHeaderViewModel();
         headerViewModel.setImageUrl(banner.getBannerImage());
+        headerViewModel.setTotalData(totalData);
         headerViewModel.setHotlistTitle(banner.getHotlistTitle());
         headerViewModel.setDesc(banner.getBannerDesc());
         headerViewModel.setHashTags(mappingHashtags(hashTags));
         if (banner.getHotlistPromoInfo() != null) {
             HotlistPromoInfo info = banner.getHotlistPromoInfo();
             headerViewModel.setHotlistPromo(mappingHotlistPromo(info));
-            TrackingUtils.impressionHotlistPromo(banner.getHotlistTitle(), info.getTitle(), info.getVoucherCode());
+            TrackingUtils.impressionHotlistPromo(MainApplication.getAppContext(), banner.getHotlistTitle(), info.getTitle(), info.getVoucherCode());
         }
         return headerViewModel;
     }

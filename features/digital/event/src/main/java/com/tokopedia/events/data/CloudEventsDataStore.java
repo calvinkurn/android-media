@@ -1,7 +1,7 @@
 package com.tokopedia.events.data;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.abstraction.common.network.mapper.DataResponseMapper;
 import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
@@ -16,6 +16,7 @@ import com.tokopedia.events.data.entity.response.seatlayoutresponse.SeatLayoutRe
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.data.source.EventsApi;
 
+import java.util.HashMap;
 import java.util.List;
 
 import rx.Observable;
@@ -34,53 +35,53 @@ public class CloudEventsDataStore implements EventDataStore {
 
 
     @Override
-    public Observable<EventResponseEntity> getEvents(TKPDMapParam<String, Object> params) {
-        return eventsApi.getEvents();
+    public Observable<EventResponseEntity> getEvents(HashMap<String, Object> params) {
+        return eventsApi.getEvents().map(new DataResponseMapper<>());
     }
 
     @Override
-    public Observable<SearchResponse> getSearchEvents(TKPDMapParam<String, Object> params) {
-        return eventsApi.getSearchEvents(params);
+    public Observable<SearchResponse> getSearchEvents(HashMap<String, Object> params) {
+        return eventsApi.getSearchEvents(params).map(new DataResponseMapper<>());
     }
 
     @Override
     public Observable<SearchResponse> getSearchNext(String nextUrl) {
-        return eventsApi.getSearchNext(nextUrl);
+        return eventsApi.getSearchNext(nextUrl).map(new DataResponseMapper<>());
     }
 
     @Override
-    public Observable<EventLocationEntity> getEventsLocationList(TKPDMapParam<String, Object> params) {
-        return eventsApi.getEventsLocationList();
+    public Observable<EventLocationEntity> getEventsLocationList(HashMap<String, Object> params) {
+        return eventsApi.getEventsLocationList().map(new DataResponseMapper<>());
     }
 
     @Override
     public Observable<EventResponseEntity> getEventsListByLocation(String location) {
-        return eventsApi.getEventsByLocation(location);
+        return eventsApi.getEventsByLocation(location).map(new DataResponseMapper<>());
     }
 
     @Override
     public Observable<EventsDetailsEntity> getEventDetails(String url) {
-        return eventsApi.getEventDetails(url);
+        return eventsApi.getEventDetails(url).map(new DataResponseMapper<>());
     }
 
     @Override
     public Observable<ValidateResponse> validateShow(JsonObject requestBody) {
-        return eventsApi.validateShow(requestBody);
+        return eventsApi.validateShow(requestBody).map(new DataResponseMapper<>());
     }
 
     @Override
     public Observable<VerifyCartResponse> verifyCart(JsonObject requestBody, boolean flag) {
-        return eventsApi.postCartVerify(requestBody, flag);
+        return eventsApi.postCartVerify(requestBody, flag).map(new DataResponseMapper<>());
     }
 
     @Override
     public Observable<VerifyCartResponse> postCouponInit(JsonObject requestBody) {
-        return eventsApi.postCouponInit(requestBody);
+        return eventsApi.postCouponInit(requestBody).map(new DataResponseMapper<>());
     }
 
     @Override
     public Observable<CheckoutResponse> checkoutCart(JsonObject requestBody) {
-        return eventsApi.checkoutCart(requestBody);
+        return eventsApi.checkoutCart(requestBody).map(new DataResponseMapper<>());
     }
 
     @Override
@@ -89,27 +90,27 @@ public class CloudEventsDataStore implements EventDataStore {
                                                         int schedule_id,
                                                         int group_id,
                                                         int package_id) {
-        return eventsApi.getSeatLayout(category_id, product_id, schedule_id, group_id, package_id);
+        return eventsApi.getSeatLayout(category_id, product_id, schedule_id, group_id, package_id).map(new DataResponseMapper<>());
     }
 
     @Override
     public Observable<List<SeatLayoutItem>> getEventSeatLayout(String url) {
-        return eventsApi.getEventSeatLayout(url);
+        return eventsApi.getEventSeatLayout(url).map(new DataResponseMapper<>());
     }
 
     @Override
     public Observable<LikeUpdateResponse> updateLikes(JsonObject requestBody) {
-        return eventsApi.updateLikes(requestBody);
+        return eventsApi.updateLikes(requestBody).map(new DataResponseMapper<>());
     }
 
     @Override
     public Observable<List<UserLikesResponse>> getUserLikes() {
-        return eventsApi.getUserLikesProduct();
+        return eventsApi.getUserLikesProduct().map(new DataResponseMapper<>());
     }
 
     @Override
     public Observable<ProductRatingResponse> getProductRating(int id) {
-        return eventsApi.getProductLike(id);
+        return eventsApi.getProductLike(id).map(new DataResponseMapper<>());
     }
 
 

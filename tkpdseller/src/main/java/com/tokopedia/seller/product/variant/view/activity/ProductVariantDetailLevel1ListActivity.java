@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.constant.StockTypeDef;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
+import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
+import com.tokopedia.product.manage.item.common.util.StockTypeDef;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDetailLevel1ListFragment;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardViewModel;
 
@@ -32,6 +32,7 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
     public static final String EXTRA_NEED_RETAIN_IMG = "need_retain_img";
     public static final String EXTRA_STOCK_TYPE = "stock_typ";
     public static final String EXTRA_IS_OFFICIAL_STORE = "is_off_store";
+    public static final String EXTRA_HAS_WHOLESALE = "has_wholesale";
 
     public static final String EXTRA_ACTION_SUBMIT = "sbmt";
 
@@ -51,15 +52,16 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
 
     private @StockTypeDef int stockType;
     private boolean isOfficialStore;
+    private boolean hasWholesale;
 
     public static void start(Context context, Fragment fragment,
                              ProductVariantDashboardViewModel productVariantDashboardViewModel,
                              String variantLv1Name, String variantLv2Name,
                              @CurrencyTypeDef int currencyType,
-                             @StockTypeDef int stockType, boolean isOfficialStore, boolean needRetainImage) {
+                             @StockTypeDef int stockType, boolean isOfficialStore, boolean needRetainImage, boolean hasWholesale) {
         Intent intent = getIntent(context, productVariantDashboardViewModel, variantLv1Name, variantLv2Name, currencyType,
                 stockType, isOfficialStore,
-                needRetainImage);
+                needRetainImage, hasWholesale);
         fragment.startActivityForResult(intent, VARIANT_EDIT_LEVEL1_LIST_REQUEST_CODE);
     }
 
@@ -67,7 +69,7 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
                                    ProductVariantDashboardViewModel productVariantDashboardViewModel,
                                    String variantLv1Name, String variantLv2Name, @CurrencyTypeDef int currencyType,
                                    @StockTypeDef int stockType, boolean isOfficialStore,
-                                   boolean needRetainImage) {
+                                   boolean needRetainImage, boolean hasWholesale) {
         Intent intent = new Intent(context, ProductVariantDetailLevel1ListActivity.class);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_DATA, productVariantDashboardViewModel);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_LV1_NAME, variantLv1Name);
@@ -76,6 +78,7 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
         intent.putExtra(EXTRA_NEED_RETAIN_IMG, needRetainImage);
         intent.putExtra(EXTRA_STOCK_TYPE, stockType);
         intent.putExtra(EXTRA_IS_OFFICIAL_STORE, isOfficialStore);
+        intent.putExtra(EXTRA_HAS_WHOLESALE, hasWholesale);
         return intent;
     }
 
@@ -95,6 +98,7 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
 
         stockType = intent.getIntExtra(EXTRA_STOCK_TYPE, StockTypeDef.TYPE_ACTIVE);
         isOfficialStore = intent.getBooleanExtra(EXTRA_IS_OFFICIAL_STORE, false);
+        hasWholesale  = intent.getBooleanExtra(EXTRA_HAS_WHOLESALE, false);
 
         super.onCreate(savedInstanceState);
 
@@ -185,7 +189,7 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
     @Override
     public void goToLeaf(ProductVariantCombinationViewModel productVariantCombinationViewModel) {
         ProductVariantDetailLevelLeafActivity.start(this, productVariantCombinationViewModel,null,
-                varLv2name, currencyType, stockType, isOfficialStore, needRetainImage);
+                varLv2name, currencyType, stockType, isOfficialStore, needRetainImage, hasWholesale);
     }
 
     @Override

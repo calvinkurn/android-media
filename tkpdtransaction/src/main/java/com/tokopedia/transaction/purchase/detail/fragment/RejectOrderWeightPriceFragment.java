@@ -10,10 +10,10 @@ import android.view.View;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.adapter.RejectOrderPriceWeightChangeAdapter;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailItemData;
+import com.tokopedia.transaction.common.data.order.OrderDetailData;
+import com.tokopedia.transaction.common.data.order.OrderDetailItemData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
-import com.tokopedia.transaction.purchase.listener.ToolbarChangeListener;
+import com.tokopedia.transaction.common.listener.ToolbarChangeListener;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -17,12 +17,18 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core.model.share.ShareData;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.interfaces.ShareCallback;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.linker.model.LinkerError;
+import com.tokopedia.linker.model.LinkerShareResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -222,13 +228,26 @@ public class ShareSocmedHandler {
      * @author EkaCipta
      */
 
-    public static void ShareSpecific(final ShareData data, final Activity context, final String packageName, final String targetType, final Bitmap image, final String altUrl) {
-        BranchSdkUtils.generateBranchLink(data, context, new BranchSdkUtils.GenerateShareContents() {
-            @Override
-            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
-                ShareData(context, packageName, targetType, shareContents, shareUri, image, altUrl);
-            }
-        });
+    public static void ShareSpecific(final LinkerData data, final Activity context, final String packageName, final String targetType, final Bitmap image, final String altUrl) {
+        LinkerManager.getInstance().executeShareRequest(
+                LinkerUtils.createShareRequest(0, DataMapper.getLinkerShareData(data), new ShareCallback() {
+                    @Override
+                    public void urlCreated(LinkerShareResult linkerShareData) {
+                        ShareData(context, packageName, targetType, linkerShareData.getShareContents(),
+                                linkerShareData.getShareUri(), image, altUrl);
+                    }
+
+                    @Override
+                    public void onError(LinkerError linkerError) {
+
+                    }
+                })
+        );
+    }
+
+    public static void ShareBranchUrl( Activity context, String packageName, String targetType, String branchUrl , String shareContents) {
+        ShareData(context, packageName, targetType, shareContents, branchUrl, null, null);
+
     }
 
     private static void ShareData(Activity context, String packageName, String targetType, String shareTxt, String ProductUri, Bitmap image, String altUrl) {
@@ -287,7 +306,7 @@ public class ShareSocmedHandler {
      * @author EkaCipta
      */
 
-    public static void ShareSpecificUri(final ShareData data, final Activity context, final String packageName, final String targetType, final String image, final String altUrl) {
+    public static void ShareSpecificUri(final LinkerData data, final Activity context, final String packageName, final String targetType, final String image, final String altUrl) {
         Observable.just(image)
                 .map(new Func1<String, File>() {
                     @Override
@@ -326,13 +345,23 @@ public class ShareSocmedHandler {
 
                             @Override
                             public void onNext(final File file) {
-                                BranchSdkUtils.generateBranchLink(data, context, new BranchSdkUtils.GenerateShareContents() {
-                                    @Override
-                                    public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
-                                        ShareDataWithSpecificUri(file, targetType, image, context, shareContents, shareUri, packageName, altUrl);
+                                LinkerManager.getInstance().executeShareRequest(
+                                        LinkerUtils.createShareRequest(0, DataMapper.getLinkerShareData(data),
+                                                new ShareCallback() {
+                                                    @Override
+                                                    public void urlCreated(LinkerShareResult linkerShareData) {
+                                                        ShareDataWithSpecificUri(file, targetType, image, context,
+                                                                linkerShareData.getShareContents(), linkerShareData.getShareUri(),
+                                                                packageName, altUrl);
+                                                    }
 
-                                    }
-                                });
+                                                    @Override
+                                                    public void onError(LinkerError linkerError) {
+
+                                                    }
+                                                }
+                                        )
+                                );
                             }
                         }
                 );
@@ -490,20 +519,26 @@ public class ShareSocmedHandler {
         return chooserIntent;
     }
 
-    public static void ShareIntentImageUri(final ShareData data, final Activity context, final String title, String imageUri) {
+    public static void ShareIntentImageUri(final LinkerData data, final Activity context, final String title, String imageUri) {
 
-        BranchSdkUtils.generateBranchLink(data, context, new BranchSdkUtils.GenerateShareContents() {
-            @Override
-            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
-                Intent share = new Intent(Intent.ACTION_SEND);
-                share.setType("text/plain");
-                share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                if (title != null) share.putExtra(Intent.EXTRA_SUBJECT, title);
-                share.putExtra(Intent.EXTRA_TEXT, shareContents);
-                context.startActivity(Intent.createChooser(share, "Share link!"));
-            }
-        });
+        LinkerManager.getInstance().executeShareRequest(
+                LinkerUtils.createShareRequest(0, DataMapper.getLinkerShareData(data), new ShareCallback() {
+                    @Override
+                    public void urlCreated(LinkerShareResult linkerShareData) {
+                        Intent share = new Intent(Intent.ACTION_SEND);
+                        share.setType("text/plain");
+                        share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                        if (title != null) share.putExtra(Intent.EXTRA_SUBJECT, title);
+                        share.putExtra(Intent.EXTRA_TEXT, linkerShareData.getShareContents());
+                        context.startActivity(Intent.createChooser(share, "Share link!"));
+                    }
 
+                    @Override
+                    public void onError(LinkerError linkerError) {
+
+                    }
+                })
+        );
     }
 
     /**

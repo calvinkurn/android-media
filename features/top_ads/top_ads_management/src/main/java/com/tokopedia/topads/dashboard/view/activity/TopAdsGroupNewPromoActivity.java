@@ -14,6 +14,7 @@ import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment;
 
@@ -39,7 +40,7 @@ public class TopAdsGroupNewPromoActivity extends BaseSimpleActivity {
                             .putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, uri.build().getQueryParameter(PARAM_ITEM_ID))
                             .putExtras(extras);
                 } else {
-                    return TopAdsDashboardActivity.getCallingIntent(context)
+                    return ((TopAdsManagementRouter)context.getApplicationContext()).getTopAdsDashboardIntent(context)
                             .putExtras(extras);
                 }
             } else {
@@ -111,7 +112,7 @@ public class TopAdsGroupNewPromoActivity extends BaseSimpleActivity {
             if(!TextUtils.isEmpty(deepLink) && deepLink.contains(Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE)) {
                 super.onBackPressed();
             } else {
-                Intent intent = new Intent(this, TopAdsDashboardActivity.class);
+                Intent intent = ((TopAdsManagementRouter) getApplication()).getTopAdsDashboardIntent(this);
                 this.startActivity(intent);
                 this.finish();
             }

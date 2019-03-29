@@ -11,6 +11,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.gm.resource.GMConstant;
 
 /**
  * Created by kris on 2/6/17. Tokopedia
@@ -31,6 +32,12 @@ public class GoldMerchantRedirectActivity extends TActivity{
         TextView backButton = (TextView) findViewById(R.id.back_button);
         proceedButton.setOnClickListener(onProceedButtonClicked());
         backButton.setOnClickListener(onBackButtonClickedListener());
+
+        TextView title = findViewById(R.id.title);
+	String gm = getString(GMConstant.getGMTitleResource(this));
+	title.setText(getString(R.string.title_gold_merchant_redirect, gm));
+
+	getSupportActionBar().setTitle(gm);
     }
 
     private View.OnClickListener onBackButtonClickedListener() {
@@ -47,11 +54,11 @@ public class GoldMerchantRedirectActivity extends TActivity{
             public void onClick(View v) {
                 Intent launchIntent = getPackageManager().getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
                 if(launchIntent != null){
-                    UnifyTracking.eventClickGMSwitcher(AppEventTracking.EventLabel.OPEN_TOP_SELLER+AppEventTracking.EventLabel.OPEN_APP);
+                    UnifyTracking.eventClickGMSwitcher(v.getContext(), AppEventTracking.EventLabel.OPEN_TOP_SELLER+AppEventTracking.EventLabel.OPEN_APP);
                     startActivity(launchIntent);
                 }
                 else {
-                    UnifyTracking.eventClickGMSwitcher(AppEventTracking.EventLabel.OPEN_TOP_SELLER+AppEventTracking.EventLabel.DOWNLOAD_APP);
+                    UnifyTracking.eventClickGMSwitcher(v.getContext(),AppEventTracking.EventLabel.OPEN_TOP_SELLER+AppEventTracking.EventLabel.DOWNLOAD_APP);
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + TOP_SELLER_APPLICATION_PACKAGE)));
                 }
             }

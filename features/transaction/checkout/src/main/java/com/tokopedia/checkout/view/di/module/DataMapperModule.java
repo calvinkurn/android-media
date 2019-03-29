@@ -12,7 +12,7 @@ import com.tokopedia.checkout.domain.mapper.MapperUtil;
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.TopPayMapper;
 import com.tokopedia.checkout.domain.mapper.VoucherCouponMapper;
-import com.tokopedia.checkout.view.view.shipment.converter.RatesDataConverter;
+import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
 
 import dagger.Module;
 import dagger.Provides;

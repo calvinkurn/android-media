@@ -57,7 +57,7 @@ public class Configuration implements Parcelable {
 		this.subConfig = in.readParcelable(SubConfig.class.getClassLoader());
 	}
 
-	public static final Parcelable.Creator<Configuration> CREATOR = new Parcelable.Creator<Configuration>() {
+	public static final Creator<Configuration> CREATOR = new Creator<Configuration>() {
 		@Override
 		public Configuration createFromParcel(Parcel source) {
 			return new Configuration(source);

@@ -1,0 +1,5 @@
+query get_existing_message_id($toShopId: Int!, $toUserId: Int!, $source: String!) {
+  chatExistingChat(toShopId: $toShopId, toUserId: $toUserId, source: $source) {
+    messageId
+  }
+}

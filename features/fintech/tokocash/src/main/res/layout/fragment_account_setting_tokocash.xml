@@ -49,8 +49,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_10"
                         android:text="Nama"
-                        android:textColor="@color/digital_voucher_notes"
-                        android:textSize="@dimen/fontvs" />
+                        android:textColor="@color/font_black_disabled_38"
+                        android:textSize="@dimen/sp_12" />
 
                     <TextView
                         android:id="@+id/name_account"
@@ -58,22 +58,22 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dp_5"
                         android:layout_marginTop="@dimen/dp_5"
-                        android:textColor="@color/digital_voucher"
-                        android:textSize="@dimen/fonts" />
+                        android:textColor="@color/font_black_secondary_54"
+                        android:textSize="@dimen/sp_14" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginBottom="@dimen/dp_15"
-                        android:background="@color/separator_grey" />
+                        android:background="@color/separator_voucher" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_10"
                         android:text="Email"
-                        android:textColor="@color/digital_voucher_notes"
-                        android:textSize="@dimen/fontvs" />
+                        android:textColor="@color/font_black_disabled_38"
+                        android:textSize="@dimen/sp_12" />
 
                     <TextView
                         android:id="@+id/email_account"
@@ -81,22 +81,22 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dp_5"
                         android:layout_marginTop="@dimen/dp_5"
-                        android:textColor="@color/digital_voucher"
-                        android:textSize="@dimen/fonts" />
+                        android:textColor="@color/font_black_secondary_54"
+                        android:textSize="@dimen/sp_14" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginBottom="@dimen/dp_15"
-                        android:background="@color/separator_grey" />
+                        android:background="@color/separator_voucher" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_10"
                         android:text="Nomor Handphone"
-                        android:textColor="@color/digital_voucher_notes"
-                        android:textSize="@dimen/fontvs" />
+                        android:textColor="@color/font_black_disabled_38"
+                        android:textSize="@dimen/sp_12" />
 
                     <TextView
                         android:id="@+id/phone_account"
@@ -104,14 +104,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dp_5"
                         android:layout_marginTop="@dimen/dp_5"
-                        android:textColor="@color/digital_voucher"
-                        android:textSize="@dimen/fonts" />
+                        android:textColor="@color/font_black_secondary_54"
+                        android:textSize="@dimen/sp_14" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginBottom="@dimen/dp_15"
-                        android:background="@color/separator_grey" />
+                        android:background="@color/separator_voucher" />
 
 
                 </LinearLayout>
@@ -134,23 +134,33 @@
                         android:paddingRight="@dimen/dp_20"
                         android:paddingTop="@dimen/dp_10"
                         android:text="Akun yang Terhubung ke TokoCash"
-                        android:textColor="@color/digital_item_title"
-                        android:textSize="@dimen/font_medium" />
+                        android:textColor="@color/black_70"
+                        android:textSize="@dimen/sp_16" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@color/separator_grey" />
+                        android:background="@color/separator_voucher" />
 
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rv_account_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
+
                 </LinearLayout>
+
             </LinearLayout>
 
         </android.support.v4.widget.NestedScrollView>
 
     </com.tokopedia.core.customwidget.SwipeToRefresh>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:visibility="gone"/>
+
 </FrameLayout>

@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:clipChildren="false">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="?toolbarTheme"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
+            app:subtitleTextAppearance="?subtitleTextAppearance"
+            app:titleTextAppearance="?titleTextAppearance">
+
+            <TextView
+                android:id="@+id/tv_done"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                style="@style/TextView.Title.Green"
+                android:text="@string/label_next"
+                android:paddingTop="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_8"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <TextView
+                android:id="@+id/tv_action_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="@dimen/sp_16"
+                android:textColor="@android:color/black"
+                tools:text="@string/crop"/>
+
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:id="@+id/vg_content_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:clipToPadding="false"
+            android:clipChildren="false">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical"
+                android:divider="@drawable/bg_line_separator"
+                android:showDividers="end">
+
+                <com.tokopedia.imagepicker.picker.gallery.widget.SquareFrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.tokopedia.abstraction.base.view.widget.TouchViewPager
+                        android:id="@+id/view_pager"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:can_swipe="false"/>
+
+                    <ProgressBar
+                        android:id="@+id/crop_progressbar"
+                        style="?android:attr/indeterminate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:indeterminate="true"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+                </com.tokopedia.imagepicker.picker.gallery.widget.SquareFrameLayout>
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/vg_footer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:clipChildren="false"
+                android:background="@color/white">
+
+                <LinearLayout
+                    android:id="@+id/vg_editor_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical"
+                    android:visibility="visible"
+                    tools:visibility="visible"
+                    android:clipToPadding="false"
+                    android:clipChildren="false">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"/>
+
+                    <com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget
+                        android:id="@+id/image_edit_action_main_widget"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:clipChildren="false"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"/>
+
+                    <com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget
+                        android:id="@+id/image_edit_thumbnail_list_widget"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+
+                <FrameLayout
+                    android:id="@+id/vg_editor_control"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:clipToPadding="false"
+                        android:clipChildren="false">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"/>
+
+                        <include
+                            android:id="@+id/layout_crop"
+                            android:layout_height="@dimen/image_editor_control_height"
+                            android:layout_width="match_parent"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:visibility="gone"
+                            tools:visibility="visible"
+                            layout="@layout/layout_crop"/>
+
+                        <include
+                            android:id="@+id/layout_rotate"
+                            android:layout_height="@dimen/image_editor_control_height"
+                            android:layout_width="match_parent"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:visibility="gone"
+                            tools:visibility="visible"
+                            layout="@layout/layout_rotate"/>
+
+                        <include
+                            android:id="@+id/layout_brightness"
+                            android:layout_height="@dimen/image_editor_control_height"
+                            android:layout_width="match_parent"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:visibility="gone"
+                            tools:visibility="visible"
+                            layout="@layout/layout_brightness"/>
+
+                        <include
+                            android:id="@+id/layout_contrast"
+                            android:layout_height="@dimen/image_editor_control_height"
+                            android:layout_width="match_parent"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:visibility="gone"
+                            tools:visibility="visible"
+                            layout="@layout/layout_contrast"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="2"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="bottom">
+                        <TextView
+                            android:id="@+id/tv_edit_cancel"
+                            style="@style/TextView.Title"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:paddingRight="@dimen/dp_16"
+                            android:paddingLeft="@dimen/dp_16"
+                            android:paddingTop="@dimen/dp_20"
+                            android:paddingBottom="@dimen/dp_20"
+                            android:textSize="@dimen/sp_18"
+                            android:text="@string/image_picker_label_cancel"
+                            android:clickable="true"
+                            android:focusable="true"/>
+
+                        <TextView
+                            android:id="@+id/tv_edit_save"
+                            style="@style/TextView.Title.Green"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:paddingRight="@dimen/dp_16"
+                            android:paddingLeft="@dimen/dp_16"
+                            android:paddingTop="@dimen/dp_20"
+                            android:paddingBottom="@dimen/dp_20"
+                            android:textSize="@dimen/sp_18"
+                            android:gravity="center_horizontal"
+                            android:text="@string/save"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:focusable="true"/>
+                    </LinearLayout>
+                </FrameLayout>
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/vg_download_progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <ProgressBar
+                android:id="@+id/progressbar"
+                style="?android:attr/indeterminate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="@string/downloading_images" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/crop_blocking_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+    </FrameLayout>
+
+</LinearLayout>

@@ -1,10 +1,10 @@
 package com.tokopedia.events.domain;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -16,8 +16,7 @@ public class GetSearchNextUseCase extends UseCase<SearchDomainModel> {
 
     private final EventRepository eventRepository;
 
-    public GetSearchNextUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, EventRepository eventRepository) {
-        super(threadExecutor, postExecutionThread);
+    public GetSearchNextUseCase(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
 

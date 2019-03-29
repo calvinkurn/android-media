@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -18,22 +20,22 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.create.model.passdata.ActionParameterPassData;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.AttachmentActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemListActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
-import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCenter;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.CreateResolutionCenterPresenter;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
+import com.tokopedia.inbox.rescenter.di.DaggerResolutionComponent;
 import com.tokopedia.inbox.rescenter.utils.CurrencyFormatter;
 
 import java.util.ArrayList;
@@ -100,67 +102,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        presenter.attachView(this);
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
-    @Override
-    protected String getScreenName() {
-        return null;
-    }
-
-    @Override
-    protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
-        DaggerCreateResoComponent daggerCreateResoComponent =
-                (DaggerCreateResoComponent) DaggerCreateResoComponent.builder()
-                        .appComponent(appComponent)
-                        .build();
-
-        daggerCreateResoComponent.inject(this);
-    }
-
-    @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-        state.putParcelable(RESULT_VIEW_MODEL_DATA, resultViewModel);
-        state.putString(PARAM_RESOLUTION_ID, resolutionId);
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-        resultViewModel = savedState.getParcelable(RESULT_VIEW_MODEL_DATA);
-        resolutionId = savedState.getString(resolutionId);
-        presenter.getRestoreData(resultViewModel);
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-        if (arguments.get(PARAM_RESOLUTION_ID) != null) {
-            resolutionId = arguments.getString(PARAM_RESOLUTION_ID);
-            orderId = arguments.getString(PARAM_ORDER_ID);
-        } else {
-            ActionParameterPassData actionParameterPassData = (ActionParameterPassData) arguments.get(KEY_PARAM_PASS_DATA);
-            orderId = actionParameterPassData.getOrderID();
-        }
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_create_resolution_center_base;
-    }
-
-    @Override
-    protected void initView(View view) {
+        View view = inflater.inflate(R.layout.fragment_create_resolution_center_base, container, false);
 
         problemView = view.findViewById(R.id.problem_view);
         footer = view.findViewById(R.id.footer);
@@ -178,10 +120,64 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         ivChooseProductProblem = (ImageView) view.findViewById(R.id.iv_product_problem);
         ivSolution = (ImageView) view.findViewById(R.id.iv_solution);
         ivUploadProve = (ImageView) view.findViewById(R.id.iv_prove);
-
         btnCreateResolution = (Button) view.findViewById(R.id.btn_create_resolution);
-
+        rlProgress = (RelativeLayout) view.findViewById(R.id.rl_progress);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+
+        presenter.attachView(this);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setupArguments(getArguments());
+        initView();
+        setViewListener();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
+    protected void initInjector() {
+        DaggerResolutionComponent resolutionComponent =
+                (DaggerResolutionComponent)DaggerResolutionComponent.builder()
+                        .baseAppComponent(((BaseMainApplication)getActivity().getApplicationContext())
+                        .getBaseAppComponent()).build();
+        resolutionComponent.inject(this);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(RESULT_VIEW_MODEL_DATA, resultViewModel);
+        outState.putString(PARAM_RESOLUTION_ID, resolutionId);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            resultViewModel = savedInstanceState.getParcelable(RESULT_VIEW_MODEL_DATA);
+            resolutionId = savedInstanceState.getString(resolutionId);
+            presenter.getRestoreData(resultViewModel);
+        }
+    }
+
+    protected void setupArguments(Bundle arguments) {
+        if (arguments.get(PARAM_RESOLUTION_ID) != null) {
+            resolutionId = arguments.getString(PARAM_RESOLUTION_ID);
+            orderId = arguments.getString(PARAM_ORDER_ID);
+        } else {
+            ActionParameterPassData actionParameterPassData = (ActionParameterPassData) arguments.get(KEY_PARAM_PASS_DATA);
+            orderId = actionParameterPassData.getOrderID();
+        }
+    }
+
+    private void initView() {
         typedValue100 = new TypedValue();
         typedValue70 = new TypedValue();
         typedValue38 = new TypedValue();
@@ -193,8 +189,6 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         float100 = typedValue100.getFloat();
         float70 = typedValue70.getFloat();
         float38 = typedValue38.getFloat();
-
-        rlProgress = (RelativeLayout) view.findViewById(R.id.rl_progress);
         updateView(new ResultViewModel());
         if (resolutionId != null) {
             presenter.loadProductProblem(orderId, resolutionId);
@@ -203,35 +197,16 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         }
     }
 
-    @Override
-    protected void setViewListener() {
-        ffChooseProductProblem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.chooseProductProblemClicked();
-            }
-        });
+    private void setViewListener() {
+        ffChooseProductProblem.setOnClickListener(view -> presenter.chooseProductProblemClicked());
 
-        ffSolution.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.solutionClicked();
-            }
-        });
+        ffSolution.setOnClickListener(view -> presenter.solutionClicked());
 
-        ffUploadProve.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.uploadProveClicked();
-            }
-        });
+        ffUploadProve.setOnClickListener(view -> presenter.uploadProveClicked());
 
-        btnCreateResolution.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.createResoClicked();
-                UnifyTracking.eventCreateResoPre();
-            }
+        btnCreateResolution.setOnClickListener(view -> {
+            presenter.createResoClicked();
+            UnifyTracking.eventCreateResoPre(getActivity());
         });
     }
 
@@ -246,7 +221,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         ffChooseProductProblem.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_layout_enable));
 
 
-        if (resultViewModel.problem.size() != 0) {
+        if (resultViewModel.complaints.size() != 0) {
             ffSolution.setEnabled(true);
             ivChooseProductProblem.setImageDrawable(ContextCompat.getDrawable(getActivity(),
                     R.drawable.ic_complete));
@@ -254,12 +229,12 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                     R.drawable.bg_layout_enable_with_green));
             ffSolution.setBackground(ContextCompat.getDrawable(getActivity(),
                     R.drawable.bg_layout_enable));
-            updateProductProblemString(resultViewModel.problem, tvChooseProductProblem);
-            tvSolution.setTextColor(context.getResources().getColor(R.color.black_70));
-            tvSolutionTitle.setTextColor(context.getResources().getColor(R.color.black_70));
+            updateProductProblemString(resultViewModel.complaints, tvChooseProductProblem);
+            tvSolution.setTextColor(getActivity().getResources().getColor(R.color.black_70));
+            tvSolutionTitle.setTextColor(getActivity().getResources().getColor(R.color.black_70));
             ivChooseProductProblem.setAlpha(float100);
             ivSolution.setAlpha(float70);
-            tvUploadProve.setText(context.getResources()
+            tvUploadProve.setText(getActivity().getResources()
                     .getString(R.string.string_upload_prove_information));
             ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(),
                     R.drawable.chevron_thin_right));
@@ -270,9 +245,9 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                     R.drawable.chevron_thin_right));
             ffSolution.setBackground(ContextCompat.getDrawable(getActivity(),
                     R.drawable.bg_layout_disable));
-            tvChooseProductProblem.setText(context.getResources().getString(R.string.string_choose_product_problem));
-            tvSolution.setTextColor(context.getResources().getColor(R.color.black_38));
-            tvSolutionTitle.setTextColor(context.getResources().getColor(R.color.black_38));
+            tvChooseProductProblem.setText(getActivity().getResources().getString(R.string.string_choose_product_problem));
+            tvSolution.setTextColor(getActivity().getResources().getColor(R.color.black_38));
+            tvSolutionTitle.setTextColor(getActivity().getResources().getColor(R.color.black_38));
             ivChooseProductProblem.setAlpha(float100);
             ivSolution.setAlpha(float38);
             ivUploadProve.setAlpha(float38);
@@ -287,15 +262,15 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                     R.drawable.bg_layout_enable));
             if (!resultViewModel.isAttachmentRequired) {
                 ffUploadProve.setEnabled(false);
-                tvUploadProve.setTextColor(context.getResources().getColor(R.color.black_38));
-                tvUploadProveTitle.setTextColor(context.getResources().getColor(R.color.black_38));
+                tvUploadProve.setTextColor(getActivity().getResources().getColor(R.color.black_38));
+                tvUploadProveTitle.setTextColor(getActivity().getResources().getColor(R.color.black_38));
                 ivUploadProve.setAlpha(float38);
             } else {
                 ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(),
                         R.drawable.chevron_thin_right));
                 ffUploadProve.setEnabled(true);
-                tvUploadProve.setTextColor(context.getResources().getColor(R.color.black_70));
-                tvUploadProveTitle.setTextColor(context.getResources().getColor(R.color.black_70));
+                tvUploadProve.setTextColor(getActivity().getResources().getColor(R.color.black_70));
+                tvUploadProveTitle.setTextColor(getActivity().getResources().getColor(R.color.black_70));
                 ivUploadProve.setAlpha(float70);
             }
             updateSolutionString(resultViewModel, tvSolution);
@@ -306,10 +281,10 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                     R.drawable.chevron_thin_right));
             ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(),
                     R.drawable.bg_layout_disable));
-            tvSolution.setText(context.getResources().getString(R.string.string_choose_solution));
-            tvUploadProve.setTextColor(context.getResources().getColor(R.color.black_38));
-            tvUploadProveTitle.setTextColor(context.getResources().getColor(R.color.black_38));
-            if (resultViewModel.problem.size() != 0) {
+            tvSolution.setText(getActivity().getResources().getString(R.string.string_choose_solution));
+            tvUploadProve.setTextColor(getActivity().getResources().getColor(R.color.black_38));
+            tvUploadProveTitle.setTextColor(getActivity().getResources().getColor(R.color.black_38));
+            if (resultViewModel.complaints.size() != 0) {
                 ivSolution.setAlpha(float70);
             } else {
                 ivSolution.setAlpha(float38);
@@ -319,7 +294,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         btnCreateResolution.setEnabled(false);
         btnCreateResolution.setBackground(ContextCompat.getDrawable(getActivity(),
                 R.drawable.bg_button_disable));
-        if (resultViewModel.problem.size() != 0 && resultViewModel.solution != 0) {
+        if (resultViewModel.complaints.size() != 0 && resultViewModel.solution != 0) {
             if (resultViewModel.isAttachmentRequired) {
                 if (resultViewModel.message.remark != null) {
                     btnCreateResolution.setEnabled(true);
@@ -329,9 +304,9 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                             R.drawable.ic_complete));
                     ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(),
                             R.drawable.bg_layout_enable_with_green));
-                    btnCreateResolution.setTextColor(context.getResources().getColor(R.color.white));
+                    btnCreateResolution.setTextColor(getActivity().getResources().getColor(R.color.white));
                     ivUploadProve.setAlpha(1f);
-                    tvUploadProve.setText(context.getResources().getString(R.string.string_step3_complete));
+                    tvUploadProve.setText(getActivity().getResources().getString(R.string.string_step3_complete));
                 }
             } else {
                 btnCreateResolution.setEnabled(true);
@@ -339,33 +314,33 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                         R.drawable.bg_button_enable));
                 ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(),
                         R.drawable.bg_layout_disable));
-                btnCreateResolution.setTextColor(context.getResources().getColor(R.color.white));
+                btnCreateResolution.setTextColor(getActivity().getResources().getColor(R.color.white));
                 ffUploadProve.setEnabled(false);
-                tvUploadProve.setText(context.getResources().getString(R.string.string_upload_prove_information));
+                tvUploadProve.setText(getActivity().getResources().getString(R.string.string_upload_prove_information));
             }
         }
     }
 
-    public void updateProductProblemString(List<ProblemResult> problemResultList, TextView textView) {
+    public void updateProductProblemString(List<ComplaintResult> complaintResults, TextView textView) {
         String problemResultString = "";
         boolean isType1Selected = false;
-        for (ProblemResult problemResult : problemResultList) {
-            if (problemResult.type == 1) {
+        for (ComplaintResult complaintResult : complaintResults) {
+            if (complaintResult.problem.type == 1) {
                 isType1Selected = true;
             }
         }
         if (isType1Selected) {
-            problemResultString += context.getString(R.string.string_difference_ongkir);
-            if (problemResultList.size() > 1) {
+            problemResultString += getActivity().getString(R.string.string_difference_ongkir);
+            if (complaintResults.size() > 1) {
                 problemResultString += " & ";
                 problemResultString += (isType1Selected ?
-                        problemResultList.size() - 1 :
-                        problemResultList.size()) + " " + context.getString(R.string.string_problem_product);
+                        complaintResults.size() - 1 :
+                        complaintResults.size()) + " " + getActivity().getString(R.string.string_problem_product);
             }
         } else {
             problemResultString += (isType1Selected ?
-                    problemResultList.size() - 1 :
-                    problemResultList.size()) + " " + context.getString(R.string.string_problem_product);
+                    complaintResults.size() - 1 :
+                    complaintResults.size()) + " " + getActivity().getString(R.string.string_problem_product);
         }
         textView.setText(problemResultString);
     }
@@ -373,7 +348,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     public void updateSolutionString(ResultViewModel resultViewModel, TextView textView) {
         textView.setText(resultViewModel.refundAmount != 0 && resultViewModel.solutionName != null ?
                 resultViewModel.solutionName.replace(
-                        context.getResources().getString(R.string.string_return_value),
+                        getActivity().getResources().getString(R.string.string_return_value),
                         CurrencyFormatter.formatDotRupiah(String.valueOf(resultViewModel.refundAmount))) :
                 resultViewModel.solutionName);
     }
@@ -432,14 +407,11 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     @Override
     public void errorLoadProductProblemData(String error) {
         dismissProgressBar();
-        NetworkErrorHelper.showEmptyState(context, getView(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                if (resolutionId != null) {
-                    presenter.loadProductProblem(orderId, resolutionId);
-                } else {
-                    presenter.loadProductProblem(orderId);
-                }
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, () -> {
+            if (resolutionId != null) {
+                presenter.loadProductProblem(orderId, resolutionId);
+            } else {
+                presenter.loadProductProblem(orderId);
             }
         });
     }
@@ -470,23 +442,21 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
     private void finishResolution(String resolutionId, String message, String shopName) {
         dismissProgressBar();
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-        presenter.getInboxAndDetailResoStackBuilder(context, resolutionId, shopName).startActivities();
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        presenter.getInboxAndDetailResoStackBuilder(getActivity(), resolutionId, shopName).startActivities();
         getActivity().finish();
     }
 
     @Override
     public void transitionToChooseProductAndProblemPage(ProductProblemListViewModel productProblemListViewModel,
-                                                        ArrayList<ProblemResult> problemResults) {
-        Intent intent = new Intent(getActivity(), ProductProblemListActivity.class);
-        intent.putExtra(KEY_PARAM_PASS_DATA, productProblemListViewModel);
-        intent.putParcelableArrayListExtra(PROBLEM_RESULT_LIST_DATA, problemResults);
+                                                        ArrayList<ComplaintResult> complaintResults) {
+        Intent intent = ProductProblemListActivity.getInstance(getActivity(), productProblemListViewModel, complaintResults);
         startActivityForResult(intent, REQUEST_STEP1);
     }
 
     @Override
     public void transitionToSolutionPage(ResultViewModel resultViewModel) {
-        Intent intent = SolutionListActivity.newCreateInstance(context, resultViewModel);
+        Intent intent = SolutionListActivity.newCreateInstance(getActivity(), resultViewModel);
         startActivityForResult(intent, REQUEST_STEP2);
     }
 
@@ -499,7 +469,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
     @Override
     public void showCreateComplainDialog(final ResultViewModel resultViewModel) {
-        final Dialog dialog = new Dialog(context);
+        final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.layout_create_complain);
         TextView tvProblem = (TextView) dialog.findViewById(R.id.tv_problem);
@@ -508,34 +478,22 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
         Button btnCreateComplain = (Button) dialog.findViewById(R.id.btn_create_complain);
 
-        updateProductProblemString(resultViewModel.problem, tvProblem);
+        updateProductProblemString(resultViewModel.complaints, tvProblem);
         updateSolutionString(resultViewModel, tvSolution);
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                UnifyTracking.eventCreateResoUnconfirm();
-            }
+        btnBack.setOnClickListener(view -> {
+            dialog.dismiss();
+            UnifyTracking.eventCreateResoUnconfirm(getActivity());
         });
-        ivClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                UnifyTracking.eventCreateResoUnconfirm();
-            }
+        ivClose.setOnClickListener(view -> {
+            dialog.dismiss();
+            UnifyTracking.eventCreateResoUnconfirm(getActivity());
         });
 
-        btnCreateComplain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (resultViewModel.isAttachmentRequired)
-                    presenter.callCreateResolutionAPIWithAttachment();
-                else
-                    presenter.callCreateResolutionAPI();
-                UnifyTracking.eventCreateResoConfirm();
-                dialog.dismiss();
-            }
+        btnCreateComplain.setOnClickListener(view -> {
+            presenter.callCreateResolutionAPIWithAttachment();
+            UnifyTracking.eventCreateResoConfirm(getActivity());
+            dialog.dismiss();
         });
 
         dialog.show();
@@ -546,7 +504,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_STEP1) {
             if (resultCode == Activity.RESULT_OK) {
-                presenter.addResultFromStep1(data.<ProblemResult>getParcelableArrayListExtra(PROBLEM_RESULT_LIST_DATA));
+                presenter.addResultFromStep1(data.<ComplaintResult>getParcelableArrayListExtra(PROBLEM_RESULT_LIST_DATA));
             }
         } else if (requestCode == REQUEST_STEP2) {
             if (resultCode == Activity.RESULT_OK) {

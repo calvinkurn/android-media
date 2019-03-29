@@ -363,6 +363,7 @@ public class Destination implements Parcelable {
         this.longitude = String.valueOf(latLng.longitude);
     }
 
+
     public void setPassword(String password) {
         this.password = password;
     }

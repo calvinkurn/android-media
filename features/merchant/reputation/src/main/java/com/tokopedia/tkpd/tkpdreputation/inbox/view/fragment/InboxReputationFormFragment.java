@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -13,12 +12,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,11 +38,9 @@ import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.ImageGallery;
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -50,8 +48,13 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.ImageUploadPreviewActivity;
@@ -67,34 +70,33 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareM
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
 /**
  * @author by nisie on 8/20/17.
  */
 
-@RuntimePermissions
 public class InboxReputationFormFragment extends BaseDaggerFragment
         implements InboxReputationForm.View, InboxReputationFormActivity.SkipListener {
 
     public static final int RESULT_CODE_SKIP = 321;
     private static final String ARGS_CAMERA_FILELOC = "ARGS_CAMERA_FILELOC";
+    private static final int REQUEST_CODE_IMAGE_REVIEW = 384;
+    public static final int MAX_IMAGE_LIMIT = 5;
 
     ImageView productImage;
     TextView productName;
     RatingBar rating;
     TextView ratingText;
     EditText review;
-    TextInputLayout reviewLayout;
+    TkpdHintTextInputLayout reviewLayout;
     ImageView uploadInfo;
     RecyclerView listImageUpload;
     Switch shareFbSwitch;
@@ -150,7 +152,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         rating = (RatingBar) parentView.findViewById(R.id.rating);
         ratingText = (TextView) parentView.findViewById(R.id.rating_text);
         review = (EditText) parentView.findViewById(R.id.review);
-        reviewLayout = (TextInputLayout) parentView.findViewById(R.id.review_layout);
+        reviewLayout = (TkpdHintTextInputLayout) parentView.findViewById(R.id.review_layout);
         uploadInfo = (ImageView) parentView.findViewById(R.id.upload_info);
         listImageUpload = (RecyclerView) parentView.findViewById(R.id.list_image_upload);
         shareFbSwitch = (Switch) parentView.findViewById(R.id.switch_facebook);
@@ -182,6 +184,19 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
             }
         }
 
+        review.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                checkButtonShouldEnabled();
+            }
+        });
+
         adapter = ImageUploadAdapter.createAdapter(getContext());
         adapter.setCanUpload(true);
         adapter.setListener(new ImageUploadAdapter.ProductImageListener() {
@@ -204,23 +219,8 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                                 shareFbSwitch.isChecked(),
                                 anomymousSwitch.isChecked()
                         ));
-                        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
-                        myAlertDialog.setMessage(getActivity().getString(R.string.dialog_upload_option));
-                        myAlertDialog.setPositiveButton(getActivity().getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                InboxReputationFormFragmentPermissionsDispatcher.actionImagePickerWithCheck(InboxReputationFormFragment.this);
-                            }
-                        });
-                        myAlertDialog.setNegativeButton(getActivity().getString(R.string.title_camera), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                InboxReputationFormFragmentPermissionsDispatcher.actionCameraWithCheck(InboxReputationFormFragment.this);
-                            }
-                        });
-                        Dialog dialog = myAlertDialog.create();
-                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                        dialog.show();
+
+                        openImagePicker();
                     }
                 };
             }
@@ -385,11 +385,37 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
             productName.setText(MethodChecker.fromHtml(getArguments().getString
                     (InboxReputationFormActivity.ARGS_PRODUCT_NAME)));
 
-            ImageHandler.LoadImage(productImage, getArguments().getString
-                    (InboxReputationFormActivity.ARGS_PRODUCT_AVATAR));
+            ImageHandler.loadImageRounded2(productImage.getContext(), productImage, getArguments().getString
+                    (InboxReputationFormActivity.ARGS_PRODUCT_AVATAR), 15.0f);
         }
         String anonymouseInfoText = getString(R.string.hint_anonym) + " " + getAnonymousName();
         anonymousInfo.setText(anonymouseInfoText);
+
+        checkButtonShouldEnabled();
+        setTips();
+    }
+
+    private void checkButtonShouldEnabled() {
+        if (TextUtils.isEmpty(review.getText().toString())){
+            sendButton.setEnabled(false);
+        } else {
+            sendButton.setEnabled(true);
+        }
+    }
+
+    private void openImagePicker() {
+
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+                new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
+                null
+                ,new ImagePickerMultipleSelectionBuilder(
+                new ArrayList<>(),
+                null,
+                com.tokopedia.core2.R.string.empty_desc,
+                MAX_IMAGE_LIMIT - adapter.getList().size()));
+        Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
+        startActivityForResult(intent, REQUEST_CODE_IMAGE_REVIEW);
     }
 
     private String getAnonymousName() {
@@ -434,16 +460,6 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
             ));
         }
         return list;
-    }
-
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void actionCamera() {
-        presenter.openCamera();
-    }
-
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void actionImagePicker() {
-        presenter.openImageGallery();
     }
 
 
@@ -628,87 +644,17 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ImageUploadHandler.REQUEST_CODE
-                && resultCode == Activity.RESULT_OK) {
-            String fileLoc = "";
-            if (presenter != null)
-                fileLoc = presenter.getFileLocFromCamera();
-            startActivityForResult(ImageUploadPreviewActivity.getCallingIntent(getActivity(),
-                    fileLoc), ImageUploadHandler.CODE_UPLOAD_IMAGE);
-        } else if (requestCode == ImageUploadHandler.REQUEST_CODE
-                && resultCode == GalleryBrowser.RESULT_CODE) {
-            String fileLoc = "";
-            if (data != null && data.getStringExtra(ImageGallery.EXTRA_URL) != null) {
-                fileLoc = data.getStringExtra(ImageGallery.EXTRA_URL);
+        if (requestCode == REQUEST_CODE_IMAGE_REVIEW && resultCode == Activity.RESULT_OK && data!= null) {
+            ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+            if (imageUrlOrPathList!= null && imageUrlOrPathList.size() > 0) {
+                startActivityForResult(ImageUploadPreviewActivity.getCallingIntent(getActivity(),
+                        imageUrlOrPathList), ImageUploadHandler.CODE_UPLOAD_IMAGE);
             }
-            startActivityForResult(ImageUploadPreviewActivity.getCallingIntent(getActivity(),
-                    fileLoc), ImageUploadHandler.CODE_UPLOAD_IMAGE);
         } else if (requestCode == ImageUploadHandler.CODE_UPLOAD_IMAGE) {
             presenter.restoreFormFromCache();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        InboxReputationFormFragmentPermissionsDispatcher.onRequestPermissionsResult(
-                InboxReputationFormFragment.this, requestCode, grantResults);
-    }
-
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showRationaleForStorageAndCamera(final PermissionRequest request) {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-
-        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
-    }
-
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showRationaleForStorage(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied(Manifest.permission.CAMERA)
-    void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.CAMERA)
-    void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showDeniedForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
-    }
-
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showNeverAskForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 
     @Override

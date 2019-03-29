@@ -29,14 +29,14 @@ import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import java.util.Locale;
 
 /**
  * Created by Alifa on 10/18/2016.
  */
-
+@Deprecated
 public class PinEntryEditText extends EditText {
     private static final String XML_NAMESPACE_ANDROID = "http://schemas.android.com/apk/res/android";
 

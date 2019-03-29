@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.events.R;
 import com.tokopedia.events.view.adapter.AddTicketAdapter;
+import com.tokopedia.events.view.contractor.EventBookTicketContract;
 import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 
@@ -21,10 +22,9 @@ import java.util.List;
 public class FragmentAddTickets extends Fragment {
     private static final String ARG_PARAM1 = "typecount";
 
-    private int mTicketTypeCount;
     private List<PackageViewModel> mPackages;
 
-    private EventBookTicketPresenter mPresenter;
+    private EventBookTicketContract.BookTicketPresenter mPresenter;
     private SpaceItemDecoration dividerItemDecoration;
     private RecyclerView scrollView;
     private AddTicketAdapter ticketAdapter;
@@ -41,18 +41,9 @@ public class FragmentAddTickets extends Fragment {
         return fragment;
     }
 
-    public void setData(List<PackageViewModel> packages, EventBookTicketPresenter presenter) {
+    public void setData(List<PackageViewModel> packages, EventBookTicketContract.BookTicketPresenter presenter) {
         this.mPresenter = presenter;
         this.mPackages = packages;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mTicketTypeCount = getArguments().getInt(ARG_PARAM1);
-        }
-
     }
 
     @Override
@@ -128,6 +119,8 @@ public class FragmentAddTickets extends Fragment {
     }
 
     public void resetAdapter() {
+        if (ticketAdapter == null)
+            ticketAdapter = new AddTicketAdapter(getActivity(), mPackages, mPresenter);
         ticketAdapter.setData(mPackages);
         ticketAdapter.notifyDataSetChanged();
     }

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd;
+    package com.tokopedia.tkpd;
 
 /**
  * Created by hangnadi on 1/24/17.
@@ -7,7 +7,9 @@ package com.tokopedia.tkpd;
 @SuppressWarnings("WeakerAccess")
 public class ConsumerAppBaseUrl {
 
+    public static final String BASE_INSTANT_LOAN_URL = "https://staging.tokopedia.com/";
     public static final String BASE_TOKOPEDIA_WEBSITE = "https://staging.tokopedia.com/";
+    public static final String BASE_TOKOPEDIA_GQL = "https://gql-staging.tokopedia.com/";
     public static final String BASE_DOMAIN = "https://ws-staging.tokopedia.com/";
     public static final String BASE_API_DOMAIN = "https://api-staging.tokopedia.com/";
     public static final String BASE_ACE_DOMAIN = "https://ace-staging.tokopedia.com/";
@@ -37,11 +39,12 @@ public class ConsumerAppBaseUrl {
     public static final String PAYMENT_DOMAIN = "https://payment-staging.tokopedia.com/";
     public static final String GALADRIEL = "https://galadriel-staging.tokopedia.com/";
     public static final String CHAT_DOMAIN = "https://chat-staging.tokopedia.com";
+    public static final String PLAY_DOMAIN = "https://groupchat-staging.tokopedia.com";
     public static final String CHAT_WEBSOCKET_DOMAIN = "wss://chat-staging.tokopedia.com";
+    public static final String GROUP_CHAT_WEBSOCKET_DOMAIN = "wss://groupchat-staging.tokopedia.com";
     public static final String MAPS_DOMAIN = "https://api-staging.tokopedia.com/";
     public static final String BASE_WALLET = "https://wallet-staging.tokopedia.id/";
     public static final String EVENT_DOMAIN = "https://booking-staging.tokopedia.com/";
-    public static final String OMS_DOMAIN = "https://omscart.tokopedia.com/";
     public static final String TOKOPOINT_API_DOMAIN = "https://gw-staging.tokopedia.com/tokopoints/api/";
     public static final String TOKO_CAMPAIGN_URL = "https://booking-staging.tokopedia.com/trigger/v1/api/";
     public static final String HOME_DATA_BASE_URL = "https://gql-staging.tokopedia.com/";
@@ -50,4 +53,17 @@ public class ConsumerAppBaseUrl {
     public static final String GAMIFICATION_BASE_URL = "https://gql-staging.tokopedia.com/";
     public static final String ACCOUNTS_DOMAIN = "https://accounts-staging.tokopedia.com";
     public static final String TOP_PAY_DOMAIN = "https://pay-staging.tokopedia.id";
+    public static final String OMS_DOMAIN = "https://omscart-staging.tokopedia.com/";
+    public static final String DEALS_DOMAIN = "https://booking-staging.tokopedia.com/";
+    public static final String CHANGE_PHONE_DOMAIN = "https://13-feature-m-staging.tokopedia.com";
+    public static final String KAI_WEB_DOMAIN = "https://tiket-staging.tokopedia.com/";
+    public static final String TOKOCARD_BASE_DOMAIN = "https://staging.tokopedia.com/tokocard/";
+
+    public static final String LOGISTIC_BASE_DOMAIN = "https://gw-staging.tokopedia.com/";
+    public static final String CART_BASE_DOMAIN = "https://api-staging.tokopedia.com/";
+    public static final String TRANSACTION_BASE_DOMAIN = "https://ws-staging.tokopedia.com/";
+    public static final String CAMPAIGN_MANAGEMENT_DOMAIN = "https://notifier-staging.tokopedia.com/imt/";
+    public static final String CM_TOKEN_UPDATE = "https://notifier-staging.tokopedia.com/api/v1/user/add";
+    public static final String LAKU6_BASE_URL = "http://wst.laku6.com";
+
 }

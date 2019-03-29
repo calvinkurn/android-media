@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.design.label.LabelView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/labelview"
+    style="@style/LabelLayout"
+    android:minHeight="@dimen/dp_64"
+    android:paddingRight="@dimen/dp_8"
+    android:paddingEnd="@dimen/dp_8"
+    app:lv_image_width="@dimen/dp_24"
+    app:lv_image_margin_right="@dimen/dp_16"
+    app:lv_title="@string/app_name"
+    app:lv_title_text_size="@dimen/sp_14"
+    app:lv_sub_title_text_size="@dimen/sp_14"/>

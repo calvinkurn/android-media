@@ -1,21 +1,32 @@
 package com.tokopedia.core.share.presenter;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.tkpd.library.utils.ConnectionDetector;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.listener.ShareView;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.ClipboardHandler;
+import com.tokopedia.core.util.DataMapper;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.interfaces.ShareCallback;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.linker.model.LinkerError;
+import com.tokopedia.linker.model.LinkerShareResult;
+
+import java.io.FileInputStream;
 
 /**
  * Created by Angga.Prasetiyo on 11/12/2015.
@@ -37,8 +48,8 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     }
 
     @Override
-    public void shareBBM(ShareData data) {
-        if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
+    public void shareBBM(LinkerData data) {
+        if (data.getType().equals(LinkerData.CATEGORY_TYPE)) {
             shareCategory(data, AppEventTracking.SOCIAL_MEDIA.BBM);
         } else {
             sendAnalyticsToGTM(data.getType(),AppEventTracking.SOCIAL_MEDIA.BBM);
@@ -50,8 +61,8 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     }
 
     @Override
-    public void shareFb(final ShareData data) {
-        if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
+    public void shareFb(final LinkerData data) {
+        if (data.getType().equals(LinkerData.CATEGORY_TYPE)) {
             shareCategory(data, AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
         } else {
             sendAnalyticsToGTM(data.getType(),AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
@@ -64,12 +75,19 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
             if (expired) {
                 LoginManager.getInstance().logOut();
             }
-            BranchSdkUtils.generateBranchLink(data, activity, new BranchSdkUtils.GenerateShareContents() {
-                @Override
-                public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
-                    view.showDialogShareFb(branchUrl);
-                }
-            });
+            LinkerManager.getInstance().executeShareRequest(
+                    LinkerUtils.createShareRequest(0, DataMapper.getLinkerShareData(data), new ShareCallback() {
+                        @Override
+                        public void urlCreated(LinkerShareResult linkerShareData) {
+                            view.showDialogShareFb(linkerShareData.getUrl());
+                        }
+
+                        @Override
+                        public void onError(LinkerError linkerError) {
+
+                        }
+                    })
+            );
 
         } else {
             NetworkErrorHelper.showSnackbar(this.activity);
@@ -79,8 +97,8 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
 
 
     @Override
-    public void shareTwitter(ShareData data) {
-        if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
+    public void shareTwitter(LinkerData data) {
+        if (data.getType().equals(LinkerData.CATEGORY_TYPE)) {
             shareCategory(data, AppEventTracking.SOCIAL_MEDIA.TWITTER);
         } else {
             sendAnalyticsToGTM(data.getType(),AppEventTracking.SOCIAL_MEDIA.TWITTER);
@@ -98,8 +116,8 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     }
 
     @Override
-    public void shareWhatsApp(ShareData data) {
-        if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
+    public void shareWhatsApp(LinkerData data) {
+        if (data.getType().equals(LinkerData.CATEGORY_TYPE)) {
             shareCategory(data, AppEventTracking.SOCIAL_MEDIA.WHATSHAPP);
         } else {
             sendAnalyticsToGTM(data.getType(),AppEventTracking.SOCIAL_MEDIA.WHATSHAPP);
@@ -111,8 +129,8 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     }
 
     @Override
-    public void shareLine(ShareData data) {
-        if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
+    public void shareLine(LinkerData data) {
+        if (data.getType().equals(LinkerData.CATEGORY_TYPE)) {
             shareCategory(data, AppEventTracking.SOCIAL_MEDIA.LINE);
         } else {
             sendAnalyticsToGTM(data.getType(),AppEventTracking.SOCIAL_MEDIA.LINE);
@@ -124,8 +142,8 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     }
 
     @Override
-    public void sharePinterest(ShareData data) {
-        if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
+    public void sharePinterest(LinkerData data) {
+        if (data.getType().equals(LinkerData.CATEGORY_TYPE)) {
             shareCategory(data, AppEventTracking.SOCIAL_MEDIA.PINTEREST);
         } else {
             sendAnalyticsToGTM(data.getType(),AppEventTracking.SOCIAL_MEDIA.PINTEREST);
@@ -142,8 +160,8 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     }
 
     @Override
-    public void shareMore(ShareData data) {
-        if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
+    public void shareMore(LinkerData data) {
+        if (data.getType().equals(LinkerData.CATEGORY_TYPE)) {
             shareCategory(data, AppEventTracking.SOCIAL_MEDIA.OTHER);
         } else {
             sendAnalyticsToGTM(data.getType(),AppEventTracking.SOCIAL_MEDIA.OTHER);
@@ -160,27 +178,32 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     }
 
     @Override
-    public void shareInstagram(ShareData data) {
-        if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
+    public void shareInstagram(LinkerData data) {
+        if (data.getType().equals(LinkerData.CATEGORY_TYPE)) {
             shareCategory(data, AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
         } else {
             sendAnalyticsToGTM(data.getType(),AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
         }
         data.setSource(AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
-        if (data.getImgUri() != null) {
+        if(data.getPathSticker() == null) {
+            if (data.getImgUri() != null) {
+                ShareSocmedHandler.ShareSpecificUri(data, activity, TkpdState.PackageName.Instagram,
+                        TkpdState.PackageName.TYPE_IMAGE,
+                        data.getImgUri(), null);
+            } else {
+                ShareSocmedHandler.ShareSpecific(data, activity, TkpdState.PackageName.Instagram,
+                        TkpdState.PackageName.TYPE_TEXT, null, null);
+            }
+        } else {
             ShareSocmedHandler.ShareSpecificUri(data, activity, TkpdState.PackageName.Instagram,
                     TkpdState.PackageName.TYPE_IMAGE,
-                    data.getImgUri(), null);
-        } else {
-            ShareSocmedHandler.ShareSpecific(data, activity, TkpdState.PackageName.Instagram,
-                    TkpdState.PackageName.TYPE_TEXT, null, null);
+                    data.getPathSticker(), null);
         }
-
     }
 
     @Override
-    public void shareGPlus(ShareData data) {
-        if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
+    public void shareGPlus(LinkerData data) {
+        if (data.getType().equals(LinkerData.CATEGORY_TYPE)) {
             shareCategory(data, AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
         } else {
             sendAnalyticsToGTM(data.getType(),AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
@@ -193,15 +216,22 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     }
 
     @Override
-    public void shareCopy(final ShareData data) {
+    public void shareCopy(final LinkerData data) {
 
         data.setSource("Copy");
-        BranchSdkUtils.generateBranchLink(data, activity, new BranchSdkUtils.GenerateShareContents() {
-            @Override
-            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
-                ClipboardHandler.CopyToClipboard(activity, shareUri);
-            }
-        });
+        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(
+                0, DataMapper.getLinkerShareData(data), new ShareCallback() {
+                    @Override
+                    public void urlCreated(LinkerShareResult linkerShareData) {
+                        ClipboardHandler.CopyToClipboard(activity, linkerShareData.getShareUri());
+                    }
+
+                    @Override
+                    public void onError(LinkerError linkerError) {
+
+                    }
+                }
+        ));
 
         Toast.makeText(activity, "Copied to clipboard", Toast.LENGTH_SHORT).show();
 
@@ -215,21 +245,23 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     }
 
     @Override
-    public void shareCategory(ShareData data, String media) {
+    public void shareCategory(LinkerData data, String media) {
         String[] shareParam = data.getSplittedDescription(",");
         if (shareParam.length == 2) {
-            UnifyTracking.eventShareCategory(shareParam[0], shareParam[1] + "-" + media);
+            UnifyTracking.eventShareCategory(view.getActivity(), shareParam[0], shareParam[1] + "-" + media);
         }
     }
 
     private void sendAnalyticsToGTM(String type, String channel) {
-        if (type.equals(ShareData.REFERRAL_TYPE)) {
-            UnifyTracking.eventReferralAndShare(AppEventTracking.Action.SELECT_CHANNEL, channel);
-            TrackingUtils.sendMoEngageReferralShareEvent(channel);
-        }else if (type.equals(ShareData.APP_SHARE_TYPE)) {
-            UnifyTracking.eventAppShareWhenReferralOff(AppEventTracking.Action.SELECT_CHANNEL, channel);
+        if (type.equals(LinkerData.REFERRAL_TYPE)) {
+            UnifyTracking.eventReferralAndShare(view.getActivity(), AppEventTracking.Action.SELECT_CHANNEL, channel);
+            TrackingUtils.sendMoEngageReferralShareEvent(view.getActivity(), channel);
+        }else if (type.equals(LinkerData.APP_SHARE_TYPE)) {
+            UnifyTracking.eventAppShareWhenReferralOff(view.getActivity(), AppEventTracking.Action.SELECT_CHANNEL, channel);
+        }else if (type.equals(LinkerData.HOTLIST_TYPE)) {
+            HotlistPageTracking.eventShareHotlist(view.getActivity(), channel);
         }else{
-            UnifyTracking.eventShare(channel);
+            UnifyTracking.eventShare(view.getActivity(), channel);
         }
     }
 }

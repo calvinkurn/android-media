@@ -1,11 +1,13 @@
 package com.tokopedia.seller.base.view.adapter;
 
+import com.tokopedia.base.list.seller.common.util.ItemType;
+import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseItemPickerCacheViewHolder;
 
 /**
  * Created by nathan on 8/14/17.
  */
-
+@Deprecated
 public abstract class BaseItemPickerCacheAdapter<T extends ItemType> extends BaseListAdapter<T> implements BaseItemPickerCacheViewHolder.RemoveCallback<T> {
 
     public interface RemoveCallback<T> {

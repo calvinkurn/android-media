@@ -124,7 +124,7 @@ public class GMTransactionGraphViewHolder implements GMStatisticViewHolder {
                     public void onBottomSheetItemClick(MenuItem item) {
                         String itemTitle = item.getTitle().toString();
 
-                        UnifyTracking.eventClickGMStatFilterNameTransaction(itemTitle);
+                        UnifyTracking.eventClickGMStatFilterNameTransaction(gmTitleCardView.getContext(), itemTitle);
 
                         gmStatGraphSelection = GMStatisticUtil.findSelection(gmStatTransactionEntries, itemTitle);
                         resetSelection(gmStatGraphSelection);

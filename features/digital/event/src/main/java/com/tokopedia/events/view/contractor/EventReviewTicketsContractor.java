@@ -1,12 +1,7 @@
 package com.tokopedia.events.view.contractor;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.widget.EditText;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 
@@ -16,33 +11,16 @@ import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 
 public class EventReviewTicketsContractor {
 
-    public interface EventReviewTicketsView extends CustomerView {
-        void showMessage(String message);
-
-        Activity getActivity();
-
-        void navigateToActivityRequest(Intent intent, int requestCode);
-
+    public interface EventReviewTicketsView extends EventBaseContract.EventBaseView {
         void renderFromPackageVM(PackageViewModel packageViewModel, SelectedSeatViewModel selectedSeats);
 
         void setEmailID(String emailID);
 
         void setPhoneNumber(String number);
 
-        void showProgressBar();
-
-        void hideProgressBar();
-
         void initForms(String[] hintText, String[] regex);
 
-
-        RequestParams getParams();
-
-        android.view.View getRootView();
-
         void showPromoSuccessMessage(String text, int color);
-
-        void showCashbackMessage(String text);
 
         void hideSuccessMessage();
 
@@ -55,9 +33,7 @@ public class EventReviewTicketsContractor {
         boolean validateAllFields();
     }
 
-    public interface Presenter extends CustomerPresenter<EventReviewTicketsContractor.EventReviewTicketsView> {
-
-        void onDestroy();
+    public interface EventReviewTicketPresenter extends EventBaseContract.EventBasePresenter {
 
         void proceedToPayment();
 
@@ -69,8 +45,6 @@ public class EventReviewTicketsContractor {
 
         void updateNumber(String number);
 
-        void getProfile();
-
         void clickEmailIcon();
 
         void clickMoreinfoIcon();
@@ -79,6 +53,8 @@ public class EventReviewTicketsContractor {
 
         void clickGoToPromo();
 
-        public String getSCREEN_NAME();
+        String getSCREEN_NAME();
+
+        void getProfile();
     }
 }

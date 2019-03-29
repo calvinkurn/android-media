@@ -34,7 +34,7 @@ public class TopAdsNewProductListWithoutGroupFragment extends TopAdsNewProductLi
     @Override
     protected void goToNextPage() {
         if(stepperListener != null){
-            UnifyTracking.eventTopAdsProductAddPromoWithoutGroupStep1();
+            UnifyTracking.eventTopAdsProductAddPromoWithoutGroupStep1(getActivity());
             stepperListener.goToNextPage(stepperModel);
             hideLoading();
         }

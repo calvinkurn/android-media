@@ -3,6 +3,8 @@ package com.tokopedia.checkout.domain.datamodel.cartshipmentform;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.shipping_recommendation.domain.shipping.AnalyticsProductCheckoutData;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,7 @@ public class Product implements Parcelable {
 
     private boolean isError;
     private String errorMessage;
+    private String errorMessageDescription;
 
     private long cartId;
     private int productId;
@@ -29,6 +32,7 @@ public class Product implements Parcelable {
     private boolean productReturnable;
     private boolean productIsFreeReturns;
     private boolean productIsPreorder;
+    private int preOrderDurationDay;
     private String productCashback;
     private int productMinOrder;
     private int productInvenageValue;
@@ -44,6 +48,27 @@ public class Product implements Parcelable {
     private List<ProductShipmentMapping> productShipmentMapping = new ArrayList<>();
     private int productCatId;
     private int productCatalogId;
+    private PurchaseProtectionPlanData purchaseProtectionPlanData;
+    private String productPreOrderInfo;
+    private TradeInInfo tradeInInfo;
+
+    private AnalyticsProductCheckoutData analyticsProductCheckoutData;
+
+    public AnalyticsProductCheckoutData getAnalyticsProductCheckoutData() {
+        return analyticsProductCheckoutData;
+    }
+
+    public String getProductPreOrderInfo() {
+        return productPreOrderInfo;
+    }
+
+    public void setProductPreOrderInfo(String productPreOrderInfo) {
+        this.productPreOrderInfo = productPreOrderInfo;
+    }
+
+    public void setAnalyticsProductCheckoutData(AnalyticsProductCheckoutData analyticsProductCheckoutData) {
+        this.analyticsProductCheckoutData = analyticsProductCheckoutData;
+    }
 
     public void setError(boolean error) {
         isError = error;
@@ -171,6 +196,10 @@ public class Product implements Parcelable {
 
     public void setProductCatalogId(int productCatalogId) {
         this.productCatalogId = productCatalogId;
+    }
+
+    public void setPurchaseProtectionPlanData(PurchaseProtectionPlanData purchaseProtectionPlanData) {
+        this.purchaseProtectionPlanData = purchaseProtectionPlanData;
     }
 
     public boolean isError() {
@@ -301,6 +330,34 @@ public class Product implements Parcelable {
         this.cartId = cartId;
     }
 
+    public int getPreOrderDurationDay() {
+        return preOrderDurationDay;
+    }
+
+    public void setPreOrderDurationDay(int preOrderDurationDay) {
+        this.preOrderDurationDay = preOrderDurationDay;
+    }
+
+    public String getErrorMessageDescription() {
+        return errorMessageDescription;
+    }
+
+    public void setErrorMessageDescription(String errorMessageDescription) {
+        this.errorMessageDescription = errorMessageDescription;
+    }
+
+    public PurchaseProtectionPlanData getPurchaseProtectionPlanData() {
+        return purchaseProtectionPlanData;
+    }
+
+    public TradeInInfo getTradeInInfo() {
+        return tradeInInfo;
+    }
+
+    public void setTradeInInfo(TradeInInfo tradeInInfo) {
+        this.tradeInInfo = tradeInInfo;
+    }
+
     public Product() {
     }
 
@@ -313,8 +370,9 @@ public class Product implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
         dest.writeString(this.errorMessage);
-        dest.writeInt(this.productId);
+        dest.writeString(this.errorMessageDescription);
         dest.writeLong(this.cartId);
+        dest.writeInt(this.productId);
         dest.writeString(this.productName);
         dest.writeString(this.productPriceFmt);
         dest.writeInt(this.productPrice);
@@ -328,6 +386,7 @@ public class Product implements Parcelable {
         dest.writeByte(this.productReturnable ? (byte) 1 : (byte) 0);
         dest.writeByte(this.productIsFreeReturns ? (byte) 1 : (byte) 0);
         dest.writeByte(this.productIsPreorder ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.preOrderDurationDay);
         dest.writeString(this.productCashback);
         dest.writeInt(this.productMinOrder);
         dest.writeInt(this.productInvenageValue);
@@ -343,13 +402,18 @@ public class Product implements Parcelable {
         dest.writeTypedList(this.productShipmentMapping);
         dest.writeInt(this.productCatId);
         dest.writeInt(this.productCatalogId);
+        dest.writeParcelable(this.purchaseProtectionPlanData, flags);
+        dest.writeString(this.productPreOrderInfo);
+        dest.writeParcelable(this.analyticsProductCheckoutData, flags);
+        dest.writeParcelable(this.tradeInInfo, flags);
     }
 
     protected Product(Parcel in) {
         this.isError = in.readByte() != 0;
         this.errorMessage = in.readString();
-        this.productId = in.readInt();
+        this.errorMessageDescription = in.readString();
         this.cartId = in.readLong();
+        this.productId = in.readInt();
         this.productName = in.readString();
         this.productPriceFmt = in.readString();
         this.productPrice = in.readInt();
@@ -363,6 +427,7 @@ public class Product implements Parcelable {
         this.productReturnable = in.readByte() != 0;
         this.productIsFreeReturns = in.readByte() != 0;
         this.productIsPreorder = in.readByte() != 0;
+        this.preOrderDurationDay = in.readInt();
         this.productCashback = in.readString();
         this.productMinOrder = in.readInt();
         this.productInvenageValue = in.readInt();
@@ -378,6 +443,10 @@ public class Product implements Parcelable {
         this.productShipmentMapping = in.createTypedArrayList(ProductShipmentMapping.CREATOR);
         this.productCatId = in.readInt();
         this.productCatalogId = in.readInt();
+        this.purchaseProtectionPlanData = in.readParcelable(PurchaseProtectionPlanData.class.getClassLoader());
+        this.productPreOrderInfo = in.readString();
+        this.analyticsProductCheckoutData = in.readParcelable(AnalyticsProductCheckoutData.class.getClassLoader());
+        this.tradeInInfo = in.readParcelable(TradeInInfo.class.getClassLoader());
     }
 
     public static final Creator<Product> CREATOR = new Creator<Product>() {

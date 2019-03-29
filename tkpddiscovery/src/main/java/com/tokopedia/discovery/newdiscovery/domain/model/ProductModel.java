@@ -12,12 +12,14 @@ public class ProductModel {
 
     private String productID;
     private String productName;
+    private String productUrl;
     private String imageUrl;
     private String imageUrl700;
     private int rating;
     private int countReview;
     private int countCourier;
     private String price;
+    private String priceRange;
     private String shopID;
     private String shopName;
     private String shopCity;
@@ -29,6 +31,19 @@ public class ProductModel {
     private String originalPrice;
     private int discountPercentage;
     private boolean isOfficial;
+    private String topLabel;
+    private String bottomLabel;
+    private int categoryId;
+    private String categoryName;
+    private String categoryBreadcrumb;
+
+    public String getProductUrl() {
+        return productUrl;
+    }
+
+    public void setProductUrl(String productUrl) {
+        this.productUrl = productUrl;
+    }
 
     public void setProductID(String productID) {
         this.productID = productID;
@@ -68,6 +83,14 @@ public class ProductModel {
 
     public String getPrice() {
         return price;
+    }
+
+    public String getPriceRange() {
+        return priceRange;
+    }
+
+    public void setPriceRange(String priceRange) {
+        this.priceRange = priceRange;
     }
 
     public void setShopID(String shopID) {
@@ -180,5 +203,45 @@ public class ProductModel {
 
     public void setOfficial(boolean official) {
         isOfficial = official;
+    }
+
+    public String getTopLabel() {
+        return topLabel;
+    }
+
+    public void setTopLabel(String topLabel) {
+        this.topLabel = topLabel;
+    }
+
+    public String getBottomLabel() {
+        return bottomLabel;
+    }
+
+    public void setBottomLabel(String bottomLabel) {
+        this.bottomLabel = bottomLabel;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public String getCategoryBreadcrumb() {
+        return categoryBreadcrumb;
+    }
+
+    public void setCategoryBreadcrumb(String categoryBreadcrumb) {
+        this.categoryBreadcrumb = categoryBreadcrumb;
     }
 }

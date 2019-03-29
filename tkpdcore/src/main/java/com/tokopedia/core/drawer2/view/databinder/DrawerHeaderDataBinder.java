@@ -15,17 +15,19 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerWalletAction;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,6 +52,8 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         void onWalletActionButtonClicked(String redirectUrlActionButton, String appLinkActionButton);
 
         void onTokoPointActionClicked(String mainPageUrl, String title);
+
+        void onGotoTokoCard();
     }
 
     public interface RetryTokoCashListener {
@@ -126,6 +130,9 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         TextView tvTokoPointAction;
         @BindView(R2.id.tv_tokopoint_count)
         TextView tvTokoPointCount;
+
+        @BindView(R2.id.drawer_tokocard)
+        RelativeLayout tokocardLayout;
 
 
         public ViewHolder(View itemView) {
@@ -241,7 +248,17 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         setTopPoints(holder);
         setTopCash(holder);
         setTokoPoint(holder);
+        setTokoCard(holder);
         setListener(holder);
+    }
+
+    private void setTokoCard(ViewHolder holder){
+        FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(context);
+        boolean showTokoCard = remoteConfig.getBoolean(RemoteConfigKey.SHOW_TOKOCARD, true);
+
+        if(!showTokoCard){
+            holder.tokocardLayout.setVisibility(View.GONE);
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -258,7 +275,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
             holder.tvTokoPointAction.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    UnifyTracking.eventUserClickedPoints();
+                    UnifyTracking.eventUserClickedPoints(view.getContext());
                     listener.onTokoPointActionClicked(
                             data.getTokoPointDrawerData().getMainPageUrl(),
                             TextUtils.isEmpty(title) ? TITLE_HEADER_WEBSITE : title
@@ -296,14 +313,14 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
                                 data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlBalance(),
                                 data.getDrawerTokoCash().getDrawerWalletAction().getAppLinkBalance()
                         );
-                        AnalyticsEventTrackingHelper.homepageTokocashClick(data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlBalance());
+                        AnalyticsEventTrackingHelper.homepageTokocashClick(v.getContext(), data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlBalance());
 
                     } else {
                         listener.onWalletActionButtonClicked(
                                 data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlActionButton(),
                                 data.getDrawerTokoCash().getDrawerWalletAction().getAppLinkActionButton()
                         );
-                        AnalyticsEventTrackingHelper.hamburgerTokocashActivateClick();
+                        AnalyticsEventTrackingHelper.hamburgerTokocashActivateClick(v.getContext());
 
                     }
                 } else {
@@ -332,6 +349,15 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
                 listener.onGoToProfileCompletion();
             }
         });
+        holder.tokocardLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onGotoTokoCard();
+            }
+        });
+
+
+
     }
 
     private void setTopCash(ViewHolder holder) {

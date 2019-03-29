@@ -7,6 +7,7 @@
     android:paddingBottom="@dimen/dp_12">
 
     <View
+        android:id="@+id/v_separator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:background="@color/grey_300" />
@@ -20,5 +21,13 @@
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         tools:text="Same Day" />
+
+    <TextView
+        style="@style/TextSmallNormalBlack54"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:text="@string/label_courier_etd" />
 
 </LinearLayout>

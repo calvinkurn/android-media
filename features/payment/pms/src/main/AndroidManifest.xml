@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.pms">
+
+    <application>
+        <activity
+            android:label="@string/payment_title_payment_status"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:name=".payment.view.activity.PaymentListActivity"/>
+        <activity
+            android:label="@string/payment_title_activity_change_clik_bca"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:name=".clickbca.view.ChangeClickBcaActivity"/>
+        <activity
+            android:label="@string/payment_title_activity_change_detail_account"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:name=".bankaccount.view.ChangeBankAccountActivity"/>
+        <activity
+            android:label="@string/payment_title_activity_howtopay"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:name=".howtopay.ReactNativeHowToPayActivity" />
+        <activity
+            android:label="@string/payment_title_activity_dest_bank"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:name=".bankdestination.view.activity.BankDestinationActivity"/>
+        <activity
+            android:label="@string/payment_title_upload_proof"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:name=".proof.view.UploadProofPaymentActivity"/>
+        <activity
+            android:label="@string/payment_title_activity_invoice"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:name=".invoice.InvoiceDetailActivity"/>
+    </application>
+
+</manifest>

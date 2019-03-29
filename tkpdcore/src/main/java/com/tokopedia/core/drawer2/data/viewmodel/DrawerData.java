@@ -1,5 +1,7 @@
 package com.tokopedia.core.drawer2.data.viewmodel;
 
+import com.tokopedia.loyalty.common.TokoPointDrawerData;
+
 /**
  * Created by nisie on 1/23/17.
  */

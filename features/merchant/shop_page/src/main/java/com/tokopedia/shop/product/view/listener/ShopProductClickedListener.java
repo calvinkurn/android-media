@@ -8,7 +8,7 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 public interface ShopProductClickedListener {
 
-    void onWishListClicked(ShopProductViewModel shopProductViewModel);
+    void onWishListClicked(ShopProductViewModel shopProductViewModel, int shopTrackType);
 
-    void onProductClicked(ShopProductViewModel shopProductViewModel);
+    void onProductClicked(ShopProductViewModel shopProductViewModel, int shopTrackType, int productPosition);
 }

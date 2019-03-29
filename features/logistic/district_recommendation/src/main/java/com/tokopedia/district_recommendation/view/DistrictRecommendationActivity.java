@@ -1,21 +1,37 @@
 package com.tokopedia.district_recommendation.view;
 
 import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
-import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.district_recommendation.R;
 import com.tokopedia.district_recommendation.domain.model.Token;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 
 import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.ARGUMENT_DATA_TOKEN;
 
-public class DistrictRecommendationActivity extends BasePresenterActivity {
+/**
+ * Created by Irfan Khoirul on 17/11/18.
+ */
 
-    public static Intent createInstance(Activity activity, Token token) {
+public class DistrictRecommendationActivity extends BaseSimpleActivity
+        implements HasComponent, ITransactionAnalyticsDistrictRecommendation {
+
+    private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
+
+    public static Intent createInstanceIntent(Activity activity, Token token) {
+        Intent intent = new Intent(activity, DistrictRecommendationActivity.class);
+        intent.putExtra(ARGUMENT_DATA_TOKEN, token);
+        return intent;
+    }
+
+    public static Intent createInstanceFromMarketplaceCart(Activity activity, Token token) {
         Intent intent = new Intent(activity, DistrictRecommendationActivity.class);
         intent.putExtra(ARGUMENT_DATA_TOKEN, token);
         return intent;
@@ -24,65 +40,49 @@ public class DistrictRecommendationActivity extends BasePresenterActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getApplication() instanceof AbstractionRouter) {
+            checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress(
+                    ((AbstractionRouter) getApplication()).getAnalyticTracker()
+            );
+        }
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().setElevation(0);
+            toolbar.setNavigationIcon(R.drawable.ic_close);
         }
-    }
-
-    @Override
-    protected void setupURIPass(Uri data) {
 
     }
 
     @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_simple_fragment;
-    }
-
-    @Override
-    protected void initView() {
+    protected Fragment getNewFragment() {
         Token token = getIntent().getParcelableExtra(ARGUMENT_DATA_TOKEN);
-        DistrictRecommendationFragment fragment = DistrictRecommendationFragment.newInstance(token);
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        fragmentTransaction.add(R.id.container, fragment,
-                DistrictRecommendationFragment.class.getSimpleName());
-        fragmentTransaction.commit();
+        return DistrictRecommendationFragment.newInstance(token);
     }
 
     @Override
-    protected void setViewListener() {
-
+    public BaseAppComponent getComponent() {
+        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
 
     @Override
-    protected void initVar() {
-
+    public void onBackPressed() {
+        sendAnalyticsOnBackPressClicked();
+        super.onBackPressed();
     }
 
     @Override
-    protected void setActionVar() {
-
+    public void sendAnalyticsOnBackPressClicked() {
+        checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickXPojokKiriKotaAtauKecamatanPadaTambahAddress();
     }
 
     @Override
-    protected void setupToolbar() {
-        super.setupToolbar();
-        toolbar.setNavigationIcon(R.drawable.ic_clear_24dp);
+    public void sendAnalyticsOnDistrictDropdownSelectionItemClicked(String districtName) {
+        checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickChecklistKotaAtauKecamatanPadaTambahAddress(districtName);
     }
 
     @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
+    public void sendAnalyticsOnClearTextDistrictRecommendationInput() {
+        checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickXPojokKananKotaAtauKecamatanPadaTambahAddress();
     }
+
 }

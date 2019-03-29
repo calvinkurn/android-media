@@ -1,5 +1,9 @@
 package com.tokopedia.discovery.autocomplete.viewmodel;
 
+import com.tkpd.library.utils.URLParser;
+
+import java.util.HashMap;
+
 public class BaseItemAutoCompleteSearch {
 
     private String keyword;
@@ -11,6 +15,26 @@ public class BaseItemAutoCompleteSearch {
     private String eventId;
     private String eventName;
     private String searchTerm;
+    private String productId;
+    private String productPrice;
+    private boolean isOfficial;
+    private int positionOfType;
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public String getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(String productPrice) {
+        this.productPrice = productPrice;
+    }
 
     public String getKeyword() {
         return keyword;
@@ -82,5 +106,25 @@ public class BaseItemAutoCompleteSearch {
 
     public void setSearchTerm(String searchTerm) {
         this.searchTerm = searchTerm;
+    }
+
+    public boolean getIsOfficial() {
+        return isOfficial;
+    }
+
+    public void setIsOfficial(boolean isOfficial) {
+        this.isOfficial = isOfficial;
+    }
+
+    public int getPositionOfType() {
+        return positionOfType;
+    }
+
+    public void setPositionOfType(int positionOfType) {
+        this.positionOfType = positionOfType;
+    }
+
+    public HashMap<String, String> getApplinkParameterHashmap() {
+        return new URLParser(this.applink).getParamKeyValueMap();
     }
 }

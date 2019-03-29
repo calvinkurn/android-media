@@ -6,28 +6,31 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.design.text.SpinnerTextView;
-import com.tokopedia.seller.product.edit.utils.ViewUtils;
+import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;
+import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordEditDetailComponent;
 import com.tokopedia.topads.keyword.di.module.TopAdsKeywordEditDetailModule;
 import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordEditDetailView;
 import com.tokopedia.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordEditDetailPresenter;
-import com.tokopedia.seller.common.widget.PrefixEditText;
-import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 
 import javax.inject.Inject;
 
@@ -44,6 +47,9 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     protected TextView topAdsMaxPriceInstruction;
     protected ProgressDialog progressDialog;
     protected TextInputLayout textInputLayoutCostPerClick;
+    protected TextInputLayout textInputLayoutKeyword;
+    protected Button submitButton;
+
     @Inject
     TopAdsKeywordEditDetailPresenter presenter;
     private KeywordAd keywordAd;
@@ -76,7 +82,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_top_ads_keyword_edit_detail, container, false);
-
+        submitButton = view.findViewById(R.id.button_submit);
         settingTopAdsKeywordType(view);
         settingTopAdsKeyword(view);
         settingTopAdsCostPerClick(view);
@@ -87,7 +93,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
             fillDataToView(keywordAd);
         }
 
-        view.findViewById(R.id.button_submit).setOnClickListener(new View.OnClickListener() {
+        submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showLoading();
@@ -126,8 +132,10 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
                         com.tokopedia.topads.dashboard.utils.ViewUtils.getKeywordClickBudgetError(getActivity(), number);
                 if (!TextUtils.isEmpty(errorMessage)) {
                     textInputLayoutCostPerClick.setError(errorMessage);
+                    submitButton.setEnabled(false);
                 } else {
                     textInputLayoutCostPerClick.setError(null);
+                    submitButton.setEnabled(true);
                 }
             }
         };
@@ -136,6 +144,37 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
 
     private void settingTopAdsKeyword(View view) {
         topAdsKeyword = ((EditText) view.findViewById(R.id.edit_text_top_ads_keyword));
+        textInputLayoutKeyword = (TextInputLayout) view.findViewById(R.id.text_input_layout_top_ads_keyword);
+        topAdsKeyword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String text = editable.toString();
+                if (TextUtils.isEmpty(text)){
+                    textInputLayoutKeyword.setError(getString(R.string.top_ads_keyword_must_be_filled));
+                } else {
+                    textInputLayoutKeyword.setError(null);
+                }
+                checkButtonNeedEnable();
+            }
+        });
+    }
+
+    private void checkButtonNeedEnable() {
+        if (submitButton.isEnabled() && TextUtils.isEmpty(topAdsKeyword.getText().toString())){
+            submitButton.setEnabled(false);
+        } else if (!submitButton.isEnabled() && !TextUtils.isEmpty(topAdsKeyword.getText().toString())){
+            submitButton.setEnabled(true);
+        }
     }
 
     protected void settingTopAdsKeywordType(View view) {

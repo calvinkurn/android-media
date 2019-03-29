@@ -2,7 +2,7 @@ package com.tokopedia.inbox.rescenter.edit.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.rescenter.edit.facade.NetworkParam;
 import com.tokopedia.inbox.rescenter.edit.interactor.RetrofitInteractor;

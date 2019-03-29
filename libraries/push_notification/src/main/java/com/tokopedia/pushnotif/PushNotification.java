@@ -110,4 +110,12 @@ public class PushNotification {
         notificationManagerCompat.notify(notificationType, notifChat);
 
     }
+
+    private static void notifyChallenges(Context context, ApplinkNotificationModel applinkNotificationModel,
+                                      int notificationType, NotificationManagerCompat notificationManagerCompat) {
+        Notification notifChat = new GeneralNotificationFactory(context)
+                .createNotification(applinkNotificationModel, notificationType, notificationType);
+
+        notificationManagerCompat.notify(notificationType, notifChat);
+    }
 }

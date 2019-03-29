@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
@@ -23,12 +22,10 @@ import com.tokopedia.core.gcm.notification.promotions.DeeplinkNotification;
 import com.tokopedia.core.gcm.notification.promotions.GeneralNotification;
 import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
-import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
@@ -48,8 +45,6 @@ import com.tokopedia.tkpd.fcm.notification.ResCenterAdminBuyerReplyNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
 
 import java.util.Map;
-
-import rx.Observable;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 
@@ -147,22 +142,6 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                             serverId,
                             new SavePushNotificationCallback()
                     );
-                    break;
-
-                case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
-                    if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
-                            && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
-                        ((ChatNotifInterface) mActivitiesLifecycleCallbacks.getLiveActivityOrNull()).onGetNotif(data);
-                    } else {
-                        String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
-                        String fullname = data.getString("full_name");
-
-                            applink = String.format("%s?fullname=%s", applink, fullname);
-
-                        data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
-                        buildNotifByData(data);
-
-                    }
                     break;
                 case Constants.ARG_NOTIFICATION_APPLINK_SELLER_INFO:
                     if (SessionHandler.isUserHasShop(mContext)) {

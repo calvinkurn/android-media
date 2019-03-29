@@ -1,0 +1,25 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/background">
+        <shape>
+            <gradient
+                android:angle="90"
+                android:centerColor="@color/poll_black"
+                android:centerY="0.75"
+                android:endColor="@color/poll_black"
+                android:startColor="@color/poll_black" />
+        </shape>
+    </item>
+    <item android:id="@android:id/progress">
+        <scale android:scaleWidth="100%">
+            <shape>
+                <corners
+                    android:bottomRightRadius="3dp"
+                    android:topRightRadius="3dp"/>
+                <gradient
+                    android:endColor="@color/poll_second_white_image"
+                    android:startColor="@color/poll_first_white_image" />
+            </shape>
+        </scale>
+    </item>
+</layer-list>
+

@@ -6,7 +6,9 @@ package com.tokopedia.digital.common.constant;
 
 public class DigitalUrl {
     public static String WEB_DOMAIN = "https://www.tokopedia.com/";
+    public static String MOJITO_DOMAIN = "https://mojito.tokopedia.com/";
     public static String DIGITAL_BANTUAN = WEB_DOMAIN + "bantuan/produk-digital/";
+    public static final String API_HOME_CATEGORY_MENU = "/api/v2.1/layout/category";
 
     public static class HelpUrl {
         public static String PULSA = DIGITAL_BANTUAN + "pulsa/";

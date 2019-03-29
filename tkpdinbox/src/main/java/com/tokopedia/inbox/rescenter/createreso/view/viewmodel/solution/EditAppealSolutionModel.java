@@ -3,11 +3,21 @@ package com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by yoasfs on 14/09/17.
  */
 
 public class EditAppealSolutionModel implements Parcelable {
+    public static final String PARAM_COMPLAINT = "complaints";
+    public static final String PARAM_SOLUTION = "solution";
+    public static final String PARAM_ID = "id";
     public boolean isChatReso;
     public boolean isEdit;
     public String resolutionId;
@@ -16,6 +26,35 @@ public class EditAppealSolutionModel implements Parcelable {
     public String name;
     public String solutionName;
     public int refundAmount;
+    public List<ComplaintResult> complaints = new ArrayList<>();
+
+    public JsonObject writeToJson() {
+        JsonObject object = new JsonObject();
+        if (complaints != null) {
+            JsonArray complaintArray = new JsonArray();
+            for (ComplaintResult complaintResult : complaints) {
+                if (complaintResult.problem.type != 1) {
+                    complaintArray.add(complaintResult.writeToJson());
+                } else if (complaintResult.isChecked) {
+                    complaintArray.add(complaintResult.writeToJson());
+                }
+            }
+            object.add(PARAM_COMPLAINT, complaintArray);
+        }
+        JsonObject solutionObject = new JsonObject();
+        solutionObject.addProperty(PARAM_ID, solution);
+        object.add(PARAM_SOLUTION, solutionObject);
+        return object;
+    }
+
+
+    public List<ComplaintResult> getComplaints() {
+        return complaints;
+    }
+
+    public void setComplaints(List<ComplaintResult> complaints) {
+        this.complaints = complaints;
+    }
 
     public boolean isChatReso() {
         return isChatReso;
@@ -103,6 +142,7 @@ public class EditAppealSolutionModel implements Parcelable {
         dest.writeString(this.name);
         dest.writeString(this.solutionName);
         dest.writeInt(this.refundAmount);
+        dest.writeTypedList(this.complaints);
     }
 
     protected EditAppealSolutionModel(Parcel in) {
@@ -114,6 +154,7 @@ public class EditAppealSolutionModel implements Parcelable {
         this.name = in.readString();
         this.solutionName = in.readString();
         this.refundAmount = in.readInt();
+        this.complaints = in.createTypedArrayList(ComplaintResult.CREATOR);
     }
 
     public static final Creator<EditAppealSolutionModel> CREATOR = new Creator<EditAppealSolutionModel>() {

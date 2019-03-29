@@ -17,6 +17,7 @@ import java.util.List;
 
 public class EventDetailsViewModelMapper {
     public static void mapDomainToViewModel(EventDetailsDomain source, EventsDetailsViewModel target) {
+        target.setId(source.getId());
         target.setTitle(source.getTitle());
         target.setConvenienceFee(source.getConvenienceFee());
         target.setDateRange(source.getDateRange());
@@ -42,19 +43,19 @@ public class EventDetailsViewModelMapper {
         target.setSeatMapImage(source.getSeatMapImage());
         target.setForms(source.getForms());
         target.setCityName(source.getCityName());
-        target.setAddress(source.getSchedules().get(0).getAddressDetail().getCity());
         String dateRange = "";
         if (source.getMinStartDate() != 0) {
             if (source.getMinStartDate() == source.getMaxEndDate()) {
-                dateRange = Utils.convertEpochToString(source.getMinStartDate());
+                dateRange = Utils.getSingletonInstance().convertEpochToString(source.getMinStartDate());
             } else {
-                dateRange = Utils.convertEpochToString(source.getMinStartDate())
-                        + " - " + Utils.convertEpochToString(source.getMaxEndDate());
+                dateRange = Utils.getSingletonInstance().convertEpochToString(source.getMinStartDate())
+                        + " - " + Utils.getSingletonInstance().convertEpochToString(source.getMaxEndDate());
             }
         }
         target.setTimeRange(dateRange);
-        if (source.getSchedules() != null) {
+        if (source.getSchedules() != null && source.getSchedules().size() > 0) {
             int size = source.getSchedules().size();
+            target.setAddress(source.getSchedules().get(0).getAddressDetail().getCity());
             List<SchedulesViewModel> schedules = new ArrayList<>(size);
             for (ScheduleDomain item : source.getSchedules()) {
                 SchedulesViewModel schedulesViewModel = new SchedulesViewModel();
@@ -65,10 +66,10 @@ public class EventDetailsViewModelMapper {
                 String timerange;
                 if (source.getMinStartDate() > 0) {
                     if (item.getSchedule().getStartDate() == item.getSchedule().getEndDate()) {
-                        timerange = Utils.convertEpochToString(item.getSchedule().getStartDate());
+                        timerange = Utils.getSingletonInstance().convertEpochToString(item.getSchedule().getStartDate());
                     } else {
-                        timerange = Utils.convertEpochToString(item.getSchedule().getStartDate())
-                                + " - " + Utils.convertEpochToString(item.getSchedule().getEndDate());
+                        timerange = Utils.getSingletonInstance().convertEpochToString(item.getSchedule().getStartDate())
+                                + " - " + Utils.getSingletonInstance().convertEpochToString(item.getSchedule().getEndDate());
                     }
                 } else {
                     timerange = "";
@@ -113,6 +114,8 @@ public class EventDetailsViewModelMapper {
                         packageViewModel.setThumbnailApp(target.getThumbnailApp());
                         packageViewModel.setAddress(schedulesViewModel.getaDdress());
                         packageViewModel.setFetchSectionUrl(aPackage.getFetchSectionUrl());
+                        packageViewModel.setStartDate(aPackage.getStartDate());
+                        packageViewModel.setEndDate(aPackage.getEndDate());
                         try {
                             packageViewModel.setForms(target.getForms());
                         } catch (Exception e) {

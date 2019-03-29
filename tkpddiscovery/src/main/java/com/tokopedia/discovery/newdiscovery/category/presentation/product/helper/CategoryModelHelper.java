@@ -58,6 +58,7 @@ public class CategoryModelHelper {
         productItem.setOriginalPrice(productModel.getOriginalPrice());
         productItem.setDiscountPercentage(productModel.getDiscountPercentage());
         productItem.setPrice(productModel.getPrice());
+        productItem.setPriceRange(productModel.getPriceRange());
         productItem.setShopID(productModel.getShopID());
         productItem.setShopName(productModel.getShopName());
         productItem.setShopCity(productModel.getShopCity());
@@ -66,6 +67,9 @@ public class CategoryModelHelper {
         productItem.setWishlisted(productModel.isWishlisted());
         productItem.setBadgesList(convertToBadgesItemList(productModel.getBadgesList()));
         productItem.setLabelList(convertToLabelsItemList(productModel.getLabelList()));
+        productItem.setTopLabel(productModel.getTopLabel());
+        productItem.setBottomLabel(productModel.getBottomLabel());
+        productItem.setCategoryBreadcrumb(productModel.getCategoryBreadcrumb());
         return productItem;
     }
 
@@ -82,6 +86,7 @@ public class CategoryModelHelper {
         BadgeItem badgeItem = new BadgeItem();
         badgeItem.setImageUrl(badgeModel.getImageUrl());
         badgeItem.setTitle(badgeModel.getTitle());
+        badgeItem.setShown(badgeModel.isShown());
         return badgeItem;
     }
 

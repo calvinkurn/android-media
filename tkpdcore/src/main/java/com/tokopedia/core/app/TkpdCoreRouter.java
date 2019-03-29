@@ -5,17 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
-import com.tokopedia.core.gcm.ApplinkUnsupported;
+import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.util.SessionHandler;
@@ -28,14 +28,11 @@ import rx.Observable;
  * all the router will moved to the each module's router
  */
 public interface TkpdCoreRouter {
-
-    void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult);
-
-    void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult);
-
-    void removeInstopedToken();
+    String EXTRAS = "extras";
 
     void goToManageProduct(Context context);
+
+    void goToEtalaseList(Context context);
 
     void goToDraftProductList(Context context);
 
@@ -71,8 +68,6 @@ public interface TkpdCoreRouter {
 
     Intent getHomeIntent(Context context);
 
-    Intent getOnBoardingActivityIntent(Context context);
-
     Intent getPhoneVerificationActivityIntent(Context context);
 
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;
@@ -84,6 +79,8 @@ public interface TkpdCoreRouter {
 
 
     void onLogout(AppComponent appComponent);
+
+    void onAppsFlyerInit();
 
     void goToCreateMerchantRedirect(Context context);
 
@@ -192,6 +189,16 @@ public interface TkpdCoreRouter {
 
     String getDesktopLinkGroupChat();
 
-    Intent getDistrictRecommendationIntent(Activity activity, Token token);
+    String getStringRemoteConfig(String key);
 
+    void setStringRemoteConfigLocal(String key, String value);
+    Intent getSettingBankIntent(Context context);
+
+    Intent getInboxTalkCallingIntent(Context context);
+
+    Intent getAutomaticResetPasswordIntent(Context context, String email);
+
+    Intent getCreateResCenterActivityIntent(Context context, String orderId);
+
+    Intent getCreateResCenterActivityIntent(Context context, String orderId, int troubleId, int solutionId);
 }

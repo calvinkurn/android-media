@@ -1,0 +1,61 @@
+query getCampaignInfo($slug: String!, $shop_id: Int!){
+    getCampaignInfo(slug:$slug, shop_id:$shop_id){
+        data {
+            campaign_id
+            name
+            short_name
+            start_date
+            end_date
+            submission_start_date
+            submission_end_date
+            review_start_date
+            review_end_date
+            phase_end_date
+            campaign_period
+            description
+            promo_code
+            minimum_transaction
+            min_seller_reputation_badge
+            max_seller_reputation_badge
+            min_cancellation_rate
+            max_cancellation_rate
+            seller_type {
+                title
+                image_url
+            }
+            criteria{
+                criteria_id
+                min_price
+                max_price
+                min_stock
+                minimum_discount_percent
+                maximum_discount_percent
+                minimum_cashback
+                max_submission
+                maximum_rating
+                exclude_preorder
+                exclude_wholesale
+                categories{
+                    dep_id
+                    dep_name
+                    dep_full_name
+                }
+            }
+            banners
+            logistics{
+                logistic_id
+                logistic_name
+            }
+            status_info {
+                status_name
+                status_label
+                label_hover_text
+                status_head
+                status_sub_text
+            }
+            dashboard_url
+            tnc
+            tnc_last_updated
+        }
+    }
+}

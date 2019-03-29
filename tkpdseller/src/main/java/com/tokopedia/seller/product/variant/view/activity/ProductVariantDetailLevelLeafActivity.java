@@ -6,12 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.constant.StockTypeDef;
-import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
+import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
+import com.tokopedia.product.manage.item.common.util.StockTypeDef;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDetailLeafFragment;
 
 /**
@@ -28,6 +27,7 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
     public static final String EXTRA_NEED_RETAIN_IMAGE = "need_retain_img";
     public static final String EXTRA_STOCK_TYPE = "stock_typ";
     public static final String EXTRA_IS_OFFICIAL_STORE = "is_off_store";
+    public static final String EXTRA_HAS_WHOLESALE = "has_wholesale";
 
     public static final String EXTRA_ACTION_SUBMIT = "sbmt";
 
@@ -46,15 +46,16 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
     private @StockTypeDef
     int stockType;
     private boolean isOfficialStore;
+    private boolean hasWholesale;
 
     public static void start(Context context, Fragment fragment,
                              ProductVariantCombinationViewModel productVariantCombinationViewModel,
                              ProductVariantOptionChild productVariantOptionChild,
                              String variantName, @CurrencyTypeDef int currencyType,
                              @StockTypeDef int stockType, boolean isOfficialStore,
-                             boolean needRetainImage) {
+                             boolean needRetainImage, boolean hasWholesale) {
         Intent intent = getIntent(context, productVariantCombinationViewModel, productVariantOptionChild,
-                variantName, currencyType, stockType, isOfficialStore, needRetainImage);
+                variantName, currencyType, stockType, isOfficialStore, needRetainImage, hasWholesale);
         fragment.startActivityForResult(intent, VARIANT_EDIT_LEAF_REQUEST_CODE);
     }
 
@@ -63,9 +64,9 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
                              ProductVariantOptionChild productVariantOptionChild,
                              String variantName, @CurrencyTypeDef int currencyType,
                              @StockTypeDef int stockType, boolean isOfficialStore,
-                             boolean needRetainImage ) {
+                             boolean needRetainImage, boolean hasWholesale) {
         Intent intent = getIntent(activity, productVariantCombinationViewModel, productVariantOptionChild,
-                variantName, currencyType, stockType, isOfficialStore, needRetainImage);
+                variantName, currencyType, stockType, isOfficialStore, needRetainImage, hasWholesale);
         activity.startActivityForResult(intent, VARIANT_EDIT_LEAF_REQUEST_CODE);
     }
 
@@ -74,7 +75,7 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
                                    ProductVariantOptionChild productVariantOptionChild,
                                    String variantName, @CurrencyTypeDef int currencyType,
                                    @StockTypeDef int stockType, boolean isOfficialStore,
-                                   boolean needRetainImage) {
+                                   boolean needRetainImage, boolean hasWholesale) {
         Intent intent = new Intent(context, ProductVariantDetailLevelLeafActivity.class);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_LEAF_DATA, productVariantCombinationViewModel);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_OPTION_CHILD, productVariantOptionChild);
@@ -83,6 +84,7 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
         intent.putExtra(EXTRA_NEED_RETAIN_IMAGE, needRetainImage);
         intent.putExtra(EXTRA_STOCK_TYPE, stockType);
         intent.putExtra(EXTRA_IS_OFFICIAL_STORE, isOfficialStore);
+        intent.putExtra(EXTRA_HAS_WHOLESALE, hasWholesale);
         return intent;
     }
 
@@ -103,6 +105,7 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
         }
         needRetainImage = intent.getBooleanExtra(EXTRA_NEED_RETAIN_IMAGE, false);
         stockType = intent.getIntExtra(EXTRA_STOCK_TYPE, StockTypeDef.TYPE_ACTIVE);
+        hasWholesale  = intent.getBooleanExtra(EXTRA_HAS_WHOLESALE, false);
         isOfficialStore = intent.getBooleanExtra(EXTRA_IS_OFFICIAL_STORE, false);
 
         super.onCreate(savedInstanceState);
@@ -135,6 +138,11 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
     @Override
     public boolean isOfficialStore() {
         return isOfficialStore;
+    }
+
+    @Override
+    public boolean hasWholesale() {
+        return hasWholesale;
     }
 
     @Override

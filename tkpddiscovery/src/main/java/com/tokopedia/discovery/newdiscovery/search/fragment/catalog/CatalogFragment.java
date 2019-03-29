@@ -1,37 +1,32 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.catalog;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.SearchTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.discovery.DiscoveryRouter;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
@@ -40,11 +35,12 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneral
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.CatalogAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogAdapterTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogTypeFactory;
-import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogFragmentContract;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogPresenter;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -52,8 +48,8 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
+import com.tokopedia.user.session.UserSessionInterface;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -64,9 +60,10 @@ import javax.inject.Inject;
 
 @SuppressWarnings("ParameterCanBeLocal")
 public class CatalogFragment extends SearchSectionFragment implements
-        CatalogFragmentContract.View, ItemClickListener, TopAdsItemClickListener,
+        CatalogFragmentContract.View, CatalogListener, TopAdsItemClickListener,
         TopAdsListener, SearchSectionGeneralAdapter.OnItemChangeView {
 
+    public static final String SCREEN_SEARCH_PAGE_CATALOG_TAB = "Search result - Catalog tab";
     public static final String SOURCE = BrowseApi.DEFAULT_VALUE_SOURCE_CATALOG;
 
     private static final String EXTRA_DEPARTMENT_ID = "EXTRA_DEPARTMENT_ID";
@@ -76,6 +73,7 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     private static final int REQUEST_ACTIVITY_SORT_CATALOG = 1234;
     private static final int REQUEST_ACTIVITY_FILTER_CATALOG = 4321;
+    private static final String SEARCH_CATALOG_TRACE = "search_catalog_trace";
 
     protected RecyclerView recyclerView;
     protected ProgressBar loadingView;
@@ -83,6 +81,7 @@ public class CatalogFragment extends SearchSectionFragment implements
     protected CatalogAdapter catalogAdapter;
     protected TopAdsRecyclerAdapter topAdsRecyclerAdapter;
 
+    private PerformanceMonitoring performanceMonitoring;
     private String departmentId;
     private String query;
     private Config topAdsConfig;
@@ -90,6 +89,9 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     @Inject
     CatalogPresenter presenter;
+
+    @Inject
+    UserSessionInterface userSession;
 
     public static CatalogFragment createInstanceByQuery(String query) {
         CatalogFragment fragment = new CatalogFragment();
@@ -137,7 +139,7 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     @Override
     public String getScreenNameId() {
-        return AppScreen.SCREEN_SEARCH_PAGE_CATALOG_TAB;
+        return SCREEN_SEARCH_PAGE_CATALOG_TAB;
     }
 
     @Override
@@ -223,7 +225,6 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     protected void onLoadMoreCatalog() {
-        showBottomBarNavigation(false);
         if (getDepartmentId() != null && !getDepartmentId().isEmpty()) {
             presenter.requestCatalogLoadMore(getDepartmentId());
         } else {
@@ -238,20 +239,41 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     @Override
     public void setOnCatalogClicked(String catalogID, String catalogName) {
-        SearchTracking.eventSearchResultCatalogClick(query, catalogName);
+        SearchTracking.eventSearchResultCatalogClick(getActivity(), query, catalogName);
         Intent intent = DetailProductRouter.getCatalogDetailActivity(getActivity(), catalogID);
         startActivityForResult(intent, REQUEST_CODE_GOTO_CATALOG_DETAIL);
     }
 
     @Override
+    public boolean isUserHasLogin() {
+        return userSession.isLoggedIn();
+    }
+
+    @Override
+    public String getUserId() {
+        return userSession.getUserId();
+    }
+
+    @Override
     public void onBannerAdsClicked(String appLink) {
-        if (!TextUtils.isEmpty(appLink)) {
-            ((TkpdCoreRouter) getActivity().getApplication()).actionApplink(getActivity(), appLink);
+        TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
+        if (router.isSupportedDelegateDeepLink(appLink)) {
+            router.actionApplink(getActivity(), appLink);
+        } else if (appLink != "") {
+            Intent intent = new Intent(getContext(), BannerWebView.class);
+            intent.putExtra("url", appLink);
+            startActivity(intent);
         }
     }
 
     @Override
+    public void onSelectedFilterRemoved(String uniqueId) {
+        removeSelectedFilter(uniqueId);
+    }
+
+    @Override
     public void onEmptyButtonClicked() {
+        SearchTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
         showSearchInputView();
     }
 
@@ -259,7 +281,7 @@ public class CatalogFragment extends SearchSectionFragment implements
 
         topAdsConfig = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .setUserId(userSession.getUserId())
                 .setEndpoint(Endpoint.PRODUCT)
                 .build();
 
@@ -309,6 +331,11 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     @Override
+    protected boolean isSortEnabled() {
+        return true;
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
     }
@@ -316,6 +343,7 @@ public class CatalogFragment extends SearchSectionFragment implements
     @Override
     protected void onFirstTimeLaunch() {
         super.onFirstTimeLaunch();
+        performanceMonitoring = PerformanceMonitoring.start(SEARCH_CATALOG_TRACE);
         if (getDepartmentId() != null && !getDepartmentId().isEmpty()) {
             presenter.requestCatalogList(getDepartmentId());
         } else {
@@ -330,11 +358,13 @@ public class CatalogFragment extends SearchSectionFragment implements
         setQueryKey(savedInstanceState.getString(EXTRA_QUERY));
         setDepartmentId(savedInstanceState.getString(EXTRA_DEPARTMENT_ID));
         setShareUrl(savedInstanceState.getString(EXTRA_SHARE_URL));
-
     }
 
     @Override
     public void renderListView(List<Visitable> catalogViewModels) {
+        if (performanceMonitoring != null) {
+            performanceMonitoring.stopTrace();
+        }
         topAdsRecyclerAdapter.hideLoading();
         catalogAdapter.incrementStart();
         topAdsRecyclerAdapter.reset();
@@ -356,9 +386,8 @@ public class CatalogFragment extends SearchSectionFragment implements
             catalogAdapter.setElement(visitables);
         } else {
             topAdsRecyclerAdapter.shouldLoadAds(false);
-            String message = String.format(getString(R.string.empty_search_content_template), query);
-            catalogAdapter.showEmptyState(message);
-            SearchTracking.eventSearchNoResult(query, getScreenName(), getSelectedFilter());
+            catalogAdapter.showEmptyState(getActivity(), query, isFilterActive(), getFlagFilterHelper(), getString(R.string.catalog_tab_title).toLowerCase());
+            SearchTracking.eventSearchNoResult(getActivity(), query, getScreenName(), getSelectedFilter());
         }
     }
 
@@ -439,47 +468,11 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     @Override
-    protected List<AHBottomNavigationItem> getBottomNavigationItems() {
-        List<AHBottomNavigationItem> items = new ArrayList<>();
-        items.add(new AHBottomNavigationItem(getString(R.string.sort), R.drawable.ic_sort_black));
-        items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
-        items.add(new AHBottomNavigationItem(getString(catalogAdapter.getTitleTypeRecyclerView()), catalogAdapter.getIconTypeRecyclerView()));
-        items.add(new AHBottomNavigationItem(getString(R.string.share), R.drawable.ic_share_black));
-        return items;
-    }
-
-    @Override
-    protected AHBottomNavigation.OnTabSelectedListener getBottomNavClickListener() {
-        return new AHBottomNavigation.OnTabSelectedListener() {
-            @Override
-            public boolean onTabSelected(final int position, boolean wasSelected) {
-                switch (position) {
-                    case 0:
-                        openSortActivity();
-                        return true;
-                    case 1:
-                        SearchTracking.eventSearchResultOpenFilterPageCatalog();
-                        openFilterActivity();
-                        return true;
-                    case 2:
-                        switchLayoutType();
-                        return true;
-                    case 3:
-                        startShareActivity(getShareUrl());
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        };
-    }
-
-    @Override
     public void initTopAdsParamsByQuery(RequestParams requestParams) {
         TopAdsParams adsParams = new TopAdsParams();
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
         adsParams.getParam().put(TopAdsParams.KEY_QUERY, getQueryKey());
-        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(getContext()));
+        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
         enrichWithFilterAndSortParams(adsParams);
         topAdsConfig.setTopAdsParams(adsParams);
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
@@ -490,14 +483,14 @@ public class CatalogFragment extends SearchSectionFragment implements
         TopAdsParams adsParams = new TopAdsParams();
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
         adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getDepartmentId());
-        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(getContext()));
+        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
         enrichWithFilterAndSortParams(adsParams);
         topAdsConfig.setTopAdsParams(adsParams);
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
     }
 
     @Override
-    public void onTopAdsLoaded() {
+    public void onTopAdsLoaded(List<Item> list) {
 
     }
 
@@ -508,16 +501,16 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        ProductItem data = new ProductItem();
-        data.setId(product.getId());
-        data.setName(product.getName());
-        data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_url());
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
+        Intent intent = getProductIntent(product.getId());
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+    }
+
+    private Intent getProductIntent(String productId){
+        if (getContext() != null) {
+            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
+        }
     }
 
     @Override

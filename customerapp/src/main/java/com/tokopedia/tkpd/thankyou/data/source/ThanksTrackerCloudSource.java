@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.thankyou.data.source;
 
-import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 

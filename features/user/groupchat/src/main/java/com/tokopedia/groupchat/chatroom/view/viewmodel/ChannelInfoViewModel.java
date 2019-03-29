@@ -5,19 +5,30 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage;
+import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BackgroundViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BanViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChannelPartnerViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.FreezeViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.KickViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
+import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author by nisie on 2/22/18.
  */
 
+@Deprecated
 public class ChannelInfoViewModel implements Parcelable {
+    private String channelId;
     private String title;
     private String channelUrl;
     private String bannerUrl;
@@ -27,16 +38,23 @@ public class ChannelInfoViewModel implements Parcelable {
     private String adsId;
     private String adsName;
     private String bannerName;
-    private String sendBirdToken;
+    private String groupChatToken;
     private String adminName;
     private String image;
     private String adminPicture;
     private String description;
     private String totalView;
     private List<ChannelPartnerViewModel> channelPartnerViewModels;
-    private String bannedMessage;
-    private String kickedMessage;
+    private BanViewModel banViewModel;
+    private KickViewModel kickViewModel;
     private boolean isFreeze;
+    private String videoId;
+    private Boolean videoLive;
+    private String infoUrl;
+    private SettingGroupChat settingGroupChat;
+    public OverlayViewModel overlayViewModel;
+    private BackgroundViewModel backgroundViewModel;
+    private FreezeViewModel freezeViewModel;
 
     @Nullable
     private VoteInfoViewModel voteInfoViewModel;
@@ -53,17 +71,61 @@ public class ChannelInfoViewModel implements Parcelable {
     @Nullable
     private ExitMessage exitMessage;
 
-    public ChannelInfoViewModel(String title, String channelUrl, String bannerUrl,
+    @Nullable
+    private List<GroupChatQuickReplyItemViewModel> quickRepliesViewModel;
+
+    public ChannelInfoViewModel(String channelId) {
+        this.channelId = channelId;
+        this.title = "";
+        this.channelUrl = "";
+        this.bannerUrl = "";
+        this.blurredBannerUrl = "";
+        this.adsImageUrl = "";
+        this.adsLink = "";
+        this.adsName = "";
+        this.adsId = "";
+        this.bannerName = "";
+        this.groupChatToken = "";
+        this.adminName = "";
+        this.image = "";
+        this.adminPicture = "";
+        this.description = "";
+        this.totalView = "";
+        this.channelPartnerViewModels = new ArrayList<>();
+        this.voteInfoViewModel = null;
+        this.sprintSaleViewModel = null;
+        this.banViewModel = null;
+        this.kickViewModel = null;
+        this.isFreeze = false;
+        this.pinnedMessageViewModel = null;
+        this.exitMessage = null;
+        this.quickRepliesViewModel = null;
+        this.videoId = "";
+        this.videoLive = false;
+        this.infoUrl = "";
+        this.settingGroupChat = null;
+        this.overlayViewModel = null;
+        this.backgroundViewModel = null;
+        this.freezeViewModel = null;
+    }
+
+    public ChannelInfoViewModel(String channelId, String title, String channelUrl, String bannerUrl,
                                 String blurredBannerUrl,
                                 String adsImageUrl, String adsLink, String adsName, String adsId,
-                                String bannerName, String sendBirdToken, String adminName, String image,
+                                String bannerName, String groupChatToken, String adminName, String image,
                                 String adminPicture, String description, String totalView,
                                 List<ChannelPartnerViewModel> channelPartnerViewModels,
                                 @Nullable VoteInfoViewModel voteInfoViewModel,
                                 @Nullable SprintSaleViewModel sprintSaleViewModel,
-                                String bannedMessage, String kickedMessage, boolean isFreeze,
+                                BanViewModel banViewModel, KickViewModel kickViewModel, boolean isFreeze,
                                 @Nullable PinnedMessageViewModel pinnedMessageViewModel,
-                                @Nullable ExitMessage exitMessage) {
+                                @Nullable ExitMessage exitMessage,
+                                List<GroupChatQuickReplyItemViewModel> quickRepliesViewModel,
+                                String videoId, Boolean videoLive, String infoUrl,
+                                SettingGroupChat settingGroupChat, OverlayViewModel overlayViewModel,
+                                BackgroundViewModel backgroundViewModel,
+                                FreezeViewModel freezeViewModel) {
+        this.channelId = channelId;
         this.title = title;
         this.channelUrl = channelUrl;
         this.bannerUrl = bannerUrl;
@@ -73,7 +135,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.adsName = adsName;
         this.adsId = adsId;
         this.bannerName = bannerName;
-        this.sendBirdToken = sendBirdToken;
+        this.groupChatToken = groupChatToken;
         this.adminName = adminName;
         this.image = image;
         this.adminPicture = adminPicture;
@@ -82,14 +144,23 @@ public class ChannelInfoViewModel implements Parcelable {
         this.channelPartnerViewModels = channelPartnerViewModels;
         this.voteInfoViewModel = voteInfoViewModel;
         this.sprintSaleViewModel = sprintSaleViewModel;
-        this.bannedMessage = bannedMessage;
-        this.kickedMessage = kickedMessage;
+        this.banViewModel = banViewModel;
+        this.kickViewModel = kickViewModel;
         this.isFreeze = isFreeze;
         this.pinnedMessageViewModel = pinnedMessageViewModel;
         this.exitMessage = exitMessage;
+        this.quickRepliesViewModel = quickRepliesViewModel;
+        this.videoId = videoId;
+        this.videoLive = videoLive;
+        this.infoUrl = infoUrl;
+        this.settingGroupChat = settingGroupChat;
+        this.overlayViewModel = overlayViewModel;
+        this.backgroundViewModel = backgroundViewModel;
+        this.freezeViewModel = freezeViewModel;
     }
 
     protected ChannelInfoViewModel(Parcel in) {
+        channelId = in.readString();
         title = in.readString();
         channelUrl = in.readString();
         bannerUrl = in.readString();
@@ -99,25 +170,35 @@ public class ChannelInfoViewModel implements Parcelable {
         adsId = in.readString();
         adsName = in.readString();
         bannerName = in.readString();
-        sendBirdToken = in.readString();
+        groupChatToken = in.readString();
         adminName = in.readString();
         image = in.readString();
         adminPicture = in.readString();
         description = in.readString();
         totalView = in.readString();
         channelPartnerViewModels = in.createTypedArrayList(ChannelPartnerViewModel.CREATOR);
-        bannedMessage = in.readString();
-        kickedMessage = in.readString();
+        banViewModel = in.readParcelable(BanViewModel.class.getClassLoader());
+        kickViewModel = in.readParcelable(KickViewModel.class.getClassLoader());
         isFreeze = in.readByte() != 0;
+        videoId = in.readString();
+        byte tmpVideoLive = in.readByte();
+        videoLive = tmpVideoLive == 0 ? null : tmpVideoLive == 1;
+        infoUrl = in.readString();
+        settingGroupChat = in.readParcelable(SettingGroupChat.class.getClassLoader());
+        overlayViewModel = in.readParcelable(OverlayViewModel.class.getClassLoader());
+        backgroundViewModel = in.readParcelable(BackgroundViewModel.class.getClassLoader());
+        freezeViewModel = in.readParcelable(FreezeViewModel.class.getClassLoader());
         voteInfoViewModel = in.readParcelable(VoteInfoViewModel.class.getClassLoader());
         sprintSaleViewModel = in.readParcelable(SprintSaleViewModel.class.getClassLoader());
         groupChatPointsViewModel = in.readParcelable(GroupChatPointsViewModel.class.getClassLoader());
         pinnedMessageViewModel = in.readParcelable(PinnedMessageViewModel.class.getClassLoader());
         exitMessage = in.readParcelable(ExitMessage.class.getClassLoader());
+        quickRepliesViewModel = in.createTypedArrayList(GroupChatQuickReplyItemViewModel.CREATOR);
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(channelId);
         dest.writeString(title);
         dest.writeString(channelUrl);
         dest.writeString(bannerUrl);
@@ -127,21 +208,29 @@ public class ChannelInfoViewModel implements Parcelable {
         dest.writeString(adsId);
         dest.writeString(adsName);
         dest.writeString(bannerName);
-        dest.writeString(sendBirdToken);
+        dest.writeString(groupChatToken);
         dest.writeString(adminName);
         dest.writeString(image);
         dest.writeString(adminPicture);
         dest.writeString(description);
         dest.writeString(totalView);
         dest.writeTypedList(channelPartnerViewModels);
-        dest.writeString(bannedMessage);
-        dest.writeString(kickedMessage);
+        dest.writeParcelable(banViewModel, flags);
+        dest.writeParcelable(kickViewModel, flags);
         dest.writeByte((byte) (isFreeze ? 1 : 0));
+        dest.writeString(videoId);
+        dest.writeByte((byte) (videoLive == null ? 0 : videoLive ? 1 : 2));
+        dest.writeString(infoUrl);
+        dest.writeParcelable(settingGroupChat, flags);
+        dest.writeParcelable(overlayViewModel, flags);
+        dest.writeParcelable(backgroundViewModel, flags);
+        dest.writeParcelable(freezeViewModel, flags);
         dest.writeParcelable(voteInfoViewModel, flags);
         dest.writeParcelable(sprintSaleViewModel, flags);
         dest.writeParcelable(groupChatPointsViewModel, flags);
         dest.writeParcelable(pinnedMessageViewModel, flags);
         dest.writeParcelable(exitMessage, flags);
+        dest.writeTypedList(quickRepliesViewModel);
     }
 
     @Override
@@ -160,6 +249,10 @@ public class ChannelInfoViewModel implements Parcelable {
             return new ChannelInfoViewModel[size];
         }
     };
+
+    public String getChannelId() {
+        return channelId;
+    }
 
     public String getTitle() {
         return title;
@@ -197,8 +290,8 @@ public class ChannelInfoViewModel implements Parcelable {
         return bannerName;
     }
 
-    public String getSendBirdToken() {
-        return sendBirdToken;
+    public String getGroupChatToken() {
+        return groupChatToken;
     }
 
     public String getAdminName() {
@@ -273,11 +366,19 @@ public class ChannelInfoViewModel implements Parcelable {
     }
 
     public String getBannedMessage() {
-        return bannedMessage;
+        return "";
     }
 
     public String getKickedMessage() {
-        return kickedMessage;
+        return "";
+    }
+
+    public BanViewModel getBanViewModel() {
+        return banViewModel;
+    }
+
+    public KickViewModel getKickViewModel() {
+        return kickViewModel;
     }
 
     public boolean isFreeze() {
@@ -289,8 +390,119 @@ public class ChannelInfoViewModel implements Parcelable {
         return pinnedMessageViewModel;
     }
 
+    public void setPinnedMessageViewModel(@Nullable PinnedMessageViewModel pinnedMessageViewModel) {
+        this.pinnedMessageViewModel = pinnedMessageViewModel;
+    }
+
     @Nullable
     public ExitMessage getExitMessage() {
         return exitMessage;
+    }
+
+    @Nullable
+    public List<GroupChatQuickReplyItemViewModel> getQuickRepliesViewModel() {
+        return quickRepliesViewModel;
+    }
+
+    public void setQuickRepliesViewModel(@Nullable List<GroupChatQuickReplyItemViewModel> quickRepliesViewModel) {
+        this.quickRepliesViewModel = quickRepliesViewModel;
+    }
+
+    public String getVideoId() {
+        return videoId;
+    }
+
+    public Boolean isVideoLive() {
+        return videoLive;
+    }
+
+
+    public void setVideoId(String videoId) {
+        this.videoId = videoId;
+    }
+
+    public SettingGroupChat getSettingGroupChat() {
+        return settingGroupChat;
+    }
+
+    public OverlayViewModel getOverlayViewModel() {
+        return overlayViewModel;
+    }
+
+
+    public void setChannelId(String channelId) {
+        this.channelId = channelId;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setChannelUrl(String channelUrl) {
+        this.channelUrl = channelUrl;
+    }
+
+    public void setBannerUrl(String bannerUrl) {
+        this.bannerUrl = bannerUrl;
+    }
+
+    public void setBlurredBannerUrl(String blurredBannerUrl) {
+        this.blurredBannerUrl = blurredBannerUrl;
+    }
+
+    public void setBannerName(String bannerName) {
+        this.bannerName = bannerName;
+    }
+
+    public void setGroupChatToken(String groupChatToken) {
+        this.groupChatToken = groupChatToken;
+    }
+
+    public void setAdminName(String adminName) {
+        this.adminName = adminName;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public void setAdminPicture(String adminPicture) {
+        this.adminPicture = adminPicture;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setChannelPartnerViewModels(List<ChannelPartnerViewModel> channelPartnerViewModels) {
+        this.channelPartnerViewModels = channelPartnerViewModels;
+    }
+
+    public void setFreeze(boolean freeze) {
+        isFreeze = freeze;
+    }
+
+    public void setSettingGroupChat(SettingGroupChat settingGroupChat) {
+        this.settingGroupChat = settingGroupChat;
+    }
+
+    public void setOverlayViewModel(OverlayViewModel overlayViewModel) {
+        this.overlayViewModel = overlayViewModel;
+    }
+
+    public void setExitMessage(@Nullable ExitMessage exitMessage) {
+        this.exitMessage = exitMessage;
+    }
+
+    public BackgroundViewModel getBackgroundViewModel() {
+        return backgroundViewModel;
+    }
+
+    public String getInfoUrl() {
+        return infoUrl;
+    }
+
+    public void setInfoUrl(String infoUrl) {
+        this.infoUrl = infoUrl;
     }
 }

@@ -18,9 +18,12 @@ import dagger.Provides;
 @Module
 public class KolCommentModule {
     private final KolComment.View viewListener;
+    private final KolComment.View.ViewHolder viewHolderListener;
 
-    public KolCommentModule(KolComment.View viewListener) {
+    public KolCommentModule(KolComment.View viewListener,
+                            KolComment.View.ViewHolder viewHolderListener) {
         this.viewListener = viewListener;
+        this.viewHolderListener = viewHolderListener;
     }
 
     @KolCommentScope
@@ -36,6 +39,6 @@ public class KolCommentModule {
     @KolCommentScope
     @Provides
     KolCommentTypeFactory providesTypeFactory() {
-        return new KolCommentTypeFactoryImpl(viewListener);
+        return new KolCommentTypeFactoryImpl(viewListener, viewHolderListener);
     }
 }

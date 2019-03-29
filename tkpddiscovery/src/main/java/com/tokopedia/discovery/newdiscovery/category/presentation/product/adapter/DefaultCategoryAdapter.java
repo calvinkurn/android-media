@@ -8,14 +8,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Alifa on 2/28/2017.
@@ -68,18 +64,19 @@ public class DefaultCategoryAdapter extends
 
     class ItemRowHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.categoryTitle)
-        TextView categoryTitle;
-
-        @BindView(R2.id.linWrapper)
-        LinearLayout container;
-
-        @BindView(R2.id.separator)
-        View separator;
+        private TextView categoryTitle;
+        private LinearLayout container;
+        private View separator;
 
         ItemRowHolder(View view) {
             super(view);
-            ButterKnife.bind(this,view);
+            initView(view);
+        }
+
+        private void initView(View view) {
+            categoryTitle = view.findViewById(R.id.categoryTitle);
+            container = view.findViewById(R.id.linWrapper);
+            separator = view.findViewById(R.id.separator);
         }
     }
 
@@ -87,6 +84,10 @@ public class DefaultCategoryAdapter extends
         void onCategoryClick(ChildCategoryModel child);
 
         void onBannerAdsClicked(String appLink);
+
+        boolean isUserHasLogin();
+
+        String getUserId();
     }
 
     public void addDataChild(List<ChildCategoryModel> children) {

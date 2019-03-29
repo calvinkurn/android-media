@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.util.Log;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.apiservices.product.ProductActService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -193,6 +193,6 @@ public class ProductInfoIntentService extends IntentService {
     }
 
     private void sendGTMSuccessReport(){
-        UnifyTracking.eventSuccessReport();
+        UnifyTracking.eventSuccessReport(getApplicationContext());
     }
 }

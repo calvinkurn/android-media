@@ -2,12 +2,11 @@ package com.tokopedia.checkout.domain.usecase;
 
 import android.content.Context;
 
-import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.checkout.CartConstant;
+import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transactiondata.entity.response.notifcounter.NotifCounterCartDataResponse;
 import com.tokopedia.transactiondata.repository.ICartRepository;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
-import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -56,9 +55,9 @@ public class GetMarketPlaceCartCounterUseCase extends UseCase<Integer> {
 
             @Override
             public void onNext(Integer integer) {
-                LocalCacheHandler cache = new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
-                cache.putInt(DrawerNotification.IS_HAS_CART, integer > 0 ? 1 : 0);
-                cache.putInt(DrawerNotification.CACHE_TOTAL_CART, integer);
+                LocalCacheHandler cache = new LocalCacheHandler(context, CartConstant.CART);
+                cache.putInt(CartConstant.IS_HAS_CART, integer > 0 ? 1 : 0);
+                cache.putInt(CartConstant.CACHE_TOTAL_CART, integer);
                 cache.applyEditor();
 
                 listener.onDataReady();

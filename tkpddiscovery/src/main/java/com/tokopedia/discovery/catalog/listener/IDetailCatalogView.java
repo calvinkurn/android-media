@@ -5,7 +5,8 @@ import com.tokopedia.discovery.catalog.model.CatalogInfo;
 import com.tokopedia.discovery.catalog.model.CatalogReview;
 import com.tokopedia.discovery.catalog.model.CatalogSpec;
 import com.tokopedia.core.product.listener.ViewListener;
-import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.model.share.ShareData;
+import com.tokopedia.linker.model.LinkerData;
 
 import java.util.List;
 
@@ -60,7 +61,7 @@ public interface IDetailCatalogView extends ViewListener {
      *
      * @param shareData share data object
      */
-    void renderCatalogShareData(ShareData shareData);
+    void renderCatalogShareData(LinkerData shareData);
 
     /**
      * render data jika saat terjadi error

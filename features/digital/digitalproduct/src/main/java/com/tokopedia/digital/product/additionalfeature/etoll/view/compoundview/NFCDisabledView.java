@@ -14,8 +14,6 @@ import com.tokopedia.digital.R;
  */
 public class NFCDisabledView extends LinearLayout {
 
-    private Button buttonActivateNFC;
-
     private OnActivateNFCClickListener listener;
 
     public interface OnActivateNFCClickListener {
@@ -44,14 +42,9 @@ public class NFCDisabledView extends LinearLayout {
     private void init() {
         View view = inflate(getContext(), R.layout.view_nfc_disabled, this);
 
-        buttonActivateNFC = view.findViewById(R.id.button_activate_nfc);
+        Button buttonActivateNFC = view.findViewById(R.id.button_activate_nfc);
 
-        buttonActivateNFC.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onClick();
-            }
-        });
+        buttonActivateNFC.setOnClickListener(v -> listener.onClick());
     }
 
 }

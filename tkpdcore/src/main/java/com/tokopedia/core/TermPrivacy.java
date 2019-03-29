@@ -20,6 +20,7 @@ import com.tokopedia.core.fragment.FragmentTermPrivacy;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import com.tokopedia.core2.R;
 
 /**
  * Created by hangnadi on 6/5/15.

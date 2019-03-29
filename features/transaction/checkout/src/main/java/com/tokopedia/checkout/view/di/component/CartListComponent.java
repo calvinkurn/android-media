@@ -2,7 +2,7 @@ package com.tokopedia.checkout.view.di.component;
 
 import com.tokopedia.checkout.view.di.module.CartListModule;
 import com.tokopedia.checkout.view.di.scope.CartListScope;
-import com.tokopedia.checkout.view.view.cartlist.CartFragment;
+import com.tokopedia.checkout.view.feature.cartlist.CartFragment;
 
 import dagger.Component;
 
@@ -14,4 +14,5 @@ import dagger.Component;
 public interface CartListComponent {
 
     void inject(CartFragment cartFragment);
+
 }

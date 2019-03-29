@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.groupchat.common.di.module.GroupChatModule;
 import com.tokopedia.groupchat.common.di.scope.GroupChatScope;
+import com.tokopedia.vote.data.VoteApi;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
@@ -31,4 +32,5 @@ public interface GroupChatComponent {
 
     AnalyticTracker provideAnalyticTracker();
 
+    VoteApi provideVoteApi();
 }

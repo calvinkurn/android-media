@@ -10,16 +10,17 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.mitratoppers.MitraToppersComponentInstance;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.mitratoppers.R;
-import com.tokopedia.mitratoppers.preapprove.data.model.response.preapprove.ResponsePreApprove;
 import com.tokopedia.mitratoppers.common.di.component.MitraToppersComponent;
+import com.tokopedia.mitratoppers.preapprove.data.model.response.preapprove.ResponsePreApprove;
 import com.tokopedia.mitratoppers.preapprove.view.activity.MitraToppersPreApproveWebViewActivity;
 import com.tokopedia.mitratoppers.preapprove.view.listener.MitraToppersPreApproveView;
 import com.tokopedia.mitratoppers.preapprove.view.presenter.MitraToppersPreApprovePresenter;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -34,9 +35,7 @@ public class MitraToppersPreApproveLabelFragment extends BaseDaggerFragment impl
     @Inject
     public MitraToppersPreApprovePresenter mitraToppersPreApprovePresenter;
 
-    @Inject
-    UserSession userSession;
-
+    private UserSessionInterface userSession;
     private View rootView;
     private LabelView labelView;
 
@@ -50,6 +49,7 @@ public class MitraToppersPreApproveLabelFragment extends BaseDaggerFragment impl
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userSession = new UserSession(getActivity());
     }
 
     @Override

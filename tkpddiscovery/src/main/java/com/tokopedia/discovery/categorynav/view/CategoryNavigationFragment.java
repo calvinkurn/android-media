@@ -19,6 +19,7 @@ import com.tokopedia.discovery.categorynav.domain.model.CategoryNavDomainModel;
 import com.tokopedia.discovery.categorynav.view.adapter.CategoryChildAdapter;
 import com.tokopedia.discovery.categorynav.view.adapter.CategoryParentAdapter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.discovery.util.MoEngageEventTracking;
 
 import java.util.List;
 
@@ -196,7 +197,8 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
 
     @Override
     public void onItemClicked(com.tokopedia.discovery.categorynav.domain.model.Category parent, int position) {
-        TrackingUtils.sendMoEngageClickMainCategoryIcon(parent.getName());
+        TrackingUtils.sendMoEngageClickMainCategoryIcon(getActivity(), parent.getName());
+        MoEngageEventTracking.sendCategory(parent.getId(), parent.getName());
         rootCategoryId = parent.getId();
         categoryParentAdapter.setActiveId(parent.getId());
         for (Category category : categoryNavDomainModel.getCategories()) {
@@ -225,8 +227,10 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
             IntermediaryActivity.moveTo(
                     getActivity(),
                     category.getId(),
-                    category.getName()
+                    category.getName(),
+                    true
             );
+            MoEngageEventTracking.sendProductCategory(category.getId(), category.getName());
             getActivity().setResult(CategoryNavigationActivity.DESTROY_BROWSE_PARENT);
             getActivity().finish();
         }

@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.gm.statistic.view.activity.GMStatisticTransactionActivity;
 import com.tokopedia.gm.statistic.view.model.GMGraphViewWithPreviousModel;
 import com.tokopedia.gm.statistic.view.widget.ArrowPercentageView;
@@ -57,7 +58,7 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
         viewNotGM.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UnifyTracking.eventClickGMStatBuyGMDetailTransaction();
+                UnifyTracking.eventClickGMStatBuyGMDetailTransaction(view.getContext());
                 if (listener != null) {
                     listener.onViewNotGmClicked();
                 }
@@ -75,11 +76,15 @@ public class GMStatisticTransactionViewHolder implements GMStatisticViewHolder {
                 Intent intent = new Intent(context, GMStatisticTransactionActivity.class);
                 context.startActivity(intent);
 
-                UnifyTracking.eventClickGMStatSeeDetailTransaction();
+                UnifyTracking.eventClickGMStatSeeDetailTransaction(view.getContext());
             }
         });
         monthNamesAbrev = transactionDataCardView.getContext().getResources()
                 .getStringArray(R.array.lib_date_picker_month_entries);
+
+        TextView titleUpgradeGM = viewNotGM.findViewById(R.id.market_insight_gmsubscribe_text);
+        titleUpgradeGM.setText(view.getContext().getString(R.string.gm_statistic_upgrade_to_gold_merchant,
+                view.getContext().getString(GMConstant.getGMTitleResource(view.getContext()))));
     }
 
     public void bindData(GMGraphViewWithPreviousModel totalTransactionModel, boolean isGoldMerchant) {

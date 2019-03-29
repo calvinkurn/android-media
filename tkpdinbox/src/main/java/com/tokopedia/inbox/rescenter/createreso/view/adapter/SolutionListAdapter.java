@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.inbox.R;
@@ -40,12 +41,8 @@ public class SolutionListAdapter extends RecyclerView.Adapter<SolutionListAdapte
     public void onBindViewHolder(ItemHolder holder, int position) {
         final SolutionViewModel solutionViewModel = solutionViewModelList.get(position);
         holder.tvSolution.setText(solutionViewModel.getName());
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.onItemClicked(solutionViewModel);
-            }
-        });
+        holder.cardView.setOnClickListener(view -> listener.onItemClicked(solutionViewModel));
+        holder.ivCheck.setVisibility(listener.showCheckOnItem(solutionViewModel.getId()) ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -57,11 +54,13 @@ public class SolutionListAdapter extends RecyclerView.Adapter<SolutionListAdapte
 
         CardView cardView;
         TextView tvSolution;
+        ImageView ivCheck;
 
         public ItemHolder(View itemView) {
             super(itemView);
             cardView = (CardView) itemView.findViewById(R.id.card);
             tvSolution = (TextView) itemView.findViewById(R.id.tv_solution);
+            ivCheck = (ImageView) itemView.findViewById(R.id.iv_check);
         }
     }
 }

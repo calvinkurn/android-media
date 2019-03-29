@@ -1,5 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.view.listener;
 
+import android.content.Context;
+
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
@@ -33,6 +35,8 @@ public interface SolutionListFragmentListener {
         void errorEditSolution(String error);
 
         void showDialogCompleteEditAppeal(SolutionViewModel solutionViewModel);
+
+        Context getContext();
 
     }
 

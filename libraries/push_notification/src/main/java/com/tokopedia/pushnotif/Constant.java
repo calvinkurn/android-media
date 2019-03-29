@@ -33,6 +33,7 @@ public interface Constant {
         int SELLER = 500;
         int RESOLUTION = 600;
         int GROUPCHAT = 700;
+        int CHALLENGES = 2018;
     }
 
     interface Settings {

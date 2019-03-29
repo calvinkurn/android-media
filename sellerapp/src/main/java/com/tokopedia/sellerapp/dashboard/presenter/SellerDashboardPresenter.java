@@ -11,6 +11,12 @@ import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.view.subscriber.NotificationSubscriber;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
+import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
+import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
+import com.tokopedia.seller.product.manage.constant.SortProductOption;
+import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
+import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.seller.shop.setting.constant.ShopCloseAction;
 import com.tokopedia.seller.shop.setting.domain.interactor.UpdateShopScheduleUseCase;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
@@ -20,6 +26,8 @@ import com.tokopedia.sellerapp.dashboard.model.ShopModelWithScore;
 import com.tokopedia.sellerapp.dashboard.presenter.listener.NotificationListener;
 import com.tokopedia.sellerapp.dashboard.usecase.GetShopInfoWithScoreUseCase;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
+import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
+import com.tokopedia.user_identification_common.usecase.GetApprovalStatusUseCase;
 
 import javax.inject.Inject;
 
@@ -35,21 +43,27 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
     private final NewNotificationUseCase newNotificationUseCase;
     private final CacheApiClearAllUseCase cacheApiClearAllUseCase;
     private final UpdateShopScheduleUseCase updateShopScheduleUseCase;
+    private final GetProductListSellingUseCase getProductListSellingUseCase;
+    private final GetApprovalStatusUseCase getVerificationStatusUseCase;
 
     @Inject
     public SellerDashboardPresenter(GetShopInfoWithScoreUseCase getShopInfoWithScoreUseCase,
                                     GetTickerUseCase getTickerUseCase,
                                     NewNotificationUseCase newNotificationUseCase,
                                     CacheApiClearAllUseCase cacheApiClearAllUseCase,
-                                    UpdateShopScheduleUseCase updateShopScheduleUseCase) {
+                                    UpdateShopScheduleUseCase updateShopScheduleUseCase,
+                                    GetProductListSellingUseCase getProductListSellingUseCase,
+                                    GetApprovalStatusUseCase getVerificationStatusUseCase) {
         this.getShopInfoWithScoreUseCase = getShopInfoWithScoreUseCase;
         this.getTickerUseCase = getTickerUseCase;
         this.newNotificationUseCase = newNotificationUseCase;
         this.cacheApiClearAllUseCase = cacheApiClearAllUseCase;
         this.updateShopScheduleUseCase = updateShopScheduleUseCase;
+        this.getProductListSellingUseCase = getProductListSellingUseCase;
+        this.getVerificationStatusUseCase = getVerificationStatusUseCase;
     }
 
-    public void getShopInfoWithScore(){
+    public void getShopInfoWithScore() {
         getShopInfoWithScoreUseCase.execute(
                 RequestParams.EMPTY, getShopInfoAndScoreSubscriber());
     }
@@ -82,7 +96,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
         };
     }
 
-    public void refreshShopInfo(){
+    public void refreshShopInfo() {
         cacheApiClearAllUseCase.execute(new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
@@ -102,12 +116,17 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
         });
     }
 
-    public void getTicker(){
+    public void getTicker() {
         getTickerUseCase.execute(RequestParams.EMPTY, getTickerSubscriber());
     }
 
-    public void getNotification(){
-        newNotificationUseCase.execute(NotificationUseCase.getRequestParam(true),getNotificationSubscriber());
+    public void getVerificationStatus() {
+        getVerificationStatusUseCase.execute(GetApprovalStatusUseCase.getRequestParam(),
+                new GetApprovalStatusSubscriber(getView().getApprovalStatusListener()));
+    }
+
+    public void getNotification() {
+        newNotificationUseCase.execute(NotificationUseCase.getRequestParam(true), getNotificationSubscriber());
     }
 
     private Subscriber<NotificationModel> getNotificationSubscriber() {
@@ -116,6 +135,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
             public void onErrorGetNotificationDrawer(String errorMessage) {
                 getView().onErrorGetNotifiction(errorMessage);
             }
+
             @Override
             public void onGetNotificationDrawer(DrawerNotification drawerNotification) {
                 getView().onSuccessGetNotification(drawerNotification);
@@ -163,11 +183,35 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
             @Override
             public void onNext(Boolean isSuccess) {
                 getView().hideLoading();
-                if(isSuccess){
+                if (isSuccess) {
                     getView().onSuccessOpenShop();
-                }else{
+                } else {
                     getView().onErrorOpenShop();
                 }
+            }
+        };
+    }
+
+    public void getProductList() {
+        getProductListSellingUseCase.execute(GetProductListSellingUseCase.createRequestParamsManageProduct(0,
+                "", CatalogProductOption.WITH_AND_WITHOUT, ConditionProductOption.ALL_CONDITION, "", 0,
+                PictureStatusProductOption.WITH_AND_WITHOUT, SortProductOption.POSITION), getSubscriberGetListProduct());
+    }
+
+    private Subscriber<ProductListSellerModel> getSubscriberGetListProduct() {
+        return new Subscriber<ProductListSellerModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(ProductListSellerModel productListSellerModel) {
+
             }
         };
     }
@@ -180,5 +224,6 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
         updateShopScheduleUseCase.unsubscribe();
         cacheApiClearAllUseCase.unsubscribe();
         newNotificationUseCase.unsubscribe();
+        getVerificationStatusUseCase.unsubscribe();
     }
 }

@@ -11,43 +11,38 @@ import android.view.KeyEvent;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.PaymentTracking;
-import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.apprating.AdvancedAppRatingDialog;
-import com.tokopedia.core.apprating.AppRatingDialog;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
+import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
 import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpdreactnative.react.ReactUtils;
+import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
+import com.tokopedia.tokocash.CacheUtil;
 
-import org.json.JSONArray;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
-
-import javax.inject.Inject;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Arrays;
 
 
-public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
+public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<ReactNativeThankYouPageFragment> {
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
+
     private static final String PLATFORM = "platform";
     private static final String DIGITAL = "digital";
+    private static final String GL_THANK_YOU_PAGE =  "gl_thank_you_page";
 
     private ReactInstanceManager reactInstanceManager;
 
     @DeepLink("tokopedia://thankyou/{platform}/{template}")
     public static Intent getThankYouPageApplinkIntent(Context context, Bundle bundle) {
+        ReactUtils.startTracing(GL_THANK_YOU_PAGE);
         return ReactNativeThankYouPageActivity.createReactNativeActivity(
                 context, ReactConst.Screen.THANK_YOU_PAGE,
                 "Thank You"
@@ -71,61 +66,24 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
         reactInstanceManager = ((ReactApplication) getApplication())
                 .getReactNativeHost().getReactInstanceManager();
         PurchaseNotifier.notify(this, getIntent().getExtras());
+        resetWalletCache();
     }
 
     @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
-
-    @Override
-    protected void setupURIPass(Uri data) {
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_react_native;
-    }
-
-    @Override
-    protected void initView() {
+    protected ReactNativeThankYouPageFragment getReactNativeFragment() {
         Bundle initialProps = getIntent().getExtras();
-        initialProps.remove("android.intent.extra.REFERRER");
-        initialProps.remove("is_deep_link_flag");
-        initialProps.remove("deep_link_uri");
-        Log.i("ReactNative", initialProps.toString());
-        sendAnalytics(initialProps);
-        ReactNativeThankYouPageFragment fragment = ReactNativeThankYouPageFragment.createInstance(initialProps);
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        if (getFragmentManager().findFragmentById(R.id.container) == null) {
-            fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
+        if (initialProps != null) {
+            initialProps.remove("android.intent.extra.REFERRER");
+            initialProps.remove("is_deep_link_flag");
+            initialProps.remove("deep_link_uri");
+            sendAnalytics(initialProps);
         }
-        fragmentTransaction.commit();
+        return ReactNativeThankYouPageFragment.createInstance(initialProps);
     }
 
     @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
+    protected String getToolbarTitle() {
+        return "Tokopedia";
     }
 
     @Override
@@ -149,18 +107,21 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
         data.setPlatform(initialProps.getString(ThanksTrackerConst.Key.PLATFORM));
         data.setTemplate(initialProps.getString(ThanksTrackerConst.Key.TEMPLATE));
         data.setId(initialProps.getString(ThanksTrackerConst.Key.ID));
+        if (initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES) != null &&
+                !initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES).isEmpty()){
+            try {
+                data.setShopTypes(Arrays.asList(URLDecoder.decode(initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES), "UTF-8").split(",")));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
         ThanksTrackerService.start(this, data);
     }
 
     @Override
     public void onBackPressed() {
         if (isDigital()) {
-            AdvancedAppRatingDialog.show(this, new AppRatingDialog.AppRatingListener() {
-                @Override
-                public void onDismiss() {
-                    closeThankyouPage();
-                }
-            });
+            AdvancedAppRatingDialog.show(this, dialog -> closeThankyouPage());
         } else {
             closeThankyouPage();
         }
@@ -170,14 +131,20 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
             String platform = extra.getString(PLATFORM);
-            if (platform != null && platform.equals(DIGITAL)) {
-                return true;
-            }
+            return platform != null && platform.equals(DIGITAL);
         }
         return false;
     }
 
+    private void resetWalletCache() {
+        if (getApplicationContext() != null && getApplicationContext() instanceof AbstractionRouter) {
+            ((AbstractionRouter) getApplicationContext()).getGlobalCacheManager().delete(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE);
+        }
+    }
+
     private void closeThankyouPage() {
         super.onBackPressed();
+        RouteManager.route(this, ApplinkConst.HOME);
+        finish();
     }
 }

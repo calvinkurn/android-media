@@ -1,0 +1,96 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:paddingEnd="@dimen/dp_16"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingStart="@dimen/dp_16">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/img_mobile"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="@dimen/dp_40"
+        android:src="@drawable/ic_verification_sms"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_24"
+        android:gravity="center"
+        android:paddingEnd="@dimen/dp_24"
+        android:paddingLeft="@dimen/dp_24"
+        android:paddingRight="@dimen/dp_24"
+        android:paddingStart="@dimen/dp_24"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/tp_text_size_xsmall"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/img_mobile"
+        tools:text="Masukan PIN untuk mengaktifkan kupon (hanya untuk merchant)"
+        tools:visibility="visible" />
+
+    <com.tokopedia.design.widget.PinEditText
+        android:id="@+id/et_input_otp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_60"
+        android:layout_marginRight="@dimen/dp_60"
+        android:layout_marginTop="@dimen/dp_32"
+        android:background="@null"
+        android:cursorVisible="false"
+        android:digits="1234567890"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:maxLength="4"
+        android:paddingBottom="@dimen/dp_10"
+        android:textColor="@color/black_54"
+        android:textIsSelectable="false"
+        android:textSize="32sp"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@+id/text_info"
+        app:pinLineColors="#33000000" />
+
+    <TextView
+        android:id="@+id/tv_pin_error"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_16"
+        android:gravity="center"
+        android:paddingEnd="@dimen/dp_24"
+        android:paddingLeft="@dimen/dp_24"
+        android:paddingRight="@dimen/dp_24"
+        android:paddingStart="@dimen/dp_24"
+        android:textColor="@color/tkpd_dark_red"
+        android:textSize="@dimen/tp_text_size_xsmall"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_input_otp" />
+
+
+    <ProgressBar
+        android:id="@+id/pb_main_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        tools:visibility="gone" />
+
+
+</android.support.constraint.ConstraintLayout>

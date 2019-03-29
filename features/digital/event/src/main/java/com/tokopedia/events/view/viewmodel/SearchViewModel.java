@@ -125,7 +125,7 @@ public class SearchViewModel implements Parcelable {
         this.isTop = in.readInt();
     }
 
-    public static final Parcelable.Creator<SearchViewModel> CREATOR = new Parcelable.Creator<SearchViewModel>() {
+    public static final Creator<SearchViewModel> CREATOR = new Creator<SearchViewModel>() {
         @Override
         public SearchViewModel createFromParcel(Parcel source) {
             return new SearchViewModel(source);

@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.events.R;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.EventsItemDomain;
@@ -27,6 +26,7 @@ import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
 import com.tokopedia.events.view.viewmodel.SearchViewModel;
+import com.tokopedia.user.session.UserSession;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -50,6 +52,8 @@ import rx.schedulers.Schedulers;
 public class Utils {
     private static Utils singleInstance;
     private List<CategoryItemsViewModel> topEvents;
+    private HashSet<Integer> likedEventSet;
+    private HashSet<Integer> unLikedEventSet;
 
     synchronized public static Utils getSingletonInstance() {
         if (singleInstance == null)
@@ -59,6 +63,46 @@ public class Utils {
 
     private Utils() {
         Log.d("UTILS", "Utils Instance created");
+    }
+
+    public HashSet<Integer> getLikedEventSet() {
+        return likedEventSet;
+    }
+
+    public void addLikedEvent(int id) {
+        if (likedEventSet == null) {
+            likedEventSet = new HashSet<>();
+        }
+        likedEventSet.add(id);
+
+    }
+
+    public void removeLikedEvent(int id) {
+        if (likedEventSet != null && !likedEventSet.isEmpty())
+            likedEventSet.remove(id);
+    }
+
+    public boolean containsLikedEvent(int id) {
+        return likedEventSet != null && !likedEventSet.isEmpty() && likedEventSet.contains(id);
+    }
+
+    public void addUnlikedEvent(int id) {
+        if (unLikedEventSet == null)
+            unLikedEventSet = new HashSet<>();
+        unLikedEventSet.add(id);
+    }
+
+    public void removeUnlikedEvent(int id) {
+        if (unLikedEventSet != null && !unLikedEventSet.isEmpty())
+            unLikedEventSet.remove(id);
+    }
+
+    public boolean containsUnlikeEvent(int id) {
+        if (unLikedEventSet != null && !unLikedEventSet.isEmpty() && unLikedEventSet.contains(id)) {
+            removeUnlikedEvent(id);
+            return true;
+        }
+        return false;
     }
 
     public List<CategoryViewModel> convertIntoCategoryListVeiwModel(List<EventsCategoryDomain> categoryList) {
@@ -73,10 +117,12 @@ public class Utils {
                             convertIntoCategoryListItemsVeiwModel(eventsCategoryDomain.getItems())));
 
                 } else {
-                    categoryViewModels.add(new CategoryViewModel(eventsCategoryDomain.getTitle(),
+                    CategoryViewModel model = new CategoryViewModel(eventsCategoryDomain.getTitle(),
                             eventsCategoryDomain.getName(),
                             eventsCategoryDomain.getMediaURL(),
-                            convertIntoCategoryListItemsVeiwModel(eventsCategoryDomain.getItems())));
+                            convertIntoCategoryListItemsVeiwModel(eventsCategoryDomain.getItems()));
+                    model.setCategoryId(eventsCategoryDomain.getId());
+                    categoryViewModels.add(model);
 
                 }
 
@@ -93,6 +139,7 @@ public class Utils {
                 CategoryItemsViewModel = new CategoryItemsViewModel();
                 CategoryItemsViewModel.setId(categoryEntity.getId());
                 CategoryItemsViewModel.setCategoryId(categoryEntity.getCategoryId());
+                CategoryItemsViewModel.setChildCategoryIds(categoryEntity.getChildCategoryIds());
                 CategoryItemsViewModel.setDisplayName(categoryEntity.getDisplayName());
                 CategoryItemsViewModel.setTitle(categoryEntity.getTitle());
                 CategoryItemsViewModel.setImageApp(categoryEntity.getImageApp());
@@ -110,6 +157,10 @@ public class Utils {
                 CategoryItemsViewModel.setUrl(categoryEntity.getUrl());
                 CategoryItemsViewModel.setSeoUrl(categoryEntity.getSeoUrl());
                 CategoryItemsViewModel.setMinLikes(categoryEntity.getLikes());
+                if (categoryEntity.isLiked())
+                    Utils.getSingletonInstance().addLikedEvent(categoryEntity.getId());
+                CategoryItemsViewModel.setWasLiked(categoryEntity.isLiked());
+                CategoryItemsViewModel.setLiked(categoryEntity.isLiked());
                 categoryItemsViewModelList.add(CategoryItemsViewModel);
             }
         }
@@ -166,7 +217,6 @@ public class Utils {
     public void setEventLike(Context context, CategoryItemsViewModel model, PostUpdateEventLikesUseCase postUpdateEventLikesUseCase,
                              Subscriber<LikeUpdateResultDomain> subscriber) {
         LikeUpdateModel requestModel = new LikeUpdateModel();
-        //todo set requestmodel values
         Rating rating = new Rating();
         if (model.isLiked()) {
             rating.setIsLiked("false");
@@ -175,7 +225,7 @@ public class Utils {
             rating.setIsLiked("true");
             model.setLiked(true);
         }
-        rating.setUserId(Integer.parseInt(SessionHandler.getLoginID(context)));
+        rating.setUserId(Integer.parseInt(Utils.getUserSession(context).getUserId()));
         rating.setProductId(model.getId());
         rating.setFeedback("");
         requestModel.setRating(rating);
@@ -228,13 +278,18 @@ public class Utils {
     }
 
 
-    public static String convertEpochToString(int time) {
+    public String convertEpochToString(int time) {
         SimpleDateFormat sdf = new SimpleDateFormat("EEEE, d MMM yyyy", new Locale("in", "ID", ""));
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
         Long epochTime = time * 1000L;
         Date date = new Date(epochTime);
-        String dateString = sdf.format(date);
-        return dateString;
+        return sdf.format(date);
+    }
+
+    public String convertLongEpoch(long epoch) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd'/'MM'/'yy", new Locale("in", "ID", ""));
+        Date date = new Date(epoch);
+        return sdf.format(date);
     }
 
     public void setTopEvents(List<CategoryItemsViewModel> topEvents) {
@@ -313,7 +368,7 @@ public class Utils {
     }
 
     public void shareEvent(Context context, String title, String URL) {
-        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+        Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
         share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         share.putExtra(Intent.EXTRA_SUBJECT,
@@ -324,13 +379,11 @@ public class Utils {
     }
 
     public static class Constants {
+        public final static String BOOK = "book";
         public final static String EXTRA_EVENT_CALENDAR = "EVENTCALENDAR";
         public final static String THEMEPARK = "hiburan";
-        public final static String TOP = "top";
-        public final static String EXTRA_SECTION = "extra_section";
         public final static String PROMOURL = "https://www.tokopedia.com/promo/tiket/events/";
         public final static String FAQURL = "https://www.tokopedia.com/bantuan/faq-tiket-event/";
-        public final static String TRANSATIONSURL = "https://pulsa.tokopedia.com/order-list/";
         public final static String TOP_EVENTS = "TOP EVENTS";
         public final static String CHECKOUTDATA = "checkoutdata";
         public final static String PRODUCTID = "product_id";
@@ -338,5 +391,26 @@ public class Utils {
         public final static String EVENTS = "events";
         public final static String HOMEDATA = "homedata";
         public final static String FAVOURITEDATA = "favouritedata";
+        public static final int REVIEW_REQUEST = 1901;
+        public static final int SELECT_TICKET_REQUEST = 1902;
+        public static String EXTRA_PACKAGEVIEWMODEL = "packageviewmodel";
+        public static String EXTRA_SEATLAYOUTVIEWMODEL = "seatlayoutviewmodel";
+        public static String EXTRA_SEATSELECTEDMODEL = "selectedseatviewmodel";
+        public static String EXTRA_VERIFY_RESPONSE = "verifyresponse";
+        static String PROMOCODE = "promocode";
+        static String PROMOCODE_DISCOUNT = "promocode_discount";
+        static String PROMO_CASHBACK = "promocode_cashback";
+        static String PROMO_FAILURE = "promocode_failure_message";
+        static String PROMO_SUCCESS = "promocode_success_message";
+        static String PROMO_STATUS = "promocode_status";
+        public static String EVENT_OMS = "event_oms_android";
+        public static final String LIKED_EVENTS = "liked_events";
+        public static final String EVENTS_PREFS = "events_prefs";
+
+    }
+
+    public static UserSession getUserSession(Context context) {
+        UserSession userSession = new UserSession(context);
+        return userSession;
     }
 }

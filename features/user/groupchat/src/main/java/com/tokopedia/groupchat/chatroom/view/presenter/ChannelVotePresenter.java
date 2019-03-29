@@ -1,12 +1,12 @@
 package com.tokopedia.groupchat.chatroom.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.groupchat.chatroom.view.listener.ChannelVoteContract;
 import com.tokopedia.groupchat.common.util.GroupChatErrorHandler;
-import com.tokopedia.groupchat.vote.domain.usecase.SendVoteUseCase;
-import com.tokopedia.groupchat.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
+import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
+import com.tokopedia.vote.domain.usecase.SendVoteUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -27,7 +27,7 @@ public class ChannelVotePresenter extends BaseDaggerPresenter<ChannelVoteContrac
     }
 
     @Override
-    public void sendVote(UserSession userSession, String pollId, boolean voted, final VoteViewModel element) {
+    public void sendVote(UserSessionInterface userSession, String pollId, boolean voted, final VoteViewModel element, String groupChatToken) {
 
         if(userSession == null || !userSession.isLoggedIn()) {
             getView().redirectToLogin();
@@ -37,7 +37,7 @@ public class ChannelVotePresenter extends BaseDaggerPresenter<ChannelVoteContrac
             getView().showHasVoted();
         } else {
             sendVoteUseCase.execute(SendVoteUseCase.createParams(pollId,
-                    element.getOptionId()), new Subscriber<VoteStatisticViewModel>() {
+                    element.getOptionId(), groupChatToken), new Subscriber<VoteStatisticDomainModel>() {
                 @Override
                 public void onCompleted() {
 
@@ -52,7 +52,7 @@ public class ChannelVotePresenter extends BaseDaggerPresenter<ChannelVoteContrac
                 }
 
                 @Override
-                public void onNext(VoteStatisticViewModel voteStatisticViewModel) {
+                public void onNext(VoteStatisticDomainModel voteStatisticViewModel) {
                     if (getView() != null) {
                         getView().onSuccessVote(element, voteStatisticViewModel);
                         getView().showSuccessVoted();
@@ -65,6 +65,6 @@ public class ChannelVotePresenter extends BaseDaggerPresenter<ChannelVoteContrac
     @Override
     public void detachView() {
         super.detachView();
-        sendVoteUseCase.unsubscribe();
+//        sendVoteUseCase.unsubscribe();
     }
 }

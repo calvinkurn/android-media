@@ -3,6 +3,7 @@ package com.tokopedia.kol.feature.post.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,23 +15,36 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.component.Dialog;
+import com.tokopedia.design.component.Menus;
+import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
+import com.tokopedia.kol.common.util.PostMenuListener;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
+import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
 import com.tokopedia.kol.feature.post.view.adapter.KolPostAdapter;
+import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
+import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
+import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.kol.common.util.PostMenuUtilKt.createBottomMenu;
 
 /**
  * @author by milhamj on 19/02/18.
@@ -38,7 +52,8 @@ import javax.inject.Inject;
 
 public class KolPostFragment extends BaseDaggerFragment implements
         KolPostListener.View,
-        KolPostListener.View.ViewHolder {
+        KolPostListener.View.ViewHolder,
+        KolPostListener.View.Like {
 
     public static final String PARAM_IS_LIKED = "is_liked";
     public static final String PARAM_TOTAL_LIKES = "total_likes";
@@ -54,17 +69,19 @@ public class KolPostFragment extends BaseDaggerFragment implements
 
     @Inject
     KolPostListener.Presenter presenter;
+
     @Inject
-    KolPostAdapter adapter;
-    @Inject
-    UserSession userSession;
+    UserSessionInterface userSession;
+
+    protected KolPostAdapter adapter;
+    protected KolPostTypeFactory typeFactory;
+    protected boolean canLoadMore = true;
+
     private RecyclerView kolRecyclerView;
     private LinearLayoutManager layoutManager;
-
     private AbstractionRouter abstractionRouter;
     private KolRouter kolRouter;
     private String userId;
-    private boolean canLoadMore = true;
     private Intent resultIntent;
 
     public static KolPostFragment newInstance(String userId) {
@@ -89,7 +106,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(
@@ -100,9 +117,11 @@ public class KolPostFragment extends BaseDaggerFragment implements
         initVar();
         initView(parentView);
         setViewListener();
-        presenter.initView(userId);
 
-        if (getActivity().getApplicationContext() instanceof KolRouter) {
+        if (getActivity() != null
+                && getActivity().getApplicationContext() != null
+                && getActivity().getApplicationContext() instanceof
+                KolRouter) {
             kolRouter = (KolRouter) getActivity().getApplicationContext();
         } else {
             throw new IllegalStateException("Application must be an instance of KolRouter!");
@@ -118,8 +137,22 @@ public class KolPostFragment extends BaseDaggerFragment implements
         return parentView;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        fetchDataFirstTime();
+    }
+
+    @Override
+    public void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
+    }
+
     private void initVar() {
         userId = getArguments().getString(PARAM_USER_ID);
+        typeFactory = new KolPostTypeFactoryImpl(this);
+        adapter = new KolPostAdapter(typeFactory);
     }
 
     private void initView(View view) {
@@ -131,7 +164,6 @@ public class KolPostFragment extends BaseDaggerFragment implements
         }
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         kolRecyclerView.setLayoutManager(layoutManager);
-
         adapter.clearData();
         kolRecyclerView.setAdapter(adapter);
     }
@@ -146,10 +178,18 @@ public class KolPostFragment extends BaseDaggerFragment implements
                 if (topVisibleItemPosition >= adapter.getItemCount() - LOAD_MORE_THRESHOLD &&
                         canLoadMore &&
                         !adapter.isLoading()) {
-                    presenter.getKolPost(userId);
+                    fetchData();
                 }
             }
         });
+    }
+
+    protected void fetchDataFirstTime() {
+        presenter.initView(userId);
+    }
+
+    protected void fetchData() {
+        presenter.getKolPost(userId);
     }
 
     @Override
@@ -159,11 +199,14 @@ public class KolPostFragment extends BaseDaggerFragment implements
 
     @Override
     protected void initInjector() {
-        DaggerKolProfileComponent.builder()
-                .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
-                .kolProfileModule(new KolProfileModule(this))
-                .build()
-                .inject(this);
+        if (getActivity() != null && getActivity().getApplication() != null) {
+            DaggerKolProfileComponent.builder()
+                    .kolComponent(KolComponentInstance.getKolComponent(getActivity()
+                            .getApplication()))
+                    .kolProfileModule(new KolProfileModule())
+                    .build()
+                    .inject(this);
+        }
     }
 
     @Override
@@ -177,7 +220,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public UserSession getUserSession() {
+    public UserSessionInterface getUserSession() {
         return userSession;
     }
 
@@ -202,17 +245,12 @@ public class KolPostFragment extends BaseDaggerFragment implements
     public void onEmptyKolPost() {
         adapter.removeErrorNetwork();
         adapter.removeLoading();
-        adapter.showEmpty();
+        adapter.showEmpty(true);
     }
 
     @Override
     public void onErrorGetProfileData(String message) {
-        adapter.showErrorNetwork(message, new ErrorNetworkModel.OnRetryListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.getKolPost(userId);
-            }
-        });
+        adapter.showErrorNetwork(message, this::fetchData);
     }
 
     @Override
@@ -229,42 +267,126 @@ public class KolPostFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onGoToKolProfile(int page, int rowNumber, String userId, int postId) {
+    public void onSuccessDeletePost(int rowNumber) {
+        adapter.removeItem(rowNumber);
+        if (isAdapterEmpty()) {
+            adapter.clearData();
+            fetchDataFirstTime();
+        }
+
+        ToasterNormal.make(getView(), getString(R.string.kol_post_deleted), BaseToaster.LENGTH_LONG)
+                .setAction(R.string.title_ok, v -> {
+
+                })
+                .show();
     }
 
     @Override
-    public void onOpenKolTooltip(int page, int rowNumber, String url) {
-        ((KolRouter) getActivity().getApplication()).actionApplinkFromActivity(getActivity(), url);
+    public void onErrorDeletePost(String message, int rowNumber, int id) {
+        showError(message, v -> presenter.deletePost(rowNumber, id));
     }
 
     @Override
-    public void onFollowKolClicked(int page, int rowNumber, int id) {
-        presenter.followKol(id, rowNumber, this);
+    public void onGoToKolProfile(int rowNumber, String userId, int postId) {
     }
 
     @Override
-    public void onUnfollowKolClicked(int page, int rowNumber, int id) {
-        presenter.unfollowKol(id, rowNumber, this);
+    public void onGoToKolProfileUsingApplink(int rowNumber, String applink) {
+    }
+
+    @Override
+    public void onOpenKolTooltip(int rowNumber, String uniqueTrackingId, String url) {
+        kolRouter.openRedirectUrl(getActivity(), url);
+    }
+
+    @Override
+    public void trackContentClick(boolean hasMultipleContent, String activityId, String
+            activityType, String position) {
 
     }
 
     @Override
-    public void onLikeKolClicked(int page, int rowNumber, int id) {
-        presenter.likeKol(id, rowNumber, this);
-    }
-
-    @Override
-    public void onUnlikeKolClicked(int page, int rowNumber, int id) {
-        presenter.unlikeKol(id, rowNumber, this);
+    public void trackTooltipClick(boolean hasMultipleContent, String activityId, String
+            activityType, String position) {
 
     }
 
     @Override
-    public void onGoToKolComment(int page, int rowNumber, KolPostViewModel kolPostViewModel) {
+    public void onFollowKolClicked(int rowNumber, int id) {
+        if (userSession != null && userSession.isLoggedIn()) {
+            presenter.followKol(id, rowNumber, this);
+        } else {
+            startActivity(kolRouter.getLoginIntent(getActivity()));
+        }
+    }
+
+    @Override
+    public void onUnfollowKolClicked(int rowNumber, int id) {
+        if (userSession != null && userSession.isLoggedIn()) {
+            presenter.unfollowKol(id, rowNumber, this);
+        } else {
+            startActivity(kolRouter.getLoginIntent(getActivity()));
+        }
+    }
+
+    @Override
+    public void onLikeKolClicked(int rowNumber, int id, boolean hasMultipleContent,
+                                 String activityType) {
+        if (userSession != null && userSession.isLoggedIn()) {
+            presenter.likeKol(id, rowNumber, this);
+        } else {
+            startActivity(kolRouter.getLoginIntent(getActivity()));
+        }
+    }
+
+    @Override
+    public void onUnlikeKolClicked(int rowNumber, int id, boolean hasMultipleContent,
+                                   String activityType) {
+        if (userSession != null && userSession.isLoggedIn()) {
+            presenter.unlikeKol(id, rowNumber, this);
+        } else {
+            startActivity(kolRouter.getLoginIntent(getActivity()));
+        }
+    }
+
+    @Override
+    public void onGoToKolComment(int rowNumber, int id, boolean hasMultipleContent,
+                                 String activityType) {
         Intent intent = KolCommentActivity.getCallingIntent(
-                getContext(), kolPostViewModel.getId(), rowNumber
+                getContext(), id, rowNumber
         );
         startActivityForResult(intent, KOL_COMMENT_CODE);
+    }
+
+    @Override
+    public void onEditClicked(boolean hasMultipleContent, String activityId,
+                              String activityType) {
+
+    }
+
+    @Override
+    public void onMenuClicked(int rowNumber, BaseKolViewModel element) {
+        if (getContext() != null) {
+            Menus menus = createBottomMenu(getContext(), element,
+                    new PostMenuListener() {
+                        @Override
+                        public void onDeleteClicked() {
+                            createDeleteDialog(rowNumber, element.getContentId()).show();
+                        }
+
+                        @Override
+                        public void onReportClick() {
+
+                        }
+
+                        @Override
+                        public void onEditClick() {
+
+                        }
+                    }
+            );
+            menus.show();
+        }
     }
 
     @Override
@@ -274,8 +396,8 @@ public class KolPostFragment extends BaseDaggerFragment implements
             case KOL_COMMENT_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     onSuccessAddDeleteKolComment(
-                            data.getIntExtra(kolRouter.getKolCommentArgsPosition(), -1),
-                            data.getIntExtra(kolRouter.getKolCommentArgsTotalComment(), 0));
+                            data.getIntExtra(KolCommentActivity.ARGS_POSITION, -1),
+                            data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0));
                 }
                 break;
             default:
@@ -295,7 +417,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
             } else {
                 kolPostViewModel.setTotalLike(kolPostViewModel.getTotalLike() - 1);
             }
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_LIKE);
 
             if (getActivity() != null &&
                     getArguments() != null &&
@@ -319,12 +441,29 @@ public class KolPostFragment extends BaseDaggerFragment implements
         showError(message);
     }
 
+    private boolean isAdapterEmpty() {
+        return adapter.getItemCount() == 0
+                || isFirstItemEntryPoint();
+    }
+
+    private boolean isFirstItemEntryPoint() {
+        return adapter.getItemCount() == 1
+                && adapter.getList().get(0) instanceof EntryPointViewModel;
+    }
+
     private void showError(String message) {
         if (message == null) {
             NetworkErrorHelper.showSnackbar(getActivity());
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), message);
         }
+    }
+
+    private void showError(String message, View.OnClickListener action) {
+        ToasterError
+                .make(getView(), message, ToasterError.LENGTH_LONG)
+                .setAction(R.string.title_try_again, action)
+                .show();
     }
 
     private void onSuccessAddDeleteKolComment(int rowNumber, int totalNewComment) {
@@ -335,7 +474,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
                     ((KolPostViewModel) adapter.getList().get(rowNumber));
             kolPostViewModel.setTotalComment(
                     kolPostViewModel.getTotalComment() + totalNewComment);
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_COMMENT);
 
             if (getActivity() != null &&
                     getArguments() != null &&
@@ -353,5 +492,19 @@ public class KolPostFragment extends BaseDaggerFragment implements
 
     public void setResultIntent(Intent resultIntent) {
         this.resultIntent = resultIntent;
+    }
+
+    private Dialog createDeleteDialog(int rowNumber, int id) {
+        Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        dialog.setTitle(getString(R.string.kol_delete_post));
+        dialog.setDesc(getString(R.string.kol_delete_post_desc));
+        dialog.setBtnOk(getString(R.string.kol_title_delete));
+        dialog.setBtnCancel(getString(R.string.kol_title_cancel));
+        dialog.setOnOkClickListener(v -> {
+            presenter.deletePost(rowNumber, id);
+            dialog.dismiss();
+        });
+        dialog.setOnCancelClickListener(v -> dialog.dismiss());
+        return dialog;
     }
 }

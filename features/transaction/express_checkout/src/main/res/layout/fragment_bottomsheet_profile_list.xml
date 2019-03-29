@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_profile"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/tv_continue_without_template"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
+        android:background="@drawable/bg_rectangle_grey"
+        android:fontFamily="sans-serif-medium"
+        android:foreground="?selectableItemBackground"
+        android:gravity="center_horizontal"
+        android:lineSpacingExtra="10sp"
+        android:padding="@dimen/dp_16"
+        android:text="@string/label_continue_without_template"
+        android:textColor="#61000000"
+        android:textSize="14sp"
+        android:textStyle="normal" />
+
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="@dimen/dp_16"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/ll_network_error_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="gone" />
+
+</LinearLayout>

@@ -1,15 +1,16 @@
 package com.tokopedia.tkpd.tokocash;
 
-import android.content.Context;
-
-import com.tokopedia.core.drawer2.data.pojo.topcash.Action;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
-import com.tokopedia.tkpd.R;
-import com.tokopedia.tokocash.network.exception.UserInactivateTokoCashException;
+import com.tokopedia.core.exception.SessionExpiredException;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
+import com.tokopedia.navigation_common.model.WalletModel;
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.tokocash.balance.domain.GetBalanceTokoCashUseCase;
+import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
+import com.tokopedia.tokocash.pendingcashback.domain.GetPendingCasbackUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -19,38 +20,66 @@ import rx.functions.Func1;
 public class GetBalanceTokoCashWrapper {
 
     private GetBalanceTokoCashUseCase getBalanceTokoCashUseCase;
-    private Context context;
+    private GetPendingCasbackUseCase getPendingCasbackUseCase;
 
-    public GetBalanceTokoCashWrapper(Context context, GetBalanceTokoCashUseCase getBalanceTokoCashUseCase) {
+    public GetBalanceTokoCashWrapper(GetBalanceTokoCashUseCase getBalanceTokoCashUseCase) {
         this.getBalanceTokoCashUseCase = getBalanceTokoCashUseCase;
-        this.context = context;
     }
 
+    public GetBalanceTokoCashWrapper(GetBalanceTokoCashUseCase getBalanceTokoCashUseCase,
+                                     GetPendingCasbackUseCase getPendingCasbackUseCase) {
+        this.getBalanceTokoCashUseCase = getBalanceTokoCashUseCase;
+        this.getPendingCasbackUseCase = getPendingCasbackUseCase;
+    }
+
+    /*  TODO need to migrate all method who will use this method to independent get balance
+     *  bcs we want to avoid use com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData
+     */
     public Observable<TokoCashData> processGetBalance() {
         return getBalanceTokoCashUseCase
-                .createObservable(com.tokopedia.usecase.RequestParams.EMPTY)
-                .map(new TokoCashBalanceMapper())
-                .onErrorReturn(new Func1<Throwable, TokoCashData>() {
-                    @Override
-                    public TokoCashData call(Throwable throwable) {
-                        if (throwable instanceof UserInactivateTokoCashException) {
-                            Action action = new Action();
-                            action.setmText(context.getString(R.string.title_activation));
-                            action.setmAppLinks(context.getString(R.string.applick_tokocash_activation));
-                            TokoCashData tokoCashData = new TokoCashData();
-                            tokoCashData.setBalance("");
-                            tokoCashData.setText(context.getString(R.string.label_tokocash));
-                            tokoCashData.setAction(action);
-                            return tokoCashData;
-                        }
-                        return null;
+                .createObservable(RequestParams.EMPTY)
+                .map(new TokoCashBalanceMapper());
+    }
+
+    public Observable<WalletModel> getTokoCashAccountBalance() {
+        return getBalanceTokoCashUseCase
+                .createObservable(RequestParams.EMPTY)
+                .flatMap((Func1<BalanceTokoCash, Observable<BalanceTokoCash>>) balanceTokoCash -> {
+                    if (!balanceTokoCash.getLink()) {
+                        return Observable.zip(Observable.just(balanceTokoCash), getPendingCasbackUseCase.createObservable(RequestParams.EMPTY),
+                                (balanceTokoCash1, pendingCashback1) -> {
+                                        balanceTokoCash1.setPendingCashback(pendingCashback1.getAmountText());
+                                        balanceTokoCash1.setAmountPendingCashback(pendingCashback1.getAmount());
+                                    return balanceTokoCash1;
+                                });
                     }
+                    balanceTokoCash.setPendingCashback("");
+                    balanceTokoCash.setAmountPendingCashback(0);
+                    return Observable.just(balanceTokoCash);
                 })
-                .doOnError(new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throw new RuntimeException(throwable);
-                    }
+
+                .map(new TokoCashAccountBalanceMapper());
+    }
+
+    public Observable<HomeHeaderWalletAction> getWalletBalanceHomeHeader() {
+        return getBalanceTokoCashUseCase
+                .createObservable(RequestParams.EMPTY)
+                .map(new TokoCashHomeBalanceMapper());
+    }
+
+
+    public Observable<com.tokopedia.digital.categorylist.data.cloud.entity.tokocash.TokoCashData> processDigitalGetBalance() {
+        return getBalanceTokoCashUseCase
+                .createObservable(RequestParams.EMPTY)
+                .map(new DigitalTokoCashBalanceMapper())
+                .onErrorResumeNext(throwable -> {
+                    if (throwable instanceof SessionExpiredException)
+                        return Observable.error(
+                                new com.tokopedia.digital.categorylist.data.cloud.exception.
+                                        SessionExpiredException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                        );
+                    return Observable.error(throwable);
                 });
     }
+
 }

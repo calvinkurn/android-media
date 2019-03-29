@@ -55,8 +55,15 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+import com.tokopedia.core2.R2;
+import com.tokopedia.core2.R;
 
+/**
+ * Use image_preview library instead
+ * ImagePreviewActivity
+ */
 @RuntimePermissions
+@Deprecated
 public class PreviewProductImage extends TActivity {
 
     @BindView(R2.id.view_pager)

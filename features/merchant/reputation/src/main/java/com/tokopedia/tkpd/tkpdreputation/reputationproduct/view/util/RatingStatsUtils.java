@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.animation.FlipAnimation;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.product_review.AdvanceReview;
 
 import java.util.ArrayList;

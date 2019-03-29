@@ -1,12 +1,9 @@
 package com.tokopedia.seller.shopsettings;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.app.TkpdActivity;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 
 /**

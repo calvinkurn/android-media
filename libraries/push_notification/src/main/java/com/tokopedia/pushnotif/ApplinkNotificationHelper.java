@@ -1,33 +1,16 @@
 package com.tokopedia.pushnotif;
 
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.widget.Switch;
 
-import com.bumptech.glide.Glide;
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
-import com.tokopedia.pushnotif.factory.SummaryNotificationFactory;
-import com.tokopedia.pushnotif.factory.TalkNotificationFactory;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
-import com.tokopedia.pushnotif.model.HistoryNotificationModel;
-
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * @author ricoharisin .
@@ -60,12 +43,14 @@ public class ApplinkNotificationHelper {
         model.setThumbnail(data.getString("thumbnail", ""));
         model.setTkpCode(Integer.parseInt(data.getString("tkp_code", "0")));
         model.setToUserId(data.getString("to_user_id", ""));
+        model.setTitle(data.getString("title", ""));
 
         return model;
     }
 
     public static Boolean allowToShow(Context context, ApplinkNotificationModel applinkNotificationModel) {
-        String loginId = ((AbstractionRouter) context.getApplicationContext()).getSession().getUserId();
+        UserSessionInterface userSession = new UserSession(context);
+        String loginId = userSession.getUserId();
         return applinkNotificationModel.getToUserId().equals(loginId) &&
                 checkLocalNotificationAppSettings(context, applinkNotificationModel.getTkpCode());
     }

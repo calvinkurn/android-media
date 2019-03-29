@@ -33,6 +33,7 @@ public class ReviewProductModelContent implements ReviewProductModel, Parcelable
     protected int totalLike;
     protected boolean isLogin;
     protected boolean isHelpful;
+    private boolean isReplyOpened;
 
     @Override
     public int type(ReviewProductTypeFactoryAdapter typeFactory) {
@@ -275,4 +276,14 @@ public class ReviewProductModelContent implements ReviewProductModel, Parcelable
             return new ReviewProductModelContent[size];
         }
     };
+
+    public boolean isReplyOpened() {
+        return isReplyOpened;
+    }
+
+    public void setReplyOpened(boolean isReplyOpened){
+        this.isReplyOpened = isReplyOpened;
+    }
+
+
 }

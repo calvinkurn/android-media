@@ -16,13 +16,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
+import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
+import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
+import com.tokopedia.base.list.seller.view.emptydatabinder.EmptyDataBinder;
+import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
+import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
+import com.tokopedia.base.list.seller.view.old.Pair;
+import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.customadapter.NoResultDataBinder;
-import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.util.Pair;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.featured.constant.GMFeaturedProductTypeView;
@@ -37,11 +40,6 @@ import com.tokopedia.gm.featured.view.listener.GMFeaturedProductView;
 import com.tokopedia.gm.featured.view.presenter.GMFeaturedProductPresenterImpl;
 import com.tokopedia.gm.statistic.view.adapter.GMStatRetryDataBinder;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
-import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
-import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.product.picker.common.ProductListPickerConstant;
 import com.tokopedia.seller.product.picker.view.ProductListPickerActivity;
@@ -138,7 +136,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventClickAddFeaturedProduct();
+                UnifyTracking.eventClickAddFeaturedProduct(getActivity());
                 moveToProductPicker();
             }
         });
@@ -460,9 +458,9 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
             return true;
         } else if (item.getItemId() == R.id.menu_done) {
             if (isFeaturedProductListChanged(gmFeaturedProductModelListFromServer, adapter.getData())) {
-                UnifyTracking.eventSortFeaturedProductChange();
+                UnifyTracking.eventSortFeaturedProductChange(getActivity());
             } else {
-                UnifyTracking.eventSortFeaturedProductNotChange();
+                UnifyTracking.eventSortFeaturedProductNotChange(getActivity());
             }
             onBackPressed();
             return true;
@@ -475,7 +473,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         builder.setMessage(getString(R.string.gm_featured_product_delete_desc, ((GMFeaturedProductAdapter) adapter).getTotalChecked()));
         builder.setPositiveButton(R.string.label_delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                UnifyTracking.eventDeleteFeaturedProduct();
+                UnifyTracking.eventDeleteFeaturedProduct(getActivity());
                 gmTemporaryDelete = ((GMFeaturedProductAdapter) adapter).deleteCheckedItem();
                 showSnackbarWithUndo();
                 reloadAfterDeleteAction();

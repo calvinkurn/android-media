@@ -9,9 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -25,7 +25,7 @@ import com.tokopedia.tokocash.accountsetting.presentation.dialog.DeleteTokoCashA
 import com.tokopedia.tokocash.accountsetting.presentation.model.AccountWalletItem;
 import com.tokopedia.tokocash.accountsetting.presentation.model.OAuthInfo;
 import com.tokopedia.tokocash.accountsetting.presentation.presenter.AccountSettingPresenter;
-import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.common.di.TokoCashComponent;
 
 import java.util.ArrayList;
 
@@ -42,8 +42,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private TextView emailAccount;
     private TextView phoneAccount;
     private RecyclerView rvConnectedUser;
+    private ProgressBar progressBar;
 
-    private TkpdProgressDialog progressDialog;
     private RefreshHandler refreshHandler;
     private LinkedAccountAdapter accountListAdapter;
     private ActionListener listener;
@@ -65,6 +65,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         emailAccount = view.findViewById(R.id.email_account);
         phoneAccount = view.findViewById(R.id.phone_account);
         rvConnectedUser = view.findViewById(R.id.rv_account_list);
+        progressBar = view.findViewById(R.id.progress_bar);
         return view;
     }
 
@@ -83,7 +84,6 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         super.onViewCreated(view, savedInstanceState);
 
         refreshHandler = new RefreshHandler(getActivity(), view, getRefreshHandlerListener());
-        progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
 
         initialVar();
         refreshHandler.startRefresh();
@@ -200,15 +200,11 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     private void showProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.showDialog();
-        }
+       progressBar.setVisibility(View.VISIBLE);
     }
 
     private void hideProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
