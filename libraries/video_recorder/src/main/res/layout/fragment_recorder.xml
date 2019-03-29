@@ -16,6 +16,7 @@
         app:cameraGrid="off"
         app:cameraFlash="off"
         app:cameraAudio="on"
+        app:cameraVideoBitRate="8000000"
         app:cameraHdr="off"
         app:cameraFacing="back"
         app:cameraGestureTap="focusWithMarker"/>
