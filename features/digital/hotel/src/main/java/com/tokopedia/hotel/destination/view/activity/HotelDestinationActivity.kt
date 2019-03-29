@@ -61,6 +61,7 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
         }
 
         initView()
+        initInjector()
     }
 
     fun initView() {
@@ -72,6 +73,10 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
         //set image close button
         search_input_view.setListener(this)
         search_input_view.setResetListener(this)
+    }
+
+    fun initInjector() {
+        component.inject(this)
     }
 
     fun initHotelRecommendationFragment() {

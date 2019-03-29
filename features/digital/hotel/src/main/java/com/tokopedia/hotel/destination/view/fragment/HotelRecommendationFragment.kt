@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.data.model.PopularSearch
+import com.tokopedia.hotel.destination.di.HotelDestinationComponent
 import com.tokopedia.hotel.destination.view.adapter.PopularSearchClickListener
 import com.tokopedia.hotel.destination.view.adapter.PopularSearchTypeFactory
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
@@ -26,7 +27,9 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
 
     override fun getScreenName(): String = ""
 
-    override fun initInjector() { }
+    override fun initInjector() {
+        getComponent(HotelDestinationComponent::class.java).inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +42,7 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_hotel_recommendation, container, false)
-        return super.onCreateView(inflater, container, savedInstanceState)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
