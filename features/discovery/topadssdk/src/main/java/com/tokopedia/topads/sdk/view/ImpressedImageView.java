@@ -122,7 +122,7 @@ public class ImpressedImageView extends AppCompatImageView {
         view.getLocationOnScreen(location);
         float X = location[0];
         float Y = location[1];
-        float margin = convertDpToPixel(R.dimen.dp_6, getContext());
+        int margin = convertDpToPixel(R.dimen.dp_6, getContext());
         if (screen.top <= Y && screen.bottom >= Y && (screen.left + margin) <= X && (screen.right - margin) >= X) {
             return true;
         } else {
@@ -130,8 +130,8 @@ public class ImpressedImageView extends AppCompatImageView {
         }
     }
 
-    public static float convertDpToPixel(float dp, Context context) {
-        return dp * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+    public static int convertDpToPixel(float dp, Context context) {
+        return (int) (dp * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
     private int getOffsetHeight() {
