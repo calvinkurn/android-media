@@ -24,6 +24,10 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask;
 
 import android.view.ViewTreeObserver;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author by errysuprayogi on 3/27/17.
  */
@@ -36,6 +40,7 @@ public class ImpressedImageView extends AppCompatImageView {
     private ViewHintListener hintListener;
     private int offset;
     private ViewTreeObserver.OnScrollChangedListener scrollChangedListener;
+    private static final ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
 
     public ImpressedImageView(Context context) {
         super(context);
@@ -79,26 +84,31 @@ public class ImpressedImageView extends AppCompatImageView {
     }
 
     private void invoke() {
-        getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+        worker.schedule(new Runnable() {
             @Override
-            public void onScrollChanged() {
-                setScrollChangedListener(this);
-                if (isVisible(getView())) {
-                    if (holder != null && !holder.isInvoke()) {
-                        if (hintListener != null) {
-                            hintListener.onViewHint();
+            public void run() {
+                getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                    @Override
+                    public void onScrollChanged() {
+                        setScrollChangedListener(this);
+                        if (isVisible(getView())) {
+                            if (holder != null && !holder.isInvoke()) {
+                                if(hintListener!=null){
+                                    hintListener.onViewHint();
+                                }
+                                if(holder instanceof ProductImage){
+                                    new ImpresionTask().execute(((ProductImage) holder).getM_url());
+                                } else if(holder instanceof CpmImage){
+                                    new ImpresionTask().execute(((CpmImage) holder).getFullUrl());
+                                }
+                                holder.invoke();
+                            }
+                            revoke();
                         }
-                        if (holder instanceof ProductImage) {
-                            new ImpresionTask().execute(((ProductImage) holder).getM_url());
-                        } else if (holder instanceof CpmImage) {
-                            new ImpresionTask().execute(((CpmImage) holder).getFullUrl());
-                        }
-                        holder.invoke();
                     }
-                    revoke();
-                }
+                });
             }
-        });
+        }, 200, TimeUnit.MILLISECONDS);
     }
 
     private View getView() {
@@ -120,18 +130,14 @@ public class ImpressedImageView extends AppCompatImageView {
 
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-        float X = location[0];
-        float Y = location[1];
-        float margin = convertDpToPixel(getResources().getDimension(R.dimen.dp_6));
-        if (screen.top <= Y && screen.bottom >= Y && (screen.left + margin) <= X && (screen.right - margin) >= X) {
+        int offset = 100;
+        float X = location[0] + offset;
+        float Y = location[1] + offset;
+        if (screen.top <= Y && screen.bottom >= Y && (screen.left) <= X && (screen.right) >= X) {
             return true;
         } else {
             return false;
         }
-    }
-
-    private float convertDpToPixel(float dp) {
-        return dp * ((float) getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
     private int getOffsetHeight() {
