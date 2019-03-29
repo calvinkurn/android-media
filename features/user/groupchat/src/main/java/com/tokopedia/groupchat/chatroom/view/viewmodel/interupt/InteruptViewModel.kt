@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by yfsx on 14/12/18.
  */
-class InteruptViewMode(
+class InteruptViewModel(
         @SerializedName("title")
         @Expose
         var title: String? = null,
@@ -53,12 +53,12 @@ class InteruptViewMode(
         dest.writeString(this.btnLink)
     }
 
-    companion object CREATOR : Parcelable.Creator<InteruptViewMode> {
-        override fun createFromParcel(parcel: Parcel): InteruptViewMode {
-            return InteruptViewMode(parcel)
+    companion object CREATOR : Parcelable.Creator<InteruptViewModel> {
+        override fun createFromParcel(parcel: Parcel): InteruptViewModel {
+            return InteruptViewModel(parcel)
         }
 
-        override fun newArray(size: Int): Array<InteruptViewMode?> {
+        override fun newArray(size: Int): Array<InteruptViewModel?> {
             return arrayOfNulls(size)
         }
     }
