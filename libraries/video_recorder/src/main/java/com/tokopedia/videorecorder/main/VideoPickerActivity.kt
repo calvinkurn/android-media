@@ -20,12 +20,12 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.videorecorder.R
 import com.tokopedia.videorecorder.main.adapter.ViewPagerAdapter
 import com.tokopedia.videorecorder.main.recorder.VideoRecorderFragment
 import com.tokopedia.videorecorder.utils.*
 import kotlinx.android.synthetic.main.activity_video_picker.*
-import kotlinx.android.synthetic.main.fragment_recorder.*
 import java.io.File
 import java.util.*
 
@@ -65,7 +65,7 @@ open class VideoPickerActivity: BaseSimpleActivity(),
     private var currentSelectedTab: Int = 0
 
     //runtime permission handle
-    private lateinit var runtimePermission: RuntimePermission
+    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     //ffmpeg
     private lateinit var ffmpeg: FFmpeg
@@ -76,10 +76,58 @@ open class VideoPickerActivity: BaseSimpleActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //init runtime permission
-        runtimePermission = RuntimePermission(this)
-        runtimePermission.requestPermissionForRecord()
 
+        //init runtime permission
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            permissionCheckerHelper = PermissionCheckerHelper()
+            permissionCheckerHelper.checkPermissions(this,
+                    getPermissions(),
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
+                            permissionCheckerHelper.onPermissionDenied(this@VideoPickerActivity, permissionText)
+                            this@VideoPickerActivity.finish()
+                        }
+
+                        override fun onNeverAskAgain(permissionText: String) {
+                            permissionCheckerHelper.onNeverAskAgain(this@VideoPickerActivity, permissionText)
+                            this@VideoPickerActivity.finish()
+                        }
+
+                        override fun onPermissionGranted() {
+                            initView()
+                        }
+                    }
+            )
+        } else {
+            initView()
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                finish()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            permissionCheckerHelper.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
+        }
+    }
+
+    private fun getPermissions(): Array<String> {
+        return arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
+                PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
+                PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO)
+    }
+
+    private fun initView() {
         //init progress dialog
         progressDialog = ProgressDialog(this)
 
@@ -101,16 +149,6 @@ open class VideoPickerActivity: BaseSimpleActivity(),
 
         //video picked
         btnDone.setOnClickListener { onVideoDoneClicked() }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-                finish()
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun setupViewPager() {
