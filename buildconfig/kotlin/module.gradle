@@ -41,12 +41,6 @@ android {
     }
 }
 
-kotlin {
-    experimental {
-        coroutines 'enable'
-    }
-}
-
 dependencies {
 
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
