@@ -29,6 +29,8 @@ import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
+import com.tokopedia.feedcomponent.data.pojo.template.Template;
+import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
@@ -59,6 +61,7 @@ import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity;
 import com.tokopedia.kol.feature.postdetail.view.adapter.KolPostDetailAdapter;
 import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactoryImpl;
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
+import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel;
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
@@ -214,40 +217,69 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetKolPostDetail(List<Visitable> list,
-                                          PostDetailFooterModel postDetailFooterModel) {
+                                          PostDetailViewModel postDetailViewModel) {
         adapter.setList(list);
-        setFooter(postDetailFooterModel);
+        setFooter(postDetailViewModel);
     }
 
-    private void setFooter(PostDetailFooterModel postDetailFooterModel) {
-        this.postDetailFooterModel = postDetailFooterModel;
-
+    private void setFooter(PostDetailViewModel postDetailViewModel) {
+        this.postDetailFooterModel = postDetailViewModel.getFooterModel();
         footer.setVisibility(View.VISIBLE);
-
-        if (postDetailFooterModel.isLiked()) {
-            ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_green);
-        } else {
-            ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_gray);
-
+        TemplateFooter template = null;
+        if (postDetailViewModel.getDynamicPostViewModel().getPostList().size() != 0) {
+            template = ((DynamicPostViewModel) postDetailViewModel.getDynamicPostViewModel().getPostList().get(0)).getTemplate().getCardpost().getFooter();
         }
+        if (template != null) {
+            bindLike(postDetailFooterModel, template);
+            bindComment(postDetailFooterModel, template);
+            bindShare(postDetailFooterModel, template);
 
-        setLikeListener(postDetailFooterModel.isLiked());
-        setTotalLike(postDetailFooterModel.getTotalLike());
-        setTotalComment(postDetailFooterModel.getTotalComment());
+        } else {
+            footer.setVisibility(View.GONE);
+        }
+    }
 
-        commentCount.setOnClickListener(v -> onGoToKolComment(0, postDetailFooterModel.getContentId()));
-        commentButton.setOnClickListener(v -> onGoToKolComment(0, postDetailFooterModel.getContentId()));
+    private void bindLike(PostDetailFooterModel model, TemplateFooter template) {
+        if (template.getLike()) {
+            setTotalLike(model.getTotalLike());
+            if (model.isLiked()) {
+                ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_green);
+            } else {
+                ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_gray);
+            }
+            setLikeListener(postDetailFooterModel.isLiked());
+        } else {
+            likeButton.setVisibility(View.GONE);
+            likeCount.setVisibility(View.GONE);
+        }
+    }
 
-        shareButton.setOnClickListener(v -> onShareClick(0, postDetailFooterModel.getContentId(),
-         postDetailFooterModel.getShareData().getTitle(),
-                postDetailFooterModel.getShareData().getDescription(),
-                postDetailFooterModel.getShareData().getUrl(),
-                postDetailFooterModel.getShareData().getImageUrl()));
-        shareText.setOnClickListener(v -> onShareClick(0, postDetailFooterModel.getContentId(),
-                postDetailFooterModel.getShareData().getTitle(),
-                postDetailFooterModel.getShareData().getDescription(),
-                postDetailFooterModel.getShareData().getUrl(),
-                postDetailFooterModel.getShareData().getImageUrl()));
+    private void bindComment(PostDetailFooterModel model, TemplateFooter template) {
+        if (template.getComment()) {
+            setTotalComment(model.getTotalLike());
+            commentCount.setOnClickListener(v -> onGoToKolComment(0, postDetailFooterModel.getContentId()));
+            commentButton.setOnClickListener(v -> onGoToKolComment(0, postDetailFooterModel.getContentId()));
+        } else {
+            commentButton.setVisibility(View.GONE);
+            commentCount.setVisibility(View.GONE);
+        }
+    }
+    private void bindShare(PostDetailFooterModel model, TemplateFooter template) {
+        if (template.getShare()) {
+            shareButton.setOnClickListener(v -> onShareClick(0, postDetailFooterModel.getContentId(),
+                    postDetailFooterModel.getShareData().getTitle(),
+                    postDetailFooterModel.getShareData().getDescription(),
+                    postDetailFooterModel.getShareData().getUrl(),
+                    postDetailFooterModel.getShareData().getImageUrl()));
+            shareText.setOnClickListener(v -> onShareClick(0, postDetailFooterModel.getContentId(),
+                    postDetailFooterModel.getShareData().getTitle(),
+                    postDetailFooterModel.getShareData().getDescription(),
+                    postDetailFooterModel.getShareData().getUrl(),
+                    postDetailFooterModel.getShareData().getImageUrl()));
+        } else {
+            shareButton.setVisibility(View.GONE);
+            shareText.setVisibility(View.GONE);
+        }
     }
 
     private void setTotalComment(int totalComment) {

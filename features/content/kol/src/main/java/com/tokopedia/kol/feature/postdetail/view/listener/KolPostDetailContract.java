@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel;
+import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public interface KolPostDetailContract {
 
         void dismissLoading();
 
-        void onSuccessGetKolPostDetail(List<Visitable> list, PostDetailFooterModel postDetailFooterModel);
+        void onSuccessGetKolPostDetail(List<Visitable> list, PostDetailViewModel postDetailViewModel);
 
         void onErrorGetKolPostDetail(String message);
 
