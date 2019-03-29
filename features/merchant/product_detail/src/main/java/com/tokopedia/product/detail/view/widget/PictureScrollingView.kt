@@ -10,10 +10,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.Picture
+import com.tokopedia.product.detail.common.data.model.product.Picture
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
-import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.PicturePagerAdapter
 import kotlinx.android.synthetic.main.widget_picture_scrolling.view.*
 

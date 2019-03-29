@@ -3,9 +3,8 @@ package com.tokopedia.discovery.util;
 import android.content.Context;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
+import com.tokopedia.track.TrackApp;
 
 import java.util.Map;
 
@@ -51,11 +50,7 @@ public class AutoCompleteTracking {
     public static final String ACTION_CLICK_HOTLIST_SUGGESTION = "click - hotlist suggestion";
 
     public static void eventClickPopularSearch(Context context, String label) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH,
                 EVENTCATEGORY_TOP_NAV,
                 CLICK_POPULAR_SEARCH,
@@ -64,11 +59,7 @@ public class AutoCompleteTracking {
     }
 
     public static void eventClickRecentSearch(Context context, String label) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH,
                 EVENTCATEGORY_TOP_NAV,
                 CLICK_RECENT_SEARCH,
@@ -77,11 +68,7 @@ public class AutoCompleteTracking {
     }
 
     public static void eventClickAutoCompleteSearch(Context context, String label, String tabName) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH_RESULT,
                 EVENTCATEGORY_TOP_NAV,
                 String.format("click - product autocomplete - tab: %s", tabName),
@@ -92,11 +79,7 @@ public class AutoCompleteTracking {
     public static void eventClickShopSearch(Context context,
                                             String label,
                                             String tabName) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH_RESULT,
                 EVENTCATEGORY_TOP_NAV,
                 String.format("click - shop autocomplete - tab: %s", tabName),
@@ -107,11 +90,7 @@ public class AutoCompleteTracking {
     public static void eventClickInCategory(Context context,
                                             String label,
                                             String tabName) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH_RESULT,
                 EVENTCATEGORY_TOP_NAV,
                 String.format("click - category autocomplete - tab: %s", tabName),
@@ -125,11 +104,7 @@ public class AutoCompleteTracking {
                                            String id,
                                            int position,
                                            String applink) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_TOP_NAV,
                 EVENTCATEGORY_TOP_NAV,
                 ACTION_CLICK_HOTLIST_SUGGESTION,
@@ -146,11 +121,7 @@ public class AutoCompleteTracking {
 
     public static void eventClickCategory(Context context,
                                           String label) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH_RESULT,
                 EVENTCATEGORY_TOP_NAV,
                 CLICK_CATEGORY_SUGGESTION,
@@ -159,11 +130,7 @@ public class AutoCompleteTracking {
     }
 
     public static void eventClickDigital(Context context, String label) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH_RESULT,
                 EVENTCATEGORY_TOP_NAV,
                 CLICK_DIGITAL_PRODUCT_SUGGESTION,
@@ -172,11 +139,7 @@ public class AutoCompleteTracking {
     }
 
     public static void eventClickProfile(Context context, String label) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_TOP_NAV,
                 EVENTCATEGORY_TOP_NAV,
                 CLICK_PROFILE_SUGGESTION,
@@ -185,11 +148,7 @@ public class AutoCompleteTracking {
     }
 
     public static void eventClickTopProfile(Context context, String label) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_TOP_NAV,
                 EVENTCATEGORY_TOP_NAV,
                 CLICK_TOP_PROFILE_SUGGESTION,
@@ -198,11 +157,7 @@ public class AutoCompleteTracking {
     }
 
     public static void eventClickSubmit(Context context, String label) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH,
                 EVENTCATEGORY_TOP_NAV,
                 CLICK_SEARCH,
@@ -214,11 +169,7 @@ public class AutoCompleteTracking {
                                             String position,
                                             BaseItemAutoCompleteSearch data) {
         Map<String, Object> productData = convertSearchItemToProductData(data, position);
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEnhancedEcommerce(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, PRODUCT_CLICK,
                         EVENT_CATEGORY, EVENTCATEGORY_TOP_NAV,
                         EVENT_ACTION, CLICK_RECENT_VIEW_PRODUCT,

@@ -1,8 +1,11 @@
 package com.tokopedia.tokocash.tracker;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
 import javax.inject.Inject;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Created by nabillasabbaha on 17/10/18.
@@ -11,46 +14,43 @@ public class WalletAnalytics {
 
     private String GENERIC_EVENT = "clickSaldo";
 
-    private AnalyticTracker analyticTracker;
-
     @Inject
-    public WalletAnalytics(AnalyticTracker analyticTracker) {
-        this.analyticTracker = analyticTracker;
+    public WalletAnalytics() {
     }
 
     public void eventClickActivationOvoNow() {
-        analyticTracker.sendEventTracking(GENERIC_EVENT, Category.TOKOCASH_TO_OVO,
-                Action.CLICK_ACTIVATION_OVO_NOW, "");
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT, Category.TOKOCASH_TO_OVO,
+                Action.CLICK_ACTIVATION_OVO_NOW, ""));
     }
 
     public void eventClickOvoLearnMore() {
-        analyticTracker.sendEventTracking(GENERIC_EVENT, Category.TOKOCASH_TO_OVO,
-                Action.CLICK_LEARN_MORE, "");
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT, Category.TOKOCASH_TO_OVO,
+                Action.CLICK_LEARN_MORE, ""));
     }
 
     public void eventClickTnc() {
-        analyticTracker.sendEventTracking(GENERIC_EVENT, Category.TOKOCASH_TO_OVO,
-                Action.CLICK_TNC, "");
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT, Category.TOKOCASH_TO_OVO,
+                Action.CLICK_TNC, ""));
     }
 
     public void eventClickPopupPhoneNumber(String textButton) {
-        analyticTracker.sendEventTracking(GENERIC_EVENT, Category.TOKOCASH_TO_OVO,
-                Action.CLICK_PHONE_NUMBER + textButton, "");
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT, Category.TOKOCASH_TO_OVO,
+                Action.CLICK_PHONE_NUMBER + textButton, ""));
     }
 
     public void eventClickMakeNewOvoAccount() {
-        analyticTracker.sendEventTracking(GENERIC_EVENT, Category.ACTIVATION_OVO,
-                Action.CLICK_OVO_NEW_ACCOUNT, "");
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT, Category.ACTIVATION_OVO,
+                Action.CLICK_OVO_NEW_ACCOUNT, ""));
     }
 
     public void eventClickChangePhoneNumber() {
-        analyticTracker.sendEventTracking(GENERIC_EVENT, Category.ACTIVATION_OVO,
-                Action.CLICK_OVO_CHANGE_PHONE_NUMBER, "");
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT, Category.ACTIVATION_OVO,
+                Action.CLICK_OVO_CHANGE_PHONE_NUMBER, ""));
     }
 
     public void eventClickActivationOvoHomepage() {
-        analyticTracker.sendEventTracking(GENERIC_EVENT, Category.HOMEPAGE,
-                Action.CLICK_HOME_ACTIVATION_OVO, "");
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT, Category.HOMEPAGE,
+                Action.CLICK_HOME_ACTIVATION_OVO, ""));
     }
 
     private static class Category {

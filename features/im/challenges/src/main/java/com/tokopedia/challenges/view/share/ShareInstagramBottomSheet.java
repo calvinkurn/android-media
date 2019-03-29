@@ -90,7 +90,7 @@ public class ShareInstagramBottomSheet extends BottomSheets {
             createInstagramIntent();
         });
         btnCancel.setOnClickListener(v -> dismiss());
-        analytics = new ChallengesGaAnalyticsTracker(getActivity());
+        analytics = new ChallengesGaAnalyticsTracker();
         analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
 
     }

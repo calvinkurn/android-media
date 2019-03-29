@@ -122,6 +122,9 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    
+    implementation project(rootProject.ext.libraries.track)
+
 }
 
 apply from: '../../../publish_local.gradle'

@@ -530,7 +530,7 @@ public class DynamicHomeChannel {
                     "event", "promoClick",
                     "eventCategory", "homepage",
                     "eventAction", "lego banner 3 image click",
-                    "eventLabel", getHeader().getName(),
+                    "eventLabel", grid.getAttribution(),
                     "ecommerce", DataLayer.mapOf(
                             "promoClick", DataLayer.mapOf(
                                     "promotions", DataLayer.listOf(

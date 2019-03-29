@@ -3,7 +3,6 @@ package com.tokopedia.groupchat.common.analytics;
 import android.app.Activity;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
@@ -19,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 /**
  * @author by StevenFredian on 05/03/18.
@@ -29,7 +30,6 @@ public class GroupChatAnalytics {
     public static final int DEFAULT_EE_POSITION = 1;
     private static final String EVENT_VIEW_GROUP_CHAT = "viewGroupChat";
     public static final String PLAY_TRACE = "mp_play_detail";
-    private AnalyticTracker analyticTracker;
 
     private static final String EVENT_NAME = "event";
     private static final String EVENT_CATEGORY = "eventCategory";
@@ -102,68 +102,67 @@ public class GroupChatAnalytics {
     public static final String VIEW_LOGO = "Logo";
 
     @Inject
-    public GroupChatAnalytics(AnalyticTracker analyticTracker) {
-        this.analyticTracker = analyticTracker;
+    public GroupChatAnalytics() {
     }
 
     public void sendScreen(Activity activity, String screenName) {
-        analyticTracker.sendScreen(activity, screenName);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
     }
 
     //#4
     public void eventClickJoin(String channelId) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "click on join",
                 channelId
-        );
+        ));
     }
 
     //#5
     public void eventUserExit(String channelLabel) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_BACK,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_BACK,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "leave room",
                 channelLabel
-        );
+        ));
     }
 
     //#6
     public void eventClickQuickReply(String channelLabel) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "click on quick reply component",
                 channelLabel
-        );
+        ));
     }
 
     //#7
     public void eventClickAdminPinnedMessage(String channelLabel) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "click on admin pinned message",
                 channelLabel
-        );
+        ));
     }
 
     //#8
     public void eventClickVoteComponent(@NotNull ChannelInfoViewModel channelInfoViewModel, String voteName) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "click on component - vote",
                 String.format("%s - %s", channelInfoViewModel.getChannelId(),voteName)
 
-        );
+        ));
     }
 
     //#9
     public void eventViewBanner(ChannelInfoViewModel viewModel,
                                 String adsId, String adsName, String adsImageUrl) {
-        analyticTracker.sendEventTracking(EVENT_NAME_PROMO_VIEW,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_PROMO_VIEW,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 String.format("%s%s", EVENT_ACTION_VIEW_COMPONENT, COMPONENT_BANNER),
                 String.format("%s - %s", viewModel.getChannelId(), adsName)
-        );
+        ));
 
         ArrayList<EEPromotion> list = new ArrayList<>();
         list.add(new EEPromotion(adsId,
@@ -175,7 +174,7 @@ public class GroupChatAnalytics {
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())
         ));
 
-        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_PROMO_VIEW,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, String.format("%s%s", EVENT_ACTION_VIEW_COMPONENT, COMPONENT_BANNER),
@@ -188,11 +187,11 @@ public class GroupChatAnalytics {
 
     //#9
     public void eventViewVote(@NotNull ChannelInfoViewModel channelInfoViewModel, String voteName) {
-        analyticTracker.sendEventTracking(EVENT_VIEW_GROUP_CHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_VIEW_GROUP_CHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "view on component - vote",
                 String.format("%s - %s", channelInfoViewModel.getChannelId(),voteName)
-        );
+        ));
     }
 
     //#9
@@ -208,7 +207,7 @@ public class GroupChatAnalytics {
                         viewModel.getChannelUrl(), viewModel.getTitle())
         ));
 
-        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_PROMO_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, EVENT_ACTION_CLICK_COMPONENT + COMPONENT_FLASH_SALE,
@@ -241,7 +240,7 @@ public class GroupChatAnalytics {
                     )));
         }
 
-        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_PROMO_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, EVENT_ACTION_CLICK_COMPONENT + COMPONENT_FLASH_SALE,
@@ -261,12 +260,12 @@ public class GroupChatAnalytics {
     //#10
     public void eventClickBanner(ChannelInfoViewModel viewModel,
                                  String adsId, String adsName, String adsImageUrl) {
-        analyticTracker.sendEventTracking(EVENT_NAME_PROMO_CLICK,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_PROMO_CLICK,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 String.format("%s%s", EVENT_ACTION_CLICK_COMPONENT, COMPONENT_BANNER),
                 String.format("%s - %s", viewModel.getChannelId(), adsName
                 )
-        );
+        ));
 
         ArrayList<EEPromotion> list = new ArrayList<>();
         list.add(new EEPromotion(adsId,
@@ -278,7 +277,7 @@ public class GroupChatAnalytics {
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())
         ));
 
-        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_PROMO_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, String.format("%s%s", EVENT_ACTION_CLICK_COMPONENT, COMPONENT_BANNER),
@@ -291,31 +290,31 @@ public class GroupChatAnalytics {
 
     //#11
     public void eventClickShare(String channelId) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "click on share",
                 channelId
-        );
+        ));
     }
 
     //#12
     public void eventClickLogin(String channelId) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "click on masuk untuk chat (non login user)",
                 channelId
-        );
+        ));
     }
 
     //#13
     public void eventViewImageAnnouncement(ChannelInfoViewModel viewModel,
                                            String imageUrl, String bannerId, String bannerName) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_NAME_INTERNAL_PROMOTION,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "view banner push promo",
                 String.format("%s - %s", viewModel.getChannelId(), imageUrl)
-        );
+        ));
 
         ArrayList<EEPromotion> list = new ArrayList<>();
         list.add(new EEPromotion(bannerId,
@@ -327,7 +326,7 @@ public class GroupChatAnalytics {
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())
         ));
 
-        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_INTERNAL_PROMOTION,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "view banner push promo",
@@ -341,11 +340,11 @@ public class GroupChatAnalytics {
     //#14
     public void eventClickThumbnail(ChannelInfoViewModel viewModel,
                                     String imageUrl, String bannerId, String bannerName) {
-        analyticTracker.sendEventTracking(EE_PROMO_CLICK,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EE_PROMO_CLICK,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "click on image thumbnail",
                 String.format("%s - %s", viewModel.getChannelId(), imageUrl)
-        );
+        ));
 
         ArrayList<EEPromotion> list = new ArrayList<>();
         list.add(new EEPromotion(bannerId,
@@ -357,7 +356,7 @@ public class GroupChatAnalytics {
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())
         ));
 
-        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EE_PROMO_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "click on image thumbnail",
@@ -370,29 +369,29 @@ public class GroupChatAnalytics {
 
     //#17
     public void eventWatchVideoDuration(String channelId, String duration) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "watch duration play",
                 channelId + " - " + duration
-        );
+        ));
     }
 
     //#18
     public void eventClickAutoPlayVideo(String channelId) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "click on play button video",
                 channelId
-        );
+        ));
     }
 
     //#19
     public void eventClickLoyaltyWidget(String channelId) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "click on loyalty widget",
                 channelId
-        );
+        ));
     }
 
     //#26
@@ -409,7 +408,7 @@ public class GroupChatAnalytics {
                         .ATTRIBUTE_BANNER, channelInfoViewModel.getChannelUrl(), channelInfoViewModel.getTitle())
         ));
 
-        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_PROMO_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "click on overlay button",
@@ -422,29 +421,29 @@ public class GroupChatAnalytics {
 
     //#27
     public void eventClickCloseOverlayCloseButton(String channelId) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_OVERLAY_CLOSE,
                 channelId + " - " + "button x"
-        );
+        ));
     }
 
     //#27
     public void eventClickCloseOverlayBackButton(String channelId) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_OVERLAY_CLOSE,
                 channelId + " - " + "back button"
-        );
+        ));
     }
 
     //#27
     public void eventClickCloseOverlayOutside(String channelId) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_OVERLAY_CLOSE,
                 channelId + " - " + "outside"
-        );
+        ));
     }
 
     //#28
@@ -461,7 +460,7 @@ public class GroupChatAnalytics {
                         .ATTRIBUTE_BANNER, viewModel.getChannelUrl(), viewModel.getTitle())
         ));
 
-        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_PROMO_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "click on image overlay",
@@ -475,20 +474,20 @@ public class GroupChatAnalytics {
 
     //#29
     public void eventViewOverlay(String channelId) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "view on overlay",
                 channelId
-        );
+        ));
     }
 
     //#31
     public void eventClickSendChat(String channelId) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "click on button send chat",
                 channelId
-        );
+        ));
     }
 
     //#32
@@ -505,7 +504,7 @@ public class GroupChatAnalytics {
                         .ATTRIBUTE_STICKY, viewModel.getChannelUrl(), viewModel.getTitle())
         ));
 
-        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_VIEW_GROUP_CHAT,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "view on sticky product",
@@ -529,7 +528,7 @@ public class GroupChatAnalytics {
                         .ATTRIBUTE_STICKY, viewModel.getChannelUrl(), viewModel.getTitle())
         ));
 
-        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_PRODUCT_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "click on sticky product",
@@ -543,23 +542,23 @@ public class GroupChatAnalytics {
     //#34
     public void eventViewProminentButton(ChannelInfoViewModel channelInfoViewModel,
                                          DynamicButtonsViewModel.Button prominentButton) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_VIEW_GROUP_CHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "view on prominent button",
                 channelInfoViewModel.getChannelId() + " - " + prominentButton.getImageUrl()
-        );
+        ));
     }
 
     //#35
     public void eventClickProminentButton(ChannelInfoViewModel channelInfoViewModel,
                                           DynamicButtonsViewModel.Button prominentButton) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "click on prominent button",
                 channelInfoViewModel.getChannelId() + " - " + prominentButton.getImageUrl()
-        );
+        ));
     }
 
     //#36
@@ -581,7 +580,7 @@ public class GroupChatAnalytics {
             buttonNames.append(button.getButtonId()).append(",");
         }
 
-        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_VIEW_GROUP_CHAT,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "view on dynamic button",
@@ -607,7 +606,7 @@ public class GroupChatAnalytics {
                             .ATTRIBUTE_STICKY, viewModel.getChannelUrl(), viewModel.getTitle())
             ));
 
-        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, "click on dynamic button",
@@ -620,11 +619,11 @@ public class GroupChatAnalytics {
     }
 
     public void eventClickGroupChatList(String id) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_LIST,
                 EVENT_ACTION_GROUPCHAT_LIST,
                 id
-        );
+        ));
     }
 
     public static String generateTrackerAttribution(String attributeName, String channelUrl, String
@@ -671,7 +670,7 @@ public class GroupChatAnalytics {
                                                      String attributeName, String channelUrl,
                                                      String channelName, List<EEPromotion> listPromotion) {
 
-        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_PROMO_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, EVENT_ACTION_CLICK_COMPONENT + componentType,
@@ -686,7 +685,7 @@ public class GroupChatAnalytics {
                                                     String attributeName, String channelUrl,
                                                     String channelName, List<EEPromotion> listPromotion) {
 
-        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, EVENT_NAME_PROMO_VIEW,
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, EVENT_ACTION_VIEW_COMPONENT + componentType,
@@ -698,122 +697,122 @@ public class GroupChatAnalytics {
 
     @Deprecated
     public void eventClickFlashSale(String id) {
-        analyticTracker.sendEventTracking(EE_PROMO_CLICK,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EE_PROMO_CLICK,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 String.format("%s%s", EVENT_ACTION_CLICK_COMPONENT, COMPONENT_FLASH_SALE),
                 id
-        );
+        ));
     }
 
     @Deprecated
     public void eventViewImageAnnouncement(String channelLabel) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_NAME_INTERNAL_PROMOTION,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "view banner push promo",
                 channelLabel
-        );
+        ));
     }
 
     public void eventClickOverlayCTAButton(@Nullable String channelId, @NotNull String contentButtonText) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "click on menu button",
                 channelId + " - " + contentButtonText
-        );
+        ));
     }
 
     @Deprecated
     public void eventClickVote(String type, String channelName) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_VOTE,
                 type + " - " + channelName
-        );
+        ));
     }
 
     @Deprecated
     public void eventClickShareChannel(String channelType, String channelName) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_SHARE,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_SHARE,
                 EVENT_CATEGORY_SHARE,
                 EVENT_ACTION_SHARE_CHANNEL,
                 channelType + " - " + channelName
-        );
+        ));
     }
 
     @Deprecated
     public void eventViewFlashSale(String id) {
-        analyticTracker.sendEventTracking(EE_PROMO_CLICK,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EE_PROMO_CLICK,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 String.format("%s%s", EVENT_ACTION_VIEW_COMPONENT, COMPONENT_FLASH_SALE),
                 id
-        );
+        ));
     }
 
 
     @Deprecated
     public void eventActionClickVoteInfo(String channelLabel) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_VOTE_INFO,
                 channelLabel
-        );
+        ));
     }
 
     @Deprecated
     public void eventActionClickOfficialPartner(String officialPartner) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_OFFICIAL_PARTNER,
                 officialPartner
-        );
+        ));
     }
 
 
     @Deprecated
     public void eventActionViewOfficialPartner(String label) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 String.format("%s%s", EVENT_ACTION_VIEW_COMPONENT, COMPONENT_PARTNER),
                 label
-        );
+        ));
     }
 
     @Deprecated
     public void eventViewBanner(String channelLabel) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 String.format("%s%s", EVENT_ACTION_VIEW_COMPONENT, COMPONENT_BANNER),
                 channelLabel
-        );
+        ));
     }
 
 
     @Deprecated
     public void eventClickThumbnail(String id) {
-        analyticTracker.sendEventTracking(EE_PROMO_CLICK,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EE_PROMO_CLICK,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_THUMBNAIL,
                 id
-        );
+        ));
     }
 
     @Deprecated
     public void eventClickBanner(String channelLabel) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 String.format("%s%s", EVENT_ACTION_CLICK_COMPONENT, COMPONENT_BANNER),
                 channelLabel
-        );
+        ));
     }
 
     @Deprecated
     public void eventClickVoteComponent(String componentType, String componentName) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_COMPONENT + "vote",
                 componentType + " " + componentName
-        );
+        ));
     }
 
 }

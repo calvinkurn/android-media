@@ -1,9 +1,5 @@
 package com.tokopedia.transactionanalytics;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-
-import javax.inject.Inject;
-
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventAction;
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventCategory;
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventName;
@@ -13,9 +9,7 @@ import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.Ev
  * @author anggaprasetiyo on 05/06/18.
  */
 public class CheckoutAnalyticsMultipleAddress extends TransactionAnalytics {
-    @Inject
-    public CheckoutAnalyticsMultipleAddress(AnalyticTracker analyticTracker) {
-        super(analyticTracker);
+    public CheckoutAnalyticsMultipleAddress() {
     }
 
     public void eventClickAtcCartMultipleAddressClickBackArrowFromKirimKeBeberapaAlamat() {

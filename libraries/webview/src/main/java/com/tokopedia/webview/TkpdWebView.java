@@ -64,10 +64,8 @@ public class TkpdWebView extends WebView {
                     getQuery(Uri.parse(url).getQuery()),
                     "GET",
                     AuthUtil.KEY.KEY_WSV4,
-                    AuthUtil.CONTENT_TYPE,
-                    userId,
-                    new UserSession(getContext()))
-            );
+                    AuthUtil.CONTENT_TYPE, userId,
+                    new UserSession(getContext())));
         }
     }
 
