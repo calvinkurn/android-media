@@ -350,8 +350,6 @@ class VideoDetailFragment:
             if (template.comment) {
                 commentIcon.show()
                 commentText.show()
-//                commentIcon.setOnClickListener { listener.onCommentClick(adapterPosition, id) }
-//                commentText.setOnClickListener { listener.onCommentClick(adapterPosition, id) }
                 bindComment(it.comment)
             } else {
                 commentIcon.hide()
@@ -384,6 +382,7 @@ class VideoDetailFragment:
         when {
             like.isChecked -> {
                 likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_green)
+                likeIcon.colorFilter = null
                 likeText.text = like.fmt
                 likeText.setTextColor(
                         MethodChecker.getColor(likeText.context, R.color.tkpd_main_green)
@@ -391,6 +390,7 @@ class VideoDetailFragment:
             }
             like.value > 0 -> {
                 likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb)
+                likeIcon.setColorFilter(activity!!.resources.getColor(R.color.white))
                 likeText.text = like.fmt
                 likeText.setTextColor(
                         MethodChecker.getColor(likeText.context, R.color.white)
@@ -398,6 +398,7 @@ class VideoDetailFragment:
             }
             else -> {
                 likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb)
+                likeIcon.setColorFilter(activity!!.resources.getColor(R.color.white))
                 likeText.setText(R.string.kol_action_like)
                 likeText.setTextColor(
                         MethodChecker.getColor(likeIcon.context, R.color.white)
