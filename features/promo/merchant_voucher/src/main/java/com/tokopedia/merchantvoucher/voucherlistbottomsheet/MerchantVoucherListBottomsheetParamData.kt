@@ -29,9 +29,6 @@ class MerchantVoucherListBottomsheetParamData {
         val EXTRA_IS_SUGESTED = "EXTRA_IS_SUGESTED"
         val EXTRA_CART_TYPE = "EXTRA_CART_TYPE"
         val EXTRA_MERCHANT_VOUCHER_LIST = "EXTRA_MERCHANT_VOUCHER_LIST"
-
-        val EXTRA_SHOP_ID_DEFAULT_VALUE = "0"
-        val EXTRA_CHECKOUT_TYPE_DEFAULT_VALUE = "default"
     }
 
     constructor(productId: Int, qty: Int, shopId: Int, uniqueId: String, promoGlobalCode: String, skipApply: Int, isSuggested: Int, cartType: String, merchantVoucherList: ArrayList<String>) {

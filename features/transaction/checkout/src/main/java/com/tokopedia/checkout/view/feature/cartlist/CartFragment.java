@@ -667,7 +667,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         }
         Promo promo = new Promo();
         promo.setState(Promo.CREATOR.getSTATE_CART());
-        promo.setCartType(MerchantVoucherListBottomsheetParamData.Companion.getEXTRA_CHECKOUT_TYPE_DEFAULT_VALUE());
+        promo.setCartType(Promo.CREATOR.getCART_TYPE_DEFAULT());
         if (promoStackingGlobalData != null) {
             ArrayList<String> globalPromoCodes = new ArrayList<>();
             globalPromoCodes.add(promoStackingGlobalData.getPromoCode());

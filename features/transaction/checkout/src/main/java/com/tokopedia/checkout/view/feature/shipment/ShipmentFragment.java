@@ -2332,9 +2332,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         promo.setOrders(orders);
 
-        String cartType = "default";
+        String cartType = Promo.CREATOR.getCART_TYPE_DEFAULT();
         if (isOneClickShipment()) {
-            cartType = "ocs";
+            cartType = Promo.CREATOR.getCART_TYPE_OCS();
         }
         promo.setState(Promo.CREATOR.getSTATE_CHECKOUT());
         promo.setCartType(cartType);
