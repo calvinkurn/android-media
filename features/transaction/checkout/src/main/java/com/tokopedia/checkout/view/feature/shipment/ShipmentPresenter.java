@@ -1281,14 +1281,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void cancelAutoApplyPromoStack(int shopIndex, String promoCode, boolean ignoreAPIResponse) {
-        if (!TextUtils.isEmpty(promoCode)) {
+    public void cancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse) {
+        if (promoCodeList.size() > 0) {
             if (!ignoreAPIResponse) {
                 getView().showLoading();
             }
-            ArrayList<String> listPromoCode = new ArrayList<>();
-            listPromoCode.add(promoCode);
-            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), listPromoCode);
+            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodeList);
             clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearShipmentCacheAutoApplySubscriber(getView(), this, shopIndex, ignoreAPIResponse));
         }
     }

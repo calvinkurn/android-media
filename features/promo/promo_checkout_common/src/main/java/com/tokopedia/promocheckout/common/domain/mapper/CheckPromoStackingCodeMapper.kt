@@ -66,11 +66,11 @@ open class CheckPromoStackingCodeMapper @Inject constructor() {
         var data = DataUiModel()
         response.let { responseGetPromoStackFirst ->
             responseGetPromoStackFirst.getPromoStackFirst.let {
-                status = it?.status ?: STATUS_ERROR
-                it?.message?.forEach { message ->
+                status = it.status ?: STATUS_ERROR
+                it.message?.forEach { message ->
                     listMessage.add(message)
                 }
-                when (it?.status) {
+                when (it.status) {
                     STATUS_OK -> {
                         data = mapData(it.data)
                     }
@@ -140,7 +140,7 @@ open class CheckPromoStackingCodeMapper @Inject constructor() {
     private fun mapBenefit(benefit: BenefitSummaryInfo): BenefitSummaryInfoUiModel {
         return BenefitSummaryInfoUiModel(
                 finalBenefitText = benefit.finalBenefitText,
-//                finalBenefitAmountStr = benefit.finalBenefitAmountStr,
+                finalBenefitAmountStr = benefit.finalBenefitAmountStr,
                 finalBenefitAmount = benefit.finalBenefitAmount,
                 summaries = benefit.summaries.map {
                     mapSummariesBenefit(it)

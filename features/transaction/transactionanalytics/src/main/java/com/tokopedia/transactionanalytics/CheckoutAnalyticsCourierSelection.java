@@ -571,4 +571,187 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 label
         );
     }
+
+    public void eventClickShowMerchantVoucherList() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_PILIH_MERCHANT_VOUCHER);
+    }
+
+    public void eventInputMerchantVoucherSuccess(String promoCode) {
+        String label = EventLabel.SUCCESS + " - " + promoCode;
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_INPUT_MERCHANT_VOUCHER,
+                label
+        );
+    }
+
+    public void eventInputMerchantVoucherError(String errorMsg) {
+        String label = EventLabel.ERROR + " - " + errorMsg;
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_INPUT_MERCHANT_VOUCHER,
+                label
+        );
+    }
+
+    public void eventUseMerchantVoucherSuccess(String promoCode) {
+        String label = EventLabel.SUCCESS + " - " + promoCode;
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER,
+                label
+        );
+    }
+
+    public void eventUseMerchantVoucherError(String errorMsg) {
+        String label = EventLabel.ERROR + " - " + errorMsg;
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER,
+                label
+        );
+    }
+
+    public void eventClickDetailMerchantVoucher(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_DETAIL_MERCHANT_VOUCHER,
+                promoCode
+        );
+    }
+
+    public void eventClickTickerMerchantVoucher(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_TICKER_MERCHANT_VOUCHER,
+                promoCode
+        );
+    }
+
+    public void eventClickCancelMerchantVoucher(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_CANCEL_MERCHANT_VOUCHER,
+                promoCode
+        );
+    }
+
+    public void eventViewDetailMerchantVoucher(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_DETAIL_MERCHANT_VOUCHER,
+                promoCode
+        );
+    }
+
+    public void eventClickOtherPromoOnVoucherDetail(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_OTHER_PROMO_ON_VOUCHER_DETAIL,
+                promoCode
+        );
+    }
+
+    public void eventClickCancelPromoOnVoucherDetail(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_CANCEL_PROMO_ON_VOUCHER_DETAIL,
+                promoCode
+        );
+    }
+
+    public void eventClickCaraPakaiPromoOnVoucherDetail(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_CARA_PAKAI_PROMO_ON_VOUCHER_DETAIL,
+                promoCode
+        );
+    }
+
+    public void eventClickKetentuanOnVoucherDetail(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_KETENTUAN_ON_VOUCHER_DETAIL,
+                promoCode
+        );
+    }
+
+    public void eventViewPopUpPromoDisable() {
+        sendEventCategoryAction(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_POPUP_PROMO_DISABLE
+        );
+    }
+
+    public void eventClickPromoLogisticTicker(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_PROMO_LOGISTIC_TICKER,
+                promoCode
+        );
+    }
+
+    public void eventClickLanjutkanTerapkanPromoSuccess(String promoCode) {
+        String label = EventLabel.SUCCESS + " - " + promoCode;
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_LANJUTKAN_TERAPKAN_PROMO,
+                label
+        );
+    }
+
+    public void eventClickLanjutkanTerapkanPromoError(String errorMsg) {
+        String label = EventLabel.ERROR + " - " + errorMsg;
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_LANJUTKAN_TERAPKAN_PROMO,
+                label
+        );
+    }
+
+    public void eventClickBatalTerapkanPromo(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_BATAL_TERAPKAN_PROMO,
+                promoCode
+        );
+    }
+
+    public void eventSelectPromoConflict(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.SELECT_PROMO_CONFLICT,
+                promoCode
+        );
+    }
+
+    public void eventSubmitPromoConflict(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.SUBMIT_PROMO_CONFLICT,
+                promoCode
+        );
+    }
 }

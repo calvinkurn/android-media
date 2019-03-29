@@ -135,6 +135,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
     private static final int REQUEST_CODE_SEND_TO_MULTIPLE_ADDRESS = 55;
+    public static final int SHOP_INDEX_PROMO_GLOBAL = -1;
 
     private static final int REQUEST_CODE_NORMAL_CHECKOUT = 0;
     private static final int REQUEST_CODE_COD = 1218;
@@ -1623,7 +1624,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentPresenter.checkPromoShipment(shipmentAdapter.getPromoData().getPromoCodeSafe(), isOneClickShipment());
         }*/
 
-        // TODO: ask apakah harus promo global applied?
         if (shipmentAdapter.getPromoGlobalStackData() != null && shipmentAdapter.hasAppliedPromoStackCode()) {
             CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
             shipmentPresenter.checkPromoStackShipment(checkPromoFirstStepParam);
@@ -1701,7 +1701,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCartPromoCancelVoucherPromoGlobalClicked(PromoStackingData cartPromoGlobal, int position) {
-        shipmentPresenter.cancelAutoApplyPromoStack(-1, cartPromoGlobal.getPromoCode(), false);
+        ArrayList<String> promoCodes = new ArrayList<>();
+        promoCodes.add(cartPromoGlobal.getPromoCode());
+        shipmentPresenter.cancelAutoApplyPromoStack(-1, promoCodes, false);
         /*shipmentPresenter.cancelAutoApplyCoupon("");
         if (isToogleYearEndPromoOn()) {
             shipmentAdapter.cancelAllCourierPromo();
@@ -1710,7 +1712,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCancelVoucherMerchantClicked(String promoMerchantCode, int position, boolean ignoreAPIResponse) {
-        shipmentPresenter.cancelAutoApplyPromoStack(position, promoMerchantCode, ignoreAPIResponse);
+        ArrayList<String> promoMerchantCodes = new ArrayList<>();
+        promoMerchantCodes.add(promoMerchantCode);
+        shipmentPresenter.cancelAutoApplyPromoStack(position, promoMerchantCodes, ignoreAPIResponse);
     }
 
     /*@Override
@@ -2346,33 +2350,24 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onSuccessClearPromoStack(int shopIndex) {
-        if (shopIndex != -1) {
-
-            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(shopIndex);
-            if (shipmentCartItemModel != null) {
-                VoucherOrdersItemUiModel voucherOrdersItemUiModel = new VoucherOrdersItemUiModel();
-                shipmentCartItemModel.setVoucherOrdersItemUiModel(voucherOrdersItemUiModel);
-
-                // validate use
-                PromoStackingData promoStackingData = new PromoStackingData.Builder()
-                        .typePromo(PromoStackingData.CREATOR.getTYPE_VOUCHER())
-                        .promoCode("")
-                        .description("")
-                        .amount(-1)
-                        .state(TickerPromoStackingCheckoutView.State.EMPTY)
-                        .variant(TickerPromoStackingCheckoutView.Variant.MERCHANT)
-                        .title("")
-                        .build();
-                updateAppliedPromoStack(promoStackingData);
-            }
-        } else {
+        if (shopIndex == SHOP_INDEX_PROMO_GLOBAL) {
             PromoStackingData promoStackingData = shipmentAdapter.getPromoGlobalStackData();
             promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
-            promoStackingData.setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
             promoStackingData.setAmount(0);
             promoStackingData.setPromoCode("");
             promoStackingData.setDescription("");
             shipmentAdapter.updateItemPromoStackVoucher(promoStackingData);
+        } else {
+            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(shopIndex);
+            if (shipmentCartItemModel != null) {
+                shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
+                shipmentAdapter.notifyItemChanged(shopIndex);
+
+                // check if courier already selected all, then hit validate use again
+                // TODO : ask if this func is appropriate with goal?
+                shipmentAdapter.checkHasSelectAllCourier(false);
+            }
+
         }
     }
 
