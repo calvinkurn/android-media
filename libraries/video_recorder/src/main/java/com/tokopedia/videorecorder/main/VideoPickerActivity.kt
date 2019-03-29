@@ -16,18 +16,18 @@ import android.widget.TextView
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg
 import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler
-import com.tokopedia.videorecorder.R
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
+import com.tokopedia.videorecorder.R
 import com.tokopedia.videorecorder.main.adapter.ViewPagerAdapter
 import com.tokopedia.videorecorder.main.recorder.VideoRecorderFragment
 import com.tokopedia.videorecorder.utils.*
 import kotlinx.android.synthetic.main.activity_video_picker.*
 import kotlinx.android.synthetic.main.fragment_recorder.*
 import java.io.File
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Created by isfaaghyth on 04/03/19.
