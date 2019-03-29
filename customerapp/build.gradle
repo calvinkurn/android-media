@@ -302,6 +302,7 @@ dependencies {
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.affiliate)
+    implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.feed)
     implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.kol)

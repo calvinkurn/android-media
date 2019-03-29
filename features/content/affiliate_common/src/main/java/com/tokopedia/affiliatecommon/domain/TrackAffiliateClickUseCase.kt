@@ -1,6 +1,6 @@
-package com.tokopedia.profile.domain.usecase
+package com.tokopedia.affiliatecommon.domain
 
-import com.tokopedia.profile.data.source.TrackAffiliateClickCloudSource
+import com.tokopedia.affiliatecommon.data.source.TrackAffiliateClickCloudSource
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable

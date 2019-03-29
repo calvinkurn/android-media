@@ -1,4 +1,4 @@
-package com.tokopedia.profile.data.network
+package com.tokopedia.affiliatecommon.data.network
 
 /**
  * @author by milhamj on 10/17/18.

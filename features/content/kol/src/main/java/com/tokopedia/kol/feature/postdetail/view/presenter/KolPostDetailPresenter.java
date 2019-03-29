@@ -3,6 +3,7 @@ package com.tokopedia.kol.feature.postdetail.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase;
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
@@ -32,7 +33,7 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
     private final LikeKolPostUseCase likeKolPostUseCase;
     private final FollowKolPostGqlUseCase followKolPostGqlUseCase;
     private final ToggleFavouriteShopUseCase doFavoriteShopUseCase;
-    //    private final TrackAffiliateClickUseCase trackAffiliateClickUseCase;
+    private final TrackAffiliateClickUseCase trackAffiliateClickUseCase;
     private final SendVoteUseCase sendVoteUseCase;
     private final UserSessionInterface userSession;
 
@@ -42,12 +43,13 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
                                   FollowKolPostGqlUseCase followKolPostGqlUseCase,
                                   ToggleFavouriteShopUseCase doFavoriteShopUseCase,
                                   SendVoteUseCase sendVoteUseCase,
+                                  TrackAffiliateClickUseCase trackAffiliateClickUseCase,
                                   UserSessionInterface userSessionInterface) {
         this.getPostDetailUseCase = getPostDetailUseCase;
         this.likeKolPostUseCase = likeKolPostUseCase;
         this.followKolPostGqlUseCase = followKolPostGqlUseCase;
         this.doFavoriteShopUseCase = doFavoriteShopUseCase;
-//        this.trackAffiliateClickUseCase = trackAffiliateClickUseCase;
+        this.trackAffiliateClickUseCase = trackAffiliateClickUseCase;
         this.sendVoteUseCase = sendVoteUseCase;
         this.userSession = userSessionInterface;
     }
@@ -200,26 +202,24 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
 
     @Override
     public void trackAffiliate(String clickURL) {
-        //TODO UNCOMMENT AFTER MERGE
-//        trackAffiliateUseCase.execute(
-//                TrackAffiliateClickUseCase.Companion.createRequestParams(clickURL),
-//                new Subscriber<VoteStatisticDomainModel>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        if (GlobalConfig.isAllowDebuggingTools()) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onNext(VoteStatisticDomainModel voteStatisticDomainModel) {
-//
-//                    }
-//                });
+        trackAffiliateClickUseCase.execute(
+                TrackAffiliateClickUseCase.Companion.createRequestParams(clickURL), new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (GlobalConfig.isAllowDebuggingTools()) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+
+                    }
+                });
     }
 }

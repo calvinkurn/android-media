@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -55,7 +56,6 @@ import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel;
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity;
 import com.tokopedia.kol.feature.postdetail.view.adapter.KolPostDetailAdapter;
@@ -97,6 +97,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private AbstractionRouter abstractionRouter;
     private KolRouter kolRouter;
     private PerformanceMonitoring performanceMonitoring;
+    private AnalyticTracker analyticTracker;
 
     private PostDetailFooterModel postDetailFooterModel;
     private boolean isTraceStopped;
@@ -136,6 +137,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         performanceMonitoring = PerformanceMonitoring.start(PERFORMANCE_POST_DETAIL);
+
     }
 
     @Nullable
@@ -392,8 +394,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToKolComment(int rowNumber, int id) {
-        Intent intent = KolCommentActivity.getCallingIntent(getContext(), id, rowNumber);
-        startActivityForResult(intent, OPEN_KOL_COMMENT);
+        if (userSession != null && userSession.isLoggedIn()) {
+            Intent intent = KolCommentActivity.getCallingIntent(getContext(), id, rowNumber);
+            startActivityForResult(intent, OPEN_KOL_COMMENT);
+        } else {
+            startActivity(kolRouter.getLoginIntent(getActivity()));
+        }
     }
 
     @Override
@@ -419,13 +425,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessFollowUnfollowKol(int rowNumber) {
-        if (adapter.getList().get(rowNumber) instanceof KolPostViewModel) {
-            KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getList().get(rowNumber);
-            kolPostViewModel.setFollowed(!(kolPostViewModel.isFollowed()));
-            kolPostViewModel.setTemporarilyFollowed(!(kolPostViewModel.isTemporarilyFollowed()));
+        if (adapter.getList().get(rowNumber) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel dynamicPostViewModel = (DynamicPostViewModel) adapter.getList().get(rowNumber);
+            dynamicPostViewModel.getHeader().getFollowCta().setFollow(!dynamicPostViewModel.getHeader().getFollowCta().isFollow());
             adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_FOLLOW);
 
-            if (kolPostViewModel.isFollowed()) {
+            if (dynamicPostViewModel.getHeader().getFollowCta().isFollow()) {
                 ToasterNormal
                         .make(swipeToRefresh,
                                 getString(R.string.post_detail_follow_success_toast),
@@ -586,7 +591,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     //NEW
-
     @Override
     public void onAvatarClick(int positionInFeed, @NotNull String redirectUrl) {
         onGoToLink(redirectUrl);
@@ -637,7 +641,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
                         @Override
                         public void onReportClick() {
-                            goToContentReport(postId);
+                            if (userSession != null && userSession.isLoggedIn()) {
+                                goToContentReport(postId);
+                            } else {
+                                startActivity(kolRouter.getLoginIntent(getActivity()));
+                            }
                         }
 
                         @Override
@@ -747,16 +755,20 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onPollOptionClick(int positionInFeed, int contentPosition, int option, @NotNull String pollId, @NotNull String optionId, boolean isVoted, @NotNull String redirectLink) {
-        if (isVoted) {
-            onGoToLink(redirectLink);
+        if (userSession != null && userSession.isLoggedIn()) {
+            if (isVoted) {
+                onGoToLink(redirectLink);
+            } else {
+                presenter.sendVote(0, pollId, optionId);
+            }
         } else {
-            presenter.sendVote(0, pollId, optionId);
+            startActivity(kolRouter.getLoginIntent(getActivity()));
         }
+
     }
 
     @Override
     public void onGridItemClick(int positionInFeed, int contentPosition, @NotNull String redirectLink) {
         onGoToLink(redirectLink);
-
     }
 }
