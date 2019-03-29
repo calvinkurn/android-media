@@ -10,6 +10,7 @@ import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.ButtonCompat
@@ -43,9 +44,10 @@ open class DynamicPostViewHolder(v: View,
                             private val imagePostListener: ImagePostViewHolder.ImagePostListener,
                             private val youtubePostListener: YoutubeViewHolder.YoutubePostListener,
                             private val pollOptionListener: PollAdapter.PollOptionListener,
-                            private val gridItemListener: GridPostAdapter.GridItemListener,
-                                 private val type : String = "")
+                            private val gridItemListener: GridPostAdapter.GridItemListener)
     : AbstractViewHolder<DynamicPostViewModel>(v) {
+
+    lateinit var captionTv : TextView
 
     companion object {
         @LayoutRes
@@ -62,6 +64,10 @@ open class DynamicPostViewHolder(v: View,
         const val NEWLINE = "(\r\n|\n)"
 
         const val TYPE_DETAIL = "detail"
+    }
+
+    init {
+        captionTv = itemView.caption
     }
 
     override fun bind(element: DynamicPostViewModel?) {
@@ -350,7 +356,7 @@ open class DynamicPostViewHolder(v: View,
     }
 
     private fun shouldShowPostTag(postTag: PostTag, template: TemplateBody): Boolean {
-        return template.postTag || postTag.totalItems != 0 || postTag.items.size != 0
+        return template.postTag && postTag.totalItems != 0 && postTag.items.isNotEmpty()
     }
 
     interface DynamicPostListener {
