@@ -10,6 +10,7 @@ import android.graphics.RectF;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
@@ -84,12 +85,12 @@ public class ImpressedImageView extends AppCompatImageView {
                 setScrollChangedListener(this);
                 if (isVisible(getView())) {
                     if (holder != null && !holder.isInvoke()) {
-                        if(hintListener!=null){
+                        if (hintListener != null) {
                             hintListener.onViewHint();
                         }
-                        if(holder instanceof ProductImage){
+                        if (holder instanceof ProductImage) {
                             new ImpresionTask().execute(((ProductImage) holder).getM_url());
-                        } else if(holder instanceof CpmImage){
+                        } else if (holder instanceof CpmImage) {
                             new ImpresionTask().execute(((CpmImage) holder).getFullUrl());
                         }
                         holder.invoke();
@@ -121,11 +122,16 @@ public class ImpressedImageView extends AppCompatImageView {
         view.getLocationOnScreen(location);
         float X = location[0];
         float Y = location[1];
-        if (screen.top <= Y && screen.bottom >= Y && screen.left <= X && screen.right >= X) {
+        float margin = convertDpToPixel(R.dimen.dp_6, getContext());
+        if (screen.top <= Y && screen.bottom >= Y && (screen.left + margin) <= X && (screen.right - margin) >= X) {
             return true;
         } else {
             return false;
         }
+    }
+
+    public static float convertDpToPixel(float dp, Context context) {
+        return dp * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
     private int getOffsetHeight() {
