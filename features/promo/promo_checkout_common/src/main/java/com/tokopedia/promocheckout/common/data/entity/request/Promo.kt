@@ -62,6 +62,9 @@ data class Promo(
         val STATE_CART = "cart"
         val STATE_CHECKOUT = "checkout"
 
+        val CART_TYPE_DEFAULT = "default"
+        val CART_TYPE_OCS = "ocs"
+
         override fun createFromParcel(parcel: Parcel): Promo {
             return Promo(parcel)
         }
