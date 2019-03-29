@@ -751,7 +751,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                 || content.getLayoutTickerAttr() == null
                 || content.getLayoutTickerAttr().getTickerList() == null
                 || content.getLayoutTickerAttr().getTickerList().isEmpty()) {
-            //tickerContainer.setVisibility(View.GONE);
+            tickerContainer.setVisibility(View.GONE);
             return;
         }
 
@@ -915,7 +915,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
 
         //init explore and kupon-saya tab
         renderExploreSectionTab(exploreSectionItem, couponSection);
-        tickerContainer.setVisibility(View.GONE);
     }
 
     @Override

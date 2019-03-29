@@ -120,6 +120,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
         containerInner.setDisplayedChild(0);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_promos);
+
         recyclerView.addItemDecoration(new SpacesItemDecoration(view.getResources().getDimensionPixelOffset(R.dimen.dp_14),
                 view.getResources().getDimensionPixelOffset(R.dimen.dp_16),
                 view.getResources().getDimensionPixelOffset(R.dimen.dp_16)));
