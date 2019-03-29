@@ -114,6 +114,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             view.findViewById(R.id.button_continue).setOnClickListener(view12 -> mPresenter.getView().gotoCatalog());
             view.findViewById(R.id.text_empty_action).setOnClickListener(v ->
                     mPresenter.getView().openWebView(CommonConstant.WebLink.INFO));
+            return;
         }
 
 
