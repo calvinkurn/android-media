@@ -242,7 +242,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         commentButton.setOnClickListener(v -> onGoToKolComment(0, postDetailFooterModel.getContentId()));
 
         shareButton.setOnClickListener(v -> onShareClick(0, postDetailFooterModel.getContentId(),
-         postDetailFooterModel.getShareData().getTitle(),
+                postDetailFooterModel.getShareData().getTitle(),
                 postDetailFooterModel.getShareData().getDescription(),
                 postDetailFooterModel.getShareData().getUrl(),
                 postDetailFooterModel.getShareData().getImageUrl()));
@@ -363,13 +363,16 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToKolComment(int rowNumber, int id) {
-        Intent intent = KolCommentActivity.getCallingIntent(getContext(), id, rowNumber);
-        startActivityForResult(intent, OPEN_KOL_COMMENT);
+        if (userSession != null && userSession.isLoggedIn()) {
+            Intent intent = KolCommentActivity.getCallingIntent(getContext(), id, rowNumber);
+            startActivityForResult(intent, OPEN_KOL_COMMENT);
+        } else {
+            startActivity(kolRouter.getLoginIntent(getActivity()));
+        }
     }
 
     @Override
     public void onGoToProfile(String url) {
-        //TODO Analytics
         kolRouter.openRedirectUrl(getActivity(), url);
     }
 
@@ -560,7 +563,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     //NEW
     @Override
     public void onAvatarClick(int positionInFeed, @NotNull String redirectUrl) {
-        //TODO ANALYTICS
         onGoToLink(redirectUrl);
     }
 
@@ -609,7 +611,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
                         @Override
                         public void onReportClick() {
-                            goToContentReport(postId);
+                            if (userSession != null && userSession.isLoggedIn()) {
+                                goToContentReport(postId);
+                            } else {
+                                startActivity(kolRouter.getLoginIntent(getActivity()));
+                            }
                         }
 
                         @Override
@@ -719,11 +725,16 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onPollOptionClick(int positionInFeed, int contentPosition, int option, @NotNull String pollId, @NotNull String optionId, boolean isVoted, @NotNull String redirectLink) {
-        if (isVoted) {
-            onGoToLink(redirectLink);
+        if (userSession != null && userSession.isLoggedIn()) {
+            if (isVoted) {
+                onGoToLink(redirectLink);
+            } else {
+                presenter.sendVote(0, pollId, optionId);
+            }
         } else {
-            presenter.sendVote(0, pollId, optionId);
+            startActivity(kolRouter.getLoginIntent(getActivity()));
         }
+
     }
 
     @Override
