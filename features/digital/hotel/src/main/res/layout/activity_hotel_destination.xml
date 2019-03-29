@@ -16,7 +16,7 @@
         app:siv_search_hint="@string/hotel_search_edittext_hint"
         />
 
-    <FrameLayout android:id="@+id/fragment_frame_layout"
+    <FrameLayout android:id="@+id/parent_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/search_input_view"/>

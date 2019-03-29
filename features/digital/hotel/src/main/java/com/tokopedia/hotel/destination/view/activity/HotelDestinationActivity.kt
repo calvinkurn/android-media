@@ -78,12 +78,12 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
     }
 
     fun initHotelRecommendationFragment() {
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_frame_layout,
+        supportFragmentManager.beginTransaction().replace(R.id.parent_view,
                 HotelRecommendationFragment()).commit()
     }
 
     fun showSearchDestinationResult() {
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_frame_layout,
+        supportFragmentManager.beginTransaction().replace(R.id.parent_view,
                 HotelSearchDestinationFragment()).addToBackStack(null).commit()
     }
 
