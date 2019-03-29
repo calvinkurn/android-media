@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.design.component.ToasterError
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateBody
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
@@ -173,7 +174,7 @@ class VideoDetailFragment:
     }
 
     override fun onLikeKolError(message: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        showError(message!!, null)
     }
 
     override fun onErrorGetVideoDetail(error: String) {
@@ -426,8 +427,10 @@ class VideoDetailFragment:
         startActivityForResult(kolRouter.getLoginIntent(context!!), LOGIN_CODE)
     }
 
-    private fun goToLoginThenFollow() {
-        startActivityForResult(kolRouter.getLoginIntent(context!!), LOGIN_FOLLOW_CODE)
+    private fun showError(message: String, listener: View.OnClickListener?) {
+        ToasterError.make(view, message, ToasterError.LENGTH_LONG)
+                .setAction(R.string.title_try_again, listener)
+                .show()
     }
 
 }
