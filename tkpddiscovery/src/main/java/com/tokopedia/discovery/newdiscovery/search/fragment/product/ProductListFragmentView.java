@@ -66,4 +66,6 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
     void stopTracePerformanceMonitoring();
 
     void initQuickFilter(List<Filter> quickFilterList);
+
+    void setAdditionalParams(String additionalParams);
 }

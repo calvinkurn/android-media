@@ -445,7 +445,7 @@ public class SearchActivity extends DiscoveryActivity
     private void populateFourTabItem(List<SearchSectionItem> searchSectionItemList,
                                       ProductViewModel productViewModel) {
 
-        productListFragment = getProductFragment(productViewModel);
+        productListFragment = getProductFragment();
         catalogFragment = getCatalogFragment();
         shopListFragment = getShopFragment();
         profileListFragment = getProfileListFragment(productViewModel.getQuery(), this);
@@ -493,8 +493,8 @@ public class SearchActivity extends DiscoveryActivity
         return CatalogFragment.newInstance(searchParameter);
     }
 
-    private ProductListFragment getProductFragment(ProductViewModel productViewModel) {
-        return ProductListFragment.newInstance(productViewModel);
+    private ProductListFragment getProductFragment() {
+        return ProductListFragment.newInstance(searchParameter, isForceSearch());
     }
 
     private ShopListFragment getShopFragment() {
@@ -508,7 +508,7 @@ public class SearchActivity extends DiscoveryActivity
     private void populateThreeTabItem(List<SearchSectionItem> searchSectionItemList,
                                       ProductViewModel productViewModel) {
 
-        productListFragment = getProductFragment(productViewModel);
+        productListFragment = getProductFragment();
         shopListFragment = getShopFragment();
         profileListFragment = getProfileListFragment(productViewModel.getQuery(), this);
 

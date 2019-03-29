@@ -240,7 +240,13 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         enrichWithAdditionalParams(requestParams, additionalParams);
         removeDefaultCategoryParam(requestParams);
 
-        Subscriber<GraphqlResponse> subscriber = new DefaultSubscriber<GraphqlResponse>() {
+        Subscriber<GraphqlResponse> subscriber = getLoadDataSubscriber();
+
+        GqlSearchHelper.requestProductFirstPage(context, requestParams, graphqlUseCase, subscriber);
+    }
+
+    private DefaultSubscriber<GraphqlResponse> getLoadDataSubscriber() {
+        return new DefaultSubscriber<GraphqlResponse>() {
             @Override
             public void onStart() {
                 if (isViewAttached()) {
@@ -294,6 +300,8 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                         if (productViewModel.getRelatedSearchModel() != null) {
                             list.add(productViewModel.getRelatedSearchModel());
                         }
+
+                        getView().setAdditionalParams(productViewModel.getAdditionalParams());
                         getView().removeLoading();
                         getView().setProductList(list);
                         getView().initQuickFilter(productViewModel.getQuickFilterModel().getFilter());
@@ -307,8 +315,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                 }
             }
         };
-
-        GqlSearchHelper.requestProductFirstPage(context, requestParams, graphqlUseCase, subscriber);
     }
 
     @Override
