@@ -12,18 +12,12 @@ buildscript {
     }
 }
 
-//android {
-//    defaultConfig {
-//        vectorDrawables.useSupportLibrary = true
-//    }
-//}
-
 dependencies {
     implementation rootProject.ext.supportLibDependencies.exifinterface
 
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.permissionchecker)
     implementation rootProject.ext.miscDependencies.ffmpeg
-
 }
