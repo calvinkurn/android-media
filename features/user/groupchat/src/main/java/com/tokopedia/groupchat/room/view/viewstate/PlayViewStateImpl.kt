@@ -56,7 +56,6 @@ import com.tokopedia.groupchat.room.view.fragment.PlayWebviewDialogFragment
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
-import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -239,6 +238,7 @@ open class PlayViewStateImpl(
             youTubePlayer?.pause()
             videoContainer.visibility = View.GONE
             setChatListHasSpaceOnTop(true)
+            analytics.eventClickHideVideoToggle(viewModel?.channelId)
         }
         showVideoToggle.setOnClickListener {
             it.hide()
@@ -246,6 +246,7 @@ open class PlayViewStateImpl(
             youTubePlayer?.play()
             videoContainer.visibility = View.VISIBLE
             setChatListHasSpaceOnTop(false)
+            analytics.eventClickShowVideoToggle(viewModel?.channelId)
         }
     }
 
@@ -848,6 +849,7 @@ open class PlayViewStateImpl(
                                                     if(!showVideoToggle.isShown) {
                                                         hideVideoToggle.show()
                                                     }
+                                                    analytics.eventClickPauseVideo(viewModel?.channelId)
                                                     onPauseTime = System.currentTimeMillis() / 1000L
                                                 }
 
