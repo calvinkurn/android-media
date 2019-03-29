@@ -27,10 +27,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -67,7 +65,6 @@ import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_INSTANCE_T
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_PLATFORM_PAGE;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT;
-import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_DEFAULT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
@@ -736,11 +733,9 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     protected void initialVar() {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
-            AnalyticTracker analyticTracker = ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
-            checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress(analyticTracker);
-            checkoutAnalyticsMultipleAddress = new CheckoutAnalyticsMultipleAddress(analyticTracker);
-        }
+
+        checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress();
+        checkoutAnalyticsMultipleAddress = new CheckoutAnalyticsMultipleAddress();
         if (isEdit() && address != null) {
             receiverNameEditText.setText(address.getReceiverName());
             addressTypeEditText.setText(address.getAddressName());

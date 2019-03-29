@@ -3,7 +3,6 @@ package com.tokopedia.kol.common.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
@@ -41,12 +40,6 @@ public class KolModule {
     @Provides
     public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
-    }
-
-    @KolScope
-    @Provides
-    public AnalyticTracker provideAnalyticTracker(AbstractionRouter abstractionRouter) {
-        return abstractionRouter.getAnalyticTracker();
     }
 
     @KolScope

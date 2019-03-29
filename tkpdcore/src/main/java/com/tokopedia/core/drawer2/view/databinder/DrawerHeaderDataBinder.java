@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core2.R;
 import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
@@ -28,6 +30,7 @@ import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.track.TrackApp;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -275,7 +278,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
             holder.tvTokoPointAction.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    UnifyTracking.eventUserClickedPoints(view.getContext());
+                    eventUserClickedPoints();
                     listener.onTokoPointActionClicked(
                             data.getTokoPointDrawerData().getMainPageUrl(),
                             TextUtils.isEmpty(title) ? TITLE_HEADER_WEBSITE : title
@@ -285,6 +288,14 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         } else {
             holder.tokoPointContainer.setVisibility(View.GONE);
         }
+    }
+
+    private void eventUserClickedPoints(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                "clickHomePage",
+                "homepage-tokopoints",
+                "click point & tier status",
+                "tokopoints");
     }
 
 

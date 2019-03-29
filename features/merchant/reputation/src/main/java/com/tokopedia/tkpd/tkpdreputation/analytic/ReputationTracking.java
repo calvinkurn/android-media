@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.analytic;
 
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
+import com.tokopedia.track.TrackApp;
 
 import java.util.HashMap;
 
@@ -20,7 +21,7 @@ public class ReputationTracking {
         HashMap<String, Object> eventMap = createEventMap(ReputationTrackingConstant.CLICK_OFFICIAL_STORE, getEventCategory(myShop),
                 action, label);
         eventMap.put(ReputationTrackingConstant.SHOP_ID, shopId);
-        reputationRouter.sendEventTracking(eventMap);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventMap);
     }
 
     private String getEventCategory(boolean myShop) {
@@ -35,7 +36,7 @@ public class ReputationTracking {
         HashMap<String, Object> eventMap = createEventMap(ReputationTrackingConstant.CLICK_OFFICIAL_STORE, getEventCategory(myShop),
                 action, label);
         eventMap.put(ReputationTrackingConstant.PRODUCT_ID, productId);
-        reputationRouter.sendEventTracking(eventMap);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventMap);
     }
 
     private HashMap<String, Object> createEventMap(String event, String category, String action, String label) {
