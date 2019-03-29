@@ -25,6 +25,7 @@ buildCache {
 
 include "libraries:inappupdate"
 include 'tkpddesign'
+include "features:common:resources_common"
 
 include "libraries:unify:unify_icon"
 include "libraries:unify:unify_principles"
