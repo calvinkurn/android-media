@@ -46,7 +46,6 @@ class HotelSearchDestinationFragment: BaseListFragment<SearchDestination, Search
     }
 
     override fun onItemClicked(t: SearchDestination?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun getScreenName(): String = ""
@@ -57,7 +56,6 @@ class HotelSearchDestinationFragment: BaseListFragment<SearchDestination, Search
     }
 
     override fun loadData(page: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 
