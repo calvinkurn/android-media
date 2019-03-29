@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -94,6 +95,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private AbstractionRouter abstractionRouter;
     private KolRouter kolRouter;
     private PerformanceMonitoring performanceMonitoring;
+    private AnalyticTracker analyticTracker;
 
     private PostDetailFooterModel postDetailFooterModel;
     private boolean isTraceStopped;
@@ -133,6 +135,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         performanceMonitoring = PerformanceMonitoring.start(PERFORMANCE_POST_DETAIL);
+
     }
 
     @Nullable
@@ -366,6 +369,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToProfile(String url) {
+        //TODO Analytics
         kolRouter.openRedirectUrl(getActivity(), url);
     }
 
@@ -554,9 +558,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     //NEW
-
     @Override
     public void onAvatarClick(int positionInFeed, @NotNull String redirectUrl) {
+        //TODO ANALYTICS
         onGoToLink(redirectUrl);
     }
 
@@ -725,6 +729,5 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onGridItemClick(int positionInFeed, int contentPosition, @NotNull String redirectLink) {
         onGoToLink(redirectLink);
-
     }
 }
