@@ -20,4 +20,7 @@ public interface KolRouter {
     Intent getTopProfileIntent(Context context, String userId);
 
     Intent getLoginIntent(Context context);
+
+    void shareFeed(Activity activity, String detailId, String url, String title, String
+            imageUrl, String description);
 }

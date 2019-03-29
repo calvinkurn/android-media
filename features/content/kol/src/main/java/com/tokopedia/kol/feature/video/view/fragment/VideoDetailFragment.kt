@@ -361,14 +361,14 @@ class VideoDetailFragment:
                 shareText.show()
                 shareText.text = footer.share.text
                 shareIcon.setOnClickListener {
-//                    listener.onShareClick(
-//                            adapterPosition,
-//                            id,
-//                            footer.share.title,
-//                            footer.share.description,
-//                            footer.share.url,
-//                            footer.share.imageUrl
-//                    )
+                    kolRouter.shareFeed(
+                            activity!!,
+                            id,
+                            dynamicPostViewModel.footer.share.url,
+                            dynamicPostViewModel.footer.share.title,
+                            dynamicPostViewModel.footer.share.imageUrl,
+                            dynamicPostViewModel.footer.share.description
+                    )
                 }
             } else {
                 shareIcon.hide()
