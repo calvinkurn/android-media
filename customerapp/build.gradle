@@ -240,7 +240,7 @@ android {
         applicationId "com.tokopedia.tkpd"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
-        vectorDrawables.useSupportLibrary = false
+        vectorDrawables.useSupportLibrary = vectorDrawable
         testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
         ndk {
             abiFilters "x86", "armeabi-v7a"
@@ -269,7 +269,7 @@ android {
     }
 
     // Specifies 4 flavor dimensions.
-    flavorDimensions "tier", "client"
+    flavorDimensions "tier" , "client"
 
     productFlavors {
         live {
@@ -297,7 +297,7 @@ afterEvaluate {
 dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-
+    implementation project(":libraries:akamai_bot_lib")
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.gamification)
@@ -386,6 +386,7 @@ dependencies {
     implementation project(rootProject.ext.features.phoneVerification)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.talk)
+    implementation project(rootProject.ext.features.tradeInCommon)
     implementation project(rootProject.ext.features.loginregister)
     implementation project(rootProject.ext.features.loginphone)
     implementation project(rootProject.ext.features.sessioncommon)
@@ -428,6 +429,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.locationmanager)
     implementation project(rootProject.ext.libraries.permissionchecker)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.collapsingTabLayout)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
@@ -468,6 +470,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
+    implementation project(rootProject.ext.libraries.cpm)
 
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation (rootProject.ext.analyticsDependencies.moengage) {

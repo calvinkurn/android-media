@@ -55,6 +55,7 @@ public interface ConstantTransactionAnalytics {
         String PURCHASE_PROTECTION = "fin - mp checkout";
         String CORNER_ADDRES = "tokopedia corner address";
         String EXPRESS_CHECKOUT = "express checkout";
+        String COURIER_SELECTION_TRADE_IN = "courier selection trade in";
     }
 
     interface EventAction {
@@ -234,6 +235,12 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PLUS_FROM_MULTIPLE = "click + from multiple";
         String CLICK_BUTTON_SIMPAN = "click button simpan";
         String CLICK_BUTTON_SIMPAN_FROM_EDIT = "click button simpan from edit";
+
+        //TRADEIN
+        String VIEW_CHECKOUYT_PAGE_TRADE_IN = "view checkout page trade in";
+        String CLICK_GANTI_NOMOR = "click ganti nomor";
+        String CLICK_BUTTON_PILIH_DURASI = "click button pilih durasi";
+        String CLICK_KURIR_TRADE_IN = "click kurir trade in";
     }
 
     interface EventLabel {

@@ -41,6 +41,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.banner)
 
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.feed)
@@ -71,6 +72,8 @@ dependencies {
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
+    implementation project(rootProject.ext.libraries.collapsingTabLayout)
+    implementation project(rootProject.ext.features.productCard)
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
@@ -112,6 +115,9 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbFlow
 
     implementation rootProject.ext.debugToolsDependencies.stetho
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 }
 

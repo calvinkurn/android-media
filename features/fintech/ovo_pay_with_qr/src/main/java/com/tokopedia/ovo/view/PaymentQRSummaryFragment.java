@@ -22,13 +22,13 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.ovo.OvoPayWithQrRouter;
 import com.tokopedia.ovo.R;
+import com.tokopedia.ovo.analytics.OvoPayByQrTrackerUtil;
 import com.tokopedia.ovo.model.BarcodeResponseData;
 import com.tokopedia.ovo.model.ImeiConfirmResponse;
 import com.tokopedia.ovo.model.Wallet;
@@ -40,6 +40,9 @@ import java.net.URLDecoder;
 
 import static com.tokopedia.ovo.view.PaymentQRSummaryActivity.IMEI;
 import static com.tokopedia.ovo.view.PaymentQRSummaryActivity.QR_DATA;
+import static com.tokopedia.ovo.view.QrOvoPayTxDetailActivity.CACHE_ID;
+import static com.tokopedia.ovo.view.QrOvoPayTxDetailActivity.TRANSACTION_ID;
+import static com.tokopedia.ovo.view.QrOvoPayTxDetailActivity.TRANSFER_ID;
 
 public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
         PaymentQrSummaryContract.View, View.OnFocusChangeListener, TextWatcher, View.OnClickListener {
@@ -50,8 +53,10 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
     public static final String PENDING_STATUS = "pending";
     public static final String SUCCESS_STATUS = "success";
     private static final float BUY_BTN_FADE_VISIBILITY = 0.19f;
-    private static final long MIN_AMOUNT = 1000;
-    private static final long MAX_AMOUNT = 10000000;
+    private static final float BUY_BTN_COMPLETE_VISIBILITY = 1f;
+    private static long MIN_AMOUNT = 1000;
+    private static long MAX_AMOUNT = 10000000;
+    public static final String LOCAL_CACHE_ID = "local_cache_id";
     String id;
     String imeiNumber;
     BarcodeResponseData responseData;
@@ -72,6 +77,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
     int transferId;
     private TextView pointCash;
     private Wallet wallet;
+    private SaveInstanceCacheManager cacheManager;
 
     public static Fragment createInstance(String qrData, String imei) {
         Bundle bundle = new Bundle();
@@ -100,16 +106,12 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
         presenter = new PaymentQrSummaryPresenterImpl(getActivity());
         presenter.attachView(this);
         presenter.fetchWalletDetails();
-        SaveInstanceCacheManager cacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
+        cacheManager = new SaveInstanceCacheManager(getActivity().getApplicationContext(), savedInstanceState);
         if (savedInstanceState == null)
-            cacheManager = new SaveInstanceCacheManager(getActivity(), id);
+            cacheManager = new SaveInstanceCacheManager(getActivity().getApplicationContext(), id);
 
-        JsonObject response = cacheManager.get(QR_RESPONSE, new TypeToken<JsonObject>() {
+        responseData = cacheManager.get(QR_RESPONSE, new TypeToken<BarcodeResponseData>() {
         }.getType());
-        if (response != null) {
-            responseData = new GsonBuilder().create().fromJson(response, BarcodeResponseData.class);
-
-        }
 
     }
 
@@ -119,6 +121,8 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
         View view = inflater.inflate(R.layout.oqr_payment_qr_summary_fragment, container, false);
         initViews(view);
         setDataAndListeners();
+        MAX_AMOUNT = ((OvoPayWithQrRouter) getActivity().getApplicationContext()).getMaxAmountFromRemoteConfig();
+        MIN_AMOUNT = ((OvoPayWithQrRouter) getActivity().getApplicationContext()).getMinAmountFromRemoteConfig();
         return view;
     }
 
@@ -161,6 +165,11 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
             }
             cancelBtn.setOnClickListener(view1 -> getActivity().finish());
         }
+        OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+                OvoPayByQrTrackerUtil.EVENT.viewOvoPayEvent,
+                OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
+                OvoPayByQrTrackerUtil.ACTION.viewPagePaymentSummary,
+                OvoPayByQrTrackerUtil.LABEL.defaultLabel);
     }
 
     private void enableInputField(boolean isEnabled) {
@@ -193,20 +202,28 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
             setProgressButton();
             if (response.getStatus().equalsIgnoreCase(PENDING_STATUS)) {
                 try {
-                    ((OvoPayWithQrRouter) getActivity().getApplication())
-                            .openTokopointWebview(getActivity(), URLDecoder.decode(
+                    LocalCacheHandler localCacheHandler = new LocalCacheHandler(
+                            getActivity().getApplicationContext(), LOCAL_CACHE_ID);
+                    cacheManager.put(TRANSACTION_ID, response.getTransactionId());
+                    cacheManager.put(TRANSFER_ID, response.getTransferId());
+                    localCacheHandler.putString(CACHE_ID, cacheManager.getId());
+                    localCacheHandler.applyEditor();
+                    Intent intent = OvoWebViewActivity
+                            .getWebViewIntent(getActivity(), URLDecoder.decode(
                                     response.getPinUrl(), "UTF-8"), getString(R.string.oqr_pin_page_title));
+
+                    startActivity(intent);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-
             } else if (response.getStatus().equalsIgnoreCase(SUCCESS_STATUS)) {
-                startActivityForResult(QrOvoPayTxDetailActivity.createInstance(
-                        getActivity(), transferId, response.getTransactionId(), SUCCESS), REQUEST_CODE);
+                startActivity(QrOvoPayTxDetailActivity.createInstance(
+                        getActivity(), transferId, response.getTransactionId(), SUCCESS));
             } else {
-                startActivityForResult(QrOvoPayTxDetailActivity.createInstance(
-                        getActivity(), transferId, response.getTransactionId(), FAIL), REQUEST_CODE);
+                startActivity(QrOvoPayTxDetailActivity.createInstance(
+                        getActivity(), transferId, response.getTransactionId(), FAIL));
             }
+            getActivity().finish();
         }
     }
 
@@ -223,7 +240,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
     }
 
     public void setProgressButton() {
-        bayarLayout.setAlpha(1f);
+        bayarLayout.setAlpha(BUY_BTN_COMPLETE_VISIBILITY);
         progressBar.setVisibility(View.GONE);
         bayarBtn.setClickable(true);
     }
@@ -257,14 +274,17 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
 
     @Override
     public void afterTextChanged(Editable editable) {
+
         if (!TextUtils.isEmpty(editable)) {
-            inputAmount.removeTextChangedListener(this);
             long amountInLong = Utils.convertToCurrencyLongFromString(editable.toString());
             String formattedString = Utils.convertToCurrencyStringWithoutRp(amountInLong);
-            inputAmount.setText(formattedString);
-            inputAmount.addTextChangedListener(this);
-            inputAmount.setSelection(inputAmount.getText().length());
 
+            inputAmount.removeTextChangedListener(this);
+            String curren = String.valueOf(amountInLong);
+            if ((curren.length() >= 8 && amountInLong > MAX_AMOUNT)) {
+                amountInLong = amountInLong / 10L;
+            }
+            inputAmount.setText(Utils.convertToCurrencyStringWithoutRp(amountInLong));
             if (wallet != null && amountInLong <= Utils.convertToCurrencyLongFromString(wallet.getPointBalance())) {
                 long balanceOvoCash = amountInLong - Utils.convertToCurrencyLongFromString(wallet.getPointBalance());
                 ovoPoints.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt),
@@ -275,6 +295,10 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
                 ovoCash.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt), String.valueOf(0)));
                 ovoPoints.setText(formattedString);
             }
+            inputAmount.addTextChangedListener(this);
+            inputAmount.setSelection(inputAmount.getText().length());
+
+
         }
     }
 
@@ -282,18 +306,22 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
     public void onClick(View view) {
         if (view.getId() == R.id.bayar_btn) {
             hideKeyboard(getView(), getActivity());
-            if (TextUtils.isEmpty(inputAmount.getText()) || (inputAmount.getText() != null
-                    && Utils.convertToCurrencyLongFromString(inputAmount.getText().toString()) < MIN_AMOUNT)) {
+            if (TextUtils.isEmpty(inputAmount.getText())
+                    || Utils.convertToCurrencyLongFromString(inputAmount.getText().toString()) < MIN_AMOUNT) {
                 setErrorMessage(getString(R.string.oqr_min_input_hint));
-            } else if (!TextUtils.isEmpty(inputAmount.getText()) && Utils.convertToCurrencyLongFromString(
-                    inputAmount.getText().toString()) > MAX_AMOUNT) {
+            } else if (Utils.convertToCurrencyLongFromString(inputAmount.getText().toString()) > MAX_AMOUNT) {
                 setErrorMessage(getString(R.string.oqr_max_input_hint));
-            } else if (inputAmount.getText() != null && Utils.convertToCurrencyLongFromString(
-                    inputAmount.getText().toString()) > wallet.getRawBalance()) {
+            } else if (Utils.convertToCurrencyLongFromString(
+                    inputAmount.getText().toString()) > wallet.getRawCashBalance()) {
                 setErrorMessage(getString(R.string.oqr_balance_exceed_error));
             } else {
                 confirmQrRequest();
             }
+            OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+                    OvoPayByQrTrackerUtil.EVENT.clickOvoPayEvent,
+                    OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
+                    OvoPayByQrTrackerUtil.ACTION.clickBayar,
+                    OvoPayByQrTrackerUtil.LABEL.defaultLabel);
         }
     }
 
@@ -302,6 +330,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
         progressBar.setVisibility(View.VISIBLE);
         bayarBtn.setClickable(false);
         transferId = responseData.getGoalQRInquiry().getTransferId();
+        cacheManager.put(TRANSFER_ID, transferId);
         presenter.confirmQrPayment(imeiNumber,
                 responseData.getGoalQRInquiry().getTransferId(),
                 Utils.convertToCurrencyLongFromString(inputAmount.getText().toString()),

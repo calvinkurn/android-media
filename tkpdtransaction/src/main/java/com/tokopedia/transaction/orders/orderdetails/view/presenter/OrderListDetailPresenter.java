@@ -10,24 +10,20 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.common.data.order.OrderDetailData;
-import com.tokopedia.transaction.common.data.order.OrderDetailItemData;
 import com.tokopedia.transaction.opportunity.data.pojo.CancelReplacementPojo;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButtonList;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.DataResponseCommon;
 import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
+import com.tokopedia.transaction.orders.orderdetails.data.Flags;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderDetails;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
@@ -134,7 +130,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             }
         });
     }
-
 
 
     @Override
@@ -268,7 +263,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     private void setDetailsData(OrderDetails details) {
-        if (getView()==null || getView().getAppContext() == null)
+        if (getView() == null || getView().getAppContext() == null)
             return;
         getView().hideProgressBar();
         getView().setStatus(details.status());
@@ -302,10 +297,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setShopInfo(details.getShopInfo());
         }
         if (details.getItems() != null && details.getItems().size() > 0) {
-            getView().setItems(details.getItems());
-        }
-        if (details.getItems() != null && details.getItems().size() > 0) {
-            getView().setItems(details.getItems());
+            Flags flags = details.getFlags();
+            if (flags != null)
+                getView().setItems(details.getItems(), flags.isIsOrderTradeIn());
+            else
+                getView().setItems(details.getItems(), false);
         }
         if (details.additionalInfo().size() > 0) {
             getView().setAdditionInfoVisibility(View.VISIBLE);

@@ -4,7 +4,6 @@ import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.browse.common.constant.DigitalBrowseEventTracking.Action
 import com.tokopedia.browse.common.constant.DigitalBrowseEventTracking.Event
-import com.tokopedia.browse.common.data.DigitalBrowsePopularAnalyticsModel
 import com.tokopedia.browse.common.data.DigitalBrowseServiceAnalyticsModel
 import java.util.*
 import javax.inject.Inject
@@ -32,59 +31,6 @@ constructor(private val analyticTracker: AnalyticTracker) {
                 GENERIC_CATEGORY,
                 Action.CLICK_VIEW_ALL_BELANJA,
                 "")
-    }
-
-    fun eventPromoImpressionPopularBrand(promotionDatas: List<DigitalBrowsePopularAnalyticsModel>) {
-        try {
-            val promotions = ArrayList<Any>()
-
-            for (promotionItem in promotionDatas) {
-                val promotion = tranformPromotionModel(promotionItem)
-
-                promotions.add(promotion)
-            }
-
-            analyticTracker.sendEnhancedEcommerce(
-                    DataLayer.mapOf(
-                            "event", Event.IMPRESSION_PROMO,
-                            "eventCategory", GENERIC_CATEGORY,
-                            "eventAction", Action.IMPRESSION_BRAND_BELANJA,
-                            "eventLabel", "",
-                            "ecommerce", DataLayer.mapOf(
-                            "promoView", DataLayer.mapOf(
-                            "promotions", DataLayer.listOf(*promotions.toTypedArray()))
-                    )
-                    )
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-    }
-
-    fun eventPromoClickPopularBrand(promotionItem: DigitalBrowsePopularAnalyticsModel) {
-        try {
-            val promotion = tranformPromotionModel(promotionItem)
-
-            val promotions = ArrayList<Any>()
-            promotions.add(promotion)
-
-            analyticTracker.sendEnhancedEcommerce(
-                    DataLayer.mapOf(
-                            "event", Event.CLICK_PROMO,
-                            "eventCategory", GENERIC_CATEGORY,
-                            "eventAction", Action.CLICK_BRAND_BELANJA,
-                            "eventLabel", promotionItem.brandName,
-                            "ecommerce", DataLayer.mapOf(
-                            "promoClick", DataLayer.mapOf(
-                            "promotions", DataLayer.listOf(*promotions.toTypedArray()))
-                        )
-                    )
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
     }
 
     fun eventImpressionHomePage(iconName: String, iconPosition: Int) {
@@ -135,14 +81,6 @@ constructor(private val analyticTracker: AnalyticTracker) {
                 String.format(Action.CLICK_ICON_LAYANAN, analyticsModel.headerName),
                 analyticsModel.iconName + "_" + analyticsModel.headerPosition
                         + "_" + analyticsModel.iconPosition)
-    }
-
-    private fun tranformPromotionModel(promotionItem: DigitalBrowsePopularAnalyticsModel): Any {
-        return DataLayer.mapOf(
-                "id", java.lang.Long.toString(promotionItem.bannerId),
-                "name", "/belanja - Brand Pilihan",
-                "creative", promotionItem.brandName,
-                "position", Integer.toString(promotionItem.position))
     }
 
 }

@@ -17,7 +17,9 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
+import com.tokopedia.ovo.OvoPayWithQrRouter;
 import com.tokopedia.ovo.R;
+import com.tokopedia.ovo.analytics.OvoPayByQrTrackerUtil;
 import com.tokopedia.ovo.model.GoalQRThanks;
 import com.tokopedia.ovo.presenter.QrOvoPayTxDetailContract;
 import com.tokopedia.ovo.presenter.QrOvoPayTxDetailPresenter;
@@ -85,8 +87,12 @@ public class QrTxSuccessDetailFragment extends BaseDaggerFragment implements QrO
         backToMain = view.findViewById(R.id.back_to_main);
         transferId = getArguments().getInt(TRANSFER_ID);
         backToMain.setOnClickListener(view1 -> {
-            listener.setResult(Activity.RESULT_OK);
-            listener.finish();
+            OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+                    OvoPayByQrTrackerUtil.EVENT.clickOvoPayEvent,
+                    OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
+                    OvoPayByQrTrackerUtil.ACTION.clickKembaliBerhasil,
+                    OvoPayByQrTrackerUtil.LABEL.defaultLabel);
+            startActivity(((OvoPayWithQrRouter)getActivity().getApplicationContext()).getHomeIntent(getActivity()));
         });
         pasteToClipboard.setOnClickListener(view1 -> {
             ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
@@ -108,7 +114,11 @@ public class QrTxSuccessDetailFragment extends BaseDaggerFragment implements QrO
         merchantName.setText(data.getMerchant().getName());
         merchantDescription.setText(data.getMerchant().getDescription());
         transactionCode.setText(String.valueOf(getArguments().getInt(TRANSACTION_ID)));
-
+        OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+                OvoPayByQrTrackerUtil.EVENT.viewOvoPayEvent,
+                OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
+                OvoPayByQrTrackerUtil.ACTION.viewPageTransaksiBerhasil,
+                OvoPayByQrTrackerUtil.LABEL.defaultLabel);
     }
 
     @Override

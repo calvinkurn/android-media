@@ -92,11 +92,31 @@
         tools:text="-" />
 
     <TextView
+        android:id="@+id/tv_trade_in_label"
+        style="@style/TextSmallNormalBlack70"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_insurance_fee_label"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/checkout_module_label_trade_in" />
+
+    <TextView
+        android:id="@+id/tv_trade_in"
+        style="@style/TextSmallMediumBlack70"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_insurance_fee_label"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:gravity="end"
+        tools:text="-" />
+
+    <TextView
         android:id="@+id/tv_purchase_protection_label"
         style="@style/TextSmallNormalBlack70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_insurance_fee_label"
+        android:layout_below="@+id/tv_trade_in_label"
         android:layout_marginBottom="@dimen/dp_16"
         tools:text="Proteksi Gadget (3 Barang)" />
 
@@ -105,7 +125,7 @@
         style="@style/TextSmallMediumBlack70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_insurance_fee_label"
+        android:layout_below="@id/tv_trade_in_label"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginBottom="@dimen/dp_16"

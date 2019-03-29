@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.navigation.R;
+import com.tokopedia.navigation.presentation.adapter.viewholder.BaseViewHolder;
 import com.tokopedia.navigation.util.IntegerUtil;
 import com.tokopedia.navigation_common.model.NotifcenterUnread;
 import com.tokopedia.navigation_common.model.NotificationsModel;
@@ -18,7 +19,6 @@ import com.tokopedia.navigation.domain.model.DrawerNotification;
 import java.util.List;
 
 import static com.tokopedia.navigation.GlobalNavConstant.BUYER;
-import static com.tokopedia.navigation.GlobalNavConstant.BUYER_INFO;
 import static com.tokopedia.navigation.GlobalNavConstant.KOMPLAIN;
 import static com.tokopedia.navigation.GlobalNavConstant.MENUNGGU_KONFIRMASI;
 import static com.tokopedia.navigation.GlobalNavConstant.MENUNGGU_PEMBAYARAN;
@@ -30,7 +30,6 @@ import static com.tokopedia.navigation.GlobalNavConstant.SAMPAI_TUJUAN;
 import static com.tokopedia.navigation.GlobalNavConstant.SEDANG_DIKIRIM;
 import static com.tokopedia.navigation.GlobalNavConstant.SELLER;
 import static com.tokopedia.navigation.GlobalNavConstant.PEMBELIAN;
-import static com.tokopedia.navigation.GlobalNavConstant.SELLER_INFO;
 import static com.tokopedia.navigation.GlobalNavConstant.SIAP_DIKIRIM;
 import static com.tokopedia.navigation.GlobalNavConstant.UPDATE;
 import static com.tokopedia.navigation_common.model.NotifcenterUnread.NOTIF_99;
