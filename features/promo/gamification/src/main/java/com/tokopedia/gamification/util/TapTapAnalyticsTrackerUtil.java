@@ -3,12 +3,7 @@ package com.tokopedia.gamification.util;
 import android.app.Activity;
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.tokopedia.track.TrackApp;
 
 public class TapTapAnalyticsTrackerUtil {
     public interface EventKeys {
@@ -45,32 +40,12 @@ public class TapTapAnalyticsTrackerUtil {
     }
 
     public static void sendScreenEvent(Activity context, String screenName) {
-        if (context == null) {
-            return;
-        }
-
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-
-        if (tracker == null) {
-            return;
-        }
-
-        tracker.sendScreen(context, screenName);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
     }
 
     public static void sendEvent(Context context, String event, String category,
                                  String action, String label) {
-        if (context == null) {
-            return;
-        }
-
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-
-        if (tracker == null) {
-            return;
-        }
-
-        tracker.sendEventTracking(event, category, action, label);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(event, category, action, label);
     }
 
 

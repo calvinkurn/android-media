@@ -21,6 +21,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core2.R;
 import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -42,6 +44,7 @@ import com.tokopedia.inbox.rescenter.edit.model.responsedata.ActionParameterPass
 import com.tokopedia.inbox.rescenter.edit.presenter.SellerEditResCenterImpl;
 import com.tokopedia.inbox.rescenter.edit.presenter.SellerEditResCenterPresenter;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -427,9 +430,17 @@ public class SellerEditResCenterFormFragment extends BasePresenterFragment<Selle
 
     @Override
     public void setActivityResult() {
-        UnifyTracking.eventResolutionEditSolution(getActivity());
+        eventResolutionEditSolution();
         Intent intent = new Intent();
         getActivity().setResult(Activity.RESULT_OK, intent);
+    }
+
+    public void eventResolutionEditSolution() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.EDIT_SOLUTION);
     }
 
     @Override

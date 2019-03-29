@@ -61,6 +61,7 @@
                     android:paddingRight="@dimen/dp_4"
                     android:paddingTop="@dimen/dp_2"
                     android:paddingBottom="@dimen/dp_2"
+                    android:visibility="gone"
                     />
 
                 <TextView
@@ -70,6 +71,7 @@
                     android:layout_marginLeft="@dimen/dp_4"
                     style="@style/TextView"
                     android:textSize="@dimen/sp_10"
+                    android:visibility="gone"
                     android:textColor="@color/charcoal_grey_40"
                     />
 
