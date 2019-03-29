@@ -219,6 +219,8 @@ public class ProductListFragment extends SearchSectionFragment
         gridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getGridLayoutManager());
 
         linearLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getLinearLayoutManager());
+
+        recyclerView.addOnScrollListener(gridLayoutLoadMoreTriggerListener);
     }
 
     private EndlessRecyclerviewListener getEndlessRecyclerViewListener(LinearLayoutManager linearLayoutManager) {
