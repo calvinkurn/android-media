@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -234,7 +235,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (template != null) {
             bindLike(postDetailFooterModel, template);
             bindComment(postDetailFooterModel, template);
-            bindShare(postDetailFooterModel, template);
+            bindShare(template);
 
         } else {
             footer.setVisibility(View.GONE);
@@ -246,8 +247,10 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             setTotalLike(model.getTotalLike());
             if (model.isLiked()) {
                 ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_green);
+                likeCount.setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
             } else {
                 ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_gray);
+                likeCount.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_70));
             }
             setLikeListener(postDetailFooterModel.isLiked());
         } else {
@@ -266,13 +269,15 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             commentCount.setVisibility(View.GONE);
         }
     }
-    private void bindShare(PostDetailFooterModel model, TemplateFooter template) {
+
+    private void bindShare(TemplateFooter template) {
         if (template.getShare()) {
             shareButton.setOnClickListener(v -> onShareClick(0, postDetailFooterModel.getContentId(),
                     postDetailFooterModel.getShareData().getTitle(),
                     postDetailFooterModel.getShareData().getDescription(),
                     postDetailFooterModel.getShareData().getUrl(),
                     postDetailFooterModel.getShareData().getImageUrl()));
+
             shareText.setOnClickListener(v -> onShareClick(0, postDetailFooterModel.getContentId(),
                     postDetailFooterModel.getShareData().getTitle(),
                     postDetailFooterModel.getShareData().getDescription(),
