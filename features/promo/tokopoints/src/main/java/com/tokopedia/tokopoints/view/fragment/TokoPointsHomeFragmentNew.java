@@ -889,6 +889,10 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
             return;
         }
 
+        if (tickerContainer != null) {
+            tickerContainer.setVisibility(View.GONE);
+        }
+
         List<SectionContent> exploreSectionItem = new ArrayList<>();
         SectionContent couponSection = null;
 
