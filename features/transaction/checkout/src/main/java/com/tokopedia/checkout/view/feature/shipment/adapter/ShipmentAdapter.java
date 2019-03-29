@@ -739,11 +739,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (shipmentCostModel != null) {
                 if (promoGlobalStackData != null) {
                     if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(dataUiModel.getMessage().getState()) == TickerPromoStackingCheckoutView.State.ACTIVE) {
-                        int finalBenefitAmount = 0;
-                        for (SummariesUiModel summariesUiModel : dataUiModel.getBenefit().getSummaries()) {
-                            finalBenefitAmount += summariesUiModel.getAmount();
-                        }
-                        shipmentCostModel.setTotalPromoStackAmount(finalBenefitAmount);
+                        shipmentCostModel.setTotalPromoStackAmount(dataUiModel.getBenefit().getFinalBenefitAmount());
                         shipmentCostModel.setTotalPromoStackAmountStr(dataUiModel.getBenefit().getFinalBenefitAmountStr());
                     } else {
                         shipmentCostModel.setTotalPromoStackAmount(0);

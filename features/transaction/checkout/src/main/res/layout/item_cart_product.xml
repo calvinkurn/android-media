@@ -67,7 +67,7 @@
             android:id="@+id/iv_product_card"
             android:layout_width="@dimen/dp_52"
             android:layout_height="@dimen/dp_52"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="@dimen/dp_20"
             android:layout_marginRight="@dimen/dp_20"
             app:cardCornerRadius="6dp"
