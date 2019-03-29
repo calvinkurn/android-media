@@ -36,7 +36,6 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.signature.StringSignature;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.gamification.GamificationComponentInstance;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkUtil;
@@ -44,6 +43,9 @@ import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
 import com.tokopedia.gamification.data.entity.TokenDataEntity;
 import com.tokopedia.gamification.data.entity.TokenFloatingEntity;
 import com.tokopedia.gamification.di.GamificationComponent;
+import com.tokopedia.gamification.di.GamificationComponentInstance;
+import com.tokopedia.gamification.floating.data.entity.FloatingCtaEntity;
+import com.tokopedia.gamification.floating.data.entity.GamiFloatingButtonEntity;
 import com.tokopedia.gamification.floating.listener.OnDragTouchListener;
 import com.tokopedia.gamification.floating.view.contract.FloatingEggContract;
 import com.tokopedia.gamification.floating.view.presenter.FloatingEggPresenter;
@@ -346,32 +348,29 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     }
 
     @Override
-    public void onSuccessGetToken(final TokenDataEntity tokenData) {
+    public void onSuccessGetToken(GamiFloatingButtonEntity tokenData) {
         final String sumTokenString = tokenData.getSumTokenStr();
 
-        TokenFloatingEntity tokenFloating = tokenData.getFloating();
-        final String pageUrl = tokenFloating.getPageUrl();
-        final String appLink = tokenFloating.getApplink();
+        FloatingCtaEntity tokenFloating = tokenData.getCta();
+        final String pageUrl = tokenFloating.getUrl();
+        final String appLink = tokenFloating.getAppLink();
 
-        final long timeRemainingSeconds = tokenFloating.getTimeRemainingSeconds();
-        final boolean isShowTime = tokenFloating.getShowTime();
-        String imageUrl = tokenFloating.getTokenAsset().getFloatingImgUrl();
+        final long timeRemainingSeconds = tokenData.getTimeRemainingSeconds();
+        final boolean isShowTime = tokenData.isShowTime();
+        String imageUrl = tokenData.getImgURL();
 
-        needHideFloatingToken = tokenData.getOffFlag() || tokenData.getSumToken() == 0 ||
-                TextUtils.isEmpty(imageUrl);
+        needHideFloatingToken = TextUtils.isEmpty(imageUrl);
 
         if (needHideFloatingToken) {
             hideFLoatingEgg();
         } else {
             showFloatingEgg();
-            trackingEggImpression(String.valueOf(tokenData.getFloating().getTokenId()));
         }
 
         vgFloatingEgg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ApplinkUtil.navigateToAssociatedPage(getActivity(), appLink, pageUrl, CrackTokenActivity.class);
-                trackingEggClick(String.valueOf(tokenData.getFloating().getTokenId()));
             }
         });
 
@@ -408,7 +407,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                         .load(imageUrl)
                         .asGif()
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .signature(new StringSignature(String.valueOf(tokenFloating.getTokenAsset().getVersion())))
                         .into(new ImageViewTarget<GifDrawable>(ivFloatingEgg) {
                             @Override
                             protected void setResource(GifDrawable resource) {
@@ -423,7 +421,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                         .load(imageUrl)
                         .asBitmap()
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .signature(new StringSignature(String.valueOf(tokenFloating.getTokenAsset().getVersion())))
                         .into(new SimpleTarget<Bitmap>() {
                             @Override
                             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
@@ -543,32 +540,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     @Override
     protected String getScreenName() {
         return null;
-    }
-
-    private void trackingEggImpression(String idToken) {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
-            ((AbstractionRouter) getActivity().getApplication())
-                    .getAnalyticTracker()
-                    .sendEventTracking(
-                            GamificationEventTracking.Event.VIEW_LUCKY_EGG,
-                            GamificationEventTracking.Category.CLICK_LUCKY_EGG,
-                            GamificationEventTracking.Action.IMPRESSION_LUCKY_EGG,
-                            idToken
-                    );
-        }
-    }
-
-    private void trackingEggClick(String idToken) {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
-            ((AbstractionRouter) getActivity().getApplication())
-                    .getAnalyticTracker()
-                    .sendEventTracking(
-                            GamificationEventTracking.Event.CLICK_LUCKY_EGG,
-                            GamificationEventTracking.Category.CLICK_LUCKY_EGG,
-                            GamificationEventTracking.Action.CLICK_LUCKY_EGG,
-                            idToken
-                    );
-        }
     }
 
     public void setOnDragListener(OnDragListener onDragListener) {

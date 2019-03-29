@@ -121,6 +121,7 @@ public class ShipmentDataRequestConverter {
                     .finsurance((shipmentDetailData.getUseInsurance() != null && shipmentDetailData.getUseInsurance()) ? 1 : 0)
                     .isPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0)
                     .shopId(shipmentCartItemModel.getShopId())
+                    .warehouseId(shipmentCartItemModel.getFulfillmentId())
                     .productData(convertToProductDataCheckout(shipmentCartItemModel.getCartItemModels()));
 
             if (shipmentDetailData.getUseDropshipper() != null && shipmentDetailData.getUseDropshipper()) {

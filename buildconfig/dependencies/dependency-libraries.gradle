@@ -80,9 +80,9 @@ ext {
             trackinterface    : ":libraries:trackinterface",
             graphView         :":libraries:graph_view",
             iris              : ":libraries:iris",
-//            iris              : ":libraries:iris_no_op"
-            cpm              : ":libraries:cpm",
-            banner            : ":libraries:unify:banner",
+//            iris              : ":libraries:iris_no_op",
+            banner            : ":libraries:banner",
+            collapsingTabLayout: ":libraries:collapsing_tab_layout",
             unifyIcon         : ":libraries:unify:unify_icon",
             unifyPrinciples   : ":libraries:unify:unify_principles",
             unifyComponents   : ":libraries:unify:unify_components",
