@@ -101,8 +101,9 @@ class SubmitPostService : JobIntentService() {
     }
 
     private fun isUploadVideo(viewModel: CreatePostViewModel): Boolean {
-        return viewModel.fileImageList.first().type == MediaType.VIDEO &&
-               viewModel.fileImageList.first().path.isNotBlank()
+        return viewModel.fileImageList.isNotEmpty()
+                && viewModel.fileImageList.first().type == MediaType.VIDEO 
+                && viewModel.fileImageList.first().path.isNotBlank()
     }
 
     private fun initInjector() {
