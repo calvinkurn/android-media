@@ -64,9 +64,9 @@ public class AffiliateAnalytics {
         return TrackApp.getInstance().getGTM();
     }
 
-    private HashMap<String, Object> getEnhancedEcommerce(String ecommerceType, String productName,
-                                                         String productId, int productComission,
-                                                         String sectionName, int position) {
+    private HashMap<String, Object> getEnhancedEcommerceImpressions(
+            String productName, String productId, int productComission, String sectionName,
+            int position) {
         HashMap<String, Object> ecommerceItem = new HashMap<>();
         ecommerceItem.put("name", productName);
         ecommerceItem.put("id", productId);
@@ -79,7 +79,31 @@ public class AffiliateAnalytics {
 
         HashMap<String, Object> ecommerce = new HashMap<>();
         ecommerce.put("currencyCode", "IDR");
-        ecommerce.put(ecommerceType, listEcommerce);
+        ecommerce.put("impressions", listEcommerce);
+        return ecommerce;
+    }
+
+    private HashMap<String, Object> getEnhancedEcommerceClick(
+            String productName, String productId, int productComission, String sectionName,
+            int position) {
+        String list = String.format("/explore page byme - %s", sectionName);
+
+        HashMap<String, Object> productItem = new HashMap<>();
+        productItem.put("name", productName);
+        productItem.put("id", productId);
+        productItem.put("price", productComission);
+        productItem.put("list", list);
+        productItem.put("position", position);
+
+        ArrayList<Object> products = new ArrayList<>();
+        products.add(productItem);
+
+        HashMap<String, Object> click = new HashMap<>();
+        click.put("actionField", list);
+        click.put("products", products);
+
+        HashMap<String, Object> ecommerce = new HashMap<>();
+        ecommerce.put("click", click);
         return ecommerce;
     }
 
@@ -160,8 +184,11 @@ public class AffiliateAnalytics {
         );
         data.put(
                 "ecommerce",
-                getEnhancedEcommerce("impressions", productName, productId,
-                        productComission, sectionName, position)
+                getEnhancedEcommerceImpressions(productName,
+                        productId,
+                        productComission,
+                        sectionName,
+                        position)
         );
         getAnalyticTracker().sendEnhanceEcommerceEvent(data);
     }
@@ -178,8 +205,11 @@ public class AffiliateAnalytics {
         );
         data.put(
                 "ecommerce",
-                getEnhancedEcommerce("click", productName, productId,
-                        productComission, sectionName, position)
+                getEnhancedEcommerceClick(productName,
+                        productId,
+                        productComission,
+                        sectionName,
+                        position)
         );
         getAnalyticTracker().sendEnhanceEcommerceEvent(data);
     }
