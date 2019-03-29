@@ -15,7 +15,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -162,15 +165,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (getActivity() != null
-                && getActivity().getApplicationContext() != null
-                && getActivity().getApplicationContext() instanceof AbstractionRouter) {
-            abstractionRouter = (AbstractionRouter) getActivity().getApplication();
-        } else {
-            throw new IllegalStateException("Application must be an instance of "
-                    + AbstractionRouter.class.getSimpleName());
-        }
-
         if (getActivity().getApplicationContext() instanceof KolRouter) {
             kolRouter = (KolRouter) getActivity().getApplicationContext();
         } else {
@@ -193,7 +187,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onStart() {
         super.onStart();
-        abstractionRouter.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(getScreenName());
     }
 
     @Override

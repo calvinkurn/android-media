@@ -78,7 +78,6 @@ ext {
             design            : ":tkpddesign",
             sharecontent      : ":libraries:sharecontent",
             track             : ":libraries:track",
-            trackinterface    : ":libraries:trackinterface",
             graphView         :":libraries:graph_view",
 //            iris              : ":libraries:iris",
             iris              : ":libraries:iris_no_op",
