@@ -221,6 +221,22 @@ public interface ConstantTransactionAnalytics {
         String CLICK_LANJUTKAN_TANPA_TEMPLATE = "click lanjutkan tanpa template";
         String CLICK_X = "click x";
         String VIEW_ERROR_METODE_PEMBAYARAN = "view error metode pembayaran";
+
+        //PROMO STACKING
+        String CLICK_PILIH_MERCHANT_VOUCHER = "click pilih merchant voucher";
+        String CLICK_PAKAI_MERCHANT_VOUCHER_MANUAL_INPUT = "click pakai merchant voucher manual input";
+        String CLICK_PAKAI_MERCHANT_VOUCHER = "click pakai merchant voucher";
+        String CLICK_DETAIL_MERCHANT_VOUCHER = "click detail merchant voucher";
+        String CLICK_TICKER_MERCHANT_VOUCHER = "click ticker merchant voucher";
+        String CLICK_HAPUS_PROMO_X_ON_TICKER = "click hapus promo (x) on ticker";
+        String VIEW_DETAIL_MERCHANT_VOUCHER = "view detail merchant voucher";
+        String CLICK_LIHAT_PROMO_LAINNYA_ON_VOUCHER_DETAIL = "click lihat promo lainnya on voucher detail";
+        String CLICK_BATALKAN_PROMO_ON_VOUCHER_DETAIL = "click batalkan promo on voucher detail";
+        String CLICK_CARA_PAKAI_ON_VOUCHER_DETAIL = "click cara pakai on voucher detail";
+        String CLICK_KETENTUAN_ON_VOUCHER_DETAIL = "click ketentuan on voucher detail";
+        String SELECT_PROMO_PROMO_KONFLIK = "select promo - promo konflik";
+        String CLICK_SUBMIT_PROMO_CONFLICT = "click submit promo konflik";
+        String VIEW_POPUP_PROMO_DISABLE = "view popup promo disable";
     }
 
     interface EventLabel {
