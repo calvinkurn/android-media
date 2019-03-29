@@ -2,6 +2,7 @@ package com.tokopedia.kotlin.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import kotlin.Any
 
 import com.google.gson.annotations.Expose
 
