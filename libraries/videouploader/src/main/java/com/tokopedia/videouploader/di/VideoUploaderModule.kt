@@ -67,15 +67,11 @@ class VideoUploaderModule constructor() {
 
     @VideoUploaderQualifier
     @Provides
-    fun provideOkHttpClient(@VideoUploaderQualifier tkpdAuthInterceptor: TkpdAuthInterceptor,
-                            @VideoUploaderQualifier fingerprintInterceptor: FingerprintInterceptor,
+    fun provideOkHttpClient(@VideoUploaderQualifier fingerprintInterceptor: FingerprintInterceptor,
                             @VideoUploaderQualifier retryPolicy: OkHttpRetryPolicy,
-                            @VideoUploaderQualifier chuckInterceptor: ChuckInterceptor,
-                            @VideoUploaderQualifier loggingInterceptor: HttpLoggingInterceptor,
                             @VideoUploaderQualifier errorHandlerInterceptor: ErrorResponseInterceptor,
                             @VideoUploaderQualifier cacheApiInterceptor: CacheApiInterceptor): OkHttpClient {
         val builder = OkHttpClient.Builder()
-        builder.addInterceptor(tkpdAuthInterceptor)
         builder.addInterceptor(fingerprintInterceptor)
         builder.addInterceptor(cacheApiInterceptor)
         builder.addInterceptor(errorHandlerInterceptor)
@@ -87,11 +83,6 @@ class VideoUploaderModule constructor() {
                         .body(ProgressResponseBody(originalResponse.body(), progressListener))
                         .build()
             }
-        }
-
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            builder.addInterceptor(loggingInterceptor)
-            builder.addInterceptor(chuckInterceptor)
         }
 
         builder.readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
@@ -110,15 +101,6 @@ class VideoUploaderModule constructor() {
     @Provides
     fun provideUserSessionInterface(@VideoUploaderQualifier context: Context): UserSessionInterface {
         return UserSession(context)
-    }
-
-    @VideoUploaderQualifier
-    @Provides
-    fun provideTkpdAuthInterceptor(@VideoUploaderQualifier context: Context,
-                                   @VideoUploaderQualifier networkRouter: NetworkRouter,
-                                   @VideoUploaderQualifier userSessionInterface:
-                                   UserSessionInterface): TkpdAuthInterceptor {
-        return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
     }
 
     @VideoUploaderQualifier
