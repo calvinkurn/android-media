@@ -13,11 +13,10 @@ import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
-import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam
+import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
-import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
@@ -40,7 +39,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     private var isOneClickShipment: Boolean = false
     lateinit var progressDialog: ProgressDialog
     var pageTracking: Int = 1
-    private var checkPromoFirstStepParam: CheckPromoFirstStepParam? = null
+    private var promo: Promo? = null
 
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING
 
@@ -49,7 +48,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         promoCode = arguments?.getString(PROMO_CODE) ?: ""
         isOneClickShipment = arguments?.getBoolean(ONE_CLICK_SHIPMENT) ?: false
         pageTracking = arguments?.getInt(PAGE_TRACKING) ?: 1
-        checkPromoFirstStepParam = arguments?.getParcelable(CHECK_PROMO_FIRST_STEP_PARAM)
+        promo = arguments?.getParcelable(CHECK_PROMO_FIRST_STEP_PARAM)
         super.onCreate(savedInstanceState)
         promoCheckoutListMarketplacePresenter.attachView(this)
     }
@@ -68,11 +67,11 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
             trackingPromoCheckoutUtil.checkoutClickCoupon(promoCheckoutListModel?.code ?: "")
         }
         startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(
-                activity, promoCheckoutListModel?.code, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, checkPromoFirstStepParam = checkPromoFirstStepParam), REQUEST_CODE_DETAIL_PROMO)
+                activity, promoCheckoutListModel?.code, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = promo), REQUEST_CODE_DETAIL_PROMO)
     }
 
     override fun onPromoCodeUse(promoCode: String) {
-        promoCheckoutListMarketplacePresenter.checkPromoStackingCode(promoCode, isOneClickShipment, checkPromoFirstStepParam)
+        promoCheckoutListMarketplacePresenter.checkPromoStackingCode(promoCode, isOneClickShipment, promo)
     }
 
     override fun showProgressLoading() {
@@ -172,14 +171,14 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         val CHECK_PROMO_FIRST_STEP_PARAM = "CHECK_PROMO_FIRST_STEP_PARAM"
 
         fun createInstance(isCouponActive: Boolean?, promoCode: String?, oneClickShipment: Boolean?, pageTracking: Int,
-                           checkPromoFirstStepParam: CheckPromoFirstStepParam): PromoCheckoutListMarketplaceFragment {
+                           promo: Promo): PromoCheckoutListMarketplaceFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListMarketplaceFragment()
             val bundle = Bundle()
             bundle.putBoolean(IS_COUPON_ACTIVE, isCouponActive ?: true)
             bundle.putString(PROMO_CODE, promoCode ?: "")
             bundle.putBoolean(ONE_CLICK_SHIPMENT, oneClickShipment ?: false)
             bundle.putInt(PAGE_TRACKING, pageTracking)
-            bundle.putParcelable(CHECK_PROMO_FIRST_STEP_PARAM, checkPromoFirstStepParam)
+            bundle.putParcelable(CHECK_PROMO_FIRST_STEP_PARAM, promo)
             promoCheckoutListMarketplaceFragment.arguments = bundle
             return promoCheckoutListMarketplaceFragment
         }

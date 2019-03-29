@@ -224,22 +224,22 @@ public interface ConstantTransactionAnalytics {
 
         //PROMO STACKING
         String CLICK_PILIH_MERCHANT_VOUCHER = "click pilih merchant voucher";
+        String CLICK_PAKAI_MERCHANT_VOUCHER_MANUAL_INPUT = "click pakai merchant voucher manual input";
         String CLICK_PAKAI_MERCHANT_VOUCHER = "click pakai merchant voucher";
         String CLICK_DETAIL_MERCHANT_VOUCHER = "click detail merchant voucher";
         String CLICK_TICKER_MERCHANT_VOUCHER = "click ticker merchant voucher";
-        String CLICK_CANCEL_MERCHANT_VOUCHER = "click hapus promo (x) on ticker";
-        String CLICK_INPUT_MERCHANT_VOUCHER = "click pakai merchant voucher manual input";
-        String CLICK_OTHER_PROMO_ON_VOUCHER_DETAIL = "click lihat promo lainnya on voucher detail";
-        String CLICK_CANCEL_PROMO_ON_VOUCHER_DETAIL = "click batalkan promo on voucher detail";
-        String CLICK_CARA_PAKAI_PROMO_ON_VOUCHER_DETAIL = "click cara pakai on voucher detail";
+        String CLICK_HAPUS_PROMO_X_ON_TICKER = "click hapus promo (x) on ticker";
+        String VIEW_DETAIL_MERCHANT_VOUCHER = "view detail merchant voucher";
+        String CLICK_LIHAT_PROMO_LAINNYA_ON_VOUCHER_DETAIL = "click lihat promo lainnya on voucher detail";
+        String CLICK_BATALKAN_PROMO_ON_VOUCHER_DETAIL = "click batalkan promo on voucher detail";
+        String CLICK_CARA_PAKAI_ON_VOUCHER_DETAIL = "click cara pakai on voucher detail";
         String CLICK_KETENTUAN_ON_VOUCHER_DETAIL = "click ketentuan on voucher detail";
+        String SELECT_PROMO_PROMO_KONFLIK = "select promo - promo konflik";
+        String CLICK_SUBMIT_PROMO_CONFLICT = "click submit promo konflik";
+        String VIEW_POPUP_PROMO_DISABLE = "view popup promo disable";
         String CLICK_PROMO_LOGISTIC_TICKER = "click promo logistic ticker";
         String CLICK_LANJUTKAN_TERAPKAN_PROMO = "click lanjutkan di pop up terapkan promo";
         String CLICK_BATAL_TERAPKAN_PROMO = "click batal di pop up terapkan promo";
-        String VIEW_DETAIL_MERCHANT_VOUCHER = "view detail merchant voucher";
-        String VIEW_POPUP_PROMO_DISABLE = "view pop up promo disable";
-        String SELECT_PROMO_CONFLICT = "select promo - promo konflik";
-        String SUBMIT_PROMO_CONFLICT = "click submit - promo konflik";
     }
 
     interface EventLabel {

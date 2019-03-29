@@ -123,6 +123,12 @@ public class ShipmentDataRequestConverter {
                     .shopId(shipmentCartItemModel.getShopId())
                     .productData(convertToProductDataCheckout(shipmentCartItemModel.getCartItemModels()));
 
+            if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
+                ArrayList<String> promoCodes = new ArrayList<>();
+                promoCodes.add(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode());
+                shopProductCheckoutBuilder.promoCodes(promoCodes);
+            }
+
             if (shipmentDetailData.getUseDropshipper() != null && shipmentDetailData.getUseDropshipper()) {
                 shopProductCheckoutBuilder.isDropship(1)
                         .dropshipData(new DropshipDataCheckoutRequest.Builder()

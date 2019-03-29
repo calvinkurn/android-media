@@ -38,7 +38,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.network.utils.AuthUtil;
-import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam;
+import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
@@ -1273,10 +1273,10 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processApplyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList) {
         view.showProgressLoading();
-        CheckPromoFirstStepParam checkPromoFirstStepParam = view.generateCheckPromoFirstStepParam();
-        checkPromoFirstStepParam.setCodes(new ArrayList<>());
-        if (checkPromoFirstStepParam.getOrders() != null) {
-            for (Order order : checkPromoFirstStepParam.getOrders()) {
+        Promo promo = view.generateCheckPromoFirstStepParam();
+        promo.setCodes(new ArrayList<>());
+        if (promo.getOrders() != null) {
+            for (Order order : promo.getOrders()) {
                 order.setCodes(new ArrayList<>());
             }
         }
@@ -1285,10 +1285,10 @@ public class CartListPresenter implements ICartListPresenter {
             if (TextUtils.isEmpty(model.getUniqueId())) {
                 ArrayList<String> codes = new ArrayList<>();
                 codes.add(model.getCode());
-                checkPromoFirstStepParam.setCodes(codes);
+                promo.setCodes(codes);
             } else {
-                if (checkPromoFirstStepParam.getOrders() != null) {
-                    for (Order order : checkPromoFirstStepParam.getOrders()) {
+                if (promo.getOrders() != null) {
+                    for (Order order : promo.getOrders()) {
                         if (model.getUniqueId().equals(order.getUniqueId())) {
                             ArrayList<String> codes = new ArrayList<>();
                             codes.add(model.getCode());
@@ -1298,7 +1298,7 @@ public class CartListPresenter implements ICartListPresenter {
                     }
                 }
             }
-            checkPromoStackingCodeUseCase.setParams(checkPromoFirstStepParam);
+            checkPromoStackingCodeUseCase.setParams(promo);
             checkPromoStackingCodeUseCase.execute(RequestParams.create(),
                     new CheckPromoFirstStepAfterClashSubscriber(view, this, newPromoList.size(), newPromoList.indexOf(model)));
         }

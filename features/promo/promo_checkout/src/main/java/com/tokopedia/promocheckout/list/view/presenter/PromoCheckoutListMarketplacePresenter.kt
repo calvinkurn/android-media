@@ -4,7 +4,7 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam
+import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
@@ -14,25 +14,25 @@ import rx.Subscriber
 
 class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase, val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper) : BaseDaggerPresenter<PromoCheckoutListMarketplaceContract.View>(), PromoCheckoutListMarketplaceContract.Presenter {
 
-    override fun checkPromoStackingCode(promoCode: String, oneClickShipment: Boolean, checkPromoFirstStepParam: CheckPromoFirstStepParam?) {
-        if (checkPromoFirstStepParam == null) return
+    override fun checkPromoStackingCode(promoCode: String, oneClickShipment: Boolean, promo: Promo?) {
+        if (promo == null) return
 
         if (TextUtils.isEmpty(promoCode)) {
             view.onErrorEmptyPromoCode()
             return
         } else {
             // Clear all merchant promo
-            checkPromoFirstStepParam.orders?.forEach { order ->
+            promo.orders?.forEach { order ->
                 order.codes = ArrayList()
             }
             // Set promo global
             val codes = ArrayList<String>()
             codes.add(promoCode)
-            checkPromoFirstStepParam.codes = codes
+            promo.codes = codes
         }
         view.showProgressLoading()
 
-        checkPromoStackingCodeUseCase.setParams(checkPromoFirstStepParam)
+        checkPromoStackingCodeUseCase.setParams(promo)
         checkPromoStackingCodeUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onNext(t: GraphqlResponse?) {
                 view.hideProgressLoading()

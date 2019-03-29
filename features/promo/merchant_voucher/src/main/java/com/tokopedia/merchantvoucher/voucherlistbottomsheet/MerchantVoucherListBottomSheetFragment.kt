@@ -32,7 +32,7 @@ import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherViewUsed
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.merchantvoucher.FileUtils
-import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam
+import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.domain.model.promostacking.response.ResponseGetPromoStackFirst
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
@@ -59,7 +59,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     private lateinit var pbLoading: ProgressBar
     private lateinit var textInputLayoutCoupon: TkpdHintTextInputLayout
 
-    private var checkPromoFirstStepParam: CheckPromoFirstStepParam? = null
+    private var promo: Promo? = null
     private var shopId: Int = 0
     private var cartString: String = ""
 
@@ -81,9 +81,9 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         val ARGUMENT_CART_STRING = "ARGUMENT_CART_STRING"
 
         @JvmStatic
-        fun newInstance(shopId: Int, cartString: String, checkPromoFirstStepParam: CheckPromoFirstStepParam): MerchantVoucherListBottomSheetFragment {
+        fun newInstance(shopId: Int, cartString: String, promo: Promo): MerchantVoucherListBottomSheetFragment {
             val bundle = Bundle()
-            bundle.putParcelable(ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM, checkPromoFirstStepParam)
+            bundle.putParcelable(ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM, promo)
             bundle.putInt(ARGUMENT_SHOP_ID, shopId)
             bundle.putString(ARGUMENT_CART_STRING, cartString)
 
@@ -144,14 +144,14 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
                 textInputLayoutCoupon.error = "Kode Voucher Harus Diisi"
                 updateHeight()
             } else {
-                presenter.checkPromoFirstStep(textInputCoupon.text.toString(), cartString, checkPromoFirstStepParam, false)
+                presenter.checkPromoFirstStep(textInputCoupon.text.toString(), cartString, promo, false)
             }
         }
     }
 
     private fun getArgumentsValue() {
         shopId = arguments?.getInt(ARGUMENT_SHOP_ID, 0) ?: 0
-        checkPromoFirstStepParam = arguments?.getParcelable(ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM)
+        promo = arguments?.getParcelable(ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM)
         cartString = arguments?.getString(ARGUMENT_CART_STRING) ?: ""
     }
 
@@ -223,7 +223,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
             return
         }
 
-        presenter.checkPromoFirstStep(merchantVoucherViewModel.voucherCode, cartString, checkPromoFirstStepParam, true)
+        presenter.checkPromoFirstStep(merchantVoucherViewModel.voucherCode, cartString, promo, true)
     }
 
     fun initInjector() {

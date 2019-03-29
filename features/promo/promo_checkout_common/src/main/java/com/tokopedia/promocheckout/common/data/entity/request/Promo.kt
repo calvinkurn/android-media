@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
  * Created by Irfan Khoirul on 19/03/19.
  */
 
-data class CheckPromoFirstStepParam(
+data class Promo(
         @SerializedName("codes")
         var codes: ArrayList<String>? = null,
 
@@ -58,15 +58,15 @@ data class CheckPromoFirstStepParam(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<CheckPromoFirstStepParam> {
+    companion object CREATOR : Parcelable.Creator<Promo> {
         val STATE_CART = "cart"
         val STATE_CHECKOUT = "checkout"
 
-        override fun createFromParcel(parcel: Parcel): CheckPromoFirstStepParam {
-            return CheckPromoFirstStepParam(parcel)
+        override fun createFromParcel(parcel: Parcel): Promo {
+            return Promo(parcel)
         }
 
-        override fun newArray(size: Int): Array<CheckPromoFirstStepParam?> {
+        override fun newArray(size: Int): Array<Promo?> {
             return arrayOfNulls(size)
         }
     }

@@ -36,6 +36,9 @@ public class ShopProductCheckoutRequest {
     @SerializedName("fcancel_partial")
     @Expose
     public int fcancelPartial;
+    @SerializedName("promo_codes")
+    @Expose
+    public ArrayList<String> promoCodes;
 
     public int getShopId() {
         return shopId;
@@ -53,6 +56,7 @@ public class ShopProductCheckoutRequest {
         dropshipData = builder.dropshipData;
         productData = builder.productData;
         fcancelPartial = builder.fcancelPartial;
+        promoCodes = builder.promoCodes;
     }
 
 
@@ -65,6 +69,7 @@ public class ShopProductCheckoutRequest {
         private DropshipDataCheckoutRequest dropshipData;
         private List<ProductDataCheckoutRequest> productData;
         private int fcancelPartial;
+        private ArrayList<String> promoCodes;
 
         public Builder() {
         }
@@ -109,6 +114,10 @@ public class ShopProductCheckoutRequest {
             return this;
         }
 
+        public Builder promoCodes(ArrayList<String> val){
+            promoCodes = val;
+            return this;
+        }
 
         public ShopProductCheckoutRequest build() {
             return new ShopProductCheckoutRequest(this);

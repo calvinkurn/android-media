@@ -584,7 +584,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_INPUT_MERCHANT_VOUCHER,
+                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER_MANUAL_INPUT,
                 label
         );
     }
@@ -594,7 +594,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_INPUT_MERCHANT_VOUCHER,
+                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER_MANUAL_INPUT,
                 label
         );
     }
@@ -641,7 +641,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_CANCEL_MERCHANT_VOUCHER,
+                EventAction.CLICK_HAPUS_PROMO_X_ON_TICKER,
                 promoCode
         );
     }
@@ -659,7 +659,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_OTHER_PROMO_ON_VOUCHER_DETAIL,
+                EventAction.CLICK_LIHAT_PROMO_LAINNYA_ON_VOUCHER_DETAIL,
                 promoCode
         );
     }
@@ -668,7 +668,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_CANCEL_PROMO_ON_VOUCHER_DETAIL,
+                EventAction.CLICK_BATALKAN_PROMO_ON_VOUCHER_DETAIL,
                 promoCode
         );
     }
@@ -677,7 +677,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_CARA_PAKAI_PROMO_ON_VOUCHER_DETAIL,
+                EventAction.CLICK_CARA_PAKAI_ON_VOUCHER_DETAIL,
                 promoCode
         );
     }
@@ -741,7 +741,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
-                EventAction.SELECT_PROMO_CONFLICT,
+                EventAction.SELECT_PROMO_PROMO_KONFLIK,
                 promoCode
         );
     }
@@ -750,7 +750,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
-                EventAction.SUBMIT_PROMO_CONFLICT,
+                EventAction.CLICK_SUBMIT_PROMO_CONFLICT,
                 promoCode
         );
     }

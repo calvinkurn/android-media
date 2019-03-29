@@ -1,8 +1,7 @@
 package com.tokopedia.promocheckout.list.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam
-import com.tokopedia.promocheckout.common.domain.model.DataVoucher
+import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 
 interface PromoCheckoutListMarketplaceContract {
@@ -17,6 +16,6 @@ interface PromoCheckoutListMarketplaceContract {
     }
 
     interface Presenter : CustomerPresenter<View>{
-        fun checkPromoStackingCode(promoCode: String, oneClickShipment: Boolean, checkPromoFirstStepParam: CheckPromoFirstStepParam?)
+        fun checkPromoStackingCode(promoCode: String, oneClickShipment: Boolean, promo: Promo?)
     }
 }

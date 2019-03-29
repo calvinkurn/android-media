@@ -20,7 +20,6 @@ import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingA
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
-import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
@@ -43,9 +42,6 @@ import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddres
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddressFormSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.SaveShipmentStateSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
-import com.tokopedia.graphql.GraphqlConstant;
-import com.tokopedia.graphql.data.model.CacheType;
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.logisticanalytics.CodAnalytics;
@@ -53,7 +49,8 @@ import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationP
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam;
+import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam;
+import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
@@ -517,7 +514,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment, @Nullable String cornerId) {
         boolean isNeedToRemoveErrorProduct = isNeedToremoveErrorShopProduct();
         if (partialCheckout || isNeedToRemoveErrorProduct) {
-            processCheckout(voucherCode, isOneClickShipment);
+//            processCheckout(voucherCode, isOneClickShipment);
         } else {
             getView().showLoading();
             TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
@@ -565,10 +562,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processCheckout(String voucherCode, boolean isOneClickShipment) {
-        CheckoutRequest checkoutRequest = generateCheckoutRequest(
-                !TextUtils.isEmpty(voucherCode) ?
-                        voucherCode : "",
+    public void processCheckout(CheckPromoParam checkPromoParam, boolean isOneClickShipment) {
+        CheckoutRequest checkoutRequest = generateCheckoutRequest(checkPromoParam,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0
         );
 
@@ -670,8 +665,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void checkPromoStackShipment(CheckPromoFirstStepParam checkPromoFirstStepParam) {
-        checkPromoStackingCodeFinalUseCase.setParams(checkPromoFirstStepParam);
+    public void checkPromoStackShipment(Promo promo) {
+        checkPromoStackingCodeFinalUseCase.setParams(promo);
         checkPromoStackingCodeFinalUseCase.execute(RequestParams.create(),
                 new Subscriber<GraphqlResponse>() {
                     @Override
@@ -707,7 +702,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void checkPromoShipment(String promoCode, boolean isOneClickShipment, CheckPromoFirstStepParam checkPromoFirstStepParam) {
+    public void checkPromoShipment(String promoCode, boolean isOneClickShipment, Promo promo) {
 
         TokopediaCornerData cornerData = null;
         RecipientAddressModel recipientAddressModel = getRecipientAddressModel();
@@ -945,11 +940,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void processCheckPromoStackingCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast) {
-        CheckPromoFirstStepParam checkPromoFirstStepParam = getView().generateCheckPromoFirstStepParam();
+        Promo promo = getView().generateCheckPromoFirstStepParam();
         ArrayList<String> listCodes = new ArrayList<>();
-        listCodes.add(promoCode);
-        checkPromoFirstStepParam.setCodes(listCodes);
-        checkPromoStackingCodeUseCase.setParams(checkPromoFirstStepParam);
+        if (!TextUtils.isEmpty(promoCode)) {
+            listCodes.add(promoCode);
+        }
+        promo.setCodes(listCodes);
+        checkPromoStackingCodeUseCase.setParams(promo);
         checkPromoStackingCodeUseCase.execute(RequestParams.create(),
                 new Subscriber<GraphqlResponse>() {
                     @Override
@@ -993,7 +990,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 });
     }
 
-    private CheckoutRequest generateCheckoutRequest(String promoCode, int isDonation) {
+    private CheckoutRequest generateCheckoutRequest(CheckPromoParam checkPromoParam, int isDonation) {
         if (dataCheckoutRequestList == null) {
             getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown_short));
             return null;
@@ -1007,12 +1004,33 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             );
         }
 
-        return new CheckoutRequest.Builder()
-                .promoCode(promoCode)
+        CheckoutRequest.Builder builder = new CheckoutRequest.Builder()
                 .isDonation(isDonation)
                 .data(dataCheckoutRequestList)
-                .cornerData(cornerData)
-                .build();
+                .cornerData(cornerData);
+
+        if (checkPromoParam != null && checkPromoParam.getPromo() != null) {
+            if (checkPromoParam.getPromo().getCodes() != null && checkPromoParam.getPromo().getCodes().size() > 0) {
+                builder.promoCodes(checkPromoParam.getPromo().getCodes());
+            }
+
+            boolean hasPromoStacking = false;
+            if (checkPromoParam.getPromo().getOrders() != null && checkPromoParam.getPromo().getOrders().size() > 0) {
+                for (Order order : checkPromoParam.getPromo().getOrders()) {
+                    if (order.getCodes() != null && order.getCodes().size() > 0) {
+                        hasPromoStacking = true;
+                        break;
+                    }
+                }
+            }
+
+            if (hasPromoStacking) {
+                builder.hasPromoStacking(true);
+            }
+        }
+
+
+        return builder.build();
     }
 
     @Override
@@ -1307,10 +1325,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void applyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList,
                                           boolean isFromMultipleAddress, boolean isOneClickShipment, String cornerId) {
-        CheckPromoFirstStepParam checkPromoFirstStepParam = getView().generateCheckPromoFirstStepParam();
-        checkPromoFirstStepParam.setCodes(new ArrayList<>());
-        if (checkPromoFirstStepParam.getOrders() != null) {
-            for (Order order : checkPromoFirstStepParam.getOrders()) {
+        Promo promo = getView().generateCheckPromoFirstStepParam();
+        promo.setCodes(new ArrayList<>());
+        if (promo.getOrders() != null) {
+            for (Order order : promo.getOrders()) {
                 order.setCodes(new ArrayList<>());
             }
         }
@@ -1318,11 +1336,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         for (ClashingVoucherOrderUiModel model : newPromoList) {
             if (TextUtils.isEmpty(model.getUniqueId())) {
                 ArrayList<String> codes = new ArrayList<>();
-                codes.add(model.getCode());
-                checkPromoFirstStepParam.setCodes(codes);
+                if (!TextUtils.isEmpty(model.getCode())) {
+                    codes.add(model.getCode());
+                }
+                promo.setCodes(codes);
             } else {
-                if (checkPromoFirstStepParam.getOrders() != null) {
-                    for (Order order : checkPromoFirstStepParam.getOrders()) {
+                if (promo.getOrders() != null) {
+                    for (Order order : promo.getOrders()) {
                         if (model.getUniqueId().equals(order.getUniqueId())) {
                             ArrayList<String> codes = new ArrayList<>();
                             codes.add(model.getCode());
@@ -1332,7 +1352,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     }
                 }
             }
-            checkPromoStackingCodeUseCase.setParams(checkPromoFirstStepParam);
+            checkPromoStackingCodeUseCase.setParams(promo);
             checkPromoStackingCodeUseCase.execute(RequestParams.create(),
                     new CheckShipmentPromoFirstStepAfterClashSubscriber(getView(),
                             this, newPromoList.size(),
@@ -1571,10 +1591,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void proceedCodCheckout(String voucherCode, boolean isOneClickShipment) {
-        CheckoutRequest checkoutRequest = generateCheckoutRequest(
-                !TextUtils.isEmpty(voucherCode) ?
-                        voucherCode : "",
+    public void proceedCodCheckout(CheckPromoParam checkPromoParam, boolean isOneClickShipment) {
+        CheckoutRequest checkoutRequest = generateCheckoutRequest(checkPromoParam,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0
         );
         getView().showLoading();

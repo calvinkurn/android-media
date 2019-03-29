@@ -8,5 +8,5 @@ import com.google.gson.annotations.SerializedName
 
 data class CheckPromoParam(
         @SerializedName("promo")
-        var promo: CheckPromoFirstStepParam? = null
+        var promo: Promo? = null
 )

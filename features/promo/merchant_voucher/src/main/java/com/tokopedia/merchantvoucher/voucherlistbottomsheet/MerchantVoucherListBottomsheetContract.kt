@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam
+import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 
@@ -42,7 +42,7 @@ interface MerchantVoucherListBottomsheetContract {
 
         fun getVoucherList(shopId: String, numVoucher: Int)
 
-        fun checkPromoFirstStep(promoMerchantCode: String, currentCartString: String, checkPromoFirstStepParam: CheckPromoFirstStepParam?, isFromList: Boolean)
+        fun checkPromoFirstStep(promoMerchantCode: String, currentCartString: String, promo: Promo?, isFromList: Boolean)
 
         fun clearCache()
 

@@ -8,7 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.R
-import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam
+import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam
 import com.tokopedia.promocheckout.common.domain.model.promostacking.response.ResponseGetPromoStackFirst
 import com.tokopedia.usecase.RequestParams
@@ -21,9 +21,9 @@ class CheckPromoStackingCodeUseCase @Inject constructor (@ApplicationContext pri
 
     val variables = HashMap<String, Any?>()
 
-    fun setParams(checkPromoFirstStepParam: CheckPromoFirstStepParam) {
+    fun setParams(promo: Promo) {
         val checkPromoParam = CheckPromoParam()
-        checkPromoParam.promo = checkPromoFirstStepParam
+        checkPromoParam.promo = promo
         val jsonTreeCheckoutRequest = Gson().toJsonTree(checkPromoParam)
         val jsonObjectCheckoutRequest = jsonTreeCheckoutRequest.asJsonObject
         variables.put("params", jsonObjectCheckoutRequest)
