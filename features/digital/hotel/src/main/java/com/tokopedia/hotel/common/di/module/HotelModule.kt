@@ -8,6 +8,8 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.experimental.CoroutineDispatcher
+import kotlinx.coroutines.experimental.Dispatchers
 
 /**
  * @author by furqan on 25/03/19
@@ -29,4 +31,8 @@ class HotelModule {
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface =
             UserSession(context)
+
+    @HotelScope
+    @Provides
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 }
