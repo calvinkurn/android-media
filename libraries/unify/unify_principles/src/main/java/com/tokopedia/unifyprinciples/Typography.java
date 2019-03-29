@@ -69,27 +69,27 @@ public class Typography extends AppCompatTextView {
                 break;
             case HEADING_2 :
                 this.setTextSize(COMPLEX_UNIT_SP, 20);
-                this.setMinimumHeight(30);
+                this.setMinimumHeight(26);
                 this.setTypeface(nunitoSans);
                 break;
             case HEADING_3 :
                 this.setTextSize(COMPLEX_UNIT_SP, 18);
-                this.setMinimumHeight(26);
+                this.setMinimumHeight(24);
                 this.setTypeface(nunitoSans);
                 break;
             case HEADING_4 :
                 this.setTextSize(COMPLEX_UNIT_SP, 16);
-                this.setMinimumHeight(24);
+                this.setMinimumHeight(22);
                 this.setTypeface(nunitoSans);
                 break;
             case HEADING_5 :
                 this.setTextSize(COMPLEX_UNIT_SP, 14);
-                this.setMinimumHeight(22);
+                this.setMinimumHeight(18);
                 this.setTypeface(nunitoSans);
                 break;
             case HEADING_6 :
                 this.setTextSize(COMPLEX_UNIT_SP, 12);
-                this.setMinimumHeight(20);
+                this.setMinimumHeight(16);
                 this.setTypeface(nunitoSans);
                 break;
             case BODY_1 :
@@ -109,7 +109,7 @@ public class Typography extends AppCompatTextView {
                 break;
             case SMALL :
                 this.setTextSize(COMPLEX_UNIT_SP, 10);
-                this.setMinimumHeight(16);
+                this.setMinimumHeight(14);
                 configFontWeight(weightType);
                 break;
         }
@@ -123,10 +123,10 @@ public class Typography extends AppCompatTextView {
                 this.setLineSpacing((float)4.0,(float)0.82);
                 break;
             case HEADING_2 :
-                this.setLineSpacing((float)-19.0,(float)1.25);
+                this.setLineSpacing((float)-15.0,(float)1.25);
                 break;
             case HEADING_3 :
-                this.setLineSpacing((float)-17.0,(float)1.3);
+                this.setLineSpacing((float)-12.0,(float)1.3);
                 break;
             case BODY_1 :
                 this.setLineSpacing((float)-4,(float)1.375);
@@ -138,7 +138,7 @@ public class Typography extends AppCompatTextView {
                 this.setLineSpacing((float)-5,(float)1.5);
                 break;
             case SMALL :
-                this.setLineSpacing((float)-5,(float)1.6);
+                this.setLineSpacing((float)-6,(float)1.6);
                 break;
         }
     }
