@@ -24,5 +24,8 @@ data class GenerateTokenPojo(
 data class TopliveVideoToken(
         @SerializedName("token")
         @Expose
-        val token : String = ""
+        val token : String = "",
+        @SerializedName("uploadUrl")
+        @Expose
+        val uploadUrl : String = ""
 )

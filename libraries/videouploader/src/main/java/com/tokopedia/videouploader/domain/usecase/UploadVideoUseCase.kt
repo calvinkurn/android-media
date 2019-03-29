@@ -7,6 +7,7 @@ import com.tokopedia.usecase.UseCase
 import com.tokopedia.videouploader.data.UploadVideoApi
 import com.tokopedia.videouploader.domain.model.VideoUploadDomainModel
 import com.tokopedia.videouploader.domain.pojo.GenerateTokenPojo
+import com.tokopedia.videouploader.domain.pojo.TopliveVideoToken
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -27,7 +28,10 @@ class UploadVideoUseCase<T>(val uploadVideoApi: UploadVideoApi,
             Observable<VideoUploadDomainModel<T>> {
         return generateVideoTokenUseCase.getExecuteObservable()
                 .flatMap { graphqlResponse ->
-                    uploadVideoApi.uploadVideo(getVideoToken(graphqlResponse),
+                    val topLiveVideo = getTopLiveVideo(graphqlResponse)
+                    val uploadUrl = topLiveVideo?.uploadUrl ?: ""
+                    val token = topLiveVideo?.token ?: ""
+                    uploadVideoApi.uploadVideo(uploadUrl, token,
                             getUploadVideoParams(requestParams))
                             .map { response ->
                                 val videoUploadDomainModel = VideoUploadDomainModel(videoUploadResultModel)
@@ -39,9 +43,9 @@ class UploadVideoUseCase<T>(val uploadVideoApi: UploadVideoApi,
                 }
     }
 
-    private fun getVideoToken(graphqlResponse: GraphqlResponse): String {
+    private fun getTopLiveVideo(graphqlResponse: GraphqlResponse): TopliveVideoToken? {
         val pojo = graphqlResponse.getData<GenerateTokenPojo>(GenerateTokenPojo::class.java)
-        return pojo?.topLiveVideoToken?.token ?: ""
+        return pojo?.topLiveVideoToken
     }
 
     private fun getUploadVideoParams(requestParams: RequestParams): MultipartBody.Part {
