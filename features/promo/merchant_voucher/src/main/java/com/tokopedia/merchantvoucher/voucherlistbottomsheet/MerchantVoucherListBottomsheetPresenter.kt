@@ -6,7 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam
+import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
@@ -49,10 +49,10 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
     }
 
     override fun checkPromoFirstStep(promoMerchantCode: String, currentCartString: String,
-                                     checkPromoFirstStepParam: CheckPromoFirstStepParam?, isFromList: Boolean) {
-        if (checkPromoFirstStepParam != null) {
-            checkPromoFirstStepParam.codes = ArrayList()
-            val orders = checkPromoFirstStepParam.orders;
+                                     promo: Promo?, isFromList: Boolean) {
+        if (promo != null) {
+            promo.codes = ArrayList()
+            val orders = promo.orders;
             if (orders != null) {
                 for (order in orders) {
                     val codes = ArrayList<String>()
@@ -64,7 +64,7 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
             }
 
             view.showLoadingDialog()
-            checkPromoStackingCodeUseCase.setParams(checkPromoFirstStepParam)
+            checkPromoStackingCodeUseCase.setParams(promo)
             checkPromoStackingCodeUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
                 override fun onCompleted() {
 

@@ -71,7 +71,7 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstan
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
 import com.tokopedia.promocheckout.common.data.entity.request.ProductDetail;
-import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam;
+import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
@@ -630,7 +630,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public CheckPromoFirstStepParam generateCheckPromoFirstStepParam() {
+    public Promo generateCheckPromoFirstStepParam() {
         List<ShopGroupData> shopGroupDataList = cartListData.getShopGroupDataList();
         PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobaldata();
         ArrayList<Order> orders = new ArrayList<>();
@@ -665,18 +665,18 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             }
             orders.add(order);
         }
-        CheckPromoFirstStepParam checkPromoFirstStepParam = new CheckPromoFirstStepParam();
-        checkPromoFirstStepParam.setState(CheckPromoFirstStepParam.CREATOR.getSTATE_CART());
-        checkPromoFirstStepParam.setCartType(MerchantVoucherListBottomsheetParamData.Companion.getEXTRA_CHECKOUT_TYPE_DEFAULT_VALUE());
+        Promo promo = new Promo();
+        promo.setState(Promo.CREATOR.getSTATE_CART());
+        promo.setCartType(MerchantVoucherListBottomsheetParamData.Companion.getEXTRA_CHECKOUT_TYPE_DEFAULT_VALUE());
         if (promoStackingGlobalData != null) {
             ArrayList<String> globalPromoCodes = new ArrayList<>();
             globalPromoCodes.add(promoStackingGlobalData.getPromoCode());
-            checkPromoFirstStepParam.setCodes(globalPromoCodes);
+            promo.setCodes(globalPromoCodes);
         }
-        checkPromoFirstStepParam.setOrders(orders);
-        checkPromoFirstStepParam.setSkipApply(0);
-        checkPromoFirstStepParam.setSuggested(0);
-        return checkPromoFirstStepParam;
+        promo.setOrders(orders);
+        promo.setSkipApply(0);
+        promo.setSuggested(0);
+        return promo;
     }
 
     /*@Override
@@ -1454,41 +1454,41 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                     .build());
         }
 
-        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
+        Promo promo = generateCheckPromoFirstStepParam();
 
         startActivityForResult(
                 checkoutModuleRouter
                         .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
                                 cartListData.isPromoCouponActive(),
                                 new Gson().toJson(updateCartRequestList), TrackingPromoCheckoutConstantKt.getFROM_CART(),
-                                "", checkPromoFirstStepParam
+                                "", promo
                         ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
         );
     }
 
     @Override
     public void goToDetail(PromoData promoData) {
-        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
+        Promo promo = generateCheckPromoFirstStepParam();
 
         if (promoData.getTypePromo() == PromoData.CREATOR.getTYPE_COUPON()) {
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutDetailIntentWithCode(promoData.getPromoCodeSafe(),
-                    cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART(), checkPromoFirstStepParam), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+                    cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART(), promo), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         } else {
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutListIntentWithCode(promoData.getPromoCodeSafe(),
-                    cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART(), checkPromoFirstStepParam), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+                    cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART(), promo), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         }
     }
 
     @Override
     public void goToDetailPromoStacking(PromoStackingData promoStackingData) {
-        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
+        Promo promo = generateCheckPromoFirstStepParam();
 
         if (promoStackingData.getTypePromo() == PromoStackingData.CREATOR.getTYPE_COUPON()) {
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutDetailIntentWithCode(promoStackingData.getPromoCodeSafe(),
-                    cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART(), checkPromoFirstStepParam), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+                    cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART(), promo), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         } else {
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutListIntentWithCode(promoStackingData.getPromoCodeSafe(),
-                    cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART(), checkPromoFirstStepParam), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+                    cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART(), promo), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         }
     }
 
@@ -1895,7 +1895,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void showMerchantVoucherListBottomsheet(ShopGroupData shopGroupData) {
-        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
+        Promo promo = generateCheckPromoFirstStepParam();
         if (getFragmentManager() != null) {
             int shopId = 0;
             try {
@@ -1905,7 +1905,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             }
 
             MerchantVoucherListBottomSheetFragment merchantVoucherListBottomSheetFragment =
-                    MerchantVoucherListBottomSheetFragment.newInstance(shopId, shopGroupData.getCartString(), checkPromoFirstStepParam);
+                    MerchantVoucherListBottomSheetFragment.newInstance(shopId, shopGroupData.getCartString(), promo);
             merchantVoucherListBottomSheetFragment.setActionListener(this);
             merchantVoucherListBottomSheetFragment.show(getFragmentManager(), "");
         }

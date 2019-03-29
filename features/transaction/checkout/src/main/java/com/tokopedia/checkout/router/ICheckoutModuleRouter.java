@@ -4,12 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
 
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam;
+import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.transactiondata.entity.response.cod.Data;
 
@@ -26,12 +25,12 @@ public interface ICheckoutModuleRouter {
 
     Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
             boolean couponActive, String additionalStringData, int pageTracking,
-            String cartString, CheckPromoFirstStepParam checkPromoFirstStepParam
+            String cartString, Promo promo
     );
 
     Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
             boolean couponActive, String additionalStringData, boolean isOneClickShipment, int pageTracking,
-            CheckPromoFirstStepParam checkPromoFirstStepParam);
+            Promo promo);
 
     Intent checkoutModuleRouterGetProductDetailIntent(String productId);
 
@@ -71,10 +70,10 @@ public interface ICheckoutModuleRouter {
 
     Intent checkoutModuleRouterGetRecentViewIntent();
 
-    Intent getPromoCheckoutDetailIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking, CheckPromoFirstStepParam checkPromoFirstStepParam);
+    Intent getPromoCheckoutDetailIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking, Promo promo);
 
     Intent getPromoCheckoutListIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking,
-                                              CheckPromoFirstStepParam checkPromoFirstStepParam);
+                                              Promo promo);
 
     Intent getCodPageIntent(Context context, Data data);
 

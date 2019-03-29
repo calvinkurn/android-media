@@ -3,25 +3,18 @@ package com.tokopedia.promocheckout.detail.view.presenter
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam
-import com.tokopedia.promocheckout.common.domain.CancelPromoUseCase
+import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
-import com.tokopedia.promocheckout.common.domain.model.cancelpromo.ResponseCancelPromo
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
-import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
-import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
-import com.tokopedia.promocheckout.detail.domain.DetailCouponMarkeplaceModel
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
-import java.lang.reflect.Type
 
 class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                                    private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
@@ -61,28 +54,28 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
 
     }
 
-    override fun validatePromoStackingUse(promoCode: String, checkPromoFirstStepParam: CheckPromoFirstStepParam?, isFromLoadDetail: Boolean) {
-        if (checkPromoFirstStepParam == null) return
+    override fun validatePromoStackingUse(promoCode: String, promo: Promo?, isFromLoadDetail: Boolean) {
+        if (promo == null) return
 
         if (TextUtils.isEmpty(promoCode)) return
 
         // Clear all merchant promo
-        checkPromoFirstStepParam.orders?.forEach { order ->
+        promo.orders?.forEach { order ->
             order.codes = ArrayList()
         }
         // Set promo global
         val codes = ArrayList<String>()
         codes.add(promoCode)
-        checkPromoFirstStepParam.codes = codes
+        promo.codes = codes
 
         if (isFromLoadDetail) {
-            checkPromoFirstStepParam.skipApply = 1
+            promo.skipApply = 1
         } else {
-            checkPromoFirstStepParam.skipApply = 0
+            promo.skipApply = 0
         }
 
         view.showProgressLoading()
-        checkPromoStackingCodeUseCase.setParams(checkPromoFirstStepParam)
+        checkPromoStackingCodeUseCase.setParams(promo)
         checkPromoStackingCodeUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onNext(t: GraphqlResponse?) {
                 if (isViewAttached) {
@@ -116,7 +109,7 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
         })
     }
 
-    override fun getDetailPromo(codeCoupon: String, oneClickShipment: Boolean, checkPromoFirstStepParam: CheckPromoFirstStepParam?) {
+    override fun getDetailPromo(codeCoupon: String, oneClickShipment: Boolean, promo: Promo?) {
         view.showLoading()
         getDetailCouponMarketplaceUseCase.execute(getDetailCouponMarketplaceUseCase.createRequestParams(codeCoupon, oneClickShipment = oneClickShipment),
                 object : Subscriber<GraphqlResponse>() {
@@ -138,7 +131,7 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
                         view.onSuccessGetDetailPromo(dataDetailCheckoutPromo?.promoCheckoutDetailModel
                                 ?: throw RuntimeException())
 
-                        validatePromoStackingUse(codeCoupon, checkPromoFirstStepParam, true)
+                        validatePromoStackingUse(codeCoupon, promo, true)
                     }
                 })
     }

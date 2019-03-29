@@ -29,7 +29,6 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.checkout.CartConstant;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
@@ -73,7 +72,8 @@ import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstantKt;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
-import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam;
+import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam;
+import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
 import com.tokopedia.promocheckout.common.data.entity.request.ProductDetail;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
@@ -119,8 +119,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.checkout.view.feature.cartlist.CartFragment.GO_TO_LIST;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -643,7 +641,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void renderCheckShipmentPrepareCheckoutSuccess() {
         // shipmentPresenter.processCheckout(shipmentAdapter.getPromoData().getPromoCodeSafe(), isOneClickShipment());
-        shipmentPresenter.processCheckout(shipmentAdapter.getPromoGlobalStackData().getPromoCodeSafe(), isOneClickShipment());
+        CheckPromoParam checkPromoParam = new CheckPromoParam();
+        checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
+        shipmentPresenter.processCheckout(checkPromoParam, isOneClickShipment());
     }
 
     @Override
@@ -878,7 +878,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
             if (autoApplyStackData.getVoucherOrders() != null) {
                 if (autoApplyStackData.getVoucherOrders().size() > 0) {
-                    for (int i=0; i<autoApplyStackData.getVoucherOrders().size(); i++) {
+                    for (int i = 0; i < autoApplyStackData.getVoucherOrders().size(); i++) {
                         VoucherOrdersItemData voucherOrdersItemData = autoApplyStackData.getVoucherOrders().get(i);
 
                         /*PromoStackingData.Builder merchantBuilder = new PromoStackingData.Builder();
@@ -1184,8 +1184,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentPresenter.setCouponStateChanged(true);
         shipmentAdapter.updateItemPromoGlobalStack(cartPromoStacking);
         if (shipmentAdapter.hasSetAllCourier()) {
-            CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
-            shipmentPresenter.checkPromoStackShipment(checkPromoFirstStepParam);
+            Promo promo = generateCheckPromoFirstStepParam();
+            shipmentPresenter.checkPromoStackShipment(promo);
 
             shipmentAdapter.notifyDataSetChanged();
         }
@@ -1625,8 +1625,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         // TODO: ask apakah harus promo global applied?
         if (shipmentAdapter.getPromoGlobalStackData() != null && shipmentAdapter.hasAppliedPromoStackCode()) {
-            CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
-            shipmentPresenter.checkPromoStackShipment(checkPromoFirstStepParam);
+            Promo promo = generateCheckPromoFirstStepParam();
+            shipmentPresenter.checkPromoStackShipment(promo);
         }
     }
 
@@ -1669,32 +1669,32 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onCartPromoUseVoucherGlobalPromoClicked(PromoStackingData cartPromoGlobal, int position) {
         trackingPromoCheckoutUtil.checkoutClickUseTickerPromoOrCoupon();
-        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
+        Promo promo = generateCheckPromoFirstStepParam();
         startActivityForResult(
                 checkoutModuleRouter
                         .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
                                 true, "", isOneClickShipment(),
-                                TrackingPromoCheckoutConstantKt.getFROM_CHECKOUT(), checkPromoFirstStepParam
+                                TrackingPromoCheckoutConstantKt.getFROM_CHECKOUT(), promo
                         ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
         );
     }
 
     @Override
     public void onVoucherMerchantPromoClicked(Object object) {
-        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
+        Promo promo = generateCheckPromoFirstStepParam();
         if (object instanceof ShipmentCartItemModel) {
             if (getFragmentManager() != null) {
                 showMerchantVoucherListBottomsheet(
                         ((ShipmentCartItemModel) object).getShopId(),
                         ((ShipmentCartItemModel) object).getCartString(),
-                        checkPromoFirstStepParam
+                        promo
                 );
             }
         }
     }
 
-    private void showMerchantVoucherListBottomsheet(int shopId, String cartString, CheckPromoFirstStepParam checkPromoFirstStepParam) {
-        MerchantVoucherListBottomSheetFragment merchantVoucherListBottomSheetFragment = MerchantVoucherListBottomSheetFragment.newInstance(shopId, cartString, checkPromoFirstStepParam);
+    private void showMerchantVoucherListBottomsheet(int shopId, String cartString, Promo promo) {
+        MerchantVoucherListBottomSheetFragment merchantVoucherListBottomSheetFragment = MerchantVoucherListBottomSheetFragment.newInstance(shopId, cartString, promo);
         merchantVoucherListBottomSheetFragment.setActionListener(this);
         merchantVoucherListBottomSheetFragment.show(getFragmentManager(), "");
     }
@@ -1771,7 +1771,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     shipmentPresenter.processSaveShipmentState();
                     break;
                 case REQUEST_CODE_COD:
-                    shipmentPresenter.proceedCodCheckout(voucherCode, isOneClickShipment());
+                    CheckPromoParam checkPromoParam = new CheckPromoParam();
+                    checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
+
+                    shipmentPresenter.proceedCodCheckout(checkPromoParam, isOneClickShipment());
             }
 
         } else if (shipmentData != null && !result) {
@@ -1808,13 +1811,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onClickDetailPromoGlobal(PromoStackingData dataGlobal, int position) {
         trackingPromoCheckoutUtil.checkoutClickTicker(dataGlobal.getDescription());
 
-        CheckPromoFirstStepParam checkPromoFirstStepParam = generateCheckPromoFirstStepParam();
+        Promo promo = generateCheckPromoFirstStepParam();
         if (dataGlobal.getTypePromo() == PromoStackingData.CREATOR.getTYPE_COUPON()) {
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutDetailIntentWithCode(dataGlobal.getPromoCodeSafe(),
-                    true, isOneClickShipment(), TrackingPromoCheckoutConstantKt.getFROM_CART(), checkPromoFirstStepParam), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+                    true, isOneClickShipment(), TrackingPromoCheckoutConstantKt.getFROM_CART(), promo), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         } else {
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutListIntentWithCode(dataGlobal.getPromoCodeSafe(),
-                    true, isOneClickShipment(), TrackingPromoCheckoutConstantKt.getFROM_CART(), checkPromoFirstStepParam), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+                    true, isOneClickShipment(), TrackingPromoCheckoutConstantKt.getFROM_CART(), promo), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         }
     }
 
@@ -2292,8 +2295,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @NonNull
-    public CheckPromoFirstStepParam generateCheckPromoFirstStepParam() {
-        CheckPromoFirstStepParam checkPromoFirstStepParam = new CheckPromoFirstStepParam();
+    public Promo generateCheckPromoFirstStepParam() {
+        Promo promo = new Promo();
         ArrayList<Order> orders = new ArrayList<>();
         List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentAdapter.getShipmentCartItemModelList();
         for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
@@ -2323,25 +2326,27 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             order.setInsurancePrice(shipmentCartItemModel.isInsurance() ? 1 : 0);
             orders.add(order);
         }
-        checkPromoFirstStepParam.setOrders(orders);
+        promo.setOrders(orders);
 
         String cartType = "default";
         if (isOneClickShipment()) {
             cartType = "ocs";
         }
-        checkPromoFirstStepParam.setState(CheckPromoFirstStepParam.CREATOR.getSTATE_CHECKOUT());
-        checkPromoFirstStepParam.setCartType(cartType);
+        promo.setState(Promo.CREATOR.getSTATE_CHECKOUT());
+        promo.setCartType(cartType);
 
         PromoStackingData promoStackingGlobalData = shipmentAdapter.getPromoGlobalStackData();
         if (promoStackingGlobalData != null) {
             ArrayList<String> globalPromoCodes = new ArrayList<>();
-            globalPromoCodes.add(promoStackingGlobalData.getPromoCode());
-            checkPromoFirstStepParam.setCodes(globalPromoCodes);
+            if (!TextUtils.isEmpty(promoStackingGlobalData.getPromoCode())) {
+                globalPromoCodes.add(promoStackingGlobalData.getPromoCode());
+            }
+            promo.setCodes(globalPromoCodes);
         }
 
-        checkPromoFirstStepParam.setSkipApply(0);
-        checkPromoFirstStepParam.setSuggested(0);
-        return checkPromoFirstStepParam;
+        promo.setSkipApply(0);
+        promo.setSuggested(0);
+        return promo;
     }
 
     @Override

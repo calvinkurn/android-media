@@ -24,6 +24,12 @@ public class CheckoutRequest {
     @SerializedName("tokopedia_corner_data")
     @Expose
     public TokopediaCornerData cornerData;
+    @SerializedName("has_promo_stacking")
+    @Expose
+    public boolean hasPromoStacking;
+    @SerializedName("promo_codes")
+    @Expose
+    public ArrayList<String> promoCodes;
 
     public CheckoutRequest() {
     }
@@ -46,6 +52,8 @@ public class CheckoutRequest {
         isDonation = builder.isDonation;
         data = builder.data;
         cornerData = builder.cornerData;
+        hasPromoStacking = builder.hasPromoStacking;
+        promoCodes = builder.promoCodes;
     }
 
 
@@ -54,6 +62,8 @@ public class CheckoutRequest {
         private int isDonation;
         private List<DataCheckoutRequest> data;
         private TokopediaCornerData cornerData;
+        private boolean hasPromoStacking;
+        private ArrayList<String> promoCodes;
 
         public Builder() {
         }
@@ -75,6 +85,16 @@ public class CheckoutRequest {
 
         public Builder data(List<DataCheckoutRequest> val) {
             data = val;
+            return this;
+        }
+
+        public Builder hasPromoStacking(boolean val) {
+            hasPromoStacking = val;
+            return this;
+        }
+
+        public Builder promoCodes(ArrayList<String> val){
+            promoCodes = val;
             return this;
         }
 

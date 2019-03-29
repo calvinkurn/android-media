@@ -3,18 +3,12 @@ package com.tokopedia.promocheckout.detail.view.fragment
 import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.View
-import android.widget.ProgressBar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
-import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam
-import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
-import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier
-import com.tokopedia.promocheckout.common.domain.model.DataVoucher
+import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailModule
 import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
@@ -30,7 +24,7 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
 
     private var isOneClickShipment: Boolean = false
     var pageTracking: Int = 1
-    var checkPromoFirstStepParam: CheckPromoFirstStepParam? = null
+    var promo: Promo? = null
     lateinit var progressDialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +33,7 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
         isUse = arguments?.getBoolean(EXTRA_IS_USE, false) ?: false
         isOneClickShipment = arguments?.getBoolean(ONE_CLICK_SHIPMENT, false) ?: false
         pageTracking = arguments?.getInt(PAGE_TRACKING, 1) ?: 1
-        checkPromoFirstStepParam = arguments?.getParcelable(CHECK_PROMO_CODE_FIRST_STEP_PARAM)
+        promo = arguments?.getParcelable(CHECK_PROMO_CODE_FIRST_STEP_PARAM)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,12 +44,12 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
 
     override fun loadData() {
         super.loadData()
-        promoCheckoutDetailPresenter.getDetailPromo(codeCoupon, isOneClickShipment, checkPromoFirstStepParam)
+        promoCheckoutDetailPresenter.getDetailPromo(codeCoupon, isOneClickShipment, promo)
     }
 
     override fun onClickUse() {
         // promoCheckoutDetailPresenter.validatePromoUse(codeCoupon, isOneClickShipment,  resources)
-        promoCheckoutDetailPresenter.validatePromoStackingUse(codeCoupon, checkPromoFirstStepParam, false)
+        promoCheckoutDetailPresenter.validatePromoStackingUse(codeCoupon, promo, false)
     }
 
     override fun onClickCancel() {
@@ -128,14 +122,14 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
         val CHECK_PROMO_CODE_FIRST_STEP_PARAM = "CHECK_PROMO_CODE_FIRST_STEP_PARAM"
 
         fun createInstance(codeCoupon: String, isUse: Boolean, oneClickShipment: Boolean, pageTracking: Int,
-                           checkPromoFirstStepParam: CheckPromoFirstStepParam): PromoCheckoutDetailMarketplaceFragment {
+                           promo: Promo): PromoCheckoutDetailMarketplaceFragment {
             val promoCheckoutDetailFragment = PromoCheckoutDetailMarketplaceFragment()
             val bundle = Bundle()
             bundle.putString(EXTRA_KUPON_CODE, codeCoupon)
             bundle.putBoolean(EXTRA_IS_USE, isUse)
             bundle.putBoolean(ONE_CLICK_SHIPMENT, oneClickShipment)
             bundle.putInt(PAGE_TRACKING, pageTracking)
-            bundle.putParcelable(CHECK_PROMO_CODE_FIRST_STEP_PARAM, checkPromoFirstStepParam)
+            bundle.putParcelable(CHECK_PROMO_CODE_FIRST_STEP_PARAM, promo)
             promoCheckoutDetailFragment.arguments = bundle
             return promoCheckoutDetailFragment
         }

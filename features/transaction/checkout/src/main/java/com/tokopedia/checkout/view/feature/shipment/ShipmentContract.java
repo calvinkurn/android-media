@@ -9,11 +9,10 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
-import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
-import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoFirstStepParam;
-import com.tokopedia.promocheckout.common.view.model.PromoData;
+import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam;
+import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
@@ -138,7 +137,7 @@ public interface ShipmentContract {
 
         void onFailedClearPromoStack(boolean ignoreAPIResponse);
 
-        CheckPromoFirstStepParam generateCheckPromoFirstStepParam();
+        Promo generateCheckPromoFirstStepParam();
     }
 
     interface AnalyticsActionListener {
@@ -244,13 +243,13 @@ public interface ShipmentContract {
 
         void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment, @Nullable String cornerId);
 
-        void processCheckout(String voucherCode, boolean isOneClickShipment);
+        void processCheckout(CheckPromoParam checkPromoParam, boolean isOneClickShipment);
 
         void processVerifyPayment(String transactionId);
 
-        void checkPromoShipment(String promoCode, boolean isOneClickShipment, CheckPromoFirstStepParam checkPromoFirstStepParam);
+        void checkPromoShipment(String promoCode, boolean isOneClickShipment, Promo promo);
 
-        void checkPromoStackShipment(CheckPromoFirstStepParam checkPromoFirstStepParam);
+        void checkPromoStackShipment(Promo promo);
 
         // void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isOneClickShipment);
 
@@ -331,7 +330,7 @@ public interface ShipmentContract {
 
         CodModel getCodData();
 
-        void proceedCodCheckout(String voucherCode, boolean isOneClickShipment);
+        void proceedCodCheckout(CheckPromoParam checkPromoParam, boolean isOneClickShipment);
     }
 
 }
