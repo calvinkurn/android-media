@@ -226,11 +226,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
         footer.setVisibility(View.VISIBLE);
 
-        if (postDetailFooterModel.isLiked()) {
+       if (postDetailFooterModel.isLiked()) {
             ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_green);
+            likeCount.setTextColor(MethodChecker.getColor(getContext(), R.color.tkpd_main_green));
         } else {
             ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_gray);
-
+            likeCount.setTextColor(MethodChecker.getColor(getContext(), R.color.black_54));
         }
 
         setLikeListener(postDetailFooterModel.isLiked());
