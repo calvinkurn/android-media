@@ -55,13 +55,14 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
         super.onCreate(savedInstanceState)
         updateTitle(intent.getStringExtra(EXTRA_TOOLBAR_TITLE))
 
+        initInjector()
+
         run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             destinationViewModel = viewModelProvider.get(HotelDestinationViewModel::class.java)
         }
 
         initView()
-        initInjector()
     }
 
     fun initView() {
