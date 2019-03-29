@@ -23,8 +23,8 @@ include 'libraries:imageuploader'
 include "libraries:inappupdate"
 include "libraries:kotlin_extensions"
 include 'libraries:locationmanager'
-//include 'libraries:iris'
-include 'libraries:iris_no_op'
+include 'libraries:iris'
+//include 'libraries:iris_no_op'
 include "libraries:network"
 include "libraries:pagination"
 include "libraries:oms"
