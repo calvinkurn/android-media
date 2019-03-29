@@ -37,7 +37,6 @@ import com.tokopedia.affiliate.common.preference.AffiliatePreference;
 import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel;
 import com.tokopedia.affiliate.common.viewmodel.ExploreTitleViewModel;
 import com.tokopedia.affiliate.common.widget.ExploreSearchView;
-import com.tokopedia.affiliate.feature.education.view.activity.AffiliateEducationActivity;
 import com.tokopedia.affiliate.feature.explore.di.DaggerExploreComponent;
 import com.tokopedia.affiliate.feature.explore.view.activity.ExploreActivity;
 import com.tokopedia.affiliate.feature.explore.view.activity.FilterActivity;
@@ -102,6 +101,7 @@ public class ExploreFragment
     private static final String USER_ID_USER_ID = "{user_id}";
     private static final String PRODUCT_ID_QUERY_PARAM = "?product_id=";
     private static final String PERFORMANCE_AFFILIATE = "mp_affiliate";
+    private static final String DISCOVERY_BY_ME = "by-me";
 
     private static final int ITEM_COUNT = 10;
     private static final int FULL_SPAN_COUNT = 2;
@@ -389,7 +389,8 @@ public class ExploreFragment
                 Visitable visitable = adapter.getData().get(position);
                 if (visitable instanceof ExploreProductViewModel
                         && view.getLayoutParams() instanceof GridLayoutManager.LayoutParams) {
-                    int spanIndex = ((GridLayoutManager.LayoutParams) view.getLayoutParams()).getSpanIndex();
+                    int spanIndex =
+                            ((GridLayoutManager.LayoutParams) view.getLayoutParams()).getSpanIndex();
                     if (spanIndex == 0) {
                         outRect.left = (int) getResources().getDimension(R.dimen.dp_12);
                     } else {
@@ -493,7 +494,8 @@ public class ExploreFragment
     public void onProductClicked(ExploreCardViewModel model, int adapterPosition) {
         trackProductClick(model, adapterPosition);
         if (getContext() != null && isCanDoAction) {
-            Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, model.getProductId());
+            Intent intent = RouteManager.getIntent(getContext(),
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL, model.getProductId());
             intent.putExtra("is_from_explore_affiliate", true);
             startActivity(intent);
         }
@@ -932,7 +934,8 @@ public class ExploreFragment
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_DETAIL_FILTER) {
-                List<FilterViewModel> currentFilter = new ArrayList<>(data.getParcelableArrayListExtra(FilterActivity.PARAM_FILTER_LIST));
+                List<FilterViewModel> currentFilter =
+                        new ArrayList<>(data.getParcelableArrayListExtra(FilterActivity.PARAM_FILTER_LIST));
                 populateFilter(currentFilter);
                 getFilteredFirstData(getOnlySelectedFilter(currentFilter));
             } else if (requestCode == REQUEST_DETAIL_SORT) {
@@ -958,7 +961,7 @@ public class ExploreFragment
     }
 
     private void trackImpression(List<Visitable<?>> visitables) {
-        for(int i = 0; i < visitables.size(); i++) {
+        for (int i = 0; i < visitables.size(); i++) {
             Visitable visitable = visitables.get(i);
             int position = adapter.getData().size() + i;
 
@@ -1006,7 +1009,12 @@ public class ExploreFragment
 
     private void goToEducation() {
         if (getContext() != null) {
-            startActivity(AffiliateEducationActivity.Companion.createIntent(getContext()));
+            Intent intent = RouteManager.getIntent(
+                    getContext(),
+                    ApplinkConst.DISCOVERY_PAGE.replace("{page_id}", DISCOVERY_BY_ME)
+            );
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(intent);
             affiliatePreference.setFirstTimeEducation(userSession.getUserId());
         }
     }
