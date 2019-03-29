@@ -243,6 +243,7 @@ import rx.Observable;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
+import com.tokopedia.cpm.CharacterPerMinuteInterface;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -270,7 +271,9 @@ public abstract class SellerRouterApplication extends MainApplication
         SaldoDetailsRouter,
         TrackingOptimizerRouter,
         FlashSaleRouter,
-        LinkerRouter {
+        LinkerRouter,
+        CharacterPerMinuteInterface
+{
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -1930,5 +1933,18 @@ public abstract class SellerRouterApplication extends MainApplication
 
     public void shareFeed(Activity activity, String detailId, String url, String title, String
             imageUrl, String description) {
+    }
+
+    @Override
+    public void saveCPM(@NonNull String cpm) {}
+
+    @Override
+    public String getCPM() {
+        return "";
+    }
+
+    @Override
+    public boolean isEnable() {
+        return false;
     }
 }
