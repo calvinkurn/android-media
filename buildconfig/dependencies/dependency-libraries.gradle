@@ -81,7 +81,7 @@ ext {
             graphView         :":libraries:graph_view",
             iris              : ":libraries:iris",
 //            iris              : ":libraries:iris_no_op",
-            banner            : ":libraries:banner",
+            banner            : ":libraries:unify:unify_compositions:banner",
             collapsingTabLayout: ":libraries:collapsing_tab_layout",
             unifyIcon         : ":libraries:unify:unify_icon",
             unifyPrinciples   : ":libraries:unify:unify_principles",
