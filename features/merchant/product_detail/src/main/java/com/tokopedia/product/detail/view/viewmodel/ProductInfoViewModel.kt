@@ -84,9 +84,13 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     val isUserHasShop: Boolean
         get() = userSessionInterface.hasShop()
 
+    var lazyNeedForceUpdate = false
+
     fun getProductInfo(productParams: ProductParams, forceRefresh: Boolean = false) {
         if (forceRefresh){
             loadOtherProduct.value = null
+            loadTopAdsProduct.value = null
+            lazyNeedForceUpdate = true
         }
         launchCatchError(block = {
             val cacheStrategy = GraphqlCacheStrategy
@@ -544,12 +548,10 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 loadTopAdsProduct.value = Loading
                 doLoadTopAdsProduct(product.data.productInfo)
             } else null
-
+            lazyNeedForceUpdate = false
             otherProductDef?.await()?.let { loadOtherProduct.value = it }
             topAdsProductDef?.await()?.let { loadTopAdsProduct.value = it }
         }
-
-
     }
 
     private fun doLoadOtherProduct(productInfo: ProductInfo) = async(Dispatchers.IO) {
@@ -557,7 +559,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 productInfo.basic.shopID, productInfo.basic.id))
         val otherProductRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_OTHER_PRODUCT],
                 ProductOther.Response::class.java, otherProductParams)
-        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+        val cacheStrategy = GraphqlCacheStrategy.Builder(if (lazyNeedForceUpdate) CacheType.ALWAYS_CLOUD
+                else CacheType.CACHE_FIRST).build()
 
         try {
             Loaded(Success(graphqlRepository.getReseponse(listOf(otherProductRequest), cacheStrategy)
@@ -571,7 +574,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val topadsParams = mapOf(KEY_PARAM to generateTopAdsParams(productInfo))
         val topAdsRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_DISPLAY_ADS],
                 TopAdsDisplayResponse::class.java, topadsParams)
-        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+        val cacheStrategy = GraphqlCacheStrategy.Builder(if (lazyNeedForceUpdate) CacheType.ALWAYS_CLOUD
+                else CacheType.CACHE_FIRST).build()
 
         try {
             Loaded(Success(graphqlRepository.getReseponse(listOf(topAdsRequest), cacheStrategy)
