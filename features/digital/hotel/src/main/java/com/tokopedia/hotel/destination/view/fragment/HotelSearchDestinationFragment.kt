@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.data.model.SearchDestination
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
-import com.tokopedia.hotel.destination.view.adapter.PopularSearchTypeFactory
 import com.tokopedia.hotel.destination.view.adapter.SearchDestinationTypeFactory
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
 import javax.inject.Inject

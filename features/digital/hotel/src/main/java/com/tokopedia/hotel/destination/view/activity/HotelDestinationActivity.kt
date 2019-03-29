@@ -33,6 +33,8 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var destinationViewModel: HotelDestinationViewModel
 
+    var isSearching: Boolean = false
+
     override fun shouldShowOptionMenu(): Boolean = false
 
     override fun getNewFragment(): Fragment = HotelRecommendationFragment.getInstance()
@@ -74,6 +76,8 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
         //set image close button
         search_input_view.setListener(this)
         search_input_view.setResetListener(this)
+
+        //setEditTextListener
     }
 
     fun initInjector() {

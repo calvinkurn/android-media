@@ -3,6 +3,7 @@ package com.tokopedia.hotel.common.di.component
 import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.hotel.HotelModuleRouter
 import com.tokopedia.hotel.common.di.module.HotelModule
 import com.tokopedia.hotel.common.di.module.HotelViewModelModule
 import com.tokopedia.hotel.common.di.scope.HotelScope
@@ -26,4 +27,6 @@ interface HotelComponent {
     fun userSessionInterface(): UserSessionInterface
 
     fun inject(hotelBaseActivity: HotelBaseActivity)
+    
+    fun hotelModuleRouter(): HotelModuleRouter
 }
