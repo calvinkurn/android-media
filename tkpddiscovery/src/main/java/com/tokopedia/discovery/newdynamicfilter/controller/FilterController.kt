@@ -4,6 +4,8 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.text.TextUtils
 import com.tokopedia.core.discovery.model.Filter
+import com.tokopedia.core.discovery.model.LevelThreeCategory
+import com.tokopedia.core.discovery.model.LevelTwoCategory
 import com.tokopedia.core.discovery.model.Option
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper
@@ -79,31 +81,14 @@ class FilterController() : Parcelable {
     private fun loadFilterViewState() {
         val optionsForFilterViewState = mutableListOf<Option>()
 
-        loopOptionsInFilterList { _, option ->
-            if(isOptionSelected(option))
-                addOrCombineOptions(optionsForFilterViewState, option)
+        loopSelectedOptionsInFilterList { _, option ->
+            addOrCombineOptions(optionsForFilterViewState, option)
         }
 
         for(option in optionsForFilterViewState) {
             if(option.value == "") option.value = getFilterValue(option.key)
             filterViewState.add(option.uniqueId)
         }
-    }
-
-    private fun isOptionSelected(option: Option) : Boolean {
-        val key = option.key
-
-        return if(filterParameter.containsKey(key))
-            return if(option.value == "") true
-            else isOptionValuesExistsInFilterParameter(option)
-        else false
-    }
-
-    private fun isOptionValuesExistsInFilterParameter(option: Option) : Boolean {
-        val optionValues = option.value.split(OptionHelper.VALUE_SEPARATOR)
-        val filterParameterValues = getFilterValue(option.key).split(OptionHelper.VALUE_SEPARATOR)
-
-        return filterParameterValues.containsAll(optionValues)
     }
 
     private fun addOrCombineOptions(optionsForFilterViewState: MutableList<Option>, option: Option) {
@@ -125,7 +110,7 @@ class FilterController() : Parcelable {
             val existingOption = iterator.next()
 
             if(existingOption.key == option.key) {
-                optionHasBeenAddedOrReplaced = replaceOrAddOptionWithSameKey(iterator, existingOption, option)
+                optionHasBeenAddedOrReplaced = addOrReplaceOptionWithSameKey(iterator, existingOption, option)
             }
         }
 
@@ -134,7 +119,7 @@ class FilterController() : Parcelable {
         }
     }
 
-    private fun replaceOrAddOptionWithSameKey(iterator: MutableListIterator<Option>, existingOption: Option, currentOption: Option) : Boolean {
+    private fun addOrReplaceOptionWithSameKey(iterator: MutableListIterator<Option>, existingOption: Option, currentOption: Option) : Boolean {
         val existingOptionValueList = existingOption.value.split(OptionHelper.VALUE_SEPARATOR).toList()
         val currentOptionValueList = currentOption.value.split(OptionHelper.VALUE_SEPARATOR).toList()
 
@@ -156,10 +141,74 @@ class FilterController() : Parcelable {
         return existingOptionValueList.containsAll(currentOptionValueList)
     }
 
+    private fun loopSelectedOptionsInFilterList(action: (filter: Filter, option: Option) -> Unit) {
+        loopOptionsInFilterList { filter, option ->
+            if(isOptionSelected(option)) {
+                action(filter, option)
+            }
+            else {
+                if(!listIsNullOrEmpty(option.levelTwoCategoryList)) {
+                    val categoryAsOption = getSelectedOptionLevelTwoCategoryList(option.levelTwoCategoryList)
+                    if(categoryAsOption != null) {
+                        action(filter, categoryAsOption)
+                    }
+                }
+            }
+        }
+    }
+
     private fun loopOptionsInFilterList(action: (filter: Filter, option: Option) -> Unit) {
         for(filter in filterList)
             for(option in filter.options)
                 action(filter, option)
+    }
+
+    private fun isOptionSelected(option: Option) : Boolean {
+        return if(filterParameter.containsKey(option.key))
+            return when {
+                option.value == "" -> true
+                isOptionValuesExistsInFilterParameter(option) -> true
+                else -> false
+            }
+        else false
+    }
+
+    private fun <T: Any> listIsNullOrEmpty(list : List<T>?) : Boolean {
+        return list == null || list.isEmpty()
+    }
+
+    private fun getSelectedOptionLevelTwoCategoryList(levelTwoCategoryList: List<LevelTwoCategory>) : Option? {
+        for(levelTwoCategory in levelTwoCategoryList) {
+            if(getFilterValue(levelTwoCategory.key) == levelTwoCategory.value) {
+                return OptionHelper.generateOptionFromUniqueId(
+                    OptionHelper.constructUniqueId(levelTwoCategory.key, levelTwoCategory.value, levelTwoCategory.name)
+                )
+            }
+            else if(!listIsNullOrEmpty(levelTwoCategory.levelThreeCategoryList)) {
+                val levelThreeCategoryAsOption = getSelectedOptionLevelThreeCategoryList(levelTwoCategory.levelThreeCategoryList)
+                if(levelThreeCategoryAsOption != null)
+                    return levelThreeCategoryAsOption
+            }
+        }
+
+        return null
+    }
+
+    private fun getSelectedOptionLevelThreeCategoryList(levelThreeCategoryList: List<LevelThreeCategory>) : Option? {
+        for(levelThreeCategory in levelThreeCategoryList)
+            if(getFilterValue(levelThreeCategory.key) == levelThreeCategory.value)
+                return OptionHelper.generateOptionFromUniqueId(
+                    OptionHelper.constructUniqueId(levelThreeCategory.key, levelThreeCategory.value, levelThreeCategory.name)
+                )
+
+        return null
+    }
+
+    private fun isOptionValuesExistsInFilterParameter(option: Option) : Boolean {
+        val optionValues = option.value.split(OptionHelper.VALUE_SEPARATOR)
+        val filterParameterValues = getFilterValue(option.key).split(OptionHelper.VALUE_SEPARATOR)
+
+        return filterParameterValues.containsAll(optionValues)
     }
 
     fun saveSliderValueStates(minValue: Int, maxValue: Int) {
@@ -314,9 +363,7 @@ class FilterController() : Parcelable {
         val activeFilter = mutableMapOf<String, String>()
 
         loopOptionsInFilterList { _, option ->
-            if(isOptionConsideredActiveFilter(option)) {
-                activeFilter[option.key] = getFilterValue(option.key)
-            }
+            activeFilter[option.key] = getFilterValue(option.key)
         }
 
         return activeFilter
@@ -325,8 +372,8 @@ class FilterController() : Parcelable {
     fun getActiveFilterOptionList() : List<Option> {
         val activeFilterOptionList = mutableListOf<Option>()
 
-        loopOptionsInFilterList { _, option ->
-            if(isOptionConsideredActiveFilter(option)) {
+        loopSelectedOptionsInFilterList { _, option ->
+            if (isOptionConsideredActiveFilter(option)) {
                 activeFilterOptionList.add(option)
             }
         }

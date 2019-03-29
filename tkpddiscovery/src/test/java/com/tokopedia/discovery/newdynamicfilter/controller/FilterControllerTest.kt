@@ -1,6 +1,8 @@
 package com.tokopedia.discovery.newdynamicfilter.controller
 
 import com.tokopedia.core.discovery.model.Filter
+import com.tokopedia.core.discovery.model.LevelThreeCategory
+import com.tokopedia.core.discovery.model.LevelTwoCategory
 import com.tokopedia.core.discovery.model.Option
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper
@@ -20,7 +22,12 @@ class FilterControllerTest {
         private const val BANDUNG_VALUE = "10"
 
         private const val HANDPHONE_VALUE = "1"
-        private const val TV_VALUE = "2"
+        private const val SEMUA_HANDPHONE_VALUE = "1"
+        private const val HANDPHONE_BESAR_VALUE = "2"
+        private const val SEMUA_HANDPHONE_BESAR_VALUE = "2"
+        private const val HANDPHONE_ENAM_INCH = "3"
+        private const val TV_VALUE = "4"
+        private const val TV_LCD_VALUE = "5"
     }
 
     private val filterController = FilterController()
@@ -32,8 +39,18 @@ class FilterControllerTest {
     private val jakartaBaratOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, JAKARTA_BARAT_VALUE, "Jakarta Barat"))
     private val tangerangOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, TANGERANG_VALUE, "Tangerang"))
     private val bandungOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, BANDUNG_VALUE, "Bandung"))
-    private val handphoneOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, HANDPHONE_VALUE, "Handphone"))
-    private val tvOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, TV_VALUE, "TV"))
+    private val semuaHandphoneOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, SEMUA_HANDPHONE_VALUE, "Semua Handphone"))
+    private val handphoneBesarOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, HANDPHONE_BESAR_VALUE, "Handphone Besar"))
+    private val semuaHandphoneBesarOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, SEMUA_HANDPHONE_BESAR_VALUE, "Semua Handphone Besar"))
+    private val handphoneEnamInchOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, HANDPHONE_ENAM_INCH, "Handphone Enam Inch"))
+    private val handphoneOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, HANDPHONE_VALUE, "Handphone")).also{
+        it.levelTwoCategoryList = createHandphoneCategoryLevels()
+    }
+    private val tvLCDOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, TV_LCD_VALUE, "TV"))
+    private val tvOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, TV_VALUE, "TV")).also {
+        it.levelTwoCategoryList = createTVCategoryLevels()
+    }
+
     private val minPriceOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.PMIN, "", "Harga Minimum"))
     private val maxPriceOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.PMAX, "", "Harga Maximum"))
 
@@ -41,6 +58,54 @@ class FilterControllerTest {
     private val locationOptions = mutableListOf<Option>()
     private val categoryOptions = mutableListOf<Option>()
     private val priceOptions = mutableListOf<Option>()
+
+    private fun createHandphoneCategoryLevels() : List<LevelTwoCategory> {
+        val handphoneLevelTwoCategoryList = mutableListOf<LevelTwoCategory>()
+
+        val semuaHandphoneLevelTwoCategory = createLevelTwoCategory(semuaHandphoneOption, listOf())
+        val handphoneBesarLevelTwoCategory = createLevelTwoCategory(handphoneBesarOption, mutableListOf<Option>().also { levelThreeOptionList ->
+            levelThreeOptionList.add(semuaHandphoneBesarOption)
+            levelThreeOptionList.add(handphoneEnamInchOption)
+        })
+
+        handphoneLevelTwoCategoryList.add(semuaHandphoneLevelTwoCategory)
+        handphoneLevelTwoCategoryList.add(handphoneBesarLevelTwoCategory)
+
+        return handphoneLevelTwoCategoryList
+    }
+
+    private fun createTVCategoryLevels() : List<LevelTwoCategory> {
+        val tvLevelTwoCharCategory = mutableListOf<LevelTwoCategory>()
+        tvLevelTwoCharCategory.add(createLevelTwoCategory(tvLCDOption, listOf()))
+        return tvLevelTwoCharCategory
+    }
+
+    private fun createLevelTwoCategory(option: Option, levelThreeCategoryOptionList: List<Option>) : LevelTwoCategory {
+        return LevelTwoCategory().apply {
+            key = option.key
+            value = option.value
+            name = option.name
+            levelThreeCategoryList = createLevelThreeCategoryList(levelThreeCategoryOptionList)
+        }
+    }
+
+    private fun createLevelThreeCategoryList(optionListLevelThree: List<Option>) : List<LevelThreeCategory> {
+        val levelThreeCategoryList = mutableListOf<LevelThreeCategory>()
+
+        for(option in optionListLevelThree) {
+            levelThreeCategoryList.add(createLevelThreeCategory(option))
+        }
+
+        return levelThreeCategoryList
+    }
+
+    private fun createLevelThreeCategory(option: Option) : LevelThreeCategory {
+        return LevelThreeCategory().apply {
+            key = option.key
+            value = option.value
+            name = option.name
+        }
+    }
 
     @Test
     fun testInitFilterWithNullsOrEmptyShouldNotCrash() {
@@ -197,8 +262,71 @@ class FilterControllerTest {
         expectedOptions.add(bandungOption)
         expectedOptions.add(officialOption)
 
-        assertFilterViewStateCorrect(expectedOptions)
         assertFilterViewStateSizeCorrect(expectedOptions.size)
+        assertFilterViewStateCorrect(expectedOptions)
+    }
+
+    @Test
+    fun testLoadFilterViewStateWithLevelTwoCategory() {
+        val filterParameter = HashMap<String, String>(createFilterParameter())
+        filterParameter[semuaHandphoneOption.key] = semuaHandphoneOption.value
+
+        val filterList = createFilterList()
+
+        filterController.initFilterController(filterParameter, filterList)
+
+        assertFilterViewStateIncludesLevelTwoCategory()
+    }
+
+    private fun assertFilterViewStateIncludesLevelTwoCategory() {
+        val expectedOptionList = mutableListOf<Option>()
+        expectedOptionList.add(officialOption)
+        expectedOptionList.add(handphoneOption)
+
+        assertFilterViewStateSizeCorrect(expectedOptionList.size)
+        assertFilterViewStateCorrect(expectedOptionList)
+    }
+
+    @Test
+    fun testLoadFilterViewStateWithLevelThreeCategoryExpectingLevelTwo() {
+        val filterParameter = HashMap<String, String>(createFilterParameter())
+        filterParameter[semuaHandphoneBesarOption.key] = semuaHandphoneBesarOption.value
+
+        val filterList = createFilterList()
+
+        filterController.initFilterController(filterParameter, filterList)
+
+        assertFilterViewStateIncludesLevelThreeCategoryExpectingLevelTwo()
+    }
+
+    private fun assertFilterViewStateIncludesLevelThreeCategoryExpectingLevelTwo() {
+        val expectedOptionList = mutableListOf<Option>()
+        expectedOptionList.add(officialOption)
+        expectedOptionList.add(handphoneBesarOption)
+
+        assertFilterViewStateSizeCorrect(expectedOptionList.size)
+        assertFilterViewStateCorrect(expectedOptionList)
+    }
+
+    @Test
+    fun testLoadFilterViewStateWithLevelThreeCategory() {
+        val filterParameter = HashMap<String, String>(createFilterParameter())
+        filterParameter[handphoneEnamInchOption.key] = handphoneEnamInchOption.value
+
+        val filterList = createFilterList()
+
+        filterController.initFilterController(filterParameter, filterList)
+
+        assertFilterViewStateIncludesLevelThreeCategory()
+    }
+
+    private fun assertFilterViewStateIncludesLevelThreeCategory() {
+        val expectedOptionList = mutableListOf<Option>()
+        expectedOptionList.add(officialOption)
+        expectedOptionList.add(handphoneEnamInchOption)
+
+        assertFilterViewStateSizeCorrect(expectedOptionList.size)
+        assertFilterViewStateCorrect(expectedOptionList)
     }
 
     @Test
@@ -408,6 +536,21 @@ class FilterControllerTest {
         expectedOptionList.add(minPriceOption)
         expectedOptionList.add(jakartaOption)
         expectedOptionList.add(handphoneOption)
+
+        assertActiveFilterOptionList(expectedOptionList)
+    }
+
+    @Test
+    fun testGetActiveFilterAsOptionListWithCategoryOption() {
+        val filterParameter = createFilterParameter()
+        val filterList = createFilterList()
+
+        filterController.initFilterController(filterParameter, filterList)
+        filterController.setFilter(handphoneEnamInchOption, true, isCleanUpExistingFilterWithSameKey = true)
+
+        val expectedOptionList = mutableListOf<Option>()
+        expectedOptionList.add(officialOption)
+        expectedOptionList.add(handphoneEnamInchOption)
 
         assertActiveFilterOptionList(expectedOptionList)
     }
