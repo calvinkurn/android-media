@@ -2,14 +2,13 @@ package com.tokopedia.kotlin.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import kotlin.Any
 
 import com.google.gson.annotations.Expose
 
 /**
  * Author errysuprayogi on 29,January,2019
  */
-open class ImpressHolder() : Any(), Parcelable {
+open class ImpressHolder(): Parcelable {
 
     @Expose(serialize = false, deserialize = false)
     var isInvoke: Boolean = false
