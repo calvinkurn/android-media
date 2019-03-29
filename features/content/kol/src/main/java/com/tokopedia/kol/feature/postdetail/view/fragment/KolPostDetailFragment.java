@@ -54,7 +54,6 @@ import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel;
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity;
 import com.tokopedia.kol.feature.postdetail.view.adapter.KolPostDetailAdapter;
@@ -394,13 +393,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessFollowUnfollowKol(int rowNumber) {
-        if (adapter.getList().get(rowNumber) instanceof KolPostViewModel) {
-            KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getList().get(rowNumber);
-            kolPostViewModel.setFollowed(!(kolPostViewModel.isFollowed()));
-            kolPostViewModel.setTemporarilyFollowed(!(kolPostViewModel.isTemporarilyFollowed()));
+        if (adapter.getList().get(rowNumber) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel dynamicPostViewModel = (DynamicPostViewModel) adapter.getList().get(rowNumber);
+            dynamicPostViewModel.getHeader().getFollowCta().setFollow(!dynamicPostViewModel.getHeader().getFollowCta().isFollow());
             adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_FOLLOW);
 
-            if (kolPostViewModel.isFollowed()) {
+            if (dynamicPostViewModel.getHeader().getFollowCta().isFollow()) {
                 ToasterNormal
                         .make(swipeToRefresh,
                                 getString(R.string.post_detail_follow_success_toast),
