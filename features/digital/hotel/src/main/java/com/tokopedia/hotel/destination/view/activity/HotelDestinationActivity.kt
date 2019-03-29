@@ -43,15 +43,9 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
 
     override fun isShowCloseButton(): Boolean = true
 
-    override fun getComponent(): HotelDestinationComponent {
-
-        if (application is HotelModuleRouter) {
-            return DaggerHotelDestinationComponent.builder()
+    override fun getComponent(): HotelDestinationComponent = DaggerHotelDestinationComponent.builder()
                     .hotelComponent(getHotelComponent())
                     .build()
-        }
-        throw RuntimeException("Application must implement ModuleRouter")
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +71,6 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
         search_input_view.setListener(this)
         search_input_view.setResetListener(this)
 
-        //setEditTextListener
     }
 
     fun initInjector() {
@@ -102,12 +95,15 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
         //ViewModel search Hotel based on Query
     }
 
-    override fun onSearchTextChanged(text: String?) {
-        if (TextUtils.isEmpty(text)) {
+    override fun onSearchTextChanged(text: String) {
+        if (text.isEmpty() && isSearching) {
+            isSearching = false
             backToHotelRecommendation()
-        } else {
+        } else if (text.isNotEmpty() && !isSearching && text.length > 2){
+            isSearching = true
             showSearchDestinationResult()
-            //ViewModel search Hotel based on Query
+        } else if (isSearching) {
+            //search
         }
     }
 

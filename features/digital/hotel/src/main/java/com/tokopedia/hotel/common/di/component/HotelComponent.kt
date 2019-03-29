@@ -27,6 +27,6 @@ interface HotelComponent {
     fun userSessionInterface(): UserSessionInterface
 
     fun inject(hotelBaseActivity: HotelBaseActivity)
-    
+
     fun hotelModuleRouter(): HotelModuleRouter
 }
