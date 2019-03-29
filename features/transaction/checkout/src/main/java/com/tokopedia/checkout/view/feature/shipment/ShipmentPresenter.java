@@ -666,6 +666,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void checkPromoStackShipment(Promo promo) {
+        TokopediaCornerData cornerData = null;
+        RecipientAddressModel recipientAddressModel = getRecipientAddressModel();
+        if (recipientAddressModel != null && recipientAddressModel.isCornerAddress()) {
+            cornerData = new TokopediaCornerData(
+                    recipientAddressModel.getUserCornerId(),
+                    Integer.parseInt(recipientAddressModel.getCornerId())
+            );
+        }
+
         checkPromoStackingCodeFinalUseCase.setParams(promo);
         checkPromoStackingCodeFinalUseCase.execute(RequestParams.create(),
                 new Subscriber<GraphqlResponse>() {
