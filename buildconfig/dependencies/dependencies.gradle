@@ -122,6 +122,7 @@ ext {
             messaging   : "com.google.firebase:firebase-messaging:${playServiceFirebaseMessaging}",
             config      : "com.google.firebase:firebase-config:${playServiceFirebaseRemoteConfig}",
             performance : "com.google.firebase:firebase-perf:${playServiceFirebasePerfMon}",
+            fireStore   : "com.google.firebase:firebase-firestore:17.1.2"
     ]
 
     butterKnifeDependencies = [
@@ -195,7 +196,8 @@ ext {
             guava                 : "com.google.guava:guava:21.0",
             viewModel             : "android.arch.lifecycle:viewmodel:$lifeCycleVersion",
             lifeCycleExtentions   : "android.arch.lifecycle:extensions:$lifeCycleVersion",
-            lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion"
+            lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.1.11"
     ]
 
     testDependencies = [

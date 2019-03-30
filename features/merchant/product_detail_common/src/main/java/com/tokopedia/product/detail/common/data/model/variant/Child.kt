@@ -10,11 +10,11 @@ data class Child(
 
     @SerializedName("productID")
     @Expose
-    val productId: Int? = null, //ex: 15212348
+    val productId: Int = -1, //ex: 15212348
 
     @SerializedName("price")
     @Expose
-    val price: Float? = null, //ex: 100000000
+    val price: Float = 0f, //ex: 100000000
 
     @SerializedName("priceFmt")
     @Expose

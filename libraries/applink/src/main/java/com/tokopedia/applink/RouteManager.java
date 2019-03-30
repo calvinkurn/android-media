@@ -31,10 +31,6 @@ public class RouteManager {
         return intent;
     }
 
-    public static void route(Context context, String applinkPattern) {
-        ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, applinkPattern);
-    }
-
     public static void route(Context context, String applinkPattern, String... parameter) {
         String uriString = UriUtil.buildUri(applinkPattern, parameter);
         Intent intent = getIntent(context, uriString);
@@ -46,29 +42,39 @@ public class RouteManager {
     }
 
     public static Intent getIntent(Context context, String applinkPattern, String... parameter) {
-        // Temporary solution: Only internal scheme to build internal Uri
+        // Temporary solution: using airbnb applink
         String applink = UriUtil.buildUri(applinkPattern, parameter);
-        if (!applink.startsWith(ApplinkConstInternal.INTERNAL_SCHEME)) {
-            // this will bring user to DeeplinkHandlerActivity
+        if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(applink)){
             return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, applink);
+        }
+
+        // Solution to redirect based on internal-scheme, or deeplink registered in manifest
+        Intent intent;
+        if (applink.startsWith(ApplinkConstInternal.INTERNAL_SCHEME) &&
+                ProductDetailRouteManager.isProductApplink(applink)){
+            intent = getProductIntent(context, applink);
         } else {
+            intent = buildInternalUri(context, applink);
+        }
+        return intent;
+    }
+
+    public static boolean isSupportApplink(Context context, String applink) {
+        if (applink.startsWith(ApplinkConstInternal.INTERNAL_SCHEME)) {
             Intent intent;
-            // TEMPORARY SOLUTION TO route product to old PDP by remote config
-            if (ProductDetailRouteManager.isProductApplink(applink)) {
+            if (ProductDetailRouteManager.isProductApplink(applink)){
                 intent = getProductIntent(context, applink);
             } else {
                 intent = buildInternalUri(context, applink);
             }
             if (intent.resolveActivity(context.getPackageManager()) != null) {
-                return intent;
+                return true;
             } else {
-                return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, applink);
+                return ((ApplinkRouter) context.getApplicationContext()).isSupportApplink(applink);
             }
+        } else {
+            return ((ApplinkRouter) context.getApplicationContext()).isSupportApplink(applink);
         }
-    }
-
-    public static boolean isSupportApplink(Context context, String applink) {
-        return ((ApplinkRouter) context.getApplicationContext()).isSupportApplink(applink);
     }
 
     public static String routeWithAttribution(Context context, String applink,

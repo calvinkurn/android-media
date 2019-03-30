@@ -48,6 +48,8 @@ public class HomeFeedMapper implements Func1<GraphqlResponse, HomeFeedListModel>
                     product.getPrice(),
                     product.getClickUrl(),
                     product.getTrackerImageUrl(),
+                    product.getSlashedPrice(),
+                    product.getDiscountPercentage(),
                     product.getPriceInt(),
                     product.getIsTopads(),
                     (position+1)

@@ -25,6 +25,8 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
     private String recommendationType;
     private String imageUrl;
     private String price;
+    private String slashedPrice;
+    private int discountPercentage;
     private String clickUrl;
     private String trackerImageUrl;
     private int priceNumber;
@@ -38,6 +40,8 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
                              String price,
                              String clickUrl,
                              String trackerImageUrl,
+                             String slashedPrice,
+                             int discountPercentage,
                              int priceNumber,
                              boolean isTopAds,
                              int position) {
@@ -49,6 +53,8 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
         this.price = price;
         this.clickUrl = clickUrl;
         this.trackerImageUrl = trackerImageUrl;
+        this.slashedPrice = slashedPrice;
+        this.discountPercentage = discountPercentage;
         this.priceNumber = priceNumber;
         this.isTopAds = isTopAds;
         this.position = position;
@@ -108,6 +114,14 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
 
     public boolean isTopAds() {
         return isTopAds;
+    }
+
+    public String getSlashedPrice() {
+        return slashedPrice;
+    }
+
+    public int getDiscountPercentage() {
+        return discountPercentage;
     }
 
     @Override

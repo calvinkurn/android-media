@@ -19,8 +19,8 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.ActionInterfaces.ActionCreator;
-import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
+import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
+import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.applink.ApplinkConst;
@@ -228,6 +228,7 @@ import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -241,6 +242,7 @@ import okhttp3.Response;
 import rx.Observable;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
+import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -266,9 +268,9 @@ public abstract class SellerRouterApplication extends MainApplication
         CoreNetworkRouter,
         ChatbotRouter,
         SaldoDetailsRouter,
-        TrackingOptimizerRouter ,
+        TrackingOptimizerRouter,
         FlashSaleRouter,
-        LinkerRouter{
+        LinkerRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -716,7 +718,7 @@ public abstract class SellerRouterApplication extends MainApplication
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
         return TopChatRoomActivity.getAskBuyerIntent(context, toUserId, customerName,
-                 customMessage, source, avatar);
+                customMessage, source, avatar);
     }
 
 
@@ -1074,6 +1076,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     /**
      * use TrackApp.getGtm() instead
+     *
      * @return
      */
     @Deprecated
@@ -1176,7 +1179,12 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void startSaldoDepositIntent(Context context) {
-        SaldoDetailsInternalRouter.startSaldoDepositIntent(context);
+        if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
+            SaldoDetailsInternalRouter.startSaldoDepositIntent(context);
+        } else {
+            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                    ApplinkConst.WebViewUrl.SALDO_DETAIL));
+        }
     }
 
     @Override
@@ -1347,8 +1355,8 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getChatBotIntent(Context context, String messageId) {
-        return  RouteManager.getIntent(context, ApplinkConst.CHATBOT
-                .replace(String.format("{%s}",ApplinkConst.Chat.MESSAGE_ID), messageId));
+        return RouteManager.getIntent(context, ApplinkConst.CHATBOT
+                .replace(String.format("{%s}", ApplinkConst.Chat.MESSAGE_ID), messageId));
     }
 
     @Override
@@ -1478,7 +1486,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getTalkDetailIntent(Context context, String talkId, String shopId,
-                                             String source) {
+                                      String source) {
         return TalkDetailsActivity.getCallingIntent(talkId, shopId, context, source);
     }
 
@@ -1549,16 +1557,16 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getBroadcastMessageListIntent(@NonNull Context context) {
         sendEventTracking(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
                 BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
-                BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_BM_CLICK,"");
+                BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_BM_CLICK, "");
         return BroadcastMessageInternalRouter.INSTANCE.getBroadcastMessageListIntent(context);
     }
 
     @NonNull
     @Override
     public Intent getBroadcastMessageAttachProductIntent(@NonNull Context context, @NonNull String shopId,
-                                           @NonNull String shopName, boolean isSeller,
-                                           @NonNull List<Integer> selectedIds,
-                                           @NonNull ArrayList<HashMap<String, String>> hashProducts) {
+                                                         @NonNull String shopName, boolean isSeller,
+                                                         @NonNull List<Integer> selectedIds,
+                                                         @NonNull ArrayList<HashMap<String, String>> hashProducts) {
         return BroadcastMessageAttachProductActivity.createInstance(context, shopId, shopName, isSeller, selectedIds, hashProducts);
     }
 
@@ -1854,14 +1862,15 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public boolean isSaldoNativeEnabled() {
-        return false;
+        return remoteConfig.getBoolean(RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
+                true);
     }
 
     public void onLoginSuccess() {
     }
 
     @Override
-    public void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate){
+    public void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate) {
     }
 
     @Override
@@ -1917,5 +1926,9 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void sendForceLogoutAnalytics(Response response) {
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
+    }
+
+    public void shareFeed(Activity activity, String detailId, String url, String title, String
+            imageUrl, String description) {
     }
 }

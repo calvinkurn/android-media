@@ -7,3 +7,6 @@ package com.tokopedia.kotlin.extensions.view
 fun String?.toIntOrZero(): Int {
     return this?.toIntOrNull()?: 0
 }
+fun String?.toLongOrZero(): Long {
+    return this?.toLongOrNull()?: 0
+}
