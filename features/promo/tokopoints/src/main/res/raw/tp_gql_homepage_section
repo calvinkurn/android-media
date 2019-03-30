@@ -4,6 +4,7 @@
       layoutType
       sectionTitle
       sectionSubTitle
+      backgroundImgURLMobile
       countdownAttr {
         showTimer
         activeCountDown

@@ -342,9 +342,5 @@ public class BannerView extends BaseCustomView {
     protected int getIndicator() {
         return R.drawable.indicator;
     }
-
-    protected BannerPagerAdapter getBannerPagerAdapter() {
-        return new BannerPagerAdapter(promoImageUrls, onPromoClickListener);
-    }
 }
 

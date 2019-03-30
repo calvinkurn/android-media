@@ -6,5 +6,9 @@ import com.google.gson.annotations.SerializedName
 data class ShopModel(
         @SerializedName("district_name")
         @Expose
-        val districtName: String = ""
+        val districtName: String = "",
+
+        @SerializedName("city_name")
+        @Expose
+        val cityName: String = ""
 )
