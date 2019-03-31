@@ -262,6 +262,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         hideLoading();
         getActivity().setResult(Activity.RESULT_OK);
         stepperListener.finishPage();
+        analytics.eventClickUploadPhotosTradeIn("success");
     }
 
     @Override
@@ -269,6 +270,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         hideLoading();
         if (getActivity() instanceof UserIdentificationFormActivity) {
             ((UserIdentificationFormActivity) getActivity()).showError(error, this::uploadImage);
+            analytics.eventClickUploadPhotosTradeIn("failed");
         }
     }
 

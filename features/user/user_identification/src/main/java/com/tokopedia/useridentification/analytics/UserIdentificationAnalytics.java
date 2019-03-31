@@ -106,23 +106,20 @@ public class UserIdentificationAnalytics {
     public void eventClickOnBackOnBoarding() {
         if (analyticTracker == null)
             return;
-        if (projectID == 4) {
-            sendTradeInClickEvent(Action.CLICK_BACK_ONBOARDING);
-        } else {
-            analyticTracker.sendEventTracking(
-                    Event.CLICK_KYC,
-                    Category.KYC_PAGE,
-                    Action.CLICK_BACK_ONBOARDING,
-                    ""
-            );
-        }
+
+        analyticTracker.sendEventTracking(
+                Event.CLICK_KYC,
+                Category.KYC_PAGE,
+                Action.CLICK_BACK_ONBOARDING,
+                ""
+        );
     }
 
     public void eventClickOnNextOnBoarding() {
         if (analyticTracker == null)
             return;
         if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_NEXT_ONBOARDING);
+            sendTradeInClickEvent(Action.CLICK_NEXT_ONBOARDING,"");
         } else {
             analyticTracker.sendEventTracking(
                     Event.CLICK_KYC,
@@ -152,23 +149,20 @@ public class UserIdentificationAnalytics {
     public void eventClickBackKtpPage() {
         if (analyticTracker == null)
             return;
-        if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_BACK_KTP_PAGE);
-        } else {
-            analyticTracker.sendEventTracking(
-                    Event.CLICK_KYC,
-                    Category.KYC_PAGE,
-                    Action.CLICK_BACK_KTP_PAGE,
-                    ""
-            );
-        }
+
+        analyticTracker.sendEventTracking(
+                Event.CLICK_KYC,
+                Category.KYC_PAGE,
+                Action.CLICK_BACK_KTP_PAGE,
+                ""
+        );
     }
 
     public void eventClickNextKtpPage() {
         if (analyticTracker == null)
             return;
         if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_NEXT_KTP_PAGE);
+            sendTradeInClickEvent(Action.CLICK_NEXT_KTP_PAGE,"");
         } else {
             analyticTracker.sendEventTracking(
                     Event.CLICK_KYC,
@@ -182,53 +176,44 @@ public class UserIdentificationAnalytics {
     public void eventViewErrorImageTooLargeKtpPage() {
         if (analyticTracker == null)
             return;
-        if(projectID ==4){
-            sendTradeInViewEvent(Action.VIEW_ERROR_IMAGE_TOO_LARGE_KTP);
-        } else {
-            analyticTracker.sendEventTracking(
-                    Event.VIEW_KYC,
-                    Category.KYC_PAGE,
-                    Action.VIEW_ERROR_IMAGE_TOO_LARGE_KTP,
-                    ""
-            );
-        }
+
+        analyticTracker.sendEventTracking(
+                Event.VIEW_KYC,
+                Category.KYC_PAGE,
+                Action.VIEW_ERROR_IMAGE_TOO_LARGE_KTP,
+                ""
+        );
     }
 
     public void eventViewOpenCameraKtp() {
         if (analyticTracker == null)
             return;
-        if(projectID ==4){
-            sendTradeInViewEvent(Action.VIEW_OPEN_CAMERA_KTP);
-        } else {
-            analyticTracker.sendEventTracking(
-                    Event.VIEW_KYC,
-                    Category.KYC_PAGE,
-                    Action.VIEW_OPEN_CAMERA_KTP,
-                    ""
-            );
-        }
+
+        analyticTracker.sendEventTracking(
+                Event.VIEW_KYC,
+                Category.KYC_PAGE,
+                Action.VIEW_OPEN_CAMERA_KTP,
+                ""
+        );
     }
 
     public void eventClickBackCameraKtp() {
         if (analyticTracker == null)
             return;
-        if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_BACK_CAMERA_KTP);
-        } else {
-            analyticTracker.sendEventTracking(
-                    Event.CLICK_KYC,
-                    Category.KYC_PAGE,
-                    Action.CLICK_BACK_CAMERA_KTP,
-                    ""
-            );
-        }
+
+        analyticTracker.sendEventTracking(
+                Event.CLICK_KYC,
+                Category.KYC_PAGE,
+                Action.CLICK_BACK_CAMERA_KTP,
+                ""
+        );
     }
 
     public void eventClickShutterCameraKtp() {
         if (analyticTracker == null)
             return;
         if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_SHUTTER_CAMERA_KTP);
+            sendTradeInClickEvent(Action.CLICK_SHUTTER_CAMERA_KTP,"");
         } else {
             analyticTracker.sendEventTracking(
                     Event.CLICK_KYC,
@@ -243,7 +228,7 @@ public class UserIdentificationAnalytics {
         if (analyticTracker == null)
             return;
         if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_FLIP_CAMERA_KTP);
+            sendTradeInClickEvent(Action.CLICK_FLIP_CAMERA_KTP,"");
         } else {
             analyticTracker.sendEventTracking(
                     Event.CLICK_KYC,
@@ -257,38 +242,32 @@ public class UserIdentificationAnalytics {
     public void eventViewImagePreviewKtp() {
         if (analyticTracker == null)
             return;
-        if(projectID ==4){
-            sendTradeInViewEvent(Action.VIEW_IMAGE_PREVIEW_KTP);
-        } else {
-            analyticTracker.sendEventTracking(
-                    Event.VIEW_KYC,
-                    Category.KYC_PAGE,
-                    Action.VIEW_IMAGE_PREVIEW_KTP,
-                    ""
-            );
-        }
+
+        analyticTracker.sendEventTracking(
+                Event.VIEW_KYC,
+                Category.KYC_PAGE,
+                Action.VIEW_IMAGE_PREVIEW_KTP,
+                ""
+        );
     }
 
     public void eventClickCloseImagePreviewKtp() {
         if (analyticTracker == null)
             return;
-        if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_CLOSE_IMAGE_PREVIEW_KTP);
-        } else {
-            analyticTracker.sendEventTracking(
-                    Event.CLICK_KYC,
-                    Category.KYC_PAGE,
-                    Action.CLICK_CLOSE_IMAGE_PREVIEW_KTP,
-                    ""
-            );
-        }
+
+        analyticTracker.sendEventTracking(
+                Event.CLICK_KYC,
+                Category.KYC_PAGE,
+                Action.CLICK_CLOSE_IMAGE_PREVIEW_KTP,
+                ""
+        );
     }
 
     public void eventClickRecaptureKtp() {
         if (analyticTracker == null)
             return;
         if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_RECAPTURE_KTP);
+            sendTradeInClickEvent(Action.CLICK_RECAPTURE_KTP,"");
         } else {
             analyticTracker.sendEventTracking(
                     Event.CLICK_KYC,
@@ -303,7 +282,7 @@ public class UserIdentificationAnalytics {
         if (analyticTracker == null)
             return;
         if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_NEXT_IMAGE_PREVIEW_KTP);
+            sendTradeInClickEvent(Action.CLICK_NEXT_IMAGE_PREVIEW_KTP,"");
         } else {
             analyticTracker.sendEventTracking(
                     Event.CLICK_KYC,
@@ -332,23 +311,20 @@ public class UserIdentificationAnalytics {
     public void eventClickBackSelfiePage() {
         if (analyticTracker == null)
             return;
-        if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_BACK_SELFIE_PAGE);
-        } else {
-            analyticTracker.sendEventTracking(
-                    Event.CLICK_KYC,
-                    Category.KYC_PAGE,
-                    Action.CLICK_BACK_SELFIE_PAGE,
-                    ""
-            );
-        }
+
+        analyticTracker.sendEventTracking(
+                Event.CLICK_KYC,
+                Category.KYC_PAGE,
+                Action.CLICK_BACK_SELFIE_PAGE,
+                ""
+        );
     }
 
     public void eventClickNextSelfiePage() {
         if (analyticTracker == null)
             return;
         if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_NEXT_SELFIE_PAGE);
+            sendTradeInClickEvent(Action.CLICK_NEXT_SELFIE_PAGE,"");
         } else {
             analyticTracker.sendEventTracking(
                     Event.CLICK_KYC,
@@ -362,53 +338,44 @@ public class UserIdentificationAnalytics {
     public void eventViewErrorImageTooLargeSelfiePage() {
         if (analyticTracker == null)
             return;
-        if(projectID ==4){
-            sendTradeInViewEvent(Action.VIEW_ERROR_IMAGE_TOO_LARGE_SELFIE);
-        } else {
+
         analyticTracker.sendEventTracking(
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_ERROR_IMAGE_TOO_LARGE_SELFIE,
                 ""
         );
-        }
     }
 
     public void eventViewOpenCameraSelfie() {
         if (analyticTracker == null)
             return;
-        if(projectID ==4){
-            sendTradeInViewEvent(Action.VIEW_OPEN_CAMERA_SELFIE);
-        } else {
-            analyticTracker.sendEventTracking(
-                    Event.VIEW_KYC,
-                    Category.KYC_PAGE,
-                    Action.VIEW_OPEN_CAMERA_SELFIE,
-                    ""
-            );
-        }
+
+        analyticTracker.sendEventTracking(
+                Event.VIEW_KYC,
+                Category.KYC_PAGE,
+                Action.VIEW_OPEN_CAMERA_SELFIE,
+                ""
+        );
     }
 
     public void eventClickBackCameraSelfie() {
         if (analyticTracker == null)
             return;
-        if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_BACK_CAMERA_SELFIE);
-        } else {
-            analyticTracker.sendEventTracking(
-                    Event.CLICK_KYC,
-                    Category.KYC_PAGE,
-                    Action.CLICK_BACK_CAMERA_SELFIE,
-                    ""
-            );
-        }
+
+        analyticTracker.sendEventTracking(
+                Event.CLICK_KYC,
+                Category.KYC_PAGE,
+                Action.CLICK_BACK_CAMERA_SELFIE,
+                ""
+        );
     }
 
     public void eventClickShutterCameraSelfie() {
         if (analyticTracker == null)
             return;
         if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_SHUTTER_CAMERA_SELFIE);
+            sendTradeInClickEvent(Action.CLICK_SHUTTER_CAMERA_SELFIE,"");
         } else {
             analyticTracker.sendEventTracking(
                     Event.CLICK_KYC,
@@ -423,7 +390,7 @@ public class UserIdentificationAnalytics {
         if (analyticTracker == null)
             return;
         if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_FLIP_CAMERA_SELFIE);
+            sendTradeInClickEvent(Action.CLICK_FLIP_CAMERA_SELFIE,"");
         } else {
             analyticTracker.sendEventTracking(
                     Event.CLICK_KYC,
@@ -437,38 +404,32 @@ public class UserIdentificationAnalytics {
     public void eventViewImagePreviewSelfie() {
         if (analyticTracker == null)
             return;
-        if(projectID ==4){
-            sendTradeInViewEvent(Action.VIEW_IMAGE_PREVIEW_SELFIE);
-        } else {
-            analyticTracker.sendEventTracking(
-                    Event.VIEW_KYC,
-                    Category.KYC_PAGE,
-                    Action.VIEW_IMAGE_PREVIEW_SELFIE,
-                    ""
-            );
-        }
+
+        analyticTracker.sendEventTracking(
+                Event.VIEW_KYC,
+                Category.KYC_PAGE,
+                Action.VIEW_IMAGE_PREVIEW_SELFIE,
+                ""
+        );
     }
 
     public void eventClickCloseImagePreviewSelfie() {
         if (analyticTracker == null)
             return;
-        if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_CLOSE_IMAGE_PREVIEW_SELFIE);
-        } else {
-            analyticTracker.sendEventTracking(
-                    Event.CLICK_KYC,
-                    Category.KYC_PAGE,
-                    Action.CLICK_CLOSE_IMAGE_PREVIEW_SELFIE,
-                    ""
-            );
-        }
+
+        analyticTracker.sendEventTracking(
+                Event.CLICK_KYC,
+                Category.KYC_PAGE,
+                Action.CLICK_CLOSE_IMAGE_PREVIEW_SELFIE,
+                ""
+        );
     }
 
     public void eventClickRecaptureSelfie() {
         if (analyticTracker == null)
             return;
         if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_RECAPTURE_SELFIE);
+            sendTradeInClickEvent(Action.CLICK_RECAPTURE_SELFIE,"");
         } else {
             analyticTracker.sendEventTracking(
                     Event.CLICK_KYC,
@@ -483,7 +444,7 @@ public class UserIdentificationAnalytics {
         if (analyticTracker == null)
             return;
         if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_NEXT_IMAGE_PREVIEW_SELFIE);
+            sendTradeInClickEvent(Action.CLICK_NEXT_IMAGE_PREVIEW_SELFIE,"");
         } else {
             analyticTracker.sendEventTracking(
                     Event.CLICK_KYC,
@@ -512,23 +473,20 @@ public class UserIdentificationAnalytics {
     public void eventClickBackFinalForm() {
         if (analyticTracker == null)
             return;
-        if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_BACK_FINAL_FORM_PAGE);
-        } else {
-            analyticTracker.sendEventTracking(
-                    Event.CLICK_KYC,
-                    Category.KYC_PAGE,
-                    Action.CLICK_BACK_FINAL_FORM_PAGE,
-                    ""
-            );
-        }
+
+        analyticTracker.sendEventTracking(
+                Event.CLICK_KYC,
+                Category.KYC_PAGE,
+                Action.CLICK_BACK_FINAL_FORM_PAGE,
+                ""
+        );
     }
 
     public void eventClickChangeKtpFinalFormPage() {
         if (analyticTracker == null)
             return;
         if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_CHANGE_KTP_FINAL_FORM_PAGE);
+            sendTradeInClickEvent(Action.CLICK_CHANGE_KTP_FINAL_FORM_PAGE,"");
         } else {
             analyticTracker.sendEventTracking(
                     Event.CLICK_KYC,
@@ -543,7 +501,7 @@ public class UserIdentificationAnalytics {
         if (analyticTracker == null)
             return;
         if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_CHANGE_SELFIE_FINAL_FORM_PAGE);
+            sendTradeInClickEvent(Action.CLICK_CHANGE_SELFIE_FINAL_FORM_PAGE,"");
         } else {
             analyticTracker.sendEventTracking(
                     Event.CLICK_KYC,
@@ -558,7 +516,7 @@ public class UserIdentificationAnalytics {
         if (analyticTracker == null)
             return;
         if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_TERMS_AND_CONDITION_FINAL_FORM_PAGE);
+            sendTradeInClickEvent(Action.CLICK_TERMS_AND_CONDITION_FINAL_FORM_PAGE,"");
         } else {
             analyticTracker.sendEventTracking(
                     Event.CLICK_KYC,
@@ -572,15 +530,20 @@ public class UserIdentificationAnalytics {
     public void eventClickUploadPhotos() {
         if (analyticTracker == null)
             return;
+
+        analyticTracker.sendEventTracking(
+                Event.CLICK_KYC,
+                Category.KYC_PAGE,
+                Action.CLICK_UPLOAD_PHOTOS,
+                ""
+        );
+    }
+
+    public void eventClickUploadPhotosTradeIn(String label) {
+        if (analyticTracker == null)
+            return;
         if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_UPLOAD_PHOTOS);
-        } else {
-            analyticTracker.sendEventTracking(
-                    Event.CLICK_KYC,
-                    Category.KYC_PAGE,
-                    Action.CLICK_UPLOAD_PHOTOS,
-                    ""
-            );
+            sendTradeInClickEvent(Action.CLICK_UPLOAD_PHOTOS,label);
         }
     }
 
@@ -603,7 +566,7 @@ public class UserIdentificationAnalytics {
         if (analyticTracker == null)
             return;
         if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_BACK_PENDING_PAGE);
+            sendTradeInClickEvent(Action.CLICK_BACK_PENDING_PAGE,"");
         } else {
             analyticTracker.sendEventTracking(
                     Event.CLICK_KYC,
@@ -648,7 +611,7 @@ public class UserIdentificationAnalytics {
         if (analyticTracker == null)
             return;
         if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_BACK_REJECTED_PAGE);
+            sendTradeInClickEvent(Action.CLICK_BACK_REJECTED_PAGE,"");
         } else {
             analyticTracker.sendEventTracking(
                     Event.CLICK_KYC,
@@ -663,7 +626,7 @@ public class UserIdentificationAnalytics {
         if (analyticTracker == null)
             return;
         if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_NEXT_REJECTED_PAGE);
+            sendTradeInClickEvent(Action.CLICK_NEXT_REJECTED_PAGE,"");
         } else {
             analyticTracker.sendEventTracking(
                     Event.CLICK_KYC,
@@ -692,23 +655,19 @@ public class UserIdentificationAnalytics {
     public void eventClickBackSuccessPage() {
         if (analyticTracker == null)
             return;
-        if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_BACK_SUCCESS_PAGE);
-        } else {
-            analyticTracker.sendEventTracking(
-                    Event.CLICK_KYC,
-                    Category.KYC_PAGE,
-                    Action.CLICK_BACK_SUCCESS_PAGE,
-                    ""
-            );
-        }
+        analyticTracker.sendEventTracking(
+                Event.CLICK_KYC,
+                Category.KYC_PAGE,
+                Action.CLICK_BACK_SUCCESS_PAGE,
+                ""
+        );
     }
 
     public void eventClickTermsSuccessPage() {
         if (analyticTracker == null)
             return;
         if(projectID ==4){
-            sendTradeInClickEvent(Action.CLICK_TERMS_AND_CONDITION_SUCCESS_PAGE);
+            sendTradeInClickEvent(Action.CLICK_TERMS_AND_CONDITION_SUCCESS_PAGE,"");
         } else {
             analyticTracker.sendEventTracking(
                     Event.CLICK_KYC,
@@ -719,7 +678,7 @@ public class UserIdentificationAnalytics {
         }
     }
 
-    private void sendTradeInClickEvent(String Action) {
+    private void sendTradeInClickEvent(String Action,String label) {
         analyticTracker.sendEventTracking(
                 Event.CLICK_TRADEIN,
                 Category.KYC_PAGE_TRADEIN,
