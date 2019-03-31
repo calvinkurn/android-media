@@ -1689,11 +1689,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getTokoPointsIntent(Context context) {
-        return new Intent(context, TokoPointsHomeActivity.class);
-    }
-
-    @Override
     public SnapHelper getSnapHelper() {
         return new StartSnapHelper();
     }
