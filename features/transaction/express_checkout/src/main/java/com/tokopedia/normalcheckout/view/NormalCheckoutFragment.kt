@@ -14,7 +14,6 @@ import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -186,16 +185,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 tv_trade_in.visible()
                 tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
                 if (tradeInParams!!.usedPrice > 0) {
-                    tv_trade_in.setOnClickListener { goToHargaFinal() }
-                    TrackApp.getInstance()?.gtm?.sendGeneralEvent("viewATC",
-                            "add to cart",
-                            "view trade in section",
-                            "after diagnostic")
-                } else
-                    TrackApp.getInstance()?.gtm?.sendGeneralEvent("viewATC",
-                            "add to cart",
-                            "view trade in section",
-                            "before diagnostic")
+                    tv_trade_in.setOnClickListener {
+                        goToHargaFinal()
+                        trackClickTradeIn()
+                    }
+                }
             }
         }
         originalProduct = productInfoAndVariant
@@ -234,52 +228,32 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     fun trackClickTradeIn() {
-        if (action == ATC_AND_BUY) {
-            tradeInParams?.let {
-                if (tradeInParams!!.usedPrice <= 0) {
-                    TrackApp.getInstance()?.gtm?.sendGeneralEvent("clickATC", "add to cart",
-                            "click tukar tambah sekarang",
-                            "redirect to diagnostic")
-                } else {
-                    TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(
-                            DataLayer.mapOf("eventCategory", "add to cart",
-                                    "eventAction", "click tukar tambah sekarang ",
-                                    "eventLabel", "kyc",
-                                    "ecommerce", DataLayer.mapOf(
-                                    "currencyCode", "IDR",
-                                    "add", DataLayer.mapOf(
-                                    "products", DataLayer.listOf(DataLayer.mapOf(
-                                    "name", selectedProductInfo?.basic?.name,
-                                    "id", selectedProductInfo?.basic?.id,
-                                    "price", selectedProductInfo?.basic?.price,
-                                    "brand", selectedProductInfo?.brand?.name,
-                                    "category", selectedProductInfo?.category?.detail?.toString(),
-                                    "variant", selectedProductInfo?.variant?.parentID,
-                                    "quantity", quantity,
-                                    "shop_id", shopId,
-                                    "shop_type", shopType,
-                                    "shop_name", shopName,
-                                    "category_id", selectedProductInfo?.category?.id,
-                                    "dimension45", selectedProductInfo?.basic?.catalogID,
-                                    "dimension38", trackerAttribution))
-                            )
-                            )
-                            ))
-                }
-            }
-        } else if (action == ATC_ONLY) {
-            tradeInParams?.let {
-                if (tradeInParams!!.usedPrice <= 0) {
-                    TrackApp.getInstance()?.gtm?.sendGeneralEvent("clickATC", "add to cart",
-                            "click tukar tambah",
-                            "redirect to diagnostic")
-                } else {
-                    TrackApp.getInstance()?.gtm?.sendGeneralEvent("clickATC", "add to cart",
-                            "click tukar tambah - tambah keranjang",
-                            "redirect to harga final")
-                }
-            }
+        val whichbutton: String
+        if (action == ATC_ONLY)
+            whichbutton = "tambah keranjang"
+        else
+            whichbutton = "beli"
+        tradeInParams?.let {
+            val label: String
+            if (tradeInParams!!.usedPrice > 0)
+                label = "after diagnostic"
+            else
+                label = "before diagnostic"
+
+            sendGeneralEvent("clickPDP",
+                    "product detail page",
+                    "click trade in widget on variants page - "
+                            + whichbutton,
+                    label)
+
         }
+    }
+
+    private fun sendGeneralEvent(event:String, category:String, action:String, label : String){
+        TrackApp.getInstance()?.gtm?.sendGeneralEvent(event,
+                category,
+                action,
+                label)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -528,60 +502,19 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 addToCart()
             } else if (action == TRADEIN_BUY) {
                 if (tradeInParams != null) {
+                    val label : String
                     if (tradeInParams!!.usedPrice > 0) {
-                        TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(
-                                DataLayer.mapOf("eventCategory", "add to cart",
-                                        "eventAction", "click tukar tambah",
-                                        "eventLabel", "diagnostic",
-                                        "ecommerce", DataLayer.mapOf(
-                                        "currencyCode", "IDR",
-                                        "add", DataLayer.mapOf(
-                                        "products", DataLayer.listOf(DataLayer.mapOf(
-                                        "name", selectedProductInfo?.basic?.name,
-                                        "id", selectedProductInfo?.basic?.id,
-                                        "price", selectedProductInfo?.basic?.price,
-                                        "brand", selectedProductInfo?.brand?.name,
-                                        "category", selectedProductInfo?.category?.detail?.toString(),
-                                        "variant", selectedProductInfo?.variant?.parentID,
-                                        "quantity", quantity,
-                                        "shop_id", shopId,
-                                        "shop_type", shopType,
-                                        "shop_name", shopName,
-                                        "category_id", selectedProductInfo?.category?.id,
-                                        "dimension45", selectedProductInfo?.basic?.catalogID,
-                                        "dimension38", trackerAttribution))
-                                )
-                                )
-                                ))
                         goToHargaFinal()
+                        label = "after diagnostic"
                     } else {
-                        TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(
-                                DataLayer.mapOf("eventCategory", "add to cart",
-                                        "eventAction", "click tukar tambah",
-                                        "eventLabel", "non-diagnostic",
-                                        "ecommerce", DataLayer.mapOf(
-                                        "currencyCode", "IDR",
-                                        "add", DataLayer.mapOf(
-                                        "products", DataLayer.listOf(DataLayer.mapOf(
-                                        "name", selectedProductInfo?.basic?.name,
-                                        "id", selectedProductInfo?.basic?.id,
-                                        "price", selectedProductInfo?.basic?.price,
-                                        "brand", selectedProductInfo?.brand?.name,
-                                        "category", selectedProductInfo?.category?.detail?.toString(),
-                                        "variant", selectedProductInfo?.variant?.parentID,
-                                        "quantity", quantity,
-                                        "shop_id", shopId,
-                                        "shop_type", shopType,
-                                        "shop_name", shopName,
-                                        "category_id", selectedProductInfo?.category?.id,
-                                        "dimension45", selectedProductInfo?.basic?.catalogID,
-                                        "dimension38", trackerAttribution))
-                                )
-                                )
-                                ))
-                        tv_trade_in.setTrackListener { null }
                         tv_trade_in.performClick()
+                        label = "before diagnostic"
                     }
+                    sendGeneralEvent("clickPDP",
+                            "product detail page",
+                            "'click trade in button on variants page",
+                            label
+                    )
                 }
             } else {
                 doBuyOrPreorder()
@@ -687,7 +620,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         addToCart(true, onFinish = { message: String?, cartId: String? ->
             onFinishAddToCart(message)
             selectedProductInfo?.run {
-                normalCheckoutTracking.eventClickBuyInVariant(
+                normalCheckoutTracking.eventClickBuyTradeIn(
                         originalProduct,
                         selectedVariantId ?: "",
                         this, quantity,

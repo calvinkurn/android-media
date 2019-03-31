@@ -309,31 +309,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         initializePartialView(view)
         initView()
-        tv_trade_in.tag = false
-        val outRectScroll = Rect()
-        nested_scroll.getHitRect(outRectScroll)
-        nested_scroll.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener {
-            _, scrollX, scrollY, oldScrollX, oldScrollY ->
-            if(tv_trade_in.visibility == View.VISIBLE){
-                if(tv_trade_in.getLocalVisibleRect(outRectScroll) && !(tv_trade_in.tag as Boolean)){
-                    if (tradeInParams.usedPrice <= 0)
-                        productDetailTracking.sendGeneralEvent("viewPDP",
-                                "product detail page",
-                                "view trade in section",
-                                "before diagnostic")
-                    else
-                        productDetailTracking.sendGeneralEvent("viewPDP",
-                                "product detail page",
-                                "view trade in section",
-                                "after diagnostic")
-                    tv_trade_in.tag = true
-                }
-
-            }
-
-        })
-
-
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener {
             if (tv_trade_in_promo != null) {
@@ -1096,7 +1071,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productInfo?.run {
             productDetailTracking.sendScreen(basic.shopID.toString(),
                     shopInfo?.goldOS?.shopTypeString ?: "", productId ?: "")
-            productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, this, productInfoP2.shopInfo, trackerAttribution)
+            productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, this, productInfoP2.shopInfo, trackerAttribution,
+                    tradeInParams?.isEligible==1, tradeInParams?.usedPrice>0)
             productDetailTracking.sendMoEngageOpenProduct(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
                     ?: "")
             productDetailTracking.eventAppsFylerOpenProduct(this)
@@ -1228,12 +1204,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     if(tradeInParams!!.usedPrice>0)
                         productDetailTracking.sendGeneralEvent(" clickPDP",
                                 "product detail page",
-                                "click tukar tambah sekarang",
+                                "click trade in widget",
                                 "after diagnostic")
                     else
                         productDetailTracking.sendGeneralEvent(" clickPDP",
                                 "product detail page",
-                                "click tukar tambah sekarang",
+                                "click trade in widget",
                                 "before diagnostic")
 
                 }

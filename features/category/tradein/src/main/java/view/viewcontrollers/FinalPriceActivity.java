@@ -225,12 +225,6 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         mTvButtonPayOrKtp.setText(R.string.buy_now);
         mTvButtonPayOrKtp.setOnClickListener(v -> {
             goToCheckout();
-            sendGeneralEvent("clickTradeIn",
-                    "harga final trade in",
-                    "click beli sekarang",
-                    "");
-
-
         });
     }
 
@@ -268,9 +262,6 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         if (isTncShowing) {
             setVisibilityGroup(View.VISIBLE);
         }
-        sendGeneralEvent("clickTradeIn",
-                "harga final trade in",
-                "click back", "");
         super.onBackPressed();
     }
 

@@ -91,7 +91,8 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         }
         if (getActivity() != null) {
             analytics = UserIdentificationAnalytics.createInstance(getActivity()
-                    .getApplicationContext());
+                    .getApplicationContext(),
+                    getActivity().getIntent().getIntExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, 1));
         }
     }
 

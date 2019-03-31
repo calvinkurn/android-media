@@ -202,16 +202,6 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        sendGeneralEvent("clickTradeIn",
-                "trade in start page",
-                "click back",
-                "");
-
-    }
-
     private boolean errorPriceNotElligible(int oldMinPrice) {
         if (oldMinPrice > tradeInHomeViewModel.getTradeInParams().getNewPrice()) {
             String notElligible = getString(R.string.not_elligible_price_high);

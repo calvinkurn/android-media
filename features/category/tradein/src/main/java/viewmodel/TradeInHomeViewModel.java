@@ -63,16 +63,10 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
                 String action = intent.getStringExtra("action");
                 String value = intent.getStringExtra("value");
                 if ("cek fisik".equals(page)) {
-                    if ("click back".equals(action) || "click salin".equals(action) || "click social share".equals(action))
+                    if ("click salin".equals(action) || "click social share".equals(action))
                         sendGeneralEvent("clickTradeIn", "cek fisik trade in", action, value);
-                    else if ("view cek fisik".equals(action))
-                        sendGeneralEvent("viewTradeIn", "cek fisik trade in", "view cek fisik", "");
-
                 } else if ("cek fungsi trade in".equals(page)) {
-                    if ("view cek fungsi".equals(action))
-                        sendGeneralEvent("viewTradeIn", "cek fungsi trade in", action, "");
-                    else
-                        sendGeneralEvent("clickTradeIn", "cek fungsi trade in", action, value);
+                    sendGeneralEvent("clickTradeIn", "cek fungsi trade in", action, value);
                 } else if ("cek fisik result trade in".equals(page)) {
                     sendGeneralEvent("viewTradeIn", "cek fisik result trade in", action, value);
                 }
@@ -181,12 +175,6 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
                 Constants.APPID, Constants.APIKEY, Constants.LAKU6_BASEURL);
         inData = activityWeakReference.get().getIntent().getParcelableExtra(TradeInParams.class.getSimpleName());
         requestPermission();
-        sendGeneralEvent("viewTradeIn",
-                "trade in start page",
-                "view preview trade in",
-                "");
-
-
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)

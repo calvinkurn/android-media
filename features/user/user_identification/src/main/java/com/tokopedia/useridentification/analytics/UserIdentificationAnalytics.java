@@ -12,10 +12,13 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 public class UserIdentificationAnalytics {
 
     private final AnalyticTracker analyticTracker;
+    private final int projectID;
 
     private static class Event {
         private static final String VIEW_KYC = "viewKYC";
         private static final String CLICK_KYC = "clickKYC";
+        static final String VIEW_TRADEIN = "viewTradeIn";
+        static final String CLICK_TRADEIN = "clickTradeIn";
     }
 
     private static class Action {
@@ -73,15 +76,17 @@ public class UserIdentificationAnalytics {
 
     private static class Category {
         private static final String KYC_PAGE = "kyc page";
+        private static final String KYC_PAGE_TRADEIN = "kyc trade in page";
     }
 
-    public UserIdentificationAnalytics(AnalyticTracker analyticTracker) {
+    private UserIdentificationAnalytics(AnalyticTracker analyticTracker, int projectID) {
+        this.projectID = projectID;
         this.analyticTracker = analyticTracker;
     }
 
-    public static UserIdentificationAnalytics createInstance(Context context) {
-        if (context != null && context instanceof AbstractionRouter) {
-            return new UserIdentificationAnalytics(((AbstractionRouter) context).getAnalyticTracker());
+    public static UserIdentificationAnalytics createInstance(Context context, int projectId) {
+        if (context instanceof AbstractionRouter) {
+            return new UserIdentificationAnalytics(((AbstractionRouter) context).getAnalyticTracker(), projectId);
 
         } else return null;
     }
@@ -101,491 +106,633 @@ public class UserIdentificationAnalytics {
     public void eventClickOnBackOnBoarding() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_BACK_ONBOARDING,
-                ""
-        );
+        if (projectID == 4) {
+            sendTradeInClickEvent(Action.CLICK_BACK_ONBOARDING);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_BACK_ONBOARDING,
+                    ""
+            );
+        }
     }
 
     public void eventClickOnNextOnBoarding() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_NEXT_ONBOARDING,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_NEXT_ONBOARDING);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_NEXT_ONBOARDING,
+                    ""
+            );
+        }
     }
 
     public void eventViewKtpPage() {
         if (analyticTracker == null)
             return;
 
-        analyticTracker.sendEventTracking(
-                Event.VIEW_KYC,
-                Category.KYC_PAGE,
-                Action.VIEW_KTP_PAGE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInViewEvent(Action.VIEW_KTP_PAGE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.VIEW_KYC,
+                    Category.KYC_PAGE,
+                    Action.VIEW_KTP_PAGE,
+                    ""
+            );
+        }
     }
 
     public void eventClickBackKtpPage() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_BACK_KTP_PAGE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_BACK_KTP_PAGE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_BACK_KTP_PAGE,
+                    ""
+            );
+        }
     }
 
     public void eventClickNextKtpPage() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_NEXT_KTP_PAGE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_NEXT_KTP_PAGE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_NEXT_KTP_PAGE,
+                    ""
+            );
+        }
     }
 
     public void eventViewErrorImageTooLargeKtpPage() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.VIEW_KYC,
-                Category.KYC_PAGE,
-                Action.VIEW_ERROR_IMAGE_TOO_LARGE_KTP,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInViewEvent(Action.VIEW_ERROR_IMAGE_TOO_LARGE_KTP);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.VIEW_KYC,
+                    Category.KYC_PAGE,
+                    Action.VIEW_ERROR_IMAGE_TOO_LARGE_KTP,
+                    ""
+            );
+        }
     }
 
     public void eventViewOpenCameraKtp() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.VIEW_KYC,
-                Category.KYC_PAGE,
-                Action.VIEW_OPEN_CAMERA_KTP,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInViewEvent(Action.VIEW_OPEN_CAMERA_KTP);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.VIEW_KYC,
+                    Category.KYC_PAGE,
+                    Action.VIEW_OPEN_CAMERA_KTP,
+                    ""
+            );
+        }
     }
 
     public void eventClickBackCameraKtp() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_BACK_CAMERA_KTP,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_BACK_CAMERA_KTP);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_BACK_CAMERA_KTP,
+                    ""
+            );
+        }
     }
 
     public void eventClickShutterCameraKtp() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_SHUTTER_CAMERA_KTP,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_SHUTTER_CAMERA_KTP);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_SHUTTER_CAMERA_KTP,
+                    ""
+            );
+        }
     }
 
     public void eventClickFlipCameraKtp() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_FLIP_CAMERA_KTP,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_FLIP_CAMERA_KTP);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_FLIP_CAMERA_KTP,
+                    ""
+            );
+        }
     }
 
     public void eventViewImagePreviewKtp() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.VIEW_KYC,
-                Category.KYC_PAGE,
-                Action.VIEW_IMAGE_PREVIEW_KTP,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInViewEvent(Action.VIEW_IMAGE_PREVIEW_KTP);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.VIEW_KYC,
+                    Category.KYC_PAGE,
+                    Action.VIEW_IMAGE_PREVIEW_KTP,
+                    ""
+            );
+        }
     }
 
     public void eventClickCloseImagePreviewKtp() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_CLOSE_IMAGE_PREVIEW_KTP,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_CLOSE_IMAGE_PREVIEW_KTP);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_CLOSE_IMAGE_PREVIEW_KTP,
+                    ""
+            );
+        }
     }
 
     public void eventClickRecaptureKtp() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_RECAPTURE_KTP,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_RECAPTURE_KTP);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_RECAPTURE_KTP,
+                    ""
+            );
+        }
     }
 
     public void eventClickNextImagePreviewKtp() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_NEXT_IMAGE_PREVIEW_KTP,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_NEXT_IMAGE_PREVIEW_KTP);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_NEXT_IMAGE_PREVIEW_KTP,
+                    ""
+            );
+        }
     }
 
     public void eventViewSelfiePage() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.VIEW_KYC,
-                Category.KYC_PAGE,
-                Action.VIEW_SELFIE_PAGE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInViewEvent(Action.VIEW_SELFIE_PAGE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.VIEW_KYC,
+                    Category.KYC_PAGE,
+                    Action.VIEW_SELFIE_PAGE,
+                    ""
+            );
+        }
     }
 
     public void eventClickBackSelfiePage() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_BACK_SELFIE_PAGE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_BACK_SELFIE_PAGE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_BACK_SELFIE_PAGE,
+                    ""
+            );
+        }
     }
 
     public void eventClickNextSelfiePage() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_NEXT_SELFIE_PAGE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_NEXT_SELFIE_PAGE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_NEXT_SELFIE_PAGE,
+                    ""
+            );
+        }
     }
 
     public void eventViewErrorImageTooLargeSelfiePage() {
         if (analyticTracker == null)
             return;
-
+        if(projectID ==4){
+            sendTradeInViewEvent(Action.VIEW_ERROR_IMAGE_TOO_LARGE_SELFIE);
+        } else {
         analyticTracker.sendEventTracking(
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_ERROR_IMAGE_TOO_LARGE_SELFIE,
                 ""
         );
+        }
     }
 
     public void eventViewOpenCameraSelfie() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.VIEW_KYC,
-                Category.KYC_PAGE,
-                Action.VIEW_OPEN_CAMERA_SELFIE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInViewEvent(Action.VIEW_OPEN_CAMERA_SELFIE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.VIEW_KYC,
+                    Category.KYC_PAGE,
+                    Action.VIEW_OPEN_CAMERA_SELFIE,
+                    ""
+            );
+        }
     }
 
     public void eventClickBackCameraSelfie() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_BACK_CAMERA_SELFIE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_BACK_CAMERA_SELFIE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_BACK_CAMERA_SELFIE,
+                    ""
+            );
+        }
     }
 
     public void eventClickShutterCameraSelfie() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_SHUTTER_CAMERA_SELFIE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_SHUTTER_CAMERA_SELFIE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_SHUTTER_CAMERA_SELFIE,
+                    ""
+            );
+        }
     }
 
     public void eventClickFlipCameraSelfie() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_FLIP_CAMERA_SELFIE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_FLIP_CAMERA_SELFIE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_FLIP_CAMERA_SELFIE,
+                    ""
+            );
+        }
     }
 
     public void eventViewImagePreviewSelfie() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.VIEW_KYC,
-                Category.KYC_PAGE,
-                Action.VIEW_IMAGE_PREVIEW_SELFIE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInViewEvent(Action.VIEW_IMAGE_PREVIEW_SELFIE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.VIEW_KYC,
+                    Category.KYC_PAGE,
+                    Action.VIEW_IMAGE_PREVIEW_SELFIE,
+                    ""
+            );
+        }
     }
 
     public void eventClickCloseImagePreviewSelfie() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_CLOSE_IMAGE_PREVIEW_SELFIE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_CLOSE_IMAGE_PREVIEW_SELFIE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_CLOSE_IMAGE_PREVIEW_SELFIE,
+                    ""
+            );
+        }
     }
 
     public void eventClickRecaptureSelfie() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_RECAPTURE_SELFIE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_RECAPTURE_SELFIE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_RECAPTURE_SELFIE,
+                    ""
+            );
+        }
     }
 
     public void eventClickNextImagePreviewSelfie() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_NEXT_IMAGE_PREVIEW_SELFIE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_NEXT_IMAGE_PREVIEW_SELFIE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_NEXT_IMAGE_PREVIEW_SELFIE,
+                    ""
+            );
+        }
     }
 
     public void eventViewFinalForm() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.VIEW_KYC,
-                Category.KYC_PAGE,
-                Action.VIEW_FINAL_FORM_PAGE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInViewEvent(Action.VIEW_FINAL_FORM_PAGE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.VIEW_KYC,
+                    Category.KYC_PAGE,
+                    Action.VIEW_FINAL_FORM_PAGE,
+                    ""
+            );
+        }
     }
 
     public void eventClickBackFinalForm() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_BACK_FINAL_FORM_PAGE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_BACK_FINAL_FORM_PAGE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_BACK_FINAL_FORM_PAGE,
+                    ""
+            );
+        }
     }
 
     public void eventClickChangeKtpFinalFormPage() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_CHANGE_KTP_FINAL_FORM_PAGE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_CHANGE_KTP_FINAL_FORM_PAGE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_CHANGE_KTP_FINAL_FORM_PAGE,
+                    ""
+            );
+        }
     }
 
     public void eventClickChangeSelfieFinalFormPage() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_CHANGE_SELFIE_FINAL_FORM_PAGE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_CHANGE_SELFIE_FINAL_FORM_PAGE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_CHANGE_SELFIE_FINAL_FORM_PAGE,
+                    ""
+            );
+        }
     }
 
     public void eventClickTermsFinalFormPage() {
-            if (analyticTracker == null)
-                return;
-
+        if (analyticTracker == null)
+            return;
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_TERMS_AND_CONDITION_FINAL_FORM_PAGE);
+        } else {
             analyticTracker.sendEventTracking(
                     Event.CLICK_KYC,
                     Category.KYC_PAGE,
                     Action.CLICK_TERMS_AND_CONDITION_FINAL_FORM_PAGE,
                     ""
             );
+        }
     }
 
     public void eventClickUploadPhotos() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_UPLOAD_PHOTOS,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_UPLOAD_PHOTOS);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_UPLOAD_PHOTOS,
+                    ""
+            );
+        }
     }
 
     public void eventViewPendingPage() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.VIEW_KYC,
-                Category.KYC_PAGE,
-                Action.VIEW_PENDING_PAGE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInViewEvent(Action.VIEW_PENDING_PAGE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.VIEW_KYC,
+                    Category.KYC_PAGE,
+                    Action.VIEW_PENDING_PAGE,
+                    ""
+            );
+        }
     }
 
     public void eventClickBackPendingPage() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_BACK_PENDING_PAGE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_BACK_PENDING_PAGE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_BACK_PENDING_PAGE,
+                    ""
+            );
+        }
     }
 
     public void eventViewSuccessSnackbarPendingPage() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.VIEW_KYC,
-                Category.KYC_PAGE,
-                Action.VIEW_SUCCESS_SNACKBAR_PENDING_PAGE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInViewEvent(Action.VIEW_SUCCESS_SNACKBAR_PENDING_PAGE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.VIEW_KYC,
+                    Category.KYC_PAGE,
+                    Action.VIEW_SUCCESS_SNACKBAR_PENDING_PAGE,
+                    ""
+            );
+        }
     }
 
     public void eventViewRejectedPage() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.VIEW_KYC,
-                Category.KYC_PAGE,
-                Action.VIEW_REJECTED_PAGE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInViewEvent(Action.VIEW_REJECTED_PAGE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.VIEW_KYC,
+                    Category.KYC_PAGE,
+                    Action.VIEW_REJECTED_PAGE,
+                    ""
+            );
+        }
     }
 
     public void eventClickBackRejectedPage() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_BACK_REJECTED_PAGE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_BACK_REJECTED_PAGE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_BACK_REJECTED_PAGE,
+                    ""
+            );
+        }
     }
 
     public void eventClickNextRejectedPage() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_NEXT_REJECTED_PAGE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_NEXT_REJECTED_PAGE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_NEXT_REJECTED_PAGE,
+                    ""
+            );
+        }
     }
 
     public void eventViewSuccessPage() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.VIEW_KYC,
-                Category.KYC_PAGE,
-                Action.VIEW_SUCCES_PAGE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInViewEvent(Action.VIEW_SUCCES_PAGE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.VIEW_KYC,
+                    Category.KYC_PAGE,
+                    Action.VIEW_SUCCES_PAGE,
+                    ""
+            );
+        }
     }
 
     public void eventClickBackSuccessPage() {
         if (analyticTracker == null)
             return;
-
-        analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_BACK_SUCCESS_PAGE,
-                ""
-        );
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_BACK_SUCCESS_PAGE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_BACK_SUCCESS_PAGE,
+                    ""
+            );
+        }
     }
 
     public void eventClickTermsSuccessPage() {
         if (analyticTracker == null)
             return;
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_TERMS_AND_CONDITION_SUCCESS_PAGE);
+        } else {
+            analyticTracker.sendEventTracking(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_TERMS_AND_CONDITION_SUCCESS_PAGE,
+                    ""
+            );
+        }
+    }
 
+    private void sendTradeInClickEvent(String Action) {
         analyticTracker.sendEventTracking(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_TERMS_AND_CONDITION_SUCCESS_PAGE,
+                Event.CLICK_TRADEIN,
+                Category.KYC_PAGE_TRADEIN,
+                Action,
+                ""
+        );
+    }
+
+    private void sendTradeInViewEvent(String Action) {
+        analyticTracker.sendEventTracking(
+                Event.VIEW_TRADEIN,
+                Category.KYC_PAGE_TRADEIN,
+                Action,
                 ""
         );
     }

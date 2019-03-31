@@ -2,7 +2,6 @@ package view.viewcontrollers;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,7 +16,6 @@ import android.widget.TextView;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.tradein.R;
 
-import viewmodel.AccessRequestViewModel;
 import viewmodel.IAccessRequestListener;
 
 public class AccessRequestFragment extends DialogFragment {
@@ -66,31 +64,28 @@ public class AccessRequestFragment extends DialogFragment {
         accessRequestListener = (IAccessRequestListener) activity;
     }
 
-   public class AccessRequestClickListener implements View.OnClickListener {
+    public class AccessRequestClickListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.button_accept) {
-                TrackApp trackApp = TrackApp.getInstance();
-                if(trackApp!=null) {
-                    trackApp.getGTM().sendGeneralEvent("clickATC",
-                            "add to cart",
-                            "click - asking permission - setuju",
-                            "");
-                }
+                sendGeneralEvent("setuju");
                 accessRequestListener.clickAccept();
                 dismiss();
+            } else {
+                sendGeneralEvent("batal");
             }
-            else {
-                TrackApp trackApp = TrackApp.getInstance();
-                if(trackApp!=null) {
-                    trackApp.getGTM().sendGeneralEvent("clickATC",
-                            "add to cart",
-                            "click - asking permission - batal",
-                            "");
-                }
-                dismiss();
-            }
+            dismiss();
+        }
+    }
+
+    private void sendGeneralEvent(String label) {
+        TrackApp trackApp = TrackApp.getInstance();
+        if (trackApp != null) {
+            trackApp.getGTM().sendGeneralEvent("clickPDP",
+                    "product detail page",
+                    "click - asking permission trade in",
+                    label);
         }
     }
 

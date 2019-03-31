@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.analytics.UserIdentificationAnalytics;
+import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
 
 import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
@@ -52,13 +53,14 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
         }
         if (getArguments() != null && savedInstanceState == null) {
             stepperModel = getArguments().getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
-        } else if (savedInstanceState != null){
+        } else if (savedInstanceState != null) {
             stepperModel = savedInstanceState.getParcelable(EXTRA_KYC_STEPPER_MODEL);
         }
         if (getActivity() != null) {
             analytics = UserIdentificationAnalytics.createInstance(getActivity()
-                    .getApplicationContext());
-        }    }
+                    .getApplicationContext(), getActivity().getIntent().getIntExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, 1));
+        }
+    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
