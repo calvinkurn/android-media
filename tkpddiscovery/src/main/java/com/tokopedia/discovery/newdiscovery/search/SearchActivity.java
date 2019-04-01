@@ -213,7 +213,7 @@ public class SearchActivity extends DiscoveryActivity
         GraphqlClient.init(this);
         initInjector();
         initForceSwipeToShop(savedInstanceState);
-        bottomSheetFilterView.initFilterBottomSheet(savedInstanceState);
+        bottomSheetFilterView.initFilterBottomSheet();
     }
 
     private void initForceSwipeToShop(Bundle savedInstanceState) {
@@ -738,7 +738,7 @@ public class SearchActivity extends DiscoveryActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        bottomSheetFilterView.onSaveInstanceState(outState);
+        bottomSheetFilterView.closeView();
     }
 
     private Context getActivityContext() {
