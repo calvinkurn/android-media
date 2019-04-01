@@ -354,7 +354,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     UsernameInputFragment::class.java.simpleName
             )
             usernameInputFragment.onDismissListener = {
-                if (usernameInputFragment.isSuccessRegister) {
+                if (usernameInputFragment.isSuccessRegister && !TextUtils.isEmpty(link)) {
                     doShare(link)
                     profilePreference.setShouldChangeUsername(false)
                 }
@@ -693,16 +693,21 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         onGoToKolComment(positionInFeed, id, false, "")
     }
 
-    override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, iamgeUrl: String) {
-        if (activity != null) {
-            profileRouter.shareFeed(
-                    activity!!,
-                    id.toString(),
-                    url,
-                    title,
-                    iamgeUrl,
-                    description
-            )
+    override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String,
+                              url: String, iamgeUrl: String) {
+        activity?.let {
+            if (shouldChangeUsername()) {
+                presenter.shouldChangeUsername(userSession.userId.toIntOrZero())
+            } else {
+                profileRouter.shareFeed(
+                        it,
+                        id.toString(),
+                        url,
+                        title,
+                        iamgeUrl,
+                        description
+                )
+            }
         }
         profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
     }
@@ -1195,12 +1200,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun shareLink(link: String) {
-        if (isOwner && profilePreference.shouldChangeUsername()) {
+        if (shouldChangeUsername()) {
             presenter.shouldChangeUsername(userSession.userId.toIntOrZero(), link)
         } else {
             doShare(link)
         }
     }
+
+    private fun shouldChangeUsername(): Boolean = isOwner && profilePreference.shouldChangeUsername()
 
     private fun doShare(link: String) {
         val shareBody = String.format(getString(R.string.profile_share_text), link)
