@@ -6,6 +6,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
+import android.os.Build
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -49,13 +50,24 @@ class BannerViewDynamicBackground : BannerView {
         imgBannerBackground = view.findViewById(R.id.img_banner_background)
         cardBannerView = view.findViewById(R.id.card_banner_view)
 
-        if (::cardBannerView.isInitialized) {
-            cardBannerView.setMargin(
-                    cardBannerView.left,
-                    ViewHelper.getStatusBarHeight(context),
-                    cardBannerView.right,
-                    cardBannerView.bottom
-            )
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (::cardBannerView.isInitialized) {
+                cardBannerView.setMargin(
+                        cardBannerView.left,
+                        ViewHelper.getStatusBarHeight(context),
+                        cardBannerView.right,
+                        cardBannerView.bottom
+                )
+            }
+        } else {
+            if (::cardBannerView.isInitialized) {
+                cardBannerView.setMargin(
+                        cardBannerView.left,
+                        cardBannerView.top,
+                        cardBannerView.right,
+                        cardBannerView.bottom
+                )
+            }
         }
 
         indicatorItems = ArrayList()

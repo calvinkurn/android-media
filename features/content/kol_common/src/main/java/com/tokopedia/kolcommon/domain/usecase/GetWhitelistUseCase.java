@@ -28,6 +28,7 @@ public class GetWhitelistUseCase extends GraphqlUseCase {
     private static final String PARAM_TYPE = "type";
     private static final String PARAM_ID = "ID";
     public static final String WHITELIST_CONTENT_USER = "content-user";
+    public static final String WHITELIST_ENTRY_POINT = "entrypoint";
     public static final String WHITELIST_SHOP = "content-shop";
     public static final String WHITELIST_INTEREST = "interest";
 

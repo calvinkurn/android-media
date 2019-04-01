@@ -33,7 +33,6 @@ import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapResource;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -108,10 +107,7 @@ public class HeaderHomeView extends BaseCustomView {
         if (listener == null)
             return;
 
-        if (getContext().getApplicationContext() instanceof IHomeRouter) {
-            AnalyticTracker analyticTracker = ((IHomeRouter) getContext().getApplicationContext()).getAnalyticTracker();
-            walletAnalytics = new WalletAnalytics(analyticTracker);
-        }
+        walletAnalytics = new WalletAnalytics();
 
         if (headerViewModel.isUserLogin()) {
             render();

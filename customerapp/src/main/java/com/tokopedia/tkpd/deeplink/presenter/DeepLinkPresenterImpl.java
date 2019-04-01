@@ -319,6 +319,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openFlight();
                     screenName = "";
                     break;
+                case DeepLinkChecker.PROFILE:
+                    openProfile(linkSegment);
+                    screenName = "";
+                    break;
                 default:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -406,6 +410,17 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         viewListener.goToPage(intent);
     }
 
+    private void openProfile(List<String> linkSegment) {
+        if (linkSegment.size() >= 2) {
+            String userId = linkSegment.get(1);
+            Intent intent = RouteManager.getIntent(
+                    context,
+                    ApplinkConst.PROFILE.replace("{user_id}", userId)
+            );
+            viewListener.goToPage(intent);
+        }
+    }
+    
     private void login(Uri uriData) {
         interactor.handleAccounts(parseUriData(uriData), new SignInInteractor.SignInListener() {
             @Override
@@ -557,30 +572,34 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openProduct(final List<String> linkSegment, final Uri uriData) {
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put(ProductDetailCommonConstant.PARAM_PRODUCT_KEY, linkSegment.get(1));
-        parameters.put(ProductDetailCommonConstant.PARAM_SHOP_DOMAIN, linkSegment.get(0));
-        getProductUseCase.setRequestParams(parameters);
-        viewListener.showLoading();
-        getProductUseCase.execute(response -> {
-            viewListener.finishLoading();
-            if (response != null && response.getData() != null && response.getData().getBasic().getId() > 0) {
-                try {
-                    context.startActivity(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                            String.valueOf(response.getData().getBasic().getId())));
-                } catch (Exception e) {
+        RequestParams params = RequestParams.create();
+        params.putString("shop_domain", linkSegment.get(0));
+        getShopInfoUseCase.execute(params, new Subscriber<ShopModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                viewListener.finishLoading();
+                Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(context, uriData.toString());
+                context.startActivity(intent);
+                context.finish();
+            }
+
+            @Override
+            public void onNext(ShopModel shopModel) {
+                viewListener.finishLoading();
+                if (shopModel != null && shopModel.info != null) {
+                    context.startActivity(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
+                            linkSegment.get(0), linkSegment.get(1)));
+                } else {
                     Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(context, uriData.toString());
                     context.startActivity(intent);
                 }
                 context.finish();
             }
-            return null;
-        }, throwable -> {
-            viewListener.finishLoading();
-            Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(context, uriData.toString());
-            context.startActivity(intent);
-            context.finish();
-            return null;
         });
     }
 
