@@ -57,9 +57,7 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
             override fun onNext(merchantVoucherModelList: ArrayList<MerchantVoucherModel>) {
                 val merchantViewModelList: ArrayList<MerchantVoucherViewModel> = ArrayList()
                 for (merchantVoucherModel in merchantVoucherModelList) {
-                    val viewModel = MerchantVoucherViewModel(merchantVoucherModel)
-                    viewModel.enableButtonUse = true
-                    merchantViewModelList.add(viewModel)
+                    merchantViewModelList.add(MerchantVoucherViewModel(merchantVoucherModel))
                 }
                 view?.onSuccessGetMerchantVoucherList(merchantViewModelList)
             }

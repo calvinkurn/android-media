@@ -125,8 +125,6 @@ public interface ICartListView extends IBaseView {
 
     void goToDetailPromoStacking(PromoStackingData promoStackingData);
 
-    // void goToDetailMerchant(PromoDataMerchant promoDataMerchant);
-
     void stopTrace();
 
     void renderAppliedPromoStacking();

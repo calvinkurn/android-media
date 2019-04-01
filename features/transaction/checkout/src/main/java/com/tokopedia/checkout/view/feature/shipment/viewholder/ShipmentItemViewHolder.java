@@ -27,7 +27,6 @@ import android.widget.TextView;
 import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentInnerProductListAdapter;
@@ -40,14 +39,14 @@ import com.tokopedia.logisticdata.data.constant.CourierConstant;
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
-import com.tokopedia.showcase.ShowCaseContentPosition;
-import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,14 +82,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private ShipmentAdapterActionListener mActionListener;
 
-    // private CardView cvInvoiceItem;
     private LinearLayout layoutError;
     private TextView tvErrorTitle;
     private TextView tvErrorDescription;
     private LinearLayout layoutWarning;
     private TextView tvWarningTitle;
     private TextView tvWarningDescription;
-    // private TextView tvTextSentBy;
     private TextView tvShopName;
     private LinearLayout llShippingWarningContainer;
     private ImageView ivProductImage;
@@ -483,14 +480,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
         }
     }
-
-    /*private void setMargin(int topMargin) {
-        ViewGroup.MarginLayoutParams layoutParams =
-                (ViewGroup.MarginLayoutParams) cvInvoiceItem.getLayoutParams();
-        int sideMargin = (int) cvInvoiceItem.getContext().getResources().getDimension(R.dimen.dp_16);
-        layoutParams.setMargins(sideMargin, topMargin, sideMargin, 0);
-        cvInvoiceItem.requestLayout();
-    }*/
 
     private void renderCartItem(ShipmentCartItemModel shipmentCartItemModel) {
         List<CartItemModel> cartItemModelList = new ArrayList<>(shipmentCartItemModel.getCartItemModels());
@@ -1301,15 +1290,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
             String addressName = recipientAddressModel.getAddressName();
             String recipientName = recipientAddressModel.getRecipientName();
-            /*addressName = " (" + addressName + ")";
-            recipientName += addressName;
-            int startSpan = recipientName.indexOf(addressName);
-            int endSpan = recipientName.indexOf(addressName) + addressName.length();
-            Spannable formattedPromoMessage = new SpannableString(recipientName);
-            final int color = ContextCompat.getColor(tvRecipientName.getContext(), R.color.black_38);
-            formattedPromoMessage.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            tvRecipientName.setTypeface(Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));*/
             tvRecipientName.setText(recipientName);
             tvAddressName.setText(addressName);
             String fullAddress = recipientAddressModel.getStreet() + ", "

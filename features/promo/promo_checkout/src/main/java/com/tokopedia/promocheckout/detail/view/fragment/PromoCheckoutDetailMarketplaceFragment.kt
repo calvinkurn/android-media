@@ -11,7 +11,6 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailModule
-import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailPresenter
 import javax.inject.Inject
 
@@ -48,7 +47,6 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
     }
 
     override fun onClickUse() {
-        // promoCheckoutDetailPresenter.validatePromoUse(codeCoupon, isOneClickShipment,  resources)
         promoCheckoutDetailPresenter.validatePromoStackingUse(codeCoupon, promo, false)
     }
 
@@ -60,15 +58,6 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
         }
         promoCheckoutDetailPresenter.cancelPromo(codeCoupon)
     }
-
-    /*override fun onSuccessValidatePromo(dataVoucher: DataVoucher) {
-        if(pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickUsePromoCouponSuccess(dataVoucher.code?:"")
-        }else{
-            trackingPromoCheckoutUtil.checkoutClickUsePromoCouponSuccess(dataVoucher.code?:"")
-        }
-        super.onSuccessValidatePromo(dataVoucher)
-    }*/
 
     override fun onSuccessValidatePromoStacking(data: DataUiModel) {
         if (pageTracking == FROM_CART) {

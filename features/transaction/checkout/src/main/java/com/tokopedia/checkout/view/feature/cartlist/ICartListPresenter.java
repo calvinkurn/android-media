@@ -8,7 +8,6 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
-import com.tokopedia.promocheckout.common.view.model.PromoData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +33,6 @@ public interface ICartListPresenter {
     void processUpdateCartDataPromoMerchant(List<CartItemData> cartItemDataList, ShopGroupData shopGroupData);
 
     void processUpdateCartDataPromoStacking(List<CartItemData> cartItemDataList, PromoStackingData promoStackingData, int goToDetail);
-
-    // void processUpdateCartDataPromoMerchant(List<CartItemData> cartItemDataList, PromoDataMerchant promoDataMerchant, int goToDetail);
 
     void processToUpdateAndReloadCartData();
 

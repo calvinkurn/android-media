@@ -11,9 +11,9 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostMo
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel;
@@ -25,11 +25,11 @@ import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemMod
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
-import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.cod.Data;
+import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,8 +86,6 @@ public interface ShipmentContract {
 
         void renderErrorCheckPromoShipmentData(String message);
 
-        // void renderCheckPromoShipmentDataSuccess(PromoCodeCartShipmentData checkPromoCodeCartShipmentResult);
-
         void renderCheckPromoStackingShipmentDataSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel);
 
         void renderEditAddressSuccess(String latitude, String longitude);
@@ -124,8 +122,6 @@ public interface ShipmentContract {
         void showBottomSheetError(String htmlMessage);
 
         void navigateToCodConfirmationPage(Data data);
-
-        // void setPromoData(CartShipmentAddressFormData cartShipmentAddressFormData);
 
         void setPromoStackingData(CartShipmentAddressFormData cartShipmentAddressFormData);
 
@@ -223,14 +219,6 @@ public interface ShipmentContract {
 
         void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment, String cornerId);
 
-        /*void processReloadCheckoutPageFromMultipleAddress(PromoData promoData,
-                                                          CartPromoSuggestion cartPromoSuggestion,
-                                                          RecipientAddressModel recipientAddressModel,
-                                                          ArrayList<ShipmentCartItemModel> shipmentCartItemModels,
-                                                          ShipmentCostModel shipmentCostModel,
-                                                          ShipmentDonationModel shipmentDonationModel,
-                                                          boolean isOneClickShipment);*/
-
         void processReloadCheckoutPageFromMultipleAddress(PromoStackingData promoStackingData,
                                                           CartPromoSuggestion cartPromoSuggestion,
                                                           RecipientAddressModel recipientAddressModel,
@@ -247,13 +235,7 @@ public interface ShipmentContract {
 
         void processVerifyPayment(String transactionId);
 
-        void checkPromoShipment(String promoCode, boolean isOneClickShipment, Promo promo);
-
         void checkPromoStackShipment(Promo promo);
-
-        // void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isOneClickShipment);
-
-        // void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast, boolean isOneClickShipment);
 
         void processCheckPromoStackingCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast);
 

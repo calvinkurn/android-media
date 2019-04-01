@@ -205,7 +205,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
         /*if (presenter.isLogin() == false) {
             val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
             startActivityForResult(intent, REQUEST_CODE_LOGIN)
-        } else if (!presenter.isMyShop(shopId)) {
+        } else if (!presenter.isMyShop(voucherShopId)) {
             showUseMerchantVoucherLoading();
             presenter.useMerchantVoucher(merchantVoucherViewModel.voucherCode, merchantVoucherViewModel.voucherId)
         }*/

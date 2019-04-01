@@ -58,31 +58,9 @@ class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUs
 
         })
 
-        /*checkPromoCodeUseCase.execute(checkPromoCodeUseCase.createRequestParams(promoCode, oneClickShipment = oneClickShipment), object : Subscriber<DataVoucher>() {
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable) {
-                if (isViewAttached) {
-                    view.hideProgressLoading()
-                    view.onErrorCheckPromoCode(e)
-                }
-            }
-
-            override fun onNext(dataVoucher: DataVoucher) {
-                view.hideProgressLoading()
-                if(dataVoucher.message?.state?.mapToStatePromoCheckout() == TickerCheckoutView.State.FAILED){
-                    view.onErrorCheckPromoCode(MessageErrorException(dataVoucher.message?.text))
-                }else{
-                    view.onSuccessCheckPromoCode(dataVoucher)
-                }
-            }
-        })*/
     }
 
     override fun detachView() {
-        // checkPromoCodeUseCase.unsubscribe()
         checkPromoStackingCodeUseCase.unsubscribe()
         super.detachView()
     }

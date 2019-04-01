@@ -87,7 +87,7 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
         compositeSubscription.unsubscribe();
         getWishlistUseCase.unsubscribe();
         getRecentViewUseCase.unsubscribe();
-
+        clearCacheAutoApplyStackUseCase.unsubscribe();
     }
 
     @Override
