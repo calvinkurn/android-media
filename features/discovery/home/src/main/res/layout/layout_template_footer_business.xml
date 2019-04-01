@@ -38,7 +38,7 @@
             android:layout_marginEnd="@dimen/dp_4"
             android:gravity="center"
             android:textSize="@dimen/sp_10"
-            android:textColor="#ae31353b"
+            android:textColor="@color/font_subtitle_bu_widget"
             android:lineSpacingExtra="@dimen/sp_6"
             tools:text="mulai dari"
             />
@@ -51,7 +51,7 @@
             android:layout_marginEnd="@dimen/dp_4"
             android:gravity="center"
             android:textSize="@dimen/sp_10"
-            android:textColor="#ae31353b"
+            android:textColor="@color/font_subtitle_bu_widget"
             android:lineSpacingExtra="@dimen/sp_6"
             tools:text="Rp3.425.000"
             />
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="@dimen/sp_12"
-            android:textColor="#ae31353b"
+            android:textColor="@color/font_subtitle_bu_widget"
             android:textStyle="bold"
             android:lineSpacingExtra="@dimen/sp_6"
             tools:text="Rp3.425.000"

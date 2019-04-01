@@ -28,4 +28,6 @@
     <color name="bg_label_green">#ebffef</color>
     <color name="bg_label_blue">#ccebff</color>
     <color name="bg_label_grey">#f3f4f5</color>
+    <color name="font_title_bu_widget">#f531353b</color>
+    <color name="font_subtitle_bu_widget">#ae31353b</color>
 </resources>
