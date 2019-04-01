@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <include layout="@layout/partial_base_toolbar" />
 
     <com.tokopedia.design.text.SearchInputView
         android:id="@+id/search_input_view"
@@ -18,8 +21,7 @@
 
     <FrameLayout android:id="@+id/parent_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/search_input_view"/>
+        android:layout_height="match_parent"/>
 
 
-</RelativeLayout>
+</LinearLayout>

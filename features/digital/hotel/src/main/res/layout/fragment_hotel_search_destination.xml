@@ -44,9 +44,5 @@
                 tools:textSize="@dimen/dp_12"
                 android:gravity="center"/>
         </LinearLayout>
-
-        <include android:id="@+id/shimmering_layout"
-            layout="@layout/layout_search_destination_shimmering"/>
-
     </RelativeLayout>
 </ScrollView>
