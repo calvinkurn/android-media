@@ -12,7 +12,8 @@ data class LogisticPromoViewModel(val promoCode: String,
                                   val shipperName: String,
                                   val shipperId: Int,
                                   val shipperProductId: Int,
-                                  val shipperDesc: String) : RatesViewModelType, Parcelable {
+                                  val shipperDesc: String,
+                                  val dialogMsg: String) : RatesViewModelType, Parcelable {
     constructor(source: Parcel) : this(
             source.readString(),
             source.readString(),
@@ -20,6 +21,7 @@ data class LogisticPromoViewModel(val promoCode: String,
             source.readString(),
             source.readInt(),
             source.readInt(),
+            source.readString(),
             source.readString()
     )
 
@@ -33,6 +35,7 @@ data class LogisticPromoViewModel(val promoCode: String,
         writeInt(shipperId)
         writeInt(shipperProductId)
         writeString(shipperDesc)
+        writeString(dialogMsg)
     }
 
     companion object {

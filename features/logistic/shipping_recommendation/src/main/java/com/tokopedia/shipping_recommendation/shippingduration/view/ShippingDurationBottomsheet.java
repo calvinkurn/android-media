@@ -2,16 +2,20 @@ package com.tokopedia.shipping_recommendation.shippingduration.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -335,8 +339,20 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     @Override
-    public void onLogisticPromoClicked() {
-
+    public void onLogisticPromoClicked(LogisticPromoViewModel data) {
+        Dialog tkpdDialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        tkpdDialog.setTitle("Tokopedia Promo");
+        tkpdDialog.setDesc(MethodChecker.fromHtml(data.getDialogMsg()));
+        tkpdDialog.setBtnOk("Lanjutkan");
+        tkpdDialog.setBtnCancel("Batalkan");
+        tkpdDialog.setOnCancelClickListener(view -> tkpdDialog.dismiss());
+        tkpdDialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), "heyo", Toast.LENGTH_SHORT).show();
+            }
+        });
+        tkpdDialog.show();
     }
 
 }

@@ -36,7 +36,7 @@ public class ShippingDurationConverter {
         return new LogisticPromoViewModel(
                 promo.getPromoCode(), promo.getTitle(), promo.getBenefitDesc(),
                 promo.getShipperName(), promo.getShipperId(), promo.getShipperProductId(),
-                promo.getShipperDesc());
+                promo.getShipperDesc(), promo.getPromoTncHtml());
     }
 
     public List<ShippingDurationViewModel> convertToViewModel(List<ServiceData> serviceDataList,
