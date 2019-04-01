@@ -2,8 +2,8 @@
 
     <gradient
         android:angle="90"
-        android:endColor="#ffffffff"
-        android:startColor="#ffe5f5ff"
+        android:endColor="@color/white_solid"
+        android:startColor="@color/gradient_solid_bu_widget"
         android:type="linear" />
 
     <corners
