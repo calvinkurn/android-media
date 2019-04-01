@@ -1,12 +1,12 @@
 package com.tokopedia.hotel.homepage.di
 
-import java.lang.annotation.Retention
-import java.lang.annotation.RetentionPolicy
 import javax.inject.Scope
+import kotlin.annotation.Retention
 
 /**
  * @author by furqan on 28/03/19
  */
+@MustBeDocumented
 @Scope
-@Retention(RetentionPolicy.CLASS)
+@Retention
 annotation class HotelHomepageScope

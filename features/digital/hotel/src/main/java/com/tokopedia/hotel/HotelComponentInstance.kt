@@ -9,14 +9,14 @@ import com.tokopedia.hotel.common.di.component.DaggerHotelComponent
  * @author by furqan on 25/03/19
  */
 object HotelComponentInstance {
-    private var hotelComponent: HotelComponent? = null
+    private lateinit var hotelComponent: HotelComponent
 
     fun getHotelComponent(application: Application): HotelComponent {
-        if (hotelComponent == null) {
+        if (!::hotelComponent.isInitialized) {
             hotelComponent = DaggerHotelComponent.builder().baseAppComponent(
                     (application as BaseMainApplication).baseAppComponent).build()
         }
 
-        return hotelComponent as HotelComponent
+        return hotelComponent
     }
 }
