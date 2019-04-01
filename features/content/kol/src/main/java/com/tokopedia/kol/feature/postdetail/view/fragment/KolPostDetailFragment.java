@@ -19,12 +19,14 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -178,7 +180,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
         swipeToRefresh.setOnRefreshListener(this);
 
-        adapter.setTypeFactory(new KolPostDetailTypeFactoryImpl(this, this,this, this, this, this, this, this, this));
+        adapter.setTypeFactory(new KolPostDetailTypeFactoryImpl(this, this, this, this, this, this
+                , this, this, this, userSession));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
@@ -331,6 +334,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             }
             setTotalLike(totalLike + 1);
             ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_green);
+            likeCount.setTextColor(MethodChecker.getColor(getContext(), R.color.tkpd_main_green));
         } else {
             int totalLike = 1;
             if (!likeCount.getText().toString().equals(getString(R.string.kol_action_like))) {
@@ -338,6 +342,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             }
             setTotalLike(totalLike - 1);
             ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_gray);
+            likeCount.setTextColor(MethodChecker.getColor(getContext(), R.color.black_54));
         }
 
         setLikeListener(action == LikeKolPostUseCase.ACTION_LIKE);
@@ -520,7 +525,23 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         }
 
         adapter.notifyItemChanged(0);
+    }
 
+    @Override
+    public void onErrorDeletePost(Throwable e) {
+        NetworkErrorHelper.showSnackbar(getActivity(), ErrorHandler.getErrorMessage(getContext(), e));
+    }
+
+    @Override
+    public void onSuccessDeletePost(int rowNumber) {
+        if(getActivity()!= null && !getActivity().isTaskRoot()) {
+            getActivity().setResult(KolPostDetailActivity.RESULT_DELETED);
+            getActivity().finish();
+        }else if (getActivity()!= null){
+            getActivity().setResult(KolPostDetailActivity.RESULT_DELETED);
+            getActivity().finish();
+            RouteManager.route(getContext(), ApplinkConst.HOME);
+        }
     }
 
     @Override
@@ -635,7 +656,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                     reportable, false, new PostMenuListener() {
                         @Override
                         public void onDeleteClicked() {
-
+                            createDeleteDialog(positionInFeed, postId).show();
                         }
 
                         @Override
@@ -654,6 +675,20 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                     });
             menus.show();
         }
+    }
+
+    private Dialog createDeleteDialog(int positionInFeed, int postId) {
+        Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        dialog.setTitle(getString(R.string.card_dialog_delete_post));
+        dialog.setDesc(getString(R.string.card_dialog_after_delete_cant));
+        dialog.setBtnOk(getString(R.string.card_dialog_title_delete));
+        dialog.setBtnCancel(getString(R.string.card_dialog_title_cancel));
+        dialog.setOnOkClickListener(v -> {
+            presenter.deletePost(postId, positionInFeed);
+            dialog.dismiss();
+        });
+        dialog.setOnCancelClickListener(v -> dialog.dismiss());
+        return dialog;
     }
 
     private void goToContentReport(int contentId) {
