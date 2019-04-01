@@ -49,6 +49,8 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
 
+    implementation rootProject.ext.miscDependencies.chips
+
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
