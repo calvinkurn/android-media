@@ -11,7 +11,6 @@ import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.common.applink.ApplinkConstant
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.common.di.component.HotelComponent
-import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.homepage.presentation.fragment.HotelHomepageFragment
 
 class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelComponent> {
