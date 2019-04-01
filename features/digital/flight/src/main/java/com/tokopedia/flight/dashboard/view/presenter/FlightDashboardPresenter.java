@@ -655,7 +655,8 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                                         isAvailableToSearch = false;
                                     }
                                     if (isSearchImmediately && isAvailableToSearch) {
-                                        onSearchTicketButtonClicked();
+                                        //TODO : search immediately is not work
+//                                        onSearchTicketButtonClicked();
                                     }
                                 }
 
