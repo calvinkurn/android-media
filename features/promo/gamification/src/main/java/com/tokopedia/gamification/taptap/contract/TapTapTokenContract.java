@@ -42,13 +42,15 @@ public interface TapTapTokenContract {
 
         void showErrorSnackBar();
 
+        void showErrorSnackBarOnSummaryPage();
+
+        void showErrorSnackBarOnSummaryPage(String errorMessage);
+
+        void showErrorSnackBarOnCrackError(String errorMessage);
+
         android.view.View getRootView();
 
         void navigateToHomePage();
-
-        void showErrorSnackBarOnSummaryPage();
-
-        void showErrorSnackBarOnSummaryPage(String join);
 
         void dismissSummaryPage();
     }

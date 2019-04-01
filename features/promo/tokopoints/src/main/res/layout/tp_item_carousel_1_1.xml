@@ -1,54 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/dp_120"
-    android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/iv_col_1"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/bg_tp_section_border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="h,1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/iv_col_1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_tp_section_border"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="h,1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_title_banner"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_8"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_20"
+            android:textStyle="bold"
+            app:layout_constraintHeight_default="wrap"
+            app:layout_constraintLeft_toLeftOf="@+id/iv_col_1"
+            app:layout_constraintStart_toStartOf="@+id/iv_col_1"
+            app:layout_constraintTop_toTopOf="@+id/iv_col_1"
+            app:layout_constraintWidth_default="wrap"
+            tools:text="Title in banner" />
+
+        <TextView
+            android:id="@+id/text_sub_title_banner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
+            android:textColor="@color/white"
+            android:textSize="@dimen/dp_14"
+            android:textStyle="bold"
+            app:layout_constraintHeight_default="wrap"
+            app:layout_constraintLeft_toLeftOf="@+id/text_title_banner"
+            app:layout_constraintStart_toStartOf="@+id/text_title_banner"
+            app:layout_constraintTop_toBottomOf="@+id/text_title_banner"
+            app:layout_constraintWidth_default="wrap"
+            tools:text="Subtitle in banner" />
+
+    </android.support.constraint.ConstraintLayout>
 
     <TextView
-        android:id="@+id/text_title_banner"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
+        android:id="@+id/text_title_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
-        android:textColor="@color/white"
-        android:textSize="@dimen/dp_20"
-        android:textStyle="bold"
-        app:layout_constraintHeight_default="wrap"
-        app:layout_constraintLeft_toLeftOf="@+id/iv_col_1"
-        app:layout_constraintStart_toStartOf="@+id/iv_col_1"
-        app:layout_constraintTop_toTopOf="@+id/iv_col_1"
-        app:layout_constraintWidth_default="wrap"
-        tools:text="Title in banner" />
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="#f531353b"
+        android:textSize="@dimen/sp_14"
+        tools:text="Title in banner Title in banne Title in banne Title in banne" />
 
     <TextView
-        android:id="@+id/text_sub_title_banner"
-        android:layout_width="wrap_content"
+        android:id="@+id/text_sub_title_bottom"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_2"
-        android:textColor="@color/white"
-        android:textSize="@dimen/dp_14"
-        android:textStyle="bold"
-        app:layout_constraintHeight_default="wrap"
-        app:layout_constraintLeft_toLeftOf="@+id/text_title_banner"
-        app:layout_constraintStart_toStartOf="@+id/text_title_banner"
-        app:layout_constraintTop_toBottomOf="@+id/text_title_banner"
-        app:layout_constraintWidth_default="wrap"
-        tools:text="Subtitle in banner" />
-
-</android.support.constraint.ConstraintLayout>
+        android:ellipsize="end"
+        android:lines="2"
+        android:maxLines="2"
+        android:textColor="#8f000000"
+        android:textSize="@dimen/dp_10"
+        tools:text="Subtitle in banner gkkj Subtitle in banner gkkj Subtitle in banner gkkj Subtitle in banner gkkj" />
+</LinearLayout>
