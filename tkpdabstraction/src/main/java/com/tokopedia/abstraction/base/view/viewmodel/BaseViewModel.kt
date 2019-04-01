@@ -12,7 +12,7 @@ abstract class BaseViewModel(private val baseDispatcher: CoroutineDispatcher): V
 
     open fun clear(){
         if (isActive && !masterJob.isCancelled){
-            masterJob.cancel()
+            masterJob.children.map { it.cancel() }
         }
     }
 }
