@@ -178,7 +178,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
         swipeToRefresh.setOnRefreshListener(this);
 
-        adapter.setTypeFactory(new KolPostDetailTypeFactoryImpl(this, this, this, this, this, this, this, this));
+        adapter.setTypeFactory(new KolPostDetailTypeFactoryImpl(this, this,this, this, this, this, this, this, this));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
