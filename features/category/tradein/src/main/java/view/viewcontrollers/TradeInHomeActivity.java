@@ -214,7 +214,13 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
             };
             tvIndicateive.setVisibility(View.GONE);
             mTvGoToProductDetails.setText(R.string.go_to_product_details);
-            mTvGoToProductDetails.setOnClickListener(v -> finish());
+            mTvGoToProductDetails.setOnClickListener( v -> {
+                sendGeneralEvent("clickTradeIn",
+                        "trade in start page",
+                        "click kembali ke detail produk",
+                        "");
+                    finish();
+            });
             int greenColor = getResources().getColor(R.color.green_nob);
             ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
             spannableString.setSpan(foregroundColorSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);

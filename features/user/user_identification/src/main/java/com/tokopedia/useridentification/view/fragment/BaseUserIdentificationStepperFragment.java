@@ -40,6 +40,7 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
     protected TextView subtitle;
     protected TextView button;
     protected UserIdentificationAnalytics analytics;
+    protected int projectId;
 
     protected T stepperModel;
 
@@ -57,7 +58,8 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
             stepperModel = savedInstanceState.getParcelable(EXTRA_KYC_STEPPER_MODEL);
         }
         if (getActivity() != null) {
-            analytics = UserIdentificationAnalytics.createInstance(getActivity().getIntent().getIntExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, 1));
+            projectId = getActivity().getIntent().getIntExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, 1);
+            analytics = UserIdentificationAnalytics.createInstance(projectId);
         }
     }
 
