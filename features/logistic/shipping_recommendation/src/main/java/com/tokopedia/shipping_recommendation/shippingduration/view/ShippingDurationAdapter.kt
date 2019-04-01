@@ -14,18 +14,20 @@ import com.tokopedia.shipping_recommendation.domain.shipping.ShippingDurationVie
 
 class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var mData: List<RatesViewModelType>
+    private var mData: MutableList<RatesViewModelType>
     private var shippingDurationAdapterListener: ShippingDurationAdapterListener? = null
     private var cartPosition: Int = 0
     // set true if has courier promo, whether own courier or other duration's courier
     private var hasCourierPromo: Boolean = false
 
     init {
-        mData = listOf()
+        mData = mutableListOf()
     }
 
     fun setShippingDurationViewModels(shippingDurationViewModels: List<ShippingDurationViewModel>) {
-        this.mData = shippingDurationViewModels
+        this.mData = shippingDurationViewModels.toMutableList()
+        this.mData.add(0, LogisticPromoViewModel(1))
+        notifyDataSetChanged()
     }
 
     fun setShippingDurationAdapterListener(shippingDurationAdapterListener: ShippingDurationAdapterListener) {

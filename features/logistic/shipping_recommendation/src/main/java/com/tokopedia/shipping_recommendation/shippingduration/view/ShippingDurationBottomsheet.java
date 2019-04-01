@@ -169,7 +169,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     private void setupRecyclerView(int cartPosition) {
         shippingDurationAdapter.setShippingDurationAdapterListener(this);
-        shippingDurationAdapter.setShippingDurationViewModels(presenter.getShippingDurationViewModels());
+//        shippingDurationAdapter.setShippingDurationViewModels(presenter.getShippingDurationViewModels());
         shippingDurationAdapter.setCartPosition(cartPosition);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 getContext(), LinearLayoutManager.VERTICAL, false);
@@ -217,7 +217,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     @Override
     public void showData(List<ShippingDurationViewModel> shippingDurationViewModelList) {
         shippingDurationAdapter.setHasCourierPromo(checkHasCourierPromo(shippingDurationViewModelList));
-        shippingDurationAdapter.notifyDataSetChanged();
+        shippingDurationAdapter.setShippingDurationViewModels(shippingDurationViewModelList);
         updateHeight();
         boolean hasCourierPromo = checkHasCourierPromo(shippingDurationViewModelList);
         if (hasCourierPromo) {
