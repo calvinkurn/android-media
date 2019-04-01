@@ -90,9 +90,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
                     .EXTRA_KYC_STEPPER_MODEL);
         }
         if (getActivity() != null) {
-            analytics = UserIdentificationAnalytics.createInstance(getActivity()
-                    .getApplicationContext(),
-                    getActivity().getIntent().getIntExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, 1));
+            analytics = UserIdentificationAnalytics.createInstance(getActivity().getIntent().getIntExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, 1));
         }
     }
 

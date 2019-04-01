@@ -101,7 +101,7 @@ class NormalCheckoutTracking {
             HARGA_FINAL_TRADEIN
         else
             PRODUCT_DETAIL_PAGE
-        TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(
+        TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(
             mutableMapOf<String, Any>(
                 "event" to "addToCart",
                 "eventCategory" to category,

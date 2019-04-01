@@ -110,8 +110,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         if (getArguments() != null) {
             viewMode = getArguments().getInt(ARG_VIEW_MODE, 1);
         }
-        analytics = UserIdentificationAnalytics.createInstance(getActivity().getApplicationContext(),
-                getActivity().getIntent().getIntExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, 1));
+        analytics = UserIdentificationAnalytics.createInstance(getActivity().getIntent().getIntExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, 1));
     }
 
     @Nullable
