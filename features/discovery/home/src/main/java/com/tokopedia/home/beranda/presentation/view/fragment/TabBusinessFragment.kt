@@ -66,13 +66,6 @@ class TabBusinessFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun onStart() {
-        context?.let {
-            GraphqlClient.init(it)
-        }
-        super.onStart()
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_parent_business_unit, container, false)
     }
