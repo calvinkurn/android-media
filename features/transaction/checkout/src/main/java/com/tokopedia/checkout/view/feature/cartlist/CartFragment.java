@@ -1922,22 +1922,22 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onSuccessCheckPromoFirstStep(@NonNull ResponseGetPromoStackUiModel responseGetPromoStackUiModel) {
         // Update global promo state
-        PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobaldata();
-        int typePromo;
-        if (responseGetPromoStackUiModel.getData().isCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON()) {
-            typePromo = PromoStackingData.CREATOR.getTYPE_COUPON();
-        } else {
-            typePromo = PromoStackingData.CREATOR.getTYPE_VOUCHER();
-        }
-        promoStackingGlobalData.setTypePromo(typePromo);
         if (responseGetPromoStackUiModel.getData().getCodes().size() > 0) {
+            PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobaldata();
+            int typePromo;
+            if (responseGetPromoStackUiModel.getData().isCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON()) {
+                typePromo = PromoStackingData.CREATOR.getTYPE_COUPON();
+            } else {
+                typePromo = PromoStackingData.CREATOR.getTYPE_VOUCHER();
+            }
+            promoStackingGlobalData.setTypePromo(typePromo);
             promoStackingGlobalData.setPromoCode(responseGetPromoStackUiModel.getData().getCodes().get(0));
+            promoStackingGlobalData.setDescription(responseGetPromoStackUiModel.getData().getMessage().getText());
+            promoStackingGlobalData.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStackUiModel.getData().getMessage().getState()));
+            promoStackingGlobalData.setTitle(responseGetPromoStackUiModel.getData().getTitleDescription());
+            promoStackingGlobalData.setAmount(responseGetPromoStackUiModel.getData().getCashbackWalletAmount());
+            promoStackingGlobalData.setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
         }
-        promoStackingGlobalData.setDescription(responseGetPromoStackUiModel.getData().getMessage().getText());
-        promoStackingGlobalData.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStackUiModel.getData().getMessage().getState()));
-        promoStackingGlobalData.setTitle(responseGetPromoStackUiModel.getData().getTitleDescription());
-        promoStackingGlobalData.setAmount(responseGetPromoStackUiModel.getData().getCashbackWalletAmount());
-        promoStackingGlobalData.setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
 
         // Update merchant voucher state
         List<CartShopHolderData> cartShopHolderDataList = cartAdapter.getAllShopGroupDataList();

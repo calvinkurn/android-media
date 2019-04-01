@@ -45,6 +45,7 @@ import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActiv
 import com.tokopedia.checkout.view.feature.bottomsheetcod.CodBottomSheetFragment;
 import com.tokopedia.checkout.view.feature.bottomsheetpromostacking.ClashBottomSheetFragment;
 import com.tokopedia.checkout.view.feature.cartlist.CartItemDecoration;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.multipleaddressform.MultipleAddressFormActivity;
 import com.tokopedia.checkout.view.feature.bottomsheetpromostacking.TotalBenefitBottomSheetFragment;
 import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentAdapter;
@@ -2394,20 +2395,22 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onSuccessCheckPromoFirstStep(@NotNull ResponseGetPromoStackUiModel promoData) {
         // Update global promo state
-        PromoStackingData promoStackingGlobalData = shipmentAdapter.getPromoGlobalStackData();
-        int typePromo;
-        if (promoData.getData().isCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON()) {
-            typePromo = PromoStackingData.CREATOR.getTYPE_COUPON();
-        } else {
-            typePromo = PromoStackingData.CREATOR.getTYPE_VOUCHER();
+        if (promoData.getData().getCodes().size() > 0) {
+            PromoStackingData promoStackingGlobalData = shipmentAdapter.getPromoGlobalStackData();
+            int typePromo;
+            if (promoData.getData().isCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON()) {
+                typePromo = PromoStackingData.CREATOR.getTYPE_COUPON();
+            } else {
+                typePromo = PromoStackingData.CREATOR.getTYPE_VOUCHER();
+            }
+            promoStackingGlobalData.setTypePromo(typePromo);
+            promoStackingGlobalData.setPromoCode(promoData.getData().getCodes().get(0));
+            promoStackingGlobalData.setDescription(promoData.getData().getMessage().getText());
+            promoStackingGlobalData.setTitle(promoData.getData().getTitleDescription());
+            promoStackingGlobalData.setAmount(promoData.getData().getCashbackWalletAmount());
+            promoStackingGlobalData.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(promoData.getData().getMessage().getState()));
+            promoStackingGlobalData.setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
         }
-        promoStackingGlobalData.setTypePromo(typePromo);
-        promoStackingGlobalData.setPromoCode(promoData.getData().getCodes().get(0));
-        promoStackingGlobalData.setDescription(promoData.getData().getMessage().getText());
-        promoStackingGlobalData.setTitle(promoData.getData().getTitleDescription());
-        promoStackingGlobalData.setAmount(promoData.getData().getCashbackWalletAmount());
-        promoStackingGlobalData.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(promoData.getData().getMessage().getState()));
-        promoStackingGlobalData.setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
 
         // Update merchant voucher state
         List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentAdapter.getShipmentCartItemModelList();

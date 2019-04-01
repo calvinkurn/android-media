@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_20">
 
     <com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
         android:id="@+id/voucher_merchant_holder_view"
