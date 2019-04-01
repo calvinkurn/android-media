@@ -38,24 +38,39 @@ open class SubmitPostUseCase @Inject constructor(
 
         val imageList = requestParams.getObject(PARAM_IMAGE_LIST) as List<String>
         uploadMultipleImageUseCase.notificationManager = notificationManager
+
+        val isUploadVideo = requestParams.getBoolean(IS_UPLOAD_VIDEO, false)
+        val videoUrl = requestParams.getString(PARAM_VIDEO_PATH, "")
+
         return uploadMultipleImageUseCase
                 .createObservable(
                         UploadMultipleImageUseCase.createRequestParams(
-                                getMediumList(imageList, tags)
+                                getMediumList(imageList, tags, videoUrl, isUploadVideo),
+                                isUploadVideo
                         )
                 )
                 .map(rearrangeMedia())
                 .flatMap(submitPostToGraphql(requestParams))
     }
 
-    private fun getMediumList(imageList: List<String>, tags: List<MediaTag>)
+    private fun getMediumList(imageList: List<String>, tags: List<MediaTag>, videoUrl: String, isUploadVideo: Boolean)
             : List<SubmitPostMedium> {
 
         val mediumList = ArrayList<SubmitPostMedium>()
-        imageList.forEachIndexed { index, image ->
-            mediumList.add(SubmitPostMedium(image, index, if (index == 0) tags else arrayListOf()))
+
+        if (isUploadVideo) {
+            mediumList.add(SubmitPostMedium(videoUrl, 0, tags, SubmitPostMedium.TYPE_VIDEO))
+        } else {
+            imageList.forEachIndexed { index, image ->
+                mediumList.add(SubmitPostMedium(image, index, addProductTagsToFirstIndex(index, tags)))
+            }
         }
+
         return mediumList
+    }
+
+    private fun addProductTagsToFirstIndex(index: Int, tags: List<MediaTag>): List<MediaTag> {
+        return if (index == 0) tags else arrayListOf()
     }
 
     private fun getListOfTag(relatedIdList: List<String>, type: String): List<MediaTag> {
@@ -140,7 +155,11 @@ open class SubmitPostUseCase @Inject constructor(
         private const val INPUT_TYPE_CONTENT = "content"
         private const val TAGS_TYPE_PRODUCT = "product"
 
+        private const val PARAM_VIDEO_PATH = "video_path"
+
         const val SUCCESS = 1
+
+        private const val IS_UPLOAD_VIDEO = "is_video"
 
         fun createRequestParams(type: String, token: String, authorId: String, caption: String,
                                 imageList: List<String>, relatedIdList: List<String>): RequestParams {
@@ -152,6 +171,23 @@ open class SubmitPostUseCase @Inject constructor(
             requestParams.putString(PARAM_CAPTION, caption)
             requestParams.putObject(PARAM_IMAGE_LIST, imageList)
             requestParams.putObject(PARAM_TAGS, relatedIdList)
+            requestParams.putBoolean(IS_UPLOAD_VIDEO, false)
+            return requestParams
+        }
+
+        fun createRequestParamsVideo(type: String, token: String, authorId: String, caption: String,
+                                     videoPath: String, relatedIdList: List<String>):
+                RequestParams {
+            val requestParams = RequestParams.create()
+            requestParams.putString(PARAM_TYPE, type)
+            requestParams.putString(PARAM_TOKEN, token)
+            requestParams.putString(PARAM_AUTHOR_ID, authorId)
+            requestParams.putString(PARAM_AUTHOR_TYPE, type)
+            requestParams.putString(PARAM_CAPTION, caption)
+            requestParams.putString(PARAM_VIDEO_PATH, videoPath)
+            requestParams.putObject(PARAM_TAGS, relatedIdList)
+            requestParams.putBoolean(IS_UPLOAD_VIDEO, true)
+            requestParams.putObject(PARAM_IMAGE_LIST, ArrayList<String>())
             return requestParams
         }
     }

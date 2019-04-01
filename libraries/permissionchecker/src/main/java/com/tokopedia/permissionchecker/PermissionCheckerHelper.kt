@@ -17,6 +17,7 @@ import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISS
 import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION
 import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_CAMERA
 import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO
+import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
 import org.jetbrains.annotations.NotNull
 import com.tokopedia.permissionchecker.R
 
@@ -55,6 +56,7 @@ class PermissionCheckerHelper {
         const val PERMISSION_RECORD_AUDIO = Manifest.permission.RECORD_AUDIO
         const val PERMISSION_ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION
         const val PERMISSION_ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION
+        const val PERMISSION_WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE
     }
 
     interface PermissionCheckListener {
@@ -137,6 +139,7 @@ class PermissionCheckerHelper {
             PERMISSION_ACCESS_FINE_LOCATION -> context.getString(R.string.permission_location)
             PERMISSION_CAMERA -> context.getString(R.string.permission_camera)
             PERMISSION_RECORD_AUDIO -> context.getString(R.string.permission_audio)
+            PERMISSION_WRITE_EXTERNAL_STORAGE -> context.getString(R.string.permission_write_storage)
             else -> ""
         }
     }
