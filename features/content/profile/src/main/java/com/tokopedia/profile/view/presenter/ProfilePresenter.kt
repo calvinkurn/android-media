@@ -1,6 +1,8 @@
 package com.tokopedia.profile.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase
@@ -9,8 +11,11 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber
 import com.tokopedia.profile.domain.usecase.GetDynamicFeedProfileFirstUseCase
 import com.tokopedia.profile.domain.usecase.GetDynamicFeedProfileUseCase
+import com.tokopedia.profile.domain.usecase.ShouldChangeUsernameUseCase
+import com.tokopedia.profile.domain.usecase.TrackAffiliateClickUseCase
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.subscriber.*
+import rx.Subscriber
 import javax.inject.Inject
 
 /**
@@ -22,7 +27,8 @@ class ProfilePresenter @Inject constructor(
         private val likeKolPostUseCase: LikeKolPostUseCase,
         private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
         private val deletePostUseCase: DeletePostUseCase,
-        private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase)
+        private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
+        private val shouldChangeUsernameUseCase: ShouldChangeUsernameUseCase)
     : BaseDaggerPresenter<ProfileContract.View>(), ProfileContract.Presenter {
 
     override var cursor: String = ""
@@ -35,6 +41,7 @@ class ProfilePresenter @Inject constructor(
         followKolPostGqlUseCase.unsubscribe()
         deletePostUseCase.unsubscribe()
         trackAffiliateClickUseCase.unsubscribe()
+        shouldChangeUsernameUseCase.unsubscribe()
     }
 
     override fun getProfileFirstPage(targetUserId: Int, isFromLogin: Boolean) {
@@ -107,8 +114,32 @@ class ProfilePresenter @Inject constructor(
         )
     }
 
+    override fun shouldChangeUsername(userId: Int, link: String) {
+        shouldChangeUsernameUseCase.execute(
+                ShouldChangeUsernameUseCase.createRequestParams(userId),
+                object : Subscriber<Boolean>() {
+                    override fun onNext(t: Boolean) {
+                        view?.onSuccessShouldChangeUsername(t, link)
+                    }
+
+                    override fun onCompleted() {
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        if (GlobalConfig.isAllowDebuggingTools()) {
+                            e?.printStackTrace()
+                        }
+                        view?.onErrorShouldChangeUsername(
+                                ErrorHandler.getErrorMessage(view.context, e),
+                                link
+                        )
+                    }
+                }
+        )
+    }
+
     private fun getUserId(): String {
-        var userId: String = "0"
+        var userId = "0"
         if (!view.getUserSession().userId.isEmpty()) {
             userId = view.getUserSession().userId
         }
