@@ -73,7 +73,7 @@
                     android:textStyle="bold"
                     android:lineSpacingExtra="@dimen/sp_6"
                     android:textSize="@dimen/sp_16"
-                    android:textColor="#f531353b"
+                    android:textColor="@color/font_title_bu_widget"
                     />
 
                 <TextView
@@ -83,7 +83,7 @@
                     android:layout_marginTop="@dimen/dp_2"
                     android:text="@string/message_retry_general_bu_widget"
                     android:textSize="@dimen/sp_12"
-                    android:textColor="#ae31353b"
+                    android:textColor="@color/font_subtitle_bu_widget"
                     android:lineSpacingExtra="@dimen/sp_6"
                     />
 
