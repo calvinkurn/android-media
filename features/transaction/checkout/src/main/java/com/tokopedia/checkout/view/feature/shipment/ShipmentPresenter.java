@@ -1000,7 +1000,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             }
                         } else {
                             if (getView() != null) {
-                                if (responseGetPromoStack.getStatus().equalsIgnoreCase("OK")) {
+                                if (responseGetPromoStack.getStatus().equalsIgnoreCase("OK") &&
+                                        responseGetPromoStack.getData() != null && responseGetPromoStack.getData().getCodes().size() > 0) {
                                     getView().renderCheckPromoStackCodeFromCourierSuccess(responseGetPromoStack.getData(), itemPosition, noToast);
                                 } else {
                                     if (!noToast) {

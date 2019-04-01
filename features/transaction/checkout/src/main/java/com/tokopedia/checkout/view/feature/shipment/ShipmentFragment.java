@@ -2006,7 +2006,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier);
                 shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
                 shipmentAdapter.setShippingCourierViewModels(shippingCourierViewModels, recommendedCourier, cartItemPosition);
-                checkCourierPromo(recommendedCourier, cartItemPosition);
+                if (!TextUtils.isEmpty(recommendedCourier.getPromoCode())) {
+                    checkCourierPromo(recommendedCourier, cartItemPosition);
+                } else {
+                    showToastError("Terjadi kesalahan. Ulangi beberapa saat lagi.");
+                }
             }
         }
     }
