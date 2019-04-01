@@ -27,6 +27,7 @@ class ClearShipmentCacheAutoApplyAfterClashSubscriber(val view: ShipmentContract
 
     override fun onNext(response: GraphqlResponse) {
         view?.hideLoading()
+        presenter.setCouponStateChanged(true)
         val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
         if (responseData.successData.success) {
             presenter.applyPromoStackAfterClash(newPromoList, isFromMultipleAddress, isOneClickShipment, cornerId)

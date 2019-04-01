@@ -12,6 +12,7 @@ import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailModule
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailPresenter
+import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import javax.inject.Inject
 
 class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment() {

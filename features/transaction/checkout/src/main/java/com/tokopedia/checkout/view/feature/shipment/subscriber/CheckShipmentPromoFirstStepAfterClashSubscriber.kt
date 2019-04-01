@@ -29,6 +29,7 @@ class CheckShipmentPromoFirstStepAfterClashSubscriber(val view: ShipmentContract
     override fun onNext(response: GraphqlResponse) {
         if (currentPromoIndex == promoListSize - 1) {
             view?.hideLoading()
+            presenter.setCouponStateChanged(true)
             presenter.processInitialLoadCheckoutPage(isFromMultipleAddress, isOneClickShipment, cornerId)
         }
     }

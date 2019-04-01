@@ -2132,10 +2132,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.clearTotalPromoStackAmount();
         shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
         shipmentAdapter.checkHasSelectAllCourier(false);
+        shipmentPresenter.setCouponStateChanged(true);
     }
 
     @Override
     public void onFailedClearPromoStack(boolean ignoreAPIResponse) {
+        shipmentPresenter.setCouponStateChanged(true);
         if (!ignoreAPIResponse) {
             ToasterError.make(getView(), "Terjadi kesalahan. Ulangi beberapa saat lagi", ToasterError.LENGTH_SHORT).show();
         }
