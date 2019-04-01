@@ -105,12 +105,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         }
 
         if (savedInstanceState == null) {
-            refreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    onFirstTimeLaunch();
-                }
-            });
+            refreshLayout.post(() -> onFirstTimeLaunch());
         } else {
             onRestoreInstanceState(savedInstanceState);
         }
@@ -125,13 +120,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     private void initSwipeToRefresh(View view) {
-        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                onSwipeToRefresh();
-            }
-        });
+        refreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        refreshLayout.setOnRefreshListener(() -> onSwipeToRefresh());
     }
 
     @Override

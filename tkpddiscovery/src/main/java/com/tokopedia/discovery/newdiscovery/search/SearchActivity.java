@@ -151,32 +151,6 @@ public class SearchActivity extends DiscoveryActivity
         return new SearchParameter(deepLinkURI == null ? "" : deepLinkURI);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        unregisterShake();
-
-        if(!isHandlingIntent && !hasSearchData()) {
-            showAutoCompleteOnResume();
-        }
-    }
-
-    private boolean hasSearchData() {
-        return searchSectionPagerAdapter != null
-                && searchSectionPagerAdapter.getCount() > 0;
-    }
-
-    private void showAutoCompleteOnResume() {
-        if(searchView.isSearchOpen()) {
-            searchView.searchTextViewRequestFocus();
-            searchView.searchTextViewSetCursorSelectionAtTextEnd();
-            forceShowKeyBoard();
-        }
-        else {
-            searchView.showSearch(true, false);
-        }
-    }
-
     private void forceShowKeyBoard() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
@@ -352,6 +326,32 @@ public class SearchActivity extends DiscoveryActivity
                     fileExtension.toLowerCase());
         }
         return mimeType;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        unregisterShake();
+
+        if(!isHandlingIntent && !hasSearchData()) {
+            showAutoCompleteOnResume();
+        }
+    }
+
+    private boolean hasSearchData() {
+        return searchSectionPagerAdapter != null
+                && searchSectionPagerAdapter.getCount() > 0;
+    }
+
+    private void showAutoCompleteOnResume() {
+        if(searchView.isSearchOpen()) {
+            searchView.searchTextViewRequestFocus();
+            searchView.searchTextViewSetCursorSelectionAtTextEnd();
+            forceShowKeyBoard();
+        }
+        else {
+            searchView.showSearch(true, false);
+        }
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
