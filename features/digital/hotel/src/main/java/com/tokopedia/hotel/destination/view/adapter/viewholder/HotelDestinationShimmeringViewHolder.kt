@@ -16,6 +16,6 @@ class HotelDestinationShimmeringViewHolder(itemView: View) : AbstractViewHolder<
 
     companion object {
         @LayoutRes
-        var LAYOUT = R.layout.item_search_destination_shimmering
+        var LAYOUT = R.layout.layout_search_destination_shimmering
     }
 }

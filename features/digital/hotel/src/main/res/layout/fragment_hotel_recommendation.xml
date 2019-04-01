@@ -13,26 +13,25 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_10"
             android:background="@drawable/bg_line_separator" />
 
-        <LinearLayout
+        <FrameLayout
+            android:id="@+id/current_location_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="@dimen/dp_16">
 
             <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/current_location_tv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:text="@string/hotel_search_nearest_location"
                 app:fontSize="small"
                 app:textViewTheme="lightPrimary"
-                android:drawableLeft="@drawable/ic_icon_location_grey"
                 android:drawablePadding="@dimen/dp_8"/>
-        </LinearLayout>
+        </FrameLayout>
 
         <View
             android:layout_width="match_parent"

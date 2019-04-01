@@ -2,6 +2,7 @@ package com.tokopedia.hotel.destination.view.fragment
 
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +11,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
+import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.destination.view.adapter.PopularSearchClickListener
 import com.tokopedia.hotel.destination.view.adapter.PopularSearchTypeFactory
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import kotlinx.android.synthetic.main.fragment_hotel_recommendation.*
 import javax.inject.Inject
 
 /**
@@ -24,6 +28,7 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var destinationViewModel: HotelDestinationViewModel
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     override fun getScreenName(): String = ""
 
@@ -38,6 +43,20 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             destinationViewModel = viewModelProvider.get(HotelDestinationViewModel::class.java)
         }
+
+        permissionCheckerHelper = PermissionCheckerHelper()
+        destinationViewModel.setPermissionChecker(permissionCheckerHelper)
+
+        initView()
+    }
+
+    fun initView() {
+        initCurrentLocationTextView()
+    }
+
+    fun initCurrentLocationTextView() {
+        current_location_tv.setDrawableLeft(R.drawable.ic_system_action_currentlocation_grayscale_24)
+        current_location_layout.setOnClickListener { destinationViewModel.getCurrentLocation(activity as HotelDestinationActivity) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -61,6 +80,15 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
 
     override fun popularSearchClicked(popularSearch: PopularSearch) {
 
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            permissionCheckerHelper.onRequestPermissionsResult(activity as HotelDestinationActivity,
+                    requestCode, permissions,
+                    grantResults)
+        }
     }
 
     companion object {
