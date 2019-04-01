@@ -338,6 +338,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 successPost = false
             }
         }
+        recyclerView.scrollTo(0,0)
     }
 
     override fun hideHeader() {
