@@ -534,10 +534,10 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessDeletePost(int rowNumber) {
-        if(getActivity()!= null && !getActivity().isTaskRoot()) {
+        if (getActivity() != null && !getActivity().isTaskRoot()) {
             getActivity().setResult(KolPostDetailActivity.RESULT_DELETED);
             getActivity().finish();
-        }else if (getActivity()!= null){
+        } else if (getActivity() != null) {
             getActivity().setResult(KolPostDetailActivity.RESULT_DELETED);
             getActivity().finish();
             RouteManager.route(getContext(), ApplinkConst.HOME);
@@ -550,6 +550,10 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
         switch (requestCode) {
             case OPEN_KOL_COMMENT:
+                if (resultCode == Activity.RESULT_OK) {
+                    presenter.getCommentFirstTime(postId);
+                }
+                break;
             case OPEN_KOL_PROFILE:
                 presenter.getCommentFirstTime(postId);
                 break;

@@ -78,11 +78,9 @@ public class KolPostDetailAdapter extends RecyclerView.Adapter<AbstractViewHolde
     }
 
     public void setList(List<Visitable> list) {
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new Callback(this.list, list));
-        diffResult.dispatchUpdatesTo(this);
-
         this.list.clear();
         this.list.addAll(list);
+        notifyDataSetChanged();
     }
 
     public void clearData() {
