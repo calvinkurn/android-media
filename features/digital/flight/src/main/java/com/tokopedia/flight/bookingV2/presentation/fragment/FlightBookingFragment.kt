@@ -106,6 +106,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
         flightBookingPresenter.attachView(this)
         if (savedInstanceState == null) {
             flightBookingCartData = FlightBookingCartData()
+            expiredDate = FlightDateUtil.getCurrentDate()
             flightBookingPresenter.initialize()
         } else {
             flightBookingCartData = savedInstanceState.getParcelable(KEY_CART_DATA)
