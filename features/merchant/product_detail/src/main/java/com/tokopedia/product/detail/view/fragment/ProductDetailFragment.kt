@@ -1062,7 +1062,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
         latestTalkView.renderData(productInfoP2.latestTalk, productInfo?.stats?.countTalk ?: 0,
                 productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
 
-        otherProductView.renderData(productInfoP2.productOthers)
+        if (!isAffiliate) {
+            otherProductView.renderData(productInfoP2.productOthers)
+        }
 
         partialVariantAndRateEstView.renderFulfillment(productInfoP2.nearestWarehouse.warehouseInfo.isFulfillment)
         if (productInfo != null && productInfoP2.nearestWarehouse.warehouseInfo.id.isNotBlank())
