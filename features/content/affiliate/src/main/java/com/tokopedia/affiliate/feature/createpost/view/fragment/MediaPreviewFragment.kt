@@ -144,7 +144,7 @@ class MediaPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun updateDeleteBtn() {
-        deleteMediaBtn.showWithCondition(imageAdapter.imageList.isNotEmpty())
+        deleteMediaBtn.showWithCondition(viewModel.fileImageList.isNotEmpty())
     }
 
     private fun updateResultIntent() {
