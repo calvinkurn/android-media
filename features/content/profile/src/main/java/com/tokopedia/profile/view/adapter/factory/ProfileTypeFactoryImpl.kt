@@ -33,6 +33,7 @@ import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
 import com.tokopedia.profile.view.viewmodel.ProfileEmptyViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
+import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * @author by milhamj on 9/20/18.
@@ -48,7 +49,8 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                              private val youtubePostListener: YoutubeViewHolder.YoutubePostListener?,
                              private val pollOptionListener: PollAdapter.PollOptionListener?,
                              private val gridItemListener: GridPostAdapter.GridItemListener?,
-                             private val videoViewListener: VideoViewHolder.VideoViewListener?)
+                             private val videoViewListener: VideoViewHolder.VideoViewListener?,
+                             private val userSession : UserSessionInterface)
     : BaseAdapterTypeFactory(), ProfileTypeFactory, KolPostTypeFactory, DynamicFeedTypeFactory {
 
     override fun type(viewModel: ProfileHeaderViewModel): Int {
@@ -127,7 +129,8 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                         youtubePostListener!!,
                         pollOptionListener!!,
                         gridItemListener!!,
-                        videoViewListener!!) as AbstractViewHolder< Visitable<*>>
+                        videoViewListener!!,
+                        userSession) as AbstractViewHolder< Visitable<*>>
             FeedRecommendationViewHolder.LAYOUT ->
                 FeedRecommendationViewHolder(parent, recommendationCardListener!!, cardTitleListener!!) as AbstractViewHolder<Visitable<*>>
             BannerViewHolder.LAYOUT ->
