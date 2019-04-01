@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -85,23 +87,23 @@ public class FeedAnalytics {
     }
 
     //#FEED016
-    public void trackClickCreatePostAsShop(String shopId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_CLICK_FEED,
-                CATEGORY_FEED,
-                "click post sebagai - shop",
-                shopId
-        );
-    }
+    public void trackClickCreatePostAs(String applink, String userId, String shopId) {
+        if(applink.equals(ApplinkConst.AFFILIATE_EXPLORE)){
+            analyticTracker.sendEventTracking(
+                    EVENT_CLICK_FEED,
+                    CATEGORY_FEED,
+                    "click post sebagai - user",
+                    userId
+            );
+        }else{
+            analyticTracker.sendEventTracking(
+                    EVENT_CLICK_FEED,
+                    CATEGORY_FEED,
+                    "click post sebagai - shop",
+                    shopId
+            );
+        }
 
-    //#FEED016
-    public void trackClickCreatePostAsUser(String userId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_CLICK_FEED,
-                CATEGORY_FEED,
-                "click post sebagai - user",
-                userId
-        );
     }
 
     public interface Element {

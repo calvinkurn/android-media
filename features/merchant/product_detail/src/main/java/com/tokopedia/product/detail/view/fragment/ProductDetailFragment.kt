@@ -955,6 +955,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun renderAffiliate(pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
         if (isAffiliate) {
             base_btn_affiliate.visible()
+            loadingAffiliate.gone()
+            getCommission.visible()
+            commission.visible()
+            commission.text = pdpAffiliate.commissionValueDisplay
             btn_affiliate.setOnClickListener { onAffiliateClick(pdpAffiliate, false) }
             actionButtonView.gone()
         } else {

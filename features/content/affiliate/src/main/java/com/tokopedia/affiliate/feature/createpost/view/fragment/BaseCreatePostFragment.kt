@@ -221,25 +221,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onErrorNotAffiliate() {
-        activity?.let {
-            val taskStackBuilder = TaskStackBuilder.create(it)
-
-            val onboardingApplink = ApplinkConst.AFFILIATE_ONBOARDING + PRODUCT_ID_QUERY_PARAM + viewModel.productIdList.firstOrNull()
-            val onboardingIntent = RouteManager.getIntent(it, onboardingApplink)
-            onboardingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            taskStackBuilder.addNextIntent(onboardingIntent)
-
-            val educationIntent = RouteManager.getIntent(
-                    it,
-                    ApplinkConst.AFFILIATE_EDUCATION)
-            taskStackBuilder.addNextIntent(educationIntent)
-
-            taskStackBuilder.startActivities()
-            it.finish()
-        }
-    }
-
     override fun onErrorNoQuota() {
         activity?.let {
             Toast.makeText(it, R.string.text_full_affiliate_title, Toast.LENGTH_LONG)
@@ -268,6 +249,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         viewModel.urlImageList.removeAll { it.path == relatedProductItem.image }
 
         updateThumbnail()
+        updateAddTagText()
         updateButton()
     }
 
@@ -306,6 +288,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
         viewModel.productIdList.addAll(productIds)
         viewModel.adIdList.addAll(adIds)
+
         updateAddTagText()
     }
 

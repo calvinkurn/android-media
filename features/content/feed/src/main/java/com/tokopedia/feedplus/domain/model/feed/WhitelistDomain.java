@@ -1,5 +1,9 @@
 package com.tokopedia.feedplus.domain.model.feed;
 
+import com.tokopedia.kolcommon.data.pojo.Author;
+
+import java.util.ArrayList;
+
 /**
  * @author by yfsx on 20/06/18.
  */
@@ -13,6 +17,7 @@ public class WhitelistDomain {
     private String postSuccessMessage;
     private String desc;
     private String image;
+    private ArrayList<Author> authors;
 
     public boolean isWhitelist() {
         return isWhitelist;
@@ -76,5 +81,13 @@ public class WhitelistDomain {
 
     public void setTitleIdentifier(String titleIdentifier) {
         this.titleIdentifier = titleIdentifier;
+    }
+
+    public void setAuthors(ArrayList<Author> authors) {
+        this.authors = authors;
+    }
+
+    public ArrayList<Author> getAuthors() {
+        return authors;
     }
 }
