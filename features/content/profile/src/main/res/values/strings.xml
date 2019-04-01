@@ -48,4 +48,19 @@
     <string name="profile_feed_report">Laporkan</string>
     <string name="profile_feed_delete">Hapus</string>
     <string name="profile_feed_cancel">Batal</string>
+
+    <!--ONBOARDING-->
+    <string name="title_af_tokopedia_byme">Tokopedia By Me</string>
+    <string name="title_af_username">Perbarui Link Profil</string>
+    <string name="af_make_by_me_profile">Bagikan untuk dapat Komisi</string>
+    <string name="af_type_username">Ketik Username:</string>
+    <string name="af_agree_terms">Dengan melanjutkan, saya setuju dengan</string>
+    <string name="af_terms_and_condition">Syarat &amp; Ketentuan By Me</string>
+    <string name="af_save">Bagikan Sekarang</string>
+    <string name="af_by_me_domain">tokopedia.me/</string>
+    <string name="af_minimal_character">Minimum %d karakter</string>
+    <string name="af_recommend_this_product">Lanjutkan Kurasi dengan Produk Ini?</string>
+    <string name="af_recommend">Rekomendasikan</string>
+    <string name="af_continue">Lanjutkan</string>
+    <string name="af_see_other_product">Lihat Produk Lainnya</string>
 </resources>

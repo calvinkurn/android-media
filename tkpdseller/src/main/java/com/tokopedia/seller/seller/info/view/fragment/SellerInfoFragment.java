@@ -16,6 +16,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.seller.info.di.component.DaggerSellerInfoComponent;
+import com.tokopedia.seller.seller.info.view.SellerInfoTracking;
 import com.tokopedia.seller.seller.info.view.SellerInfoView;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoWebViewActivity;
 import com.tokopedia.seller.seller.info.view.adapter.SellerInfoAdapter;
@@ -90,7 +91,7 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
 
         if(sellerInfoModel instanceof SellerInfoSectionModel)
             return;
-        UnifyTracking.eventClickItemSellerInfo(getActivity(), sellerInfoModel.getTitle());
+        SellerInfoTracking.eventClickItemSellerInfo(sellerInfoModel.getTitle());
 
         startActivity(SellerInfoWebViewActivity.getCallingIntent(getContext(), sellerInfoModel.getExternalLink()));
     }

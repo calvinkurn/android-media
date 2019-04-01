@@ -16,7 +16,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.Video
+import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.adapter.YoutubeThumbnailAdapter
@@ -88,7 +88,8 @@ class ProductFullDescriptionFragment: BaseDaggerFragment() {
             }
 
             val descr = it.getString(PARAM_PRODUCT_DESCR, "")
-            val descFormatted = MethodChecker.fromHtml(if (descr.isNotBlank()) descr else NO_DESCRIPTION)
+            val descFormatted = MethodChecker.fromHtml(if (descr.isNotBlank())
+                descr.replace("(\r\n|\n)".toRegex(), "<br />") else NO_DESCRIPTION)
 
             txt_product_descr.text =  descFormatted
 

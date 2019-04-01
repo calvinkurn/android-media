@@ -1,7 +1,6 @@
 package com.tokopedia.transactionanalytics;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
 import java.util.Map;
 
@@ -18,8 +17,7 @@ import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.Ev
  */
 public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     @Inject
-    public CheckoutAnalyticsCourierSelection(AnalyticTracker analyticTracker) {
-        super(analyticTracker);
+    public CheckoutAnalyticsCourierSelection() {
     }
 
     public void eventClickAtcCourierSelectionClickBackArrow() {

@@ -21,7 +21,7 @@ import com.tokopedia.gamification.taptap.data.entiity.GamiTapEggHome;
 import com.tokopedia.gamification.taptap.data.entiity.PlayWithPointsEntity;
 import com.tokopedia.gamification.taptap.data.entiity.TapTapBaseEntity;
 import com.tokopedia.gamification.taptap.data.entiity.TokenAsset;
-import com.tokopedia.gamification.util.TapTapAnalyticsTrackerUtil;
+import com.tokopedia.gamification.taptap.utils.TapTapAnalyticsTrackerUtil;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -119,7 +119,7 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
                             && crackResult.getResultStatus().getMessage() != null
                             && crackResult.getResultStatus().getMessage().size() != 0
                             && crackResult.isCrackButtonErrorTapTap()) {
-                        getView().showErrorSnackBar(TextUtils.join(",", crackResult.getResultStatus().getMessage()));
+                        getView().showErrorSnackBarOnCrackError(TextUtils.join(",", crackResult.getResultStatus().getMessage()));
                     } else {
                         showErrorView(R.drawable.gf_server_full_error, getView().getResources().getString(R.string.error_server_full), true);
                         getView().onFinishCrackToken();

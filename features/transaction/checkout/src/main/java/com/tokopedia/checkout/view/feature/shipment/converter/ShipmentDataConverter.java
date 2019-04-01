@@ -115,6 +115,9 @@ public class ShipmentDataConverter {
                     getShipmentItem(shipmentCartItemModel, userAddress, groupShop,
                             cartShipmentAddressFormData.getKeroToken(),
                             String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), true);
+                    shipmentCartItemModel.setFulfillment(groupShop.isFulfillment());
+                    shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
+                    shipmentCartItemModel.setFulfillmentName(groupShop.getFulfillmentName());
                     setCartItemModelError(shipmentCartItemModel);
                     shipmentCartItemModels.add(shipmentCartItemModel);
                 }
@@ -130,6 +133,9 @@ public class ShipmentDataConverter {
                         .get(0).getUserAddress().getAddressId());
                 getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
                         String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), false);
+                shipmentCartItemModel.setFulfillment(groupShop.isFulfillment());
+                shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
+                shipmentCartItemModel.setFulfillmentName(groupShop.getFulfillmentName());
                 setCartItemModelError(shipmentCartItemModel);
                 shipmentCartItemModels.add(shipmentCartItemModel);
             }

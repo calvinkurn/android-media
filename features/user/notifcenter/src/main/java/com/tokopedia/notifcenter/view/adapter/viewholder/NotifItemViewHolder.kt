@@ -34,7 +34,7 @@ class NotifItemViewHolder(val v: View, val viewListener: NotifCenterContract.Vie
                         MethodChecker.getColor(itemView.context, R.color.notif_unread_color)
             )
             itemView.mainLayout.setOnClickListener {
-                viewListener.openRedirectUrl(this.redirectLink, element.notifId)
+                viewListener.openRedirectUrl(this.redirectLink, element.templateKey)
             }
             itemView.timeSummary.visibility = if (this.showTimeSummary) View.VISIBLE else View.GONE
         }

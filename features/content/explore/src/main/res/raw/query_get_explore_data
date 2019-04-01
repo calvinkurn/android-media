@@ -14,6 +14,7 @@ query GetExploreData ($limit: Int!, $cursor: String!, $idcategory: Int!, $search
       createTime
       description
       content {
+        type
         imageurl
         tags {
           id

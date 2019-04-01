@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -110,9 +112,9 @@ public class ChooseAddressActivity extends BasePresenterActivity {
             Bundle bundle = intent.getExtras();
             if (bundle.getBoolean(IS_RESOLUTION) && !bundle.getBoolean(IS_RESO_CHAT)) {
                 if (bundle.getBoolean(IS_EDIT_ADDRESS)) {
-                    UnifyTracking.eventResoDetailClickBackEditAddressPage(this, bundle.getString(RESOLUTION_ID));
+                    eventResoDetailClickBackEditAddressPage(bundle.getString(RESOLUTION_ID));
                 } else {
-                    UnifyTracking.eventResoDetailClickBackInputAddressPage(this, bundle.getString(RESOLUTION_ID));
+                    eventResoDetailClickBackInputAddressPage(bundle.getString(RESOLUTION_ID));
                 }
             }
         }
@@ -133,6 +135,24 @@ public class ChooseAddressActivity extends BasePresenterActivity {
             }
         }
         finish();
+    }
+
+    public EventTracking eventResoDetailClickBackInputAddressPage(String resolutionId) {
+        return new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_BACK_INPUT_ADDRESS_PAGE_DETAIL,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId);
+    }
+
+    public EventTracking eventResoDetailClickBackEditAddressPage(String resolutionId) {
+        return new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_BACK_EDIT_ADDRESS_PAGE_DETAIL,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId);
     }
 
     public interface OnChooseAddressViewListener {
