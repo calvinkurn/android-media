@@ -42,16 +42,17 @@ import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddres
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddressFormSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.SaveShipmentStateSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.logisticanalytics.CodAnalytics;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam;
-import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
+import com.tokopedia.promocheckout.common.data.entity.request.Promo;
+import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
@@ -62,18 +63,16 @@ import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiMod
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.shipping_recommendation.domain.ShippingParam;
-import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
-import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase;
-import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierConverter;
-import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase;
+import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.transaction.common.sharedata.EditAddressParam;
-import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
@@ -99,6 +98,7 @@ import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentSt
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateShopProductData;
 import com.tokopedia.transactiondata.entity.response.cod.CodResponse;
 import com.tokopedia.transactiondata.entity.response.cod.Data;
+import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -128,7 +128,6 @@ import rx.subscriptions.CompositeSubscription;
 public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View>
         implements ShipmentContract.Presenter {
 
-    // private final CheckPromoCodeFinalUseCase checkPromoCodeFinalUseCase;
     private final CheckPromoStackingCodeFinalUseCase checkPromoStackingCodeFinalUseCase;
     private final CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase;
     private final CheckPromoStackingCodeMapper checkPromoStackingCodeMapper;
@@ -375,7 +374,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             setShipmentDonationModel(null);
         }
 
-        // getView().setPromoData(cartShipmentAddressFormData);
         getView().setPromoStackingData(cartShipmentAddressFormData);
 
         if (cartShipmentAddressFormData.getCartPromoSuggestion() != null) {
@@ -715,57 +713,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             }
                             if (getView() != null) {
                                 getView().renderErrorCheckPromoShipmentData(message);
+                                getView().cancelAllCourierPromo();
                             }
                         } else {
                             getView().renderCheckPromoStackingShipmentDataSuccess(responseGetPromoStack);
                         }
                     }
                 });
-    }
-
-    @Override
-    public void checkPromoShipment(String promoCode, boolean isOneClickShipment, Promo promo) {
-
-        TokopediaCornerData cornerData = null;
-        RecipientAddressModel recipientAddressModel = getRecipientAddressModel();
-        if (recipientAddressModel != null && recipientAddressModel.isCornerAddress()) {
-            cornerData = new TokopediaCornerData(
-                    recipientAddressModel.getUserCornerId(),
-                    Integer.parseInt(recipientAddressModel.getCornerId())
-            );
-        }
-
-        CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest =
-                new CheckPromoCodeCartShipmentRequest.Builder()
-                        .promoCode(promoCode)
-                        .data(promoCodeCartShipmentRequestDataList)
-                        .cornerData(cornerData)
-                        .build();
-
-        /*checkPromoCodeFinalUseCase.execute(checkPromoCodeFinalUseCase.createRequestParams(
-                new Gson().toJson(checkPromoCodeCartShipmentRequest), isOneClickShipment), new Subscriber<DataVoucher>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                if (getView() != null) {
-                    getView().renderErrorCheckPromoShipmentData(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
-                }
-            }
-
-            @Override
-            public void onNext(DataVoucher dataVoucher) {
-                getView().renderCheckPromoShipmentDataSuccess(voucherCouponMapper.convertPromoCodeCartShipmentData(dataVoucher));
-                if (TickerCheckoutUtilKt.mapToStatePromoCheckout(dataVoucher.getMessage().getState()) == TickerCheckoutView.State.FAILED) {
-                    getView().showToastFailedTickerPromo(dataVoucher.getMessage().getText());
-                    getView().cancelAllCourierPromo();
-                }
-            }
-        });*/
     }
 
     @NonNull
@@ -873,92 +827,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         return checkoutMapData;
     }
-
-    /*@Override
-    public void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isOneClickShipment) {
-        getView().showLoading();
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_CODE, promoCode);
-        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_LANG, CheckPromoCodeCartListUseCase.PARAM_VALUE_LANG_ID);
-        param.put(CheckPromoCodeCartListUseCase.PARAM_ONE_CLICK_SHIPMENT, String.valueOf(isOneClickShipment));
-        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_SUGGESTED, CheckPromoCodeCartListUseCase.PARAM_VALUE_SUGGESTED);
-
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
-                getGeneratedAuthParamNetwork(param));
-        compositeSubscription.add(
-                checkPromoCodeCartListUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
-                        .subscribe(new Subscriber<PromoCodeCartListData>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                e.printStackTrace();
-                                getView().hideLoading();
-                                if (e instanceof UnknownHostException) {
-                                    getView().showToastError(
-                                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                                    );
-                                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                                    getView().showToastError(
-                                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                                    );
-                                } else if (e instanceof CartResponseErrorException) {
-                                    getView().showToastError(e.getMessage());
-                                } else if (e instanceof CartResponseDataNullException) {
-                                    getView().showToastError(e.getMessage());
-                                } else if (e instanceof CartHttpErrorException) {
-                                    getView().showToastError(e.getMessage());
-                                } else if (e instanceof ResponseCartApiErrorException) {
-                                    getView().showToastError(e.getMessage());
-                                } else if (e instanceof CheckPromoCodeException) {
-                                    getView().showToastError(e.getMessage());
-                                } else {
-                                    getView().showToastError(
-                                            ErrorNetMessage.MESSAGE_ERROR_DEFAULT
-                                    );
-                                }
-                            }
-
-                            @Override
-                            public void onNext(PromoCodeCartListData promoCodeCartListData) {
-                                getView().hideLoading();
-                                if (!promoCodeCartListData.isError()) {
-                                    getView().renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);
-                                } else {
-                                    getView().renderErrorCheckPromoCodeFromSuggestedPromo(promoCodeCartListData.getErrorMessage());
-                                }
-                            }
-                        })
-        );
-    }*/
-
-    /*@Override
-    public void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition,
-                                                         boolean noToast, boolean isOneClickShipment) {
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_CODE, promoCode);
-        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_LANG, CheckPromoCodeCartListUseCase.PARAM_VALUE_LANG_ID);
-        param.put(CheckPromoCodeCartListUseCase.PARAM_ONE_CLICK_SHIPMENT, String.valueOf(isOneClickShipment));
-
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
-                getGeneratedAuthParamNetwork(param));
-
-        compositeSubscription.add(
-                checkPromoCodeCartListUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
-                        .subscribe(new CheckPromoCodeFromSelectedCourierSubscriber(getView(), itemPosition, noToast))
-        );
-    }*/
 
     @Override
     public void processCheckPromoStackingCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast) {

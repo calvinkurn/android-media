@@ -22,13 +22,7 @@ class PromoCheckoutListModule {
     fun providePresenter() : PromoCheckoutListPresenter {
         return PromoCheckoutListPresenter(GraphqlUseCase())
     }
-
-    /*@PromoCheckoutListScope
-    @Provides
-    fun provideMarketplacePresenter(@PromoCheckoutQualifier checkPromoCodeUseCase: CheckPromoCodeUseCase) : PromoCheckoutListMarketplacePresenter {
-        return PromoCheckoutListMarketplacePresenter(checkPromoCodeUseCase)
-    }*/
-
+    
     @PromoCheckoutListScope
     @Provides
     fun provideMarketplacePresenter(@PromoCheckoutQualifier checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase, checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper) : PromoCheckoutListMarketplacePresenter {

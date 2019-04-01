@@ -592,11 +592,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     }
 
-    /*@Override
-    public void onCartPromoSuggestionActionClicked(CartPromoSuggestion data, int position) {
-        dPresenter.processCheckPromoCodeFromSuggestedPromo(data.getPromoCode(), false);
-    }*/
-
     @Override
     public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion data, int position) {
         data.setVisible(false);
@@ -608,12 +603,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void onCartItemListIsEmpty(int shopPosition) {
         renderEmptyCartData(null);
     }
-
-    /*@Override
-    public void onCartPromoUseVoucherPromoClicked(PromoData promoData, int position) {
-        trackingPromoCheckoutUtil.cartClickUseTickerPromoOrCoupon();
-        dPresenter.processUpdateCartDataPromoMerchant(getSelectedCartDataList(), promoData, GO_TO_LIST);
-    }*/
 
     @Override
     public void onCartPromoUseVoucherGlobalPromoClicked(PromoStackingData cartPromoGlobal, int position) {
@@ -678,11 +667,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         return promo;
     }
 
-    /*@Override
-    public void onCartPromoCancelVoucherPromoClicked(PromoData promoData, int position) {
-        dPresenter.processCancelAutoApply();
-    }*/
-
     @Override
     public void onCartPromoCancelVoucherPromoGlobalClicked(PromoStackingData cartPromoGlobal, int position) {
         ArrayList<String> promoCodes = new ArrayList<>();
@@ -697,20 +681,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         dPresenter.processCancelAutoApplyPromoStack(shopIndex, promoMerchantCodes, ignoreAPIResponse);
     }
 
-    /*@Override
-    public void onCartPromoTrackingImpression(PromoData promoData, int position) {
-        trackingPromoCheckoutUtil.cartImpressionTicker(promoData.getPromoCodeSafe());
-    }*/
-
     @Override
     public void onCartPromoGlobalTrackingImpression(PromoStackingData cartPromoGlobal, int position) {
         trackingPromoCheckoutUtil.cartImpressionTicker(cartPromoGlobal.getPromoCodeSafe());
     }
-
-    /*@Override
-    public void onCartPromoTrackingCancelled(PromoData promoData, int position) {
-        sendAnalyticsOnClickCancelPromoCodeAndCouponBanner();
-    }*/
 
     @Override
     public void onCartPromoGlobalTrackingCancelled(PromoStackingData cartPromoGlobal, int position) {
@@ -785,12 +759,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void onDropshipperValidationResult(boolean result, Object shipmentData, int position, int requestCode) {
 
     }
-
-    /*@Override
-    public void onClickDetailPromo(PromoData data, int position) {
-        trackingPromoCheckoutUtil.cartClickTicker(data.getPromoCodeSafe());
-        dPresenter.processUpdateCartDataPromoMerchant(getSelectedCartDataList(), data, GO_TO_DETAIL);
-    }*/
 
     @Override
     public void onClickDetailPromoGlobal(PromoStackingData dataGlobal, int position) {
@@ -1216,9 +1184,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void renderToAddressChoice() {
         FLAG_BEGIN_SHIPMENT_PROCESS = true;
-        /*boolean isAutoApplyPromoCodeApplied = dPresenter.getCartListData() != null &&
-                dPresenter.getCartListData().getAutoApplyData() != null &&
-                dPresenter.getCartListData().getAutoApplyData().isSuccess();*/
         boolean isAutoApplyPromoStackCodeApplied = dPresenter.getCartListData() != null &&
                 dPresenter.getCartListData().getAutoApplyStackData() != null &&
                 dPresenter.getCartListData().getAutoApplyStackData().isSuccess();
@@ -1272,16 +1237,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData) {
-        /*PromoData promoData = new PromoData.Builder()
-                .typePromo(PromoData.CREATOR.getTYPE_VOUCHER())
-                .promoCode(promoCodeCartListData.getDataVoucher().getCode())
-                .description(promoCodeCartListData.getDataVoucher().getMessageSuccess())
-                .amount(promoCodeCartListData.getDataVoucher().getCashbackAmount())
-                .state(TickerCheckoutUtilKt.mapToStatePromoCheckout(promoCodeCartListData.getDataVoucher().getState()))
-                .title(promoCodeCartListData.getDataVoucher().getTitleDescription())
-                .build();
-        cartAdapter.updateItemPromoVoucher(promoData);*/
-
         PromoStackingData promoStackingData = new PromoStackingData.Builder()
                 .typePromo(PromoStackingData.CREATOR.getTYPE_VOUCHER())
                 .promoCode(promoCodeCartListData.getDataVoucher().getCode())
@@ -1549,7 +1504,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (layoutUsedPromoEmptyCart != null) {
             layoutUsedPromoEmptyCart.setVisibility(View.GONE);
         } else {
-            // cartAdapter.cancelAutoApplyCoupon();
             cartAdapter.cancelAutoApplyStackCoupon();
             cartAdapter.checkForShipmentForm();
         }
@@ -1655,16 +1609,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             sendAnalyticsScreenName(getScreenName());
             Bundle bundle = data.getExtras();
             if (bundle != null) {
-                /*PromoData promoData = bundle.getParcelable(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
-                if (promoData != null) {
-                    cartAdapter.updateItemPromoVoucher(promoData);
-                    if (promoData.getTypePromo() == PromoData.CREATOR.getTYPE_VOUCHER()) {
-                        sendAnalyticsOnViewPromoManualApply("voucher");
-                    } else {
-                        sendAnalyticsOnViewPromoManualApply("coupon");
-                    }
-                }*/
-
                 PromoStackingData promoStackingData = bundle.getParcelable(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
                 if (promoStackingData != null) {
                     cartAdapter.updateItemPromoStackVoucher(promoStackingData);

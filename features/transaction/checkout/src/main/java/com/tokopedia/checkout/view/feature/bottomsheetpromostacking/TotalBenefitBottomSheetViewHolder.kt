@@ -14,11 +14,6 @@ class TotalBenefitBottomSheetViewHolder(itemView: View) : RecyclerView.ViewHolde
     private var totalBenefitLabel: TextView = itemView.findViewById(com.tokopedia.checkout.R.id.tv_total_benefit_label)
     private var totalBenefitAmount: TextView = itemView.findViewById(com.tokopedia.checkout.R.id.tv_total_benefit_amount)
 
-    /*fun bind(model: SummariesUiModel) {
-        totalBenefitLabel.text = model.description
-        totalBenefitAmount.text = model.amountStr
-    }*/
-
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_total_benefit

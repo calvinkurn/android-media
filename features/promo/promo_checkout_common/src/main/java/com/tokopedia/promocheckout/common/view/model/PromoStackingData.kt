@@ -10,12 +10,12 @@ data class PromoStackingData(var typePromo: Int = 0,
                              var title: String = "",
                              var amount: Int = 0,
                              var state: TickerPromoStackingCheckoutView.State = TickerPromoStackingCheckoutView.State.EMPTY,
-                             var variant: TickerPromoStackingCheckoutView.Variant = TickerPromoStackingCheckoutView.Variant.GLOBAL) : Parcelable{
+                             var variant: TickerPromoStackingCheckoutView.Variant = TickerPromoStackingCheckoutView.Variant.GLOBAL) : Parcelable {
 
-    fun getPromoCodeSafe() : String{
-        if(state != TickerPromoStackingCheckoutView.State.EMPTY){
+    fun getPromoCodeSafe(): String {
+        if (state != TickerPromoStackingCheckoutView.State.EMPTY) {
             return promoCode
-        }else{
+        } else {
             return ""
         }
     }
