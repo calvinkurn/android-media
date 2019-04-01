@@ -61,10 +61,8 @@ class FilterAdapter(private val filterClickedListener: OnFilterClickedListener,
     }
 
     override fun getItemCount(): Int {
-        if (page.equals(PAGE_EXPLORE)) {
-            if (allFilterList.size > 5) {
-                return 5
-            }
+        if (page.equals(PAGE_EXPLORE) && allFilterList.size > 5) {
+            return 5
         }
         return allFilterList.size
     }

@@ -10,5 +10,4 @@ data class Video(
         @SerializedName("url")
         @Expose
         var url: String = ""
-) {
-}
+)
