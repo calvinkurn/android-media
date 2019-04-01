@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.tokopedia.shipping_recommendation.R
 import com.tokopedia.shipping_recommendation.domain.shipping.LogisticPromoViewModel
+import kotlinx.android.synthetic.main.item_logistic_voucher.view.*
 
 /**
  * Created by fajarnuha on 29/03/19.
@@ -15,7 +16,12 @@ class LogisticPromoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
     }
 
     fun bindData(data: LogisticPromoViewModel) {
+        itemView.view_logistic_voucher.setData(data.title, data.description)
+        itemView.view_logistic_voucher.setUseButtonClickListener(object : View.OnClickListener{
+            override fun onClick(view: View?) {
 
+            }
+        })
     }
 
 }
