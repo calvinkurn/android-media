@@ -8,13 +8,9 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.data.entity.RecomendationEntity;
-import com.tokopedia.navigation.domain.model.Recomendation;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSessionInterface;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -31,9 +27,9 @@ public class GetRecomendationUseCase extends UseCase<RecomendationEntity.Recomen
     public static final String PAGE_NUMBER = "pageNumber";
     public static final String X_DEVICE = "xDevice";
     public static final String PAGE_NAME = "pageName";
-    public static final String DEFAULT_VALUE_X_SOURCE = "inbox";
+    public static final String INBOX_VALUE_X_SOURCE = "inbox";
     public static final String DEFAULT_VALUE_X_DEVICE = "android";
-    public static final String DEFAULT_PAGE_NAME = "default";
+    public static final String INBOX_PAGE_NAME = "inbox";
     private final GraphqlUseCase graphqlUseCase;
     private final Context context;
     private UserSessionInterface userSession;
@@ -65,9 +61,9 @@ public class GetRecomendationUseCase extends UseCase<RecomendationEntity.Recomen
         RequestParams params = RequestParams.create();
         params.putInt(USER_ID, Integer.parseInt(userSession.getUserId()));
         params.putInt(PAGE_NUMBER, pageNumber);
-        params.putString(X_SOURCE, DEFAULT_VALUE_X_SOURCE);
+        params.putString(X_SOURCE, INBOX_VALUE_X_SOURCE);
         params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE);
-        params.putString(PAGE_NAME, DEFAULT_PAGE_NAME);
+        params.putString(PAGE_NAME, INBOX_PAGE_NAME);
         return params;
     }
 }
