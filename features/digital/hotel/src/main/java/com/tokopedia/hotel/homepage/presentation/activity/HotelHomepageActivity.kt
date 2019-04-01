@@ -10,8 +10,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.common.applink.ApplinkConstant
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
-import com.tokopedia.hotel.common.di.component.DaggerHotelComponent
 import com.tokopedia.hotel.common.di.component.HotelComponent
+import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.homepage.presentation.fragment.HotelHomepageFragment
 
 class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelComponent> {
@@ -21,10 +21,7 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelComponent> 
         toolbar.contentInsetStartWithNavigation = 0
     }
 
-    override fun getComponent(): HotelComponent =
-            DaggerHotelComponent.builder()
-                    .hotelComponent(HotelComponentInstance.getHotelComponent(application))
-                    .build()
+    override fun getComponent(): HotelComponent = HotelComponentInstance.getHotelComponent(application)
 
     override fun getScreenName(): String = ""
 
