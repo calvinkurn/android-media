@@ -249,7 +249,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                 likeCount.setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
             } else {
                 ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_gray);
-                likeCount.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_70));
+                likeCount.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
             }
             setLikeListener(postDetailFooterModel.isLiked());
         } else {
