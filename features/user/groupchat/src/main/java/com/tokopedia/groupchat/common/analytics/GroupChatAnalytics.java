@@ -64,7 +64,9 @@ public class GroupChatAnalytics {
     private static final String EVENT_ACTION_CLICK_OVERLAY_CLOSE = "click on close button";
     private static final String EVENT_ACTION_CLICK_OVERLAY_IMAGE = "click on image overlay";
     private static final String EVENT_ACTION_VIEW_OVERLAY = "view on overlay";
-
+    private static final String EVENT_ACTION_CLICK_HIDE_VIDEO = "click hide video";
+    private static final String EVENT_ACTION_CLICK_SHOW_VIDEO = "click show video";
+    private static final String EVENT_ACTION_CLICK_PAUSE_VIDEO = "click on pause video";
 
     private static final String EVENT_NAME_CLICK_GROUPCHAT = "clickGroupChat";
     private static final String EVENT_NAME_CLICK_SHARE = "clickShare";
@@ -815,4 +817,25 @@ public class GroupChatAnalytics {
         ));
     }
 
+    public void eventClickHideVideoToggle(@Nullable String channelId) {
+        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_CLICK_HIDE_VIDEO,
+                channelId
+        );
+    }
+    public void eventClickShowVideoToggle(@Nullable String channelId) {
+        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_CLICK_SHOW_VIDEO,
+                channelId
+        );
+    }
+    public void eventClickPauseVideo(@Nullable String channelId) {
+        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_CLICK_PAUSE_VIDEO,
+                channelId
+        );
+    }
 }

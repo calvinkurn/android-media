@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder;
+import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -85,7 +87,14 @@ import static com.tokopedia.kol.common.util.PostMenuUtilKt.createBottomMenu;
 public class KolPostDetailFragment extends BaseDaggerFragment
         implements KolPostDetailContract.View, KolPostListener.View.Like,
         KolComment.View.ViewHolder, KolComment.View.SeeAll,
-        SwipeRefreshLayout.OnRefreshListener, DynamicPostViewHolder.DynamicPostListener, CardTitleView.CardTitleListener, ImagePostViewHolder.ImagePostListener, YoutubeViewHolder.YoutubePostListener, PollAdapter.PollOptionListener, GridPostAdapter.GridItemListener {
+        SwipeRefreshLayout.OnRefreshListener,
+        DynamicPostViewHolder.DynamicPostListener,
+        CardTitleView.CardTitleListener,
+        ImagePostViewHolder.ImagePostListener,
+        YoutubeViewHolder.YoutubePostListener,
+        PollAdapter.PollOptionListener,
+        GridPostAdapter.GridItemListener,
+        VideoViewHolder.VideoViewListener {
 
     private static final String PERFORMANCE_POST_DETAIL = "mp_explore_detail";
     private static final int OPEN_KOL_COMMENT = 101;
@@ -765,5 +774,10 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onGridItemClick(int positionInFeed, int contentPosition, @NotNull String redirectLink) {
         onGoToLink(redirectLink);
+    }
+
+    @Override
+    public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String postId) {
+        startActivity(VideoDetailActivity.Companion.getInstance(getActivity(), postId));
     }
 }

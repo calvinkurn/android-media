@@ -39,6 +39,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
@@ -58,6 +59,10 @@ import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity.PARAM_POST_ID
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
+import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
+import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
+import com.tokopedia.kotlin.extensions.view.showNormalToaster
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
@@ -99,7 +104,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         ImagePostViewHolder.ImagePostListener,
         YoutubeViewHolder.YoutubePostListener,
         PollAdapter.PollOptionListener,
-        GridPostAdapter.GridItemListener {
+        GridPostAdapter.GridItemListener,
+        VideoViewHolder.VideoViewListener{
 
     private var userId: Int = 0
     private var afterPost: Boolean = false
@@ -235,6 +241,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return ProfileTypeFactoryImpl(
+                this,
                 this,
                 this,
                 this,
@@ -818,6 +825,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     redirectLink
             )
         }
+    }
+
+    override fun onVideoPlayerClicked(
+            positionInFeed: Int,
+            contentPosition: Int,
+            postId: String) {
+        startActivity(VideoDetailActivity.getInstance(
+                activity!!,
+                postId))
+
     }
 
     //end of new feed section
