@@ -45,6 +45,9 @@ dependencies {
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 
+    
+    implementation project(rootProject.ext.libraries.track)
+
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation project(rootProject.ext.libraries.graphql)
