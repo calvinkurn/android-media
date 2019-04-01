@@ -651,12 +651,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                                     } else {
                                         isAvailableToSearch = false;
                                     }
-                                    if (flightDashboardAirportAndClassWrapper.getFlightClassEntity() != null
-                                            && getView().getCurrentDashboardViewModel().getFlightClass() == null) {
-                                        onFlightClassesChange(
-                                                flightClassViewModelMapper.transform(flightDashboardAirportAndClassWrapper.getFlightClassEntity())
-                                        );
-                                    } else {
+                                    if (getView().getCurrentDashboardViewModel().getFlightClass() == null) {
                                         isAvailableToSearch = false;
                                     }
                                     if (isSearchImmediately && isAvailableToSearch) {
