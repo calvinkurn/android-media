@@ -97,6 +97,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
+import com.tokopedia.hotel.HotelModuleRouter;
 import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity;
 import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -593,7 +594,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TradeInRouter,
         com.tokopedia.product.detail.ProductDetailRouter,
         OvoPayWithQrRouter,
-        KYCRouter{
+        KYCRouter,
+        HotelModuleRouter {
 
 
     private final static int IRIS_ROW_LIMIT = 50;
