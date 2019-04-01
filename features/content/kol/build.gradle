@@ -41,7 +41,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.trackinterface)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.sharecontent)
 

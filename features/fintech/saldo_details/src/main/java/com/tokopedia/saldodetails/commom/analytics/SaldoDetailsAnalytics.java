@@ -14,16 +14,13 @@ public class SaldoDetailsAnalytics {
     }
 
     public void eventMCLImpression(String label) {
-        if (tracker == null) {
-            return;
-        }
 
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 SaldoDetailsConstants.Event.EVENT_VIEW_FINTECH_MICROSITE,
                 SaldoDetailsConstants.Category.FIN_SALDO_PAGE,
                 SaldoDetailsConstants.Action.SALDO_MODAL_TOKO_IMP,
                 label
-        );
+        ));
     }
 
 
@@ -37,28 +34,21 @@ public class SaldoDetailsAnalytics {
     }
 
     public void eventMCLCardCLick(String label) {
-        if (tracker == null) {
-            return;
-        }
 
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 SaldoDetailsConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 SaldoDetailsConstants.Category.FIN_SALDO_PAGE,
                 SaldoDetailsConstants.Action.SALDO_MODAL_TOKO_CLICK,
                 label
-        );
+        ));
     }
 
     public void eventMCLActionItemClick(String action, String label) {
-        if (tracker == null) {
-            return;
-        }
-
-        tracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 SaldoDetailsConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 SaldoDetailsConstants.Category.FIN_SALDO_PAGE,
                 String.format(SaldoDetailsConstants.Action.SALDO_MODAL_TOKO_ACTION_CLICK, action.toLowerCase()),
                 label
-        );
+        ));
     }
 }
