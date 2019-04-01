@@ -219,9 +219,9 @@ class CoachMarkLayout : FrameLayout {
             //set custom target to view
             if (customTarget != null) {
                 if (customTarget.size == 2) {
-                    this.bitmap = ViewHelper.getCroppedBitmap(bitmap, customTarget, radius)
+                    this.bitmap = ViewHelper.getCroppedBitmap(bitmap!!, customTarget, radius)
                 } else if (customTarget.size == 4) {
-                    this.bitmap = ViewHelper.getCroppedBitmap(bitmap, customTarget)
+                    this.bitmap = ViewHelper.getCroppedBitmap(bitmap!!, customTarget)
                 }
 
                 this.highlightLocX = customTarget[0] - radius
