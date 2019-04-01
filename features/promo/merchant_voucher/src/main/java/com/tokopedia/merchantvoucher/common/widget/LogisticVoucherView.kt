@@ -33,10 +33,6 @@ class LogisticVoucherView : CustomVoucherView {
         fun isOwner(): Boolean
     }
 
-    var merchantVoucherViewModel: MerchantVoucherViewModel? = null
-        get
-        private set
-
     constructor(context: Context) : super(context) {
         init()
     }
@@ -61,15 +57,19 @@ class LogisticVoucherView : CustomVoucherView {
         mDashColor = ContextCompat.getColor(this.context, R.color.colorGray)
         LayoutInflater.from(context).inflate(R.layout.widget_merchant_voucher_view,
                 this, true)
+        ivVoucherLogo.visibility = View.GONE
+        tvVoucherTitle.setSingleLine(false)
         btnUseVoucher.text = context.getString(R.string.use_voucher)
-
-        btnUseVoucher.setOnClickListener {
-            Toast.makeText(context, "gunakan!!", Toast.LENGTH_SHORT).show()
-        }
+        btnUseVoucher.setTextColor(ContextCompat.getColor(this.context, R.color.tkpd_main_green))
+        btnUseVoucher.setBackgroundResource(R.drawable.button_border_green)
     }
 
-    fun setData(model: Any?) {
-
+    fun setData(title: String, desc: String) {
+        tvVoucherTitle.text = title
+        tvVoucherDesc.text = desc
     }
 
+    fun setUseButtonClickListener(listener: View.OnClickListener) {
+        btnUseVoucher.setOnClickListener(listener)
+    }
 }
