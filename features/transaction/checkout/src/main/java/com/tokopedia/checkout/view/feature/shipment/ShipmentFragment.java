@@ -2427,6 +2427,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         shipmentAdapter.notifyDataSetChanged();
+        shipmentPresenter.setCouponStateChanged(true);
     }
 
     @Override

@@ -225,9 +225,21 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void detachView() {
         super.detachView();
-        compositeSubscription.unsubscribe();
-        getCourierRecommendationUseCase.unsubscribe();
-        codCheckoutUseCase.unsubscribe();
+        if (compositeSubscription != null) {
+            compositeSubscription.unsubscribe();
+        }
+        if (getCourierRecommendationUseCase != null) {
+            getCourierRecommendationUseCase.unsubscribe();
+        }
+        if (codCheckoutUseCase != null) {
+            codCheckoutUseCase.unsubscribe();
+        }
+        if (checkPromoStackingCodeFinalUseCase != null) {
+            checkPromoStackingCodeFinalUseCase.unsubscribe();
+        }
+        if (checkPromoStackingCodeUseCase != null) {
+            checkPromoStackingCodeUseCase.unsubscribe();
+        }
     }
 
     @Override
@@ -674,7 +686,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     Integer.parseInt(recipientAddressModel.getCornerId())
             );
         }
-
+        promo.setTokopediCornerData(cornerData);
         checkPromoStackingCodeFinalUseCase.setParams(promo);
         checkPromoStackingCodeFinalUseCase.execute(RequestParams.create(),
                 new Subscriber<GraphqlResponse>() {
@@ -693,6 +705,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                     @Override
                     public void onNext(GraphqlResponse graphqlResponse) {
+                        setCouponStateChanged(true);
                         checkPromoStackingCodeMapper.setFinal(true);
                         ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
                         if (responseGetPromoStack.getStatus().equalsIgnoreCase("ERROR") || TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
@@ -977,6 +990,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                     @Override
                     public void onNext(GraphqlResponse graphqlResponse) {
+                        setCouponStateChanged(true);
                         checkPromoStackingCodeMapper.setFinal(false);
                         ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
                         if (!responseGetPromoStack.getStatus().equalsIgnoreCase("OK") || TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
