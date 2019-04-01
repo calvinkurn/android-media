@@ -370,7 +370,7 @@ class ProductDetailTracking() {
             "true non diagnostic"
         else
             "false"
-        TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(DataLayer.mapOf(
             "event", "viewProduct",
             "eventCategory", "product page",
             "eventAction", "view product page",
@@ -387,7 +387,7 @@ class ProductDetailTracking() {
                 "category", getEnhanceCategoryFormatted(productInfo?.category?.detail),
                 "variant", "none / other",
                 "dimension38", trackerAttribution ?: "none / other",
-                 "dimension55",dimension55))).apply {
+                "dimension55",dimension55))).apply {
             if (trackerListName?.isNotEmpty() == true) {
                 put("actionField", DataLayer.mapOf("list", trackerListName))
             }
