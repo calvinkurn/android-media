@@ -707,6 +707,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         updateCheckoutButtonData(null);
     }
 
+    public void clearTotalPromoStackAmount() {
+        shipmentCostModel.setTotalPromoStackAmount(0);
+    }
+
     public int getShipmentCostPosition() {
         for (int i = 0; i < shipmentDataList.size(); i++) {
             if (shipmentDataList.get(i) instanceof ShipmentCostModel) {
@@ -738,7 +742,25 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (dataUiModel != null) {
             if (shipmentCostModel != null) {
                 if (promoGlobalStackData != null) {
+                    boolean isApplied = false;
                     if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(dataUiModel.getMessage().getState()) == TickerPromoStackingCheckoutView.State.ACTIVE) {
+                        isApplied = true;
+                        for (int i = 0; i < shipmentDataList.size(); i++) {
+                            Object itemAdapter = shipmentDataList.get(i);
+                            if (itemAdapter instanceof PromoStackingData) {
+                                ((PromoStackingData) itemAdapter).setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(dataUiModel.getMessage().getState()));
+                                ((PromoStackingData) itemAdapter).setTitle(dataUiModel.getMessage().getText());
+                                ((PromoStackingData) itemAdapter).setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
+                                notifyItemChanged(i);
+                            }
+                        }
+                    }
+                    for (VoucherOrdersItemUiModel voucherOrdersItemUiModel : dataUiModel.getVoucherOrders()) {
+                        if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(voucherOrdersItemUiModel.getMessage().getState()) == TickerPromoStackingCheckoutView.State.ACTIVE) {
+                            isApplied = true;
+                        }
+                    }
+                    if (isApplied) {
                         shipmentCostModel.setTotalPromoStackAmount(dataUiModel.getBenefit().getFinalBenefitAmount());
                         shipmentCostModel.setTotalPromoStackAmountStr(dataUiModel.getBenefit().getFinalBenefitAmountStr());
                     } else {
@@ -941,12 +963,23 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public boolean hasAppliedPromoStackCode() {
+        boolean hasApplied = false;
         for (Object itemAdapter : shipmentDataList) {
             if (itemAdapter instanceof PromoStackingData) {
-                return ((PromoStackingData) itemAdapter).getState() != TickerPromoStackingCheckoutView.State.EMPTY;
+                if (((PromoStackingData) itemAdapter).getState() != TickerPromoStackingCheckoutView.State.EMPTY) {
+                    hasApplied = true;
+                }
+            }
+
+            if (itemAdapter instanceof  ShipmentCartItemModel) {
+                if (((ShipmentCartItemModel) itemAdapter).getVoucherOrdersItemUiModel() != null) {
+                    if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(((ShipmentCartItemModel) itemAdapter).getVoucherOrdersItemUiModel().getMessage().getState()) != TickerPromoStackingCheckoutView.State.EMPTY) {
+                        hasApplied = true;
+                    }
+                }
             }
         }
-        return false;
+        return hasApplied;
     }
 
     public void setCourierPromoApplied(int position) {

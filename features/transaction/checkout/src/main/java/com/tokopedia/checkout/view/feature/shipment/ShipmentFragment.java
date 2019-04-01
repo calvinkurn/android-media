@@ -980,8 +980,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderCheckPromoStackingShipmentDataSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel) {
-        // update global
         DataUiModel dataUiModel = responseGetPromoStackUiModel.getData();
+        // update benefit
+        setBenefitSummaryInfoUiModel(dataUiModel.getBenefit());
+
+        // update global
         if (dataUiModel.getCodes().size() > 0) {
             PromoStackingData promoData = new PromoStackingData.Builder()
                     .typePromo(dataUiModel.isCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON()
@@ -993,17 +996,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     .title(dataUiModel.getTitleDescription())
                     .build();
 
-            setBenefitSummaryInfoUiModel(dataUiModel.getBenefit());
             shipmentAdapter.updateItemPromoGlobalStack(promoData);
-            shipmentAdapter.updatePromoStack(dataUiModel);
-            if (getArguments() != null && getArguments().getBoolean(ARG_AUTO_APPLY_PROMO_CODE_APPLIED)) {
-                sendAnalyticsOnViewPromoAutoApply();
+        }
+
+        // update merchant
+        shipmentAdapter.updatePromoStack(dataUiModel);
+        if (getArguments() != null && getArguments().getBoolean(ARG_AUTO_APPLY_PROMO_CODE_APPLIED)) {
+            sendAnalyticsOnViewPromoAutoApply();
+        } else {
+            if (dataUiModel.isCoupon() == 1) {
+                sendAnalyticsOnViewPromoManualApply("coupon");
             } else {
-                if (dataUiModel.isCoupon() == 1) {
-                    sendAnalyticsOnViewPromoManualApply("coupon");
-                } else {
-                    sendAnalyticsOnViewPromoManualApply("voucher");
-                }
+                sendAnalyticsOnViewPromoManualApply("voucher");
             }
         }
     }
@@ -1705,10 +1709,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ArrayList<String> promoCodes = new ArrayList<>();
         promoCodes.add(cartPromoGlobal.getPromoCode());
         shipmentPresenter.cancelAutoApplyPromoStack(-1, promoCodes, false);
-        /*shipmentPresenter.cancelAutoApplyCoupon("");
         if (isToogleYearEndPromoOn()) {
             shipmentAdapter.cancelAllCourierPromo();
-        }*/
+        }
     }
 
     @Override
@@ -1716,31 +1719,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ArrayList<String> promoMerchantCodes = new ArrayList<>();
         promoMerchantCodes.add(promoMerchantCode);
         shipmentPresenter.cancelAutoApplyPromoStack(position, promoMerchantCodes, ignoreAPIResponse);
-    }
-
-    /*@Override
-    public void onCancelVoucherMerchantClicked() {
-        shipmentPresenter.cancelAutoApplyCoupon("merchant_voucher");
         if (isToogleYearEndPromoOn()) {
             shipmentAdapter.cancelAllCourierPromo();
         }
-    }*/
-
-    /*@Override
-    public void onCartPromoTrackingImpression(PromoData cartPromo, int position) {
-        trackingPromoCheckoutUtil.checkoutImpressionTicker(cartPromo.getDescription());
-    }*/
+    }
 
     @Override
     public void onCartPromoGlobalTrackingImpression(PromoStackingData cartPromoGlobal, int position) {
         trackingPromoCheckoutUtil.checkoutImpressionTicker(cartPromoGlobal.getDescription());
     }
-
-    /*@Override
-    public void onCartPromoTrackingCancelled(PromoData cartPromo, int position) {
-        sendAnalyticsOnClickCancelUsePromoCodeAndCouponBanner();
-
-    }*/
 
     @Override
     public void onCartPromoGlobalTrackingCancelled(PromoStackingData cartPromoGlobal, int position) {
@@ -2356,6 +2343,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onSuccessClearPromoStack(int shopIndex) {
+        setBenefitSummaryInfoUiModel(null);
+
         if (shopIndex == SHOP_INDEX_PROMO_GLOBAL) {
             PromoStackingData promoStackingData = shipmentAdapter.getPromoGlobalStackData();
             promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
@@ -2368,13 +2357,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (shipmentCartItemModel != null) {
                 shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
                 shipmentAdapter.notifyItemChanged(shopIndex);
-
-                // check if courier already selected all, then hit validate use again
-                // TODO : ask if this func is appropriate with goal?
-                shipmentAdapter.checkHasSelectAllCourier(false);
             }
-
         }
+        shipmentAdapter.clearTotalPromoStackAmount();
+        shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
+        shipmentAdapter.checkHasSelectAllCourier(false);
     }
 
     @Override
@@ -2427,6 +2414,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         shipmentAdapter.notifyDataSetChanged();
+        shipmentAdapter.checkHasSelectAllCourier(false);
     }
 
     @Override

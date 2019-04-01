@@ -208,18 +208,17 @@
         android:gravity="end"
         tools:text="Rp100.000" />
 
-    <View
-        android:id="@+id/item_shipment_divider"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
-        android:layout_below="@id/tv_donation_label"
-        android:background="@color/checkout_module_color_background" />
-
     <RelativeLayout
         android:id="@+id/rl_total_promo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/item_shipment_divider">
+        android:layout_below="@+id/tv_donation_label">
+
+        <View
+            android:id="@+id/item_shipment_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_8"
+            android:background="@color/checkout_module_color_background" />
 
         <TextView
             android:id="@+id/tv_total_promo_label"
@@ -233,6 +232,7 @@
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
             android:text="@string/label_total_nilai_promo"
+            android:layout_below="@id/item_shipment_divider"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
 
