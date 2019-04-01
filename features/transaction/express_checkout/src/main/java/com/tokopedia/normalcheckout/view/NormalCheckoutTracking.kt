@@ -2,9 +2,8 @@ package com.tokopedia.normalcheckout.view
 
 import com.appsflyer.AFInAppEventParameterName
 import com.appsflyer.AFInAppEventType
-import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.normalcheckout.model.ProductInfoAndVariant
-import com.tokopedia.product.detail.common.data.model.ProductInfo
+import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.track.TrackApp
 
 class NormalCheckoutTracking {
@@ -73,7 +72,7 @@ class NormalCheckoutTracking {
         val productVariantString = (originalProductInfoAndVariant.productVariant
             .getOptionListString(selectedVariantId)?.joinToString(" - ")
             ?: "non variant")
-        TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(
+        TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(
             mutableMapOf<String, Any>(
                 "event" to "addToCart",
                 "eventCategory" to PRODUCT_DETAIL_PAGE,

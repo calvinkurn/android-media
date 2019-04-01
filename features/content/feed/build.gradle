@@ -82,6 +82,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lottie
 
+    implementation project(rootProject.ext.libraries.track)
+
     implementation rootProject.ext.viewDependencies.appIntro
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher

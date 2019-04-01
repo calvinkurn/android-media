@@ -17,9 +17,9 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.Category
-import com.tokopedia.product.detail.common.data.model.ProductInfo
-import com.tokopedia.product.detail.common.data.model.Video
+import com.tokopedia.product.detail.common.data.model.product.Category
+import com.tokopedia.product.detail.common.data.model.product.ProductInfo
+import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.common.data.model.constant.ProductConditionTypeDef
 import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.util.*
@@ -105,13 +105,13 @@ class PartialProductDescrFullView private constructor(private val view: View,
             txt_min_order.text = context.getString(R.string.template_min_order, data.basic.minOrder)
             txt_product_condition.text = if (data.basic.condition == ProductConditionTypeDef.NEW) "Baru" else "Bekas"
 
-            val descFormatted = if (data.basic.description.isNotBlank()) data.basic.description
-                else NO_DESCRIPTION
+            val descFormatted = MethodChecker.fromHtmlPreserveLineBreak(if (data.basic.description.isNotBlank()) data.basic.description
+                else NO_DESCRIPTION)
 
             txt_product_descr.text = if (descFormatted.length > MAX_CHAR){
-                val subDescr = MethodChecker.fromHtml(descFormatted).toString().substring(0,MAX_CHAR)
+                val subDescr = descFormatted.toString().substring(0,MAX_CHAR)
                 MethodChecker.fromHtml(subDescr.replace("(\r\n|\n)".toRegex(), "<br />") + "....")
-            } else MethodChecker.fromHtml(descFormatted)
+            } else descFormatted
 
             txt_product_descr.autoLinkMask = 0
             Linkify.addLinks(txt_product_descr, Linkify.WEB_URLS)

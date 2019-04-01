@@ -19,13 +19,13 @@
             style="@style/TextSmallNormalBlack38"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxWidth="200dp"
+            android:maxWidth="180dp"
             android:layout_marginBottom="3dp"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:lineSpacingExtra="4sp"
             tools:ignore="SmallSp"
-            tools:text="Alamat Kantor" />
+            tools:text="Alamat Maximum Chars 350 karakter Jika Bisa" />
 
         <TextView
             android:id="@+id/tv_address_status"

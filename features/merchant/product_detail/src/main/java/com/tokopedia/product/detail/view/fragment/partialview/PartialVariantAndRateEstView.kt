@@ -1,8 +1,10 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.graphics.Typeface
+import android.support.v4.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -23,12 +25,22 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
         fun build(_view: View) = PartialVariantAndRateEstView(_view)
     }
 
+    init {
+        val titleFulfillment = view.title_multiorigin.text
+        val spanText = SpannableString(titleFulfillment)
+        val from = titleFulfillment.length - "tokopedia".length - 1
+        spanText.setSpan(StyleSpan(Typeface.BOLD), from, titleFulfillment.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spanText.setSpan(ForegroundColorSpan(ContextCompat.getColor(view.context, R.color.tkpd_main_green)),
+                from, titleFulfillment.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        view.title_multiorigin.text = spanText
+    }
+
     fun renderData(productVariant: ProductVariant?, selectedOptionString: String, onVariantClickedListener: (() -> Unit)? = null) {
         with(view) {
             if (productVariant != null) {
                 label_variant.visible()
                 label_choose_variant.visible()
-                if (txt_rate_estimation_start.isVisible || txt_courier_dest.isVisible) {
+                if (title_multiorigin.isVisible || txt_rate_estimation_start.isVisible || txt_courier_dest.isVisible) {
                     variant_divider.visible()
                 } else {
                     variant_divider.gone()
@@ -122,11 +134,28 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
                 txt_purchase_protection_title.text = productInfo.ppItemDetailPage!!.titlePDP
                 txt_purchase_protection_message.text = productInfo.ppItemDetailPage!!.subTitlePDP
             } else {
-                base_variant.gone()
                 purchase_protection_divider.gone()
                 icon_purchase_protection.gone()
                 txt_purchase_protection_title.gone()
                 txt_purchase_protection_message.gone()
+            }
+        }
+    }
+
+    fun renderFulfillment(fulfillment: Boolean) {
+        with(view){
+            if (fulfillment){
+                title_multiorigin.visible()
+                subtitle_multiorigin.visible()
+                if (label_variant.isVisible) {
+                    variant_divider.visible()
+                } else {
+                    variant_divider.gone()
+                }
+                visible()
+            } else {
+                title_multiorigin.gone()
+                subtitle_multiorigin.gone()
             }
         }
     }

@@ -21,48 +21,48 @@ import dagger.Provides;
 public class TrackingAnalyticsModule {
 
     @Provides
-    CheckoutAnalyticsCart checkoutAnalyticsCartPage(AbstractionRouter abstractionRouter) {
-        return new CheckoutAnalyticsCart(abstractionRouter.getAnalyticTracker());
+    CheckoutAnalyticsCart checkoutAnalyticsCartPage() {
+        return new CheckoutAnalyticsCart();
     }
 
     @Provides
-    CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress(AbstractionRouter abstractionRouter) {
-        return new CheckoutAnalyticsChangeAddress(abstractionRouter.getAnalyticTracker());
+    CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress() {
+        return new CheckoutAnalyticsChangeAddress();
     }
 
     @Provides
-    CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress(AbstractionRouter abstractionRouter) {
-        return new CheckoutAnalyticsMultipleAddress(abstractionRouter.getAnalyticTracker());
+    CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress() {
+        return new CheckoutAnalyticsMultipleAddress();
     }
 
     @Provides
-    CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart(AbstractionRouter abstractionRouter) {
-        return new CheckoutAnalyticsAddToCart(abstractionRouter.getAnalyticTracker());
+    CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart() {
+        return new CheckoutAnalyticsAddToCart();
     }
 
     @Provides
-    CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection(AbstractionRouter abstractionRouter) {
-        return new CheckoutAnalyticsCourierSelection(abstractionRouter.getAnalyticTracker());
+    CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection() {
+        return new CheckoutAnalyticsCourierSelection();
     }
 
     @Provides
-    OrderAnalyticsOrderTracking orderAnalyticsOrderTracking(AbstractionRouter abstractionRouter) {
-        return new OrderAnalyticsOrderTracking(abstractionRouter.getAnalyticTracker());
+    OrderAnalyticsOrderTracking orderAnalyticsOrderTracking() {
+        return new OrderAnalyticsOrderTracking();
     }
 
     @Provides
-    CheckoutAnalyticsPurchaseProtection providePurchaseProtectionAnalytics(AbstractionRouter abstractionRouter) {
-        return new CheckoutAnalyticsPurchaseProtection(abstractionRouter.getAnalyticTracker());
+    CheckoutAnalyticsPurchaseProtection providePurchaseProtectionAnalytics() {
+        return new CheckoutAnalyticsPurchaseProtection();
     }
 
     @Provides
-    CodAnalytics provideCodAnalytics(AbstractionRouter abstractionRouter) {
-        return new CodAnalytics(abstractionRouter.getAnalyticTracker());
+    CodAnalytics provideCodAnalytics() {
+        return new CodAnalytics();
     }
 
     @Provides
-    CornerAnalytics provideCornerAnalytics(AbstractionRouter abstractionRouter) {
-        return new CornerAnalytics(abstractionRouter.getAnalyticTracker());
+    CornerAnalytics provideCornerAnalytics() {
+        return new CornerAnalytics();
     }
 
 }
