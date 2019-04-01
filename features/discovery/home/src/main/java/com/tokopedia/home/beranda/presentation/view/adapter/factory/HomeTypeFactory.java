@@ -4,17 +4,18 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicIconSectionViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.UseCaseIconSectionViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BusinessUnitViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicIconSectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.InspirationHeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsDynamicChannelModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.UseCaseIconSectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 
 /**
@@ -30,6 +31,8 @@ public interface HomeTypeFactory {
     int type(TickerViewModel tickerViewModel);
 
     int type(DigitalsViewModel digitalsViewModel);
+
+    int type(BusinessUnitViewModel businessUnitViewModel);
 
     int type(UseCaseIconSectionViewModel useCaseIconSectionViewModel);
 
