@@ -2,8 +2,6 @@ package com.tokopedia.talk.common.di
 
 import android.content.Context
 import com.readystatesoftware.chuck.ChuckInterceptor
-import com.tokopedia.abstraction.AbstractionRouter
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor
@@ -151,11 +149,5 @@ class TalkModule {
     fun provideCreateTalkUseCase(api: TalkApi,
                                  createTalkMapper: CreateTalkMapper): CreateTalkUsecase {
         return CreateTalkUsecase(api, createTalkMapper)
-    }
-
-    @TalkScope
-    @Provides
-    fun provideAnalyticTracker(abstractionRouter: AbstractionRouter): AnalyticTracker {
-        return abstractionRouter.analyticTracker
     }
 }

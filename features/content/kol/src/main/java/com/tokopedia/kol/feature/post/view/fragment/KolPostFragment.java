@@ -406,7 +406,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onLikeKolSuccess(int rowNumber) {
+    public void onLikeKolSuccess(int rowNumber, int action) {
         if (adapter.getList().get(rowNumber) != null
                 && adapter.getList().get(rowNumber) instanceof KolPostViewModel) {
             KolPostViewModel kolPostViewModel =

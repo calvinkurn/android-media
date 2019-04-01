@@ -1,0 +1,10 @@
+mutation RegisterUsername ($affiliateName: String!) {
+  bymeRegisterAffiliateName(affiliateName: $affiliateName) {
+    success
+    error {
+      message
+      type
+      code
+    }
+  }
+}

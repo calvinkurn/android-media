@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -20,7 +21,9 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.R;
@@ -36,6 +39,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -223,38 +227,72 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private void sendSearchProductGTM(String keyword) {
         if (keyword != null &&
                 !TextUtils.isEmpty(keyword)) {
-            UnifyTracking.eventDiscoverySearch(this, keyword);
+            eventDiscoverySearch(keyword);
         }
+    }
+
+    public void eventDiscoverySearch(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                AppEventTracking.Category.EVENT_TOP_NAV,
+                AppEventTracking.Action.SEARCH_PRODUCT,
+                label);
     }
 
     private void sendSearchShopGTM(String keyword) {
         if (keyword != null &&
                 !TextUtils.isEmpty(keyword)) {
-            UnifyTracking.eventDiscoverySearchShop(this, keyword);
+            eventDiscoverySearchShop(keyword);
         }
+    }
+
+    public void eventDiscoverySearchShop(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                AppEventTracking.Category.EVENT_TOP_NAV,
+                AppEventTracking.Action.SEARCH_SHOP,
+                label);
     }
 
     private void sendVoiceSearchGTM(String keyword) {
         if (keyword != null &&
                 !TextUtils.isEmpty(keyword)) {
-            UnifyTracking.eventDiscoveryVoiceSearch(this, keyword);
+            eventDiscoveryVoiceSearch(keyword);
         }
     }
 
-    private void sendCameraImageSearchProductGTM() {
-        UnifyTracking.eventDiscoveryCameraImageSearch(this);
-    }
-
-    private void sendGalleryImageSearchProductGTM() {
-        UnifyTracking.eventDiscoveryGalleryImageSearch(this);
+    public void eventDiscoveryVoiceSearch(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.VOICE_SEARCH,
+                label
+        ).getEvent());
     }
 
     private void sendGalleryImageSearchResultGTM(String label) {
-        UnifyTracking.eventDiscoveryGalleryImageSearchResult(this, label);
+        eventDiscoveryGalleryImageSearchResult(label);
     }
 
+    public void eventDiscoveryGalleryImageSearchResult(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH,
+                AppEventTracking.Action.GALLERY_SEARCH_RESULT,
+                label);
+    }
+
+
     private void sendCameraImageSearchResultGTM(String label) {
-        UnifyTracking.eventDiscoveryCameraImageSearchResult(this, label);
+        eventDiscoveryCameraImageSearchResult(label);
+    }
+
+    public void eventDiscoveryCameraImageSearchResult(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH,
+                AppEventTracking.Action.CAMERA_SEARCH_RESULT,
+                label);
     }
 
     @Override

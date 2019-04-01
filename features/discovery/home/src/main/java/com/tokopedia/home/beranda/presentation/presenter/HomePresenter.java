@@ -476,6 +476,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     private Observable<GraphqlResponse> getTokopointsObservable() {
         if (getHomeTokopointsDataUseCaseLazy != null) {
             GetHomeTokopointsDataUseCase getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCaseLazy.get();
+            getHomeTokopointsDataUseCase.clearRequest();
             getHomeTokopointsDataUseCase.addRequest(getHomeTokopointsDataUseCase.getRequest());
             return getHomeTokopointsDataUseCase.getExecuteObservable(RequestParams.EMPTY);
         }
