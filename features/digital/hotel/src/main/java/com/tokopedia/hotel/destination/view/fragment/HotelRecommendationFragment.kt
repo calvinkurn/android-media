@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.data.model.PopularSearch
@@ -32,13 +33,14 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
 
     override fun getScreenName(): String = ""
 
+    lateinit var currentLocationTv: TextView
+
     override fun initInjector() {
         getComponent(HotelDestinationComponent::class.java).inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             destinationViewModel = viewModelProvider.get(HotelDestinationViewModel::class.java)
@@ -51,12 +53,13 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     }
 
     fun initView() {
+        currentLocationTv = view!!.findViewById(R.id.current_location_tv)
         initCurrentLocationTextView()
     }
 
     fun initCurrentLocationTextView() {
 //        current_location_tv.setDrawableLeft(R.drawable.ic_system_action_currentlocation_grayscale_24)
-        current_location_tv.setOnClickListener { destinationViewModel.getCurrentLocation(activity as HotelDestinationActivity) }
+        currentLocationTv.setOnClickListener { destinationViewModel.getCurrentLocation(activity as HotelDestinationActivity) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
