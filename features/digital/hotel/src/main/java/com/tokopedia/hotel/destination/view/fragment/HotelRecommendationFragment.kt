@@ -90,7 +90,7 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     }
 
     fun initCurrentLocationTextView() {
-        current_location_tv.setDrawableLeft(R.drawable.ic_system_action_currentlocation_grayscale_24)
+//        current_location_tv.setDrawableLeft(R.drawable.ic_system_action_currentlocation_grayscale_24)
         current_location_tv.setOnClickListener { destinationViewModel.getCurrentLocation(activity as HotelDestinationActivity) }
     }
 
