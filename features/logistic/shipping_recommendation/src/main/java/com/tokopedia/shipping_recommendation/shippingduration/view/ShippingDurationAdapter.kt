@@ -42,6 +42,18 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         this.hasCourierPromo = hasCourierPromo
     }
 
+    fun initiateShowcase() {
+        var position = 0
+        for (mDatum in mData) {
+            if (mDatum is ShippingDurationViewModel) {
+                mDatum.isShowShowCase = true
+                break
+            }
+            position++
+        }
+        notifyItemChanged(position)
+    }
+
     override fun getItemViewType(position: Int): Int = when (mData.get(position)) {
         is LogisticPromoViewModel -> LogisticPromoViewHolder.LAYOUT
         else -> ShippingDurationViewHolder.ITEM_VIEW_SHIPMENT_DURATION

@@ -37,7 +37,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
     private final ShippingDurationConverter shippingDurationConverter;
     private final ShippingCourierConverter shippingCourierConverter;
 
-    private List<ShippingDurationViewModel> shippingDurationViewModelList;
+    private List<ShippingDurationViewModel> shippingDurationViewModelList = new ArrayList<>();
     private RecipientAddressModel recipientAddressModel;
 
     @Inject
