@@ -18,6 +18,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shipping_recommendation.R;
 import com.tokopedia.shipping_recommendation.domain.ShippingParam;
+import com.tokopedia.shipping_recommendation.domain.shipping.LogisticPromoViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
@@ -214,9 +215,9 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     @Override
-    public void showData(List<ShippingDurationViewModel> shippingDurationViewModelList) {
+    public void showData(List<ShippingDurationViewModel> shippingDurationViewModelList, LogisticPromoViewModel promoViewModel) {
         shippingDurationAdapter.setHasCourierPromo(checkHasCourierPromo(shippingDurationViewModelList));
-        shippingDurationAdapter.setShippingDurationViewModels(shippingDurationViewModelList);
+        shippingDurationAdapter.setShippingDurationViewModels(shippingDurationViewModelList, promoViewModel);
         shippingDurationAdapter.initiateShowcase();
         updateHeight();
         boolean hasCourierPromo = checkHasCourierPromo(shippingDurationViewModelList);

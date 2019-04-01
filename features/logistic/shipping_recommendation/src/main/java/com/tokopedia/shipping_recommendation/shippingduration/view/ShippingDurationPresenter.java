@@ -133,7 +133,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                     }
                                 }
                                 shippingDurationViewModelList.addAll(shippingRecommendationData.getShippingDurationViewModels());
-                                getView().showData(shippingDurationViewModelList);
+                                getView().showData(shippingDurationViewModelList, shippingRecommendationData.getLogisticPromo());
                                 getView().stopTrace();
                             } else {
                                 getView().showNoCourierAvailable(getView().getActivity().getString(R.string.label_no_courier_bottomsheet_message));

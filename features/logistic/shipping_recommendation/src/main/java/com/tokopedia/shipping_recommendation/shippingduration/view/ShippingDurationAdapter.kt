@@ -24,9 +24,9 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         mData = mutableListOf()
     }
 
-    fun setShippingDurationViewModels(shippingDurationViewModels: List<ShippingDurationViewModel>) {
+    fun setShippingDurationViewModels(shippingDurationViewModels: List<ShippingDurationViewModel>, promoViewModel: LogisticPromoViewModel?) {
         this.mData = shippingDurationViewModels.toMutableList()
-        this.mData.add(0, LogisticPromoViewModel(1))
+        promoViewModel?.let { this.mData.add(0, it) }
         notifyDataSetChanged()
     }
 

@@ -92,6 +92,9 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                                                 shopShipments, selectedSpId, ratesId, selectedServiceId
                                         )
                                 );
+                                shippingRecommendationData.setLogisticPromo(
+                                        shippingDurationConverter.convertToPromoModel(
+                                                data.getRatesData().getRatesDetailData().getPromoStacking()));
                             }
                         }
                         return shippingRecommendationData;

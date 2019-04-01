@@ -29,6 +29,9 @@ public class RatesDetailData implements Parcelable {
     @SerializedName("error")
     @Expose
     private ErrorRatesDetailData error;
+    @SerializedName("promo_stacking")
+    @Expose
+    private PromoStacking promoStacking;
 
     public RatesDetailData() {
     }
@@ -105,5 +108,13 @@ public class RatesDetailData implements Parcelable {
 
     public void setError(ErrorRatesDetailData error) {
         this.error = error;
+    }
+
+    public PromoStacking getPromoStacking() {
+        return promoStacking;
+    }
+
+    public void setPromoStacking(PromoStacking promoStacking) {
+        this.promoStacking = promoStacking;
     }
 }
