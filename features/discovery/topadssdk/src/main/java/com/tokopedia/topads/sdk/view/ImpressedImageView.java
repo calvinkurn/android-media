@@ -84,13 +84,13 @@ public class ImpressedImageView extends AppCompatImageView {
     }
 
     private void invoke() {
-        worker.schedule(new Runnable() {
+        getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
-            public void run() {
-                getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            public void onScrollChanged() {
+                setScrollChangedListener(this);
+                worker.schedule(new Runnable() {
                     @Override
-                    public void onScrollChanged() {
-                        setScrollChangedListener(this);
+                    public void run() {
                         if (isVisible(getView())) {
                             if (holder != null && !holder.isInvoke()) {
                                 if(hintListener!=null){
@@ -106,9 +106,9 @@ public class ImpressedImageView extends AppCompatImageView {
                             revoke();
                         }
                     }
-                });
+                }, 300, TimeUnit.MILLISECONDS);
             }
-        }, 200, TimeUnit.MILLISECONDS);
+        });
     }
 
     private View getView() {

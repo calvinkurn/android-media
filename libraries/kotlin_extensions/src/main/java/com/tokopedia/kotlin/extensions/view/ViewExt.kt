@@ -78,9 +78,9 @@ fun ViewGroup.inflateLayout(layoutId: Int, isAttached: Boolean = false): View {
     return LayoutInflater.from(context).inflate(layoutId, this, isAttached)
 }
 
-fun Activity.createDefaultProgressDialog(loadingMessage:String?,
-                                         cancelable:Boolean = true,
-                                         onCancelClicked: (() -> Unit)?) : ProgressDialog{
+fun Activity.createDefaultProgressDialog(loadingMessage: String?,
+                                         cancelable: Boolean = true,
+                                         onCancelClicked: (() -> Unit)?): ProgressDialog {
     return ProgressDialog(this).apply {
         setMessage(loadingMessage)
         setCancelable(cancelable)
@@ -200,18 +200,18 @@ fun View.getDimens(@DimenRes id: Int): Int {
 
 fun ImageView.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintListener) {
     if (!holder.isInvoke) {
-        Executors.newSingleThreadScheduledExecutor().schedule({
-            viewTreeObserver.addOnScrollChangedListener(
-                    object : ViewTreeObserver.OnScrollChangedListener {
-                        override fun onScrollChanged() {
+        viewTreeObserver.addOnScrollChangedListener(
+                object : ViewTreeObserver.OnScrollChangedListener {
+                    override fun onScrollChanged() {
+                        Executors.newSingleThreadScheduledExecutor().schedule({
                             if (!holder.isInvoke && viewIsVisible(this@addOnImpressionListener)) {
                                 listener.onViewHint()
                                 holder.invoke()
                                 viewTreeObserver.removeOnScrollChangedListener(this)
                             }
-                        }
-                    })
-        }, 200, TimeUnit.MILLISECONDS)
+                        }, 300, TimeUnit.MILLISECONDS)
+                    }
+                })
     }
 }
 
