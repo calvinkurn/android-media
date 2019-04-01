@@ -56,6 +56,6 @@ interface ProfileContract {
 
         fun trackPostClickUrl(url:String)
 
-        fun shouldChangeUsername(userId: Int, link: String)
+        fun shouldChangeUsername(userId: Int, link: String = "")
     }
 }
