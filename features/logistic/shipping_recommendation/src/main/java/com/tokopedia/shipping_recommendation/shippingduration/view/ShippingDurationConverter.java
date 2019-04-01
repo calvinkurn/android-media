@@ -32,6 +32,7 @@ public class ShippingDurationConverter {
     }
 
     public LogisticPromoViewModel convertToPromoModel(PromoStacking promo) {
+        if (promo == null) return null;
         return new LogisticPromoViewModel(
                 promo.getPromoCode(), promo.getTitle(), promo.getBenefitDesc(),
                 promo.getShipperName(), promo.getShipperId(), promo.getShipperProductId(),
