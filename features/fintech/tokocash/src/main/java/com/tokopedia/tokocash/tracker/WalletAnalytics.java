@@ -13,6 +13,7 @@ import com.tokopedia.track.interfaces.ContextAnalytics;
 public class WalletAnalytics {
 
     private String GENERIC_EVENT = "clickSaldo";
+    private String HOME_PAGE = "clickHomepage";
 
     @Inject
     public WalletAnalytics() {
@@ -49,7 +50,7 @@ public class WalletAnalytics {
     }
 
     public void eventClickActivationOvoHomepage() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT, Category.HOMEPAGE,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(HOME_PAGE, Category.HOMEPAGE,
                 Action.CLICK_HOME_ACTIVATION_OVO, ""));
     }
 
