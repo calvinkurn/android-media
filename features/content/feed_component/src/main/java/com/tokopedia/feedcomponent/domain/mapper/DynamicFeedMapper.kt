@@ -311,7 +311,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         return VideoViewModel(
                 media.id,
                 media.thumbnail,
-                media.videoList.get(0).url
+                media.videoList.getOrNull(0)?.url ?: ""
         )
     }
 
