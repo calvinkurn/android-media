@@ -56,8 +56,10 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private static final int INDEX_DEPARTURE_TRIP = 0;
     private static final int INDEX_RETURN_TRIP = 1;
     private static final int INDEX_ID_AIRPORT_DEPARTURE_TRIP = 0;
-    private static final int INDEX_ID_AIRPORT_ARRIVAL_TRIP = 1;
-    private static final int INDEX_DATE_TRIP = 2;
+    private static final int INDEX_NAME_CITY_DEPARTURE_TRIP = 1;
+    private static final int INDEX_ID_AIRPORT_ARRIVAL_TRIP = 2;
+    private static final int INDEX_NAME_CITY_ARRIVAL_TRIP = 3;
+    private static final int INDEX_DATE_TRIP = 4;
     private static final int DEFAULT_ADULT_PASSENGER = 1;
     private static final int DEFAULT_CHILD_PASSENGER = 0;
     private static final int DEFAULT_INFANT_PASSENGER = 0;
@@ -488,7 +490,9 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
              */
 
             flightDashboardPassDataViewModel.setDepartureAirportId(extrasTripDeparture[INDEX_ID_AIRPORT_DEPARTURE_TRIP]);
+            flightDashboardPassDataViewModel.setDepartureCityName(extrasTripDeparture[INDEX_NAME_CITY_DEPARTURE_TRIP]);
             flightDashboardPassDataViewModel.setArrivalAirportId(extrasTripDeparture[INDEX_ID_AIRPORT_ARRIVAL_TRIP]);
+            flightDashboardPassDataViewModel.setArrivalCityName(extrasTripDeparture[INDEX_NAME_CITY_ARRIVAL_TRIP]);
             flightDashboardPassDataViewModel.setRoundTrip(false);
             flightDashboardPassDataViewModel.setDepartureDate(extrasTripDeparture[INDEX_DATE_TRIP]);
             flightDashboardPassDataViewModel.setReturnDate("");
