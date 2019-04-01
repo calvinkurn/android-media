@@ -822,20 +822,20 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_HIDE_VIDEO,
                 channelId
-        );
+        ));
     }
     public void eventClickShowVideoToggle(@Nullable String channelId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_SHOW_VIDEO,
                 channelId
-        );
+        ));
     }
     public void eventClickPauseVideo(@Nullable String channelId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_PAUSE_VIDEO,
                 channelId
-        );
+        ));
     }
 }
