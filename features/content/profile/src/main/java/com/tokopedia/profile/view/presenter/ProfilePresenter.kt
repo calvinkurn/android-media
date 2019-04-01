@@ -12,7 +12,6 @@ import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber
 import com.tokopedia.profile.domain.usecase.GetDynamicFeedProfileFirstUseCase
 import com.tokopedia.profile.domain.usecase.GetDynamicFeedProfileUseCase
 import com.tokopedia.profile.domain.usecase.ShouldChangeUsernameUseCase
-import com.tokopedia.profile.domain.usecase.TrackAffiliateClickUseCase
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.subscriber.*
 import rx.Subscriber
