@@ -295,11 +295,18 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     protected fun initProductIds() {
-        val productIds = arguments!!.getString(CreatePostActivity.PARAM_PRODUCT_ID, "").split(',')
-        val adIds = arguments!!.getString(CreatePostActivity.PARAM_AD_ID, "").split(',')
+        val productIds = arguments!!.getString(CreatePostActivity.PARAM_PRODUCT_ID, "")
+                .split(',')
+                .toMutableList()
+                .apply { removeAll { it.trim() == "" } }
+        val adIds = arguments!!.getString(CreatePostActivity.PARAM_AD_ID, "")
+                .split(',')
+                .toMutableList()
+                .apply { removeAll { it.trim() == "" } }
 
         viewModel.productIdList.addAll(productIds)
         viewModel.adIdList.addAll(adIds)
+        updateAddTagText()
     }
 
     protected fun updateAddTagText() {
@@ -361,6 +368,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
         caption.afterTextChanged {
             viewModel.caption = it
+            updateMaxCharacter()
         }
         addVideoBtn.setOnClickListener {
             goToVideoPicker()
@@ -406,7 +414,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                     CreatePostImagePickerActivity.getInstance(
                             it,
                             ArrayList(viewModel.fileImageList),
-                            viewModel.maxImage - viewModel.urlImageList.size,
+                            viewModel.maxImage,
                             viewModel.fileImageList.isEmpty()
                     ),
                     REQUEST_IMAGE_PICKER)

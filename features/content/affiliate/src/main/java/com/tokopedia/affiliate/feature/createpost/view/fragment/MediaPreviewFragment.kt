@@ -89,7 +89,7 @@ class MediaPreviewFragment : BaseDaggerFragment() {
     private fun initView() {
         val imageList = ArrayList(viewModel.completeImageList.map { it.path?: "" })
 
-        if (viewModel.completeImageList.first().type == MediaType.VIDEO) {
+        if (viewModel.completeImageList.firstOrNull()?.type == MediaType.VIDEO) {
             btnPlay.visibility = View.VISIBLE
             tabLayout.visibility = View.GONE
             imageAdapter.setList(imageList, PostImageAdapter.VIDEO)

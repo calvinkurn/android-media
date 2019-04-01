@@ -63,7 +63,7 @@ class SubmitPostService : JobIntentService() {
         val notifId = Random().nextInt()
         notificationManager = getNotificationManager(id,
                 viewModel.authorType,
-                viewModel.completeImageList.first().path,
+                viewModel.completeImageList.firstOrNull()?.path?:"",
                 notifId,
                 viewModel.completeImageList.size)
         submitPostUseCase.notificationManager = notificationManager
