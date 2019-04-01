@@ -512,12 +512,13 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                         goToHargaFinal()
                         label = "after diagnostic"
                     } else {
+                        tv_trade_in.setTrackListener(null)
                         tv_trade_in.performClick()
                         label = "before diagnostic"
                     }
                     sendGeneralEvent("clickPDP",
                             "product detail page",
-                            "'click trade in button on variants page",
+                            "click trade in button on variants page",
                             label
                     )
                 }
