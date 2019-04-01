@@ -75,9 +75,6 @@ class GlCameraPreview extends CameraPreview<GLSurfaceView, SurfaceTexture> imple
         glView.setEGLContextClientVersion(2);
         glView.setRenderer(this);
         glView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-        // Tried these 2 to remove the black background, does not work.
-        // glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        // glView.setZOrderMediaOverlay(true);
         glView.getHolder().addCallback(new SurfaceHolder.Callback() {
             public void surfaceCreated(SurfaceHolder holder) {}
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) { }
