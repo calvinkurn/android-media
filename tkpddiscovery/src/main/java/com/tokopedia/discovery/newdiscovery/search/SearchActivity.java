@@ -445,12 +445,12 @@ public class SearchActivity extends DiscoveryActivity
     private void populateFourTabItem(List<SearchSectionItem> searchSectionItemList,
                                       ProductViewModel productViewModel) {
 
-        productListFragment = getProductFragment(productViewModel);
+//        productListFragment = getProductFragment(productViewModel);
         catalogFragment = getCatalogFragment();
         shopListFragment = getShopFragment();
         profileListFragment = getProfileListFragment(productViewModel.getQuery(), this);
 
-        searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
+//        searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
         searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
         searchSectionItemList.add(new SearchSectionItem(getString(R.string.title_profile), profileListFragment));
@@ -461,7 +461,7 @@ public class SearchActivity extends DiscoveryActivity
             public void onTabReselected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case TAB_PRODUCT:
-                        productListFragment.backToTop();
+//                        productListFragment.backToTop();
                         break;
                     case TAB_SECOND_POSITION:
                         catalogFragment.backToTop();
@@ -476,7 +476,7 @@ public class SearchActivity extends DiscoveryActivity
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case TAB_PRODUCT:
-                        SearchTracking.eventSearchResultTabClick(getActivityContext(), productTabTitle);
+//                        SearchTracking.eventSearchResultTabClick(getActivityContext(), productTabTitle);
                         break;
                     case TAB_SECOND_POSITION:
                         SearchTracking.eventSearchResultTabClick(getActivityContext(), catalogTabTitle);
@@ -508,11 +508,11 @@ public class SearchActivity extends DiscoveryActivity
     private void populateThreeTabItem(List<SearchSectionItem> searchSectionItemList,
                                       ProductViewModel productViewModel) {
 
-        productListFragment = getProductFragment(productViewModel);
+//        productListFragment = getProductFragment(productViewModel);
         shopListFragment = getShopFragment();
         profileListFragment = getProfileListFragment(productViewModel.getQuery(), this);
 
-        searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
+//        searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
         searchSectionItemList.add(new SearchSectionItem(getString(R.string.title_profile), profileListFragment));
 
@@ -522,7 +522,7 @@ public class SearchActivity extends DiscoveryActivity
             public void onTabReselected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case TAB_PRODUCT:
-                        productListFragment.backToTop();
+//                        productListFragment.backToTop();
                         break;
                     case TAB_SECOND_POSITION:
                         shopListFragment.backToTop();
@@ -534,7 +534,7 @@ public class SearchActivity extends DiscoveryActivity
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case TAB_PRODUCT:
-                        SearchTracking.eventSearchResultTabClick(getActivityContext(), productTabTitle);
+//                        SearchTracking.eventSearchResultTabClick(getActivityContext(), productTabTitle);
                         break;
                     case TAB_SECOND_POSITION:
                         SearchTracking.eventSearchResultTabClick(getActivityContext(), shopTabTitle);
