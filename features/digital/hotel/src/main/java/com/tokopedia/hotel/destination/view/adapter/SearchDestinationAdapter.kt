@@ -9,9 +9,4 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
  */
 
 class SearchDestinationAdapter(adapterTypeFactory: SearchDestinationTypeFactory, visitables: List<Visitable<*>>) :
-        BaseAdapter<SearchDestinationTypeFactory>(adapterTypeFactory, visitables) {
-
-    override fun getItemCount(): Int {
-        return if (isLoading) return 4 else super.getItemCount()
-    }
-}
+        BaseAdapter<SearchDestinationTypeFactory>(adapterTypeFactory, visitables)

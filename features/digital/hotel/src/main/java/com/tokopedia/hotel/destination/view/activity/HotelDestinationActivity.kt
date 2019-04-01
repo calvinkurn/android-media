@@ -111,6 +111,9 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
         //delete search query
     }
 
+    override fun onBackPressed() {
+        finish()
+    }
     companion object {
         val EXTRA_TOOLBAR_TITLE = "EXTRA_TOOLBAR_TITLE"
 

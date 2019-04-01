@@ -10,15 +10,15 @@
     android:clipChildren="false"
     android:clipToPadding="false"
     android:orientation="horizontal"
-    android:padding="@dimen/margin_16">
+    android:padding="@dimen/dp_16">
 
     <ImageView
         android:id="@+id/search_destination_icon"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         tools:src="@drawable/ic_icon_location_grey"
-        android:layout_marginRight="@dimen/margin_12"
-        android:layout_marginEnd="@dimen/margin_12"
+        android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
         android:layout_gravity="center_vertical"
         />
 

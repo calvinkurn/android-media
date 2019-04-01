@@ -20,7 +20,7 @@ class HotelHomepageFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        startActivity(HotelDestinationActivity.createInstance(activity as HotelHomepageActivity, ""))
+        startActivity(HotelDestinationActivity.createInstance(activity as HotelHomepageActivity, "Tujuan"))
     }
 
     override fun initInjector() {

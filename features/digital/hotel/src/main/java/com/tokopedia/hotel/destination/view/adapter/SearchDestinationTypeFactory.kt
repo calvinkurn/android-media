@@ -3,9 +3,11 @@ package com.tokopedia.hotel.destination.view.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.hotel.destination.data.model.SearchDestination
+import com.tokopedia.hotel.destination.view.adapter.viewholder.HotelDestinationEmptyResultViewHolder
 import com.tokopedia.hotel.destination.view.adapter.viewholder.HotelDestinationShimmeringViewHolder
 import com.tokopedia.hotel.destination.view.adapter.viewholder.SearchDestinationViewHolder
 
@@ -16,9 +18,12 @@ import com.tokopedia.hotel.destination.view.adapter.viewholder.SearchDestination
 class SearchDestinationTypeFactory: BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
-        if (type == HotelDestinationShimmeringViewHolder.LAYOUT) return HotelDestinationShimmeringViewHolder(parent)
-        else if (type == SearchDestinationViewHolder.LAYOUT) return SearchDestinationViewHolder(parent)
-        else return super.createViewHolder(parent, type)
+        when (type) {
+            HotelDestinationShimmeringViewHolder.LAYOUT -> return HotelDestinationShimmeringViewHolder(parent)
+            SearchDestinationViewHolder.LAYOUT -> return SearchDestinationViewHolder(parent)
+            HotelDestinationEmptyResultViewHolder.LAYOUT -> return HotelDestinationEmptyResultViewHolder(parent)
+            else -> return super.createViewHolder(parent, type)
+        }
     }
 
     fun type(searchDestination: SearchDestination): Int {
@@ -27,6 +32,10 @@ class SearchDestinationTypeFactory: BaseAdapterTypeFactory() {
 
     override fun type(viewModel: LoadingModel): Int {
         return HotelDestinationShimmeringViewHolder.LAYOUT
+    }
+
+    override fun type(viewModel: EmptyResultViewModel?): Int {
+        return HotelDestinationEmptyResultViewHolder.LAYOUT
     }
 
 }

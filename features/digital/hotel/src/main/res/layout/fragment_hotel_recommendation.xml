@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/margin_16">
+            android:padding="@dimen/dp_16">
 
             <com.tokopedia.design.component.TextViewCompat
                 android:layout_width="match_parent"
@@ -31,7 +31,7 @@
                 app:fontSize="small"
                 app:textViewTheme="lightPrimary"
                 android:drawableLeft="@drawable/ic_icon_location_grey"
-                android:drawablePadding="@dimen/margin_8"/>
+                android:drawablePadding="@dimen/dp_8"/>
         </LinearLayout>
 
         <View
