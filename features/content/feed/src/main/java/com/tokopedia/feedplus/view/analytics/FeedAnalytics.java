@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -89,14 +88,14 @@ public class FeedAnalytics {
     //#FEED016
     public void trackClickCreatePostAs(String applink, String userId, String shopId) {
         if(applink.equals(ApplinkConst.AFFILIATE_EXPLORE)){
-            analyticTracker.sendEventTracking(
+            TrackApp.getInstance().getGTM().sendGeneralEvent(
                     EVENT_CLICK_FEED,
                     CATEGORY_FEED,
                     "click post sebagai - user",
                     userId
             );
         }else{
-            analyticTracker.sendEventTracking(
+            TrackApp.getInstance().getGTM().sendGeneralEvent(
                     EVENT_CLICK_FEED,
                     CATEGORY_FEED,
                     "click post sebagai - shop",
