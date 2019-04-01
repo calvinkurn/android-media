@@ -26,6 +26,7 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
     : UseCase<DynamicFeedDomainModel>() {
 
     var queryRaw = R.raw.query_feed_dynamic;
+
     init {
         graphqlUseCase.setCacheStrategy(
                 GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
@@ -49,22 +50,28 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
     }
 
     companion object {
-        private const val PARAM_USER_ID = "userID"
-        private const val PARAM_LIMIT = "limit"
-        private const val PARAM_CURSOR = "cursor"
-        private const val PARAM_SOURCE = "source"
+        const val PARAM_USER_ID = "userID"
+        const val PARAM_LIMIT = "limit"
+        const val PARAM_CURSOR = "cursor"
+        const val PARAM_SOURCE = "source"
+        const val PARAM_SOURCE_ID = "sourceID"
 
-        private const val LIMIT_3 = 3
+
+        const val LIMIT_3 = 3
         const val SOURCE_FEEDS = "feeds"
         const val SOURCE_PROFILE = "profile"
+        const val SOURCE_DETAIL = "detail"
 
         @JvmOverloads
-        fun createRequestParams(userId: String, cursor: String = "", source: String): RequestParams {
+        fun createRequestParams(userId: String, cursor: String = "", source: String, sourceId:
+        String = ""):
+                RequestParams {
             val requestParams = RequestParams.create()
-            requestParams.putString(PARAM_USER_ID, userId)
+            requestParams.putString(PARAM_USER_ID, if (userId == "") "0" else userId)
             requestParams.putInt(PARAM_LIMIT, LIMIT_3)
             requestParams.putString(PARAM_CURSOR, cursor)
             requestParams.putString(PARAM_SOURCE, source)
+            requestParams.putString(PARAM_SOURCE_ID, sourceId)
             return requestParams
         }
     }

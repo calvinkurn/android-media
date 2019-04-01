@@ -119,7 +119,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.context = parent.getContext();
-        dealsAnalytics = new DealsAnalytics(context.getApplicationContext());
+        dealsAnalytics = new DealsAnalytics();
         LayoutInflater inflater = LayoutInflater.from(
                 parent.getContext());
         RecyclerView.ViewHolder holder = null;

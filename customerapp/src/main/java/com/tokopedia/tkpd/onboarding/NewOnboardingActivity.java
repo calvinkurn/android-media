@@ -1,18 +1,13 @@
 package com.tokopedia.tkpd.onboarding;
 
-import android.content.Context;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -20,9 +15,8 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import com.appsflyer.AppsFlyerConversionListener;
-import com.appsflyer.AppsFlyerLib;
-import com.tokopedia.applink.RouteManager;
+
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -30,6 +24,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.BuildConfig;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.tkpd.R;
 
 import com.github.paolorotolo.appintro.AppIntro;
@@ -37,6 +32,7 @@ import com.tokopedia.tkpd.onboarding.util.CustomAnimationPageTransformer;
 import com.tokopedia.tkpd.ConsumerRouterApplication;
 import com.tokopedia.tkpd.onboarding.analytics.ConsumerOnboardingAnalytics;
 import com.tokopedia.tkpd.onboarding.fragment.NewOnBoardingFragment;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.Map;
@@ -84,7 +80,11 @@ public class NewOnboardingActivity extends AppIntro {
         pager.setPageTransformer(false, new CustomAnimationPageTransformer());
 
         if(GlobalConfig.IS_PREINSTALL) {
-            TrackingUtils.sendInstallSourceEvent(this);
+
+            Map<String, Object> value = DataLayer.mapOf(
+                    AppEventTracking.MOENGAGE.PARTNER_SOURCE, "source_apk"
+            );
+            TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.PARTNER_REFERRAL);
         }
     }
 

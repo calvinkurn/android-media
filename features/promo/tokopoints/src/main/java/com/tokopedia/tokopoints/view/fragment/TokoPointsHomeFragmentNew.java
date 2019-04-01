@@ -751,6 +751,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                 || content.getLayoutTickerAttr() == null
                 || content.getLayoutTickerAttr().getTickerList() == null
                 || content.getLayoutTickerAttr().getTickerList().isEmpty()) {
+            tickerContainer.setVisibility(View.GONE);
             return;
         }
 
@@ -820,7 +821,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                 mValueMembershipDescription = data.getStatus().getTier().getNameDesc();
                 mTextMembershipValue.setText(mValueMembershipDescription);
                 mTextMembershipValueBottom.setText(mValueMembershipDescription);
-                ImageHandler.loadImageFitCenter(mImgBackground.getContext(), mImgBackground,data.getStatus().getTier().getBackgroundImgURLMobile());
+                ImageHandler.loadImageFitCenter(mImgBackground.getContext(), mImgBackground, data.getStatus().getTier().getBackgroundImgURLMobile());
                 ImageHandler.loadImageCircle2(getActivityContext(), mImgEgg, data.getStatus().getTier().getEggImageHomepageURL());
                 ImageHandler.loadImageCircle2(getActivityContext(), mImgEggBottom, data.getStatus().getTier().getEggImageHomepageURL());
             }
@@ -886,6 +887,10 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         if (sections == null) {
             //TODO hide all section container
             return;
+        }
+
+        if (tickerContainer != null) {
+            tickerContainer.setVisibility(View.GONE);
         }
 
         List<SectionContent> exploreSectionItem = new ArrayList<>();
@@ -975,7 +980,10 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
             }
         });
 
-        if (couponSection.getLayoutCouponAttr().getCouponList().isEmpty()) {
+        if (couponSection == null
+                || couponSection.getLayoutCouponAttr() == null
+                || couponSection.getLayoutCouponAttr().getCouponList() == null
+                || couponSection.getLayoutCouponAttr().getCouponList().isEmpty()) {
             mPresenter.setPagerSelectedItem(TAB_CATALOG);
         } else {
             mPresenter.setPagerSelectedItem(TAB_COUPON);

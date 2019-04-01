@@ -3,7 +3,6 @@ package com.tokopedia.affiliate.feature.createpost.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.TaskStackBuilder
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -85,7 +84,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     override fun onStart() {
         super.onStart()
-        affiliateAnalytics.analyticTracker.sendScreen(activity, screenName)
+        affiliateAnalytics.analyticTracker.sendScreenAuthenticated(screenName)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -198,25 +197,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     override fun onErrorGetContentForm(message: String) {
         NetworkErrorHelper.showEmptyState(context, mainView, message) {
             fetchContentForm()
-        }
-    }
-
-    override fun onErrorNotAffiliate() {
-        activity?.let {
-            val taskStackBuilder = TaskStackBuilder.create(it)
-
-            val onboardingApplink = ApplinkConst.AFFILIATE_ONBOARDING + PRODUCT_ID_QUERY_PARAM + viewModel.productIdList.firstOrNull()
-            val onboardingIntent = RouteManager.getIntent(it, onboardingApplink)
-            onboardingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            taskStackBuilder.addNextIntent(onboardingIntent)
-
-            val educationIntent = RouteManager.getIntent(
-                    it,
-                    ApplinkConst.AFFILIATE_EDUCATION)
-            taskStackBuilder.addNextIntent(educationIntent)
-
-            taskStackBuilder.startActivities()
-            it.finish()
         }
     }
 
