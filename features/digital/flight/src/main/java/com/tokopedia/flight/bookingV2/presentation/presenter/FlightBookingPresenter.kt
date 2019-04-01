@@ -109,7 +109,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
 
     override fun onFinishTransactionTimeReached() {
         if (isViewAttached) {
-            onGetCart(false, view.getCurrentCartPassData())
+            onGetCart(true, view.getCurrentCartPassData())
         }
     }
 
