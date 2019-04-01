@@ -29,6 +29,10 @@ class ItemTabBusinessViewModel(
         graphqlUseCase.execute(OnGetListSubscriber(listener))
     }
 
+    fun clearJob() {
+        graphqlUseCase.unsubscribe()
+    }
+
 }
 
 class OnGetListSubscriber(private val listener: BusinessUnitItemView) : Subscriber<GraphqlResponse>() {

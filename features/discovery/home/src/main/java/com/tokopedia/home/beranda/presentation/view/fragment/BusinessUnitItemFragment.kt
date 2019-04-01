@@ -147,6 +147,11 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
         }
     }
 
+    override fun onDestroy() {
+        viewModel.clearJob()
+        super.onDestroy()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getRecyclerView(view).addItemDecoration(
