@@ -413,9 +413,9 @@ public class SearchActivity extends DiscoveryActivity
         List<SearchSectionItem> searchSectionItemList = new ArrayList<>();
 
         if (productViewModel.isHasCatalog()) {
-            populateFourTabItem(searchSectionItemList, productViewModel);
+            populateFourTabItem(searchSectionItemList);
         } else {
-            populateThreeTabItem(searchSectionItemList, productViewModel);
+            populateThreeTabItem(searchSectionItemList);
         }
         searchSectionPagerAdapter = new SearchSectionPagerAdapter(getSupportFragmentManager());
         searchSectionPagerAdapter.setData(searchSectionItemList);
@@ -442,13 +442,11 @@ public class SearchActivity extends DiscoveryActivity
         return hasCatalogTab ? 2 : 1;
     }
 
-    private void populateFourTabItem(List<SearchSectionItem> searchSectionItemList,
-                                      ProductViewModel productViewModel) {
-
+    private void populateFourTabItem(List<SearchSectionItem> searchSectionItemList) {
         productListFragment = getProductFragment();
         catalogFragment = getCatalogFragment();
         shopListFragment = getShopFragment();
-        profileListFragment = getProfileListFragment(productViewModel.getQuery(), this);
+        profileListFragment = getProfileListFragment(searchParameter.getSearchQuery(), this);
 
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
         searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogFragment));
@@ -505,12 +503,10 @@ public class SearchActivity extends DiscoveryActivity
         return ProfileListFragment.Companion.newInstance(query, searchNavigationListener, this);
     }
 
-    private void populateThreeTabItem(List<SearchSectionItem> searchSectionItemList,
-                                      ProductViewModel productViewModel) {
-
+    private void populateThreeTabItem(List<SearchSectionItem> searchSectionItemList) {
         productListFragment = getProductFragment();
         shopListFragment = getShopFragment();
-        profileListFragment = getProfileListFragment(productViewModel.getQuery(), this);
+        profileListFragment = getProfileListFragment(searchParameter.getSearchQuery(), this);
 
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
