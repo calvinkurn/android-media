@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSubscriber;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
@@ -58,6 +59,19 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
 
     private void enrichWithRelatedSearchParam(RequestParams requestParams, boolean relatedSearchEnabled) {
         requestParams.putBoolean(SearchApiConst.RELATED, relatedSearchEnabled);
+    }
+
+    private RequestParams createInitiateSearchRequestParams(SearchParameter searchParameter, boolean isForceSearch) {
+        RequestParams requestParams = RequestParams.create();
+
+        requestParams.putAll(searchParameter.getSearchParameterMap());
+
+        requestParams.putString(SearchApiConst.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
+        requestParams.putString(SearchApiConst.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
+        requestParams.putBoolean(SearchApiConst.REFINED, isForceSearch);
+        requestParams.putBoolean(SearchApiConst.RELATED, true);
+
+        return requestParams;
     }
 
     @Override
