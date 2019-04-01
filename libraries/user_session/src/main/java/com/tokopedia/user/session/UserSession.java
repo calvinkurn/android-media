@@ -461,7 +461,6 @@ public class UserSession implements UserSessionInterface {
         editor.putBoolean(IS_LOGIN, false);
         editor.putBoolean(IS_MSISDN_VERIFIED, false);
         editor.putBoolean(HAS_SHOWN_SALDO_WARNING, false);
-        editor.putBoolean(HAS_SHOWN_SALDO_INTRO_PAGE, false);
         editor.putBoolean(IS_AFFILIATE, false);
         editor.putString(PHONE_NUMBER, null);
         editor.putString(REFRESH_TOKEN, null);

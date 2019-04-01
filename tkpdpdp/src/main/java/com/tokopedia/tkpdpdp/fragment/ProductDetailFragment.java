@@ -1290,6 +1290,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                                 .replace(PRODUCT_ID, String.valueOf(affiliate.getProductId()))
                                 .replace(AD_ID, String.valueOf(affiliate.getAdId()))
                 );
+                getActivity().finish();
             } else {
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("login", true);

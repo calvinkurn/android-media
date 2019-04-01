@@ -40,10 +40,7 @@ import org.jetbrains.annotations.NotNull;
 public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
         implements KolPostDetailTypeFactory, KolPostTypeFactory, KolCommentTypeFactory, DynamicFeedTypeFactory {
 
-    //OLD
     private final KolComment.View.ViewHolder kolCommentListener;
-
-    //NEW
     private final DynamicPostViewHolder.DynamicPostListener listener;
     private final CardTitleView.CardTitleListener cardTitleListener;
     private final ImagePostViewHolder.ImagePostListener imagePostListener;
@@ -132,8 +129,6 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
             abstractViewHolder = new KolCommentViewHolder(view, kolCommentListener);
         else if (viewType == SeeAllCommentsViewHolder.LAYOUT)
             abstractViewHolder = new SeeAllCommentsViewHolder(view, seeAll);
-//        else if (viewType == KolPostViewHolder.LAYOUT)
-//            abstractViewHolder = new KolPostViewHolder(view, kolPostListener, KolPostViewHolder.Type.EXPLORE);
         else
             abstractViewHolder = super.createViewHolder(view, viewType);
         return abstractViewHolder;

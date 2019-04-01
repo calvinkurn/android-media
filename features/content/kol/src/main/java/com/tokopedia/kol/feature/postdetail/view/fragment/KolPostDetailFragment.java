@@ -342,7 +342,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     private void setLikeListener(boolean isLiked) {
-        //TODO ANALYTICS
         if (postDetailFooterModel != null) {
             if (isLiked) {
                 likeCount.setOnClickListener(v -> onUnlikeKolClicked(0, postDetailFooterModel.getContentId()));
@@ -589,7 +588,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         };
     }
 
-    //NEW
     @Override
     public void onAvatarClick(int positionInFeed, @NotNull String redirectUrl) {
         onGoToLink(redirectUrl);

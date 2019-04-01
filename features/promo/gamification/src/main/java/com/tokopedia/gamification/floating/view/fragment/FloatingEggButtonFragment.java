@@ -9,6 +9,9 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -51,6 +54,7 @@ import com.tokopedia.gamification.floating.view.contract.FloatingEggContract;
 import com.tokopedia.gamification.floating.view.presenter.FloatingEggPresenter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.gamification.util.HexValidator;
 
 import javax.inject.Inject;
 
@@ -402,6 +406,23 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         tvFloatingCounter.setVisibility(View.GONE);
         tvFloatingTimer.setVisibility(View.GONE);
+        if (isShowTime) {
+            Drawable counterBackground = tvFloatingTimer.getBackground();
+            if (counterBackground instanceof GradientDrawable) {
+                GradientDrawable drawable = ((GradientDrawable) counterBackground);
+                if (HexValidator.validate(tokenData.getTimerFontColor())) {
+                    drawable.setStroke(getResources().getDimensionPixelOffset(R.dimen.dp_2), Color.parseColor(tokenData.getTimerFontColor()));
+                }
+                if (HexValidator.validate(tokenData.getTimerBGColor())) {
+                    drawable.setColor(Color.parseColor(tokenData.getTimerBGColor()));
+                }
+            }
+            if (HexValidator.validate(tokenData.getTimerFontColor())) {
+                tvFloatingTimer.setTextColor(Color.parseColor(tokenData.getTimerFontColor()));
+            }
+
+        }
+
 
         if (!TextUtils.isEmpty(imageUrl)) {
             if (imageUrl.endsWith(".gif")) {
@@ -550,6 +571,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
     public interface OnDragListener {
         void onDragStart();
+
         void onDragEnd();
     }
 }
