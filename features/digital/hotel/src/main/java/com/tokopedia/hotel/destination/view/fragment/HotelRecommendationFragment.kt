@@ -48,8 +48,6 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
 
         permissionCheckerHelper = PermissionCheckerHelper()
         destinationViewModel.setPermissionChecker(permissionCheckerHelper)
-
-        initView()
     }
 
     fun initView() {
@@ -64,6 +62,7 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_hotel_recommendation, container, false)
+        initView()
         return view
     }
 
