@@ -45,25 +45,25 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             destinationViewModel = viewModelProvider.get(HotelDestinationViewModel::class.java)
         }
-
+        
         permissionCheckerHelper = PermissionCheckerHelper()
         destinationViewModel.setPermissionChecker(permissionCheckerHelper)
     }
 
-    fun initView() {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_hotel_recommendation, container, false)
         currentLocationTv = view!!.findViewById(R.id.current_location_tv)
+        initView()
+        return view
+    }
+
+    fun initView() {
         initCurrentLocationTextView()
     }
 
     fun initCurrentLocationTextView() {
 //        current_location_tv.setDrawableLeft(R.drawable.ic_system_action_currentlocation_grayscale_24)
         currentLocationTv.setOnClickListener { destinationViewModel.getCurrentLocation(activity as HotelDestinationActivity) }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_hotel_recommendation, container, false)
-        initView()
-        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
