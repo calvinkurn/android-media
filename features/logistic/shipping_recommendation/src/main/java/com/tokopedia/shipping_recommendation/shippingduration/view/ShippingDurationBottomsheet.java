@@ -333,4 +333,10 @@ public class ShippingDurationBottomsheet extends BottomSheets
         }
         return false;
     }
+
+    @Override
+    public void onLogisticPromoClicked() {
+
+    }
+
 }
