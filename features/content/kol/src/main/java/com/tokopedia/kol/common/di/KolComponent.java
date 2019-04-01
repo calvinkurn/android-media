@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -48,8 +47,6 @@ public interface KolComponent {
     FollowKolPostGqlUseCase getFollowKolPostGqlUseCase();
 
     UserSessionInterface userSessionInterface();
-
-    AnalyticTracker analyticTracker();
 
     void inject(VideoDetailFragment videoDetailFragment);
 }

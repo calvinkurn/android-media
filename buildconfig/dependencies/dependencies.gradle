@@ -12,7 +12,7 @@ ext {
 
     supportLibraryVersion = '27.1.1'
     playServiceVersion = '11.0.4'
-    butterKnifeVersion = '9.0.0-SNAPSHOT'
+    butterKnifeVersion = '9.0.0'
     coroutineVersion = '0.30.2'
     dbFlowVersion = '3.0.1'
     retrofitVersion = '2.1.0'
@@ -123,6 +123,7 @@ ext {
             messaging   : "com.google.firebase:firebase-messaging:${playServiceFirebaseMessaging}",
             config      : "com.google.firebase:firebase-config:${playServiceFirebaseRemoteConfig}",
             performance : "com.google.firebase:firebase-perf:${playServiceFirebasePerfMon}",
+            fireStore   : "com.google.firebase:firebase-firestore:17.1.2"
     ]
 
     butterKnifeDependencies = [
@@ -198,7 +199,8 @@ ext {
             exoPlayerCore         : "com.google.android.exoplayer:exoplayer-core:$exoPlayerVersion",
             exoPlayerUi           : "com.google.android.exoplayer:exoplayer-ui:$exoPlayerVersion",
             lifeCycleExtentions   : "android.arch.lifecycle:extensions:$lifeCycleVersion",
-            lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion"
+            lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.1.11"
     ]
 
     testDependencies = [

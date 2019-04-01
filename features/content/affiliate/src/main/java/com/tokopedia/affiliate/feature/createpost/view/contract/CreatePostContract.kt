@@ -21,8 +21,6 @@ interface CreatePostContract {
 
         fun onErrorGetContentForm(message: String)
 
-        fun onErrorNotAffiliate()
-
         fun onErrorNoQuota()
     }
 

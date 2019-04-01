@@ -19,8 +19,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -29,7 +27,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -72,6 +69,7 @@ import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.data.api.FeedUrl;
 import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity;
 import com.tokopedia.feedplus.view.activity.TransparentVideoActivity;
+import com.tokopedia.feedplus.view.adapter.EntryPointAdapter;
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl;
@@ -89,6 +87,7 @@ import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -242,7 +241,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             if (!(adapter.getlist().get(0) instanceof EmptyModel)
                     && !(adapter.getlist().get(lastIndex) instanceof RetryModel)
                     && !(adapter.getlist().get(lastIndex) instanceof AddFeedViewHolder)
-                    )
+            )
                 presenter.fetchNextPage();
         });
         layoutManager = new NpaLinearLayoutManager(getActivity(),
@@ -435,13 +434,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
         getActivity().startActivity(getProductIntent(productId));
     }
 
-    private Intent getProductIntent(String productId){
+    private Intent getProductIntent(String productId) {
         if (getContext() != null) {
-            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         } else {
             return null;
         }
     }
+
     @Override
     public void onGoToProductDetail(int rowNumber, int page, String productId, String
             imageSourceSingle, String name, String price) {
@@ -1485,12 +1485,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onWhitelistClicked() {
+    public void onWhitelistClicked(WhitelistViewModel element) {
         analytics.trackClickCreatePost(userSession.getUserId());
-        showBottomSheetCreatePost();
+        showBottomSheetCreatePost(element);
     }
 
-    private void showBottomSheetCreatePost() {
+    private void showBottomSheetCreatePost(WhitelistViewModel element) {
         if (getActivity() != null) {
 
             if (createPostBottomSheet == null) {
@@ -1500,7 +1500,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         }, () -> {
 
                         });
-                View customView = createCustomCreatePostBottomSheetView(getActivity().getLayoutInflater());
+                View customView =
+                        createCustomCreatePostBottomSheetView(getActivity().getLayoutInflater(), element);
                 createPostBottomSheet.setCustomContentView(customView,
                         getString(R.string.create_post_as), true);
             }
@@ -1508,78 +1509,27 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-    private View createCustomCreatePostBottomSheetView(@NonNull LayoutInflater layoutInflater) {
+    private View createCustomCreatePostBottomSheetView(@NonNull LayoutInflater layoutInflater, WhitelistViewModel element) {
         View view = layoutInflater.inflate(R.layout.layout_create_post_bottom_sheet
                 , null);
-        View separator = view.findViewById(R.id.separator);
-        View shopLayout = view.findViewById(R.id.layout_shop);
-        View userLayout = view.findViewById(R.id.layout_user);
 
-        if (userSession.hasShop()) {
-            separator.setVisibility(View.VISIBLE);
-            shopLayout.setVisibility(View.VISIBLE);
-            setupCreatePostAsShopLayout(shopLayout);
-        } else {
-            shopLayout.setVisibility(View.GONE);
-            separator.setVisibility(View.GONE);
+        if (getActivity() != null) {
+            RecyclerView entryPointRecyclerView = view.findViewById(R.id.entry_point_list);
+            EntryPointAdapter adapter = new EntryPointAdapter(getActivity(),
+                    element.getWhitelist().getAuthors(), applink -> {
+                        analytics.trackClickCreatePostAs(applink, userSession.getUserId(),
+                                userSession.getShopId());
+                        startActivityForResult(
+                                RouteManager.getIntent(getContext(), applink),
+                                CREATE_POST
+                        );
+                        createPostBottomSheet.dismiss();
+                    });
+            entryPointRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
+                    LinearLayoutManager.VERTICAL, false));
+            entryPointRecyclerView.setAdapter(adapter);
         }
-
-        setupCreatePostAsUserLayout(userLayout);
-
         return view;
-    }
-
-    private void setupCreatePostAsUserLayout(View userLayout) {
-        TextView userName = userLayout.findViewById(R.id.tvNameUser);
-        userName.setText(MethodChecker.fromHtml(userSession.getName()));
-
-        ImageView userAvatar = userLayout.findViewById(R.id.ivAvatarUser);
-        ImageHandler.loadImageCircle2(
-                userAvatar.getContext(),
-                userAvatar,
-                userSession.getProfilePicture()
-        );
-
-        userLayout.setOnClickListener(v -> {
-            if (getContext() != null) {
-                analytics.trackClickCreatePostAsUser(userSession.getUserId());
-                startActivityForResult(
-                        RouteManager.getIntent(getContext(), ApplinkConst.AFFILIATE_EXPLORE),
-                        CREATE_POST
-                );
-                createPostBottomSheet.dismiss();
-            }
-        });
-    }
-
-    private void setupCreatePostAsShopLayout(View shopLayout) {
-        TextView shopName = shopLayout.findViewById(R.id.tvNameShop);
-        shopName.setText(MethodChecker.fromHtml(userSession.getShopName()));
-
-        ImageView badge = shopLayout.findViewById(R.id.ivBadge);
-        if (userSession.isGoldMerchant()) {
-            badge.setVisibility(View.VISIBLE);
-            ImageHandler.loadImageWithId(badge, R.drawable.ic_shop_gold);
-        }
-
-        ImageView shopAvatar = shopLayout.findViewById(R.id.ivAvatarShop);
-        ImageHandler.loadImageCircle2(
-                shopAvatar.getContext(),
-                shopAvatar,
-                userSession.getShopAvatar()
-        );
-
-        shopLayout.setOnClickListener(v -> {
-            if (getContext() != null) {
-                analytics.trackClickCreatePostAsShop(userSession.getShopId());
-
-                startActivityForResult(
-                        RouteManager.getIntent(getContext(), ApplinkConst.CONTENT_CREATE_POST),
-                        CREATE_POST
-                );
-                createPostBottomSheet.dismiss();
-            }
-        });
     }
 
     @Override
@@ -1661,11 +1611,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (getActivity() != null && getActivity().isFinishing()) {
             unRegisterNewFeedReceiver();
         }
-    }
-
-    @Override
-    public AbstractionRouter getAbstractionRouter() {
-        return abstractionRouter;
     }
 
     @Override

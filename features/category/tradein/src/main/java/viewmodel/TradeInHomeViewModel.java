@@ -10,7 +10,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
@@ -19,7 +18,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.laku6.tradeinsdk.api.Laku6TradeIn;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.graphql.data.model.GraphqlError;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -38,13 +37,12 @@ import model.DeviceDiagInput;
 import model.DeviceDiagInputResponse;
 import model.DeviceDiagnostics;
 import model.TradeInParams;
-import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;
 import tradein_common.Constants;
 import view.viewcontrollers.FinalPriceActivity;
 
 public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver, Laku6TradeIn.TradeInListener {
-    private MutableLiveData<String> eligibileTickerData;
+    private MutableLiveData<Integer> insertResultData;
     private MutableLiveData<JSONObject> minPriceData;
     private MutableLiveData<JSONObject> priceFailData;
 
@@ -76,7 +74,7 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
                 deviceDiagInput.setDeviceId(diagnostics.getImei());
                 inData.setDeviceId(diagnostics.getImei());
                 deviceDiagInput.setDeviceReview(diagnostics.getReviewDetails());
-                deviceDiagInput.setNewPrice(activityWeakReference.get().getIntent().getIntExtra(TradeInParams.PARAM_NEW_PRICE, 0));
+                deviceDiagInput.setNewPrice(inData.getNewPrice());
                 deviceDiagInput.setOldPrice(diagnostics.getTradeInPrice());
                 variables.put("params", deviceDiagInput);
                 GraphqlUseCase gqlDeviceDiagInput = new GraphqlUseCase();
@@ -98,16 +96,15 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
                     @Override
                     public void onNext(GraphqlResponse graphqlResponse) {
                         if (graphqlResponse != null) {
-                            if (graphqlResponse.getData(DeviceDiagInputResponse.class) != null) {
-                                Intent finalPriceIntent = new Intent(activityWeakReference.get(), FinalPriceActivity.class);
-                                finalPriceIntent.putExtra(TradeInParams.class.getSimpleName(),inData);
-                                activityWeakReference.get().startActivityForResult(finalPriceIntent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE);
-                            } else {
-                                List<GraphqlError> errors = graphqlResponse.getError(DeviceDiagInputResponse.class);
-                                if (errors.get(0).getMessage().contains("duplicate key value")) {
+                            DeviceDiagInputResponse deviceDiagInputResponse = graphqlResponse.getData(DeviceDiagInputResponse.class);
+                            if (deviceDiagInputResponse != null && deviceDiagInputResponse.getDeviceDiagInputRepsponse() != null) {
+                                if (deviceDiagInputResponse.getDeviceDiagInputRepsponse().isEligible()) {
                                     Intent finalPriceIntent = new Intent(activityWeakReference.get(), FinalPriceActivity.class);
-                                    finalPriceIntent.putExtra(TradeInParams.class.getSimpleName(),inData);
+                                    finalPriceIntent.putExtra(TradeInParams.class.getSimpleName(), inData);
                                     activityWeakReference.get().startActivityForResult(finalPriceIntent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE);
+                                } else {
+                                    insertResultData.setValue(diagnostics.getTradeInPrice());
+                                    ToasterError.showClose(activityWeakReference.get(), deviceDiagInputResponse.getDeviceDiagInputRepsponse().getMessage());
                                 }
                             }
                         }
@@ -129,13 +126,13 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
 
     public TradeInHomeViewModel(FragmentActivity activity) {
         activityWeakReference = new WeakReference<>(activity);
-        eligibileTickerData = new MutableLiveData<>();
+        insertResultData = new MutableLiveData<>();
         minPriceData = new MutableLiveData<>();
         priceFailData = new MutableLiveData<>();
     }
 
-    public MutableLiveData<String> getEligibileTickerData() {
-        return eligibileTickerData;
+    public MutableLiveData<Integer> getInsertResult() {
+        return insertResultData;
     }
 
     public MutableLiveData<JSONObject> getMinPriceData() {
@@ -148,9 +145,11 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     public void getPriceFromSDK() {
-        laku6TradeIn = Laku6TradeIn.getInstance(activityWeakReference.get(), "tokopediaSandbox",
+        String campaignId = Constants.CAMPAIGN_ID_PROD;
+        if (Constants.LAKU6_BASEURL.equals(Constants.LAKU6_BASEURL_STAGING))
+            campaignId = Constants.CAMPAIGN_ID_STAGING;
+        laku6TradeIn = Laku6TradeIn.getInstance(activityWeakReference.get(), campaignId,
                 Constants.APPID, Constants.APIKEY, Constants.LAKU6_BASEURL);
-        laku6TradeIn.setCampaignTradeInId("tokopediaSandbox");
         inData = activityWeakReference.get().getIntent().getParcelableExtra(TradeInParams.class.getSimpleName());
         requestPermission();
     }
@@ -201,7 +200,7 @@ public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver
         laku6TradeIn.getMinMaxPrice(this);
     }
 
-    public TradeInParams getTradeInParams(){
+    public TradeInParams getTradeInParams() {
         return inData;
     }
 }

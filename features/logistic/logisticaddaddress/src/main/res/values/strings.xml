@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">logisticaddaddress</string>
     <string name="title_save_address_as">Label Alamat</string>
-    <string name="minimal_karakter">Minimal 20 karakter</string>
+    <string name="minimal_karakter">Minimal 5 karakter</string>
     <string name="address_type_default">Rumah</string>
     <string name="title_update_address">Ubah Alamat</string>
     <string name="title_sort_by">Urutkan</string>
@@ -21,7 +21,7 @@
     <string name="choose_this_location">Pilih lokasi ini</string>
     <string name="error_min_phone_numer">Nomor telepon minimal 6 angka</string>
     <string name="error_max_phone_numer">Nomor telepon maksimum 20 angka</string>
-    <string name="error_min_address">Alamat minimum 20 karakter</string>
+    <string name="error_min_5_address">Alamat minimum 5 karakter</string>
     <string name="error_max_128_character">Maksimal 128 karakter.</string>
     <string name="error_min_5_character">Minimal 5 karakter</string>
     <string name="error_max_post_code">Kode Pos maksimum 10 angka</string>

@@ -319,6 +319,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openFlight();
                     screenName = "";
                     break;
+                case DeepLinkChecker.PROFILE:
+                    openProfile(linkSegment);
+                    screenName = "";
+                    break;
                 default:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -406,6 +410,17 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         viewListener.goToPage(intent);
     }
 
+    private void openProfile(List<String> linkSegment) {
+        if (linkSegment.size() >= 2) {
+            String userId = linkSegment.get(1);
+            Intent intent = RouteManager.getIntent(
+                    context,
+                    ApplinkConst.PROFILE.replace("{user_id}", userId)
+            );
+            viewListener.goToPage(intent);
+        }
+    }
+    
     private void login(Uri uriData) {
         interactor.handleAccounts(parseUriData(uriData), new SignInInteractor.SignInListener() {
             @Override
