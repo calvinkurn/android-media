@@ -17,22 +17,12 @@
  * Edited by Meyta
  */
 
-package com.tokopedia.coachmark;
+package com.tokopedia.coachmark
 
-public enum CoachMarkContentPosition {
-    UNDEFINED (0),
-    TOP (1),
-    RIGHT (2),
-    BOTTOM (3),
-    LEFT (4);
-
-    private final int position;
-
-    CoachMarkContentPosition(int position) {
-        this.position = position;
-    }
-
-    public int getPosition() {
-        return position;
-    }
+enum class CoachMarkContentPosition private constructor(val position: Int) {
+    UNDEFINED(0),
+    TOP(1),
+    RIGHT(2),
+    BOTTOM(3),
+    LEFT(4)
 }

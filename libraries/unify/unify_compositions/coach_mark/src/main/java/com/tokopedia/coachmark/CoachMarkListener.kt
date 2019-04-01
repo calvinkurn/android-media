@@ -17,11 +17,11 @@
  * Edited by Meyta
  */
 
-package com.tokopedia.coachmark;
+package com.tokopedia.coachmark
 
-public interface CoachMarkListener {
-    void onPrevious();
-    void onNext();
+interface CoachMarkListener {
+    fun onPrevious()
+    fun onNext()
 
-    void onComplete();
+    fun onComplete()
 }
