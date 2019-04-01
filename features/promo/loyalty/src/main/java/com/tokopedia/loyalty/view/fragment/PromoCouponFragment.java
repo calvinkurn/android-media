@@ -163,6 +163,7 @@ public class PromoCouponFragment extends BaseDaggerFragment
         loyaltyModuleRouter.sendEventDigitalEventTracking(context, text, failmsg);
     }
 
+
     @Override
     public void renderErrorNoConnectionGetCouponList(String message) {
         refreshHandler.finishRefresh();

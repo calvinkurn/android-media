@@ -72,7 +72,7 @@ public class PhoneVerificationActivationActivity extends BaseSimpleActivity {
         initInjector();
         initView();
 
-        analytics = PhoneVerificationAnalytics.createInstance(getApplicationContext());
+        analytics = PhoneVerificationAnalytics.createInstance();
     }
 
     private void initInjector() {

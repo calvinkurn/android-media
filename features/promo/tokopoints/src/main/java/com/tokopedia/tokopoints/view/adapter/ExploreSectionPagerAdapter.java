@@ -1,7 +1,11 @@
 package com.tokopedia.tokopoints.view.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +20,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
@@ -52,7 +59,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             view = mLayoutInflater.inflate(R.layout.tp_view_section_explore, container, false);
             setUpExploreTab(view);
         } else if (position == TAB_MY_COUPON) {
-            view = mLayoutInflater.inflate(R.layout.tp_layout_promos_list_container, container, false);
+            view = mLayoutInflater.inflate(R.layout.tp_layout_promos_list_container_new, container, false);
             setTabMyCoupon(view);
         }
 
@@ -101,17 +108,19 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             //TODO ask from Gulfikar for empty message
             containerInner.setDisplayedChild(1);
             ((ImageView) view.findViewById(R.id.img_error2)).setImageResource(R.drawable.ic_tp_empty_pages);
-//            ((TextView) view.findViewById(R.id.text_title_error2)).setText(mEmptyMessages.get(CommonConstant.CouponMapKeys.TITLE));
-//            ((TextView) view.findViewById(R.id.text_label_error2)).setText(mEmptyMessages.get(CommonConstant.CouponMapKeys.SUB_TITLE));
+            ((TextView) view.findViewById(R.id.text_title_error2)).setText("Anda Tidak Memiliki Kupon");
+            ((TextView) view.findViewById(R.id.text_label_error2)).setText("Segera Tukar Points Anda");
             view.findViewById(R.id.button_continue).setVisibility(View.VISIBLE);
             view.findViewById(R.id.button_continue).setOnClickListener(view12 -> mPresenter.getView().gotoCatalog());
             view.findViewById(R.id.text_empty_action).setOnClickListener(v ->
                     mPresenter.getView().openWebView(CommonConstant.WebLink.INFO));
+            return;
         }
 
 
         containerInner.setDisplayedChild(0);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_promos);
+
         recyclerView.addItemDecoration(new SpacesItemDecoration(view.getResources().getDimensionPixelOffset(R.dimen.dp_14),
                 view.getResources().getDimensionPixelOffset(R.dimen.dp_16),
                 view.getResources().getDimensionPixelOffset(R.dimen.dp_16)));
@@ -239,8 +248,15 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
         }
 
-        ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
-        ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionSubTitle());
+        if (!TextUtils.isEmpty(content.getSectionTitle())) {
+            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+        }
+
+        if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
+            view.findViewById(R.id.text_sub_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionSubTitle());
+        }
 
         if (content.getLayoutBannerAttr().getImageList() != null
                 && !content.getLayoutBannerAttr().getImageList().isEmpty()
@@ -252,6 +268,16 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
             ((TextView) view.findViewById(R.id.text_title_banner)).setText(data.getInBannerTitle());
             ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
+
+            if (!TextUtils.isEmpty(data.getTitle())) {
+                view.findViewById(R.id.text_title_bottom).setVisibility(View.VISIBLE);
+                ((TextView) view.findViewById(R.id.text_title_bottom)).setText(data.getTitle());
+            }
+
+            if (!TextUtils.isEmpty(data.getSubTitle())) {
+                view.findViewById(R.id.text_sub_title_bottom).setVisibility(View.VISIBLE);
+                ((TextView) view.findViewById(R.id.text_sub_title_bottom)).setText(data.getSubTitle());
+            }
         }
 
         return view;
@@ -274,8 +300,15 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
         }
 
-        ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
-        ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionTitle());
+        if (!TextUtils.isEmpty(content.getSectionTitle())) {
+            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+        }
+
+        if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
+            view.findViewById(R.id.text_sub_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionSubTitle());
+        }
 
         if (content.getLayoutBannerAttr().getImageList() != null
                 && !content.getLayoutBannerAttr().getImageList().isEmpty()
@@ -287,6 +320,16 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
             ((TextView) view.findViewById(R.id.text_title_banner)).setText(data.getInBannerTitle());
             ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
+
+            if (!TextUtils.isEmpty(data.getTitle())) {
+                view.findViewById(R.id.text_title_bottom).setVisibility(View.VISIBLE);
+                ((TextView) view.findViewById(R.id.text_title_bottom)).setText(data.getTitle());
+            }
+
+            if (!TextUtils.isEmpty(data.getSubTitle())) {
+                view.findViewById(R.id.text_sub_title_bottom).setVisibility(View.VISIBLE);
+                ((TextView) view.findViewById(R.id.text_sub_title_bottom)).setText(data.getSubTitle());
+            }
         }
 
         return view;
@@ -309,8 +352,15 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
         }
 
-        ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
-        ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionSubTitle());
+        if (!TextUtils.isEmpty(content.getSectionTitle())) {
+            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+        }
+
+        if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
+            view.findViewById(R.id.text_sub_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionSubTitle());
+        }
 
         if (content.getLayoutBannerAttr().getImageList() != null
                 && !content.getLayoutBannerAttr().getImageList().isEmpty()
@@ -322,6 +372,16 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
             ((TextView) view.findViewById(R.id.text_title_banner)).setText(data.getInBannerTitle());
             ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
+
+            if (!TextUtils.isEmpty(data.getTitle())) {
+                view.findViewById(R.id.text_title_bottom).setVisibility(View.VISIBLE);
+                ((TextView) view.findViewById(R.id.text_title_bottom)).setText(data.getTitle());
+            }
+
+            if (!TextUtils.isEmpty(data.getSubTitle())) {
+                view.findViewById(R.id.text_sub_title_bottom).setVisibility(View.VISIBLE);
+                ((TextView) view.findViewById(R.id.text_sub_title_bottom)).setText(data.getSubTitle());
+            }
         }
 
         return view;
@@ -344,8 +404,15 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
         }
 
-        ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
-        ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionSubTitle());
+        if (!TextUtils.isEmpty(content.getSectionTitle())) {
+            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+        }
+
+        if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
+            view.findViewById(R.id.text_sub_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionSubTitle());
+        }
 
         if (content.getLayoutBannerAttr().getImageList() != null) {
             ImageList data = null;
@@ -409,8 +476,15 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
         }
 
-        ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
-        ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionSubTitle());
+        if (!TextUtils.isEmpty(content.getSectionTitle())) {
+            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+        }
+
+        if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
+            view.findViewById(R.id.text_sub_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionSubTitle());
+        }
 
         if (content.getLayoutBannerAttr().getImageList() != null) {
             ImageList data = null;
@@ -461,8 +535,15 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
         }
 
-        ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
-        ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionSubTitle());
+        if (!TextUtils.isEmpty(content.getSectionTitle())) {
+            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+        }
+
+        if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
+            view.findViewById(R.id.text_sub_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionSubTitle());
+        }
 
         if (content.getLayoutBannerAttr().getImageList() != null) {
             ImageList data = null;
@@ -513,9 +594,15 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
         }
 
-        view.setBackgroundColor(Color.parseColor("#ffe078"));
-        ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
-        ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionSubTitle());
+        if (!TextUtils.isEmpty(content.getSectionTitle())) {
+            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+        }
+
+        if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
+            view.findViewById(R.id.text_sub_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionSubTitle());
+        }
 
         if (content.getLayoutBannerAttr().getImageList() != null) {
             RecyclerView rvCarousel = view.findViewById(R.id.rv_carousel);
@@ -544,8 +631,15 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
         }
 
-        ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
-        ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionSubTitle());
+        if (!TextUtils.isEmpty(content.getSectionTitle())) {
+            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+        }
+
+        if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
+            view.findViewById(R.id.text_sub_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionSubTitle());
+        }
 
         if (content.getLayoutBannerAttr().getImageList() != null) {
             RecyclerView rvCarousel = view.findViewById(R.id.rv_carousel);
@@ -567,8 +661,15 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             return view;
         }
 
-        ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
-        ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionSubTitle());
+        if (!TextUtils.isEmpty(content.getSectionTitle())) {
+            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+        }
+
+        if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
+            view.findViewById(R.id.text_sub_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionSubTitle());
+        }
 
         if (!content.getCta().isEmpty()) {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);

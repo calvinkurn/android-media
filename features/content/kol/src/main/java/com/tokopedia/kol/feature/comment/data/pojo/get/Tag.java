@@ -8,22 +8,22 @@ public class Tag {
 
     @SerializedName("id")
     @Expose
-    private int id;
+    private int id = 0;
     @SerializedName("type")
     @Expose
-    private String type;
+    private String type = "";
     @SerializedName("link")
     @Expose
-    private String link;
+    private String link = "";
     @SerializedName("price")
     @Expose
-    private String price;
+    private String price = "";
     @SerializedName("url")
     @Expose
-    private String url;
+    private String url = "";
     @SerializedName("caption")
     @Expose
-    private String caption;
+    private String caption = "";
 
     public Tag(int id, String type, String link, String price, String url, String caption) {
         this.id = id;

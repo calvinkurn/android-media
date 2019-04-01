@@ -5,8 +5,17 @@ package com.tokopedia.kotlin.extensions.view
  */
 
 fun String?.toIntOrZero(): Int {
-    return this?.toIntOrNull()?: 0
+    return this?.toIntOrNull() ?: 0
 }
+
 fun String?.toLongOrZero(): Long {
-    return this?.toLongOrNull()?: 0
+    return this?.toLongOrNull() ?: 0
+}
+
+fun String?.toFloatOrZero(): Float {
+    return this?.toFloatOrNull() ?: 0f
+}
+
+fun String?.toDoubleOrZero(): Double {
+    return this?.toDoubleOrNull() ?: 0f.toDouble()
 }

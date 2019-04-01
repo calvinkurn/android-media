@@ -111,5 +111,7 @@
     <string name="play_next_event">"Nantikan dan gabung di channel Play selanjutnya"</string>
     <string name="play_start_shopping">"Mulai belanja"</string>
     <string name="from">oleh</string>
+    <string name="hide_video">Sembunyikan Video</string>
+    <string name="show_video">Tampilkan Video</string>
 
 </resources>
