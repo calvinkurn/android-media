@@ -15,4 +15,6 @@ public interface TokopointRouter {
     String getStringRemoteConfig(String key);
 
     long getLongRemoteConfig(String key, long defaultValue);
+
+    boolean getBooleanRemoteConfig(String key, boolean defaultValue);
 }

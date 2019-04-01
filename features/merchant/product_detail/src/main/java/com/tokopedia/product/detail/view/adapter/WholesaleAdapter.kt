@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.Wholesale
+import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 
 import java.util.ArrayList

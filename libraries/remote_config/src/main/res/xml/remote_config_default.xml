@@ -250,5 +250,48 @@
         <key>mainapp_flight_new_search_flow</key>
         <value>true</value>
     </entry>
-
+    <entry>
+        <key>android_customer_flight_booking_new_flow</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>nonb_1_ttl</key>
+        <value>Bebas Beli Apa Saja</value>
+    </entry>
+    <entry>
+        <key>nonb_1_dsc</key>
+        <value><![CDATA[Tersedia jutaan produk dari <em>merchant</em> &#38; <em>official store</em> tepercaya]]></value>
+    </entry>
+    <entry>
+        <key>nonb_2_ttl</key>
+        <value>Bayar Tagihan Bebas Cemas</value>
+    </entry>
+    <entry>
+        <key>nonb_2_dsc</key>
+        <value>Tagihan mulai BPJS, gas, hingga air bisa terbayar tanpa was-was</value>
+    </entry>
+    <entry>
+        <key>nonb_3_ttl</key>
+        <value>Pesan Kebutuhan Liburan</value>
+    </entry>
+    <entry>
+        <key>nonb_3_dsc</key>
+        <value>Dapatkan tiket kereta, wahana rekreasi, dan event seru bebas antre</value>
+    </entry>
+    <entry>
+        <key>nonb_4_ttl</key>
+        <value>Ajukan Asuransi hingga Modal</value>
+    </entry>
+    <entry>
+        <key>nonb_4_dsc</key>
+        <value>Lengkapi kebutuhan finansial mulai kartu kredit hingga pinjaman modal</value>
+    </entry>
+    <entry>
+        <key>nonb_5_ttl</key>
+        <value>Jual Barang Ciptakan Peluang</value>
+    </entry>
+    <entry>
+        <key>nonb_5_dsc</key>
+        <value>Buka toko gratis, nikmati transaksi mudah, aman, dan dikunjungi jutaan pembeli</value>
+    </entry>
 </defaultsMap>

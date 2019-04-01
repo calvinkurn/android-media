@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
+import android.util.DisplayMetrics;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.UiThreadUtil;
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -134,5 +136,18 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void stopTracing() {
         ReactUtils.stopTracing();
+    }
+
+    @ReactMethod
+    public void getStatusBarHeight(Promise promise) {
+        int result = 25;
+        if (getCurrentActivity() != null) {
+            int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                result = (int) (context.getResources().getDimensionPixelSize(resourceId) / context.getResources().getDisplayMetrics().density);
+            }
+        }
+
+        promise.resolve(result);
     }
 }

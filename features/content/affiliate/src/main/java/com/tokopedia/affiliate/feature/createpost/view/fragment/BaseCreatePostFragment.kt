@@ -3,7 +3,6 @@ package com.tokopedia.affiliate.feature.createpost.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.TaskStackBuilder
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -85,7 +84,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     override fun onStart() {
         super.onStart()
-        affiliateAnalytics.analyticTracker.sendScreen(activity, screenName)
+        affiliateAnalytics.analyticTracker.sendScreenAuthenticated(screenName)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -191,6 +190,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
         updateMedia()
         updateThumbnail()
+        updateAddTagText()
         updateHeader(feedContentForm.authors)
     }
 
@@ -200,31 +200,12 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onErrorNotAffiliate() {
-        activity?.let {
-            val taskStackBuilder = TaskStackBuilder.create(it)
-
-            val onboardingApplink = ApplinkConst.AFFILIATE_ONBOARDING + PRODUCT_ID_QUERY_PARAM + viewModel.productIdList.firstOrNull()
-            val onboardingIntent = RouteManager.getIntent(it, onboardingApplink)
-            onboardingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            taskStackBuilder.addNextIntent(onboardingIntent)
-
-            val educationIntent = RouteManager.getIntent(
-                    it,
-                    ApplinkConst.AFFILIATE_EDUCATION)
-            taskStackBuilder.addNextIntent(educationIntent)
-
-            taskStackBuilder.startActivities()
-            it.finish()
-        }
-    }
-
     override fun onErrorNoQuota() {
         activity?.let {
             Toast.makeText(it, R.string.text_full_affiliate_title, Toast.LENGTH_LONG)
                     .show()
             it.finish()
-            affiliateAnalytics.onJatahRekomendasiHabisPdp()
+            affiliateAnalytics.onJatahRekomendasiHabisDialogShow()
         }
     }
 
@@ -292,7 +273,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             val numberOfProducts = if (isTypeAffiliate()) viewModel.adIdList.size else
                 viewModel.productIdList.size
             if (numberOfProducts < viewModel.maxProduct) {
-                relatedAddBtn.setOnClickListener { onRelatedAddProductClick() }
+                relatedAddBtn.setOnClickListener {
+                    onRelatedAddProductClick()
+                    affiliateAnalytics.onTambahTagButtonClicked()
+                }
                 relatedAddBtn.setTextColor(MethodChecker.getColor(it, R.color.medium_green))
             } else {
                 relatedAddBtn.setOnClickListener { }
@@ -332,9 +316,14 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         relatedProductRv.setHasFixedSize(true)
         doneBtn.setOnClickListener {
             saveDraftAndSubmit()
+            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList)
         }
         addImageBtn.setOnClickListener {
             goToImagePicker()
+            affiliateAnalytics.onTambahGambarButtonClicked()
+        }
+        addVideoBtn.setOnClickListener {
+            affiliateAnalytics.onTambahVideoButtonClicked()
         }
         caption.afterTextChanged {
             viewModel.caption = it
@@ -360,7 +349,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun goToImagePicker() {
-        affiliateAnalytics.onTambahGambarButtonClicked(viewModel.productIdList.firstOrNull())
         activity?.let {
             startActivityForResult(
                     CreatePostImagePickerActivity.getInstance(
@@ -402,8 +390,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
 
     private fun saveDraftAndSubmit() {
-        affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList.firstOrNull())
-
         if (isFormInvalid()) {
             return
         }
@@ -469,7 +455,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 goToMediaPreview()
             }
         } else {
-            thumbnail.loadDrawable(R.drawable.ic_system_action_addimage_grayscale_62)
+            thumbnail.loadImageDrawable(R.drawable.ic_system_action_addimage_grayscale_62)
             edit.hide()
             thumbnail.setOnClickListener { }
             carouselIcon.setOnClickListener { }

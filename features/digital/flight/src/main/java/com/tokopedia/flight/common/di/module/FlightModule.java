@@ -5,7 +5,6 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
@@ -16,6 +15,7 @@ import com.tokopedia.flight.country.data.FlightCountryListDbSource;
 import com.tokopedia.flight.country.database.FlightAirportCountryDao;
 import com.tokopedia.flight.banner.data.source.BannerDataSource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
+import com.tokopedia.flight.bookingV2.data.FlightBookingCartDataSource;
 import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.db.FlightRoomDb;
@@ -68,15 +68,6 @@ public class FlightModule {
     private static final int NET_CONNECT_TIMEOUT = 30;
     private static final int NET_RETRY = 1;
     private static final String GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
-
-    @FlightScope
-    @Provides
-    public AnalyticTracker provideAnalyticTracker(@ApplicationContext Context context) {
-        if (context instanceof AbstractionRouter) {
-            return ((AbstractionRouter) context).getAnalyticTracker();
-        }
-        throw new RuntimeException("App should implement " + AbstractionRouter.class.getSimpleName());
-    }
 
     @FlightScope
     @Provides
@@ -133,11 +124,12 @@ public class FlightModule {
                                                     FlightOrderMapper flightOrderMapper,
                                                     FlightPassengerFactorySource flightPassengerFactorySource,
                                                     FlightCancellationCloudDataSource flightCancellationCloudDataSource,
-                                                    FlightCancelVoucherDataSource flightCancelVoucherDataSource) {
+                                                    FlightCancelVoucherDataSource flightCancelVoucherDataSource,
+                                                    FlightBookingCartDataSource flightBookingCartDataSource) {
         return new FlightRepositoryImpl(bannerDataSource, flightCountryListDbSource,
                 getFlightClassesUseCase, flightCartDataSource, flightCheckVoucheCodeDataSource,
                 flightBookingDataSource, flightOrderDataSource, flightOrderMapper, flightPassengerFactorySource, flightCancellationCloudDataSource,
-                flightCancelVoucherDataSource);
+                flightCancelVoucherDataSource, flightBookingCartDataSource);
     }
 
     @Provides

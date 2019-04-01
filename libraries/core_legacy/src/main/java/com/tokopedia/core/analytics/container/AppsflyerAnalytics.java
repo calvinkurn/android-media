@@ -1,13 +1,13 @@
 package com.tokopedia.core.analytics.container;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.appsflyer.AFInAppEventType;
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
@@ -19,6 +19,8 @@ import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.interfaces.AFAdsIDCallback;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.io.IOException;
@@ -30,6 +32,9 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static com.appsflyer.AFInAppEventParameterName.CUSTOMER_USER_ID;
+import static com.appsflyer.AFInAppEventParameterName.REGSITRATION_METHOD;
 
 public class AppsflyerAnalytics extends ContextAnalytics {
     private static final String TAG = AppsflyerAnalytics.class.getSimpleName();
@@ -111,6 +116,20 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     }
 
     @Override
+    public void sendAppsflyerRegisterEvent(String userId, String method) {
+        Map<String, Object> eventVal = new HashMap<>();
+        eventVal.put("custom_prop1", "registration");
+        eventVal.put("os", "Android");
+        eventVal.put(CUSTOMER_USER_ID, userId);
+        eventVal.put(REGSITRATION_METHOD, method);
+        sendTrackEvent(AFInAppEventType.COMPLETE_REGISTRATION, eventVal);
+    }
+
+    public void updateFCMToken(String fcmToken) {
+        AppsFlyerLib.getInstance().updateServerUninstallToken(context, fcmToken);
+    }
+
+    @Override
     public void sendGeneralEvent(Map<String, Object> value) {
         // no op, only for GTM
     }
@@ -121,7 +140,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     }
 
     @Override
-    public void sendEnhanceECommerceEvent(Map<String, Object> value) {
+    public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
         // no op, only for GTM
     }
 
@@ -153,16 +172,21 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         AppsFlyerLib.getInstance().startTracking(getContext(), key);
     }
 
-    public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
-        CommonUtils.dumper(TAG + " Appsflyer send " + eventName + " " + eventValue);
+    public void sendEvent(String eventName, Map<String, Object> eventValue) {
         AppsFlyerLib.getInstance().trackEvent(getContext(), eventName, eventValue);
+    }
+
+    //aliasing
+    @Override
+    public void sendTrackEvent(Map<String, Object> data, String eventName) {
+        sendTrackEvent(eventName, data);
     }
 
     public void sendDeeplinkData(Activity activity) {
         AppsFlyerLib.getInstance().sendDeepLinkData(activity);
     }
 
-    public void getAdsID(final AppsflyerContainer.AFAdsIDCallback callback) {
+    public void getAdsID(final AFAdsIDCallback callback) {
             AdvertisingIdClient.Info adInfo = null;
             try {
                 adInfo = AdvertisingIdClient.getAdvertisingIdInfo(getContext());

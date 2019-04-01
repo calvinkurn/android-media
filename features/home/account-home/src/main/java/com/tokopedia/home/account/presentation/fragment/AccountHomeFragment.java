@@ -1,9 +1,11 @@
 package com.tokopedia.home.account.presentation.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.badge.BadgeView;
@@ -51,7 +54,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     private AppBarLayout appBarLayout;
     private AccountHomePagerAdapter adapter;
     private BadgeView badgeView;
-    private Toolbar toolbar;
     private ImageButton menuNotification;
     private int counterNumber = 0;
 
@@ -141,6 +143,11 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
 
     private void setToolbar(View view) {
         Toolbar toolbar = view.findViewById(R.id.toolbar);
+        View statusBarBackground = view.findViewById(R.id.status_bar_bg);
+        if (getActivity() != null) {
+            statusBarBackground.getLayoutParams().height =
+                    DisplayMetricUtils.getStatusBarHeight(getActivity());
+        }
         TextView title = toolbar.findViewById(R.id.toolbar_title);
         title.setText(getString(R.string.title_account));
         menuNotification = toolbar.findViewById(R.id.action_notification);
@@ -156,6 +163,18 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         if (getActivity() instanceof AppCompatActivity) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         }
+
+        //status bar background compability
+        statusBarBackground.getLayoutParams().height =
+                DisplayMetricUtils.getStatusBarHeight(getActivity());
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            statusBarBackground.setVisibility(View.INVISIBLE);
+        } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            statusBarBackground.setVisibility(View.VISIBLE);
+        } else {
+            statusBarBackground.setVisibility(View.GONE);
+        }
+
         setHasOptionsMenu(true);
     }
 

@@ -15,9 +15,10 @@ import com.tokopedia.normalcheckout.model.ProductInfoAndVariant
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_ID
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_KEY
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_DOMAIN
-import com.tokopedia.product.detail.common.data.model.ProductInfo
-import com.tokopedia.product.detail.common.data.model.ProductParams
+import com.tokopedia.product.detail.common.data.model.product.ProductInfo
+import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
+import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -35,6 +36,8 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
                                                   val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     val productInfoResp = MutableLiveData<Result<ProductInfoAndVariant>>()
+    var warehouses: Map<String, MultiOriginWarehouse> = mapOf()
+    var selectedwarehouse: MultiOriginWarehouse? = null
 
     fun getProductInfo(productParams: ProductParams, resources: Resources) {
 
@@ -57,7 +60,32 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
                         graphqlRepository.getReseponse(listOf(graphqlVariantRequest), cacheStrategy)
                     }
                     productVariantData.getSuccessData<ProductDetailVariantResponse>().let { productVariant ->
+                        val productIds = productVariant.data.children.map { child -> child.productId.toString() }
+                        val nearestWarehouseParam = mapOf("productIds" to productIds)
+                        val nearestWarehouseRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_MULTI_ORIGIN],
+                                MultiOriginWarehouse.Response::class.java, nearestWarehouseParam)
+                        val response = withContext(Dispatchers.IO){
+                            graphqlRepository.getReseponse(listOf(nearestWarehouseRequest), cacheStrategy)
+                        }
+                        if (response.getError(MultiOriginWarehouse.Response::class.java)?.isNotEmpty() != true){
+                            warehouses = response.getData<MultiOriginWarehouse.Response>(MultiOriginWarehouse.Response::class.java)
+                                    .result.data.groupBy { warehouse -> warehouse.productId }
+                                    .filterValues { warehousesInfos -> warehousesInfos.isNotEmpty()  }
+                                    .mapValues { warehousesInfos -> warehousesInfos.value.first() }
+                            selectedwarehouse = warehouses[productVariant.data.defaultChild.toString()]
+                        }
                         productInfo.productVariant = productVariant.data
+                    }
+                } else {
+                    val nearestWarehouseParam = mapOf("productIds" to listOf(productParams.productId ?: ""))
+                    val nearestWarehouseRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_MULTI_ORIGIN],
+                            MultiOriginWarehouse.Response::class.java, nearestWarehouseParam)
+                    val response = withContext(Dispatchers.IO){
+                        graphqlRepository.getReseponse(listOf(nearestWarehouseRequest), cacheStrategy)
+                    }
+                    if (response.getError(MultiOriginWarehouse.Response::class.java)?.isNotEmpty() != true){
+                        selectedwarehouse = response.getData<MultiOriginWarehouse.Response>(MultiOriginWarehouse.Response::class.java)
+                                .result.data.firstOrNull()
                     }
                 }
                 productInfoResp.value = Success(productInfo)
