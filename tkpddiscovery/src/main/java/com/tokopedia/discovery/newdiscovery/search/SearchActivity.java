@@ -23,6 +23,8 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.discovery.model.DataValue;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.discovery.R;
@@ -193,7 +195,7 @@ public class SearchActivity extends DiscoveryActivity
                               boolean forceSwipeToShop,
                               boolean isActivityPaused) {
         if (activity != null) {
-            productViewModel.setDynamicFilterModel(null); // TODO:: Fix this after testing
+            productViewModel.setDynamicFilterModel(new DynamicFilterModel()); // TODO:: Fix this after testing
 
             Intent intent = new Intent(activity, SearchActivity.class);
             intent.putExtra(EXTRA_PRODUCT_VIEW_MODEL, productViewModel);
