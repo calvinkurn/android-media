@@ -488,7 +488,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             String[] extrasTripDeparture = tempExtras[INDEX_DEPARTURE_TRIP].split("_");
 
             /**
-             * tokopedia://flight/search?dest=CGK_DPS_2018-04-01,CGK_DPS_2018-05-01&a=1&c=1&i=1&s=1
+             * tokopedia://pesawat/search?dest=CGK_Jakarta_DPS_Denpasar_2018-04-01,CGK_Jakarta_DPS_Denpasar_2018-05-01&a=1&c=1&i=1&s=1
              */
 
             flightDashboardPassDataViewModel.setDepartureAirportId(extrasTripDeparture[INDEX_ID_AIRPORT_DEPARTURE_TRIP]);
