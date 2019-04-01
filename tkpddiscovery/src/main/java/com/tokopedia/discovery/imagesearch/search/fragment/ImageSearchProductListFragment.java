@@ -472,7 +472,8 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     private void loadMoreProduct(final int startRow) {
-        SearchParameter searchParameter = generateLoadMoreParameter(startRow, productViewModel.getQuery());
+        SearchParameter searchParameter =
+                generateLoadMoreParameter(startRow, productViewModel.getQuery());
 
         HashMap<String, String> additionalParams
                 = NetworkParamHelper.getParamMap(productViewModel.getAdditionalParams());
