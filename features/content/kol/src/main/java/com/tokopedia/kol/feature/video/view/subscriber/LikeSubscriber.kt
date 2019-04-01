@@ -27,7 +27,7 @@ class LikeSubscriber constructor(
     override fun onNext(isSuccess: Boolean?) {
         if (view != null) {
             if (isSuccess!!) {
-                view.onLikeKolSuccess(rowNumber)
+                view.onLikeKolSuccess(rowNumber, 0)
             } else {
                 view.onLikeKolError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
             }

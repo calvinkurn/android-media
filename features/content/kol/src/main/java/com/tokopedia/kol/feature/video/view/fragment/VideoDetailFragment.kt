@@ -72,10 +72,6 @@ class VideoDetailFragment:
         }
     }
 
-    init {
-
-    }
-
     override fun getScreenName(): String {
         return ""
     }
@@ -149,7 +145,7 @@ class VideoDetailFragment:
         return activity!!
     }
 
-    override fun onLikeKolSuccess(rowNumber: Int) {
+    override fun onLikeKolSuccess(rowNumber: Int, action: Int) {
 
         val like = dynamicPostViewModel.footer.like
         like.isChecked = !like.isChecked
