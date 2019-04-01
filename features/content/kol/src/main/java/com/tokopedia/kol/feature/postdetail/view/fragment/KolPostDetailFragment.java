@@ -15,13 +15,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder;
-import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity;
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -36,12 +29,12 @@ import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
-import com.tokopedia.feedcomponent.data.pojo.template.Template;
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
@@ -69,6 +62,8 @@ import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDeta
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel;
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
+import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
@@ -262,7 +257,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     private void bindComment(PostDetailFooterModel model, TemplateFooter template) {
         if (template.getComment()) {
-            setTotalComment(model.getTotalLike());
+            setTotalComment(model.getTotalComment());
             commentCount.setOnClickListener(v -> onGoToKolComment(0, postDetailFooterModel.getContentId()));
             commentButton.setOnClickListener(v -> onGoToKolComment(0, postDetailFooterModel.getContentId()));
         } else {
