@@ -391,7 +391,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         presenter.cursor = cursor
     }
 
-    override fun onLikeKolSuccess(rowNumber: Int) {
+    override fun onLikeKolSuccess(rowNumber: Int, action: Int) {
         if (adapter.data[rowNumber] != null && adapter.data[rowNumber] is DynamicPostViewModel) {
             val model = adapter.data[rowNumber] as DynamicPostViewModel
             val like = model.footer.like

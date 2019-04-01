@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
+import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
@@ -77,14 +78,14 @@ class ProfilePresenter @Inject constructor(
     override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
         likeKolPostUseCase.execute(
                 LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
-                LikeKolPostSubscriber(likeListener, rowNumber)
+                LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.ACTION_LIKE)
         )
     }
 
     override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
         likeKolPostUseCase.execute(
                 LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_UNLIKE),
-                LikeKolPostSubscriber(likeListener, rowNumber)
+                LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.ACTION_LIKE)
         )
     }
 

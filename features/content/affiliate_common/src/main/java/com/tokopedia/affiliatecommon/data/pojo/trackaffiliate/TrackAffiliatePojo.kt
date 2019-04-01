@@ -1,4 +1,4 @@
-package com.tokopedia.profile.data.pojo.trackaffiliate
+package com.tokopedia.affiliatecommon.data.pojo.trackaffiliate
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

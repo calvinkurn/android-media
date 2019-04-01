@@ -1,9 +1,9 @@
-package com.tokopedia.profile.data.source
+package com.tokopedia.affiliatecommon.data.source
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.profile.data.network.TopAdsApi
-import com.tokopedia.profile.data.pojo.trackaffiliate.TrackAffiliatePojo
+import com.tokopedia.affiliatecommon.data.network.TopAdsApi
+import com.tokopedia.affiliatecommon.data.pojo.trackaffiliate.TrackAffiliatePojo
 import com.tokopedia.usecase.RequestParams
 import org.json.JSONException
 import rx.Observable
