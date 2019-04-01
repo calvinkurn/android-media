@@ -1198,7 +1198,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 tradeInParams.isPreorder = preorderstatus
             else
                 tradeInParams.isPreorder = false
-            tradeInParams.isOnCampaign = productInfoP1.productInfo.hasActiveCampaign
+            tradeInParams.isOnCampaign = productInfoP1.productInfo.campaign.isActive
             tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
             tv_trade_in.setOnClickListener { goToNormalCheckout(TRADEIN_BUY) }
         }
