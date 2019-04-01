@@ -194,7 +194,7 @@ public class SearchActivity extends DiscoveryActivity
                               boolean isActivityPaused) {
         if (activity != null) {
             Intent intent = new Intent(activity, SearchActivity.class);
-            intent.putExtra(EXTRA_PRODUCT_VIEW_MODEL, productViewModel);
+            intent.putExtra(EXTRA_PRODUCT_VIEW_MODEL, new ProductViewModel());
             intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, forceSwipeToShop);
             intent.putExtra(EXTRA_ACTIVITY_PAUSED, isActivityPaused);
             activity.startActivity(intent);
