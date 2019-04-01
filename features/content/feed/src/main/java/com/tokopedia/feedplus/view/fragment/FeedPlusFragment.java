@@ -46,6 +46,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder;
@@ -100,6 +101,7 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
+import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -143,7 +145,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         ImagePostViewHolder.ImagePostListener,
         YoutubeViewHolder.YoutubePostListener,
         PollAdapter.PollOptionListener,
-        GridPostAdapter.GridItemListener {
+        GridPostAdapter.GridItemListener,
+        VideoViewHolder.VideoViewListener {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
@@ -1964,6 +1967,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     redirectLink
             );
         }
+    }
+
+    @Override
+    public void onVideoPlayerClicked(int positionInFeed,
+                                     int contentPosition,
+                                     String postId) {
+        startActivity(VideoDetailActivity.Companion.getInstance(
+                getActivity(),
+                postId));
     }
 
     private void goToContentReport(int contentId) {

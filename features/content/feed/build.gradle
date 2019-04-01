@@ -48,6 +48,8 @@ dependencies {
     implementation project(rootProject.ext.features.goldMerchantResource)
 
     implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.imagePicker)
@@ -56,8 +58,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.youtubeutil)
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.analytics)
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler

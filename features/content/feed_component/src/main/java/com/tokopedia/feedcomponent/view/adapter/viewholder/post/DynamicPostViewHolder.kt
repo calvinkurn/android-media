@@ -26,6 +26,7 @@ import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
@@ -45,7 +46,8 @@ open class DynamicPostViewHolder(v: View,
                             private val imagePostListener: ImagePostViewHolder.ImagePostListener,
                             private val youtubePostListener: YoutubeViewHolder.YoutubePostListener,
                             private val pollOptionListener: PollAdapter.PollOptionListener,
-                            private val gridItemListener: GridPostAdapter.GridItemListener)
+                            private val gridItemListener: GridPostAdapter.GridItemListener,
+                            private val videoViewListener: VideoViewHolder.VideoViewListener)
     : AbstractViewHolder<DynamicPostViewModel>(v) {
 
     lateinit var captionTv : TextView
@@ -230,7 +232,7 @@ open class DynamicPostViewHolder(v: View,
             contentList.forEach { it.postId = postId }
             contentList.forEach { it.positionInFeed = adapterPosition }
 
-            val adapter = PostPagerAdapter(imagePostListener, youtubePostListener, pollOptionListener, gridItemListener)
+            val adapter = PostPagerAdapter(imagePostListener, youtubePostListener, pollOptionListener, gridItemListener, videoViewListener)
             adapter.setList(contentList)
             itemView.contentViewPager.adapter = adapter
             itemView.contentViewPager.offscreenPageLimit = adapter.count

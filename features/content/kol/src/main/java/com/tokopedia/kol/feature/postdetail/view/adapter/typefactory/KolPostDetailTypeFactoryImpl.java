@@ -9,6 +9,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
@@ -47,6 +48,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     private final YoutubeViewHolder.YoutubePostListener youtubePostListener;
     private final PollAdapter.PollOptionListener pollOptionListener;
     private final GridPostAdapter.GridItemListener gridItemListener;
+    private final VideoViewHolder.VideoViewListener videoViewListener;
     private final KolComment.View.SeeAll seeAll;
 
     public KolPostDetailTypeFactoryImpl(KolComment.View.ViewHolder kolCommentListener,
@@ -56,7 +58,8 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
                                         ImagePostViewHolder.ImagePostListener imagePostListener,
                                         YoutubeViewHolder.YoutubePostListener youtubePostListener,
                                         PollAdapter.PollOptionListener pollOptionListener,
-                                        GridPostAdapter.GridItemListener gridItemListener) {
+                                        GridPostAdapter.GridItemListener gridItemListener,
+                                        VideoViewHolder.VideoViewListener videoViewListener) {
         this.kolCommentListener = kolCommentListener;
         this.seeAll = seeAll;
         this.listener = listener;
@@ -65,6 +68,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
         this.youtubePostListener = youtubePostListener;
         this.pollOptionListener = pollOptionListener;
         this.gridItemListener = gridItemListener;
+        this.videoViewListener = videoViewListener;
     }
 
     @Override
@@ -123,7 +127,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
         if (viewType == DynamicPostViewHolder.Companion.getLAYOUT()) {
             abstractViewHolder = new KolPostDetailViewHolder(view,
                     listener, cardTitleListener, imagePostListener, youtubePostListener,
-                    pollOptionListener, gridItemListener
+                    pollOptionListener, gridItemListener, videoViewListener
             );
         } else if (viewType == KolCommentViewHolder.LAYOUT)
             abstractViewHolder = new KolCommentViewHolder(view, kolCommentListener);
