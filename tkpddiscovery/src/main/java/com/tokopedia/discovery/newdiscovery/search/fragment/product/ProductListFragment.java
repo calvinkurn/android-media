@@ -115,7 +115,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     public static ProductListFragment newInstance(ProductViewModel productViewModel) {
         Bundle args = new Bundle();
-        args.putParcelable(ARG_VIEW_MODEL, productViewModel);
+        args.putParcelable(ARG_VIEW_MODEL, new ProductViewModel());
         args.putParcelable(EXTRA_SEARCH_PARAMETER, productViewModel.getSearchParameter());
         ProductListFragment productListFragment = new ProductListFragment();
         productListFragment.setArguments(args);
