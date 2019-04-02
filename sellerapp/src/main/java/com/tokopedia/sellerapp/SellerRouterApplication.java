@@ -1908,4 +1908,14 @@ public abstract class SellerRouterApplication extends MainApplication
     public void sendForceLogoutAnalytics(Response response) {
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
     }
+
+    @Override
+    public void shareFeed(@NotNull Activity activity, @NotNull String detailId, @NotNull String url, @NotNull String title, @NotNull String imageUrl, @NotNull String description) {
+
+    }
+
+    @Override
+    public Intent getInboxTicketCallingIntent(Context context) {
+        return new Intent(context, InboxListActivity.class);
+    }
 }
