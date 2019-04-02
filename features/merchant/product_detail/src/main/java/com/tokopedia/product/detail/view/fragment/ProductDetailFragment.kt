@@ -11,7 +11,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.Rect
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
@@ -21,7 +20,6 @@ import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
-import android.support.v4.widget.NestedScrollView
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.*
@@ -109,7 +107,6 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.listener.TopAdsListener
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
-import com.tokopedia.track.TrackApp
 import com.tokopedia.transaction.common.TransactionRouter
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
@@ -309,6 +306,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         initializePartialView(view)
         initView()
+
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener {
             if (tv_trade_in_promo != null) {
@@ -1077,8 +1075,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productInfo?.run {
             productDetailTracking.sendScreen(basic.shopID.toString(),
                     shopInfo?.goldOS?.shopTypeString ?: "", productId ?: "")
-            productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, this, productInfoP2.shopInfo, trackerAttribution,
-                    tradeInParams?.isEligible==1, tradeInParams?.usedPrice>0)
+            productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, this, productInfoP2.shopInfo, trackerAttribution)
             productDetailTracking.sendMoEngageOpenProduct(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
                     ?: "")
             productDetailTracking.eventAppsFylerOpenProduct(this)
@@ -1212,22 +1209,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 tradeInParams.isPreorder = false
             tradeInParams.isOnCampaign = productInfoP1.productInfo.hasActiveCampaign
             tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
-            tv_trade_in.setOnClickListener {
-                goToNormalCheckout(TRADEIN_BUY)
-                tradeInParams?.let {
-                    if(tradeInParams!!.usedPrice>0)
-                        productDetailTracking.sendGeneralEvent(" clickPDP",
-                                "product detail page",
-                                "click trade in widget",
-                                "after diagnostic")
-                    else
-                        productDetailTracking.sendGeneralEvent(" clickPDP",
-                                "product detail page",
-                                "click trade in widget",
-                                "before diagnostic")
-
-                }
-            }
+            tv_trade_in.setOnClickListener { goToNormalCheckout(TRADEIN_BUY) }
         }
         activity?.invalidateOptionsMenu()
     }
