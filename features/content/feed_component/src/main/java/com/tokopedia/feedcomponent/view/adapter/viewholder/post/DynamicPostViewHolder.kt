@@ -7,8 +7,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
-import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -33,24 +31,25 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 import kotlinx.android.synthetic.main.item_posttag.view.*
-import kotlinx.android.synthetic.main.partial_card_title.view.*
 
 /**
  * @author by milhamj on 28/11/18.
  */
 open class DynamicPostViewHolder(v: View,
-                            private val listener: DynamicPostListener,
-                            private val cardTitleListener: CardTitleView.CardTitleListener,
-                            private val imagePostListener: ImagePostViewHolder.ImagePostListener,
-                            private val youtubePostListener: YoutubeViewHolder.YoutubePostListener,
-                            private val pollOptionListener: PollAdapter.PollOptionListener,
-                            private val gridItemListener: GridPostAdapter.GridItemListener,
-                            private val videoViewListener: VideoViewHolder.VideoViewListener)
+                                 private val listener: DynamicPostListener,
+                                 private val cardTitleListener: CardTitleView.CardTitleListener,
+                                 private val imagePostListener: ImagePostViewHolder.ImagePostListener,
+                                 private val youtubePostListener: YoutubeViewHolder.YoutubePostListener,
+                                 private val pollOptionListener: PollAdapter.PollOptionListener,
+                                 private val gridItemListener: GridPostAdapter.GridItemListener,
+                                 private val videoViewListener: VideoViewHolder.VideoViewListener,
+                                 private val userSession: UserSessionInterface)
     : AbstractViewHolder<DynamicPostViewModel>(v) {
 
-    lateinit var captionTv : TextView
+    lateinit var captionTv: TextView
 
     companion object {
         @LayoutRes
@@ -150,7 +149,8 @@ open class DynamicPostViewHolder(v: View,
                 itemView.authorSubtitile.setOnClickListener { onAvatarClick(header.avatarApplink) }
             }
 
-            itemView.headerAction.shouldShowWithAction(template.followCta) {
+            itemView.headerAction.shouldShowWithAction(template.followCta
+                    && header.followCta.authorID != userSession.userId) {
                 bindFollow(header.followCta)
             }
 
@@ -347,7 +347,7 @@ open class DynamicPostViewHolder(v: View,
             if (postTag.text.isNotEmpty()) {
                 itemView.cardTitlePostTag.text = postTag.text
                 itemView.cardTitlePostTag.show()
-            } else{
+            } else {
                 itemView.cardTitlePostTag.hide()
             }
             if (postTag.totalItems > 0) {
@@ -369,7 +369,7 @@ open class DynamicPostViewHolder(v: View,
         return template.postTag || isPostTagAvailable(postTag)
     }
 
-    private fun isPostTagAvailable(postTag: PostTag) : Boolean {
+    private fun isPostTagAvailable(postTag: PostTag): Boolean {
         return postTag.totalItems != 0 || postTag.items.size != 0
     }
 
@@ -382,9 +382,9 @@ open class DynamicPostViewHolder(v: View,
 
         fun onCaptionClick(positionInFeed: Int, redirectUrl: String)
 
-        fun onLikeClick(positionInFeed: Int,  id: Int, isLiked: Boolean)
+        fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean)
 
-        fun onCommentClick(positionInFeed: Int,  id: Int)
+        fun onCommentClick(positionInFeed: Int, id: Int)
 
         fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, iamgeUrl: String)
 
@@ -392,6 +392,6 @@ open class DynamicPostViewHolder(v: View,
 
         fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String)
 
-        fun onAffiliateTrackClicked(trackList : MutableList<TrackingViewModel>)
+        fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>)
     }
 }
