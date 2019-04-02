@@ -2,7 +2,6 @@ package com.tokopedia.normalcheckout.view
 
 import com.appsflyer.AFInAppEventParameterName
 import com.appsflyer.AFInAppEventType
-import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.normalcheckout.model.ProductInfoAndVariant
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.track.TrackApp
@@ -11,13 +10,10 @@ class NormalCheckoutTracking {
     companion object {
         const val CLICK_PDP = "clickPDP"
         const val PRODUCT_DETAIL_PAGE = "product detail page"
-        const val HARGA_FINAL_TRADEIN = "harga final trade in"
         const val SELECT_COLOR_VARIANT = "select color on variants page"
         const val SELECT_SIZE_VARIANT = "select size on variants page"
         const val NONE_OTHER = "none / other"
     }
-
-    private var isTrackTradeIn = false
 
     fun eventClickBuyInVariantNotLogin(productId: String?) {
         TrackApp.getInstance()?.gtm?.sendGeneralEvent(
@@ -61,24 +57,6 @@ class NormalCheckoutTracking {
             trackerAttribution, trackerListName)
     }
 
-    fun eventClickBuyTradeIn(originalProductInfoAndVariant: ProductInfoAndVariant?,
-                               selectedVariantId: String,
-                               selectedProductInfo: ProductInfo,
-                               qty:Int,
-                               shopId:String? = NONE_OTHER,
-                               shopType:String? = NONE_OTHER,
-                               shopName:String? = NONE_OTHER,
-                               cartId:String? = NONE_OTHER,
-                               trackerAttribution:String?,
-                               trackerListName:String?) {
-        isTrackTradeIn = true
-        eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant,
-                "click beli sekarang",
-                selectedVariantId, selectedProductInfo,
-                qty, shopId, shopType, shopName, cartId,
-                trackerAttribution, trackerListName)
-    }
-
     private fun eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant: ProductInfoAndVariant?,
                                           actionLabel: String,
                                           selectedVariantId: String,
@@ -90,21 +68,14 @@ class NormalCheckoutTracking {
                                           cartId:String? = NONE_OTHER,
                                           trackerAttribution:String?,
                                           trackerListName:String?) {
-        if (originalProductInfoAndVariant == null) {
-            isTrackTradeIn = false
-            return
-        }
+        if (originalProductInfoAndVariant == null) return
         val productVariantString = (originalProductInfoAndVariant.productVariant
             .getOptionListString(selectedVariantId)?.joinToString(" - ")
             ?: "non variant")
-        val category : String = if(isTrackTradeIn)
-            HARGA_FINAL_TRADEIN
-        else
-            PRODUCT_DETAIL_PAGE
         TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(
             mutableMapOf<String, Any>(
                 "event" to "addToCart",
-                "eventCategory" to category,
+                "eventCategory" to PRODUCT_DETAIL_PAGE,
                 "eventAction" to actionLabel,
                 "eventLabel" to productVariantString,
                 "ecommerce" to mutableMapOf<String, Any>(
@@ -132,7 +103,6 @@ class NormalCheckoutTracking {
                     }
                 )
             ))
-        isTrackTradeIn = false
     }
 
 
