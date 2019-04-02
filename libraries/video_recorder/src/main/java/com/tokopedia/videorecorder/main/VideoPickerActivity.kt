@@ -204,6 +204,7 @@ open class VideoPickerActivity: BaseSimpleActivity(),
     private fun cancelVideo() {
         onVideoVisible()
         videoPreview.stopPlayback()
+        videoPreview.setVideoURI(null)
         setupViewPager()
 
         selectCurrentPage(currentSelectedTab)
