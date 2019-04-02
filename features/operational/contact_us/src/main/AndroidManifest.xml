@@ -76,5 +76,11 @@
             android:label="Detail Kendala"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+        <activity android:name="com.tokopedia.contactus.inboxticket2.view.activity.ProvideRatingActivity"
+            android:exported="true"
+            android:label="@string/cu_surey_layana"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
     </application>
 </manifest>

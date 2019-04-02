@@ -2,12 +2,12 @@ package com.tokopedia.topads.common.view.presenter;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
-import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor;
+import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -23,11 +23,11 @@ import rx.Subscriber;
 public class TopAdsBaseListPresenter<T extends CustomerView> extends BaseDaggerPresenter<T> {
     private final TopAdsDatePickerInteractor topAdsDatePickerInteractor;
     private final TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
-    protected final UserSession userSession;
+    protected final UserSessionInterface userSession;
 
     public TopAdsBaseListPresenter(TopAdsDatePickerInteractor topAdsDatePickerInteractor,
                                    TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,
-                                   UserSession userSession) {
+                                   UserSessionInterface userSession) {
         this.topAdsDatePickerInteractor = topAdsDatePickerInteractor;
         this.topAdsAddSourceTaggingUseCase = topAdsAddSourceTaggingUseCase;
         this.userSession = userSession;

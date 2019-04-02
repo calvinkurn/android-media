@@ -11,34 +11,34 @@ public class NotificationData {
 
     @SerializedName("total_cart")
     @Expose
-    private int totalCart;
+    private int totalCart = 0;
     @SerializedName("sales")
     @Expose
-    private Sales sales;
+    private Sales sales = new Sales();
     @SerializedName("resolution")
     @Expose
-    private int resolution;
+    private int resolution = 0;
     @SerializedName("resolution_as")
     @Expose
-    private Resolution resolutionModel;
+    private Resolution resolutionModel = new Resolution();
     @SerializedName("purchase")
     @Expose
-    private Purchase purchase;
+    private Purchase purchase = new Purchase();
     @SerializedName("incr_notif")
     @Expose
-    private int incrNotif;
+    private int incrNotif = 0;
     @SerializedName("inbox")
     @Expose
-    private Inbox inbox;
+    private Inbox inbox = new Inbox();
     @SerializedName("total_notif")
     @Expose
-    private int totalNotif;
+    private int totalNotif = 0;
     @SerializedName("buyer_order_status")
     @Expose
-    private NotificationBuyerOrder buyerOrder;
+    private NotificationBuyerOrder buyerOrder = new NotificationBuyerOrder();
     @SerializedName("seller_order_status")
     @Expose
-    private NotificationSellerOrder sellerOrder;
+    private NotificationSellerOrder sellerOrder = new NotificationSellerOrder();
 
     public int getTotalCart() {
         return totalCart;

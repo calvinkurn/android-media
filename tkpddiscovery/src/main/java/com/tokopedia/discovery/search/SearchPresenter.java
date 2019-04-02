@@ -41,11 +41,12 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
     }
 
     @Override
-    public void search(String query) {
+    public void search(String query, boolean isOfficial) {
         this.querySearch = query;
         autoCompleteUseCase.execute(
                 AutoCompleteUseCase.getParams(
                         this.querySearch,
+                        isOfficial,
                         GCMHandler.getRegistrationId(context),
                         userSession.getUserId()
                 ),

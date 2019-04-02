@@ -7,8 +7,8 @@ import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.chatroom.view.fragment.ChannelInfoFragment;
 import com.tokopedia.groupchat.chatroom.view.fragment.ChannelVoteFragment;
 import com.tokopedia.groupchat.chatroom.view.fragment.GroupChatFragment;
+import com.tokopedia.groupchat.room.view.fragment.PlayWebviewFragment;
 import com.tokopedia.groupchat.common.di.component.GroupChatComponent;
-import com.tokopedia.vote.domain.usecase.SendVoteUseCase;
 
 import dagger.Component;
 
@@ -29,5 +29,4 @@ public interface ChatroomComponent {
     void inject(ChannelInfoFragment fragment);
 
     void inject(GroupChatActivity activity);
-
 }

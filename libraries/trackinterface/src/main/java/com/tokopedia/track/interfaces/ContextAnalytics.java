@@ -6,7 +6,7 @@ import android.app.Service;
 import android.content.Context;
 
 public abstract class ContextAnalytics implements Analytics {
-    private final Application context;
+    protected final Application context;
 
     public ContextAnalytics(Context context) {
         this.context = getApplication(context);

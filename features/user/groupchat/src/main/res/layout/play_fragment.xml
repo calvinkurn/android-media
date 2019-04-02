@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
+    >
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+
+        <View
+            android:id="@+id/top_guideline"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0"
+            android:orientation="horizontal"
+            android:background="@drawable/bg_play_gradient"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <ImageView
+            android:id="@+id/channel_banner"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="@+id/sponsor_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_weight="1"
+            />
+
+        <RelativeLayout
+            android:id="@+id/shadow_layer"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/shadow_layer_group_chat_banner"
+            android:adjustViewBounds="true"
+            android:alpha="0.1"
+            android:background="@color/black"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="@id/channel_banner"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/channel_banner"
+            tools:visibility="gone"/>
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:paddingTop="@dimen/dp_24"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:subtitleTextAppearance="@style/ToolbarSubtitleGroupChat"
+            app:titleTextAppearance="@style/ToolbarGroupChat"
+            tools:layout_height="?attr/actionBarSize"
+            tools:title="title">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="@dimen/sp_4"
+                    android:maxLines="1"
+                    android:textColor="#ffffff"
+                    android:textSize="@dimen/sp_16"
+                    android:textStyle="bold"
+                    tools:text="Ramadan Ekstra"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/toolbar_title"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/toolbar_subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingExtra="3sp"
+                        android:textColor="#ffffff"
+                        android:textSize="@dimen/sp_11"
+                        tools:text="2.546.000 dilihat"
+                        />
+
+                    <android.widget.Space
+                        android:layout_width="@dimen/dp_4"
+                        android:layout_height="wrap_content"/>
+
+                    <include
+                        android:id="@+id/toolbar_live"
+                        layout="@layout/play_live"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.Toolbar>
+
+        <LinearLayout
+            android:id="@+id/sponsor_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_8"
+            android:visibility="gone"
+            app:layout_constraintDimensionRatio="6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:foreground="@drawable/bg_sponsor_border"
+                app:cardBackgroundColor="@color/transparent"
+                app:cardCornerRadius="@dimen/card_channel_elevation"
+                app:cardElevation="0dp"
+                app:contentPadding="@dimen/space_atomic">
+
+                <ImageView
+                    android:id="@+id/sponsor_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:scaleType="fitXY"
+                    tools:src="@tools:sample/avatars"/>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v4.widget.Space
+
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_8"/>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/video_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintDimensionRatio="16:9"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sponsor_layout"
+            tools:ignore="MergeRootFrame"
+            tools:visibility="gone">
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                      xmlns:tools="http://schemas.android.com/tools"
+                      android:id="@+id/video_container"
+                      android:name="com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment"
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      tools:layout="@layout/fragment_groupchat_video"/>
+
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/chat_list"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fadingEdge="vertical"
+            android:fadingEdgeLength="@dimen/dp_24"
+            android:overScrollMode="never"
+            android:requiresFadingEdge="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/sticky_component"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/video_horizontal"
+            app:layout_constraintVertical_weight="0.5"
+            tools:ignore="MergeRootFrame"/>
+
+        <ImageView
+            android:id="@+id/webview_icon"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="@dimen/dp_60"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/video_horizontal"
+            />
+
+        <include
+            android:id="@+id/bottom"
+            layout="@layout/input_play"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/login"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_weight="1.0"
+            tools:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:alpha="0.7"
+            android:background="@drawable/top_shadow"
+            android:elevation="@dimen/elevation_login_group_chat"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:paddingTop="@dimen/dp_30"
+            android:paddingBottom="@dimen/dp_20"
+            android:text="@string/login_to_chat"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="normal"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:visibility="visible"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/quick_reply"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/dp_6"
+            android:requiresFadingEdge="vertical"
+            android:visibility="gone"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@id/bottom"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:listitem="@layout/item_quick_reply"
+            tools:visibility="gone"/>
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/grey_300"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/quick_reply"
+            app:layout_constraintTop_toTopOf="@id/quick_reply"
+            tools:visibility="gone"/>
+
+        <include
+            android:id="@+id/pinned_message"
+            layout="@layout/pinned_message_view_holder"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_4"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/quick_reply"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_weight="0.5"
+            tools:visibility="visible"/>
+
+        <include
+            android:id="@+id/sticky_component"
+            layout="@layout/item_sticky_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_8"
+            app:layout_constraintBottom_toTopOf="@id/pinned_message"
+            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_marginTop="@dimen/dp_4"
+            />
+
+        <LinearLayout
+            android:id="@+id/layout_new_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:background="@drawable/label_new_chat"
+            android:elevation="@dimen/cardview_default_elevation"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/space_med"
+            android:paddingTop="@dimen/space_small"
+            android:paddingRight="@dimen/space_med"
+            android:paddingBottom="@dimen/space_small"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/bottom"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:targetApi="lollipop"
+            tools:visibility="visible">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/new_message"
+                android:textColor="@color/play_new_chat"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="normal"/>
+
+            <Space
+                android:layout_width="@dimen/dp_4"
+                android:layout_height="@dimen/dp_14"/>
+
+            <ImageView
+                android:layout_width="@dimen/arrow_size"
+                android:layout_height="@dimen/arrow_size"
+                android:layout_gravity="center_vertical"
+                android:rotation="180"
+                android:tint="@color/play_new_chat"
+                app:srcCompat="@drawable/ic_arrow_up_green"/>
+
+        </LinearLayout>
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@id/webview_icon"
+            app:layout_constraintGuide_percent="0.85"/>
+        <RelativeLayout
+            android:id="@+id/card_retry"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            android:paddingLeft="@dimen/dp_48"
+            android:paddingRight="@dimen/dp_48"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/channel_banner"
+            tools:visibility="gone">
+
+            <include
+                layout="@layout/channel_not_found_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/loading_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:gravity="center"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="gone">
+
+            <ProgressBar
+                android:id="@+id/loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+        </RelativeLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <include
+        layout="@layout/bottom_sheet_rounded_header" />
+
+</android.support.design.widget.CoordinatorLayout>

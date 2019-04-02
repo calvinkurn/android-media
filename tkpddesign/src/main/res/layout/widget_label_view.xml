@@ -92,7 +92,7 @@
         android:layout_marginEnd="@dimen/dp_8"
         android:visibility="gone"
         tools:visibility="visible"
-        android:src="@drawable/ic_arrow_right_grey"
+        app:srcCompat="@drawable/ic_arrow_right_grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

@@ -10,15 +10,15 @@ public class InboxModel {
 
     @SerializedName("talk")
     @Expose
-    private String talk;
+    private String talk = "";
 
     @SerializedName("ticket")
     @Expose
-    private String ticket;
+    private String ticket = "";
 
     @SerializedName("review")
     @Expose
-    private String review;
+    private String review = "";
 
     public String getTalk() {
         return talk;

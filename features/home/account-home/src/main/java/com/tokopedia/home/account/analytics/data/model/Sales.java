@@ -8,13 +8,13 @@ public class Sales {
 
     @SerializedName("newOrder")
     @Expose
-    private int salesNewOrder;
+    private int salesNewOrder = 0;
     @SerializedName("shippingStatus")
     @Expose
-    private int salesShippingStatus;
+    private int salesShippingStatus = 0;
     @SerializedName("shippingConfirm")
     @Expose
-    private int salesShippingConfirm;
+    private int salesShippingConfirm = 0;
 
     public int getSalesNewOrder() {
         return salesNewOrder;

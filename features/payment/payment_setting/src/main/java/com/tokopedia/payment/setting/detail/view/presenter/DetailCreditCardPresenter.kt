@@ -26,7 +26,7 @@ class DetailCreditCardPresenter : BaseDaggerPresenter<DetailCreditCardContract.V
         val variables = HashMap<String, Any?>()
         variables.put(TOKEN_ID, tokenId)
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.delete_credit_card_query), DataResponseDeleteCC::class.java, variables)
+                R.raw.delete_credit_card_query), DataResponseDeleteCC::class.java, variables, false)
         getCCListUseCase.clearRequest()
         getCCListUseCase.addRequest(graphqlRequest)
         getCCListUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {

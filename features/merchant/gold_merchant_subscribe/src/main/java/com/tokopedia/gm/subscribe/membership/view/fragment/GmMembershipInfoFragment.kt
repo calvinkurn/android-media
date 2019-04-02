@@ -1,20 +1,20 @@
 package com.tokopedia.gm.subscribe.membership.view.fragment
 
 import android.os.Bundle
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment
-import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 
 class GmMembershipInfoFragment : BaseWebViewFragment(){
 
     private val url = "https://www.tokopedia.com/bantuan/penjual/fitur-jualan/gold-merchant/#apa-itu-gold-merchant"
-    private lateinit var userSession: UserSession
+    private lateinit var userSession: UserSessionInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        userSession = (activity!!.application as AbstractionRouter).session
+        userSession = UserSession(activity)
     }
 
     override fun getUrl(): String {

@@ -28,10 +28,6 @@ public interface ICheckoutModuleRouter {
     Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
             boolean couponActive, String additionalStringData, boolean isOneClickShipment, int pageTracking);
 
-    Intent checkoutModuleRouterGetProductDetailIntent(String productId);
-
-    Intent checkoutModuleRouterGetProductDetailIntentForTopAds(Product product);
-
     Intent checkoutModuleRouterGetTransactionSummaryIntent();
 
     void checkoutModuleRouterResetBadgeCart();
@@ -51,8 +47,6 @@ public interface ICheckoutModuleRouter {
     Converter.Factory checkoutModuleRouterGetStringResponseConverter();
 
     Intent checkoutModuleRouterGetHomeIntent(Context context);
-
-    Intent getAddAddressIntent(Activity activity, @Nullable AddressModel data, Token token, boolean isEdit, boolean isEmptyAddressFirst);
 
     Intent getGeolocationIntent(Context context, LocationPass locationPass);
 

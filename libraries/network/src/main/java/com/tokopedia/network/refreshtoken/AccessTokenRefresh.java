@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.converter.StringResponseConverter;
+import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -34,7 +35,6 @@ public class AccessTokenRefresh {
     public String refreshToken(Context context, UserSessionInterface userSession, NetworkRouter
             networkRouter) {
 
-        userSession.clearToken();
         Map<String, String> params = new HashMap<>();
 
         params.put(ACCESS_TOKEN, userSession.getAccessToken());
@@ -82,8 +82,8 @@ public class AccessTokenRefresh {
         return new Retrofit.Builder()
                 .baseUrl(TkpdBaseURL.ACCOUNTS_DOMAIN)
                 .addConverterFactory(new StringResponseConverter())
-                .client(tkpdOkHttpBuilder.addInterceptor(
-                        new AccountsBasicInterceptor(context, networkRouter, userSession))
+                .client(tkpdOkHttpBuilder.addInterceptor(new AccountsBasicInterceptor(context, networkRouter, userSession))
+                        .addInterceptor(new FingerprintInterceptor(networkRouter, userSession))
                         .build())
                 .build();
     }

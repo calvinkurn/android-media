@@ -1,6 +1,11 @@
 package com.tokopedia.saldodetails.commom.analytics;
 
+import java.util.concurrent.TimeUnit;
+
 public class SaldoDetailsConstants {
+
+    public static final String SALDO_HELP_URL = "https://www.tokopedia.com/help/article/a-1709?refid=st-1005";
+    public static long cacheDuration = TimeUnit.HOURS.toSeconds(1);
 
     interface Event {
         String EVENT_CLICK_FINTECH_MICROSITE = "clickFintechMicrosite";

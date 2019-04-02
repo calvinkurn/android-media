@@ -30,9 +30,9 @@ public class GroupChatPointsViewHolder extends BaseChatViewHolder<GroupChatPoint
     private TextView messageView;
     private View mainView;
     private ImageView icon;
-    private final ChatroomContract.View.GroupChatPointsViewHolderListener listener;
+    private final ChatroomContract.ChatItem.GroupChatPointsViewHolderListener listener;
 
-    public GroupChatPointsViewHolder(View itemView, ChatroomContract.View.GroupChatPointsViewHolderListener imageListener) {
+    public GroupChatPointsViewHolder(View itemView, ChatroomContract.ChatItem.GroupChatPointsViewHolderListener imageListener) {
         super(itemView);
         mainView = itemView;
         messageView = itemView.findViewById(R.id.text);

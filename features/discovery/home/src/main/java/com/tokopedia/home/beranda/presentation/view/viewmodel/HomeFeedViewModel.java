@@ -1,0 +1,164 @@
+package com.tokopedia.home.beranda.presentation.view.viewmodel;
+
+import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory;
+import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
+
+public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFeedTypeFactory> {
+    private static final String DATA_NONE_OTHER = "none / other";
+    private static final String DATA_NAME = "name";
+    private static final String DATA_ID = "id";
+    private static final String DATA_PRICE = "price";
+    private static final String DATA_BRAND = "brand";
+    private static final String DATA_VARIANT = "variant";
+    private static final String DATA_CATEGORY = "category";
+    private static final String DATA_LIST = "list";
+    private static final String DATA_POSITION = "position";
+    private static final String DATA_LIST_VALUE = "/ - p2 - %s - rekomendasi untuk anda - %s";
+    private static final String DATA_LIST_VALUE_NON_LOGIN = "/ - p2 - non login - %s - rekomendasi untuk anda - %s";
+
+    private final int position;
+    private String productId;
+    private String productName;
+    private String categoryBreadcrumbs;
+    private String recommendationType;
+    private String imageUrl;
+    private String price;
+    private String clickUrl;
+    private String trackerImageUrl;
+    private int priceNumber;
+    private boolean isTopAds;
+
+    public HomeFeedViewModel(String productId,
+                             String productName,
+                             String categoryBreadcrumbs,
+                             String recommendationType,
+                             String imageUrl,
+                             String price,
+                             String clickUrl,
+                             String trackerImageUrl,
+                             int priceNumber,
+                             boolean isTopAds,
+                             int position) {
+        this.productId = productId;
+        this.productName = productName;
+        this.categoryBreadcrumbs = categoryBreadcrumbs;
+        this.recommendationType = recommendationType;
+        this.imageUrl = imageUrl;
+        this.price = price;
+        this.clickUrl = clickUrl;
+        this.trackerImageUrl = trackerImageUrl;
+        this.priceNumber = priceNumber;
+        this.isTopAds = isTopAds;
+        this.position = position;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public String getCategoryBreadcrumbs() {
+        return categoryBreadcrumbs;
+    }
+
+    public String getClickUrl() {
+        return clickUrl;
+    }
+
+    public String getTrackerImageUrl() {
+        return trackerImageUrl;
+    }
+
+    public void setCategoryBreadcrumbs(String categoryBreadcrumbs) {
+        this.categoryBreadcrumbs = categoryBreadcrumbs;
+    }
+
+    public String getRecommendationType() {
+        return recommendationType;
+    }
+
+    public void setRecommendationType(String recommendationType) {
+        this.recommendationType = recommendationType;
+    }
+
+    public int getPriceNumber() {
+        return priceNumber;
+    }
+
+    public void setPriceNumber(int priceNumber) {
+        this.priceNumber = priceNumber;
+    }
+
+    public boolean isTopAds() {
+        return isTopAds;
+    }
+
+    @Override
+    public int type(HomeFeedTypeFactory typeFactory) {
+        return typeFactory.type(this);
+    }
+
+    public Object convertFeedTabModelToImpressionDataForLoggedInUser(
+            String tabName
+    ) {
+        return DataLayer.mapOf(
+                DATA_NAME, getProductName(),
+                DATA_ID, getProductId(),
+                DATA_PRICE, getPriceNumber(),
+                DATA_BRAND, DATA_NONE_OTHER,
+                DATA_VARIANT, DATA_NONE_OTHER,
+                DATA_CATEGORY, getCategoryBreadcrumbs(),
+                DATA_LIST, String.format(
+                        DATA_LIST_VALUE,
+                        tabName,
+                        getRecommendationType()
+                ),
+                DATA_POSITION, getPosition());
+    }
+
+    public Object convertFeedTabModelToImpressionDataForNonLoginUser(
+            String tabName
+    ) {
+        return DataLayer.mapOf(
+                DATA_NAME, getProductName(),
+                DATA_ID, getProductId(),
+                DATA_PRICE, getPriceNumber(),
+                DATA_BRAND, DATA_NONE_OTHER,
+                DATA_VARIANT, DATA_NONE_OTHER,
+                DATA_CATEGORY, getCategoryBreadcrumbs(),
+                DATA_LIST, String.format(
+                        DATA_LIST_VALUE_NON_LOGIN,
+                        tabName,
+                        getRecommendationType()
+                ),
+                DATA_POSITION, getPosition());
+    }
+
+    public Object convertFeedTabModelToClickData() {
+        return DataLayer.mapOf(
+                DATA_NAME, getProductName(),
+                DATA_ID, getProductId(),
+                DATA_PRICE, getPriceNumber(),
+                DATA_BRAND, DATA_NONE_OTHER,
+                DATA_VARIANT, DATA_NONE_OTHER,
+                DATA_CATEGORY, getCategoryBreadcrumbs(),
+                DATA_POSITION, getPosition());
+    }
+}

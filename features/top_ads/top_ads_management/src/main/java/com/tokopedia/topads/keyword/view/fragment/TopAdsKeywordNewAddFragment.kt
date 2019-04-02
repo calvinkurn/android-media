@@ -6,19 +6,20 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tkpd.library.ui.utilities.TkpdProgressDialog
-import com.tkpd.library.ui.view.LinearLayoutManager
-import com.tkpd.library.utils.CommonUtils
+import android.widget.Toast
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.core.network.retrofit.response.TextErrorObject
+import com.tokopedia.core.util.MethodChecker
 import com.tokopedia.topads.R
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.data.response.Error
 import com.tokopedia.topads.common.view.fragment.TopAdsNewBaseStepperFragment
+import com.tokopedia.topads.common.view.widget.TkpdProgressDialog
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent
 import com.tokopedia.topads.dashboard.utils.ViewUtils
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordAddComponent
@@ -237,8 +238,7 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
 
     override fun onSuccessSaveKeyword() {
         hideLoading()
-        CommonUtils.UniversalToast(activity,
-                getString(R.string.top_ads_keyword_has_been_added))
+        Toast.makeText(activity, MethodChecker.fromHtml(getString(R.string.top_ads_keyword_has_been_added)), Toast.LENGTH_LONG).show()
         onSuccessSaveKeywordListener?.onSuccessSave(localKeywordAdapter.localKeywords)
         stepperListener?.finishPage()
     }

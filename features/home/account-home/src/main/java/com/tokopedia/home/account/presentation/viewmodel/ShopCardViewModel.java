@@ -12,7 +12,6 @@ import com.tokopedia.topads.common.data.model.DataDeposit;
 public class ShopCardViewModel implements ParcelableViewModel<AccountTypeFactory> {
     private String shopId;
     private String shopName;
-    private String balance;
     private String shopImageUrl;
     private Boolean isGoldMerchant;
     private String reputationImageUrl;
@@ -34,14 +33,6 @@ public class ShopCardViewModel implements ParcelableViewModel<AccountTypeFactory
 
     public void setShopName(String shopName) {
         this.shopName = shopName;
-    }
-
-    public String getBalance() {
-        return balance;
-    }
-
-    public void setBalance(String balance) {
-        this.balance = balance;
     }
 
     public String getShopImageUrl() {
@@ -109,7 +100,6 @@ public class ShopCardViewModel implements ParcelableViewModel<AccountTypeFactory
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.shopId);
         dest.writeString(this.shopName);
-        dest.writeString(this.balance);
         dest.writeString(this.shopImageUrl);
         dest.writeValue(this.isGoldMerchant);
         dest.writeString(this.reputationImageUrl);
@@ -122,7 +112,6 @@ public class ShopCardViewModel implements ParcelableViewModel<AccountTypeFactory
     protected ShopCardViewModel(Parcel in) {
         this.shopId = in.readString();
         this.shopName = in.readString();
-        this.balance = in.readString();
         this.shopImageUrl = in.readString();
         this.isGoldMerchant = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.reputationImageUrl = in.readString();

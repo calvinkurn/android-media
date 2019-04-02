@@ -41,7 +41,7 @@ public class SearchTracking {
     public static final String EVENT_ACTION_CLICK_FOLLOW_ACTION_PROFILE = "click - %s profile";
     public static final String EVENT_LABEL_CLICK_FOLLOW_ACTION_PROFILE = "keyword: %s - profile: %s - profile id: %s - po: %s";
     public static final String PROMO_VIEW = "promoView";
-    public static final String EVENT_ACTION_IMPORESSION_PROFILE = "imporession - profile";
+    public static final String EVENT_ACTION_IMPRESSION_PROFILE = "impression - profile";
     public static String imageClick = "/imagesearch - p%s";
 
     private AnalyticTracker tracker;
@@ -472,7 +472,7 @@ public class SearchTracking {
 
         tracker.sendEnhancedEcommerce(
                 DataLayer.mapOf(
-                        EVENT, EVENT_CLICK_SEARCH_RESULT,
+                        EVENT, PROMO_CLICK,
                         EVENT_CATEGORY, EVENT_CATEGORY_SEARCH_RESULT_PROFILE,
                         EVENT_ACTION, EVENT_ACTION_CLICK_PROFILE_RESULT,
                         EVENT_LABEL, keyword,
@@ -534,7 +534,7 @@ public class SearchTracking {
                 DataLayer.mapOf(
                         EVENT, PROMO_VIEW,
                         EVENT_CATEGORY, EVENT_CATEGORY_SEARCH_RESULT_PROFILE,
-                        EVENT_ACTION, EVENT_ACTION_IMPORESSION_PROFILE,
+                        EVENT_ACTION, EVENT_ACTION_IMPRESSION_PROFILE,
                         EVENT_LABEL, keyword,
                         ECOMMERCE, DataLayer.mapOf(
                                 PROMO_VIEW, DataLayer.mapOf(

@@ -1,13 +1,13 @@
 package com.tokopedia.shop.product.domain.interactor;
 
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase;
 
 import java.util.List;
@@ -32,7 +32,7 @@ public class GetShopProductListWithAttributeUseCase extends BaseGetShopProductAt
     public GetShopProductListWithAttributeUseCase(GetShopProductListUseCase getShopProductListUseCase,
                                                   GetWishListUseCase getWishListUseCase,
                                                   GetProductCampaignsUseCase getProductCampaignsUseCase,
-                                                  UserSession userSession,
+                                                  UserSessionInterface userSession,
                                                   ShopProductMapper shopProductMapper) {
         super(getWishListUseCase, getProductCampaignsUseCase, userSession, shopProductMapper);
         this.getShopProductListUseCase = getShopProductListUseCase;
@@ -60,7 +60,9 @@ public class GetShopProductListWithAttributeUseCase extends BaseGetShopProductAt
             final ShopProductRequestModel shopProductRequestModel, final PagingList<ShopProduct> shopProductPagingList) {
         List<ShopProductViewModel> shopProductViewModelList = shopProductMapper.convertFromShopProduct(
                 shopProductPagingList.getList(), shopProductRequestModel.getPage(), ShopPageConstant.DEFAULT_PER_PAGE);
-        return super.getShopProductViewModelList(isShopOwner(shopProductRequestModel.getShopId()),
+        return super.getShopProductViewModelList(
+                userSession.isLoggedIn(),
+                isShopOwner(shopProductRequestModel.getShopId()),
                 shopProductRequestModel.isOfficialStore(), shopProductViewModelList)
                 .flatMap(new Func1<List<ShopProductViewModel>, Observable<PagingList<ShopProductViewModel>>>() {
                     @Override

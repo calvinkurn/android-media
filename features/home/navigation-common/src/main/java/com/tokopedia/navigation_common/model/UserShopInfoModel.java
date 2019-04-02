@@ -9,10 +9,10 @@ import com.google.gson.annotations.SerializedName;
 public class UserShopInfoModel {
     @SerializedName("info")
     @Expose
-    private ShopInfoModel info;
+    private ShopInfoModel info = new ShopInfoModel();
     @SerializedName("owner")
     @Expose
-    private ShopOwnerModel owner;
+    private ShopOwnerModel owner = new ShopOwnerModel();
 
     public ShopInfoModel getInfo() {
         return info;

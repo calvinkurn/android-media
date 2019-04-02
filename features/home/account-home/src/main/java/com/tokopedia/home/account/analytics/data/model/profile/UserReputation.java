@@ -8,19 +8,19 @@ public class UserReputation {
 
     @SerializedName("positive_percentage")
     @Expose
-    private String positivePercentage;
+    private String positivePercentage = "";
     @SerializedName("no_reputation")
     @Expose
-    private Integer noReputation;
+    private Integer noReputation = 0;
     @SerializedName("negative")
     @Expose
-    private String negative;
+    private String negative = "";
     @SerializedName("positive")
     @Expose
-    private String positive;
+    private String positive = "";
     @SerializedName("neutral")
     @Expose
-    private String neutral;
+    private String neutral = "";
 
     public String getPositivePercentage() {
         return positivePercentage;

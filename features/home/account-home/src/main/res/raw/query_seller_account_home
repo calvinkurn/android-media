@@ -1,10 +1,6 @@
 query SellerAccountHome($shop_ids:[Int!]!, $merchantID:Int!, $projectId:Int!){
   status
   isAuthenticated
-  saldo {
-    deposit
-    deposit_fmt
-  }
   userShopInfo {
     info {
       shop_name

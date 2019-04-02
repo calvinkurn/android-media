@@ -16,6 +16,8 @@ import com.tokopedia.discovery.newdiscovery.data.repository.ShopRepositoryImpl;
 import com.tokopedia.discovery.newdiscovery.data.source.ShopDataSource;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetShopUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.ToggleFavoriteActionUseCase;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -33,6 +35,12 @@ public class ShopModule {
             ShopRepository shopRepository,
             TomeService tomeService) {
         return new GetShopUseCase(threadExecutor, postExecutionThread, shopRepository, tomeService);
+    }
+
+    @Provides
+    ToggleFavouriteShopUseCase toggleFavouriteShopUseCase(
+            @ApplicationContext Context context) {
+        return new ToggleFavouriteShopUseCase(new GraphqlUseCase(), context.getResources());
     }
 
     @Provides

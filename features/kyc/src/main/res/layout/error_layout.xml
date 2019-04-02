@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/dp_30"
+    android:paddingRight="@dimen/dp_30">
+    <TextView
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_16"
+        android:textColor="@color/clr_4c2a86"
+        android:text="@string/atn"
+        />
+
+    <TextView
+        android:layout_marginTop="@dimen/dp_25"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_14"
+        android:textColor="@color/clr_2d263b"
+        android:text="@string/upld_fail_retry"
+        />
+
+    <Button
+        android:id="@+id/error_btn_confirm"
+        android:layout_marginTop="@dimen/dp_40"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_14"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:text="@string/oke"
+        android:background="@drawable/btn_bg_rounded_corners"
+        android:layout_marginBottom="@dimen/dp_14"
+        />
+</LinearLayout>

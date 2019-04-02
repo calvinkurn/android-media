@@ -5,11 +5,12 @@ import android.os.Bundle;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.di.ChallengesComponentInstance;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 public abstract class ChallengesBaseActivity extends BaseSimpleActivity implements HasComponent<ChallengesComponent> {
 
@@ -23,7 +24,7 @@ public abstract class ChallengesBaseActivity extends BaseSimpleActivity implemen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UserSession userSession = ((AbstractionRouter) this.getApplication()).getSession();
+        UserSessionInterface userSession = new UserSession(this);
         if (!userSession.isLoggedIn()) {
             navigateToLoginPage();
         }

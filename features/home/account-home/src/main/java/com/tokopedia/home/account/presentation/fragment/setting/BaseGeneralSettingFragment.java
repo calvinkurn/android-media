@@ -12,23 +12,24 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.adapter.setting.GeneralSettingAdapter;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import java.util.List;
 
 public abstract class BaseGeneralSettingFragment extends TkpdBaseV4Fragment
         implements GeneralSettingAdapter.OnSettingItemClicked {
 
     protected RecyclerView recyclerView;
-    protected UserSession userSession;
+    protected UserSessionInterface userSession;
     protected GeneralSettingAdapter adapter;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        userSession = ((AbstractionRouter)context.getApplicationContext()).getSession();
+        userSession = new UserSession(getActivity());
     }
 
     @Nullable

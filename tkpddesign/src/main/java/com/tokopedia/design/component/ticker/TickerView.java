@@ -199,7 +199,9 @@ public class TickerView extends BaseCustomView {
     }
 
     private void updateTicker(){
-        listTextColor.add(defaultTextColor);
+        for (int i = 0; i < listMessage.size() - listTextColor.size(); ++i)
+            listTextColor.add(defaultTextColor);
+
         this.setVisibility(listMessage.size() < 1? View.GONE : View.VISIBLE);
 
         if (listMessage.size() == 1) {

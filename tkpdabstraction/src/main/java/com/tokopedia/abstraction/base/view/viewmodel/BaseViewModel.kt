@@ -13,7 +13,7 @@ abstract class BaseViewModel(private val baseDispatcher: CoroutineDispatcher): V
     override val coroutineContext: CoroutineContext
         get() = baseDispatcher + masterJob
 
-    fun clear(){
+    open fun clear(){
         if (isActive && !masterJob.isCancelled){
             masterJob.cancel()
         }

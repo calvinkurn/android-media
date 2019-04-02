@@ -21,11 +21,12 @@ public class BuyerAccountPresenter implements BuyerAccount.Presenter {
     }
 
     @Override
-    public void getBuyerData(String query) {
+    public void getBuyerData(String query, String saldoQuery) {
         view.showLoading();
         RequestParams requestParams = RequestParams.create();
 
         requestParams.putString(AccountConstants.QUERY, query);
+        requestParams.putString(AccountConstants.SALDO_QUERY, saldoQuery);
         requestParams.putObject(AccountConstants.VARIABLES, new HashMap<>());
 
         getBuyerAccountUseCase.execute(requestParams, new GetBuyerAccountSubscriber(view));

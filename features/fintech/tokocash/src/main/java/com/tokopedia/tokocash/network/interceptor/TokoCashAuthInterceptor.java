@@ -3,7 +3,6 @@ package com.tokopedia.tokocash.network.interceptor;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -21,8 +20,8 @@ public class TokoCashAuthInterceptor extends TkpdAuthInterceptor {
 
     @Inject
     public TokoCashAuthInterceptor(@ApplicationContext Context context,
-                                   AbstractionRouter abstractionRouter, UserSession userSession) {
-        super(context, abstractionRouter, userSession);
+                                   AbstractionRouter abstractionRouter) {
+        super(context, abstractionRouter);
     }
 
     @Override

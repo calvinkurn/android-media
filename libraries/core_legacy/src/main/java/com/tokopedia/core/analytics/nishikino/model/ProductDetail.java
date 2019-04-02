@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Created by ricoharisin on 11/20/15.
  */
-public class ProductDetail extends BaseGTMModel {
+public class ProductDetail {
 
     private Map<String, Object> detail = new HashMap<>();
     private Map<String, Object> actionField = new HashMap<>();

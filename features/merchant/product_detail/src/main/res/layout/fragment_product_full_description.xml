@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_16">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:cardPreventCornerOverlap="false"
+            app:cardUseCompatPadding="true"
+            app:cardElevation="@dimen/dp_4"
+            app:cardCornerRadius="@dimen/dp_4">
+            
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_8">
+                
+                <com.tokopedia.design.image.SquareImageView
+                    android:id="@+id/product_image"
+                    android:layout_width="@dimen/dp_96"
+                    android:layout_height="@dimen/dp_96"
+                    tools:src="@drawable/ic_product_cart_counter_dark"/>
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/product_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:layout_toRightOf="@+id/product_image"
+                    android:layout_toEndOf="@+id/product_image"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginStart="@dimen/dp_8"
+                    tools:text="Simple Minimalistic Ergonomic White Chair"
+                    app:fontSize="small"
+                    app:textViewTheme="lightPrimary"
+                    app:weight="medium"/>
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/product_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="@color/orange_red"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_below="@+id/product_name"
+                    android:layout_alignLeft="@+id/product_name"
+                    android:layout_alignStart="@+id/product_name"
+                    tools:text="Rp100.000"
+                    app:fontSize="micro"
+                    app:weight="medium"/>
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/product_shop"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignLeft="@+id/product_name"
+                    android:layout_alignStart="@+id/product_name"
+                    android:drawablePadding="@dimen/dp_4"
+                    tools:text="The Dept Store"
+                    app:fontSize="micro"
+                    app:textViewTheme="lightPrimary"
+                    app:weight="medium"/>
+                
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/youtube_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_80"
+            android:layout_marginTop="@dimen/dp_16"
+            android:transitionName="@string/transition_video_horizontal_scroll"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/txt_product_descr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_product_desc"
+            android:layout_marginTop="@dimen/dp_16"
+            android:autoLink="all"
+            android:longClickable="false"
+            android:transitionName="@string/transition_description"
+            android:textIsSelectable="false"
+            android:lineSpacingExtra="@dimen/sp_6"
+            tools:text="Pilihan tepat untuk dekorasi rumah minimalis modern Anda, atau untuk mengimbangi interior unik pilihan Anda. Tersedia dalam 4 pilihan warna, hitam, putih, biru, dan jingga. .."
+            app:fontSize="small"
+            app:textViewTheme="lightPrimary"/>
+
+    </LinearLayout>
+
+</ScrollView>

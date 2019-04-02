@@ -11,7 +11,7 @@ import com.tokopedia.seller.R;
 /**
  * Created by nathan on 7/11/17.
  */
-
+@Deprecated
 public abstract class BaseTabActivity extends BaseToolbarActivity {
 
     protected ViewPager viewPager;

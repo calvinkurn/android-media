@@ -21,10 +21,12 @@ import com.tokopedia.usecase.UseCase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by zulfikarrahman on 12/7/17.
@@ -45,7 +47,20 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
 
     @Override
     public Observable<DataResponseVerify> createObservable(RequestParams requestParams) {
-        return flightRepository.verifyBooking((VerifyRequest) requestParams.getObject(VERIFY_REQUEST));
+        final int[] numOfAttempts = {0};
+        final int[] poolDelay = {0};
+
+        return flightRepository.verifyBooking((VerifyRequest) requestParams.getObject(VERIFY_REQUEST))
+                .doOnNext(dataResponseVerify -> {
+                    poolDelay[0] = dataResponseVerify.getMeta().getRefreshTime();
+                    numOfAttempts[0]++;
+                }).repeatWhen(observable -> {
+                    observable.delay(poolDelay[0], TimeUnit.SECONDS);
+                    return observable.flatMap((Func1<Void, Observable<?>>) aVoid ->
+                            Observable.timer(poolDelay[0], TimeUnit.SECONDS));
+                }).takeUntil(dataResponseVerify -> (!dataResponseVerify.getMeta().isNeedRefresh()) ||
+                        (numOfAttempts[0] >= dataResponseVerify.getMeta().getMaxRetry())).last()
+                .map(dataResponseVerify -> dataResponseVerify);
     }
 
     public RequestParams createRequestParams(String promoCode, int price, String cartId,

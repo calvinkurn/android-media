@@ -25,5 +25,6 @@ public class TkpdCache {
         public static final String MAINAPP_WALLET_APPLINK_REGISTER = "mainapp_wallet_applink_register";
         public static final String MAINAPP_WALLET_LABEL_NAME = "mainapp_wallet_label_name";
         public static final String MAINAPP_WALLET_LABEL_REGISTER = "mainapp_wallet_label_register";
+        public static final String APP_GLOBAL_NAV_NEW_DESIGN = "app_global_nav_new_design";
     }
 }

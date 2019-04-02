@@ -33,7 +33,7 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_toEndOf="@+id/tv_variant_value"
         android:layout_toRightOf="@+id/tv_variant_value"
         android:fontFamily="sans-serif"
@@ -41,7 +41,9 @@
         android:textColor="@color/text_green"
         android:textSize="@dimen/sp_13"
         android:textStyle="normal"
-        tools:text="Panduan Ukuran" />
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:text="@string/sizechart_guideline" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_variant_options"

@@ -9,13 +9,13 @@ import java.util.List;
 public class SettingEditResponse {
     @SerializedName("data")
     @Expose
-    private Data data;
+    private Data data = new Data();
     @SerializedName("server_process_time")
     @Expose
-    private String serverProcessTime;
+    private String serverProcessTime = "";
     @SerializedName("config")
     @Expose
-    private Object config;
+    private Object config = new Object();
     @SerializedName("message_status")
     @Expose
     private List<String> messageStatus = new ArrayList<String>();
@@ -30,7 +30,7 @@ public class SettingEditResponse {
 
         @SerializedName("is_success")
         @Expose
-        private Integer isSuccess;
+        private Integer isSuccess = 0;
 
         /**
          *

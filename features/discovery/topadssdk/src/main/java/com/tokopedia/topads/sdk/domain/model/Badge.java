@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONException;
@@ -19,14 +20,25 @@ public class Badge implements Parcelable {
     private static final String KEY_SHOW = "show";
 
     @SerializedName(KEY_TITLE)
+    @Expose
     private String title = "";
+
     @SerializedName(KEY_IMAGE_URL)
+    @Expose
     private String imageUrl = "";
+
     @SerializedName(KEY_SHOW)
+    @Expose
     private Boolean show = false;
 
     public Badge(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public Badge(String title, String imageUrl, Boolean show) {
+        this.title = title;
+        this.imageUrl = imageUrl;
+        this.show = show;
     }
 
     public Badge(JSONObject object) throws JSONException {

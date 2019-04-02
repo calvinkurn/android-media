@@ -1,13 +1,10 @@
 package com.tokopedia.topads.dashboard.di
 
 import android.content.Context
-
-import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi
-import com.tokopedia.seller.shop.common.di.ShopQualifier
 import com.tokopedia.shop.common.constant.ShopCommonUrl
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource
@@ -20,24 +17,23 @@ import com.tokopedia.topads.common.data.api.TopAdsManagementApi
 import com.tokopedia.topads.common.data.repository.TopAdsShopDepositRepositoryImpl
 import com.tokopedia.topads.common.data.source.ShopDepositDataSource
 import com.tokopedia.topads.common.data.source.cloud.ShopDepositDataSourceCloud
-import com.tokopedia.topads.common.domain.repository.TopAdsShopDepositRepository
 import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSource
 import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSourceImpl
+import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor
+import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractorImpl
+import com.tokopedia.topads.common.domain.repository.TopAdsShopDepositRepository
 import com.tokopedia.topads.dashboard.data.repository.TopAdsDashboardRepositoryImpl
 import com.tokopedia.topads.dashboard.data.source.TopAdsDashboardDataSource
 import com.tokopedia.topads.dashboard.data.source.cloud.TopAdsDashboardDataSourceCloud
 import com.tokopedia.topads.dashboard.data.source.cloud.serviceapi.TopAdsDashboardApi
 import com.tokopedia.topads.dashboard.domain.interactor.DeleteTopAdsStatisticsUseCase
 import com.tokopedia.topads.dashboard.domain.interactor.DeleteTopAdsTotalAdUseCase
-import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor
-import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractorImpl
 import com.tokopedia.topads.dashboard.domain.repository.TopAdsDashboardRepository
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal
 import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository
 import com.tokopedia.user.session.UserSessionInterface
-
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.experimental.CoroutineDispatcher
@@ -93,7 +89,7 @@ class TopAdsDashboardModule {
     @Provides
     @TopAdsDashboardScope
     fun provideShopCommonCloudDataSource(shopCommonApi: ShopCommonApi, shopCommonWS4Api: ShopCommonWSApi,
-                                         userSession: UserSession): ShopCommonCloudDataSource {
+                                         userSession: UserSessionInterface): ShopCommonCloudDataSource {
         return ShopCommonCloudDataSource(shopCommonApi, shopCommonWS4Api, userSession)
     }
 

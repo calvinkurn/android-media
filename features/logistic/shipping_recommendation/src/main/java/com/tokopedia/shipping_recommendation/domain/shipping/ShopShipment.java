@@ -76,31 +76,30 @@ public class ShopShipment implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.shipId);
-        dest.writeString(this.shipName);
-        dest.writeString(this.shipCode);
-        dest.writeString(this.shipLogo);
-        dest.writeList(this.shipProds);
-        dest.writeByte(this.isDropshipEnabled ? (byte) 1 : (byte) 0);
+        dest.writeInt(shipId);
+        dest.writeString(shipName);
+        dest.writeString(shipCode);
+        dest.writeString(shipLogo);
+        dest.writeTypedList(shipProds);
+        dest.writeByte((byte) (isDropshipEnabled ? 1 : 0));
     }
 
     public ShopShipment() {
     }
 
     protected ShopShipment(Parcel in) {
-        this.shipId = in.readInt();
-        this.shipName = in.readString();
-        this.shipCode = in.readString();
-        this.shipLogo = in.readString();
-        this.shipProds = new ArrayList<ShipProd>();
-        in.readList(this.shipProds, ShipProd.class.getClassLoader());
-        this.isDropshipEnabled = in.readByte() != 0;
+        shipId = in.readInt();
+        shipName = in.readString();
+        shipCode = in.readString();
+        shipLogo = in.readString();
+        shipProds = in.createTypedArrayList(ShipProd.CREATOR);
+        isDropshipEnabled = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<ShopShipment> CREATOR = new Parcelable.Creator<ShopShipment>() {
+    public static final Creator<ShopShipment> CREATOR = new Creator<ShopShipment>() {
         @Override
-        public ShopShipment createFromParcel(Parcel source) {
-            return new ShopShipment(source);
+        public ShopShipment createFromParcel(Parcel in) {
+            return new ShopShipment(in);
         }
 
         @Override

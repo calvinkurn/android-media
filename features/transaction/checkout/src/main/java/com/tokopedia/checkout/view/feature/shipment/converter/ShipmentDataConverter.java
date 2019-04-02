@@ -80,24 +80,34 @@ public class ShipmentDataConverter {
     public List<ShipmentCartItemModel> getShipmentItems(CartShipmentAddressFormData cartShipmentAddressFormData) {
         List<ShipmentCartItemModel> shipmentCartItemModels = new ArrayList<>();
 
+        int addressIndex = 0;
         ShipmentCartItemModel shipmentCartItemModel = null;
         if (cartShipmentAddressFormData.isMultiple()) {
             for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
                 UserAddress userAddress = groupAddress.getUserAddress();
                 for (GroupShop groupShop : groupAddress.getGroupShop()) {
                     shipmentCartItemModel = new ShipmentCartItemModel();
-                    shipmentCartItemModel.setUseCourierRecommendation(cartShipmentAddressFormData.isUseCourierRecommendation());
-                    getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
+                    shipmentCartItemModel.setUseCourierRecommendation(cartShipmentAddressFormData
+                            .isUseCourierRecommendation());
+                    shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
+                    shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
+                            .get(addressIndex).getUserAddress().getAddressId());
+                    getShipmentItem(shipmentCartItemModel, userAddress, groupShop,
+                            cartShipmentAddressFormData.getKeroToken(),
                             String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), true);
                     setCartItemModelError(shipmentCartItemModel);
                     shipmentCartItemModels.add(shipmentCartItemModel);
                 }
+                addressIndex++;
             }
         } else {
             UserAddress userAddress = cartShipmentAddressFormData.getGroupAddress().get(0).getUserAddress();
             for (GroupShop groupShop : cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop()) {
                 shipmentCartItemModel = new ShipmentCartItemModel();
                 shipmentCartItemModel.setUseCourierRecommendation(cartShipmentAddressFormData.isUseCourierRecommendation());
+                shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
+                shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
+                        .get(0).getUserAddress().getAddressId());
                 getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
                         String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), false);
                 setCartItemModelError(shipmentCartItemModel);

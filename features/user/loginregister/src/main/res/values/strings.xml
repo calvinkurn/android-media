@@ -305,7 +305,7 @@
         color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=0\'&gt;Syarat dan Ketentuan&lt;/a&gt;&lt;/font&gt; serta &lt;font color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=1\'&gt;Kebijakan Privasi&lt;/a&gt;&lt;/font&gt;</string>
     <string name="or_login_with_space">atau masuk dengan</string>
 
-    <string name="must_insert_email_or_phone">Email atau nomor ponsel harus diisi</string>
+    <string name="must_insert_email_or_phone">Nomor Ponsel atau Email harus diisi</string>
     <string name="change_2">Ubah</string>
     <string name="loginregister_failed_login_google">Akun gagal terautentikasi (%s). Mohon coba kembali.</string>
 

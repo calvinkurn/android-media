@@ -38,7 +38,5 @@ public class GetMerchantSaldoDetailsSubscriber extends Subscriber<GraphqlRespons
         } else {
             viewListener.hideSaldoPrioritasFragment();
         }
-        viewListener.finishLoading();
-
     }
 }

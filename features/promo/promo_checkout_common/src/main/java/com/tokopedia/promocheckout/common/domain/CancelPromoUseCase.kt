@@ -19,7 +19,7 @@ class CancelPromoUseCase(authInterceptor : List<Interceptor>, context: Context) 
     override fun buildRequest(requestParams: RequestParams): MutableList<RestRequest> {
         val tempRequest = arrayListOf<RestRequest>()
 
-        val params = HashMap<String, Any>()
+        val params = HashMap<String, String>()
         params.put(AuthUtil.HEADER_DEVICE, ANDROID)
         val restRequest1 = RestRequest.Builder(TkpdBaseURL.BASE_API_DOMAIN + PATH_CANCEL_AUTO_APPLY_COUPON, ResponseCancelPromo::class.java)
                 .setHeaders(params)

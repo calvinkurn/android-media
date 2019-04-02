@@ -130,8 +130,10 @@ open class GetExistingChatMapper @Inject constructor() {
     }
 
     private fun convertToFallBackModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        val pojoAttribute = GsonBuilder().create().fromJson<FallbackAttachmentViewModel>(chatItemPojoByDateByTime.attachment?.attributes,
-                FallbackAttachmentViewModel::class.java)
+        var fallbackMessage = ""
+        chatItemPojoByDateByTime.attachment?.fallback?.let{
+            fallbackMessage = it.message
+        }
         return FallbackAttachmentViewModel(
                 chatItemPojoByDateByTime.msgId.toString(),
                 chatItemPojoByDateByTime.senderId.toString(),
@@ -140,7 +142,7 @@ open class GetExistingChatMapper @Inject constructor() {
                 chatItemPojoByDateByTime.attachment?.id.toString(),
                 chatItemPojoByDateByTime.attachment?.type.toString(),
                 chatItemPojoByDateByTime.replyTime,
-                pojoAttribute.message
+                fallbackMessage
         )
     }
 

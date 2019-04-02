@@ -15,8 +15,8 @@ buildscript {
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
-        classpath 'com.google.gms:google-services:4.2.0'
+        classpath rootProject.ext.gradlePlugin.googleServices
+        classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
@@ -46,18 +46,21 @@ dependencies {
     }
 
     implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.userSession)
     implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.base
-    implementation rootProject.ext.playServicesDependencies.appIndexing
-    implementation rootProject.ext.playServicesDependencies.analytics
-    implementation rootProject.ext.playServicesDependencies.firebase
+    implementation rootProject.ext.firebase.appIndexing
+    implementation rootProject.ext.firebase.core
+    implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.auth
     implementation rootProject.ext.playServicesDependencies.places
-    implementation rootProject.ext.playServicesDependencies.perfMon
+    implementation rootProject.ext.playServicesDependencies.tagManagerImpl
+    implementation rootProject.ext.firebase.performance
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.analyticsDependencies.installRef
+    implementation rootProject.ext.analyticsDependencies.moengageFirebase
     implementation (rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-gcm'
     }
@@ -73,7 +76,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.iris)
-    implementation rootProject.ext.playServicesDependencies.remoteConfig
+    implementation rootProject.ext.firebase.config
 
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
@@ -86,7 +89,14 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-
+    implementation "com.moengage:moengagesdk:3.3.00"
+    implementation "com.moengage:pushbase:3.2.00"
+    implementation "com.moengage:moe-push-firebase:3.2.00"
+    implementation "com.moengage:inapp:3.2.02"
+    implementation "com.moengage:moe-location-lib:5.2.02"
+    implementation "com.moengage:addon-messaging:3.2.01"
+    implementation "com.moengage:addon-realtime-trigger:2.2.00"
+    implementation "com.moengage:integration-verifier:1.0.00"
 }
 
 apply plugin: 'com.google.gms.google-services'

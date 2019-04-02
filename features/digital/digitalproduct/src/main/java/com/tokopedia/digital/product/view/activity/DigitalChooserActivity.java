@@ -1,19 +1,18 @@
 package com.tokopedia.digital.product.view.activity;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
-import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.fragment.DigitalChooserOperatorFragment;
 import com.tokopedia.digital.product.view.fragment.DigitalChooserProductFragment;
@@ -21,7 +20,7 @@ import com.tokopedia.digital.product.view.fragment.DigitalChooserProductFragment
 /**
  * @author anggaprasetiyo on 5/8/17.
  */
-public class DigitalChooserActivity extends BasePresenterActivity implements
+public class DigitalChooserActivity extends BaseSimpleActivity implements
         DigitalChooserProductFragment.ActionListener, DigitalChooserOperatorFragment.ActionListener {
 
     private static final String EXTRA_PRODUCT_STYLE_VIEW = "EXTRA_PRODUCT_STYLE_VIEW";
@@ -81,13 +80,14 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
         }
     }
 
-    @Override
-    protected void setupURIPass(Uri data) {
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        setupBundlePass(getIntent().getExtras());
+        super.onCreate(savedInstanceState);
     }
 
-    @Override
-    protected void setupBundlePass(Bundle extras) {
+    private void setupBundlePass(Bundle extras) {
         Log.d("DigitalChooserActivity", String.valueOf(sizeAsParcel(extras)));
 
         this.categoryId = extras.getString(EXTRA_CATEGORY_ID);
@@ -100,61 +100,17 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
     }
 
     @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_chooser_digital_module;
-    }
-
-    @Override
-    protected void initView() {
-        Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
-        if (fragment == null || !((fragment instanceof DigitalChooserOperatorFragment)
-                || (fragment instanceof DigitalChooserProductFragment))) {
-            if (categoryId != null & operatorId != null) {
-                getFragmentManager().beginTransaction().replace(R.id.container,
-                        DigitalChooserProductFragment.newInstance(
-                                categoryId, operatorId, productStyleView
-                        )).commit();
-            } else if (categoryId != null) {
-                getFragmentManager().beginTransaction().replace(R.id.container,
-                        DigitalChooserOperatorFragment.newInstance(
-                                categoryId, operatorStyleView, operatorLabel, categoryName
-                        )).commit();
-            }
-        }
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
     public void onOperatorItemSelected(Operator operator) {
         setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_OPERATOR_DATA, operator));
         finish();
-        overridePendingTransition(R.anim.digital_anim_stay,R.anim.digital_slide_out_up );
+        overridePendingTransition(R.anim.digital_anim_stay, R.anim.digital_slide_out_up);
     }
 
     @Override
     public void onProductItemSelected(Product product) {
         setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_PRODUCT_DATA, product));
         finish();
-        overridePendingTransition(R.anim.digital_anim_stay,R.anim.digital_slide_out_up );
+        overridePendingTransition(R.anim.digital_anim_stay, R.anim.digital_slide_out_up);
     }
 
     @Override
@@ -179,24 +135,35 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
     }
 
     private void invalidateTitleToolBar() {
-        if (!TextUtils.isEmpty(titleToolbar)) toolbar.setTitle(titleToolbar);
+        if (!TextUtils.isEmpty(titleToolbar)) updateTitle(titleToolbar);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.digital_anim_stay,R.anim.digital_slide_out_up );
+        overridePendingTransition(R.anim.digital_anim_stay, R.anim.digital_slide_out_up);
     }
 
-    private void invalidateHomeUpToolbarIndicator(){
+    private void invalidateHomeUpToolbarIndicator() {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_close_default));
         }
     }
 
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
 
+    @Override
+    protected Fragment getNewFragment() {
+        if (categoryId != null & operatorId != null) {
+            return
+                    DigitalChooserProductFragment.newInstance(
+                            categoryId, operatorId, productStyleView
+                    );
+        } else if (categoryId != null) {
+            return
+                    DigitalChooserOperatorFragment.newInstance(
+                            categoryId, operatorStyleView, operatorLabel, categoryName
+                    );
+        }
+        return null;
+    }
 }

@@ -9,5 +9,4 @@ public interface MerchantSaldoDetailsActionListener {
 
     void showSaldoPrioritasFragment(GqlDetailsResponse sellerDetails);
 
-    void finishLoading();
 }

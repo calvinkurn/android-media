@@ -1,7 +1,8 @@
 package com.tokopedia.topads.dashboard.data.source;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
+
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -20,7 +21,7 @@ public class GetDepositTopadsDataSource {
         this.getDepositTopAdsDataSourceCloud = getDepositTopAdsDataSourceCloud;
     }
 
-    public Observable<DataDeposit> getDeposit(TKPDMapParam<String, String> params) {
+    public Observable<DataDeposit> getDeposit(HashMap<String, String> params) {
         return getDepositTopAdsDataSourceCloud.getDeposit(params);
     }
 }

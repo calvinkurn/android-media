@@ -34,7 +34,7 @@ public class DigitalCartDealsModule {
     @Provides
     @DigitalDealsQualifier
     @DigitalDealsScope
-    public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor) {
+    OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor) {
         OkHttpRetryPolicy retryPolicy = OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
@@ -50,7 +50,7 @@ public class DigitalCartDealsModule {
     @Provides
     @DigitalDealsQualifier
     @DigitalDealsScope
-    public Retrofit.Builder provideRetrofitBuilder(@DigitalDealsQualifier Gson gson) {
+    Retrofit.Builder provideRetrofitBuilder(@DigitalDealsQualifier Gson gson) {
         return new Retrofit.Builder()
                 .addConverterFactory(new StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
@@ -60,7 +60,7 @@ public class DigitalCartDealsModule {
     @DigitalDealsQualifier
     @Provides
     @DigitalDealsScope
-    public Gson provideGson() {
+    Gson provideGson() {
         return new GsonBuilder()
                 .setPrettyPrinting()
                 .serializeNulls()
@@ -70,14 +70,14 @@ public class DigitalCartDealsModule {
     @Provides
     @DigitalDealsQualifier
     @DigitalDealsScope
-    public Retrofit provideDigitalRestApiRetrofit(@DigitalDealsQualifier OkHttpClient okHttpClient,
-                                                  @DigitalDealsQualifier Retrofit.Builder retrofitBuilder) {
+    Retrofit provideDigitalRestApiRetrofit(@DigitalDealsQualifier OkHttpClient okHttpClient,
+                                           @DigitalDealsQualifier Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(DigitalDealsUrl.BASE_URL).client(okHttpClient).build();
     }
 
     @Provides
     @DigitalDealsScope
-    public DigitalDealsApi provideApi(@DigitalDealsQualifier Retrofit retrofit) {
+    DigitalDealsApi provideApi(@DigitalDealsQualifier Retrofit retrofit) {
         return retrofit.create(DigitalDealsApi.class);
     }
 

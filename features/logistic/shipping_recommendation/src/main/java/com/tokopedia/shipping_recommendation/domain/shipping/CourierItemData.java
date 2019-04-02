@@ -30,6 +30,9 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private String shipmentItemDataEtd;
     private String shipmentItemDataType;
     private String promoCode;
+    private String checksum;
+    private String ut;
+    private String blackboxInfo;
 
     public CourierItemData() {
     }
@@ -210,6 +213,26 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.promoCode = promoCode;
     }
 
+    public String getChecksum() {
+        return checksum;
+    }
+
+    public void setChecksum(String checksum) {
+        this.checksum = checksum;
+    }
+
+    public String getUt() {
+        return ut;
+    }
+
+    public void setUt(String ut) {
+        this.ut = ut;
+    }
+
+    public String getBlackboxInfo() { return blackboxInfo; }
+
+    public void setBlackboxInfo(String blackboxInfo) { this.blackboxInfo = blackboxInfo; }
+
     @Override
     public int describeContents() {
         return 0;
@@ -239,6 +262,9 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         dest.writeString(this.shipmentItemDataType);
         dest.writeString(this.shipperFormattedPrice);
         dest.writeString(this.promoCode);
+        dest.writeString(this.checksum);
+        dest.writeString(this.ut);
+        dest.writeString(this.blackboxInfo);
     }
 
     protected CourierItemData(Parcel in) {
@@ -264,6 +290,9 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.shipmentItemDataType = in.readString();
         this.shipperFormattedPrice = in.readString();
         this.promoCode = in.readString();
+        this.checksum = in.readString();
+        this.ut = in.readString();
+        this.blackboxInfo = in.readString();
     }
 
     public static final Creator<CourierItemData> CREATOR = new Creator<CourierItemData>() {

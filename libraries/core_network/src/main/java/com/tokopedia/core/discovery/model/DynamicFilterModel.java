@@ -14,7 +14,7 @@ public class DynamicFilterModel implements Parcelable {
     String processTime;
     @SerializedName("data")
     @Expose
-    DataValue data;
+    DataValue data = new DataValue();
     @SerializedName("status")
     @Expose
     String status;

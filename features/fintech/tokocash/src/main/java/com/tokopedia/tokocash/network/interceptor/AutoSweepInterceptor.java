@@ -3,7 +3,6 @@ package com.tokopedia.tokocash.network.interceptor;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.tokocash.WalletUserSession;
@@ -22,8 +21,8 @@ public class AutoSweepInterceptor extends TkpdAuthInterceptor {
 
     @Inject
     public AutoSweepInterceptor(@ApplicationContext Context context, AbstractionRouter abstractionRouter,
-                                UserSession userSession, WalletUserSession walletUserSession) {
-        super(context, abstractionRouter, userSession);
+                                WalletUserSession walletUserSession) {
+        super(context, abstractionRouter);
         this.walletUserSession = walletUserSession;
     }
 

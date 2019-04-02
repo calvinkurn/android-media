@@ -9,16 +9,16 @@ import com.google.gson.annotations.SerializedName;
 public class TokopointTierModel {
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private Integer id = 0;
     @SerializedName("name")
     @Expose
-    private String name;
+    private String name = "";
     @SerializedName("nameDesc")
     @Expose
-    private String nameDesc;
+    private String nameDesc = "";
     @SerializedName("imageURL")
     @Expose
-    private String imageUrl;
+    private String imageUrl = "";
 
     public Integer getId() {
         return id;

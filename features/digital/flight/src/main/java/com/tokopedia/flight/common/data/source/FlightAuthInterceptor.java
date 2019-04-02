@@ -3,7 +3,6 @@ package com.tokopedia.flight.common.data.source;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
@@ -30,9 +29,8 @@ public class FlightAuthInterceptor extends TkpdAuthInterceptor {
     private static final String KEY_ZIP_ENCODING = "gzip";
 
     @Inject
-    public FlightAuthInterceptor(@ApplicationContext Context context, AbstractionRouter abstractionRouter,
-                                 UserSession userSession) {
-        super(context, abstractionRouter, userSession);
+    public FlightAuthInterceptor(@ApplicationContext Context context, AbstractionRouter abstractionRouter) {
+        super(context, abstractionRouter);
         this.maxRetryAttempt = 0;
     }
 

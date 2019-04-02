@@ -25,6 +25,7 @@ project.ext {
 }
 
 dependencies {
+    implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.reactNative)

@@ -1,10 +1,13 @@
 package com.tokopedia.transaction.purchase.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.view.inputmethod.InputMethodManager;
 
@@ -21,12 +24,17 @@ import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
+import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
+import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.purchase.adapter.PurchaseTabAdapter;
 import com.tokopedia.transaction.purchase.dialog.CancelTransactionDialog;
 import com.tokopedia.transaction.purchase.fragment.TxListFragment;
 import com.tokopedia.transaction.purchase.fragment.TxSummaryFragment;
+import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +65,6 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
 
     private int drawerPosition;
     private String stateTxFilterID;
-
     private PurchaseTabAdapter adapter;
 
     public static Intent newInstance(Context context) {
@@ -75,46 +82,66 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
     @DeepLink({ApplinkConst.PURCHASE_CONFIRMED, ApplinkConst.PURCHASE_ORDER})
     public static Intent getConfirmedIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, PurchaseActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_CONFIRMED)
-                .putExtras(extras);
+        if (!openNewBom(context)) {
+            return new Intent(context, PurchaseActivity.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_CONFIRMED)
+                    .putExtras(extras);
+        } else {
+            return getMarketPlaceIntent(context, extras);
+        }
     }
 
     @DeepLink(ApplinkConst.PURCHASE_PROCESSED)
     public static Intent getProcessedIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, PurchaseActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_PROCESSED)
-                .putExtras(extras);
+        if (!openNewBom(context)) {
+            return new Intent(context, PurchaseActivity.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_PROCESSED)
+                    .putExtras(extras);
+        } else {
+            return getMarketPlaceIntent(context, extras);
+        }
     }
 
     @DeepLink({ApplinkConst.PURCHASE_SHIPPED})
     public static Intent getShippedIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, PurchaseActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_SHIPPED)
-                .putExtras(extras);
+        if (!openNewBom(context)) {
+            return new Intent(context, PurchaseActivity.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_SHIPPED)
+                    .putExtras(extras);
+        } else {
+            return getMarketPlaceIntent(context, extras);
+        }
     }
 
     @DeepLink({ApplinkConst.PURCHASE_DELIVERED, ApplinkConst.PURCHASE_SHIPPING_CONFIRM})
     public static Intent getDeliveredIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, PurchaseActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_DELIVERED)
-                .putExtras(extras);
+        if (!openNewBom(context)) {
+            return new Intent(context, PurchaseActivity.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_DELIVERED)
+                    .putExtras(extras);
+        } else {
+            return getMarketPlaceIntent(context, extras);
+        }
     }
 
     @DeepLink(ApplinkConst.PURCHASE_HISTORY)
-    public static Intent getHistoryIntent(Context context, Bundle extras){
+    public static Intent getHistoryIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, PurchaseActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_ALL_ORDER)
-                .putExtras(extras);
+        if (!openNewBom(context)) {
+            return new Intent(context, PurchaseActivity.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_ALL_ORDER)
+                    .putExtras(extras);
+        } else {
+            return getMarketPlaceIntent(context, extras);
+        }
     }
 
     @Override
@@ -272,6 +299,18 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
             ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                     .hideSoftInputFromWindow(viewPager.getWindowToken(), 0);
         }
+    }
+
+    private static boolean openNewBom(Context context) {
+        return (((ITransactionOrderDetailRouter) context.getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true));
+    }
+
+    private static Intent getMarketPlaceIntent(Context context, Bundle extras) {
+        Uri uri = Uri.parse(extras.getString(DeepLink.URI));
+        extras.putString(OrderCategory.KEY_LABEL, OrderCategory.MARKETPLACE);
+        extras.putString(OrderListContants.ORDER_FILTER_ID, uri.getQueryParameter(OrderListContants.ORDER_FILTER_ID));
+        Intent intent = new Intent(context, OrderListActivity.class);
+        return intent.putExtras(extras);
     }
 
 }

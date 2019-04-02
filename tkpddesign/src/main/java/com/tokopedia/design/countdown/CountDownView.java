@@ -92,7 +92,7 @@ public class CountDownView extends FrameLayout {
 
     public void setup(final long serverTimeOffset, final Date expiredTime,
                       final CountDownListener listener) {
-        Date serverTime = new Date();
+        Date serverTime = new Date(System.currentTimeMillis());
         serverTime.setTime(
                 serverTime.getTime() + serverTimeOffset
         );

@@ -146,6 +146,9 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
         @Override
         public void onNext(IntermediaryCategoryDomainModel domainModel) {
             if (isViewAttached()) {
+                if (domainModel.getBannerModelList().size() > 0) {
+                    getView().renderBanner(domainModel.getBannerModelList());
+                }
                 getView().renderTopAds();
                 getView().renderCuratedProducts(mappingDataLayer(domainModel));
                 if (domainModel.getHotListModelList().size() > 0) {
@@ -153,16 +156,13 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
                 }
 
                 getView().updateDepartementId(domainModel.getDepartementId());
+                getView().renderCategoryChildren(domainModel.getChildCategoryModelList());
+                getView().renderHeader(domainModel.getHeaderModel());
                 if (domainModel.getVideoModel() != null && domainModel.getVideoModel().getVideoUrl() != null) {
                     getView().renderVideo(domainModel.getVideoModel());
                 }
                 if (domainModel.getBrandModelList() != null && domainModel.getBrandModelList().size() > 0) {
                     getView().renderBrands(domainModel.getBrandModelList());
-                }
-                getView().renderCategoryChildren(domainModel.getChildCategoryModelList());
-                getView().renderHeader(domainModel.getHeaderModel());
-                if (domainModel.getBannerModelList().size() > 0) {
-                    getView().renderBanner(domainModel.getBannerModelList());
                 }
                 getView().backToTop();
                 getView().stopFirebaseTrace();
@@ -189,7 +189,7 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
                         DataLayer.mapOf(
                                 "event", "productView",
                                 "eventCategory", "intermediary page",
-                                "eventAction", "product curation impression",
+                                "eventAction", "product list impression - "+categoryHadesModel.getData().getId(),
                                 "eventLabel", "",
                                 "ecommerce", DataLayer.mapOf(
                                         "currencyCode", "IDR",

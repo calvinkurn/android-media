@@ -3,7 +3,6 @@ package com.tokopedia.network.interceptor;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.utils.AuthUtil;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
@@ -28,15 +27,6 @@ public class FingerprintInterceptor implements Interceptor {
 
     private NetworkRouter networkRouter;
     private UserSessionInterface userSession;
-
-    @Deprecated
-    /*
-    use constructor with interface instead.
-     */
-    public FingerprintInterceptor(NetworkRouter networkRouter, UserSession userSession) {
-        this.networkRouter = networkRouter;
-        this.userSession = userSession;
-    }
 
     public FingerprintInterceptor(NetworkRouter networkRouter, UserSessionInterface userSession) {
         this.networkRouter = networkRouter;

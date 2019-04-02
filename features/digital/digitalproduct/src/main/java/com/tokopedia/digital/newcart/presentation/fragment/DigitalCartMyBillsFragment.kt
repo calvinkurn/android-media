@@ -2,7 +2,6 @@ package com.tokopedia.digital.newcart.presentation.fragment
 
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.support.v7.widget.AppCompatTextView
 import android.view.LayoutInflater
@@ -14,13 +13,12 @@ import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData
-
 import com.tokopedia.digital.R
-import com.tokopedia.digital.cart.di.DigitalCartComponent
-import com.tokopedia.digital.cart.presentation.compoundview.InputPriceHolderView
+import com.tokopedia.digital.newcart.di.DigitalCartComponent
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartCheckoutHolderView
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartDetailHolderView
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartMyBillsView
+import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderView
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartMyBillsContract
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalCartMyBillsPresenter
 import javax.inject.Inject
@@ -114,10 +112,14 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
 
     override fun isSubscriptionChecked(): Boolean = mybillSubscription.isChecked()
 
-    override fun renderMyBillsView(headerTitle: String, description: String, checked: Boolean) {
+    override fun renderMyBillsView(headerTitle: String?, description: String?, checked: Boolean) {
         mybillSubscription.setChecked(checked)
-        mybillSubscription.setDescription(description)
-        mybillSubscription.setHeaderTitle(headerTitle)
+        if (description != null) {
+            mybillSubscription.setDescription(description)
+        }
+        if (headerTitle != null) {
+            mybillSubscription.setHeaderTitle(headerTitle)
+        }
         mybillSubscription.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
             run {
                 presenter.onSubcriptionCheckedListener(isChecked)
@@ -125,7 +127,7 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
         })
     }
 
-    override fun updateCheckoutButtonText(buttonTitle: String) {
+    override fun updateCheckoutButtonText(buttonTitle: String?) {
         checkoutHolderView.setTextButton(buttonTitle)
     }
 
@@ -137,8 +139,9 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
         mybillSubscription.visibility = View.GONE
     }
 
-    override fun renderMyBillsDescriptionView(title: String) {
-        mybillSubscription.setDescription(title)
+    override fun renderMyBillsDescriptionView(title: String?) {
+        if (title != null)
+            mybillSubscription.setDescription(title)
     }
 
     override fun updateToolbarTitle(headerTitle: String?) {

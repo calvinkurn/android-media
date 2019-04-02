@@ -66,12 +66,8 @@ public class FlightOrderRefundViewHolder extends FlightOrderBaseViewHolder<Fligh
             renderArrow(element.getOrderJourney());
             FlightOrderJourney orderJourney = element.getOrderJourney().get(0);
             tvDepartureCity.setText(getAirportTextForView(
-                    orderJourney.getDepartureAiportId(),
-                    orderJourney.getDepartureCityCode(),
                     orderJourney.getDepartureCity()));
             tvArrivalCity.setText(getAirportTextForView(
-                    orderJourney.getArrivalAirportId(),
-                    orderJourney.getArrivalCityCode(),
                     orderJourney.getArrivalCity()));
             renderDepartureSchedule(element.getOrderJourney());
         }

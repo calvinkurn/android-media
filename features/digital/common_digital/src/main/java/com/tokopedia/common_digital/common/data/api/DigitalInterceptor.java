@@ -9,10 +9,7 @@ import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.common_digital.common.data.api.exception.DigitalError;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
-import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.exception.ResponseErrorException;
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
 import java.util.Map;
@@ -27,8 +24,8 @@ public class DigitalInterceptor extends com.tokopedia.abstraction.common.network
     private static final String TAG = DigitalInterceptor.class.getSimpleName();
     private Context context;
 
-    public DigitalInterceptor(Context context, AbstractionRouter abstractionRouter, com.tokopedia.abstraction.common.data.model.session.UserSession userSession) {
-        super(context, abstractionRouter, userSession);
+    public DigitalInterceptor(Context context, AbstractionRouter abstractionRouter) {
+        super(context, abstractionRouter);
         this.context = context;
     }
 
@@ -46,19 +43,19 @@ public class DigitalInterceptor extends com.tokopedia.abstraction.common.network
             } else if (digitalErrorResponse.getTypeOfError()
                     == TkpdDigitalResponse.DigitalErrorResponse.ERROR_SERVER) {
                 if (digitalErrorResponse.getStatus().equalsIgnoreCase(
-                        DigitalError.STATUS_UNDER_MAINTENANCE
+                        DigitalError.Companion.getSTATUS_UNDER_MAINTENANCE()
                 )) {
                     throw new ResponseErrorException(
                             digitalErrorResponse.getServerErrorMessageFormatted()
                     );
                 } else if (digitalErrorResponse.getStatus().equalsIgnoreCase(
-                        DigitalError.STATUS_REQUEST_DENIED
+                        DigitalError.Companion.getSTATUS_REQUEST_DENIED()
                 )) {
                     throw new ResponseErrorException(
                             digitalErrorResponse.getServerErrorMessageFormatted()
                     );
                 } else if (digitalErrorResponse.getStatus().equalsIgnoreCase(
-                        DigitalError.STATUS_FORBIDDEN
+                        DigitalError.Companion.getSTATUS_FORBIDDEN()
                 ) && MethodChecker.isTimezoneNotAutomatic(context)) {
                     throw new ResponseErrorException(
                             digitalErrorResponse.getServerErrorMessageFormatted()

@@ -24,10 +24,6 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsManageGroupPromoPrese
 
 public class TopAdsAddPromoPoductDI {
     public static TopAdsManageGroupPromoPresenter createPresenter(Context context) {
-        // Gson gson = new Gson();
-
-        JobExecutor threadExecutor = new JobExecutor();
-        UIThread postExecutionThread = new UIThread();
 
         TopAdsManagementService topAdsManagementService = new TopAdsManagementService(new SessionHandler(context));
         TopAdsOldManagementApi topAdsManagementApi = topAdsManagementService.getApi();
@@ -42,8 +38,8 @@ public class TopAdsAddPromoPoductDI {
 
         TopAdsGroupAdsRepository topAdsGroupAdsRepository = new TopAdsGroupAdsRepositoryImpl(topAdsGroupAdFactory);
 
-        TopAdsSearchGroupAdsNameUseCase topAdsSearchGroupAdsNameUseCase = new TopAdsSearchGroupAdsNameUseCase(threadExecutor, postExecutionThread, topAdsGroupAdsRepository);
-        TopAdsCheckExistGroupUseCase topAdsCheckExistGroupUseCase = new TopAdsCheckExistGroupUseCase(threadExecutor, postExecutionThread, topAdsGroupAdsRepository);
+        TopAdsSearchGroupAdsNameUseCase topAdsSearchGroupAdsNameUseCase = new TopAdsSearchGroupAdsNameUseCase(topAdsGroupAdsRepository);
+        TopAdsCheckExistGroupUseCase topAdsCheckExistGroupUseCase = new TopAdsCheckExistGroupUseCase(topAdsGroupAdsRepository);
         return new TopAdsManageGroupPromoPresenterImpl(topAdsSearchGroupAdsNameUseCase, topAdsCheckExistGroupUseCase);
     }
 }

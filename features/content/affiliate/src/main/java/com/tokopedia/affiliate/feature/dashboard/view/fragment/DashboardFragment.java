@@ -37,12 +37,16 @@ import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.EmptyDashboardVi
 import com.tokopedia.affiliate.feature.explore.view.activity.ExploreActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 
 
 /**
@@ -86,7 +90,7 @@ public class DashboardFragment
     @Override
     protected void initInjector() {
         DaggerAffiliateComponent affiliateComponent = (DaggerAffiliateComponent) DaggerAffiliateComponent.builder()
-                .baseAppComponent(((BaseMainApplication)getActivity().getApplicationContext()).getBaseAppComponent()).build();
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplicationContext()).getBaseAppComponent()).build();
 
         DaggerDashboardComponent.builder()
                 .affiliateComponent(affiliateComponent)
@@ -233,9 +237,9 @@ public class DashboardFragment
         }
     }
 
-    public int convertDpToPixel(int dp){
+    public int convertDpToPixel(int dp) {
         DisplayMetrics metrics = getActivity().getResources().getDisplayMetrics();
-        int px = dp * ((int)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        int px = dp * ((int) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
         return px;
     }
 
@@ -249,7 +253,7 @@ public class DashboardFragment
                 () -> {
                     presenter.loadDashboardItem(false);
                 }
-                );
+        );
     }
 
     @Override
@@ -274,7 +278,7 @@ public class DashboardFragment
                 error,
                 () -> {
                     presenter.loadMoreDashboardItem(cursor);
-        });
+                });
     }
 
     @Override
@@ -301,8 +305,23 @@ public class DashboardFragment
 
     @Override
     public void goToDeposit() {
-        RouteManager.route(getContext(), ApplinkConst.DEPOSIT);
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
+            if (userSession.hasShownSaldoIntroScreen()) {
+                openApplink(ApplinkConst.DEPOSIT);
+            } else {
+                userSession.setSaldoIntroPageStatus(true);
+                openApplink(ApplinkConst.SALDO_INTRO);
+            }
+        } else {
+            RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                    ApplinkConst.WebViewUrl.SALDO_DETAIL));
+        }
         affiliateAnalytics.onAfterClickSaldo();
+    }
+
+    private void openApplink(String applink) {
+        RouteManager.route(getContext(), applink);
     }
 
     @Override

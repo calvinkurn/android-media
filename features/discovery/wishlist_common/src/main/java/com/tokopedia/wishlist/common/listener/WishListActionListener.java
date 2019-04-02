@@ -8,6 +8,4 @@ public interface WishListActionListener {
     void onErrorRemoveWishlist(String errorMessage, String productId);
 
     void onSuccessRemoveWishlist(String productId);
-
-    String getString(int resId);
 }

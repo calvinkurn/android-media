@@ -11,7 +11,7 @@ public class DepositData {
 
     @SerializedName("deposit_total")
     @Expose
-    private String depositTotal;
+    private String depositTotal = "";
 
     public String getDepositTotal() {
         return depositTotal;

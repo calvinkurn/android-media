@@ -161,7 +161,7 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
 
         GraphqlRequest graphqlRequestMain = new GraphqlRequest(GraphqlHelper.loadRawString(mContext.getResources(), R.raw.tp_gql_coupon_listing),
                 TokoPointPromosEntity.class,
-                variablesMain);
+                variablesMain, false);
         graphqlUseCase.addRequest(graphqlRequestMain);
 
 

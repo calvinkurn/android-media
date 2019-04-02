@@ -8,10 +8,10 @@ public class AbTag {
 
     @SerializedName("__typename")
     @Expose
-    private String typename;
+    private String typename = "";
     @SerializedName("tag")
     @Expose
-    private String tag;
+    private String tag = "";
 
     public String getTypename() {
         return typename;

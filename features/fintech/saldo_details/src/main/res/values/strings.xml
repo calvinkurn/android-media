@@ -36,12 +36,43 @@
     <string name="sp_title_max_day">Pemilihan tanggal mutasi transaksi maksimal 31 hari</string>
     <string name="sp_end_date">Tanggal Akhir</string>
     <string name="sp_start_date">Tanggal Awal</string>
-    <string name="sp_transaction_history_heading">Pilih Tanggal Riwayat Saldo</string>
+    <string name="sp_transaction_history_heading">Riwayat Transaksi</string>
 
     <string name="sp_alert_not_verified_yet_title">Akun Anda Belum Terverifikasi</string>
     <string name="sp_alert_not_verified_yet_body">Untuk melakukan penarikan saldo Anda harus mengverifikasi akun Anda.</string>
     <string name="sp_alert_not_verified_yet_positive">Verifikasi</string>
     <string name="sp_alert_not_verified_yet_negative">Tidak</string>
-
+    <string name="saldo_intro_title_refund">Refund</string>
+    <string name="saldo_intro_description_refund">Berisi dana pengembalian  dari transaksi gagal dan hasil penjualan produk investasi. Dana digunakan kembali untuk melakukan pembelian di Tokopedia.</string>
+    <string name="saldo_intro_view_more">Lihat Selengkapnya</string>
+    <string name="saldo_intro_goto_balance_page">Cek Halaman Saldo</string>
+    <string name="title_saldo_detail">Detail Saldo</string>
+    <string name="saldo_help">Pelajari</string>
+    <string name="saldo_buyer_title">Refund</string>
+    <string name="saldo_seller_title">Penghasilan</string>
+    <string name="saldo_total_balance_buyer">Saldo Refund</string>
+    <string name="saldo_total_balance_seller">Saldo Penghasilan</string>
+    <string name="saldo_total_balance_text">Nilai Saldo</string>
+    <string name="total_saldo_text">Total Saldo Aktif</string>
+    <string name="saldo_balance_buyer_desc">Berisi dana pengembalian  dari transaksi gagal dan hasil penjualan produk investasi. Dana digunakan kembali untuk melakukan pembelian di Tokopedia.</string>
+    <string name="saldo_balance_seller_desc">Berisi dana hasil penjualan. Saldo Penghasilan tidak dapat digunakan untuk pembelanjaan. Tetapi dapat digunakan untuk berlangganan Power Merchant dan Kredit TopAds.</string>
+    <string name="deposit_summary_title_seller">Riwayat Saldo Penghasilan</string>
+    <string name="saldo_detail_intro_desc3">Pantau riwayat mutasi dana  dalam periode yang  ditentukan.</string>
+    <string name="deposit_summary_title_buyer">Riwayat Saldo Refund</string>
+    <string name="deposit_summary_title">Riwayat Saldo</string>
+    <string name="saldo_detail_intro_desc4">Cek jumlah saldo yang dapat digunakan untuk transaksi.</string>
+    <string name="sumber_dana_refund">Sumber dana Refund</string>
+    <string name="dana_refund">Dana refund</string>
+    <string name="disbursement_fund">Pencairan dana investasi</string>
+    <string name="saldo_intro_title_seller">Penghasilan</string>
+    <string name="saldo_intro_description_seller">Berisi dana hasil penjualan dan tidak dapat digunakan untuk pembayaran. Juga berfungsi sebagai sumber dana untuk pemotongan  biaya kurir, komisi affiliate, dan transaksi lainnya.</string>
+    <string name="sumber_dana_seller">Sumber dana Penghasilan</string>
+    <string name="hasil_penjualan">Hasil Penjualan</string>
+    <string name="disbursement_priority_balance">Pencairan Saldo Prioritas</string>
+    <string name="saldo_intro_help">Untuk melihat informasi selengkapnya lihat di sini.</string>
+    <string name="saldo_help_text">di sini</string>
+    <string name="saldo_min_withdrawal_error">Penarikan Saldo Minimum Rp10.000</string>
+    <string name="saldo_empty_list_heading">Belum Ada Transaksi</string>
+    <string name="saldo_empty_list_desc">Ubah tab untuk melihat transaksi yang lain</string>
 
 </resources>

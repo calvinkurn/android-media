@@ -6,13 +6,11 @@ import android.content.Intent;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 
 public interface SaldoDetailsRouter {
-    Intent getWithdrawIntent(Context context);
+    Intent getWithdrawIntent(Context context, boolean isSeller);
 
     Intent getAddPasswordIntent(Context context);
 
     boolean isSaldoNativeEnabled();
-
-    CacheManager getGlobalCacheManager();
 
     Intent getInboxTicketCallingIntent(Context context);
 
