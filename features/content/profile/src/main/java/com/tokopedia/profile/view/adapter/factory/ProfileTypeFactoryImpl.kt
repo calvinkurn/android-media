@@ -48,7 +48,8 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                              private val youtubePostListener: YoutubeViewHolder.YoutubePostListener?,
                              private val pollOptionListener: PollAdapter.PollOptionListener?,
                              private val gridItemListener: GridPostAdapter.GridItemListener?,
-                             private val videoViewListener: VideoViewHolder.VideoViewListener?)
+                             private val videoViewListener: VideoViewHolder.VideoViewListener?,
+                             private val onEmptyItemClickedListener: ProfileEmptyViewHolder.OnEmptyItemClickedListener)
     : BaseAdapterTypeFactory(), ProfileTypeFactory, KolPostTypeFactory, DynamicFeedTypeFactory {
 
     override fun type(viewModel: ProfileHeaderViewModel): Int {
@@ -104,7 +105,7 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
             ProfileHeaderViewHolder.LAYOUT ->
                 ProfileHeaderViewHolder(parent, viewListener) as AbstractViewHolder<Visitable<*>>
             ProfileEmptyViewHolder.LAYOUT ->
-                ProfileEmptyViewHolder(parent) as AbstractViewHolder<Visitable<*>>
+                ProfileEmptyViewHolder(parent, onEmptyItemClickedListener) as AbstractViewHolder<Visitable<*>>
             KolPostViewHolder.LAYOUT ->
                     KolPostViewHolder(parent,
                             kolPostViewListener,

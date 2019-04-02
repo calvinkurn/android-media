@@ -72,6 +72,7 @@ import com.tokopedia.profile.di.DaggerProfileComponent
 import com.tokopedia.profile.view.activity.FollowingListActivity
 import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
+import com.tokopedia.profile.view.adapter.viewholder.ProfileEmptyViewHolder
 import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.preference.ProfilePreference
@@ -105,7 +106,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         YoutubeViewHolder.YoutubePostListener,
         PollAdapter.PollOptionListener,
         GridPostAdapter.GridItemListener,
-        VideoViewHolder.VideoViewListener{
+        VideoViewHolder.VideoViewListener,
+        ProfileEmptyViewHolder.OnEmptyItemClickedListener{
 
     private var userId: Int = 0
     private var afterPost: Boolean = false
@@ -241,6 +243,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return ProfileTypeFactoryImpl(
+                this,
                 this,
                 this,
                 this,
@@ -838,7 +841,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     }
 
-    //end of new feed section
+    override fun onEmptyComponentClicked() {
+        goToDashboard()
+    }
+//end of new feed section
 
     private fun initVar(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
