@@ -150,12 +150,10 @@ public abstract class BaseTradeInActivity<T extends ViewModel> extends BaseSimpl
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.item_show_tnc) {
-            if (TrackApp.getInstance() != null && TrackApp.getInstance().getGTM() != null) {
-                TrackApp.getInstance().getGTM().sendGeneralEvent("clickTradeIn",
-                        "trade in start page",
-                        "click icon syarat dan ketentuan",
-                        "");
-            }
+            sendGeneralEvent("clickTradeIn",
+                    "trade in start page",
+                    "click icon syarat dan ketentuan",
+                    "");
             showTnC(R.string.tradein_tnc);
             return true;
         } else {
@@ -168,6 +166,7 @@ public abstract class BaseTradeInActivity<T extends ViewModel> extends BaseSimpl
             }
             return super.onOptionsItemSelected(item);
         }
+
     }
 
     @Override
