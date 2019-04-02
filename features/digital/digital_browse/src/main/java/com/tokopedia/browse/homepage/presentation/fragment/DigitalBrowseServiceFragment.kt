@@ -18,6 +18,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.browse.R
 import com.tokopedia.browse.common.DigitalBrowseRouter
+import com.tokopedia.browse.common.data.DigitalBrowseServiceAnalyticsModel
 import com.tokopedia.browse.common.util.DigitalBrowseAnalytics
 import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent
 import com.tokopedia.browse.homepage.presentation.adapter.DigitalBrowseServiceAdapter
@@ -29,6 +30,7 @@ import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseServiceView
 import com.tokopedia.browse.homepage.presentation.presenter.DigitalBrowseServicePresenter
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * @author by furqan on 30/08/18.
@@ -176,6 +178,11 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
         presenter.processTabData(viewModel.titleMap!!, viewModel, selectedCategoryId)
 
         renderDataList(viewModel.categoryViewModelList)
+
+        viewModel.categoryViewModelList?.run {
+            sendImpressionAnalytics(viewModel.categoryViewModelList)
+        }
+
         setRecyclerViewListener()
         stopTrace()
     }
@@ -297,11 +304,21 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
         }
     }
 
-    override fun sendImpressionAnalytics(viewModel: DigitalBrowseServiceCategoryViewModel, itemPosition: Int) {
-        val analyticsModel = presenter.getItemPositionInGroup(this.viewModel.titleMap!!, itemPosition)
-        analyticsModel.iconName = viewModel.name!!
+    override fun sendImpressionAnalytics(viewModels: List<DigitalBrowseServiceCategoryViewModel>) {
+        var dataObjects : ArrayList<DigitalBrowseServiceAnalyticsModel> =
+                arrayListOf<DigitalBrowseServiceAnalyticsModel>()
+        var position = 1
+        for (item: DigitalBrowseServiceCategoryViewModel in viewModels) {
+            val analyticsModel = presenter.getItemPositionInGroup(
+                    this.viewModel.titleMap!!,
+                    position)
+            analyticsModel.iconName = item.name?:""
+            dataObjects.add(analyticsModel)
+            position++
+        }
 
-        digitalBrowseAnalytics.eventImpressionIconLayanan(analyticsModel)
+
+        digitalBrowseAnalytics.eventImpressionIconLayanan(dataObjects)
     }
 
     override fun onDestroy() {

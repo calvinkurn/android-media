@@ -145,4 +145,30 @@ constructor(private val analyticTracker: AnalyticTracker) {
                 "position", Integer.toString(promotionItem.position))
     }
 
+    fun eventImpressionIconLayanan(promotionDatas: List<DigitalBrowseServiceAnalyticsModel>) {
+        try {
+            val promotions = ArrayList<Any>()
+
+            for (promotionItem in promotionDatas) {
+                val promotion = promotionItem.getPromoFieldObject()
+                promotions.add(promotion)
+            }
+
+            analyticTracker.sendEnhancedEcommerce(
+                    DataLayer.mapOf(
+                            "event", "promoView",
+                            "eventCategory", GENERIC_CATEGORY,
+                            "eventAction", "",
+                            "eventLabel", "",
+                            "ecommerce", DataLayer.mapOf(
+                            "promoView", DataLayer.mapOf(
+                            "promotions", DataLayer.listOf(*promotions.toTypedArray()))
+                    )
+                    )
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
 }
