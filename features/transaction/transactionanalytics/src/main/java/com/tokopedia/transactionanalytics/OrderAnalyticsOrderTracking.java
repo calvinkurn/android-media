@@ -1,6 +1,5 @@
 package com.tokopedia.transactionanalytics;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
 import javax.inject.Inject;
 
@@ -13,8 +12,8 @@ import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.Ev
  */
 public class OrderAnalyticsOrderTracking extends TransactionAnalytics {
     @Inject
-    public OrderAnalyticsOrderTracking(AnalyticTracker analyticTracker) {
-        super(analyticTracker);
+    public OrderAnalyticsOrderTracking() {
+
     }
 
     public void eventViewOrderTrackingImpressionButtonLiveTracking() {

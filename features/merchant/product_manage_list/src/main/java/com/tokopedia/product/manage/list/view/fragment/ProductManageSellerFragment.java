@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService;
 import com.tokopedia.product.manage.list.R;
@@ -21,6 +22,7 @@ import com.tokopedia.product.manage.list.di.ProductDraftListCountModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListCountView;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
+import com.tokopedia.track.TrackApp;
 
 import javax.inject.Inject;
 
@@ -129,12 +131,20 @@ public class ProductManageSellerFragment extends ProductManageFragment implement
             tvDraftProductInfo.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UnifyTracking.eventManageProductClicked(getActivity(), AppEventTracking.EventLabel.DRAFT_PRODUCT);
+                    eventManageProductClicked(AppEventTracking.EventLabel.DRAFT_PRODUCT);
                     startActivity(new Intent(getActivity(), ProductDraftListActivity.class));
                 }
             });
             tvDraftProductInfo.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void eventManageProductClicked(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
+                AppEventTracking.Category.MANAGE_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                label);
     }
 
     @Override

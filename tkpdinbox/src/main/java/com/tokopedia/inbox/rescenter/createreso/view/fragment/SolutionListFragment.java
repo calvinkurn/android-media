@@ -44,6 +44,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.Solution
 import com.tokopedia.inbox.rescenter.di.DaggerResolutionComponent;
 import com.tokopedia.inbox.rescenter.utils.CurrencyFormatter;
 import com.tokopedia.inbox.util.analytics.InboxAnalytics;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -161,13 +162,13 @@ public class SolutionListFragment extends BaseDaggerFragment
         presenter.solutionClicked(solutionViewModel);
         if (isEditAppeal) {
             if (SolutionListActivity.isEditFromChatReso(editAppealSolutionModel)) {
-                UnifyTracking.eventTracking(getActivity(),InboxAnalytics.eventResoChatClickSolutionEditPage(
+                TrackApp.getInstance().getGTM().sendGeneralEvent(InboxAnalytics.eventResoChatClickSolutionEditPage(
                         editAppealSolutionModel.resolutionId,
-                        solutionViewModel.getSolutionName()));
+                        solutionViewModel.getSolutionName()).getEvent());
             } else {
-                UnifyTracking.eventTracking(getActivity(),InboxAnalytics.eventResoChatClickSolutionAppealPage(
+                TrackApp.getInstance().getGTM().sendGeneralEvent(InboxAnalytics.eventResoChatClickSolutionAppealPage(
                         editAppealSolutionModel.resolutionId,
-                        solutionViewModel.getSolutionName()));
+                        solutionViewModel.getSolutionName()).getEvent());
             }
         }
     }
@@ -258,13 +259,13 @@ public class SolutionListFragment extends BaseDaggerFragment
         if (isEditAppeal) {
             for (SolutionViewModel model : solutionResponseViewModel.getSolutionViewModelList()) {
                 if (SolutionListActivity.isEditFromChatReso(editAppealSolutionModel)) {
-                    UnifyTracking.eventTracking(getActivity(),InboxAnalytics.eventResoChatImpressionSolutionEditPage(
+                    TrackApp.getInstance().getGTM().sendGeneralEvent(InboxAnalytics.eventResoChatImpressionSolutionEditPage(
                             editAppealSolutionModel.resolutionId, model.getSolutionName()
-                    ));
+                    ).getEvent());
                 } else {
-                    UnifyTracking.eventTracking(getActivity(),InboxAnalytics.eventResoChatImpressionSolutionAppealPage(
+                    TrackApp.getInstance().getGTM().sendGeneralEvent(InboxAnalytics.eventResoChatImpressionSolutionAppealPage(
                             editAppealSolutionModel.resolutionId, model.getSolutionName()
-                    ));
+                    ).getEvent());
                 }
             }
         }

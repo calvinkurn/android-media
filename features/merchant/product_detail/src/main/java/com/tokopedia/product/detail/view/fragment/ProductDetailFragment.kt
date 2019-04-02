@@ -28,7 +28,6 @@ import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.GlobalConfig
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -85,6 +84,7 @@ import com.tokopedia.product.detail.view.fragment.partialview.*
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
 import com.tokopedia.product.detail.view.util.FlingBehavior
+import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
 import com.tokopedia.product.detail.view.widget.CountDrawable
 import com.tokopedia.product.report.view.dialog.ReportDialogFragment
@@ -954,6 +954,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun renderAffiliate(pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
         if (isAffiliate) {
             base_btn_affiliate.visible()
+            loadingAffiliate.gone()
+            getCommission.visible()
+            commission.visible()
+            commission.text = pdpAffiliate.commissionValueDisplay
             btn_affiliate.setOnClickListener { onAffiliateClick(pdpAffiliate, false) }
             actionButtonView.gone()
         } else {
@@ -988,7 +992,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
         activity?.let {
             startActivity(RatesEstimationDetailActivity.createIntent(it,
                 shopInfo!!.shopCore.domain, productInfo!!.basic.weight,
-                    productInfo!!.basic.weightUnit, productInfoViewModel.multiOrigin.origin))
+                    productInfo!!.basic.weightUnit,
+                    if (productInfoViewModel.multiOrigin.isFulfillment)
+                        productInfoViewModel.multiOrigin.origin else null))
         }
     }
 
@@ -1124,7 +1130,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorGetProductInfo(throwable: Throwable) {
-        context?.let { ToasterError.make(coordinator, ErrorHandler.getErrorMessage(it, throwable)).show() }
+        context?.let { ToasterError.make(coordinator, ProductDetailErrorHandler.getErrorMessage(it, throwable)).show() }
     }
 
     private fun onSuccessGetProductInfo(productInfoP1: ProductInfoP1) {
@@ -1175,7 +1181,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productInfoP1.productInfo.category.detail.forEach { detail: Category.Detail ->
             if (detail.name.equals("Handphone")) {
                 isHandPhone = true
-                categoryId = detail.id.toInt()
+                val handfone = 24
+                categoryId = if (detail.id.isNotEmpty())
+                    detail.id.toInt()
+                else
+                    handfone
+
             }
         }
         tradeInParams = TradeInParams()
@@ -1183,7 +1194,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
             tradeInParams.categoryId = categoryId
             tradeInParams.deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
             val userSession = UserSession(activity)
-            tradeInParams.userId = userSession.userId.toInt()
+            tradeInParams.userId = if (userSession.userId.isNotEmpty())
+                userSession.userId.toInt()
+            else
+                0
             tradeInParams.setPrice(productInfoP1.productInfo.basic.price.toInt())
             tradeInParams.productId = productInfoP1.productInfo.basic.id
             tradeInParams.shopId = productInfoP1.productInfo.basic.shopID
@@ -1237,7 +1251,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun onFailFavoriteShop(t: Throwable) {
         context?.let {
-            ToasterError.make(view, ErrorHandler.getErrorMessage(it, t))
+            ToasterError.make(view, ProductDetailErrorHandler.getErrorMessage(it, t))
                     .setAction(R.string.retry_label) { onShopFavoriteClick() }
         }
         productShopView.toggleClickableFavoriteBtn(true)
@@ -1252,7 +1266,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun showToastError(throwable: Throwable) {
         activity?.run {
             ToasterError.make(findViewById(android.R.id.content),
-                    ErrorHandler.getErrorMessage(context, throwable),
+                ProductDetailErrorHandler.getErrorMessage(this, throwable),
                     ToasterError.LENGTH_LONG)
                     .show()
         }

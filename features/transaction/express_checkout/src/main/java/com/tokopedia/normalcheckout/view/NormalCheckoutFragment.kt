@@ -37,6 +37,7 @@ import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showErrorToaster
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.normalcheckout.adapter.NormalCheckoutAdapterTypeFactory
 import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
 import com.tokopedia.normalcheckout.constant.ATC_ONLY
@@ -346,7 +347,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         // if it has campaign, use campaign price
         var totalString = ""
         if (productInfo.campaign.activeAndHasId) {
-            val discountedPrice = if (selectedwarehouse != null && selectedwarehouse.warehouseInfo.id.isNotBlank()){
+            val discountedPrice = if (selectedwarehouse != null && selectedwarehouse.warehouseInfo.id.isNotBlank()) {
                 selectedwarehouse.price.toFloat()
             } else productInfo.campaign.discountedPrice
 
@@ -402,8 +403,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     private fun showToastError(throwable: Throwable?, onRetry: ((v: View) -> Unit)?) {
-        val snackbar = ToasterError.make(activity!!.findViewById(android.R.id.content),
-            ErrorHandler.getErrorMessage(context, throwable))
+        val message = if (throwable is MessageErrorException && throwable.message?.isNotEmpty() == true) {
+            throwable.message
+        } else {
+            ErrorHandler.getErrorMessage(context, throwable)
+        }
+        val snackbar = ToasterError.make(activity!!.findViewById(android.R.id.content), message)
         if (onRetry != null) {
             snackbar.setAction(R.string.retry_label) { onRetry.invoke(it) }
         }
@@ -524,7 +529,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     /**
      * called when on Success Add to Cart
      */
-    fun onFinishAddToCart(atcSuccessMessage: String?) {
+    fun onFinishAddToCart(atcSuccessMessage: String? = null) {
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
@@ -542,7 +547,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     }
                 putExtra(EXTRA_QUANTITY, quantity)
                 putExtra(EXTRA_NOTES, notes)
-                putExtra(RESULT_ATC_SUCCESS_MESSAGE, atcSuccessMessage)
+                atcSuccessMessage?.let {
+                    putExtra(RESULT_ATC_SUCCESS_MESSAGE, atcSuccessMessage)
+                }
             })
             finish()
         }
@@ -552,7 +559,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         tempQuantity = quantity
         isTradeIn = 0
         addToCart(true, onFinish = { message: String?, cartId: String? ->
-            onFinishAddToCart(message)
+            onFinishAddToCart()
             selectedProductInfo?.run {
                 normalCheckoutTracking.eventClickBuyInVariant(
                     originalProduct,
@@ -574,14 +581,14 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         tempQuantity = 1
         isTradeIn = 1
         addToCart(true, onFinish = { message: String?, cartId: String? ->
-            onFinishAddToCart(message)
+            onFinishAddToCart()
             selectedProductInfo?.run {
                 normalCheckoutTracking.eventClickBuyInVariant(
-                        originalProduct,
-                        selectedVariantId ?: "",
-                        this, quantity,
-                        shopId, shopType, shopName, cartId,
-                        trackerAttribution, trackerListName)
+                    originalProduct,
+                    selectedVariantId ?: "",
+                    this, quantity,
+                    shopId, shopType, shopName, cartId,
+                    trackerAttribution, trackerListName)
             }
             activity?.run {
                 val intent = router.getCheckoutIntent(this, deviceid)
@@ -765,7 +772,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun onProductChange(originalProduct: ProductInfoAndVariant, inputSelectedVariantId: String?) {
         inputSelectedVariantId?.let {
-            if (viewModel.warehouses.isNotEmpty()){
+            if (viewModel.warehouses.isNotEmpty()) {
                 viewModel.selectedwarehouse = viewModel.warehouses[it]
             }
         }
@@ -773,7 +780,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         selectedProductInfo = getSelectedProductInfo(originalProduct, selectedVariantId)
         selectedProductInfo?.let {
             val viewModels = ModelMapper.convertVariantToModels(it, viewModel.selectedwarehouse,
-                    originalProduct.productVariant, notes, quantity)
+                originalProduct.productVariant, notes, quantity)
             fragmentViewModel.viewModels = viewModels
             quantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity
                 ?: 0

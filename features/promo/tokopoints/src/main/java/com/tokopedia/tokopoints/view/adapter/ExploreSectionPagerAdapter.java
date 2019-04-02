@@ -108,17 +108,19 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             //TODO ask from Gulfikar for empty message
             containerInner.setDisplayedChild(1);
             ((ImageView) view.findViewById(R.id.img_error2)).setImageResource(R.drawable.ic_tp_empty_pages);
-//            ((TextView) view.findViewById(R.id.text_title_error2)).setText(mEmptyMessages.get(CommonConstant.CouponMapKeys.TITLE));
-//            ((TextView) view.findViewById(R.id.text_label_error2)).setText(mEmptyMessages.get(CommonConstant.CouponMapKeys.SUB_TITLE));
+            ((TextView) view.findViewById(R.id.text_title_error2)).setText("Anda Tidak Memiliki Kupon");
+            ((TextView) view.findViewById(R.id.text_label_error2)).setText("Segera Tukar Points Anda");
             view.findViewById(R.id.button_continue).setVisibility(View.VISIBLE);
             view.findViewById(R.id.button_continue).setOnClickListener(view12 -> mPresenter.getView().gotoCatalog());
             view.findViewById(R.id.text_empty_action).setOnClickListener(v ->
                     mPresenter.getView().openWebView(CommonConstant.WebLink.INFO));
+            return;
         }
 
 
         containerInner.setDisplayedChild(0);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_promos);
+
         recyclerView.addItemDecoration(new SpacesItemDecoration(view.getResources().getDimensionPixelOffset(R.dimen.dp_14),
                 view.getResources().getDimensionPixelOffset(R.dimen.dp_16),
                 view.getResources().getDimensionPixelOffset(R.dimen.dp_16)));

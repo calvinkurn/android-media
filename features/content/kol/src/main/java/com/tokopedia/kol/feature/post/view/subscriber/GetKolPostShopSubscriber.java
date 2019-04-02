@@ -8,6 +8,10 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostShopContract;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 import rx.Subscriber;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * @author by milhamj on 23/08/18.
@@ -50,13 +54,13 @@ public class GetKolPostShopSubscriber extends Subscriber<ContentListDomain> {
         for (Visitable visitable: contentListDomain.getVisitableList()) {
             if (visitable instanceof KolPostViewModel) {
                 KolPostViewModel kolPostViewModel = (KolPostViewModel) visitable;
-                view.getAbstractionRouter().getAnalyticTracker().sendEventTracking(
+                TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                         KolEventTracking.Event.EVENT_SHOP_PAGE,
                         KolEventTracking.Category.SHOP_PAGE_FEED,
                         KolEventTracking.Action.SHOP_ITEM_IMPRESSION_DYNAMIC
                                 .replace(PARAM_COUNT, kolPostViewModel.getImageList().size() == COUNT_SINGLE ? SINGLE : MULTIPLE)
                                 .replace(PARAM_TYPE, kolPostViewModel.getTagsType()),
-                        String.valueOf(kolPostViewModel.getContentId()));
+                        String.valueOf(kolPostViewModel.getContentId())));
             }
         }
     }
