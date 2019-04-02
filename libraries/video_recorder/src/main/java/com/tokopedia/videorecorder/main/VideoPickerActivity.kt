@@ -210,7 +210,10 @@ open class VideoPickerActivity: BaseSimpleActivity(),
         onVideoVisible()
         videoPreview.stopPlayback()
         setupViewPager()
+
         tabPicker.getTabAt(1)?.select()
+        vpVideoPicker.currentItem = 1
+
         if (!isVideoSourcePicker) {
             if (File(videoPath).exists()) {
                 FileUtils.deleteCacheDir()
