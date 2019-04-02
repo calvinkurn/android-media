@@ -175,7 +175,7 @@ public class ProductListFragment extends SearchSectionFragment
 
         if (productViewModel != null) {
             setForceSearch(productViewModel.isForceSearch());
-            //renderDynamicFilter(productViewModel.getDynamicFilterModel());
+            // Temporary solution
             getDynamicFilter();
         }
 
@@ -470,11 +470,6 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     protected void onFirstTimeLaunch() {
         super.onFirstTimeLaunch();
-    }
-
-    @Override
-    protected void requestDynamicFilter() {
-
     }
 
     @Override
