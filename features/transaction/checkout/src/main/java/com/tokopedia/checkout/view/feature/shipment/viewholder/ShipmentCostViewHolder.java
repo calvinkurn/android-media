@@ -91,6 +91,10 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    public void hideTotalNilaiPromo() {
+        mRlTotalPromo.setVisibility(View.GONE);
+    }
+
     private String getTotalItemLabel(Context context, int totalItem) {
         return String.format(context.getString(R.string.label_item_count_summary_with_format), totalItem);
     }

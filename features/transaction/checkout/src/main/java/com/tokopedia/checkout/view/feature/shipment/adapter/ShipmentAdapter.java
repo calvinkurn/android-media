@@ -386,6 +386,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         int addressIndex = 0;
         shipmentDataList.set(addressIndex, newlySelectedAddress);
         this.recipientAddressModel = newlySelectedAddress;
+        shipmentCostModel.setTotalPromoStackAmount(0);
         resetCourier();
         notifyDataSetChanged();
         shipmentAdapterActionListener.resetTotalPrice();
