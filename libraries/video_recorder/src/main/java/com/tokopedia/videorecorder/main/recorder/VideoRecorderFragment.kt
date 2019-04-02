@@ -55,7 +55,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        cameraPrepared()
         //set max progress value
         progress.max = DURATION_MAX
 
@@ -83,7 +83,6 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
 
     override fun onResume() {
         super.onResume()
-        cameraPrepared()
 
         exceptionHandler {
             cameraView.open()

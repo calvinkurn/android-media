@@ -23,17 +23,17 @@ class VideoPlayerView @JvmOverloads constructor(
         mVideoWidth = width
     }
 
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        var width = View.getDefaultSize(mVideoWidth, widthMeasureSpec)
-        var height = View.getDefaultSize(mVideoHeight, heightMeasureSpec)
-        if (mVideoWidth > 0 && mVideoHeight > 0) {
-            if (mVideoWidth * height > width * mVideoHeight) {
-                height = width * mVideoHeight / mVideoWidth
-            } else if (mVideoWidth * height < width * mVideoHeight) {
-                width = height * mVideoWidth / mVideoHeight
-            } else {
-            }
-        }
-        setMeasuredDimension(width, height)
-    }
+//    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+//        var width = View.getDefaultSize(mVideoWidth, widthMeasureSpec)
+//        var height = View.getDefaultSize(mVideoHeight, heightMeasureSpec)
+//        if (mVideoWidth > 0 && mVideoHeight > 0) {
+//            if (mVideoWidth * height > width * mVideoHeight) {
+//                height = width * mVideoHeight / mVideoWidth
+//            } else if (mVideoWidth * height < width * mVideoHeight) {
+//                width = height * mVideoWidth / mVideoHeight
+//            } else {
+//            }
+//        }
+//        setMeasuredDimension(width, height)
+//    }
 }

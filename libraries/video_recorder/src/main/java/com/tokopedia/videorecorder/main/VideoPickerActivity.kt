@@ -201,7 +201,7 @@ open class VideoPickerActivity: BaseSimpleActivity(),
     private fun playVideoPreview(mediaPlayer: MediaPlayer) {
         if (videoPreview.isPlaying) return
         if (File(videoPath).exists()) {
-            resizeVideo(mediaPlayer.videoWidth, mediaPlayer.videoHeight)
+//            resizeVideo(mediaPlayer.videoWidth, mediaPlayer.videoHeight)
             videoPreview.start()
         }
     }
