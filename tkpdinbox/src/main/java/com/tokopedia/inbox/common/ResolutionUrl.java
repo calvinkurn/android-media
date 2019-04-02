@@ -11,6 +11,7 @@ public class ResolutionUrl {
     public static final String RESO_CREATE = HOSTNAME + "resolution-center/create/%s" + MOBILE;
     private static final String RESO_INBOX =  HOSTNAME + "resolution-center/inbox/";
     public static final String RESO_DETAIL =  HOSTNAME + "resolution-center/detail/%s" + MOBILE;
+    public static final String RESO_DETAIL_NEW =  HOSTNAME + "resolution/detail/%s" + MOBILE;
 
     public static final String RESO_INBOX_SELLER =  RESO_INBOX + "seller" + MOBILE;
     public static final String RESO_INBOX_BUYER =  RESO_INBOX + "buyer" + MOBILE;

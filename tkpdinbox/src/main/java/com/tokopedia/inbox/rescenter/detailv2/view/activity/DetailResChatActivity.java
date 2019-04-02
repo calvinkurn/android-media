@@ -99,6 +99,14 @@ public class DetailResChatActivity
         return null;
     }
 
+    private static Intent getApplinkIntentCenter(Context context, String resolutionId) {
+        if (context.getApplicationContext() instanceof ResolutionRouter) {
+            return ((ResolutionRouter)context.getApplicationContext()).getApplinkIntent(context,
+                    String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.RESO_DETAIL_NEW, resolutionId));
+        }
+        return null;
+    }
+
     @DeepLink(Constants.Applinks.RESCENTER)
     public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
@@ -136,6 +144,47 @@ public class DetailResChatActivity
         taskStackBuilder.addNextIntent(destinationIntent);
         return taskStackBuilder;
     }
+
+
+    @DeepLink(Constants.Applinks.RESCENTER_CENTER)
+    public static TaskStackBuilder getResCenterCallingIntent(Context context, Bundle bundle) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        Intent parentIntent;
+        Intent destinationIntent = null;
+        String resoId = bundle.getString(PARAM_RESOLUTION_ID, "");
+        if (isToggleResoEnabled(context)) {
+            destinationIntent = getApplinkIntentCenter(context, resoId);
+        }
+        if (destinationIntent == null) {
+            destinationIntent = new Intent(context, DetailResChatActivity.class);
+        }
+        destinationIntent.putExtra(PARAM_RESOLUTION_ID, resoId);
+        String userName = MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_BUYER,"")).toString();
+        String shopName = MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_SELLER,"")).toString();
+        String userNameSpanned = userName.replaceAll("%20"," ");
+        String shopNameSpanned = shopName.replaceAll("%20"," ");
+        if (TextUtils.isEmpty(shopName)) {
+            parentIntent = ResoInboxActivity.newSellerInstance(context);
+            destinationIntent.putExtra(PARAM_USER_NAME, userNameSpanned);
+            destinationIntent.putExtra(PARAM_IS_SELLER, true);
+            bundle.putString(PARAM_USER_NAME, userNameSpanned);
+        } else {
+            parentIntent = ResoInboxActivity.newBuyerInstance(context);
+            destinationIntent.putExtra(PARAM_SHOP_NAME, shopNameSpanned);
+            destinationIntent.putExtra(PARAM_IS_SELLER,false);
+            bundle.putString(PARAM_SHOP_NAME, shopNameSpanned);
+        }
+        destinationIntent.putExtras(bundle);
+        if (context.getApplicationContext() instanceof TkpdInboxRouter){
+            Intent intent = ((TkpdInboxRouter) context.getApplicationContext()).getHomeIntent(context);
+            taskStackBuilder.addNextIntent(intent);
+        }
+        taskStackBuilder.addNextIntent(parentIntent);
+        taskStackBuilder.addNextIntent(destinationIntent);
+        return taskStackBuilder;
+    }
+
+
 
     @Override
     public void inflateFragment(Fragment fragment, String TAG, boolean isReload) {
