@@ -175,7 +175,8 @@ public class ProductListFragment extends SearchSectionFragment
 
         if (productViewModel != null) {
             setForceSearch(productViewModel.isForceSearch());
-            renderDynamicFilter(productViewModel.getDynamicFilterModel());
+            //renderDynamicFilter(productViewModel.getDynamicFilterModel());
+            getDynamicFilter();
         }
 
         initFilterControllerForQuickFilterIfExists();

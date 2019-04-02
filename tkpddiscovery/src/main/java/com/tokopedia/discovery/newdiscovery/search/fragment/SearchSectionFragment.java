@@ -457,7 +457,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         return !isFilterDataAvailable()
                 && !isGettingDynamicFilter;
     }
-    
+
+    //TODO will be removed after catalog and shop already migrated also to Gql
     protected void requestDynamicFilter() {
         getPresenter().requestDynamicFilter();
     }

@@ -21,6 +21,7 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetSearchGuideUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.ProductWishlistUrlUseCase;
 import com.tokopedia.discovery.newdiscovery.helper.GqlSearchHelper;
+import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.BadgeItem;
@@ -90,7 +91,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
     @Override
     protected void getFilterFromNetwork(RequestParams requestParams) {
-        //TODO will be removed after catalog and shop already migrated also to Gql
+        getDynamicFilterUseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
     }
 
     @Override
@@ -155,11 +156,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     private void removeWishlist(String productId, String userId) {
         Log.d(this.toString(), "Remove Wishlist " + productId);
         removeWishlistActionUseCase.createObservable(productId, userId, wishlistActionListener);
-    }
-
-    @Override
-    public void requestDynamicFilter() {
-        //TODO will be removed after catalog and shop already migrated also to Gql
     }
 
     @Override

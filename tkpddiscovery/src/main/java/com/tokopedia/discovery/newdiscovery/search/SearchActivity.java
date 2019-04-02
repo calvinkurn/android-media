@@ -23,7 +23,6 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -195,7 +194,10 @@ public class SearchActivity extends DiscoveryActivity
                               boolean forceSwipeToShop,
                               boolean isActivityPaused) {
         if (activity != null) {
-            productViewModel.setDynamicFilterModel(new DynamicFilterModel()); // TODO:: Fix this after testing
+            // Set empty DynamicFilterModel as temporary solution for TransactionTooLargeException
+            // Dynamic Filter Model will be loaded inside ProductListFragment for now
+            // For long term solution, ProductViewModel will not be sent from SearchActivity, but should be loaded inside ProductListFragment
+            productViewModel.setDynamicFilterModel(new DynamicFilterModel());
 
             Intent intent = new Intent(activity, SearchActivity.class);
             intent.putExtra(EXTRA_PRODUCT_VIEW_MODEL, productViewModel);
