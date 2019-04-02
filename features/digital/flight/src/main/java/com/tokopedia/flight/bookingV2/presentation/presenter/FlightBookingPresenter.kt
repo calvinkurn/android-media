@@ -293,7 +293,10 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 val passengerViewModels = buildPassengerViewModel(view.getCurrentBookingParamViewModel().searchParam)
                 view.getCurrentBookingParamViewModel().passengerViewModels = passengerViewModels
                 view.renderPassengersList(passengerViewModels)
+            } else {
+                view.renderPassengersList(view.getCurrentBookingParamViewModel().passengerViewModels)
             }
+
             if (isFromSavedInstance) {
                 view.renderPassengersList(view.getCurrentBookingParamViewModel().passengerViewModels)
                 view.setContactName(view.getCurrentBookingParamViewModel().contactName)
