@@ -788,7 +788,7 @@ public class HomePageTracking {
             @NonNull String position,
             @NonNull String promoCode
     ) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
             Map<String, Object> data = DataLayer.mapOf(
                     "event", "promoClick",
@@ -810,14 +810,14 @@ public class HomePageTracking {
                             )
                     )
             );
-            tracker.sendEnhancedEcommerce(data);
+            tracker.sendEnhanceEcommerceEvent(data);
         }
     }
 
     public static void eventClickTabHomeWidget(Context context, String headerName) {
-        AnalyticTracker tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
-            tracker.sendEventTracking(
+            tracker.sendGeneralEvent(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     "click on bu widget tab",
