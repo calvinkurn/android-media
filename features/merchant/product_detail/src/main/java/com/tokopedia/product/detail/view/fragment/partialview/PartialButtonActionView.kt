@@ -72,7 +72,6 @@ class PartialButtonActionView private constructor(private val view: View,
         with(view) {
             btn_buy.visibility = View.GONE
             btn_promote_topads.visibility = View.GONE
-            btn_byme.visibility = View.GONE
             btn_topchat.visibility = View.VISIBLE
             tv_buy_now.text = context.getString(
                 if (preOrder?.isPreOrderActive() == true) {

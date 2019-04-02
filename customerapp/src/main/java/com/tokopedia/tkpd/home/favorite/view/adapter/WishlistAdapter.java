@@ -15,10 +15,13 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.WishlistItem;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,12 +69,20 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UnifyTracking.eventFavoriteView(view.getContext(), item.getName());
+                eventFavoriteView(item.getName());
                 Context context = view.getContext();
                 Intent intent = getProductIntent(context, item.getProductId());
                 context.startActivity(intent);
             }
         };
+    }
+
+    public void eventFavoriteView(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.FAVORITE,
+                AppEventTracking.Category.FAVORITE,
+                AppEventTracking.Action.VIEW_WISHLIST,
+                label);
     }
 
     private Intent getProductIntent(Context context, String productId){

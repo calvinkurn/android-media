@@ -13,8 +13,6 @@ import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.util.BorderItemDecoration;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 
-import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
-
 /**
  * @author by nisie on 7/26/17.
  */
@@ -36,7 +34,7 @@ public class OfficialStoreBrandsViewHolder extends AbstractViewHolder<OfficialSt
         adapter = new BrandsAdapter(viewListener);
         recyclerView.setHasFixedSize(true);
         recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.setLayoutManager(new NonScrollGridLayoutManager(getContext(), 3,
+        recyclerView.setLayoutManager(new NonScrollGridLayoutManager(recyclerView.getContext(), 3,
                 GridLayoutManager.VERTICAL, false));
         recyclerView.addItemDecoration(new BorderItemDecoration(
                 recyclerView.getContext(), BorderItemDecoration.GRID));

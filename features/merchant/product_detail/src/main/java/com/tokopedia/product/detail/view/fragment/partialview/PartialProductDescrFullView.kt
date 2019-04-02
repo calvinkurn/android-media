@@ -105,13 +105,13 @@ class PartialProductDescrFullView private constructor(private val view: View,
             txt_min_order.text = context.getString(R.string.template_min_order, data.basic.minOrder)
             txt_product_condition.text = if (data.basic.condition == ProductConditionTypeDef.NEW) "Baru" else "Bekas"
 
-            val descFormatted = if (data.basic.description.isNotBlank()) data.basic.description
-                else NO_DESCRIPTION
+            val descFormatted = MethodChecker.fromHtmlPreserveLineBreak(if (data.basic.description.isNotBlank()) data.basic.description
+                else NO_DESCRIPTION)
 
             txt_product_descr.text = if (descFormatted.length > MAX_CHAR){
-                val subDescr = MethodChecker.fromHtml(descFormatted).toString().substring(0,MAX_CHAR)
+                val subDescr = descFormatted.toString().substring(0,MAX_CHAR)
                 MethodChecker.fromHtml(subDescr.replace("(\r\n|\n)".toRegex(), "<br />") + "....")
-            } else MethodChecker.fromHtml(descFormatted)
+            } else descFormatted
 
             txt_product_descr.autoLinkMask = 0
             Linkify.addLinks(txt_product_descr, Linkify.WEB_URLS)

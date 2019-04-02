@@ -14,13 +14,13 @@ import java.util.*
 class ProductDetailTracking() {
 
     fun sendScreen(shopID: String, shopType: String, productId: String) {
-        TrackApp.getInstance()?.gtm?.sendScreenAuthenticated(
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(
             PRODUCT_DETAIL_SCREEN_NAME,
             shopID, shopType, "/product", productId)
     }
 
     fun eventTalkClicked() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK,
@@ -82,7 +82,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickMerchantVoucherUse(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
-        TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(createEventMVCClick(ProductTrackingConstant.MerchantVoucher.EVENT,
+        TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(createEventMVCClick(ProductTrackingConstant.MerchantVoucher.EVENT,
             ProductTrackingConstant.Category.PDP,
             listOf(ProductTrackingConstant.MerchantVoucher.ACTION,
                 ProductTrackingConstant.Action.CLICK).joinToString(" "),
@@ -97,7 +97,7 @@ class ProductDetailTracking() {
             "use voucher",
             merchantVoucherViewModelList)
         map?.run {
-            TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(this)
+            TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(this)
         }
     }
 
@@ -199,7 +199,7 @@ class ProductDetailTracking() {
     }
 
     fun eventTopAdsClicked(product: Product, position: Int) {
-        TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(
+        TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(KEY_EVENT, ProductTrackingConstant.Action.PRODUCT_CLICK,
                 KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
                 KEY_ACTION, ProductTrackingConstant.Action.TOPADS_CLICK,
@@ -219,7 +219,7 @@ class ProductDetailTracking() {
     }
 
     fun eventTopAdsImpression(position: Int, product: Product) {
-        TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(
+        TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(KEY_EVENT, "productView",
                 KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
                 KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION,
@@ -259,11 +259,11 @@ class ProductDetailTracking() {
                 KEY_LABEL to productId)
         }
         params.put(KEY_USER_ID, userId)
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(params)
+        TrackApp.getInstance().gtm.sendGeneralEvent(params)
     }
 
     fun eventSendMessage() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             ProductTrackingConstant.Message.EVENT,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK,
@@ -363,7 +363,7 @@ class ProductDetailTracking() {
     }
 
     fun eventEnhanceEcommerceProductDetail(trackerListName: String?, productInfo: ProductInfo?, shopInfo: ShopInfo?, trackerAttribution: String?) {
-        TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(DataLayer.mapOf(
             "event", "viewProduct",
             "eventCategory", "product page",
             "eventAction", "view product page",

@@ -7,6 +7,7 @@ import com.tokopedia.hotel.common.di.module.HotelModule
 import com.tokopedia.hotel.common.di.module.HotelViewModelModule
 import com.tokopedia.hotel.common.di.scope.HotelScope
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
+import com.tokopedia.hotel.homepage.presentation.fragment.HotelHomepageFragment
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
@@ -28,4 +29,7 @@ interface HotelComponent {
 
     fun inject(hotelBaseActivity: HotelBaseActivity)
     fun inject(hotelSearchResultFragment: HotelSearchResultFragment)
+
+    fun inject(hotelHomepageFragment: HotelHomepageFragment)
+
 }

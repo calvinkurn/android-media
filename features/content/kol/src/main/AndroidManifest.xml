@@ -54,6 +54,10 @@
             android:theme="@style/Theme.White"
             />
 
+        <activity android:name=".feature.video.view.activity.VideoDetailActivity"
+            android:screenOrientation="portrait"
+            />
+
     </application>
 
 </manifest>
