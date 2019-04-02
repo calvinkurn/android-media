@@ -473,9 +473,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 addToCart()
             } else if (action == TRADEIN_BUY) {
                 if (tradeInParams != null) {
-                    if (tradeInParams!!.usedPrice > 0) {
+                    if (tradeInParams!!.usedPrice > 0)
                         goToHargaFinal()
-                    } else
+                    else
                         tv_trade_in.performClick()
                 }
             } else {
