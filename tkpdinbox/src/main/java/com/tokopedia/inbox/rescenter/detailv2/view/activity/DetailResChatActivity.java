@@ -94,7 +94,7 @@ public class DetailResChatActivity
     private static Intent getApplinkIntent(Context context, String resolutionId) {
         if (context.getApplicationContext() instanceof ResolutionRouter) {
             return ((ResolutionRouter)context.getApplicationContext()).getApplinkIntent(context,
-                    String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.RESO_DETAIL, resolutionId));
+                    String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_DETAIL, resolutionId));
         }
         return null;
     }
@@ -102,7 +102,7 @@ public class DetailResChatActivity
     private static Intent getApplinkIntentCenter(Context context, String resolutionId) {
         if (context.getApplicationContext() instanceof ResolutionRouter) {
             return ((ResolutionRouter)context.getApplicationContext()).getApplinkIntent(context,
-                    String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.RESO_DETAIL_NEW, resolutionId));
+                    String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_DETAIL_NEW, resolutionId));
         }
         return null;
     }
