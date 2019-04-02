@@ -10,19 +10,15 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.home.beranda.data.model.Promotion;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Created by Akmal on 2/6/18.
@@ -788,41 +784,41 @@ public class HomePageTracking {
             @NonNull String position,
             @NonNull String promoCode
     ) {
-        AnalyticTracker tracker = getTracker(context);
-        if (tracker != null){
-            Map<String, Object> data = DataLayer.mapOf(
-                    "event", "promoClick",
-                    "eventCategory", "homepage",
-                    "eventAction", "click on bu widget",
-                    "eventLabel", name,
-                    "ecommerce", DataLayer.mapOf(
-                            "promoClick", DataLayer.mapOf(
-                                    "promotions", DataLayer.listOf(
-                                            DataLayer.mapOf(
-                                                    "id", id,
-                                                    "name", name,
-                                                    "creative", alias,
-                                                    "creative_url", creativeUrl,
-                                                    "position", position,
-                                                    "promo_code", !TextUtils.isEmpty(promoCode) ? promoCode : "NoPromoCode"
-                                            )
-                                    )
-                            )
-                    )
-            );
-            tracker.sendEnhancedEcommerce(data);
-        }
+//        AnalyticTracker tracker = getTracker(context);
+//        if (tracker != null){
+//            Map<String, Object> data = DataLayer.mapOf(
+//                    "event", "promoClick",
+//                    "eventCategory", "homepage",
+//                    "eventAction", "click on bu widget",
+//                    "eventLabel", name,
+//                    "ecommerce", DataLayer.mapOf(
+//                            "promoClick", DataLayer.mapOf(
+//                                    "promotions", DataLayer.listOf(
+//                                            DataLayer.mapOf(
+//                                                    "id", id,
+//                                                    "name", name,
+//                                                    "creative", alias,
+//                                                    "creative_url", creativeUrl,
+//                                                    "position", position,
+//                                                    "promo_code", !TextUtils.isEmpty(promoCode) ? promoCode : "NoPromoCode"
+//                                            )
+//                                    )
+//                            )
+//                    )
+//            );
+//            tracker.sendEnhancedEcommerce(data);
+//        }
     }
 
     public static void eventClickTabHomeWidget(Context context, String headerName) {
-        AnalyticTracker tracker = getTracker(context);
-        if (tracker != null) {
-            tracker.sendEventTracking(
-                    EVENT_CLICK_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    "click on bu widget tab",
-                    headerName
-            );
-        }
+//        AnalyticTracker tracker = getTracker(context);
+//        if (tracker != null) {
+//            tracker.sendEventTracking(
+//                    EVENT_CLICK_HOME_PAGE,
+//                    CATEGORY_HOME_PAGE,
+//                    "click on bu widget tab",
+//                    headerName
+//            );
+//        }
     }
 }
