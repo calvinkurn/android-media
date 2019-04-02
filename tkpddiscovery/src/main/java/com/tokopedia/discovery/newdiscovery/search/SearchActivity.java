@@ -807,7 +807,8 @@ public class SearchActivity extends DiscoveryActivity
 
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
+        finish();
+        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop(), isPausing());
         stopPerformanceMonitoring();
-        handleIntentWithProductViewModel(productViewModel);
     }
 }
