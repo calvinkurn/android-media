@@ -526,6 +526,8 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                             .subscribe(object : Subscriber<AddToCartEntity>() {
                                 override fun onNext(t: AddToCartEntity?) {
                                     if (isViewAttached && t != null) {
+                                        val passengerViewModels = buildPassengerViewModel(view.getCurrentBookingParamViewModel().searchParam)
+                                        view.getCurrentBookingParamViewModel().passengerViewModels = passengerViewModels
                                         onGetCart(true, view.getCurrentCartPassData())
                                     }
                                 }
