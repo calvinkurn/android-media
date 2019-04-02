@@ -13,6 +13,7 @@ import android.widget.TextView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.data.model.RecentSearch
@@ -39,6 +40,8 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     lateinit var destinationViewModel: HotelDestinationViewModel
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
+    lateinit var currentLocationTextView: TextViewCompat
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -63,6 +66,7 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     }
 
     fun initView(view: View) {
+        currentLocationTextView = view.findViewById(R.id.current_location_tv)
         initCurrentLocationTextView()
         initRecentSearch(view)
     }
@@ -90,8 +94,8 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     }
 
     fun initCurrentLocationTextView() {
-//        current_location_tv.setDrawableLeft(R.drawable.ic_system_action_currentlocation_grayscale_24)
-        current_location_tv.setOnClickListener { destinationViewModel.getCurrentLocation(activity as HotelDestinationActivity) }
+        currentLocationTextView.setDrawableLeft(R.drawable.ic_system_action_currentlocation_grayscale_24)
+        currentLocationTextView.setOnClickListener { destinationViewModel.getCurrentLocation(activity as HotelDestinationActivity) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
