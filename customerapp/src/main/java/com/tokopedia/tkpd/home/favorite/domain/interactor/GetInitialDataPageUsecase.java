@@ -1,18 +1,25 @@
 package com.tokopedia.tkpd.home.favorite.domain.interactor;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.home.favorite.domain.model.DataFavorite;
 import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
+import com.tokopedia.topads.sdk.utils.CacheHandler;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import rx.Observable;
-import rx.functions.Func3;
+import rx.functions.Func2;
 
 
 /**
@@ -22,43 +29,45 @@ import rx.functions.Func3;
 public class GetInitialDataPageUsecase extends UseCase<DataFavorite> {
 
     private GetFavoriteShopUsecase getFavoriteShopUsecase;
-    private GetWishlistUsecase getWishlistUsecase;
+    private GetWishlistUtil getWishlistUtil;
     private final GetTopAdsShopUseCase getTopAdsShopUseCase;
+    private final Context context;
+    private final CacheHandler cacheHandler;
+    private final Random random;
 
-    public GetInitialDataPageUsecase(ThreadExecutor threadExecutor,
+    public GetInitialDataPageUsecase(Context context, ThreadExecutor threadExecutor,
                                      PostExecutionThread postExecutionThread,
                                      GetFavoriteShopUsecase getFavoriteShopUsecase,
-                                     GetWishlistUsecase getWishlistUsecase,
+                                     GetWishlistUtil getWishlistUtil,
                                      GetTopAdsShopUseCase getTopAdsShopUseCase) {
 
         super(threadExecutor, postExecutionThread);
+        this.context = context;
         this.getFavoriteShopUsecase = getFavoriteShopUsecase;
-        this.getWishlistUsecase = getWishlistUsecase;
+        this.getWishlistUtil = getWishlistUtil;
         this.getTopAdsShopUseCase = getTopAdsShopUseCase;
+        this.cacheHandler = new CacheHandler(context, CacheHandler.TOP_ADS_CACHE);
+        random = new Random();
     }
 
     @Override
     public Observable<DataFavorite> createObservable(RequestParams requestParams) {
-        return Observable.zip(getWishlist(), getTopAdsShop(), getFavoriteShop(),
-                new Func3<DomainWishlist, TopAdsShop, FavoriteShop, DataFavorite>() {
+        return Observable.zip(getTopAdsShop(), getFavoriteShop(),
+                new Func2<TopAdsShop, FavoriteShop, DataFavorite>() {
 
                     @Override
-                    public DataFavorite call(DomainWishlist domainWishlist,
-                                             TopAdsShop adsShop, FavoriteShop favoriteShop) {
-                        return validateDataFavorite(domainWishlist, adsShop, favoriteShop);
+                    public DataFavorite call(TopAdsShop adsShop, FavoriteShop favoriteShop) {
+                        return validateDataFavorite(adsShop, favoriteShop);
                     }
                 });
     }
 
 
     @NonNull
-    private DataFavorite validateDataFavorite(DomainWishlist domainWishlist,
-                                              TopAdsShop adsShop, FavoriteShop favoriteShop) {
+    private DataFavorite validateDataFavorite(TopAdsShop adsShop, FavoriteShop favoriteShop) {
 
-        if (domainWishlist.isNetworkError()
-                && adsShop.isNetworkError()
+        if (adsShop.isNetworkError()
                 && favoriteShop.isNetworkError()
-                && domainWishlist.getData() == null
                 && adsShop.getTopAdsShopItemList() == null
                 && favoriteShop.getData() == null) {
 
@@ -66,7 +75,6 @@ public class GetInitialDataPageUsecase extends UseCase<DataFavorite> {
         }
 
         DataFavorite dataFavorite = new DataFavorite();
-        dataFavorite.setWishListData(domainWishlist);
         dataFavorite.setTopAdsShop(adsShop);
         dataFavorite.setFavoriteShop(favoriteShop);
         return dataFavorite;
@@ -79,14 +87,26 @@ public class GetInitialDataPageUsecase extends UseCase<DataFavorite> {
     }
 
     public Observable<DomainWishlist> getWishlist() {
-        RequestParams params = GetWishlistUsecase.getDefaultParams();
-        params.putBoolean(GetWishlistUsecase.KEY_IS_FORCE_REFRESH, false);
-        return getWishlistUsecase.createObservable(params);
+        RequestParams params = GetWishlistUtil.getDefaultParams();
+        params.putBoolean(GetWishlistUtil.KEY_IS_FORCE_REFRESH, false);
+        return getWishlistUtil.getWishListData(params);
     }
 
     public Observable<TopAdsShop> getTopAdsShop() {
         RequestParams requestParams = GetTopAdsShopUseCase.defaultParams();
         requestParams.putBoolean(GetTopAdsShopUseCase.KEY_IS_FORCE_REFRESH, false);
+        requestParams.putString(GetTopAdsShopUseCase.KEY_USER_ID, SessionHandler.getLoginID(context));
+        ArrayList<Integer> preferredCacheList
+                = cacheHandler.getArrayListInteger(CacheHandler.KEY_PREFERRED_CATEGORY);
+        requestParams.putInt(GetTopAdsShopUseCase.KEY_DEP_ID, getRandomId(preferredCacheList));
         return getTopAdsShopUseCase.createObservable(requestParams);
+    }
+
+    private int getRandomId(List<Integer> ids) {
+        if (ids.size() > 0) {
+            return ids.get(random.nextInt(ids.size()));
+        } else {
+            return 0;
+        }
     }
 }

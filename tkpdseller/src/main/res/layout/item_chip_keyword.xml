@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="top"
-    android:background="@drawable/rounded"
+    android:background="@drawable/selector_rounded_gray_red"
     tools:layout_marginLeft="16dp"
     tools:layout_marginTop="16dp">
 
@@ -17,8 +18,8 @@
         android:layout_marginLeft="16dp"
         android:layout_marginStart="12dp"
         android:maxWidth="@dimen/max_width_keyword"
-        android:paddingTop="@dimen/margin_ms"
-        android:paddingBottom="@dimen/margin_ms"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
         android:tag="text"
         android:textColor="@android:color/black"
         android:textSize="14sp"
@@ -35,6 +36,6 @@
         android:layout_toEndOf="@+id/textview_keyword_item"
         android:layout_toRightOf="@+id/textview_keyword_item"
         android:background="@null"
-        android:src="@drawable/vector_cancel_24dp" />
+        app:srcCompat="@drawable/vector_cancel_24dp" />
 
 </RelativeLayout>

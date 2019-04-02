@@ -2,12 +2,9 @@ package com.tokopedia.inbox.rescenter.discussion.view.subscriber;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.network.MessageErrorException;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.ActionDiscussionModel;
 import com.tokopedia.inbox.rescenter.discussion.view.listener.ResCenterDiscussionView;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
 
@@ -34,7 +31,9 @@ public class ReplyDiscussionSubscriber extends Subscriber<DiscussionItemViewMode
 
     @Override
     public void onError(Throwable e) {
-        CommonUtils.dumper("NISNIS " + e.toString());
+        for (StackTraceElement st: e.getStackTrace()) {
+            CommonUtils.dumper("NISNIS " + st.toString());
+        }
         if (e instanceof UnknownHostException) {
             viewListener.onErrorSendReply(
                     viewListener.getString(R.string.msg_no_connection));

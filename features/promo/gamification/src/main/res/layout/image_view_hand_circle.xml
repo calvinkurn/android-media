@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.AppCompatImageView android:id="@+id/ic_hand"
+    android:layout_width="@dimen/image_width_hand_circle"
+    android:layout_height="@dimen/image_width_hand_circle"
+    app:srcCompat="@drawable/circle_trans_white"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" />

@@ -1,10 +1,13 @@
 package com.tokopedia.session.forgotpassword.presenter;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -13,6 +16,7 @@ import com.tokopedia.core.service.constant.DownloadServiceConstant;
 import com.tokopedia.session.R;
 import com.tokopedia.session.forgotpassword.interactor.ForgotPasswordRetrofitInteractor;
 import com.tokopedia.session.forgotpassword.listener.ForgotPasswordFragmentView;
+import com.tokopedia.track.TrackApp;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,7 +68,7 @@ public class ForgotPasswordFragmentPresenterImpl implements ForgotPasswordFragme
         viewListener.resetError();
         if (isValidForm()) {
             viewListener.showLoadingProgress();
-            UnifyTracking.eventForgotPassword();
+            eventForgotPassword();
 
             compositeSubscription.add(networkInteractor.resetPassword(getResetPasswordParam())
                     .subscribeOn(Schedulers.newThread())
@@ -145,15 +149,23 @@ public class ForgotPasswordFragmentPresenterImpl implements ForgotPasswordFragme
         }
     }
 
+    public void eventForgotPassword() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.FORGOT_PASSWORD,
+                AppEventTracking.Category.FORGOT_PASSWORD,
+                AppEventTracking.Action.RESET_SUCCESS,
+                AppEventTracking.EventLabel.RESET_PASSWORD);
+    }
+
     private boolean isValidForm() {
         Boolean isValid = true;
 
         if (viewListener.getEmail().getText().toString().length() == 0) {
-            viewListener.setEmailError(viewListener.getString(com.tokopedia.core.R.string.error_field_required));
+            viewListener.setEmailError(viewListener.getString(com.tokopedia.core2.R.string.error_field_required));
             isValid = false;
 
         } else if (!CommonUtils.EmailValidation(viewListener.getEmail().getText().toString())) {
-            viewListener.setEmailError(viewListener.getString(com.tokopedia.core.R.string.error_invalid_email));
+            viewListener.setEmailError(viewListener.getString(com.tokopedia.core2.R.string.error_invalid_email));
             isValid = false;
         }
 

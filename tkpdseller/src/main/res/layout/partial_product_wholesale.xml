@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/LabelLayoutInnerExpandable"
+    style="@style/LabelLayout.InnerExpandable"
     android:orientation="vertical">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_wholesale"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
     </android.support.v7.widget.RecyclerView>
 
     <TextView
         android:id="@+id/text_view_add_wholesale"
-        style="@style/TextView.TopAds.Body.Green"
-        android:layout_marginTop="@dimen/topads_detail_padding_item"
+        style="@style/TextView.Small.Green"
+        android:layout_marginTop="@dimen/dp_15"
         android:text="@string/product_label_add_wholesale" />
 
 </LinearLayout>

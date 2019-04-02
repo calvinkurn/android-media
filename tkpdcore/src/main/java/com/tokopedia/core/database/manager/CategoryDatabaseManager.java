@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Delete;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
@@ -12,7 +11,6 @@ import com.tokopedia.core.database.CacheDuration;
 import com.tokopedia.core.database.DBOperation;
 import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.core.database.model.CategoryDB;
-import com.tokopedia.core.database.model.CategoryDB_Table;
 
 import java.util.List;
 
@@ -96,44 +94,5 @@ public class CategoryDatabaseManager implements DBOperation<CategoryDB> {
         return null;
     }
 
-    public int getDepartmentCount(int level, int depId){
-        long count = new Select()
-                .from(CategoryDB.class)
-                .where(CategoryDB_Table.levelId.is(level))
-                .and(CategoryDB_Table.parentId.is(depId)).count();
-        return (int)count;
-    }
 
-    public List<CategoryDB> getDepartementChild(int depId){
-        List<CategoryDB> categoryDBs = new Select()
-                .from(CategoryDB.class)
-                .where(CategoryDB_Table.departmentId.is(depId))
-                .queryList();
-        return categoryDBs;
-    }
-
-    public List<CategoryDB> getDepartmentChild(int level, int depId){
-        List<CategoryDB> categoryDBs = new Select()
-                .from(CategoryDB.class)
-                .where(CategoryDB_Table.levelId.is(level))
-                .and(CategoryDB_Table.parentId.is(depId))
-                .queryList();
-        return categoryDBs;
-    }
-
-    public List<CategoryDB> getDepartmentParent(){
-        List<CategoryDB> categoryDBs = new Select()
-                .from(CategoryDB.class)
-                .where(CategoryDB_Table.parentId.is(0))
-                .queryList();
-        return categoryDBs;
-    }
-
-    /**
-     * @return
-     */
-    public boolean isDepartmentParentFetch(){
-        List<CategoryDB> departmentParent = getDepartmentParent();
-        return departmentParent != null && departmentParent.size()>0;
-    }
 }

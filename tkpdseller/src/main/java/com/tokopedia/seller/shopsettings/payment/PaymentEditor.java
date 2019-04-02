@@ -117,7 +117,6 @@ public class PaymentEditor extends TActivity {
 
                             @Override
                             public void onNext(Response<TkpdResponse> responseData) {
-                                Log.d("STUART", responseData.toString());
                                 TkpdResponse response = responseData.body();
 
                                 mProgressDialog.dismiss();

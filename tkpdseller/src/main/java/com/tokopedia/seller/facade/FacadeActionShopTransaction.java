@@ -6,7 +6,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.fragment.FragmentShopShippingDetailV2;
@@ -105,18 +105,16 @@ public class FacadeActionShopTransaction {
                         new Subscriber<Response<TkpdResponse>>() {
                             @Override
                             public void onCompleted() {
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "completed");
+
                             }
 
                             @Override
                             public void onError(Throwable e) {
                                 listener.onFailed();
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "on error");
                             }
 
                             @Override
                             public void onNext(Response<TkpdResponse> responseData) {
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "on next");
                                 TkpdResponse response = responseData.body();
 
                                 if (response.getStringData() == null || response.getStringData().equals("{}")) {
@@ -178,18 +176,16 @@ public class FacadeActionShopTransaction {
                         new Subscriber<Response<TkpdResponse>>() {
                             @Override
                             public void onCompleted() {
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "completed");
+
                             }
 
                             @Override
                             public void onError(Throwable e) {
                                 listener.onFailed();
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "on error");
                             }
 
                             @Override
                             public void onNext(Response<TkpdResponse> responseData) {
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "on next");
                                 TkpdResponse response = responseData.body();
 
                                 if (response.getStringData() == null || response.getStringData().equals("{}")) {
@@ -229,18 +225,16 @@ public class FacadeActionShopTransaction {
                         new Subscriber<Response<TkpdResponse>>() {
                             @Override
                             public void onCompleted() {
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "completed");
+
                             }
 
                             @Override
                             public void onError(Throwable e) {
                                 listener.onFailed("terjadi masalah koneksi");
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "on error");
                             }
 
                             @Override
                             public void onNext(Response<TkpdResponse> responseData) {
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "on next");
                                 TkpdResponse response = responseData.body();
 
                                 JSONObject jsonObject = null;

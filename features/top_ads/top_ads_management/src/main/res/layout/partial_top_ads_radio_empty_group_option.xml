@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.topads.dashboard.view.widget.TopAdsRadioExpandView
+        android:id="@+id/view_radio_not_in_group"
+        style="@style/TopAdsRadioExpandView"
+        app:radio_id="@+id/radio_promo_not_in_group"
+        app:title_radio="@string/label_top_ads_create_promo_not_in_group">
+        <TextView
+            android:text="@string/label_top_ads_info_group_option_empty"
+            android:id="@+id/view_info_radio_not_in_group"
+            style="@style/TextView.Micro.BlackSecondary"/>
+    </com.tokopedia.topads.dashboard.view.widget.TopAdsRadioExpandView>
+</merge>

@@ -19,7 +19,7 @@
             android:layout_width="@dimen/img_hotprod"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/ic_wishlist_empty_state"
+            app:srcCompat="@drawable/ic_wishlist_empty_state"
             android:layout_marginBottom="@dimen/margin_vs" />
 
         <TextView
@@ -46,7 +46,7 @@
 
     </LinearLayout>
 
-    <com.tokopedia.topads.sdk.view.TopAdsView
+    <com.tokopedia.topads.sdk.widget.TopAdsView
         android:id="@id/topads"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -9,11 +9,14 @@ public class HistoryAddressItemDomainData {
     private String actionByText;
     private String conversationID;
     private String date;
+    private String createTimestamp;
     private String street;
     private String district;
     private String city;
     private String province;
     private String postalCode;
+    private String receiver;
+    private String phoneNumber;
 
     public int getActionBy() {
         return actionBy;
@@ -85,5 +88,29 @@ public class HistoryAddressItemDomainData {
 
     public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getCreateTimestamp() {
+        return createTimestamp;
+    }
+
+    public void setCreateTimestamp(String createTimestamp) {
+        this.createTimestamp = createTimestamp;
     }
 }

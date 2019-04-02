@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/fl_see_all_product"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:orientation="horizontal"
+    android:background="@drawable/bg_bubble_button"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:context="http://schemas.android.com/tools">
+
+    <Button
+        android:id="@+id/btn_track_awb"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:background="@color/transparent"
+        android:text="@string/string_chat_track_awb"
+        android:textSize="@dimen/fontvs"
+        android:textAllCaps="false"
+        android:textColor="@color/tkpd_main_green"
+        android:visibility="gone"
+        context:visibility="visible"/>
+
+    <Button
+        android:id="@+id/btn_edit_awb"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:background="@color/transparent"
+        android:text="@string/string_chat_edit_awb"
+        android:textSize="@dimen/fontvs"
+        android:textAllCaps="false"
+        android:textColor="@color/tkpd_main_green"
+        android:visibility="gone"
+        context:visibility="visible"/>
+
+    <Button
+        android:id="@+id/btn_edit_address"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:background="@color/transparent"
+        android:text="@string/string_chat_edit_address"
+        android:textSize="@dimen/fontvs"
+        android:textAllCaps="false"
+        android:textColor="@color/tkpd_main_green"
+        android:visibility="gone"
+        context:visibility="visible"/>
+</LinearLayout>

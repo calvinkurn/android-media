@@ -1,0 +1,45 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+project.ext {
+    artifactId = 'topads'
+    groupId = 'com.tokopedia.topads.sdk'
+    versionName = "2.22"
+    artifactName ="tkpdtopadssdk-release"
+}
+
+
+dependencies {
+    
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.features.goldMerchantResource)
+    implementation project(rootProject.ext.libraries.design)
+    androidTestImplementation rootProject.ext.testDependencies.androidAnnotation
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.0'
+    implementation rootProject.ext.networkDependencies.glide
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.dagger
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+}
+
+apply from: '../../../publish_local.gradle'

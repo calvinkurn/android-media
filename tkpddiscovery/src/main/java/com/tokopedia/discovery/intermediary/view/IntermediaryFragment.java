@@ -3,6 +3,7 @@ package com.tokopedia.discovery.intermediary.view;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -24,28 +26,41 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.google.android.youtube.player.YouTubeApiServiceUtil;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.URLParser;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
-import com.tokopedia.core.R2;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.widgets.DividerItemDecoration;
+import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.activity.BrowseProductActivity;
+import com.tokopedia.discovery.intermediary.analytics.IntermediaryAnalytics;
 import com.tokopedia.discovery.intermediary.di.IntermediaryDependencyInjector;
 import com.tokopedia.discovery.intermediary.domain.model.BannerModel;
 import com.tokopedia.discovery.intermediary.domain.model.BrandModel;
@@ -61,24 +76,38 @@ import com.tokopedia.discovery.intermediary.view.adapter.CurationAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.HotListItemAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryBrandsAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryCategoryAdapter;
+import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
+import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
 import com.tokopedia.tkpdpdp.customview.YoutubeWebViewThumbnail;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
-import com.tokopedia.topads.sdk.view.TopAdsView;
+import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
+import com.tokopedia.topads.sdk.widget.TopAdsView;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
+import static com.tokopedia.core.home.presenter.HotList.CATALOG_KEY;
+import static com.tokopedia.core.home.presenter.HotList.HOT_KEY;
+import static com.tokopedia.core.home.presenter.HotList.SEARCH;
+import static com.tokopedia.core.home.presenter.HotList.TOPPICKS_KEY;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALUE;
 
@@ -88,67 +117,38 @@ import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALU
 
 public class IntermediaryFragment extends BaseDaggerFragment implements IntermediaryContract.View,
         CuratedProductAdapter.OnItemClickListener, TopAdsItemClickListener, TopAdsListener,
-        IntermediaryCategoryAdapter.CategoryListener, IntermediaryBrandsAdapter.BrandListener {
+        IntermediaryCategoryAdapter.CategoryListener, IntermediaryBrandsAdapter.BrandListener,
+        BannerPagerAdapter.OnPromoClickListener, HotListItemAdapter.HotlistItemListener,
+        WishListActionListener {
 
     public static final String TAG = "INTERMEDIARY_FRAGMENT";
     private static final long SLIDE_DELAY = 8000;
+    public static final String DEFAULT_ITEM_VALUE = "1";
+    public static final int REQUEST_CODE_LOGIN = 561;
+    private static final String PERFORMANCE_TRACE_INTERMEDIARY = "mp_category_intermediary";
 
-    @BindView(R2.id.nested_intermediary)
-    NestedScrollView nestedScrollView;
+    private NestedScrollView nestedScrollView;
+    private ImageView imageHeader;
+    private TextView titleHeader;
+    private LinearLayout expandLayout;
+    private LinearLayout hideLayout;
+    private RecyclerView revampCategoriesRecyclerView;
+    private RecyclerView curationRecyclerView;
+    private CardView cardViewHotList;
+    private CardView cardViewVideo;
+    private LinearLayout placeHolderVideo;
+    private RecyclerView hotListRecyclerView;
+    private TextView viewAllCategory;
+    private RelativeLayout bannerContainer;
+    private RelativeLayout headerContainer;
+    private TextView videoTitle;
+    private TextView videoDesc;
+    private CardView cardOfficial;
+    private RecyclerView brandsRecyclerView;
+    private TopAdsView topAdsView;
+    private TopAdsBannerView topAdsBannerView;
 
-    @BindView(R2.id.image_header)
-    ImageView imageHeader;
-
-    @BindView(R2.id.title_header)
-    TextView titleHeader;
-
-    @BindView(R2.id.expand_layout)
-    LinearLayout expandLayout;
-
-    @BindView(R2.id.hide_layout)
-    LinearLayout hideLayout;
-
-    @BindView(R2.id.recycler_view_revamp_categories)
-    RecyclerView revampCategoriesRecyclerView;
-
-    @BindView(R2.id.recycler_view_curation)
-    RecyclerView curationRecyclerView;
-
-    @BindView(R2.id.card_hoth_intermediary)
-    CardView cardViewHotList;
-
-    @BindView(R2.id.card_video_intermediary)
-    CardView cardViewVideo;
-
-    @BindView(R2.id.youtube_video_place_holder)
-    LinearLayout placeHolderVideo;
-
-    @BindView(R2.id.recycler_view_hot_list)
-    RecyclerView hotListRecyclerView;
-
-    @BindView(R2.id.category_view_all)
-    TextView viewAllCategory;
-
-    @BindView(R2.id.banner_container)
-    RelativeLayout bannerContainer;
-
-    @BindView(R2.id.header_container)
-    RelativeLayout headerContainer;
-
-    @BindView(R2.id.intermediary_video_title)
-    TextView videoTitle;
-
-    @BindView(R2.id.intermediary_video_desc)
-    TextView videoDesc;
-
-    @BindView(R2.id.card_official_intermediary)
-    CardView cardOfficial;
-
-    @BindView(R2.id.rv_official_intermediary)
-    RecyclerView brandsRecyclerView;
-
-    @BindView(R2.id.top_ads_view)
-    TopAdsView topAdsView;
+    private TextView btnSeeAllOfficialBrand;
 
     private CirclePageIndicator bannerIndicator;
     private View banner;
@@ -158,19 +158,28 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     private Runnable incrementPage;
 
     private String departmentId = "";
+    private String trackerAttribution = "";
+    private String parentCategoryName;
+    private String parentCategory;
     private IntermediaryCategoryAdapter categoryAdapter;
     private IntermediaryBrandsAdapter brandsAdapter;
     private IntermediaryCategoryAdapter.CategoryListener categoryListener;
     private IntermediaryBrandsAdapter.BrandListener brandListener;
     private ArrayList<ChildCategoryModel> activeChildren = new ArrayList<>();
+    private List<BannerModel> bannerModelList;
     private boolean isUsedUnactiveChildren = false;
     private CurationAdapter curationAdapter;
     private IntermediaryContract.Presenter presenter;
     private NonScrollGridLayoutManager gridLayoutManager;
+    private UserSessionInterface userSession;
+    private PerformanceMonitoring performanceMonitoring;
+    private boolean isTraceStopped;
+    private static final String SHOP = "shop";
 
-    public static IntermediaryFragment createInstance(String departmentId) {
+    public static IntermediaryFragment createInstance(String departmentId, String trackerAttribution) {
         IntermediaryFragment intermediaryFragment = new IntermediaryFragment();
         intermediaryFragment.departmentId = departmentId;
+        intermediaryFragment.setTrackerAttribution(trackerAttribution);
         return intermediaryFragment;
     }
 
@@ -184,27 +193,109 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         presenter = IntermediaryDependencyInjector.getPresenter(getActivity());
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(PERFORMANCE_TRACE_INTERMEDIARY);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_intermediary, container, false);
 
-        ButterKnife.bind(this, parentView);
+        initView(parentView);
+        initListener();
+
+        btnSeeAllOfficialBrand = parentView.findViewById(R.id.see_all_official_brand_button);
+        btnSeeAllOfficialBrand.setOnClickListener(new SeeAllOfficialOnClickListener());
 
         presenter.attachView(this);
-        presenter.getIntermediaryCategory(departmentId);
-
+        presenter.setWishlishListener(this);
         return parentView;
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        userSession = new UserSession(getActivity());
+        presenter.getIntermediaryCategory(departmentId);
+    }
+
+    private void initView(View view) {
+        nestedScrollView = view.findViewById(R.id.nested_intermediary);
+        imageHeader = view.findViewById(R.id.image_header);
+        titleHeader = view.findViewById(R.id.title_header);
+        expandLayout = view.findViewById(R.id.expand_layout);
+        hideLayout = view.findViewById(R.id.hide_layout);
+        revampCategoriesRecyclerView = view.findViewById(R.id.recycler_view_revamp_categories);
+        curationRecyclerView = view.findViewById(R.id.recycler_view_curation);
+        cardViewHotList = view.findViewById(R.id.card_hoth_intermediary);
+        cardViewVideo = view.findViewById(R.id.card_video_intermediary);
+        placeHolderVideo = view.findViewById(R.id.youtube_video_place_holder);
+        hotListRecyclerView = view.findViewById(R.id.recycler_view_hot_list);
+        viewAllCategory = view.findViewById(R.id.category_view_all);
+        bannerContainer = view.findViewById(R.id.banner_container);
+        headerContainer = view.findViewById(R.id.header_container);
+        videoTitle = view.findViewById(R.id.intermediary_video_title);
+        videoDesc = view.findViewById(R.id.intermediary_video_desc);
+        cardOfficial = view.findViewById(R.id.card_official_intermediary);
+        brandsRecyclerView = view.findViewById(R.id.rv_official_intermediary);
+        topAdsView = view.findViewById(R.id.top_ads_view);
+        topAdsBannerView = view.findViewById(R.id.top_ads_banner);
+    }
+
+    private void initListener() {
+        viewAllCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewAllCategory();
+            }
+        });
+    }
+
+    @Override
+    public void onErrorAddWishList(String errorMessage, String productId) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessAddWishlist(String productId) {
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
+    }
+
+    @Override
+    public void onErrorRemoveWishlist(String errorMessage, String productId) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessRemoveWishlist(String productId) {
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
+    }
+
+    YoutubeViewHolder.YouTubeThumbnailLoadInProcess youTubeThumbnailLoadInProcessListener;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof YoutubeViewHolder.YouTubeThumbnailLoadInProcess)
+            youTubeThumbnailLoadInProcessListener = (YoutubeViewHolder.YouTubeThumbnailLoadInProcess) context;
+    }
+
+    @Override
     public void renderHeader(HeaderModel headerModel) {
+        parentCategoryName = headerModel.getCategoryName();
+        parentCategory = parentCategoryName.replace(" ", "-");
         ImageHandler.loadImageFitTransformation(imageHeader.getContext(), imageHeader,
                 headerModel.getHeaderImageUrl(), new CategoryHeaderTransformation(imageHeader.getContext()));
         titleHeader.setText(headerModel.getCategoryName().toUpperCase());
-        titleHeader.setShadowLayer(24, 0, 0, com.tokopedia.core.R.color.checkbox_text);
+        titleHeader.setShadowLayer(24, 0, 0, com.tokopedia.core2.R.color.checkbox_text);
         viewAllCategory.setVisibility(View.VISIBLE);
+        headerContainer.setVisibility(View.VISIBLE);
+        bannerContainer.setVisibility(View.GONE);
         viewAllCategory.setText("Lihat Produk " + headerModel.getCategoryName() + " Lainnya");
+        ((IntermediaryActivity) getActivity()).updateTitle(headerModel.getCategoryName());
     }
 
     @Override
@@ -216,14 +307,59 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .setUserId(userSession.getUserId())
                 .topAdsParams(params)
                 .build();
 
         topAdsView.setAdsItemClickListener(this);
         topAdsView.setAdsListener(this);
+        topAdsView.setAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                TopAdsGtmTracker.eventIntermediaryProductView(getContext(), "", product, position);
+            }
+        });
         topAdsView.setConfig(config);
         topAdsView.loadTopAds();
+
+        TopAdsParams adsBannerParams = new TopAdsParams();
+        adsBannerParams.getParam().put(TopAdsParams.KEY_SRC, SRC_INTERMEDIARY_VALUE);
+        adsBannerParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, departmentId);
+        adsBannerParams.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
+        adsBannerParams.getParam().put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
+
+        Config configAdsBanner = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(userSession.getUserId())
+                .setEndpoint(Endpoint.CPM)
+                .topAdsParams(adsBannerParams)
+                .build();
+        topAdsBannerView.setConfig(configAdsBanner);
+        topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
+            @Override
+            public void onBannerAdsClicked(int position, String appLink, CpmData data) {
+                TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
+                if (router.isSupportedDelegateDeepLink(appLink)) {
+                    router.actionApplink(getActivity(), appLink);
+                } else if (appLink != "") {
+                    Intent intent = new Intent(getContext(), BannerWebView.class);
+                    intent.putExtra("url", appLink);
+                    startActivity(intent);
+                }
+                if(appLink.contains(SHOP)) {
+                    TopAdsGtmTracker.eventIntermediaryShopPromoClick(getContext(), data, position);
+                } else {
+                    TopAdsGtmTracker.eventIntermediaryProductPromoClick(getContext(), data, position);
+                }
+            }
+        });
+        topAdsBannerView.setTopAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionHeadlineAdsItem(int position, CpmData data) {
+                TopAdsGtmTracker.eventIntermediaryPromoView(getContext(), data, position);
+            }
+        });
+        topAdsBannerView.loadTopAds();
     }
 
     @Override
@@ -249,7 +385,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
             expandLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UnifyTracking.eventShowMoreCategory(departmentId);
+                    eventExpandCategoryIntermediary(departmentId);
                     categoryAdapter.addDataChild(childCategoryModelList
                             .subList(9, childCategoryModelList.size()));
                     expandLayout.setVisibility(View.GONE);
@@ -274,6 +410,15 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         }
     }
 
+    private void eventExpandCategoryIntermediary(String parentCategory){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCategory,
+                AppEventTracking.Action.NAVIGATION_CLICK,
+                AppEventTracking.EventLabel.EXPAND_SUB_CATEGORY
+        ).getEvent());
+    }
+
     @Override
     public void renderCuratedProducts(List<CuratedSectionModel> curatedSectionModelList) {
         curationRecyclerView.setHasFixedSize(true);
@@ -291,11 +436,17 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     @Override
+    public void trackEventEnhance(Map<String, Object> maps) {
+        CategoryPageTracking.eventEnhance(getActivity(), maps);
+    }
+
+    @Override
     public void renderHotList(List<HotListModel> hotListModelList) {
         cardViewHotList.setVisibility(View.VISIBLE);
 
         HotListItemAdapter hotListItemAdapter = new HotListItemAdapter(hotListModelList,
                 getCategoryWidth(), getActivity(), departmentId);
+        hotListItemAdapter.registerListener(this);
 
         hotListRecyclerView.setHasFixedSize(true);
         hotListRecyclerView.setNestedScrollingEnabled(false);
@@ -310,7 +461,8 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     public void renderBanner(List<BannerModel> bannerModelList) {
         bannerHandler = new Handler();
         incrementPage = runnableIncrement();
-        bannerPagerAdapter = new BannerPagerAdapter(getActivity(), bannerModelList);
+        this.bannerModelList = bannerModelList;
+        bannerPagerAdapter = new BannerPagerAdapter(getActivity(), bannerModelList, departmentId, this);
         banner = getActivity().getLayoutInflater().inflate(R.layout.banner_intermediary, bannerContainer);
         bannerViewPager = (ViewPager) banner.findViewById(R.id.view_pager_intermediary);
         bannerIndicator = (CirclePageIndicator) banner.findViewById(R.id.indicator_intermediary);
@@ -324,6 +476,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         DisplayMetrics metrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
         bannerViewPager.setLayoutParams(param);
+        bannerContainer.setVisibility(View.VISIBLE);
         headerContainer.setVisibility(View.GONE);
         if (bannerModelList.size() == 1) bannerIndicator.setVisibility(View.GONE);
         startSlide();
@@ -337,6 +490,28 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
             @Override
             public void onPageSelected(int position) {
+                BannerModel model = bannerModelList.get(position);
+                if (!model.isTracked()) {
+                    trackEventEnhance(DataLayer.mapOf(
+                            "event", "promoView",
+                            "eventCategory", "intermediary page",
+                            "eventAction", "banner impression - " + departmentId,
+                            "eventLabel", model.getTitle() + " - " + model.getApplink(),
+                            "ecommerce", DataLayer.mapOf(
+                                    "promoView", DataLayer.mapOf(
+                                            "promotions", DataLayer.listOf(DataLayer.mapOf(
+                                                    "id", model.getTitle(),
+                                                    "name", "/intermediary/" + model.getCategoryName() + " - p1 - slider banner",
+                                                    "position", model.getPosition(),
+                                                    "creative", model.getTitle(),
+                                                    "creative_url", model.getApplink(),
+                                                    "category", model.getCategoryName()
+                                            ))
+                                    )
+
+                            )));
+                    model.setTracked(true);
+                }
                 stopSlide();
                 startSlide();
             }
@@ -388,7 +563,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(getContext().getApplicationContext())
                 .equals(YouTubeInitializationResult.SUCCESS)) {
 
-            placeHolderVideo.addView(new YoutubeViewHolder(getContext(), videoModel.getVideoUrl()));
+            placeHolderVideo.addView(new YoutubeViewHolder(getContext(), videoModel.getVideoUrl(), videoModel.getTitle(), departmentId, youTubeThumbnailLoadInProcessListener));
 
         } else {
             placeHolderVideo.addView(new YoutubeWebViewThumbnail(getContext(), videoModel.getVideoUrl()));
@@ -430,12 +605,27 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @Override
     public void skipIntermediaryPage() {
         if (isAdded()) {
-            BrowseProductActivity.moveToWithoutAnimation(
+            stopFirebaseTrace();
+            CategoryActivity.moveTo(
                     getActivity(),
                     departmentId,
-                    TopAdsApi.SRC_DIRECTORY,
-                    BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
-                    ((IntermediaryActivity) getActivity()).getCategoryName()
+                    ((IntermediaryActivity) getActivity()).getCategoryName(),
+                    true,
+                    trackerAttribution
+            );
+            getActivity().overridePendingTransition(0, 0);
+            getActivity().finish();
+        }
+    }
+
+    @Override
+    public void skipIntermediaryPage(CategoryHadesModel categoryHadesModel) {
+        if (isAdded()) {
+            CategoryActivity.moveTo(
+                    getActivity(),
+                    CategoryHeaderModel.convertIntermediaryToCategoryHeader(categoryHadesModel),
+                    true,
+                    trackerAttribution
             );
             getActivity().overridePendingTransition(0, 0);
             getActivity().finish();
@@ -444,7 +634,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void backToTop() {
-        nestedScrollView.smoothScrollTo(0, 0);
+        nestedScrollView.fullScroll(NestedScrollView.FOCUS_UP);
     }
 
     @Override
@@ -455,7 +645,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.eventDiscoveryScreenAuth(departmentId);
+        ScreenTracking.eventDiscoveryScreenAuth(getActivity(), departmentId);
     }
 
     @Override
@@ -481,31 +671,65 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
-        return (int) (width / 2);
+        return width / 2;
     }
 
-    @OnClick(R2.id.category_view_all)
     public void viewAllCategory() {
-        BrowseProductActivity.moveTo(
+        trackEventEnhance(DataLayer.mapOf(
+                "event", "clickIntermediary",
+                "eventCategory", "intermediary page",
+                "eventAction", "click see all - " + departmentId,
+                "eventLabel", parentCategoryName));
+        CategoryActivity.moveTo(
                 getActivity(),
                 departmentId,
-                TopAdsApi.SRC_DIRECTORY,
-                BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
-                ((IntermediaryActivity) getActivity()).getCategoryName()
+                ((IntermediaryActivity) getActivity()).getCategoryName(),
+                true,
+                ""
         );
+        getActivity().finish();
     }
 
     @Override
     public void onItemClicked(ProductModel productModel, String curatedName) {
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
-                Integer.toString(productModel.getId()));
+        trackEventEnhance(createClickProductDataLayer(productModel));
+        Bundle bundle = new Bundle();
+        Intent intent = getProductIntent(String.valueOf(productModel.getId()));
+        bundle.putString("tracker_attribution", productModel.getTrackerAttribution());
+        bundle.putString("tracker_list_name", productModel.getTrackerListName());
+        intent.putExtras(bundle);
         getActivity().startActivity(intent);
-        UnifyTracking.eventCuratedIntermediary(departmentId,
+        eventCuratedIntermediary(departmentId,
                 curatedName, productModel.getName());
     }
 
+    public void eventCuratedIntermediary(String parentCat, String curatedProductName,
+                                                String productName) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.CURATED + " " + curatedProductName,
+                productName);
+    }
+
+    private Map<String, Object> createClickProductDataLayer(ProductModel product) {
+        return DataLayer.mapOf("event", "productClick",
+                "eventCategory", "intermediary page",
+                "eventAction", "click product list - " + departmentId,
+                "eventLabel", String.valueOf(product.getId()),
+                "ecommerce", DataLayer.mapOf(
+                        "click", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf("list", product.getTrackerListName()),
+                                "products", DataLayer.listOf(
+                                        product.generateClickDataLayer()
+                                )
+                        )
+                )
+        );
+    }
+
     @Override
-    public void onTopAdsLoaded() {
+    public void onTopAdsLoaded(List<Item> list) {
         hideLoading();
         topAdsView.setVisibility(View.VISIBLE);
         backToTop();
@@ -517,42 +741,88 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     @Override
-    public void onProductItemClicked(Product product) {
-        ProductItem data = new ProductItem();
-        data.setId(product.getId());
-        data.setName(product.getName());
-        data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_url());
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
+    public void onProductItemClicked(int position, Product product) {
+        Intent intent = getProductIntent(product.getId());
+        getActivity().startActivity(intent);
+        TopAdsGtmTracker.eventIntermediaryProductClick(getContext(), "", product, position);
+    }
+
+    private Intent getProductIntent(String productId){
+        if (getActivity() != null) {
+            return RouteManager.getIntent(getActivity(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void onShopItemClicked(int position, Shop shop) {
+        Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
         getActivity().startActivity(intent);
     }
 
     @Override
-    public void onShopItemClicked(Shop shop) {
-        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        intent.putExtras(bundle);
-        getActivity().startActivity(intent);
-    }
-
-    @Override
-    public void onAddFavorite(Data shopData) {
+    public void onAddFavorite(int position, Data shopData) {
         //TODO: this listener not used in this sprint
     }
 
     @Override
-    public void onCategoryRevampClick(ChildCategoryModel child) {
-        BrowseProductActivity.moveTo(
+    public void onCategoryRevampClick(ChildCategoryModel child, int pos) {
+        CategoryActivity.moveToDestroyIntermediary(
                 getActivity(),
                 child.getCategoryId(),
-                TopAdsApi.SRC_DIRECTORY,
-                BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
-                child.getCategoryName()
+                child.getCategoryName(),
+                true
         );
-        UnifyTracking.eventLevelCategoryIntermediary(departmentId, child.getCategoryId());
+        trackEventEnhance(DataLayer.mapOf(
+                "event", "promoClick",
+                "eventCategory", "intermediary page",
+                "eventAction", "click subcategory",
+                "eventLabel", child.getCategoryId(),
+                "ecommerce", DataLayer.mapOf(
+                        "promoClick", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(DataLayer.mapOf(
+                                        "id", child.getCategoryId(),
+                                        "name", "/intermediary/" + parentCategory + " - p" + (pos + 1) + " - subcategory",
+                                        "position", String.valueOf(pos + 1),
+                                        "creative", child.getCategoryName(),
+                                        "creative_url", child.getCategoryImageUrl(),
+                                        "category", parentCategoryName
+                                ))
+                        )
+
+                )));
+        eventLevelCategoryIntermediary(departmentId, child.getCategoryId());
+    }
+
+    public void eventLevelCategoryIntermediary(String parentCat, String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.CATEGORY_LEVEL,
+                label);
+    }
+
+    @Override
+    public void sendCategoryImpressionTracking(ChildCategoryModel child, int pos) {
+        trackEventEnhance(DataLayer.mapOf(
+                "event", "promoView",
+                "eventCategory", "intermediary page",
+                "eventAction", "subcategory impression",
+                "eventLabel", child.getCategoryId(),
+                "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(DataLayer.mapOf(
+                                        "id", child.getCategoryId(),
+                                        "name", "/intermediary/" + parentCategory + " - p" + (pos + 1) + " - subcategory",
+                                        "position", String.valueOf(pos + 1),
+                                        "creative", child.getCategoryName(),
+                                        "creative_url", child.getCategoryImageUrl(),
+                                        "category", parentCategoryName
+                                ))
+                        )
+
+                )));
     }
 
     public String getDepartmentId() {
@@ -561,6 +831,42 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     public void setDepartmentId(String departmentId) {
         this.departmentId = departmentId;
+    }
+
+    public void setTrackerAttribution(String trackerAttribution) {
+        this.trackerAttribution = trackerAttribution;
+    }
+
+    @Override
+    public String getTrackerAttribution() {
+        if (trackerAttribution == null || trackerAttribution.isEmpty()) return "none/other";
+        else return trackerAttribution;
+    }
+
+    @Override
+    public boolean isUserHasLogin() {
+        return userSession.isLoggedIn();
+    }
+
+    @Override
+    public void launchLoginActivity(Bundle extras) {
+        Intent intent = ((DiscoveryRouter) MainApplication.getAppContext()).getLoginIntent
+                (getActivity());
+        intent.putExtras(extras);
+        startActivityForResult(intent, REQUEST_CODE_LOGIN);
+    }
+
+    @Override
+    public String getUserId() {
+        return userSession.getUserId();
+    }
+
+    @Override
+    public void stopFirebaseTrace() {
+        if (performanceMonitoring != null && !isTraceStopped) {
+            performanceMonitoring.stopTrace();
+            isTraceStopped = true;
+        }
     }
 
     private GridLayoutManager.SpanSizeLookup onSpanSizeLookup() {
@@ -581,10 +887,210 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     @Override
-    public void onBrandClick(BrandModel brandModel) {
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        intent.putExtras(ShopInfoActivity.createBundle(brandModel.getId(), ""));
+    public void onBrandClick(BrandModel brandModel, int position) {
+        eventOfficialStoreIntermediary(departmentId, brandModel.getBrandName());
+        Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), brandModel.getId());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
+        trackEventEnhance(DataLayer.mapOf(
+                "event", "promoClick",
+                "eventCategory", "intermediary page",
+                "eventAction", "click official store - " + departmentId,
+                "eventLabel", brandModel.getId(),
+                "ecommerce", DataLayer.mapOf(
+                        "promoClick", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(DataLayer.mapOf(
+                                        "id", brandModel.getId(),
+                                        "name", "/intermediary/" + parentCategory + " - p" + position + 1 + " - slider banner",
+                                        "position", String.valueOf(position + 1),
+                                        "creative", brandModel.getBrandName(),
+                                        "creative_url", brandModel.getImageUrl(),
+                                        "category", parentCategoryName
+                                ))
+                        )
+
+                )));
+    }
+
+    private void eventOfficialStoreIntermediary(String parentCat, String brandName){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.OFFICIAL_STORE_CLICK,
+                brandName);
+    }
+
+    @Override
+    public void sendBrandImpressionEvent(BrandModel model, int pos) {
+        trackEventEnhance(DataLayer.mapOf(
+                "event", "promoView",
+                "eventCategory", "intermediary page",
+                "eventAction", "official store impression - " + departmentId,
+                "eventLabel", model.getId(),
+                "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(DataLayer.mapOf(
+                                        "id", model.getId(),
+                                        "name", "/intermediary/" + parentCategory + " - p" + (pos + 1) + " - hotlist",
+                                        "position", String.valueOf(pos + 1),
+                                        "creative", model.getBrandName(),
+                                        "creative_url", model.getImageUrl(),
+                                        "category", parentCategoryName
+                                ))
+                        )
+
+                )));
+    }
+
+    @Override
+    public void onPromoClick(int pos, String categoryName, String name, String applink, String url, String imgurl) {
+        trackEventEnhance(DataLayer.mapOf(
+                "event", "promoClick",
+                "eventCategory", "intermediary page",
+                "eventAction", "click banner - " + departmentId,
+                "eventLabel", name + " - " + applink,
+                "ecommerce", DataLayer.mapOf(
+                        "promoClick", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(DataLayer.mapOf(
+                                        "id", name,
+                                        "name", "/intermediary/" + parentCategory + " - p" + pos + " - slider banner",
+                                        "position", String.valueOf(pos),
+                                        "creative", name,
+                                        "creative_url", imgurl,
+                                        "category", parentCategoryName
+                                ))
+                        )
+
+                )));
+        if (getActivity() != null
+                && getActivity().getApplicationContext() instanceof TkpdCoreRouter
+                && !TextUtils.isEmpty(applink)
+                && ((TkpdCoreRouter) getActivity().getApplicationContext())
+                .isSupportedDelegateDeepLink(applink)) {
+            ((TkpdCoreRouter) getActivity().getApplicationContext())
+                    .actionApplink(getActivity(), applink);
+        } else {
+            switch ((DeepLinkChecker.getDeepLinkType(url))) {
+                case DeepLinkChecker.BROWSE:
+                    DeepLinkChecker.openBrowse(url, getActivity());
+                    break;
+                case DeepLinkChecker.HOT:
+                    DeepLinkChecker.openHot(url, getActivity());
+                    break;
+                case DeepLinkChecker.CATALOG:
+                    DeepLinkChecker.openCatalog(url, getActivity());
+                    break;
+                default:
+                    Intent intent = new Intent(getActivity(), BannerWebView.class);
+                    intent.putExtra("url", url);
+                    startActivity(intent);
+            }
+        }
+    }
+
+    public void viewAllOfficialStores() {
+        if (getActivity() != null) {
+            RouteManager.route(getActivity(), ApplinkConst.OFFICIAL_STORES);
+        }
+    }
+
+    @Override
+    public void sendHotlistImpressionEvent(HotListModel model, int pos) {
+        trackEventEnhance(DataLayer.mapOf(
+                "event", "promoView",
+                "eventCategory", "intermediary page",
+                "eventAction", "hotlist curation impression - " + departmentId,
+                "eventLabel", model.getTitle() + " - " + model.getUrl(),
+                "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(DataLayer.mapOf(
+                                        "id", model.getId(),
+                                        "name", "/intermediary/" + parentCategory + " - p" + (pos + 1) + " - hotlist",
+                                        "position", pos + 1,
+                                        "creative", model.getTitle(),
+                                        "creative_url", model.getImageUrl(),
+                                        "category", parentCategoryName
+                                ))
+                        )
+
+                )));
+    }
+
+    @Override
+    public void sendHotlistClickEvent(HotListModel hotListModel, int pos) {
+        eventHotlistIntermediary(departmentId, hotListModel.getTitle());
+        String url = hotListModel.getUrl();
+        URLParser urlParser = new URLParser(url);
+        switch (urlParser.getType()) {
+            case HOT_KEY:
+                startActivity(
+                        BrowseProductRouter.getHotlistIntent(getContext(), url));
+                break;
+            case CATALOG_KEY:
+                startActivity(
+                        DetailProductRouter.getCatalogDetailActivity(getContext(), urlParser.getHotAlias()));
+                break;
+            case TOPPICKS_KEY:
+                if (!TextUtils.isEmpty(url)) {
+                    startActivity(TopPicksWebView.newInstance(getContext(), url));
+                }
+                break;
+            case SEARCH:
+                Uri uriData = Uri.parse(url);
+                Bundle bundle = new Bundle();
+
+                String departmentId = uriData.getQueryParameter("sc");
+                String searchQuery = uriData.getQueryParameter("q");
+
+                bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
+                bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
+
+                Intent intent = BrowseProductRouter.getSearchProductIntent(getContext());
+                intent.putExtras(bundle);
+
+                startActivity(intent);
+                break;
+            default:
+                CategoryActivity.moveTo(
+                        getContext(),
+                        url
+                );
+                break;
+        }
+        trackEventEnhance(DataLayer.mapOf(
+                "event", "promoClick",
+                "eventCategory", "intermediary page",
+                "eventAction", "click hotlist curation - " + departmentId,
+                "eventLabel", hotListModel.getTitle() + " - " + hotListModel.getUrl(),
+                "ecommerce", DataLayer.mapOf(
+                        "promoClick", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(DataLayer.mapOf(
+                                        "id", hotListModel.getId(),
+                                        "name", "/intermediary/" + parentCategory + " - p" + pos + 1 + " - hotlist",
+                                        "position", String.valueOf(pos + 1),
+                                        "creative", hotListModel.getTitle(),
+                                        "creative_url", hotListModel.getImageUrl(),
+                                        "category", parentCategoryName
+                                ))
+                        )
+
+                )));
+
+    }
+
+    public void eventHotlistIntermediary(String parentCat, String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.HOTLIST,
+                label);
+    }
+
+    private class SeeAllOfficialOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            IntermediaryAnalytics.eventClickSeeAllOfficialStores();
+            viewAllOfficialStores();
+        }
     }
 }

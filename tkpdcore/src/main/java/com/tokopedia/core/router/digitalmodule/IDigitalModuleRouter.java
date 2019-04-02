@@ -1,27 +1,22 @@
 package com.tokopedia.core.router.digitalmodule;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 
 /**
  * @author anggaprasetiyo on 2/23/17.
+ * please use DigitalRouter in digital module for the future development features
+ *
  */
 
 public interface IDigitalModuleRouter {
 
-    int REQUEST_CODE_CART_DIGITAL = 216;
-    int REQUEST_CODE_LOGIN = 221;
-    int REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER = 217;
-    int REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER = 218;
-    int REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220;
-    int REQUEST_CODE_CONTACT_PICKER = 219;
+    boolean isSupportedDelegateDeepLink(String appLinks);
 
-    String EXTRA_MESSAGE = "EXTRA_MESSAGE";
+    void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle);
 
-    Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData);
-
-    Intent instanceIntentDigitalProduct(DigitalCategoryDetailPassData passData);
-
+    Intent getLoginIntent(Context context);
 }

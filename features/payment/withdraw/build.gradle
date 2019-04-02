@@ -1,0 +1,72 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+project.ext {
+    artifactId = "${artifactIdWithdraw}"
+    groupId = "${groupIdPayment}"
+    versionName = "${paymentGroupVersion}"
+    artifactName = "${artifactIdWithdraw}-release"
+}
+
+
+dependencies {
+    
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.features.settingbank)
+    implementation project(rootProject.ext.features.changepassword)
+
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
+        exclude group: 'com.android.support'
+    }
+
+    implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
+        exclude group: "com.android.support"
+    }
+
+    implementation rootProject.ext.playServicesDependencies.analytics
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation(rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
+    }
+
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
+}
+
+apply from: '../../../publish_local.gradle'

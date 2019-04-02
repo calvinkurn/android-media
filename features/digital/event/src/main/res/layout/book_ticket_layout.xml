@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent"
+    android:orientation="vertical">
+
+    <android.support.design.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        tools:context="com.tokopedia.events.view.activity.EventBookTicketActivity">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/collapse_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:titleEnabled="false">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:descendantFocusability="blocksDescendants"
+                    android:orientation="vertical">
+
+                    <include
+                        android:id="@+id/seating_layout_card"
+                        layout="@layout/seating_layout" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="@color/grey_100" />
+                </LinearLayout>
+            </android.support.design.widget.CollapsingToolbarLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_2"
+                android:background="@color/grey_100" />
+        </android.support.design.widget.AppBarLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:elevation="@dimen/dp_4"
+                tools:targetApi="lollipop">
+
+                <TextView
+                    android:id="@+id/tv_jadwal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:paddingEnd="@dimen/dp_16"
+                    android:paddingLeft="@dimen/dp_16"
+                    android:paddingRight="@dimen/dp_16"
+                    android:paddingStart="@dimen/dp_16"
+                    android:text="@string/jadwal"
+                    android:textColor="@color/black_54"
+                    android:textSize="@dimen/sp_12" />
+
+                <TextView
+                    android:id="@+id/tv_ubah_jadwal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:paddingEnd="@dimen/dp_16"
+                    android:paddingLeft="@dimen/dp_16"
+                    android:paddingRight="@dimen/dp_16"
+                    android:paddingStart="@dimen/dp_16"
+                    android:text="@string/ubah_jadwal"
+                    android:textColor="@color/green_nob"
+                    android:textSize="@dimen/sp_12"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_location_bta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/tv_jadwal"
+                    android:layout_marginTop="@dimen/dp_4"
+                    android:paddingEnd="@dimen/dp_16"
+                    android:paddingStart="@dimen/dp_16"
+                    android:text="@string/rp_5980000"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/sp_14"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_day_time_bta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_location_bta"
+                    android:layout_marginBottom="@dimen/dp_16"
+                    android:paddingEnd="@dimen/dp_16"
+                    android:paddingStart="@dimen/dp_16"
+                    android:text="@string/rp_5980000"
+                    android:textColor="@color/black_54"
+                    android:textSize="@dimen/sp_14" />
+            </RelativeLayout>
+
+            <FrameLayout
+                android:id="@+id/bookticket_fragment_holder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        </LinearLayout>
+
+
+    </android.support.design.widget.CoordinatorLayout>
+
+    <RelativeLayout
+        android:id="@+id/button_count_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/white"
+        android:elevation="@dimen/dp_4"
+        android:visibility="invisible"
+        tools:targetApi="lollipop">
+
+        <TextView
+
+            android:id="@+id/tiket"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="TIKET:"
+            android:textColor="@color/black_70"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/ticketcount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tiket"
+            android:layout_alignStart="@+id/tiket"
+            android:layout_below="@+id/tiket"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_3"
+            android:layout_toLeftOf="@+id/totalprice"
+            android:maxLines="1"
+            android:textColor="@color/green_nob"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold"
+            tools:text="1 x Festival" />
+
+        <TextView
+            android:id="@+id/total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="TOTAL:"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/sp_10"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/totalprice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/ticketcount"
+            android:layout_below="@+id/total"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:textColor="@color/red_800"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold"
+            tools:text="TOTAL:" />
+
+
+        <include
+            android:id="@+id/pay_tickets"
+            layout="@layout/btn_lanjuktan_simple"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ticketcount"
+            android:layout_gravity="bottom"
+            android:visibility="visible" />
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:background="@color/black_12"
+        android:clickable="true"
+        android:elevation="@dimen/dp_4"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/prog_bar"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:subtitleTextAppearance="@style/EventToolbarTextStyle"
+            app:theme="@style/AppBarTheme"
+            app:titleTextAppearance="@style/EventToolbarTextStyle" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black_12" />
+
+    </LinearLayout>
+
+</FrameLayout>

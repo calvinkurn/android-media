@@ -8,12 +8,17 @@ import java.util.List;
 
 public class GetPeopleAddress {
 
-    @SerializedName("paging")
-    @Expose
-    private Paging paging;
     @SerializedName("list")
     @Expose
     private List<AddressModel> list = new ArrayList<>();
+
+    @SerializedName("paging")
+    @Expose
+    private Paging paging;
+
+    @SerializedName("token")
+    @Expose
+    private Token token;
 
     /**
      * 
@@ -51,4 +56,11 @@ public class GetPeopleAddress {
         this.list = list;
     }
 
+    public Token getToken() {
+        return token;
+    }
+
+    public void setToken(Token token) {
+        this.token = token;
+    }
 }

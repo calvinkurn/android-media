@@ -9,8 +9,8 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 
@@ -20,6 +20,11 @@ import butterknife.ButterKnife;
 /**
  * Created by Nisie on 2/26/16.
  */
+
+/**
+ * Use base adapter with visitor pattern from tkpd abstraction
+ */
+@Deprecated
 public class NoResultDataBinder extends DataBinder<NoResultDataBinder.ViewHolder> {
 
     protected boolean isFullScreen = false;

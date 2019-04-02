@@ -7,9 +7,10 @@ package com.tokopedia.transaction.exception;
 public class ResponseErrorException extends Exception {
 
     private static final long serialVersionUID = 713361211323198507L;
+    private static final String GENERAL_ORDER_DETAIL_RESPONSE_ERROR = "General OrderDetailResponseError";
 
     public ResponseErrorException() {
-        super("General Error");
+        super(GENERAL_ORDER_DETAIL_RESPONSE_ERROR);
     }
 
     public ResponseErrorException(String detailMessage) {

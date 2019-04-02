@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,7 +14,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -21,23 +21,26 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.android.gms.location.places.AutocompletePrediction;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
+import com.tokopedia.core.analytics.fingerprint.LocationCache;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.fragment.GoogleMapFragment;
 import com.tokopedia.core.geolocation.interactor.RetrofitInteractor;
 import com.tokopedia.core.geolocation.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.geolocation.listener.GoogleMapView;
-import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.core.geolocation.model.autocomplete.viewmodel.PredictionResult;
+import com.tokopedia.core.geolocation.model.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+
 
 /**
  * Created by hangnadi on 1/31/16.
@@ -55,6 +58,7 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     private final RetrofitInteractor retrofitInteractor;
     private final GoogleApiClient googleApiClient;
     private final LocationRequest locationRequest;
+    private final boolean hasLocation;
 
     private Context context;
 
@@ -63,7 +67,11 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
 
     private LocationPass locationPass;
 
-    public GoogleMapPresenterImpl(Context context, GoogleMapFragment googleMapFragment, LocationPass locationPass) {
+    public GoogleMapPresenterImpl(
+            Context context,
+            GoogleMapFragment googleMapFragment,
+            LocationPass locationPass,
+            boolean hasLocation) {
         this.context = context;
         this.view = googleMapFragment;
         this.retrofitInteractor = new RetrofitInteractorImpl();
@@ -79,23 +87,27 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
                 .build();
         this.isAllowGenerateAddress = true;
         this.locationPass = locationPass;
+        this.hasLocation = hasLocation;
+        if(hasLocation)
+        {
+            Location location = new Location(LocationManager.NETWORK_PROVIDER);
+            location.setLatitude(Double.parseDouble(locationPass.getLatitude()));
+            location.setLongitude(Double.parseDouble(locationPass.getLongitude()));
+            new LocationCache(context).saveLocation(context, location);
+        }
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(TAG, "onLocationChanged");
+        Log.d(TAG, "PORING onLocationChanged");
         view.moveMap(GeoLocationUtils.generateLatLng(location.getLatitude(), location.getLongitude()));
+        new LocationCache(context).saveLocation(context, location);
         removeLocationUpdate();
     }
 
     @Override
     public void onGoogleApiConnected(Bundle bundle) {
         Log.d(TAG, "onGoogleApiConnected");
-        if (locationPass == null) {
-            getNewLocation();
-        } else {
-            getExistingLocation();
-        }
     }
 
     private void getNewLocation() {
@@ -103,7 +115,6 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     }
 
     private void getExistingLocation() {
-        setExistingLocationState(true);
         view.moveMap(GeoLocationUtils.generateLatLng(locationPass.getLatitude(), locationPass.getLongitude()));
     }
 
@@ -112,13 +123,14 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     }
 
     private void checkLocationSettings() {
-        LocationSettingsRequest locationSettingsRequest = new LocationSettingsRequest.Builder()
-                .addLocationRequest(locationRequest)
-                .build();
+        LocationSettingsRequest.Builder locationSettingsRequest = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+
+        locationSettingsRequest.setAlwaysShow(true);
 
         PendingResult<LocationSettingsResult> result =
                 LocationServices.SettingsApi
-                        .checkLocationSettings(googleApiClient, locationSettingsRequest);
+                        .checkLocationSettings(googleApiClient, locationSettingsRequest.build());
 
         view.checkLocationSettings(result);
     }
@@ -157,11 +169,12 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
         try {
             if (isServiceConnected()) {
                 Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+                new LocationCache(context).saveLocation(context, location);
                 return new LatLng(location.getLatitude(), location.getLongitude());
             } else {
                 return DEFAULT_LATLNG_JAKARTA;
             }
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             return DEFAULT_LATLNG_JAKARTA;
         }
     }
@@ -283,19 +296,22 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     private void saveLatLng(LatLng target) {
         LocalCacheHandler cache = new LocalCacheHandler(context, CACHE_LATITUDE_LONGITUDE);
         cache.putString(CACHE_LATITUDE, String.valueOf(target.latitude));
-                cache.putString(CACHE_LONGITUDE, String.valueOf(target.longitude));
-                cache.applyEditor();
+        cache.putString(CACHE_LONGITUDE, String.valueOf(target.longitude));
+        cache.applyEditor();
     }
 
     @Override
     public void prepareAutoCompleteView() {
-        view.initAutoCompleteAdapter(googleApiClient, setDefaultBoundsJakarta());
+        view.initAutoCompleteAdapter(retrofitInteractor.getCompositeSubscription(),
+                retrofitInteractor.getMapService(),
+                retrofitInteractor.getMapRepository(),
+                googleApiClient, setDefaultBoundsJakarta());
         view.setAutoCompleteAdaoter();
     }
 
     @Override
     public void prepareDetailDestination(View rootview) {
-        if (locationPass != null) {
+        if (hasLocation) {
             if (locationPass.getManualAddress() == null) {
                 view.hideDetailDestination();
             } else {
@@ -307,37 +323,33 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
         }
     }
 
+    @Override
+    public void onMapReady() {
+        if (!hasLocation) {
+            getNewLocation();
+        } else {
+            getExistingLocation();
+        }
+    }
+
     private LatLngBounds setDefaultBoundsJakarta() {
         return GeoLocationUtils.generateBoundary(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
     }
 
     @Override
     public void onSuggestionItemClick(AdapterView<?> adapter, int position) {
-        final AutocompletePrediction item = (AutocompletePrediction) adapter.getItemAtPosition(position);
+        final PredictionResult item = (PredictionResult) adapter.getItemAtPosition(position);
         final String placeID = item.getPlaceId();
-        final CharSequence primaryText = item.getPrimaryText(null);
+        final CharSequence primaryText = item.getMainText();
 
         Log.d(TAG, "AutoComplete item selected: " + primaryText);
 
-        PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(googleApiClient, placeID);
-
-        placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
-            @Override
-            public void onResult(PlaceBuffer places) {
-                if (!places.getStatus().isSuccess()) {
-
-                    Log.d(TAG, "Place query did not complete.\n" +
-                            "Error: " + places.getStatus().toString());
-
-                    view.toastMessage("ERROR GOOGLE API CONNECTION");
-                } else {
-
-                    Place place = places.get(0);
-                    view.moveMap(place.getLatLng());
-                }
-                places.release();
-            }
-        });
+        //TODO summon service di sini
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("placeid", placeID);
+        retrofitInteractor.generateLatLng(context,
+                AuthUtil.generateParamsNetwork(context, param),
+                latLongListener());
     }
 
     @Override
@@ -348,6 +360,7 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
             Intent intent = new Intent();
             intent.putExtras(bundle);
             intent.putExtra(GeolocationActivity.EXTRA_EXISTING_LOCATION, locationPass);
+//            intent.putExtra(GeolocationActivity.EXTRA_HASH_LOCATION, bundleLocationMap(locationPass));
             activity.setResult(Activity.RESULT_OK, intent);
             activity.finish();
         }
@@ -371,4 +384,19 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     public void onDestroy() {
         retrofitInteractor.unSubscribe();
     }
+
+    private RetrofitInteractor.GenerateLatLongListener latLongListener() {
+        return new RetrofitInteractor.GenerateLatLongListener() {
+            @Override
+            public void onSuccess(CoordinateViewModel model) {
+                view.moveMap(model.getCoordinate());
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+
+            }
+        };
+    }
+
 }

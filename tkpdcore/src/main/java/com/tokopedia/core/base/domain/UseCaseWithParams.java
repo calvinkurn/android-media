@@ -14,6 +14,12 @@ import rx.subscriptions.Subscriptions;
  * @author erry on 23/02/17.
  */
 
+/**
+ * Extends usecase from tkpd usecase and move to specific module for specific need (Only used in tkpd discovery)
+ * @param <P>
+ * @param <T>
+ */
+@Deprecated
 public abstract class UseCaseWithParams
         <P extends DefaultParams, T> implements InteractorParams<P, T> {
 

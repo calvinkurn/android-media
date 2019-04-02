@@ -9,14 +9,20 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.tokopedia.core.R;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.geolocation.fragment.GoogleMapFragment;
 import com.tokopedia.core.geolocation.listener.GeolocationView;
-import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.listener.ITransactionAnalyticsGeoLocationPinPoint;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.geolocation.presenter.GeolocationPresenter;
 import com.tokopedia.core.geolocation.presenter.GeolocationPresenterImpl;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+
+import java.util.HashMap;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -30,17 +36,43 @@ import permissions.dispatcher.RuntimePermissions;
  */
 @RuntimePermissions
 public class GeolocationActivity extends BasePresenterActivity<GeolocationPresenter>
-        implements GeolocationView {
+        implements GeolocationView, ITransactionAnalyticsGeoLocationPinPoint {
 
     public static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
+    public static final String EXTRA_IS_FROM_MARKETPLACE_CART = "EXTRA_IS_FROM_CHECKOUT_CART";
+    public static final String EXTRA_HASH_LOCATION = "EXTRA_HASH_LOCATION";
 
     private Bundle bundleData;
     private Uri uriData;
+    private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
-    public static Intent createInstance(@NonNull Context context, @Nullable LocationPass locationPass) {
+    // Address -> Router
+    public static Intent createInstanceFromAddress(@NonNull Context context,
+                                                   @Nullable HashMap<String, String> locationPass,
+                                                   boolean isFromMarketPlaceCart) {
+        Intent intent = new Intent(context, GeolocationActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(EXTRA_HASH_LOCATION, locationPass);
+        bundle.putBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, isFromMarketPlaceCart);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    // Shop Open -> Router
+    public static Intent createInstanceIntent(@NonNull Context context, @Nullable LocationPass locationPass) {
         Intent intent = new Intent(context, GeolocationActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_EXISTING_LOCATION, locationPass);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    // Shipment Fragment -> Direct dep
+    public static Intent createInstanceFromMarketplaceCart(@NonNull Context context, @Nullable LocationPass locationPass) {
+        Intent intent = new Intent(context, GeolocationActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_EXISTING_LOCATION, locationPass);
+        bundle.putBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, true);
         intent.putExtras(bundle);
         return intent;
     }
@@ -64,6 +96,13 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gojek);
         GeolocationActivityPermissionsDispatcher.initFragmentWithCheck(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        sendAnalyticsOnBackPressClicked();
+        super.onBackPressed();
+
     }
 
     @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -101,6 +140,10 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
 
     @Override
     protected void initVar() {
+        if (getApplication() instanceof AbstractionRouter) {
+            checkoutAnalyticsChangeAddress =
+                    new CheckoutAnalyticsChangeAddress();
+        }
     }
 
     @Override
@@ -110,6 +153,16 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (getFragmentManager().findFragmentByTag(
+                GoogleMapFragment.class.getSimpleName()
+        ) != null) {
+            getFragmentManager()
+                    .findFragmentByTag(
+                            GoogleMapFragment.class.getSimpleName()
+                    ).onActivityResult(requestCode, resultCode, new Intent());
+        }
+
+        //presenter.replaceFragment(this, bundleData);
     }
 
     @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -133,5 +186,35 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         GeolocationActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
+
+    @Override
+    public void sendAnalyticsOnDropdownSuggestionItemClicked() {
+        if (bundleData.getBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, false))
+            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickDropdownSuggestionTandaiLokasiPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnSetCurrentMarkerAsCurrentPosition() {
+        if (bundleData.getBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, false))
+            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickVTandaiLokasiPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnBackPressClicked() {
+        if (bundleData.getBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, false))
+            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickBackArrowTandaiLokasiPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnGetCurrentLocationClicked() {
+        if (bundleData.getBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, false))
+            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickPinButtonFromTandaiLokasi();
+    }
+
+    @Override
+    public void sendAnalyticsOnViewErrorSetPinPointLocation(String errorMessage) {
+        if (bundleData.getBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, false))
+            checkoutAnalyticsChangeAddress.eventViewShippingCartChangeAddressViewValidationErrorTandaiLokasi(errorMessage);
     }
 }

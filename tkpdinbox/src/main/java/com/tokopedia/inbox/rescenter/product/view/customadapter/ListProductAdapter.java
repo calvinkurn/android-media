@@ -88,7 +88,11 @@ public class ListProductAdapter extends BaseLinearRecyclerViewAdapter {
     private void renderData(ListProductViewHolder holder, ListProductViewItem item) {
         ImageHandler.LoadImage(holder.productImage, item.getProductImageUrl());
         holder.productName.setText(item.getProductName());
-        holder.itemView.setOnClickListener(new OnProductClick(item.getResCenterProductID()));
+        holder.itemView.setOnClickListener(
+                new OnProductClick(
+                        item.getResCenterProductID(),
+                        item.getProductName()
+                ));
     }
 
     @Override
@@ -111,14 +115,16 @@ public class ListProductAdapter extends BaseLinearRecyclerViewAdapter {
 
     private class OnProductClick implements View.OnClickListener {
         private final String productID;
+        private final String productName;
 
-        public OnProductClick(String productID) {
+        public OnProductClick(String productID, String productName) {
             this.productID = productID;
+            this.productName = productName;
         }
 
         @Override
         public void onClick(View view) {
-            fragmentView.setOnProductItemClick(productID);
+            fragmentView.setOnProductItemClick(productID, productName);
         }
     }
 }

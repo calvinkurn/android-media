@@ -1,0 +1,67 @@
+query RateEstimate($weight: Float!, $domain: String!) {
+    rates_estimate(input: {weight: $weight, domain: $domain}) {
+        data{
+          address {
+            city_name
+            province_name
+            district_name
+            country
+            postal_code
+            address
+            lat
+            long
+            phone
+            addr_name
+           }
+           shop {
+               district_name
+               postal_code
+               origin
+               addr_street
+               latitude
+               longitude
+               city_name
+          }
+          rates {
+            id
+            type
+            attributes {
+              service_name
+              service_id
+              service_etd
+              service_order
+              service_range_price
+              service_notes
+              products {
+                shipper_name
+                shipper_id
+                shipper_product_id
+                shipper_product_name
+                shipper_product_desc
+                is_show_map
+                shipper_price
+                shipper_formatted_price
+                shipper_etd
+                min_etd
+                max_etd
+                shipper_weight
+                insurance_price
+                insurance_type
+                insurance_type_info
+                insurance_used_type
+                insurance_used_default
+                insurance_used_info
+                check_sum
+                ut
+                error_msg
+              }
+            }
+            texts {
+              text_min_price
+              text_destination
+            }
+          }
+        }
+        error_message
+    }
+}

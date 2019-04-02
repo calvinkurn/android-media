@@ -10,11 +10,14 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.util.RefreshHandler.OnRefreshHandlerListener;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inbox.adapter.ResCenterInboxAdapter;
 import com.tokopedia.inbox.rescenter.inbox.customviews.EndLessScrollBehavior;
@@ -24,9 +27,6 @@ import com.tokopedia.inbox.rescenter.inbox.model.ResCenterInboxItem;
 import com.tokopedia.inbox.rescenter.inbox.model.ResolutionList;
 import com.tokopedia.inbox.rescenter.inbox.presenter.InboxResCenterImpl;
 import com.tokopedia.inbox.rescenter.inbox.presenter.InboxResCenterPresenter;
-import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.core.util.RefreshHandler.OnRefreshHandlerListener;
-import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
 
@@ -115,7 +115,7 @@ public class InboxResCenterFragment extends BasePresenterFragment<InboxResCenter
         if (isVisibleToUser && snackbarRetry != null) {
             snackbarRetry.resumeRetrySnackbar();
         } else {
-            if (!isVisibleToUser && snackbarRetry != null)  snackbarRetry.pauseRetrySnackbar();
+            if (!isVisibleToUser && snackbarRetry != null) snackbarRetry.pauseRetrySnackbar();
         }
         super.setUserVisibleHint(isVisibleToUser);
         if (getView() != null && isVisibleToUser) {
@@ -349,7 +349,11 @@ public class InboxResCenterFragment extends BasePresenterFragment<InboxResCenter
 
     @Override
     public void setFilterAble(boolean isFilterAble) {
-        fab.setEnabled(isFilterAble);
+        if (isFilterAble)
+            fab.show();
+        else
+            fab.hide();
+
         fab.setClickable(isFilterAble);
         /**
          * if you need filter to be hidden
@@ -357,13 +361,13 @@ public class InboxResCenterFragment extends BasePresenterFragment<InboxResCenter
          * then
          * uncomment lines of code below
          *
-        if (isFilterAble) {
-            fab.animate().translationY(0).setInterpolator(new LinearInterpolator()).start();
-        } else {
-            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
-            int marginBottomFAB = layoutParams.bottomMargin;
-            fab.animate().translationY(fab.getHeight() + marginBottomFAB).setInterpolator(new LinearInterpolator()).start();
-        }
+         if (isFilterAble) {
+         fab.animate().translationY(0).setInterpolator(new LinearInterpolator()).start();
+         } else {
+         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
+         int marginBottomFAB = layoutParams.bottomMargin;
+         fab.animate().translationY(fab.getHeight() + marginBottomFAB).setInterpolator(new LinearInterpolator()).start();
+         }
          */
     }
 

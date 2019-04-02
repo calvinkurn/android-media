@@ -82,10 +82,11 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     private TxListUIReceiver txUIReceiver;
 
 
-    public static TxListFragment instanceStatusOrder() {
+    public static TxListFragment instanceStatusOrder(String txFilterID) {
         TxListFragment fragment = new TxListFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(TransactionPurchaseRouter.ARG_PARAM_EXTRA_INSTANCE_TYPE, INSTANCE_STATUS);
+        bundle.putString(TransactionPurchaseRouter.ARG_PARAM_EXTRA_INSTANCE_FILTER, txFilterID);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -94,6 +95,7 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
         TxListFragment fragment = new TxListFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(TransactionPurchaseRouter.ARG_PARAM_EXTRA_INSTANCE_TYPE, INSTANCE_RECEIVE);
+        bundle.putString(TransactionPurchaseRouter.ARG_PARAM_EXTRA_INSTANCE_FILTER, TransactionPurchaseRouter.TRANSACTION_DELIVERED_FILTER_ID);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -182,11 +184,13 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && !isLoading && getActivity() != null
                 && (txListAdapter == null || txListAdapter.getCount() == 0)) {
-            if (stateFilterListener != null) txFilterID = stateFilterListener.getStateTxFilterID();
-            allTxFilter.setFilter(txFilterID);
+            if (stateFilterListener != null && typeInstance == TransactionPurchaseRouter.INSTANCE_ALL) {
+                txFilterID = stateFilterListener.getStateTxFilterID();
+                allTxFilter.setFilter(txFilterID);
+            }
             refreshHandler.startRefresh();
             if (getView() != null) NetworkErrorHelper.hideEmptyState(getView());
-        } else if (isVisibleToUser && !isLoading && getActivity() != null) {
+        } else if (isVisibleToUser && !isLoading && getActivity() != null && typeInstance == TransactionPurchaseRouter.INSTANCE_ALL) {
             String txFilterBefore = allTxFilter.getFilter();
             if (stateFilterListener != null) txFilterID = stateFilterListener.getStateTxFilterID();
             allTxFilter.setFilter(txFilterID);
@@ -250,12 +254,14 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
 
     @Override
     public void showProgressLoading() {
-        progressDialog.showDialog();
+        if (progressDialog != null)
+            progressDialog.showDialog();
     }
 
     @Override
     public void hideProgressLoading() {
-        progressDialog.dismiss();
+        if (progressDialog != null)
+            progressDialog.dismiss();
     }
 
     @Override
@@ -264,6 +270,8 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
         if (view != null) Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
+
+
 
     @Override
     public void showDialog(Dialog dialog) {
@@ -524,6 +532,16 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     }
 
     @Override
+    public void actionComplain(OrderData orderData) {
+        presenter.processComplain(getActivity(), orderData);
+    }
+
+    @Override
+    public void actionComplainConfirmDeliver(OrderData orderData) {
+        presenter.processComplainConfirmDeliver(getActivity(), orderData);
+    }
+
+    @Override
     public void onRefresh(View view) {
         if (!isLoading) {
             pagingHandler.resetPage();
@@ -570,6 +588,8 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         presenter.onActivityResult(getActivity(), requestCode, resultCode, data);
+        resetData();
+        onRefresh(getView());
     }
 
     private void initialData() {
@@ -582,22 +602,10 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     private void getData(int typeRequest) {
         fabFilter.hide();
         if (getView() != null) NetworkErrorHelper.hideEmptyState(getView());
-        switch (typeInstance) {
-            case TransactionPurchaseRouter.INSTANCE_ALL:
-                isLoading = true;
-                presenter.getAllOrderData(
-                        getActivity(), pagingHandler.getPage(), allTxFilter, typeRequest
-                );
-                break;
-            case INSTANCE_RECEIVE:
-                isLoading = true;
-                presenter.getDeliverOrderData(getActivity(), pagingHandler.getPage(), typeRequest);
-                break;
-            case INSTANCE_STATUS:
-                isLoading = true;
-                presenter.getStatusOrderData(getActivity(), pagingHandler.getPage(), typeRequest);
-                break;
-        }
+        isLoading = true;
+        presenter.getAllOrderData(
+                getActivity(), pagingHandler.getPage(), allTxFilter, typeRequest
+        );
     }
 
     public interface StateFilterListener {
@@ -612,8 +620,17 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
 
     @Override
     public void onSuccessCancelReplacement() {
-        hideProgressLoading();
-        onRefresh(getView());
+        if (getView() != null) {
+            Snackbar.make(getView(), getString(R.string.success_cancel_replacement), Snackbar
+                    .LENGTH_SHORT).show();
+            hideProgressLoading();
+            onRefresh(getView());
+        }
+    }
+
+    @Override
+    public void showToastSuccessMessage(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 }
 

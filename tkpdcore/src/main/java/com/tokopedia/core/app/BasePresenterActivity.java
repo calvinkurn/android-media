@@ -8,6 +8,11 @@ import butterknife.ButterKnife;
 /**
  * Created by Angga.Prasetiyo on 09/11/2015.
  */
+
+/**
+ * Extends one of BaseActivity from tkpd abstraction eg:BaseSimpleActivity, BaseStepperActivity, BaseTabActivity, etc
+ */
+@Deprecated
 public abstract class BasePresenterActivity<P> extends TActivity {
     private static final String TAG = BasePresenterActivity.class.getSimpleName();
 
@@ -17,9 +22,9 @@ public abstract class BasePresenterActivity<P> extends TActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(isAfterRotate(savedInstanceState)){
+        if (isAfterRotate(savedInstanceState)) {
             setupVar(savedInstanceState);
-        }else{
+        } else {
             setupVar();
         }
         if (getIntent().getExtras() != null) {
@@ -29,7 +34,11 @@ public abstract class BasePresenterActivity<P> extends TActivity {
             setupURIPass(getIntent().getData());
         }
         initialPresenter();
-        inflateView(getLayoutId());
+
+        if (getLayoutId() != 0) {
+            inflateView(getLayoutId());
+        }
+
         initViews();
         initView();
         initVar();
@@ -43,9 +52,9 @@ public abstract class BasePresenterActivity<P> extends TActivity {
         ButterKnife.bind(this);
     }
 
-    protected void setupVar(){ /*leave empty*/ }
+    protected void setupVar() { /*leave empty*/ }
 
-    protected boolean isAfterRotate(Bundle savedInstanceState){
+    protected boolean isAfterRotate(Bundle savedInstanceState) {
         return isAfterRotate = savedInstanceState != null;
     }
 

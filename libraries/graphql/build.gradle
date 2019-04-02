@@ -1,0 +1,62 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+android {
+    configurations {
+        all {
+            resolutionStrategy {
+                force "android.arch.core:runtime:1.1.1"
+            }
+        }
+    }
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['targetModuleName': 'graphql']
+            }
+        }
+    }
+}
+
+project.ext {
+    artifactId = 'graphql'
+    groupId = 'com.tokopedia.graphql'
+    versionName = "${tkpdGraphqlVersion}"
+    artifactName = "graphql-release"
+}
+
+
+
+dependencies {
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation rootProject.ext.miscDependencies.gson
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.config)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+
+    //room
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
+    implementation project(rootProject.ext.libraries.cpm)
+}
+
+apply from: '../../publish_local.gradle'

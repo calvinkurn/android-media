@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/vg_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <FrameLayout
+        android:id="@+id/vg_floating_egg"
+        android:layout_width="@dimen/floating_egg_widget_width"
+        android:layout_height="@dimen/floating_egg_widget_height">
+        <ImageView
+            android:id="@+id/iv_floating_egg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            tools:src="@drawable/ic_empty_egg"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_8"/>
+
+        <TextView
+            android:id="@+id/tv_floating_counter"
+            android:layout_width="@dimen/floating_counter_width"
+            android:layout_height="@dimen/floating_counter_width"
+            tools:text="99+"
+            android:layout_gravity="center_vertical|end"
+            android:gravity="center"
+            style="@style/TextView.Micro"
+            android:background="@drawable/circle_red_shadow"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:id="@+id/tv_floating_timer"
+            style="@style/TextView.Small.Bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
+            android:layout_gravity="bottom"
+            android:background="@drawable/bg_countdown_timer_thin"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dp_3"
+            android:paddingTop="@dimen/dp_3"
+            android:textColor="@color/yellow"
+            tools:text="01:12:12" />
+    </FrameLayout>
+</FrameLayout>

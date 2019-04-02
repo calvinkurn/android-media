@@ -2,6 +2,7 @@ package com.tokopedia.seller.opportunity.customview;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +11,11 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.product.customview.BaseView;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.listener.OpportunityView;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OrderProductViewModel;
 
 /**
  * Created by hangnadi on 2/27/17.
@@ -20,12 +23,12 @@ import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityIte
 
 public class OpportunityDetailProductView extends BaseView<OpportunityItemViewModel, OpportunityView> {
 
+    private static final String DEFAULT_EMPTY = "0";
     View actionSeeProduct;
     ImageView productImage;
     TextView productName;
     TextView productQuantity;
     TextView productDescription;
-
 
     public OpportunityDetailProductView(Context context) {
         super(context);
@@ -70,15 +73,17 @@ public class OpportunityDetailProductView extends BaseView<OpportunityItemViewMo
 
     @Override
     public void renderData(@NonNull final OpportunityItemViewModel data) {
-        ImageHandler.LoadImage(productImage, data.getOrderProducts().get(0).getProductPicture());
-        productName.setText(data.getOrderProducts().get(0).getProductName());
-        String quantity = data.getOrderProducts().get(0).getProductQuantity() + " " + getContext().getString(R.string.item);
+        OrderProductViewModel firstOrderProduct = data.getOrderProducts().get(0);
+        ImageHandler.LoadImage(productImage, firstOrderProduct.getProductPicture());
+        productName.setText(firstOrderProduct.getProductName());
+        String quantity = firstOrderProduct.getProductQuantity() + " " + getContext().getString(R.string.item);
         productQuantity.setText(quantity);
-        if (data.getOrderProducts().get(0).getProductNotes().equals("")
-                && data.getOrderProducts().get(0).getProductNotes().equals("0"))
-            productDescription.setText(data.getOrderProducts().get(0).getProductNotes());
+        if (!TextUtils.isEmpty(firstOrderProduct.getProductNotes())
+                && !firstOrderProduct.getProductNotes().equals(DEFAULT_EMPTY))
+            productDescription.setText(firstOrderProduct.getProductNotes());
         else
-            productDescription.setText("-");
+            productDescription.setText(MethodChecker.fromHtml(
+                    getContext().getString(R.string.item_replacement_no_note)));
 
         actionSeeProduct.setOnClickListener(new OnClickListener() {
             @Override

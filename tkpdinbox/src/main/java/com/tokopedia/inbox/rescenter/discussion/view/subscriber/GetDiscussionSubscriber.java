@@ -112,6 +112,7 @@ public class GetDiscussionSubscriber extends Subscriber<DiscussionModel> {
             attachment.setUrl(item.getUrl());
             attachment.setImgThumb(item.getImageThumb());
             attachment.setImgLarge(item.getUrl());
+            attachment.setFileType(item.getIsVideo() == 1 ? AttachmentViewModel.FILE_VIDEO : AttachmentViewModel.FILE_IMAGE);
             list.add(attachment);
         }
         return list;

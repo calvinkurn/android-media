@@ -355,4 +355,9 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
             return "-";
         } else return notes;
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

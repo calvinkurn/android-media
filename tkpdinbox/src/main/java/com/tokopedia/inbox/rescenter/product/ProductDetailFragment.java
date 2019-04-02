@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.product;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,11 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
 import com.tokopedia.inbox.rescenter.product.di.component.DaggerResolutionProductDetailComponent;
 import com.tokopedia.inbox.rescenter.product.di.component.ResolutionProductDetailComponent;
 import com.tokopedia.inbox.rescenter.product.di.module.ResolutionProductDetailModule;
@@ -21,6 +24,9 @@ import com.tokopedia.inbox.rescenter.product.view.customadapter.AttachmentAdapte
 import com.tokopedia.inbox.rescenter.product.view.model.ProductDetailViewData;
 import com.tokopedia.inbox.rescenter.product.view.presenter.ProductDetailFragmentContract;
 import com.tokopedia.inbox.rescenter.product.view.presenter.ProductDetailFragmentImpl;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -42,6 +48,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
     ImageView productImage;
     TextView troubleName;
     TextView troubleReason;
+    TextView troubleAmount;
     View attachmentView;
     RecyclerView recyclerViewAttachment;
 
@@ -160,6 +167,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         productName = (TextView) view.findViewById(R.id.tv_product_name);
         productPrice = (TextView) view.findViewById(R.id.tv_product_price);
         productImage = (ImageView) view.findViewById(R.id.iv_product_image);
+        troubleAmount = (TextView) view.findViewById(R.id.complaint_amount);
         troubleName = (TextView) view.findViewById(R.id.complaint_name);
         troubleReason = (TextView) view.findViewById(R.id.complaint_reason);
         attachmentView = view.findViewById(R.id.view_attachment);
@@ -168,17 +176,15 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     protected void setViewListener() {
-
     }
 
     @Override
     public void renderData() {
         productName.setText(viewData.getProductName());
         productPrice.setText(viewData.getProductPrice());
-        ImageHandler.loadImage2(
-                productImage, viewData.getProductThumbUrl(), R.drawable.remove_thin
-        );
+        ImageHandler.LoadImage(productImage, viewData.getProductThumbUrl());
         troubleName.setText(getTroubleText());
+        troubleAmount.setText(getTroubleAmount());
         troubleReason.setText(viewData.getTroubleReason());
         if (viewData.getAttachment() != null && !viewData.getAttachment().isEmpty()) {
             attachmentView.setVisibility(View.VISIBLE);
@@ -186,6 +192,13 @@ public class ProductDetailFragment extends BaseDaggerFragment
         } else {
             attachmentView.setVisibility(View.GONE);
         }
+
+        productImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     private String getTroubleText() {
@@ -196,6 +209,10 @@ public class ProductDetailFragment extends BaseDaggerFragment
             troubleText = getString(R.string.template_product_detail_trouble, viewData.getTrouble(), viewData.getQuantity());
         }
         return troubleText;
+    }
+
+    private String getTroubleAmount() {
+        return viewData.getTroubleAmountString();
     }
 
     private void renderAttachment() {

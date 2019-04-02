@@ -1,0 +1,38 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parent_scroll_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/sp_app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="@dimen/dp_0">
+
+        <include
+            android:id="@+id/deposit_header_layout"
+            layout="@layout/saldo_deposit_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <fragment
+        android:id="@+id/saldo_history_layout"
+        android:name="com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/dp_1"
+        android:layout_marginLeft="@dimen/dp_1"
+        android:layout_marginEnd="@dimen/dp_1"
+        android:layout_marginRight="@dimen/dp_1"
+        android:layout_marginBottom="@dimen/dp_4"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+</android.support.design.widget.CoordinatorLayout>
+
+
+
+

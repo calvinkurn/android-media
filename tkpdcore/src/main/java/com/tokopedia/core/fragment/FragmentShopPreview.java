@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +15,10 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.MethodChecker;
@@ -69,6 +67,7 @@ public class FragmentShopPreview extends Fragment {
         LinearLayout rootLayout;
         TextView vShopName;
         ImageView vGoldImg;
+        ImageView officialStoreBadgetImageView;
         TextView vShopLoc;
         ImageView vShopAvatar;
         View vShopInfo;
@@ -105,6 +104,7 @@ public class FragmentShopPreview extends Fragment {
         Holder.rootLayout = (LinearLayout) MainView.findViewById(R.id.shop_info);
         Holder.vShopName = (TextView) MainView.findViewById(R.id.shop_name);
         Holder.vGoldImg = (ImageView) MainView.findViewById(R.id.gold_merchant);
+        Holder.officialStoreBadgetImageView = (ImageView) MainView.findViewById(R.id.image_official_store);
         Holder.vShopLoc = (TextView) MainView.findViewById(R.id.shop_loc);
         Holder.vShopAvatar = (ImageView) MainView.findViewById(R.id.shop_ava);
         Holder.vShopInfo = MainView.findViewById(R.id.shop_info);
@@ -142,9 +142,8 @@ public class FragmentShopPreview extends Fragment {
     }
 
     private void openShop() {
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        intent.putExtras(ShopInfoActivity.createBundle("", ShopDomain));
-        getActivity().startActivity(intent);
+        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getShopPageIntentByDomain(getActivity(), ShopDomain);
+        startActivity(intent);
     }
 
     public void GetShopInfo() {
@@ -216,9 +215,21 @@ public class FragmentShopPreview extends Fragment {
             mIsGold = 0;
         }
 
+        int isOfficalStore = -1;
+
+        if (!ShopInfo.isNull("shop_is_official")) {
+            isOfficalStore = ShopInfo.getInt("shop_is_official");
+        }
+
         if (mIsGold == 0) {
             Holder.vGoldImg.setVisibility(View.GONE);
         }
+
+        if (isOfficalStore == 1){
+            Holder.vGoldImg.setVisibility(View.GONE);
+            Holder.officialStoreBadgetImageView.setVisibility(View.VISIBLE);
+        }
+
         Holder.rootLayout.setVisibility(View.VISIBLE);
     }
 

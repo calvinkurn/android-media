@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/ll_promo_detail_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/tv_promo_detail_action"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/call_to_action_button_height"
+            android:background="@color/green_250"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_16"
+            tools:text="Belanja Sekarang" />
+    </LinearLayout>
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:visibility="visible"
+        android:layout_above="@id/ll_promo_detail_bottom_layout">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_promo_detail_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+</RelativeLayout>

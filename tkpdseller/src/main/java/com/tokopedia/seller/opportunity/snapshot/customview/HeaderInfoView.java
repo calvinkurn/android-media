@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.snapshot.listener.SnapShotFragmentView;
 import com.tokopedia.core.util.MethodChecker;
@@ -70,7 +71,11 @@ public class HeaderInfoView extends BaseView<ProductDetailData, SnapShotFragment
     @Override
     public void renderData(@NonNull ProductDetailData data) {
         tvName.setText(MethodChecker.fromHtml(data.getInfo().getProductName()));
-        tvPrice.setText(data.getInfo().getProductPrice());
+        String price = data.getInfo().getProductPrice();
+        if (CurrencyFormatHelper.countPrefixCurrency(price) < 1){
+            price = getResources().getString(R.string.format_rupiah_with_prefix, price);
+        }
+        tvPrice.setText(price);
         setVisibility(VISIBLE);
     }
 

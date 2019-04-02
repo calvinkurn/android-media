@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="@dimen/padding_small"
     tools:context=".manage.people.address.activity.AddAddressActivity">
 
@@ -36,7 +37,7 @@
                     android:layout_marginBottom="@dimen/margin_vs"
                     android:imeOptions="actionNext"
                     android:inputType="text"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -51,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
                     android:inputType="text"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 
@@ -79,16 +80,46 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/district_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Kota atau Kecamatan"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/district"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:textSize="@dimen/sp_14" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/postal_code_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Kode Pos"
+                android:visibility="gone">
+
+                <AutoCompleteTextView
+                    android:id="@+id/autocomplete_postal_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:completionThreshold="1"
+                    android:digits="1234567890"
+                    android:inputType="phone"
+                    android:maxLength="5"
+                    android:textSize="@dimen/sp_14" />
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 
-        <!-- End of alamat -->
-
-
-        <!-- Detail alamat -->
-
         <LinearLayout
+            android:id="@+id/address_spinner_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_small"
@@ -166,7 +197,6 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"/>
 
-
             <Spinner
                 android:id="@+id/sub_district"
                 android:layout_width="match_parent"
@@ -185,9 +215,6 @@
                 android:visibility="gone" />
         </LinearLayout>
         <!-- End of detail alamat -->
-
-
-        <!-- No HP dan kodepos -->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -209,7 +236,7 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
                     android:inputType="number"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -224,7 +251,7 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
                     android:inputType="number"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -240,7 +267,7 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
                     android:inputType="textPassword"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
             </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>
@@ -259,7 +286,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_delivery_location"
+                android:text="@string/title_delivery_location_pickup"
                 android:textColor="@color/label_color"
                 android:textSize="@dimen/fonts" />
 
@@ -277,34 +304,23 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/ic_icon_market_toped" />
-
-                <ImageView
-                    android:id="@+id/layout_right"
-                    android:layout_width="@dimen/img_thumb_s"
-                    android:layout_height="@dimen/img_thumb_s"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/chevron_thin_right" />
+                    app:srcCompat="@drawable/ic_icon_market_toped" />
 
                 <EditText
                     android:id="@+id/value_location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/margin_vs"
                     android:layout_marginLeft="@dimen/margin_vs"
                     android:layout_marginRight="@dimen/margin_vs"
                     android:layout_marginStart="@dimen/margin_vs"
                     android:layout_toEndOf="@id/icon_map"
-                    android:layout_toLeftOf="@id/layout_right"
                     android:layout_toRightOf="@id/icon_map"
-                    android:layout_toStartOf="@id/layout_right"
-                    android:layout_centerVertical="true"
                     android:clickable="true"
                     android:focusable="false"
                     android:hint="@string/choose_location"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
 
             </RelativeLayout>
 

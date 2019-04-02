@@ -13,12 +13,14 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.tokopedia.core.BuildConfig;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.BuildConfig;
+import com.tokopedia.core2.R;
 
 /**
  * Created by nisie on 10/7/16.
+ * Deprecated. Please use from module webview instead.
  */
+@Deprecated
 public abstract class TkpdWebViewClient extends WebViewClient {
     @Override
     public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error) {

@@ -2,9 +2,14 @@ package com.tokopedia.core.manage.people.profile.presenter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.core2.R;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.core.manage.people.profile.datamanager.DataManager;
 import com.tokopedia.core.manage.people.profile.datamanager.DataManagerImpl;
 import com.tokopedia.core.manage.people.profile.intentservice.ManagePeopleProfileIntentService;
@@ -14,6 +19,7 @@ import com.tokopedia.core.manage.people.profile.model.Profile;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.track.TrackApp;
 
 /**
  * Created on 6/27/16.
@@ -22,10 +28,12 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
 
     private final ManagePeopleProfileFragmentView view;
     private final DataManager dataManager;
+    private final GlobalCacheManager cacheManager;
 
     public ManagePeopleProfileFragmentImpl(ManagePeopleProfileFragmentView view) {
         this.view = view;
         this.dataManager = new DataManagerImpl(this);
+        cacheManager = new GlobalCacheManager();
     }
 
     @Override
@@ -60,6 +68,8 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
         view.setLoadingView(false);
         view.setMainView(true);
         view.storeImageToDrawer(result.getDataUser().getUserImage100());
+        view.storeImageToUserSession(result.getDataUser().getUserImage());
+
     }
 
     @Override
@@ -89,10 +99,8 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
         param.setGender(
                 generateGenderCode(view.getGender())
         );
-        param.setHobby(view.getHobby());
-        param.setMessenger(view.getMessanger());
-        param.setMsisdn(view.getVerifiedPhone());
-        param.setVerifiedPhone(view.getPhone());
+        param.setMsisdn(view.getPhone());
+        param.setVerifiedPhone(view.getVerifiedPhone());
 
         param.setImagePath(view.getImagePath());
         return param;
@@ -121,20 +129,6 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
 
     private boolean isValid(Context context) {
         boolean validation = true;
-
-        if (view.getPhone().isEmpty()) {
-            view.setPhoneError(context.getString(R.string.error_field_required));
-            validation = false;
-        }
-
-        if (view.getEmail().isEmpty()) {
-            view.setEmailError(context.getString(R.string.error_field_required));
-            validation = false;
-        } else if (!CommonUtils.EmailValidation(view.getEmail())) {
-            view.setEmailError(context.getString(R.string.error_invalid_email));
-            validation = false;
-        }
-
         if (view.getBirthDay().isEmpty()) {
             view.setBirthDayError(context.getString(R.string.error_field_required));
             validation = false;
@@ -161,16 +155,41 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
 
     @Override
     public void setOnChangePhoneButtonClick(Context context, String userPhone) {
-        view.showManualPhoneVerificationDialog(userPhone);
+        eventClickChangePhoneNumber();
+        view.startChangePhoneNumber();
+    }
+
+    public void eventClickChangePhoneNumber() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
+                AppEventTracking.Category.PROFILE_PAGE,
+                AppEventTracking.Action.CLICK_CHANGE_PHONE_NUMBER,
+                "");
+    }
+
+
+    @Override
+    public void setOnChangePhoneNumberEmptyEmailClick(Context context) {
+        view.showDialogChangePhoneNumberEmptyEmail();
     }
 
     @Override
     public void setOnVerificationButtonClick(Context context, String userPhone) {
-        if (!userPhone.isEmpty()) {
+        if (!TextUtils.isEmpty(userPhone)) {
             view.showPhoneVerificationDialog(userPhone);
         } else {
             view.setVerificationError(context.getString(R.string.error_field_required));
         }
+    }
+
+    @Override
+    public void setOnAddEmailClick(Context context) {
+        view.startAddEmailActivity();
+    }
+
+    @Override
+    public void setOnChangeNameClick(Context context) {
+        view.startChangeNameActivity();
     }
 
     @Override
@@ -186,6 +205,7 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
 
     private void deleteCache(Context context) {
         ShopSettingCache.DeleteCache(ShopSettingCache.CODE_PROFILE, context);
+        cacheManager.delete(ProfileSourceFactory.KEY_PROFILE_DATA);
     }
 
     @Override

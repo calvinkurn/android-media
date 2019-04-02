@@ -9,6 +9,8 @@ import com.tokopedia.seller.util.ShopNetworkController;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -26,6 +28,7 @@ public class ReviewReputationMergeUseCase extends UseCase<List<Object>> {
     private final ShopInfoUseCase shopInfoUseCase;
 
 
+    @Inject
     public ReviewReputationMergeUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
@@ -64,15 +67,6 @@ public class ReviewReputationMergeUseCase extends UseCase<List<Object>> {
                 shopInfoUseCase.createObservable((RequestParams) requestParams.getObject(KEY_SHOP_INFO_CONTAINER_PARAM)),
                 reviewReputationUseCase.createObservable((RequestParams) requestParams.getObject(KEY_REVIEW_REPUTATION_CONTAINER_PARAM))
         ).toList();
-    }
-
-    @Override
-    public void execute(RequestParams requestParams, Subscriber<List<Object>> subscriber) {
-        createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(subscriber);
     }
 
     public static class RequestParamFactory {

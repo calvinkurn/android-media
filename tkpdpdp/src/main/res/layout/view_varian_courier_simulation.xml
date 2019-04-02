@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/variant_courier_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_shadow"
+    android:paddingTop="@dimen/dp_25"
+    android:paddingBottom="@dimen/dp_25"
+    android:visibility="gone"
+    tools:visibility="visible"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:paddingLeft="@dimen/pdp_content_padding"
+        android:paddingRight="@dimen/pdp_content_padding"
+        android:id="@+id/view_variant_field"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_title_varian"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/product_variant"
+            android:textColor="@color/black_54"
+            android:textSize="@dimen/font_medium"/>
+
+        <TextView
+            android:id="@+id/variant_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:text="@string/choose_variant"
+            android:textColor="@color/medium_green"
+            android:textSize="@dimen/fontvs" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/line"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:background="@color/pdp_line_color" />
+
+    <LinearLayout
+        android:paddingLeft="@dimen/pdp_content_padding"
+        android:paddingRight="@dimen/pdp_content_padding"
+        android:id="@+id/view_courier_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:visibility="visible"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/view_courier"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_courier_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black_54"
+                android:textSize="@dimen/font_medium"
+                tools:text="4" />
+
+            <TextView
+                android:id="@+id/tv_courier_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/dp_4"
+                android:text="@string/label_courier"
+                android:textColor="@color/black_54"
+                android:textSize="@dimen/font_medium" />
+
+            <TextView
+                android:id="@+id/tv_courier_est_cost_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:textColor="@color/black_54"
+                android:textSize="@dimen/font_medium"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_courier_count"
+                app:layout_constraintStart_toEndOf="@+id/tv_courier_label"
+                app:layout_constraintTop_toTopOf="@+id/tv_courier_count"
+                tools:text="@string/label_cost_est" />
+
+            <TextView
+                android:id="@+id/tv_courier_est_cost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/dp_4"
+                android:textColor="@color/black_54"
+                android:textSize="@dimen/font_medium"
+                tools:text="Rp 12.000" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/view_shop_address"
+            android:layout_marginTop="@dimen/dp_16"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/img_shop_location"
+                android:layout_width="@dimen/med_dp"
+                android:layout_height="@dimen/med_dp"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                app:srcCompat="@drawable/ic_shop_location_pdp"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/tv_shop_location_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_courier_from"
+                android:textColor="@color/black_54"
+                android:textSize="@dimen/font_small" />
+
+            <TextView
+                android:id="@+id/tv_shop_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/dp_4"
+                android:textColor="@color/black_54"
+                android:textSize="@dimen/font_small"
+                android:textStyle="bold"
+                tools:text="Kota Depok" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/view_destination"
+            android:layout_marginTop="@dimen/dp_14"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/img_courier"
+                tools:visibility="visible"
+                android:layout_width="@dimen/med_dp"
+                android:layout_height="@dimen/med_dp"
+                app:srcCompat="@drawable/ic_courier_pdp"
+                tools:ignore="ContentDescription" />
+            <TextView
+                android:id="@+id/tv_destination_label"
+                tools:visibility="visible"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:text="@string/label_courier_to"
+                android:textColor="@color/medium_green"
+                android:textSize="@dimen/font_small"/>
+
+            <TextView
+                android:id="@+id/tv_destination"
+                tools:visibility="visible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/dp_4"
+                android:textColor="@color/medium_green"
+                android:textSize="@dimen/font_small"
+                android:textStyle="bold"
+                tools:text="Kab. Bolaang Mongondow Selatan" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

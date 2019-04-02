@@ -36,6 +36,8 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.TouchImageAdapter;
 import com.tokopedia.core.customadapter.TouchImageAdapter.OnImageStateChange;
+import com.tokopedia.core.gcm.utils.NotificationChannelId;
+import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 
@@ -53,8 +55,15 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+import com.tokopedia.core2.R2;
+import com.tokopedia.core2.R;
 
+/**
+ * Use image_preview library instead
+ * ImagePreviewActivity
+ */
 @RuntimePermissions
+@Deprecated
 public class PreviewProductImage extends TActivity {
 
     @BindView(R2.id.view_pager)
@@ -249,7 +258,7 @@ public class PreviewProductImage extends TActivity {
         final NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         final NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(PreviewProductImage.this);
+                new NotificationCompat.Builder(PreviewProductImage.this, NotificationChannelId.GENERAL);
         notificationBuilder.setContentTitle(filenameParam)
                 .setContentText(getString(R.string.download_in_process))
                 .setSmallIcon(R.drawable.ic_stat_notify)

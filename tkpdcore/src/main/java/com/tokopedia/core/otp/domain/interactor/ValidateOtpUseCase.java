@@ -11,8 +11,10 @@ import rx.Observable;
 
 /**
  * Created by nisie on 3/7/17.
+ * @deprecated Don't use this. Use ValidateOtpUseCase in tkpdsession instead.
  */
 
+@Deprecated
 public class ValidateOtpUseCase extends UseCase<ValidateOtpModel> {
 
     public static final String PARAM_USER = "user";

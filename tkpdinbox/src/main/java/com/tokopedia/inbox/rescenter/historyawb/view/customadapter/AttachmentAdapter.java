@@ -48,7 +48,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        ImageHandler.loadImage2(holder.placeHolder, getAttachmentItem(position).getThumbnailUrl(), R.drawable.ic_action_attachment);
+        ImageHandler.LoadImage(holder.placeHolder, getAttachmentItem(position).getThumbnailUrl());
         holder.placeHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

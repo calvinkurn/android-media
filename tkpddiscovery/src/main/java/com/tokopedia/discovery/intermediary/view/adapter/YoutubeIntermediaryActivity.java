@@ -1,17 +1,12 @@
 package com.tokopedia.discovery.intermediary.view.adapter;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
-import com.tokopedia.core.R2;
 import com.tokopedia.discovery.R;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by alifa on 5/26/17.
@@ -21,8 +16,7 @@ public class YoutubeIntermediaryActivity extends YouTubeBaseActivity {
 
     public static final String EXTRA_YOUTUBE_VIDEO_URL = "EXTRA_YOUTUBE_VIDEO_URL";
 
-    @BindView(R2.id.youtube_player_main)
-    YouTubePlayerView youTubePlayerView;
+    private YouTubePlayerView youTubePlayerView;
 
 
     private YouTubePlayer youTubePlayerScreen;
@@ -33,9 +27,12 @@ public class YoutubeIntermediaryActivity extends YouTubeBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intermediary_youtube);
         getVideoDatas();
-        ButterKnife.bind(this);
+        initView();
         setSideBarAvailability();
+    }
 
+    private void initView() {
+        youTubePlayerView = findViewById(R.id.youtube_player_main);
     }
 
     private void getVideoDatas() {
@@ -43,7 +40,7 @@ public class YoutubeIntermediaryActivity extends YouTubeBaseActivity {
     }
 
     private void setSideBarAvailability() {
-        youTubePlayerView.initialize(getApplicationContext().getString(com.tokopedia.core.R.string.GOOGLE_API_KEY),
+        youTubePlayerView.initialize(getApplicationContext().getString(com.tokopedia.core2.R.string.GOOGLE_API_KEY),
                 onSingleVideoInitializedListener());
     }
 
@@ -142,7 +139,7 @@ public class YoutubeIntermediaryActivity extends YouTubeBaseActivity {
     }
 
     public void onInitiazlizeVideo(int videoIndex) {
-        youTubePlayerView.initialize(getApplicationContext().getString(com.tokopedia.core.R.string.GOOGLE_API_KEY),
+        youTubePlayerView.initialize(getApplicationContext().getString(com.tokopedia.core2.R.string.GOOGLE_API_KEY),
                 onInitializedListener());
     }
 

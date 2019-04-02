@@ -6,13 +6,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 
 /**
  * Created by Nisie on 2/26/16.
  */
+
+/**
+ * Use base adapter with visitor pattern from tkpd abstraction
+ */
+@Deprecated
 public class LoadingDataBinder extends DataBinder<LoadingDataBinder.ViewHolder> {
 
     boolean isFullScreen = false;

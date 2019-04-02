@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.fragment.OpportunityDetailFragment;
@@ -80,4 +81,8 @@ public class OpportunityDetailActivity extends BasePresenterActivity<Opportunity
 
     }
 
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_OPPORTUNITY_DETAIL;
+    }
 }

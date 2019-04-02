@@ -10,7 +10,7 @@ import android.content.DialogInterface.OnDismissListener;
 import android.view.Window;
 import android.widget.DatePicker;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import java.util.Calendar;
 
@@ -103,7 +103,7 @@ public class DatePickerUtil {
         if (MinYear != 0) {
             Calendar minDate = Calendar.getInstance();
             minDate.set(minDate.get(Calendar.YEAR) - MinYear, minDate.getMinimum(Calendar.MONTH), minDate.getMinimum(Calendar.DATE));
-            dpd.getDatePicker().setMinDate(minDate.getTimeInMillis());
+            dpd.getDatePicker().setMinDate(minDate.getTimeInMillis() - 1000);
         }
 
         if (minDate != 0) {

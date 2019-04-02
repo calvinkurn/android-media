@@ -12,7 +12,9 @@ import android.webkit.WebView;
 import android.widget.ProgressBar;
 
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.TkpdWebView;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.webview.fragment.BaseWebViewClient;
 import com.tokopedia.transaction.R;
 
@@ -20,12 +22,14 @@ import com.tokopedia.transaction.R;
  * Created by kris on 1/13/17. Tokopedia
  */
 
-public class WalletActivity extends TActivity implements BaseWebViewClient.WebViewCallback, View.OnKeyListener{
+public class WalletActivity extends TActivity implements BaseWebViewClient.WebViewCallback, View.OnKeyListener {
 
+    public static final String EXTRA_URL = "url";
     private String url;
 
     private TkpdWebView webView;
     private ProgressBar progressBar;
+
 
     @Override
     public String getScreenName() {
@@ -35,7 +39,7 @@ public class WalletActivity extends TActivity implements BaseWebViewClient.WebVi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        url = getIntent().getExtras().getString("url");
+        url = getIntent().getExtras().getString(EXTRA_URL);
         inflateView(R.layout.wallet_webview);
         initiateView();
         setWebView();
@@ -78,10 +82,16 @@ public class WalletActivity extends TActivity implements BaseWebViewClient.WebVi
     @Override
     public void onProgressResult(String progressResult) {
         Uri uri = Uri.parse(progressResult);
-        if(uri.getPath().contains("thanks_wallet")) {
-            drawer.clearTokoCashData();
+        String pathUri = uri.getPath();
+        if (pathUri != null && uri.getPath().contains("thanks_wallet")) {
+            clearTokoCashData();
             finish();
         }
+    }
+
+    private void clearTokoCashData() {
+        GlobalCacheManager cacheManager = new GlobalCacheManager();
+        cacheManager.delete(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
     }
 
     @Override
@@ -101,18 +111,29 @@ public class WalletActivity extends TActivity implements BaseWebViewClient.WebVi
 
     @Override
     public void onBackPressed() {
-        drawer.clearTokoCashData();
+        clearTokoCashData();
         super.onBackPressed();
     }
 
     @Override
     public boolean onOverrideUrl(String url) {
         Uri uri = Uri.parse(url);
-        if(uri.getPath().contains("thanks_wallet")) {
-            drawer.clearTokoCashData();
+        String pathUri = uri.getPath();
+        if (pathUri != null && uri.getPath().contains("thanks_wallet")) {
+            clearTokoCashData();
             finish();
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onWebTitlePageCompleted(String title) {
+
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

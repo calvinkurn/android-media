@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools"
     android:orientation="vertical"
+    android:background="@color/tkpd_bg_color"
     android:paddingTop="@dimen/padding_vs"
     android:layout_marginBottom="@dimen/margin_vs">
 
@@ -53,7 +55,7 @@
             android:layout_height="@dimen/med_dp"
             android:gravity="center_vertical"
             android:visibility="visible"
-            android:src="@drawable/ic_expand_more_black_24dp"/>
+            app:srcCompat="@drawable/ic_expand_more_black_24dp"/>
 
     </LinearLayout>
 
@@ -77,9 +79,16 @@
             android:layout_height="@dimen/med_dp"
             android:gravity="center_vertical"
             android:visibility="visible"
-            android:src="@drawable/ic_expand_less_grey_24dp"/>
+            app:srcCompat="@drawable/ic_expand_less_grey_24dp"/>
 
     </LinearLayout>
+
+    <com.tokopedia.topads.sdk.widget.TopAdsBannerView
+        android:id="@+id/topAdsBannerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_vvvs"
+        android:layout_marginBottom="@dimen/margin_vvvs" />
 
     <TextView
         android:id="@+id/total_product"
@@ -91,6 +100,7 @@
         android:textSize="@dimen/fontm"
         android:layout_marginLeft="@dimen/margin_small"
         android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/margin_vvvs"
         android:textAlignment="viewStart"
         android:visibility="gone"
         android:layout_weight="1"/>

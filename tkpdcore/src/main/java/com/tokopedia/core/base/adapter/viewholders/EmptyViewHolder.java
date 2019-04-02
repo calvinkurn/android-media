@@ -3,13 +3,17 @@ package com.tokopedia.core.base.adapter.viewholders;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 
 /**
  * @author kulomady on 1/24/17.
  */
 
+/**
+ * Use abstract view holder from tkpd abstraction
+ */
+@Deprecated
 public class EmptyViewHolder extends AbstractViewHolder<EmptyModel> {
 
     @LayoutRes

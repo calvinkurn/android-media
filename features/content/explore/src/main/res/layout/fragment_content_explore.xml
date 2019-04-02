@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:visibility="gone">
+
+        <com.tokopedia.design.text.SearchInputView
+            android:id="@+id/search_inspiration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-8dp"
+            android:fitsSystemWindows="true"
+            android:visibility="gone"
+            app:siv_search_hint="@string/search_your_inspiration" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/explore_category_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_16"
+            tools:itemCount="2"
+            tools:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_explore_tag" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/explore_image_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            tools:layoutManager="android.support.v7.widget.GridLayoutManager"
+            tools:spanCount="3"
+            tools:itemCount="21"
+            tools:listitem="@layout/item_explore_image"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+</android.support.design.widget.CoordinatorLayout>

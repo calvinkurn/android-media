@@ -1,0 +1,38 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['targetModuleName': 'BaseAdapter']
+            }
+        }
+    }
+}
+
+project.ext {
+    artifactId = 'base_adapter'
+    groupId = 'com.tokopedia.library.baseadapter'
+    versionName = "${tkpdBaseAdapterlVersion}"
+    artifactName = "base_adapter-release"
+}
+
+
+
+dependencies {
+    implementation project(rootProject.ext.libraries.design)
+}
+
+apply from: '../../publish_local.gradle'

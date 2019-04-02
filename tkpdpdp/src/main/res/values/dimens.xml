@@ -15,22 +15,8 @@
     <dimen name="fontvvs">10sp</dimen>
 
     <dimen name="page_with_pad">290dp</dimen>
-    <dimen name="margin_vs">5dp</dimen>
-    <dimen name="margin_ms">8dp</dimen>
-    <dimen name="margin_vvs">3.3dp</dimen>
-    <dimen name="margin_vvvs">2dp</dimen>
-    <dimen name="margin_small">10dp</dimen>
-    <dimen name="margin_sm">15dp</dimen>
-    <dimen name="margin_med">20dp</dimen>
-    <dimen name="margin_large">30dp</dimen>
-    <dimen name="margin_vl">40dp</dimen>
-    <dimen name="padding_vs">5dp</dimen>
-    <dimen name="padding_vvs">3dp</dimen>
-    <dimen name="padding_vvvs">2dp</dimen>
-    <dimen name="padding_small">10dp</dimen>
     <dimen name="padding_vl">40dp</dimen>
     <dimen name="med_dp">20dp</dimen>
-    <dimen name="large_dp">30dp</dimen>
     <dimen name="margin_2">2dp</dimen>
 
     <dimen name="half_screen">160dp</dimen>
@@ -71,10 +57,6 @@
     <dimen name="message_width">300dp</dimen>
     <dimen name="message_corner">12dp</dimen>
 
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-
     <!-- Fragment Shop -->
     <dimen name="tx_list_search_btn">80dp</dimen>
     <dimen name="tx_list_search_btn_h">30dp</dimen>
@@ -88,7 +70,6 @@
     <dimen name="loading_img">30dp</dimen>
     <dimen name="loading_img_big">150dp</dimen>
     <dimen name="pager_height">200dp</dimen>
-    <dimen name="padding_med">20dp</dimen>
     <dimen name="img_thumb_s">15dp</dimen>
     <dimen name="screen_per_3_pad">90dp</dimen>
     <dimen name="shop_cover_height">220dp</dimen>
@@ -144,6 +125,7 @@
     <dimen name="text_size_l_medium">16sp</dimen>
     <dimen name="text_size_large">18sp</dimen>
     <dimen name="text_size_xlarge">20sp</dimen>
+    <dimen name="text_size_xxlarge">24sp</dimen>
     <dimen name="text_size_xxxlarge">30sp</dimen>
 
     <dimen name="keyline_1">16dp</dimen>
@@ -164,17 +146,18 @@
 
     <!--NEW DIMENSION USED FOR NEW FRAGMENT_ADD_PRODUCT UI-->
 
-    <dimen name="new_margin_small">8dp</dimen>
-    <dimen name="new_margin_med">16dp</dimen>
+    <dimen name="new_dp_10">8dp</dimen>
+    <dimen name="new_dp_20">16dp</dimen>
     <dimen name="new_icon_size">32dp</dimen>
     <dimen name="new_text_size_title">18sp</dimen>
     <dimen name="new_text_size_small">12sp</dimen>
     <dimen name="new_text_size_input">14sp</dimen>
 
     <dimen name="floating_label">12sp</dimen>
+    <dimen name="size_text_variant">13sp</dimen>
     <dimen name="view_pager_instoped_height">1600dp</dimen>
 
-    <dimen name="margin_small_header">1.5dp</dimen>
+    <dimen name="dp_10_header">1.5dp</dimen>
 
     <!--NEW DIMENSION USED FOR NEW FRAGMENT_ADD_PRODUCT UI-->
     <dimen name="add_to_cart_qty">72dp</dimen>
@@ -189,4 +172,17 @@
     <dimen name="drop_down_indicator_height">5dp</dimen>
     <dimen name="shopinfo_pdp">55dp</dimen>
     <dimen name="favorite_shop_pdp">100dp</dimen>
+
+    <dimen name="width_video_pdp">140dp</dimen>
+    <dimen name="height_video_pdp">80dp</dimen>
+
+    <dimen name="icon_stock_width">27dp</dimen>
+    <dimen name="icon_stock_height">21dp</dimen>
+    <dimen name="pdp_discount_background_radius">16dp</dimen>
+    <dimen name="pdp_product_attr_background_radius">10dp</dimen>
+    <dimen name="badge_count_textsize">9sp</dimen>
+    <dimen name="dp_26">26dp</dimen>
+
+    <dimen name="pdp_content_padding">16dp</dimen>
+    <dimen name="pdp_title_text_size">16sp</dimen>
 </resources>

@@ -23,4 +23,5 @@ public interface ViewListener {
     void dismissDialog(Dialog dialog);
 
     void closeView();
+
 }

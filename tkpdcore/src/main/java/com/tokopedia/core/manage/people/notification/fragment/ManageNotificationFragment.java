@@ -4,11 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.manage.people.notification.listener.ManageNotificationFragmentView;
 import com.tokopedia.core.manage.people.notification.model.SettingNotification;
@@ -22,7 +21,7 @@ import butterknife.BindView;
  * Created by Nisie on 6/22/16.
  */
 public class ManageNotificationFragment extends BasePresenterFragment<ManageNotificationPresenter>
-        implements ManageNotificationFragmentView {
+        implements ManageNotificationFragmentView, View.OnClickListener {
 
     @BindView(R2.id.newsletter)
     CheckBox newsletterCheckBox;
@@ -39,14 +38,8 @@ public class ManageNotificationFragment extends BasePresenterFragment<ManageNoti
     @BindView(R2.id.admin_message)
     CheckBox adminCheckBox;
 
-    @BindView(R2.id.save_but)
-    TextView saveButton;
-
     @BindView(R2.id.main_view)
     View mainView;
-
-    @BindView(R2.id.set_ring)
-    TextView setRingButton;
 
     TkpdProgressDialog mProgressDialog;
 
@@ -66,7 +59,6 @@ public class ManageNotificationFragment extends BasePresenterFragment<ManageNoti
     @Override
     protected void onFirstTimeLaunched() {
         mainView.setVisibility(View.GONE);
-        setRingButton.setVisibility(View.GONE);
         presenter.checkCache();
     }
 
@@ -113,18 +105,11 @@ public class ManageNotificationFragment extends BasePresenterFragment<ManageNoti
 
     @Override
     protected void setViewListener() {
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.onSaveSetting();
-            }
-        });
-        setRingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.onGoToSetRing();
-            }
-        });
+        newsletterCheckBox.setOnClickListener(this);
+        reviewsCheckBox.setOnClickListener(this);
+        talkCheckBox.setOnClickListener(this);
+        messageCheckBox.setOnClickListener(this);
+        adminCheckBox.setOnClickListener(this);
     }
 
     @Override
@@ -201,5 +186,10 @@ public class ManageNotificationFragment extends BasePresenterFragment<ManageNoti
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDestroyView();
+    }
+
+    @Override
+    public void onClick(View v) {
+        presenter.onSaveSetting();
     }
 }

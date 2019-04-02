@@ -34,4 +34,7 @@ public interface HistoryActionFragmentView {
 
     void showTimeOutMessage();
 
+    void setResolutionStatus(int resolutionStatus);
+
+    int getResolutionStatus();
 }

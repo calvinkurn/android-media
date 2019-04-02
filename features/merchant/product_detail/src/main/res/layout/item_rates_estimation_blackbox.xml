@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:background="@android:color/white"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingEnd="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_12"
+    android:paddingBottom="@dimen/dp_12"
+    tools:ignore="UnusedAttribute">
+
+    <com.tokopedia.design.label.LabelView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/label_view"
+        android:paddingLeft="@dimen/dp_0"
+        android:paddingStart="@dimen/dp_0"
+        android:paddingRight="@dimen/dp_0"
+        android:paddingEnd="@dimen/dp_0"
+        app:lv_title="@string/service_title_format"
+        app:lv_content="@string/see_message"
+        app:lv_title_text_size="@dimen/sp_14"
+        app:lv_content_text_size="@dimen/sp_14"
+        app:lv_sub_title_text_size="@dimen/dp_14"
+        app:lv_sub_title_color="@color/font_black_secondary_54"
+        app:lv_content_color="@color/font_black_secondary_54"
+        app:lv_title_text_style="bold"
+        app:lv_content_max_width_percentage="0.5"/>
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:visibility="gone"
+        tools:text="@string/label_see_all"
+        tools:visibility="visible"
+        app:fontSize="micro"
+        app:textViewTheme="lightSecondary"/>
+
+</LinearLayout>

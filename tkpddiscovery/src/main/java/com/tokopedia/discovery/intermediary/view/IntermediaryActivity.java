@@ -2,13 +2,16 @@ package com.tokopedia.discovery.intermediary.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,44 +19,107 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R2;
+import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.fragment.BrowseParentFragment;
+import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
+import com.tokopedia.discovery.search.view.DiscoverySearchView;
+import com.tokopedia.discovery.util.MoEngageEventTracking;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.List;
 
-
-public class IntermediaryActivity extends BasePresenterActivity implements MenuItemCompat.OnActionExpandListener {
+/**
+ * For navigate: use ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL
+ */
+public class IntermediaryActivity extends BasePresenterActivity implements MenuItemCompat.OnActionExpandListener, YoutubeViewHolder.YouTubeThumbnailLoadInProcess {
 
     private FragmentManager fragmentManager;
     MenuItem searchItem;
-    public static final String CATEGORY_DEFAULT_TITLE = "Direktori";
+    public static final String CATEGORY_DEFAULT_TITLE = "";
+    private static final String EXTRA_TRACKER_ATTRIBUTION = "tracker_attribution";
+    private static final String EXTRA_ACTIVITY_PAUSED = "EXTRA_ACTIVITY_PAUSED";
 
     private String departmentId = "";
+    private String trackerAttribution = "";
     private String categoryName = CATEGORY_DEFAULT_TITLE;
 
-    @BindView(R2.id.toolbar)
     Toolbar toolbar;
-
-    @BindView(R2.id.progressBar)
+    DiscoverySearchView searchView;
     ProgressBar progressBar;
-
-    @BindView(R2.id.container)
     FrameLayout frameLayout;
+    private boolean fromNavigation;
+
+    @DeepLink(Constants.Applinks.DISCOVERY_CATEGORY_DETAIL)
+    public static Intent getCallingIntent(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, IntermediaryActivity.class);
+        Bundle newBundle = new Bundle();
+        newBundle.putString(BrowseProductRouter.DEPARTMENT_ID, bundle.getString(BrowseProductRouter.DEPARTMENT_ID));
+        try {
+            newBundle.putString(
+                    EXTRA_TRACKER_ATTRIBUTION,
+                    URLDecoder.decode(bundle.getString("tracker_attribution", ""), "UTF-8")
+            );
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            newBundle.putString(
+                    EXTRA_TRACKER_ATTRIBUTION,
+                    bundle.getString("tracker_attribution", "").replaceAll("%20", " ")
+            );
+        }
+        return intent.putExtras(newBundle);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            List<String> paths = UriUtil.destructureUri(ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, uri);
+            if (!paths.isEmpty()) {
+                departmentId = paths.get(0);
+            }
+        }
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            if (departmentId.isEmpty()) {
+                departmentId = extras.getString(BrowseProductRouter.DEPARTMENT_ID);
+            }
+            trackerAttribution = extras.getString(EXTRA_TRACKER_ATTRIBUTION, "");
+            fromNavigation = extras.getBoolean(BrowseProductRouter.FROM_NAVIGATION, false);
+            if (extras.getString(BrowseProductRouter.DEPARTMENT_NAME) != null
+                    && extras.getString(BrowseProductRouter.DEPARTMENT_NAME).length() > 0)
+                categoryName = extras.getString(BrowseProductRouter.DEPARTMENT_NAME);
+        }
         super.onCreate(savedInstanceState);
+        if (getIntent().getBooleanExtra(EXTRA_ACTIVITY_PAUSED, false)) {
+            moveTaskToBack(true);
+        }
+        trackMoEngageCategory();
+    }
+
+    private void trackMoEngageCategory() {
+        if (!fromNavigation)
+            MoEngageEventTracking.sendCategory(departmentId, categoryName);
     }
 
     @Override
     public void inflateView(int layoutId) {
         setContentView(layoutId);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == CategoryNavigationActivity.DESTROY_INTERMEDIARY) {
+            finish();
+        }
     }
 
     public static void moveTo(Context context, String depId, String categoryName) {
@@ -68,13 +134,41 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
         context.startActivity(intent);
     }
 
-    public static void moveTo(Context context, String depId) {
+    public static void moveTo(Context context, String depId, String categoryName, boolean fromNavigation) {
         if (context == null)
             return;
 
         Intent intent = new Intent(context, IntermediaryActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(BrowseProductRouter.DEPARTMENT_ID, depId);
+        bundle.putString(BrowseProductRouter.DEPARTMENT_NAME, categoryName);
+        bundle.putBoolean(BrowseProductRouter.FROM_NAVIGATION, fromNavigation);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    public static void moveTo(Context context, String depId, boolean isActivityPaused) {
+        if (context == null)
+            return;
+
+        Intent intent = new Intent(context, IntermediaryActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, depId);
+        bundle.putBoolean(EXTRA_ACTIVITY_PAUSED, isActivityPaused);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    public static void moveToClear(Context context, String depId) {
+        if (context == null)
+            return;
+
+        Intent intent = new Intent(context, IntermediaryActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, depId);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
@@ -87,10 +181,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        departmentId = extras.getString(BrowseProductRouter.DEPARTMENT_ID);
-        if (extras.getString(BrowseProductRouter.DEPARTMENT_NAME)!=null
-                && extras.getString(BrowseProductRouter.DEPARTMENT_NAME).length()>0)
-            categoryName = extras.getString(BrowseProductRouter.DEPARTMENT_NAME);
+        // already handled in oncreate
     }
 
     @Override
@@ -105,11 +196,41 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
 
     @Override
     protected void initView() {
-        ButterKnife.bind(this);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        frameLayout = (FrameLayout) findViewById(R.id.container);
+        searchView = (DiscoverySearchView) findViewById(R.id.search);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         toolbar.setTitle(categoryName);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(10);
+            toolbar.setBackgroundResource(com.tokopedia.core2.R.color.white);
+        } else {
+            toolbar.setBackgroundResource(com.tokopedia.core2.R.drawable.bg_white_toolbar_drop_shadow);
+        }
+        Drawable drawable = ContextCompat.getDrawable(this, com.tokopedia.core2.R.drawable.ic_toolbar_overflow_level_two_black);
+        drawable.setBounds(5, 5, 5, 5);
+        toolbar.setOverflowIcon(drawable);
+
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setHomeAsUpIndicator(
+                    com.tokopedia.core2.R.drawable.ic_webview_back_button
+            );
+
+    }
+
+    public void updateTitle(String categoryName) {
+        toolbar.setTitle(categoryName);
     }
 
     @Override
@@ -132,9 +253,10 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
         Fragment fragment =
                 (fragmentManager.findFragmentByTag(IntermediaryFragment.TAG));
         if (fragment == null) {
-            fragment = IntermediaryFragment.createInstance(departmentId);
+            fragment = IntermediaryFragment.createInstance(departmentId, trackerAttribution);
         } else if (fragment instanceof IntermediaryFragment) {
-            ((IntermediaryFragment)fragment).setDepartmentId(departmentId);
+            ((IntermediaryFragment) fragment).setDepartmentId(departmentId);
+            ((IntermediaryFragment) fragment).setTrackerAttribution(trackerAttribution);
         }
         inflateFragment(
                 fragment,
@@ -142,23 +264,10 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
                 IntermediaryFragment.TAG);
     }
 
-    protected boolean onSearchOptionSelected() {
-        Intent intent = BrowseProductRouter
-                .getBrowseProductIntent(this, departmentId, TopAdsApi.SRC_DIRECTORY);
-        startActivity(intent);
-        return true;
-    }
-
     private void inflateFragment(Fragment fragment, boolean isAddToBackStack, String tag) {
         if (isFinishing()) return;
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
-        if (fragment instanceof BrowseParentFragment) {
-            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL |
-                    AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-            CommonUtils.hideKeyboard(this, getCurrentFocus());
-        } else {
-            params.setScrollFlags(0);
-        }
+        params.setScrollFlags(0);
         toolbar.setLayoutParams(params);
         toolbar.requestLayout();
 
@@ -202,5 +311,51 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
 
     public FrameLayout getFrameLayout() {
         return frameLayout;
+    }
+
+
+    // { Work Around IF your press back and
+    //      youtube thumbnail doesn't intalized yet
+
+    boolean isBackPressed;
+
+    @Override
+    public void onBackPressed() {
+        if (!thumbnailIntializing) {
+            super.onBackPressed();
+        } else {
+            isBackPressed = true;
+            return;
+        }
+
+    }
+
+    boolean thumbnailIntializing = false;
+
+    @Override
+    public void onIntializationStart() {
+        thumbnailIntializing = true;
+    }
+
+    @Override
+    public void onIntializationComplete() {
+        if (isBackPressed) {
+            super.onBackPressed();
+        }
+        thumbnailIntializing = false;
+    }
+
+    @Override
+    public void clickVideo(String title) {
+        CategoryPageTracking.eventEnhance(this, DataLayer.mapOf(
+                "event", "clickIntermediary",
+                "eventCategory", "intermediary page",
+                "eventAction", "click video - " + departmentId,
+                "eventLabel", title));
+    }
+
+    // Work Around IF your press back and youtube thumbnail doesn't intalized yet }
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

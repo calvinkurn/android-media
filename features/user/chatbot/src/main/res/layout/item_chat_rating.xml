@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/dp_3"
+    android:paddingLeft="@dimen/dp_15"
+    android:paddingRight="@dimen/dp_15"
+    android:paddingTop="@dimen/dp_3">
+
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:textAllCaps="true"
+        android:textColor="@color/grey_500"
+        android:textSize="@dimen/sp_12"
+        tools:text="13:16 wib" />
+
+    <ImageView
+        android:id="@+id/user_ava"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/name"
+        android:layout_marginRight="@dimen/dp_10"
+        android:visibility="gone" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_group_chat_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/name"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        app:cardBackgroundColor="@color/cardview_light_background"
+        app:cardCornerRadius="@dimen/dp_3"
+        app:cardElevation="0dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:maxHeight="@dimen/max_width_chat_bubble"
+            android:maxWidth="@dimen/max_height_chat_bubble"
+            android:scaleType="fitCenter"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/view_user_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/card_group_chat_message"
+        android:layout_toEndOf="@id/user_ava"
+        android:layout_toRightOf="@id/user_ava">
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/message_holder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
+            app:layout_constraintLeft_toLeftOf="@id/view_user_box">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/message_content_holder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/message_text_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/message"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_selected_rating"
+                        android:layout_marginRight="@dimen/margin_selected_rating"
+                        android:background="@drawable/left_bubble"
+                        android:linksClickable="true"
+                        android:maxWidth="@dimen/max_width_chat_bubble"
+                        android:paddingBottom="@dimen/dp_8"
+                        android:paddingEnd="@dimen/dp_18"
+                        android:paddingLeft="@dimen/dp_16"
+                        android:paddingRight="@dimen/dp_18"
+                        android:paddingStart="@dimen/dp_16"
+                        android:paddingTop="@dimen/dp_8"
+                        android:textColor="@color/black_70"
+                        android:textColorLink="@color/black_70"
+                        android:textIsSelectable="true"
+                        android:textSize="@dimen/sp_14"
+                        android:visibility="visible"
+                        tools:text="opesjkajd aasdfkalskdjfla;ksdfajsdlfkjalsdjflaksjdfl;aks;dlfalskdfj;alksdflaksdjfsdfkj" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/rating_selected"
+                    android:layout_width="@dimen/rating_icon_size"
+                    android:layout_height="@dimen/rating_icon_size"
+                    android:layout_marginTop="@dimen/dp_4"
+                    android:background="@drawable/circle_grey_border"
+                    android:padding="@dimen/dp_8"
+                    android:scaleType="fitCenter"
+                    android:visibility="gone"
+                    app:layout_constraintRight_toRightOf="@+id/message_text_holder"
+                    app:layout_constraintTop_toTopOf="@id/message_text_holder"
+                    app:srcCompat="@drawable/selector_chat_rating" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/bottom_message_holder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/message_content_holder">
+
+                <TextView
+                    android:id="@+id/hour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_3"
+                    android:textColor="@color/time_color"
+                    android:textSize="@dimen/sp_10"
+                    tools:text="11:50" />
+
+                <LinearLayout
+                    android:id="@+id/rating_option_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/margin_selected_rating"
+                    android:layout_marginRight="@dimen/margin_selected_rating"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:foregroundGravity="right"
+                    android:gravity="end"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/rating_option_yes"
+                        android:layout_width="@dimen/rating_icon_size"
+                        android:layout_height="@dimen/rating_icon_size"
+                        android:layout_marginEnd="@dimen/dp_4"
+                        android:layout_marginRight="@dimen/dp_4"
+                        android:background="@drawable/circle_green_border"
+                        android:padding="@dimen/dp_8"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/ic_chat_rating_yes" />
+
+                    <ImageView
+                        android:id="@+id/rating_option_no"
+                        android:layout_width="@dimen/rating_icon_size"
+                        android:layout_height="@dimen/rating_icon_size"
+                        android:background="@drawable/circle_green_border"
+                        android:padding="@dimen/dp_8"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/ic_chat_rating_no" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+</RelativeLayout>

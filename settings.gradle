@@ -1,12 +1,24 @@
-include ':customerapp'
-include ':tkpddigital'
-include ':tkpdcore'
-include ':tkpdinbox'
-include ':tkpddiscovery'
-include ':tkpdtransaction'
-include ':tkpdsession'
-include ':tkpdseller'
-include ':sellerapp'
-include ':tkpdtopadssdk'
-include ':tkpdpayment'
-include ':tkpdpdp'
+ext.isCiServer = System.getenv().containsKey("CI")
+
+buildCache {
+    local {
+        enabled = !isCiServer
+    }
+    remote(HttpBuildCache) {
+        url = "${ci_url}"
+        push = isCiServer
+//        allowUntrustedServer = true
+        credentials {
+            username = "${ci_username}"
+            password = "${ci_password}"
+        }
+    }
+}
+apply from: "buildconfig/appcompile/compile-libraries.gradle"
+//apply from: "buildconfig/appcompile/compile-libraries-no-op.gradle"
+apply from: "buildconfig/appcompile/compile-customerapp.gradle"
+//apply from: "buildconfig/appcompile/compile-customerapp-no-op.gradle"
+apply from: "buildconfig/appcompile/compile-sellerapp.gradle"
+//apply from: "buildconfig/appcompile/compile-sellerapp-no-op.gradle"
+apply from: "buildconfig/appcompile/compile-mitrapp.gradle"
+apply from: "buildconfig/appcompile/compile-posapp.gradle"

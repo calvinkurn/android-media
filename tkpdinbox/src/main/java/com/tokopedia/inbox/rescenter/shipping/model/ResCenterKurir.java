@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class ResCenterKurir {
 
-    @SerializedName("list")
+    @SerializedName("shippingList")
     @Expose
     private List<Kurir> list;
 
@@ -24,10 +24,10 @@ public class ResCenterKurir {
 
     public static class Kurir {
 
-        @SerializedName("shipment_id")
+        @SerializedName("id")
         @Expose
         private String shipmentId;
-        @SerializedName("shipment_name")
+        @SerializedName("name")
         @Expose
         private String shipmentName;
 

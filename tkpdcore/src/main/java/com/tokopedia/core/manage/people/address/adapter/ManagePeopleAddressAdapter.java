@@ -13,8 +13,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.address.presenter.ManagePeopleAddressFragmentPresenter;
@@ -61,6 +61,9 @@ public class ManagePeopleAddressAdapter extends BaseLinearRecyclerViewAdapter {
 
         @BindView(R2.id.label_no_location)
         View noLocationLabel;
+
+        @BindView(R2.id.view_bottom)
+        View bottomView;
 
         GoogleMap googleMap;
 
@@ -124,15 +127,17 @@ public class ManagePeopleAddressAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     private void bindAddressHolder(MPAddressViewHolder viewHolder, int position) {
-        setVisibility(viewHolder, position);
-        setTitle(viewHolder.addressName, position);
-        setAddress(viewHolder.addressDetail, position);
-        setGoogleMap(viewHolder.googleMap, position);
-        setListener(viewHolder, position);
+        if (position < list.size()) {
+            setVisibility(viewHolder, position);
+            setTitle(viewHolder.addressName, position);
+            setAddress(viewHolder.addressDetail, position);
+            setGoogleMap(viewHolder.googleMap, position);
+            setListener(viewHolder, position);
+        }
     }
 
     private void setVisibility(MPAddressViewHolder viewHolder, int position) {
-        if (list.get(position).getAddressStatus() == 1) {
+        if (list != null && list.size() > position && list.get(position).getAddressStatus() == 1) {
             viewHolder.defaultBtn.setVisibility(View.VISIBLE);
         } else {
             viewHolder.defaultBtn.setVisibility(View.GONE);
@@ -149,6 +154,12 @@ public class ManagePeopleAddressAdapter extends BaseLinearRecyclerViewAdapter {
             viewHolder.noLocationLabel.setVisibility(View.VISIBLE);
         } else {
             viewHolder.noLocationLabel.setVisibility(View.INVISIBLE);
+        }
+
+        if (position == list.size() - 1) {
+            viewHolder.bottomView.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.bottomView.setVisibility(View.GONE);
         }
     }
 

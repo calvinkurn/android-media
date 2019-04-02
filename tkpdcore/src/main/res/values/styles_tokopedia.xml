@@ -237,6 +237,7 @@
         <item name="android:actionOverflowButtonStyle">@style/OverFlow</item>
         <item name="android:colorPrimary">@color/tkpd_dark_green</item>
         <item name="android:statusBarColor">@color/green_600</item>
+        <item name="android:colorAccent">@color/tkpd_dark_green</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="android:windowActionModeOverlay">true</item>
         <item name="windowActionBar">false</item>
@@ -246,13 +247,14 @@
         <item name="actionModeStyle">@style/CustomActionMode</item>
         <item name="spinnerStyle">@style/Widget.AppCompat.Spinner.Underlined</item>
     </style>
-
-    <style name="Theme.Tokopedia3.Launcher" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowBackground">@drawable/launch_screen</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:windowActionBarOverlay">true</item>
+    
+    <style name="Theme.TextInputLayout" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textColorHint">@color/colorGray</item>
+        <item name="android:textSize">16sp</item>
+        <item name="colorControlActivated">@color/green_600</item>
+        <item name="colorControlNormal">@color/grey_hint</item>
     </style>
+
     <style name="TextAppearance.Tokopedia.Title.Collapsed" parent="android:TextAppearance">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">17sp</item>
@@ -278,7 +280,6 @@
         <item name="android:textColorPrimary">@color/abc_primary_text_material_dark</item>
         <item name="android:actionMenuTextColor">@color/abc_primary_text_material_dark</item>
         <item name="android:textColorSecondary">@color/abc_primary_text_material_dark</item>
-        <item name="android:itemTextAppearance">@style/TextAppearance</item>
     </style>
 
     <style name="TextAppearance">
@@ -287,12 +288,41 @@
 
     <style name="ToolbarText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Toolbar.TitleText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/grey_700</item>
+    </style>
+
+    <style name="ToolbarText.SansSerifMedium" parent="ToolbarText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_70</item>
     </style>
 
     <style name="ToolbarSubtitleText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
         <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
+    <style name="ToolbarSubtitleText.SansSerifMedium" parent="ToolbarSubtitleText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_70</item>
+    </style>
+
+    <style name="WebViewToolbarText" parent="MediumText">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_70</item>
+    </style>
+
+    <style name="WebViewToolbarSubtitleText"
+           parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_54</item>
+    </style>
     <!--
         <style name="UserVoiceTheme" parent="Theme.AppCompat.Light">
             <item name="android:popupMenuStyle">@style/PopupMenu.Tokopedia</item>
@@ -348,8 +378,23 @@
 
         <!-- No backgrounds, titles or window float -->
         <item name="windowNoTitle">true</item>
-        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
 
+    </style>
+
+    <style name="TranslucentTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <!-- custom dialog activity theme -->
+    <style name="AppTheme.Dialog" parent="Base.Theme.AppCompat.Light.Dialog.FixedSize">
+        <!-- removing the dialog's action bar -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="Theme.AppCompat.Translucent" parent="Theme.AppCompat.NoActionBar">

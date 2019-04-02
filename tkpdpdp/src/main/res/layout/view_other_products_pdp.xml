@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:orientation="vertical"
-    android:padding="@dimen/padding_small">
+    android:paddingBottom="@dimen/pdp_content_padding"
+    android:paddingLeft="@dimen/pdp_content_padding"
+    android:paddingRight="@dimen/pdp_content_padding">
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
         android:text="@string/title_other_shop_product"
-        android:textColor="@color/black_70"
+        android:textColor="@color/pdp_text_color"
+        android:textSize="@dimen/pdp_title_text_size"
         android:textStyle="bold" />
 
     <HorizontalScrollView
@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:fadeScrollbars="false"
         android:fillViewport="true"
+        android:scrollbars="none"
         android:background="@color/white"
         android:measureAllChildren="false"
         android:scrollbarSize="3dp">
@@ -33,8 +34,7 @@
             android:animateLayoutChanges="true"
             android:baselineAligned="false"
             android:orientation="horizontal"
-            android:paddingBottom="@dimen/margin_small"
-            android:paddingTop="@dimen/margin_med"
+            android:paddingBottom="@dimen/dp_10"
             android:visibility="visible">
 
             <include

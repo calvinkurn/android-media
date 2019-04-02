@@ -14,7 +14,7 @@ import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.seller.selling.model.ResponseConfirmShipping;
 import com.tokopedia.seller.selling.constant.shopshippingdetail.ShopShippingDetailView;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -263,7 +263,7 @@ public class SellingService extends IntentService implements SellingServiceConst
                 rejectOrderWithPrice(modelEditPrices, modelRejectOrder, type);
                 break;
             case CONFIRM_SHIPPING:
-                /* Update UI: Download Service is Running */
+                /* Update UI: Download CourierService is Running */
                 running = new Bundle();
                 running.putInt(TYPE, type);
                 ModelParamSelling modelParamSelling = Parcels.unwrap(intent.getParcelableExtra(MODEL_PARAM_SELLING_KEY));
@@ -286,7 +286,7 @@ public class SellingService extends IntentService implements SellingServiceConst
                         .subscribe(new Subscriber(type, modelParamSelling.getPosition()));
                 break;
             case CANCEL_SHIPPING:
-                /* Update UI: Download Service is Running */
+                /* Update UI: Download CourierService is Running */
                 running = new Bundle();
                 running.putInt(TYPE, type);
                 modelParamSelling = Parcels.unwrap(intent.getParcelableExtra(MODEL_PARAM_SELLING_KEY));
@@ -312,7 +312,7 @@ public class SellingService extends IntentService implements SellingServiceConst
                 multiConfirmShipping(modelParamSellings, type);
                 break;
             case CONFIRM_NEW_ORDER:
-                /* Update UI: Download Service is Running */
+                /* Update UI: Download CourierService is Running */
                 running = new Bundle();
                 running.putInt(TYPE, type);
                 modelParamSelling = Parcels.unwrap(intent.getParcelableExtra(MODEL_PARAM_SELLING_KEY));
@@ -330,7 +330,7 @@ public class SellingService extends IntentService implements SellingServiceConst
                         .subscribe(new Subscriber(type, modelParamSelling.getPosition()));
                 break;
             case PARTIAL_NEW_ORDER:
-                /* Update UI: Download Service is Running */
+                /* Update UI: Download CourierService is Running */
                 running = new Bundle();
                 running.putInt(TYPE, type);
                 modelParamSelling = Parcels.unwrap(intent.getParcelableExtra(MODEL_PARAM_SELLING_KEY));
@@ -622,10 +622,7 @@ public class SellingService extends IntentService implements SellingServiceConst
 
         @Override
         public void onError(Throwable e) {
-            Log.e(TAG, messageTAG + e.getLocalizedMessage());
-//            if(e.getLocalizedMessage().contains("Unable to resolve host")){
             listener.noConnection();
-//            }
         }
 
         @Override

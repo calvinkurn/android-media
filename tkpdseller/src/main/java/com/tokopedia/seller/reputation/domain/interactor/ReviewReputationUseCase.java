@@ -9,6 +9,8 @@ import com.tokopedia.seller.reputation.domain.model.SellerReputationDomain;
 
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -23,6 +25,7 @@ public class ReviewReputationUseCase extends UseCase<SellerReputationDomain> {
 
     private ReputationReviewRepository reputationReviewRepository;
 
+    @Inject
     public ReviewReputationUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
@@ -34,15 +37,6 @@ public class ReviewReputationUseCase extends UseCase<SellerReputationDomain> {
     @Override
     public Observable<SellerReputationDomain> createObservable(RequestParams requestParams) {
         return reputationReviewRepository.getReputationHistory(requestParams);
-    }
-
-    @Override
-    public void execute(RequestParams requestParams, Subscriber<SellerReputationDomain> subscriber) {
-        this.subscription = createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(subscriber);
     }
 
     public Observable<SellerReputationDomain> createObservable(String shopId, Map<String, String> param) {

@@ -1,0 +1,140 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:orientation="vertical"
+    tools:background="@color/grey_100">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <RelativeLayout
+            android:id="@+id/fl_holder_input_client_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.88"
+            android:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_height="0px"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                tools:ignore="UselessLeaf" />
+
+            <TextView
+                android:id="@+id/tv_label_client_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/font_black_disabled_38"
+                android:textSize="@dimen/sp_14"
+                android:visibility="gone"
+                tools:text="@string/prompt_phone"
+                tools:visibility="visible" />
+
+            <AutoCompleteTextView
+                android:id="@+id/ac_client_number"
+                style="@style/HintTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_label_client_number"
+                android:focusableInTouchMode="true"
+                android:inputType="numberDecimal"
+                android:maxLines="1"
+                android:popupBackground="@color/white"
+                android:textColor="@color/black_70"
+                android:textColorHint="@color/grey_400"
+                android:textSize="@dimen/sp_14"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/ac_client_number"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/tv_label_client_number"
+                android:layout_gravity="end"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginTop="@dimen/dp_6"
+                    android:layout_marginBottom="@dimen/dp_6"
+                    android:background="@drawable/bg_button_disabled"
+                    android:clickable="false"
+                    android:layout_gravity="center"
+                    android:id="@+id/button_additional"
+                    style="@style/Button.Submit.Green.Full"
+                    android:text="Cek"/>
+
+                <ImageView
+                    android:id="@+id/iv_pic_operator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_25"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
+                    android:contentDescription="@string/app_name"
+                    android:paddingBottom="@dimen/dp_5"
+                    tools:src="@drawable/ic_close_24dp" />
+
+                <Button
+                    android:id="@+id/btn_clear_client_number"
+                    android:background="@drawable/digital_bg_widget_close"
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_25"
+                    android:layout_gravity="end|center_vertical"
+                    android:paddingBottom="@dimen/dp_5" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_weight="0.12"
+            android:paddingBottom="@dimen/dp_9"
+            tools:visibility="visible">
+
+            <Button
+                android:id="@+id/btn_contact_picker"
+                android:background="@drawable/ic_digital_client_number_contact"
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_25"
+                android:layout_marginEnd="4dp"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginRight="4dp"
+                android:layout_marginStart="@dimen/dp_8" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_error_client_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_4"
+        android:paddingEnd="@null"
+        android:paddingLeft="@dimen/dp_3"
+        android:paddingRight="@null"
+        android:paddingStart="@dimen/dp_3"
+        android:text="@string/title_empty_stock"
+        android:textColor="@color/red_600"
+        android:textSize="@dimen/sp_14"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+</LinearLayout>

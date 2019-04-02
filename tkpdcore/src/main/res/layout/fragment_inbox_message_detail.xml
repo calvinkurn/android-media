@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -14,7 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:background="@drawable/cards_ui">
+            android:background="@drawable/cards_ui"
+            android:visibility="gone">
 
             <LinearLayout
                 android:id="@+id/reputation_view"
@@ -81,7 +83,7 @@
                 android:layout_centerVertical="true"
                 android:layout_gravity="center"
                 android:padding="@dimen/padding_small"
-                android:src="@drawable/ic_action_attachment" />
+                app:srcCompat="@drawable/ic_action_attachment" />
 
 
             <EditText
@@ -104,7 +106,7 @@
                 android:layout_centerVertical="true"
                 android:layout_gravity="center"
                 android:padding="@dimen/padding_small"
-                android:src="@drawable/ic_send_24dp_green" />
+                app:srcCompat="@drawable/ic_send_24dp_green" />
 
             <ProgressBar
                 android:id="@+id/loading"

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.imagepicker">
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
+
+    <application
+        android:label="@string/app_name">
+        <activity android:name=".picker.main.view.ImagePickerActivity"
+            android:theme="@style/Theme.White"
+            android:label="@string/choose_image"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"/>
+
+        <activity android:name=".picker.main.view.VideoPickerActivity"
+            android:theme="@style/Theme.White"
+            android:label="@string/choose_image"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"/>
+
+        <activity android:name=".picker.album.AlbumPickerActivity"
+            android:theme="@style/Theme.White"
+            android:label="@string/album"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"/>
+
+        <activity android:name=".editor.main.view.ImageEditorActivity"
+            android:theme="@style/Theme.White"
+            android:label="@string/edit_image"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"/>
+
+        <activity android:name=".picker.instagram.view.activity.InstagramLoginActivity"
+            android:theme="@style/Theme.White"
+            android:label="@string/instagram_label_login"
+            android:windowSoftInputMode="adjustResize"
+            android:screenOrientation="portrait"/>
+
+    </application>
+
+</manifest>

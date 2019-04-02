@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -15,12 +16,11 @@
 
     <ImageView
         android:id="@+id/btn_overflow"
-        android:layout_width="@dimen/user_ava"
-        android:layout_height="@dimen/user_ava"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:background="@drawable/overflow_selected"
-        android:padding="@dimen/padding_vs"
-        android:src="@drawable/ic_new_action_overflow_black" />
+        app:srcCompat="@drawable/ic_new_action_overflow_black" />
 
     <TextView
         android:id="@+id/product_title"
@@ -36,7 +36,7 @@
         android:minLines="1"
         android:paddingTop="@dimen/padding_vs"
         android:singleLine="true"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         android:textStyle="bold" />
 
     <TextView

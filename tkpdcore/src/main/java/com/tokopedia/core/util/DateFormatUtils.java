@@ -1,8 +1,10 @@
 package com.tokopedia.core.util;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -16,6 +18,9 @@ public class DateFormatUtils {
     public static final String FORMAT_DD_MM_YYYY = "dd/MM/yyyy";
     public static final String FORMAT_DD_MMMM_YYYY = "dd MMMM yyyy";
     public static final String FORMAT_YYYY_MM_DD = "yyyy-MM-dd";
+    public static final String FORMAT_RESO = "dd MMM yyyy hh:mm";
+    public static final String FORMAT_D_MMMM_YYYY = "d MMMM yyyy";
+    public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
 
     @SuppressLint("SimpleDateFormat")
     public static String getStringDateAfter(int count) {
@@ -27,18 +32,20 @@ public class DateFormatUtils {
     }
 
     public static String formatDate(String currentFormat, String newFormat, String dateString){
+        return formatDate(currentFormat, newFormat, dateString, DEFAULT_LOCALE);
+    }
 
+    public static String formatDate(String currentFormat, String newFormat, String dateString, Locale locale){
         try{
-            DateFormat fromFormat = new SimpleDateFormat(currentFormat);
+            DateFormat fromFormat = new SimpleDateFormat(currentFormat, locale);
             fromFormat.setLenient(false);
-            DateFormat toFormat = new SimpleDateFormat(newFormat);
+            DateFormat toFormat = new SimpleDateFormat(newFormat, locale);
             toFormat.setLenient(false);
             Date date = fromFormat.parse(dateString);
             return toFormat.format(date);
-        }catch (Exception e){
+        }catch (ParseException e){
             e.printStackTrace();
             return dateString;
         }
-
     }
 }

@@ -1,0 +1,55 @@
+query getCampaignEligibleSellerProduct($camp_id: Int!,
+                      $rows: Int!,
+                      $offset: Int!,
+                      $shop_id: Int!,
+                      $q: String,
+                      $filter: Int){
+    getCampaignEligibleSellerProduct(params:{
+    camp_id:$camp_id
+    rows:$rows
+    offset:$offset
+    shop_id:$shop_id
+    q:$q
+    filter:$filter
+    }){
+        data{
+            submitted_count
+            pending_count
+            products{
+                id
+                price
+                name
+                department_id
+                campaign {
+                  campaign_id
+                  discount_percentage
+                  original_price
+                  discounted_price
+                  criteria {
+                    criteria_id
+                    price_min
+                    price_max
+                    stock_min
+                    rating_min
+                    rating_max
+                    discount_percentage_min
+                    discount_percentage_max
+                    submission_max
+                    submission_count
+                    exclude_preorder
+                    exclude_wholesale
+                    min_order_min
+                    min_order_max
+                  }
+                  stock
+                  product_status
+                  image_url
+                  is_eligible
+                  message
+                }
+                is_valid
+                product_status
+            }
+        }
+    }
+}

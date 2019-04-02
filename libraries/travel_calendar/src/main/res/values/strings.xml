@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">travel_calendar</string>
+    <string name="travel_calendar_label_choose_departure_trip_date">Pilih Tanggal Pergi</string>
+    <string name="travel_calendar_label_choose_return_trip_date">Pilih Tanggal Pulang</string>
+    <string name="travel_calendar_label_choose_date">Pilih Tanggal</string>
+    <string name="train_calender_label_day_name_sunday">Min</string>
+    <string name="train_calender_label_day_name_monday">Sen</string>
+    <string name="train_calender_label_day_name_tuesday">Sel</string>
+    <string name="train_calender_label_day_name_wednesday">Rab</string>
+    <string name="train_calender_label_day_name_thursday">Kam</string>
+    <string name="train_calender_label_day_name_friday">Jum</string>
+    <string name="train_calender_label_day_name_saturday">Sab</string>
+</resources>

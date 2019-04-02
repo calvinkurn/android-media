@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.router.SellerAppRouter;
@@ -24,6 +24,8 @@ import com.tokopedia.inbox.rescenter.detail.service.DetailResCenterReceiver;
 /**
  * Created by hangnadi on 2/9/16.
  */
+
+@Deprecated
 public class ResCenterActivity extends BasePresenterActivity<ResCenterPresenter> implements
         ResCenterView,
         DetailResCenterReceiver.Receiver {
@@ -149,5 +151,10 @@ public class ResCenterActivity extends BasePresenterActivity<ResCenterPresenter>
             finish();
         }
         super.onBackPressed();
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

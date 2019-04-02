@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="section_title">
+        <item>Beli</item>
+        <item>Bayar</item>
+        <item>Pesan</item>
+        <item>Ajukan</item>
+        <item>Jual</item>
+    </string-array>
+    <integer-array name="section_icon">
+        <item>@drawable/ic_beli</item>
+        <item>@drawable/ic_bayar</item>
+        <item>@drawable/ic_pesan</item>
+        <item>@drawable/ic_ajukan</item>
+        <item>@drawable/ic_jual</item>
+    </integer-array>
+</resources>

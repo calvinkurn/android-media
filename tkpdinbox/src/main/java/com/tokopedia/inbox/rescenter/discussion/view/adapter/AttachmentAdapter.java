@@ -2,13 +2,14 @@ package com.tokopedia.inbox.rescenter.discussion.view.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R2;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 
@@ -18,8 +19,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static android.view.View.Y;
 
 /**
  * Created by nisie on 3/31/17.
@@ -54,6 +53,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     private ProductImageListener listener;
     private ArrayList<AttachmentViewModel> data;
     private boolean canDelete;
+    public boolean isClickable = true;
 
     public AttachmentAdapter(Context context, boolean canDelete) {
         this.context = context;
@@ -95,11 +95,15 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
             if (data.get(position).getImgThumb() != null
                     && !data.get(position).getImgThumb().equals("")
                     ) {
+                Log.d("hangnadi", "bindImage: wrong1");
                 ImageHandler.LoadImage(holder.image, data.get(position).getImgThumb());
-            } else if (data.get(position).getFileLoc() != null && !data.get(position).getFileLoc().equals("")) {
+            } else if (data.get(position).getFileLoc() != null
+                    && !data.get(position).getFileLoc().equals("")) {
+                Log.d("hangnadi", "bindImage: " + data.get(position).getFileLoc());
                 ImageHandler.loadImageFromFile(context, holder.image, new File(data.get(position).getFileLoc()));
             } else if (data.get(position).getUrl() != null &&
                     !data.get(position).getUrl().equals("")) {
+                Log.d("hangnadi", "bindImage: wrong2");
                 ImageHandler.loadImageWithId(holder.image, R.drawable.ic_video_thumb);
             }
         } catch (Exception e) {

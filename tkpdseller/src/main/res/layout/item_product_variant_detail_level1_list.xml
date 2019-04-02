@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="2dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardUseCompatPadding="true"
+    android:layout_marginLeft="@dimen/margin_sm"
+    android:layout_marginRight="@dimen/margin_sm"
+    android:layout_marginTop="@dimen/padding_vvvs"
+    android:layout_marginBottom="@dimen/padding_vvvs">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:divider="@drawable/line_divider"
+        android:showDividers="middle">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:divider="@drawable/line_divider"
+            android:showDividers="middle">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="?attr/listPreferredItemHeightSmall"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tv_title"
+                    style="@style/TextView.Title"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    tools:text="0-3 Bulan" />
+                <TextView
+                    android:id="@+id/tv_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/margin_med"
+                    android:paddingRight="@dimen/margin_med"
+                    android:paddingTop="@dimen/padding_vs"
+                    android:paddingBottom="@dimen/padding_vs"
+                    android:layout_marginLeft="@dimen/padding_ms"
+                    android:layout_marginStart="@dimen/padding_ms"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/product_variant_status_not_available"
+                    android:background="@color/tkpd_yellow_status"
+                    style="@style/TextView.Micro"
+                    android:visibility="gone"
+                    tools:visibility="visible"/>
+            </LinearLayout>
+
+            <com.tokopedia.design.label.LabelView
+                android:id="@+id/label_view_variant_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/padding_ms"
+                android:paddingBottom="@dimen/padding_ms"
+                app:lv_title_color="@color/font_black_disabled_38"
+                app:lv_title="@string/product_variant_price_label" />
+
+            <com.tokopedia.design.label.LabelView
+                android:id="@+id/label_view_variant_stock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/padding_ms"
+                android:paddingBottom="@dimen/padding_ms"
+                app:lv_title_color="@color/font_black_disabled_38"
+                app:lv_title="@string/product_variant_stock_total_label" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_see_detail"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/listPreferredItemHeightSmall"
+            style="@style/TextView.Title"
+            android:layout_marginRight="@dimen/padding_ms"
+            android:layout_marginLeft="@dimen/padding_ms"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:textColor="@color/tkpd_main_green"
+            android:text="@string/product_variant_see_detail"
+            android:gravity="center_vertical|end"/>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

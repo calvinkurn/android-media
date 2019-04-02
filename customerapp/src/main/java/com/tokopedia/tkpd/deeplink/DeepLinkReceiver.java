@@ -12,10 +12,9 @@ import com.tkpd.library.utils.CommonUtils;
  */
 
 public class DeepLinkReceiver extends BroadcastReceiver {
-    private static final String TAG = DeepLinkReceiver.class.getSimpleName();
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         String deepLinkUri = intent.getStringExtra(DeepLinkHandler.EXTRA_URI);
 
         if (intent.getBooleanExtra(DeepLinkHandler.EXTRA_SUCCESSFUL, false)) {

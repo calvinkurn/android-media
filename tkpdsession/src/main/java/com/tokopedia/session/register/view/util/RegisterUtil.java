@@ -8,13 +8,22 @@ import com.tokopedia.session.R;
  */
 
 public class RegisterUtil {
+    public static final int MAX_PHONE_NUMBER = 13;
+    public static final int MIN_PHONE_NUMBER = 6;
+    public static final int MAX_NAME = 35;
+    public static final int MAX_NAME_128 = 128;
+    public static final int MIN_NAME = 3;
+
 
     public static boolean checkRegexNameLocal(String param){
         String regex = "[A-Za-z]+";
         return !param.replaceAll("\\s","").matches(regex);
     }
     public static boolean isExceedMaxCharacter(String text) {
-        return text.length()>35;
+        return text.length() > MAX_NAME;
+    }
+    public static boolean isBelowMinChar(String text) {
+        return text.length() < MIN_NAME;
     }
 
     public static String formatDateText(int mDateDay, int mDateMonth, int mDateYear) {
@@ -39,5 +48,13 @@ public class RegisterUtil {
             default: bulan = MainApplication.getAppContext().getString(R.string.wrong_input); break;
         }
         return String.format("%d %s %d", mDateDay, bulan, mDateYear);
+    }
+
+    public static boolean isValidPhoneNumber(String phoneNo) {
+        for (int i = MIN_PHONE_NUMBER; i <= MAX_PHONE_NUMBER; i++) {
+            if (phoneNo.matches("\\d{" + i + "}")) return true;
+        }
+        return false;
+
     }
 }

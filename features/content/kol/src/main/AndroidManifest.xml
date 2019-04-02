@@ -1,0 +1,63 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.tokopedia.kol">
+
+    <application>
+        <activity android:name=".feature.comment.view.activity.KolCommentActivity"
+            android:label="@string/title_comment_kol"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:theme="@style/Theme.White"
+            />
+
+        <activity android:name=".feature.postdetail.view.activity.KolPostDetailActivity"
+            android:label="@string/title_kol_post_detail"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:theme="@style/Theme.White"
+            />
+
+        <activity
+            android:name="com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity"
+            android:label="@string/title_following_kol"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:theme="@style/Theme.White"/>
+
+        <activity
+            android:name=".feature.createpost.view.activity.CreatePostActivity"
+            android:label="@string/title_create_post"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:theme="@style/Theme.White"/>
+
+        <activity
+            android:name=".feature.createpost.view.activity.CreatePostImagePickerActivity"
+            android:label="@string/title_image_picker"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:theme="@style/Theme.White"/>
+
+        <activity
+            android:name=".feature.createpost.view.activity.CreatePostImageEditorActivity"
+            android:label="@string/title_image_editor"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:theme="@style/Theme.White"/>
+
+        <activity android:name=".feature.post.view.activity.KolPostYouTubeActivity"
+            android:screenOrientation="landscape"/>
+
+        <activity android:name=".feature.report.view.activity.ContentReportActivity"
+            android:label="@string/title_kol_report"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+            android:theme="@style/Theme.White"
+            />
+
+        <activity android:name=".feature.video.view.activity.VideoDetailActivity"
+            android:screenOrientation="portrait"
+            />
+
+    </application>
+
+</manifest>

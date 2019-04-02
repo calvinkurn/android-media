@@ -29,14 +29,14 @@ import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import java.util.Locale;
 
 /**
  * Created by Alifa on 10/18/2016.
  */
-
+@Deprecated
 public class PinEntryEditText extends EditText {
     private static final String XML_NAMESPACE_ANDROID = "http://schemas.android.com/apk/res/android";
 
@@ -340,7 +340,7 @@ public class PinEntryEditText extends EditText {
      */
     private void updateColorForLines(boolean hasTextOrIsNext) {
         if (mHasError) {
-            mLinesPaint.setColor(getColorForState(android.R.attr.state_active));
+            mLinesPaint.setColor(getResources().getColor(R.color.red_500));
         } else if (isFocused()) {
             mLinesPaint.setStrokeWidth(mLineStrokeSelected);
             mLinesPaint.setColor(getColorForState(android.R.attr.state_focused));

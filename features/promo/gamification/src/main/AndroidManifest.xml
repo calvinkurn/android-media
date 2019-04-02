@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.gamification">
+
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true">
+
+        <activity
+            android:name=".cracktoken.activity.CrackTokenActivity"
+            android:label="@string/title_activity_gamification"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Green"
+            android:launchMode="singleTask"/>
+
+        <activity android:name=".taptap.activity.TapTapTokenActivity"
+            android:label="@string/title_activity_gamification"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Green"
+            android:launchMode="singleTask"/>
+
+    </application>
+
+</manifest>

@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.var.NotificationVariable;
 
 /**
  * modify by mnormansyah 18 feb 2017
@@ -19,8 +17,6 @@ public class RefreshHandler {
 	private boolean isRefreshing = false;
 	private Activity context;
 	private View view;
-	private NotificationVariable notif;
-
 
 	public interface OnRefreshHandlerListener {
 		void onRefresh(View view);
@@ -29,16 +25,12 @@ public class RefreshHandler {
 	public RefreshHandler(SwipeToRefresh swipeToRefresh,
 						  OnRefreshHandlerListener onRefreshHandlerListener){
 		this.swipeToRefreshLayout = swipeToRefresh;
-		notif = MainApplication.getNotifInstance();
-		notif.setContext((Activity) swipeToRefresh.getContext());
 		this.RefreshHandlerListener = onRefreshHandlerListener;
 		swipeToRefresh.setOnRefreshListener(onSwipeRefresh());
 	}
 
 	public RefreshHandler(Activity context, View view, OnRefreshHandlerListener RefreshListener) {
 		swipeToRefreshLayout = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
-		notif = MainApplication.getNotifInstance();
-		notif.setContext(context);
 		this.RefreshHandlerListener = RefreshListener;
 		swipeToRefreshLayout.setOnRefreshListener(onSwipeRefresh());
 	}
@@ -61,7 +53,6 @@ public class RefreshHandler {
 		isRefreshing = true;
 		swipeToRefreshLayout.setRefreshing(true);
 		RefreshHandlerListener.onRefresh(view);
-		notif.GetNotif();
 	}
 
 	public void finishRefresh() {

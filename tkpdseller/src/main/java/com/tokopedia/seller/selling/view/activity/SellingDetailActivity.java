@@ -10,10 +10,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.WindowManager;
 
 import com.tkpd.library.utils.DownloadResultReceiver;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdActivity;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.fragment.FragmentShopNewOrderDetailV2;
 import com.tokopedia.seller.fragment.FragmentShopShippingDetailV2;
 import com.tokopedia.core.network.v4.NetworkConfig;
@@ -46,6 +47,11 @@ public class SellingDetailActivity extends TkpdActivity implements  DownloadResu
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_SHOP_SELLING_DETAIL;
+    }
+
+    @Override
+    public int getDrawerPosition() {
+        return TkpdState.DrawerPosition.SHOP;
     }
 
     private FragmentManager fragmentManager;

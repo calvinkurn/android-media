@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="video_height">200dp</dimen>
+    <dimen name="ic_badge_size">14dp</dimen>
+    <dimen name="avatar_size">40dp</dimen>
+    <dimen name="share_button_height">52dp</dimen>
+
+    <dimen name="feed_shop_ava">30dp</dimen>
+    <dimen name="feed_user_ava">40dp</dimen>
+    <dimen name="feed_gold_badge">15dp</dimen>
+    <dimen name="feed_info">15dp</dimen>
+    <dimen name="small_icon_size">6dp</dimen>
+
+    <dimen name="text_size_11">11sp</dimen>
+    <dimen name="text_size_12">12sp</dimen>
+    <dimen name="text_size_13">13sp</dimen>
+    <dimen name="text_size_14">14sp</dimen>
+    <dimen name="text_size_16">16sp</dimen>
+
+    <dimen name="feed_margin_s">4.2dp</dimen>
+    <dimen name="feed_detail_product">110dp</dimen>
+
+    <dimen name="padding_info">16dp</dimen>
+    <dimen name="cactus_height">100dp</dimen>
+    <dimen name="small_badge_size">11dp</dimen>
+
+    <dimen name="label_new_feed_width">120dp</dimen>
+
+    <dimen name="dp_10">10dp</dimen>
+    <dimen name="dp_5">5dp</dimen>
+    <dimen name="feed_detail_buy_height">32dp</dimen>
+    <dimen name="arrow_size">14dp</dimen>
+    <dimen name="share_header_height">52dp</dimen>
+    <dimen name="margin_top_os_feed">40dp</dimen>
+    <dimen name="feed_official_store_height">69dp</dimen>
+    <dimen name="official_store_header_image_height">85dp</dimen>
+    <dimen name="unify_font_small">11sp</dimen>
+    <dimen name="unify_font_normal">13sp</dimen>
+    <dimen name="header_official_store_height">44dp</dimen>
+    <dimen name="official_store_item_height">300dp</dimen>
+    <dimen name="unified_dp_3">3dp</dimen>
+    <dimen name="footer_height">48dp</dimen>
+    <dimen name="kol_avatar">60dp</dimen>
+    <dimen name="small_wishlist_kol">20dp</dimen>
+
+    <dimen name="badge_size">15dp</dimen>
+    <dimen name="label_padding_left_right">5dp</dimen>
+
+    <!-- partial empty feed -->
+    <dimen name="button_width">200dp</dimen>
+    <dimen name="img_width">250dp</dimen>
+    <dimen name="img_height">150dp</dimen>
+
+    <!-- recent view -->
+    <dimen name="recent_view_image_size">106dp</dimen>
+    <dimen name="recent_view_product_name">80dp</dimen>
+    <dimen name="recent_view_item_height">180dp</dimen>
+
+    <dimen name="avatar_size_small">32dp</dimen>
+    <dimen name="feed_badge_size">12dp</dimen>
+    <dimen name="feed_kol_button">15dp</dimen>
+    <dimen name="content_product_margin">6dp</dimen>
+    <dimen name="product_padding_medium">10dp</dimen>
+    <dimen name="product_padding_small">8dp</dimen>
+    <dimen name="product_padding_very_small">6dp</dimen>
+    <dimen name="image_padding_for_border">0.5dp</dimen>
+    <dimen name="tab_feed_indicator">54dp</dimen>
+
+</resources>

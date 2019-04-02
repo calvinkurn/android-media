@@ -18,10 +18,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customadapter.ColoredFilterAdapter;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.SlideOffViewHandler;
 import com.tokopedia.discovery.catalog.adapter.CatalogDetailAdapter;
 import com.tokopedia.discovery.catalog.listener.ICatalogDetailListView;
 import com.tokopedia.discovery.catalog.model.CatalogDetailItem;
@@ -30,13 +31,9 @@ import com.tokopedia.discovery.catalog.model.CatalogListWrapperData;
 import com.tokopedia.discovery.catalog.model.SingleItemFilter;
 import com.tokopedia.discovery.catalog.presenter.CatalogDetailListPresenter;
 import com.tokopedia.discovery.catalog.presenter.ICatalogDetailListPresenter;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.SlideOffViewHandler;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
 
 /**
  * @author by Alvarisi
@@ -45,22 +42,14 @@ import butterknife.BindView;
 public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDetailListPresenter>
         implements ICatalogDetailListView {
     public static final String CATALOG_ID = "catalog_id";
-    @BindView(R2.id.sorting)
-    TextView mSorting;
-    @BindView(R2.id.condition)
-    TextView mCondition;
-    @BindView(R2.id.location)
-    TextView mLocation;
-    @BindView(R2.id.list)
-    RecyclerView mList;
-    @BindView(R2.id.container)
-    CoordinatorLayout mContainer;
-    @BindView(R2.id.filter_container)
-    LinearLayout mFilterContainer;
-    @BindView(R2.id.loading)
-    ProgressBar mLoading;
-    @BindView(R2.id.swipe_refresh_layout)
-    SwipeRefreshLayout mRefresh;
+    private TextView mSorting;
+    private TextView mCondition;
+    private TextView mLocation;
+    private RecyclerView mList;
+    private CoordinatorLayout mContainer;
+    private LinearLayout mFilterContainer;
+    private ProgressBar mLoading;
+    private SwipeRefreshLayout mRefresh;
 
     CatalogDetailAdapter mAdapter;
     LinearLayoutManager layoutManager;
@@ -142,7 +131,14 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
 
     @Override
     protected void initView(View view) {
-
+        mSorting = view.findViewById(R.id.sorting);
+        mCondition = view.findViewById(R.id.condition);
+        mLocation = view.findViewById(R.id.location);
+        mList = view.findViewById(R.id.list);
+        mContainer = view.findViewById(R.id.container);
+        mFilterContainer = view.findViewById(R.id.filter_container);
+        mLoading = view.findViewById(R.id.loading);
+        mRefresh = view.findViewById(R.id.swipe_refresh_layout);
     }
 
     @Override
@@ -313,6 +309,9 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
 
     @Override
     public void renderListLocation(@NonNull List<CatalogDetailListLocation> locationsData) {
+        if (mLocationsData == null) {
+            return;
+        }
         this.mLocationsData.clear();
         this.mLocationsData.add(0, CatalogDetailListLocation.createSelectionInfo(getString(R.string.sort_browse_catalog_all_location)));
         this.mLocationsData.addAll(locationsData);
@@ -320,6 +319,9 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
 
     @Override
     public void renderListCatalogProduct(@NonNull List<CatalogDetailItem> catalogDetailItems) {
+        if (mRefresh == null) {
+            return;
+        }
         hideProgressLoading();
         mRefresh.setRefreshing(false);
         mCatalogDetailItems.clear();
@@ -340,6 +342,9 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
 
     @Override
     public void renderErrorGetCatalogProduct(String message) {
+        if (mContainer == null) {
+            return;
+        }
         hideProgressLoading();
         mContainer.setVisibility(View.GONE);
         mRefresh.setRefreshing(false);

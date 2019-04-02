@@ -2,7 +2,6 @@ package com.tokopedia.discovery.intermediary.view.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.home.TopPicksWebView;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.intermediary.domain.model.BannerModel;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +27,29 @@ public class BannerPagerAdapter extends PagerAdapter {
 
     List<BannerModel> bannerList = new ArrayList<>();
     private final Context context;
-    private static final String URL = "url";
+    private final String categoryId;
+    private OnPromoClickListener listener;
 
-    public BannerPagerAdapter(Context context, List<BannerModel> bannerList) {
+    public interface OnPromoClickListener {
+        void onPromoClick(int pos, String categoryName, String name, String applink, String url,String imgUrl);
+    }
+
+    public BannerPagerAdapter(Context context,
+                              List<BannerModel> bannerList,
+                              String categoryId,
+                              OnPromoClickListener listener) {
         this.context = context;
         this.bannerList = bannerList;
+        this.categoryId = categoryId;
+        this.listener = listener;
+    }
+
+    public BannerPagerAdapter(Context context,
+                              List<BannerModel> bannerList,
+                              String categoryId) {
+        this.context = context;
+        this.bannerList = bannerList;
+        this.categoryId = categoryId;
     }
 
     @Override
@@ -38,14 +57,24 @@ public class BannerPagerAdapter extends PagerAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.slider_intermediary, container, false);
 
-        ImageView bannerImage = (ImageView) view.findViewById(R.id.image);
-        if (bannerList.get(position).getUrl()!=null && bannerList.get(position).getUrl().length()>0) {
+        final ImageView bannerImage = (ImageView) view.findViewById(R.id.image);
+        if (bannerList.get(position).getUrl() != null && bannerList.get(position).getUrl().length() > 0) {
             bannerImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(context, TopPicksWebView.class);
-                    intent.putExtra(URL, bannerList.get(position).getUrl());
-                    context.startActivity(intent);
+                    eventBannerClickCategory(categoryId, bannerList.get(position).getUrl());
+                    if (listener != null) {
+                        BannerModel model = bannerList.get(position);
+                        String categoryName =model.getCategoryName().toLowerCase();
+                        listener.onPromoClick(
+                                model.getPosition(),
+                                categoryName,
+                                model.getTitle(),
+                                model.getApplink(),
+                                model.getUrl(),
+                                model.getImageUrl()
+                        );
+                    }
                 }
             });
         }
@@ -55,6 +84,14 @@ public class BannerPagerAdapter extends PagerAdapter {
         );
         container.addView(view);
         return view;
+    }
+
+    private void eventBannerClickCategory(String parentCat, String bannerName){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.BANNER_CLICK,
+                bannerName);
     }
 
     @Override

@@ -3,41 +3,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/background_light"
-    android:paddingTop="@dimen/padding_small"
+    android:paddingTop="@dimen/dp_8"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/cards_ui_selected"
         android:baselineAligned="false"
         android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@id/review_container"
+            android:id="@+id/review_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".32"
+            android:layout_weight="1"
             android:gravity="center"
+            android:layout_marginLeft="@dimen/dp_6"
+            android:layout_marginRight="@dimen/dp_6"
             android:orientation="vertical">
 
-            <LinearLayout
+            <com.tokopedia.tkpdpdp.customview.RatingBarWithTextView
+                android:id="@+id/product_rating"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:gravity="center_horizontal">
-
-                <ImageView
-                    android:id="@id/iv_quality"
-                    android:layout_width="80dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:contentDescription="@string/image_product_desc"
-                    android:src="@drawable/ic_star_five" />
-            </LinearLayout>
+                android:layout_height="40dp" />
 
             <TextView
-                android:id="@id/tv_review"
+                android:id="@+id/tv_review"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -49,32 +41,25 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginTop="@dimen/margin_small"
-            android:background="@color/grey_300" />
-
         <LinearLayout
-            android:id="@id/talk_container"
+            android:id="@+id/talk_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".33"
+            android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
 
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginRight="@dimen/margin_small"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_10"
                 android:contentDescription="@string/image_product_desc"
-                android:src="@drawable/icon_discussion_pesan_green" />
+                android:src="@drawable/discussion" />
 
 
             <TextView
-                android:id="@id/tv_talk"
+                android:id="@+id/tv_talk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -86,37 +71,29 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_height="match_parent"
-            android:layout_width="1dp"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginTop="@dimen/margin_small"
-            android:background="@color/grey_300" />
-
-
         <LinearLayout
-            android:id="@id/courier_container"
+            android:id="@+id/courier_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".33"
+            android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
 
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginRight="@dimen/margin_small"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_10"
                 android:contentDescription="@string/image_product_desc"
-                android:src="@drawable/icon_kurir_green" />
+                app:srcCompat="@drawable/ic_courier" />
 
 
             <TextView
-                android:id="@id/tv_courier"
+                android:id="@+id/tv_courier"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="0 Kurir"
+                android:text="@string/label_courier"
                 android:textColor="@color/tkpd_main_green"
                 android:textSize="@dimen/fontvs"
                 tools:ignore="HardcodedText" />

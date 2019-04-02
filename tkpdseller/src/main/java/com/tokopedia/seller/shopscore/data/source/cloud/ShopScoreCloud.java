@@ -6,6 +6,8 @@ import com.tokopedia.core.product.model.shopscore.summary.ShopScoreSummaryServic
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shopscore.data.common.GetData;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -15,6 +17,7 @@ public class ShopScoreCloud {
     private final GoldMerchantApi api;
     private final SessionHandler sessionHandler;
 
+    @Inject
     public ShopScoreCloud(GoldMerchantApi api, SessionHandler sessionHandler) {
         this.api = api;
         this.sessionHandler = sessionHandler;

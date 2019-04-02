@@ -107,7 +107,6 @@ public class AddFavoriteShopService extends IntentService {
 
     private Retrofit getWsV4Retrofit(OkHttpClient okHttpClient,
                                      Retrofit.Builder retrofitBuilder) {
-//        return RetrofitFactory.createRetrofitDefaultConfig(TkpdBaseURL.BASE_DOMAIN).build();
         return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN).client(okHttpClient).build();
     }
 

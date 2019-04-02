@@ -1,15 +1,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".Splash"   
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Splash"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/tkpd_main_green" >
+    android:background="@color/tkpd_main_green">
 
     <ImageView 
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:src="@drawable/logo_tkpd_white"
+         app:srcCompat="@drawable/logo_tkpd_white"
          android:layout_gravity="center"
          />
 

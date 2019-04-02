@@ -1,50 +1,107 @@
 package com.tokopedia.tkpdpdp;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterNoLayoutActivity;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.intentservice.ProductInfoResultReceiver;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.share.fragment.ProductShareFragment;
+import com.tokopedia.core.share.DefaultShare;
+import com.tokopedia.core.share.ShareBottomSheet;
+import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
+import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.tkpdpdp.customview.YoutubeThumbnailViewHolder;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductInfoView;
 import com.tokopedia.tkpdpdp.presenter.ProductInfoPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductInfoPresenterImpl;
 
+/**
+ * Use ProductDetailActivity. This will deleted.
+ *
+ */
+@Deprecated
 public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductInfoPresenter> implements
+        DeepLinkWebViewHandleListener,
         ProductInfoView,
         DetailFragmentInteractionListener,
-        ProductInfoResultReceiver.Receiver {
+        ProductInfoResultReceiver.Receiver,YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess,
+        BottomSheets.BottomSheetDismissListener, ActionUIDelegate<String, String> {
+
     public static final String SHARE_DATA = "SHARE_DATA";
     public static final String IS_ADDING_PRODUCT = "IS_ADDING_PRODUCT";
+    private static final String KEY_FROM_EXPLORE_AFFILIATE = "is_from_explore_affiliate";
 
     private Uri uriData;
     private Bundle bundleData;
+    private ProgressDialog loading;
+
 
     ProductInfoResultReceiver mReceiver;
 
-    @DeepLink(Constants.Applinks.PRODUCT_INFO)
+    @Override
+    protected void forceRotation() {
+
+    }
+
+    @Deprecated
+    public static Intent getAffiliateIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        extras.putBoolean(KEY_FROM_EXPLORE_AFFILIATE, true);
+        return new Intent(context, ProductInfoActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
+
+    //Deprecated
+    //@DeepLink(Constants.Applinks.PRODUCT_INFO)
+    /**
+     * To add lazy load, make sure to add PDP query parameter from {@link ApplinkConst.Query}
+     *
+     * @param context
+     * @param extras
+     * @return
+     */
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+
+        if (!TextUtils.isEmpty(extras.getString(ApplinkConst.Query.PDP_ID))) {
+            ProductPass productPass = ProductPass.Builder.aProductPass()
+                    .setProductId(extras.getString(ApplinkConst.Query.PDP_ID, ""))
+                    .setProductPrice(extras.getString(ApplinkConst.Query.PDP_PRICE, ""))
+                    .setProductName(extras.getString(ApplinkConst.Query.PDP_NAME, ""))
+                    .setDateTimeInMilis(Long.parseLong(extras.getString(ApplinkConst.Query.PDP_DATE, "0")))
+                    .setProductImage(extras.getString(ApplinkConst.Query.PDP_IMAGE, ""))
+                    .build();
+            extras.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_PASS, productPass);
+        }
         return new Intent(context, ProductInfoActivity.class)
                 .setData(uri.build())
                 .putExtras(extras);
@@ -77,10 +134,20 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         return intent;
     }
 
-    public static Intent createInstance(Context context, @NonNull ShareData shareData) {
+    public static Intent createInstance(Context context, @NonNull LinkerData shareData) {
         Intent intent = new Intent(context, ProductInfoActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(SHARE_DATA, shareData);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent createInstance(Context context, String productId,
+                                        int adapterPosition) {
+        Intent intent = new Intent(context, ProductInfoActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(ProductDetailRouter.EXTRA_PRODUCT_ID, productId);
+        bundle.putInt(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
         intent.putExtras(bundle);
         return intent;
     }
@@ -104,6 +171,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     @Override
     public void onResume() {
         super.onResume();
+        unregisterShake();
     }
 
     @Override
@@ -122,12 +190,30 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     }
 
     @Override
-    protected void initView() {
+    protected void setViewListener() {
+        if (!share()) {
+            presenter.initialFragment(this, uriData, bundleData);
+        }
     }
 
-    @Override
-    protected void setViewListener() {
-        presenter.initialFragment(this, uriData, bundleData);
+    private boolean share() {
+
+        Bundle bundle = this.bundleData;
+        boolean isAddingProduct = bundle.getBoolean(IS_ADDING_PRODUCT);
+        LinkerData shareData = bundle.getParcelable(SHARE_DATA);
+
+        if (isAddingProduct) {
+            ShareBottomSheet share = ShareBottomSheet.newInstance(shareData, true);
+            share.setDismissListener(this);
+            share.show(getSupportFragmentManager(), ShareBottomSheet.TITLE_EN);
+        } else if (shareData != null) {
+            ShareBottomSheet share = ShareBottomSheet.newInstance(shareData, false);
+            share.setDismissListener(this);
+            share.show(getSupportFragmentManager(), ShareBottomSheet.TITLE_EN);
+        } else {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -142,9 +228,9 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     }
 
     @Override
-    public void shareProductInfo(@NonNull ShareData shareData) {
+    public void shareProductInfo(@NonNull LinkerData shareData) {
         presenter.processToShareProduct(this, shareData);
-        inflateNewFragment(ProductShareFragment.newInstance(shareData), ProductShareFragment.class.getSimpleName());
+        new DefaultShare(this, shareData).show();
     }
 
     @Override
@@ -159,9 +245,9 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
 
     @Override
     public void inflateFragment(Fragment fragment, String tag) {
-        if (getFragmentManager().findFragmentByTag(tag) == null) {
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        if (getSupportFragmentManager().findFragmentByTag(tag) == null) {
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentTransaction.add(R.id.container, fragment, tag);
             fragmentTransaction.commit();
         }
@@ -179,7 +265,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     }
 
     private void inflateNewFragment(Fragment fragment, String tag) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container, fragment, tag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
@@ -227,8 +313,20 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
 
     @Override
     public void onBackPressed() {
+            if(thumbnailIntializing) {
+                isBackPressed = true;
+                return;
+            }
+
+
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
+        } else if (isTaskRoot() && GlobalConfig.isSellerApp()) {
+            startActivity(SellerAppRouter.getSellerHomeActivity(this));
+            this.finish();
+        } else if (isTaskRoot()) {
+            startActivity(HomeRouter.getHomeActivity(this));
+            this.finish();
         } else {
             this.finish();
         }
@@ -240,7 +338,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
-        Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
         if (fragment != null) {
             switch (resultCode) {
                 case ProductInfoIntentService.STATUS_SUCCESS_REPORT_PRODUCT:
@@ -253,12 +351,10 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     public void onSaveInstanceState(Bundle stateBundle) {
-        int osVersion = android.os.Build.VERSION.SDK_INT;
-        if ( osVersion < Build.VERSION_CODES.N) {
-            super.onSaveInstanceState(stateBundle);
-        }
+        // Do not put super, avoid crash transactionTooLarge
     }
 
     private void onReceiveResultError(Fragment fragment, Bundle resultData, int resultCode) {
@@ -268,4 +364,60 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     private void onReceiveResultSuccess(Fragment fragment, Bundle resultData, int resultCode) {
         ((ProductDetailFragment) fragment).onSuccessAction(resultData, resultCode);
     }
+
+    @Override
+    public void catchToWebView(String url) {
+        Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(this, url);
+        startActivity(intent);
+        finish();
+    }
+
+    // { Work Around IF your press back and
+    //      youtube thumbnail doesn't intalized yet
+
+    boolean isBackPressed;
+
+    boolean thumbnailIntializing = false;
+    @Override
+    public void onIntializationStart() {
+        thumbnailIntializing = true;
+    }
+
+    @Override
+    public void onIntializationComplete() {
+
+        thumbnailIntializing = false;
+        if(isBackPressed) {
+            onBackPressed();
+        }
+    }
+
+    @Override
+    public void onDismiss() {
+        closeView();
+    }
+
+    @Override
+    public void waitForResult(int actionId, String dataObj) {
+        showProgressDialog();
+    }
+
+    @Override
+    public void stopWaiting(int actionId, String dataObj) {
+        hideProgressDialog();
+    }
+
+    private void hideProgressDialog(){
+        if(loading != null)
+            loading.dismiss();
+    }
+
+    private void showProgressDialog() {
+        if(loading == null) loading = new ProgressDialog(this);
+        loading.setCancelable(false);
+        loading.setMessage(getString(R.string.title_loading));
+        loading.show();
+    }
+
+    // Work Around IF your press back and youtube thumbnail doesn't intalized yet }
 }

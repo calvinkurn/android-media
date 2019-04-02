@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_gold_merchant_redirect"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -51,10 +52,10 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_topseller___logo_02"
+            app:srcCompat="@drawable/ic_topseller___logo_02"
             android:layout_marginBottom="@dimen/margin_vl"/>
 
-        <TextView
+        <TextView android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
@@ -68,7 +69,7 @@
             android:gravity="center"
             android:layout_height="wrap_content"
             android:text="@string/gold_merchant_redirect_text"
-            android:textSize="@dimen/font_small"/>
+            android:textSize="@dimen/sp_14"/>
     </LinearLayout>
 
 </RelativeLayout>

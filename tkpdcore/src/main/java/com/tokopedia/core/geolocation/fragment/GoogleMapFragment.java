@@ -11,7 +11,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,23 +27,28 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.geolocation.adapter.SuggestionLocationAdapter;
+import com.tokopedia.core.geolocation.domain.IMapsRepository;
 import com.tokopedia.core.geolocation.listener.GoogleMapView;
-import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.listener.ITransactionAnalyticsGeoLocationPinPoint;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.geolocation.presenter.GoogleMapPresenter;
 import com.tokopedia.core.geolocation.presenter.GoogleMapPresenterImpl;
+import com.tokopedia.core.network.apiservices.maps.MapService;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 
 import butterknife.BindView;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created on 1/29/16.
@@ -53,12 +57,15 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
         GoogleMapView,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        ResultCallback<LocationSettingsResult> {
+        ResultCallback<LocationSettingsResult>, OnMapReadyCallback {
 
     private static final int REQUEST_CHECK_SETTINGS = 0x1;
+    private static final boolean HAS_LOCATION = true;
+    private static final boolean NO_LOCATION = false;
     private static final String TAG = GoogleMapFragment.class.getSimpleName();
     private static final String ARG_PARAM_GEOLOCATION_PASS_DATA = "ARG_PARAM_GEOLOCATION_PASS_DATA";
     private static final String STATE_MAPVIEW_SAVE_STATE = "STATE_MAPVIEW_SAVE_STATE";
+    private static final String STATE_LOCATION_INITIATED = "STATE_LOCATION_INITIATED";
 
     @BindView(R2.id.mapview)
     MapView mapView;
@@ -74,15 +81,28 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
     FloatingActionButton fab;
 
     private LocationPass locationPass;
+    private boolean hasLocation;
     private GoogleMap googleMap;
     private SuggestionLocationAdapter adapter;
     private ActionBar actionBar;
     private BottomSheetDialog dialog;
+    private ITransactionAnalyticsGeoLocationPinPoint analyticsGeoLocationListener;
 
     public static Fragment newInstance(LocationPass locationPass) {
         GoogleMapFragment fragment = new GoogleMapFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_PARAM_GEOLOCATION_PASS_DATA, locationPass);
+        args.putBoolean(STATE_LOCATION_INITIATED, HAS_LOCATION);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static Fragment newInstanceNoLocation() {
+        GoogleMapFragment fragment = new GoogleMapFragment();
+        Bundle args = new Bundle();
+        LocationPass emptyLocationPass = new LocationPass();
+        args.putParcelable(ARG_PARAM_GEOLOCATION_PASS_DATA, emptyLocationPass);
+        args.putBoolean(STATE_LOCATION_INITIATED, NO_LOCATION);
         fragment.setArguments(args);
         return fragment;
     }
@@ -116,16 +136,23 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
 
     @Override
     protected void initialPresenter() {
-        this.presenter = new GoogleMapPresenterImpl(getActivity(), this, locationPass);
+        this.presenter = new GoogleMapPresenterImpl(
+                getActivity(),
+                this,
+                locationPass,
+                hasLocation
+        );
     }
 
     @Override
     protected void initialListener(Activity activity) {
+        analyticsGeoLocationListener = (ITransactionAnalyticsGeoLocationPinPoint) activity;
     }
 
     @Override
     protected void setupArguments(Bundle arguments) {
         locationPass = arguments.getParcelable(ARG_PARAM_GEOLOCATION_PASS_DATA);
+        hasLocation = arguments.getBoolean(STATE_LOCATION_INITIATED);
     }
 
     @Override
@@ -164,8 +191,12 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
     }
 
     @Override
-    public void initAutoCompleteAdapter(GoogleApiClient googleApiClient, LatLngBounds latLngBounds) {
-        adapter = new SuggestionLocationAdapter(getActivity(), googleApiClient, latLngBounds, null);
+    public void initAutoCompleteAdapter(CompositeSubscription compositeSubscription,
+                                        MapService service,
+                                        IMapsRepository repository,
+                                        GoogleApiClient googleApiClient, LatLngBounds latLngBounds) {
+        adapter = new SuggestionLocationAdapter(getActivity(), googleApiClient, latLngBounds,
+                null, service, compositeSubscription, repository);
     }
 
     @Override
@@ -173,10 +204,6 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
         autoComplete.setAdapter(adapter);
     }
 
-    @Override
-    public void initGoogleMap() {
-        googleMap = mapView.getMap();
-    }
 
     @Override
     public void setToolbarMap() {
@@ -195,6 +222,7 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
             @Override
             public void onClick(View view) {
                 presenter.onSubmitPointer(getActivity());
+                analyticsGeoLocationListener.sendAnalyticsOnSetCurrentMarkerAsCurrentPosition();
             }
         });
     }
@@ -215,9 +243,7 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
         } else {
             final Bundle mapViewSaveState = savedInstanceState != null ? savedInstanceState.getBundle(STATE_MAPVIEW_SAVE_STATE) : null;
             mapView.onCreate(mapViewSaveState);
-            initMapView();
-            initMapListener();
-            presenter.initDefaultLocation();
+            mapView.getMapAsync(this);
             presenter.connectGoogleApi();
         }
     }
@@ -236,6 +262,7 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long itemID) {
                 presenter.onSuggestionItemClick(adapterView, position);
+                analyticsGeoLocationListener.sendAnalyticsOnDropdownSuggestionItemClicked();
             }
         });
 
@@ -243,6 +270,7 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
             @Override
             public void onClick(View view) {
                 dialog.show();
+                analyticsGeoLocationListener.sendAnalyticsOnGetCurrentLocationClicked();
             }
         });
     }
@@ -253,7 +281,6 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
 
     @Override
     public void initMapView() {
-        initGoogleMap();
         setToolbarMap();
         setMyLocButton();
         MapsInitializer.initialize(getActivity());
@@ -317,7 +344,6 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
         if (RequestPermissionUtil.checkHasPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
             mapView.onDestroy();
         }
-
         super.onDestroyView();
     }
 
@@ -435,6 +461,27 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
         TextView destination = (TextView) dialog.findViewById(R.id.text_address_destination);
         if (destination != null) {
             destination.setText(MethodChecker.fromHtml(s).toString());
+        }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        this.googleMap = googleMap;
+        initMapView();
+        initMapListener();
+
+        //This to fulfill 4th condition when no coordinate, no district, and no GPS
+        //TODO remove this if annoys UX or inefficient fending off GPS Error
+        presenter.initDefaultLocation();
+
+        presenter.onMapReady();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            presenter.onMapReady();
         }
     }
 }

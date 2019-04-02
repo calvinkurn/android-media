@@ -7,12 +7,15 @@ package com.tokopedia.core.widgets;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Scroller;
 import java.lang.reflect.Field;
 
 public class NonSwipeableViewPager extends ViewPager {
+
+    private boolean swipeAble = true;
 
     public NonSwipeableViewPager(Context context) {
         super(context);
@@ -27,13 +30,13 @@ public class NonSwipeableViewPager extends ViewPager {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
         // Never allow swiping to switch between pages
-        return false;
+        return swipeAble && super.onInterceptTouchEvent(event);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         // Never allow swiping to switch between pages
-        return false;
+        return swipeAble && super.onTouchEvent(event);
     }
 
     //down one is added for smooth scrolling
@@ -47,6 +50,10 @@ public class NonSwipeableViewPager extends ViewPager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void setSwipeAble(boolean swipeAble) {
+        this.swipeAble = swipeAble;
     }
 
     public class MyScroller extends Scroller {

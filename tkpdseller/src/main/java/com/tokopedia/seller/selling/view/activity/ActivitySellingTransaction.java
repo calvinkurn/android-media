@@ -1,5 +1,6 @@
 package com.tokopedia.seller.selling.view.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
@@ -9,104 +10,167 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
-import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
-import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.method.ScrollingMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
-import android.text.util.Linkify;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
-import android.view.MenuItem;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
-import com.tokopedia.core.analytics.container.GTMContainer;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.app.TkpdActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.NotificationModHandler;
+import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
-import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core2.R;
+import com.tokopedia.design.component.Tabs;
 import com.tokopedia.seller.opportunity.fragment.OpportunityListFragment;
 import com.tokopedia.seller.selling.SellingService;
+import com.tokopedia.seller.selling.constant.shopshippingdetail.ShopShippingDetailView;
+import com.tokopedia.seller.selling.presenter.ShippingView;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipping;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingStatus;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTransaction;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTxCenter;
-import com.tokopedia.seller.selling.presenter.ShippingView;
-import com.tokopedia.seller.selling.constant.shopshippingdetail.ShopShippingDetailView;
-import com.tokopedia.core.service.DownloadService;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.selling.view.listener.SellingTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActivitySellingTransaction extends TkpdActivity implements FragmentSellingTxCenter.OnCenterMenuClickListener, DownloadResultReceiver.Receiver {
+public class ActivitySellingTransaction extends TkpdActivity
+        implements FragmentSellingTxCenter.OnCenterMenuClickListener,
+        DownloadResultReceiver.Receiver,
+        SellingTransaction {
 
-    SectionsPagerAdapter mSectionsPagerAdapter;
+    public static final String FROM_WIDGET_TAG = "from widget";
+
+    public static final String EXTRA_STATE_TAB_POSITION = "tab";
+    public static final String EXTRA_QUERY = "query";
+
+    public static final int TAB_POSITION_SELLING_OPPORTUNITY = 1;
+    public final static int TAB_POSITION_SELLING_NEW_ORDER = 2;
+    public final static int TAB_POSITION_SELLING_CONFIRM_SHIPPING = 3;
+    public final static int TAB_POSITION_SELLING_SHIPPING_STATUS = 4;
+    public final static int TAB_POSITION_SELLING_TRANSACTION_LIST = 5;
+
     ViewPager mViewPager;
-    private TabLayout indicator;
+    DownloadResultReceiver mReceiver;
+    FragmentManager fragmentManager;
+    private Tabs indicator;
     private TextView sellerTickerView;
-
     private String[] CONTENT;
     private List<Fragment> fragmentList;
-    DownloadResultReceiver mReceiver;
 
-    FragmentManager fragmentManager;
+    @DeepLink(ApplinkConst.SELLER_OPPORTUNITY)
+    public static Intent getCallingIntentSellerOpportunity(Context context, Bundle extras) {
+        if (GlobalConfig.isSellerApp()) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return new Intent(context, ActivitySellingTransaction.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_OPPORTUNITY)
+                    .putExtras(extras);
+        } else {
+            return CustomerAppSellerTransactionActivity.getIntentOpportunity(context, extras);
+        }
+    }
 
-    @DeepLink(Constants.Applinks.SELLER_NEW_ORDER)
+    @DeepLink(ApplinkConst.SELLER_NEW_ORDER)
     public static Intent getCallingIntentSellerNewOrder(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ActivitySellingTransaction.class)
-                .setData(uri.build())
-                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_NEW_ORDER)
-                .putExtras(extras);
+        if (GlobalConfig.isSellerApp()) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return new Intent(context, ActivitySellingTransaction.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_NEW_ORDER)
+                    .putExtras(extras);
+        } else {
+            return CustomerAppSellerTransactionActivity.getIntentNewOrder(context, extras);
+        }
     }
 
-    @DeepLink(Constants.Applinks.SELLER_SHIPMENT)
+    @DeepLink(ApplinkConst.SELLER_SHIPMENT)
     public static Intent getCallingIntentSellerShipment(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ActivitySellingTransaction.class)
-                .setData(uri.build())
-                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_CONFIRM_SHIPPING)
-                .putExtras(extras);
+        if (GlobalConfig.isSellerApp()) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return new Intent(context, ActivitySellingTransaction.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_CONFIRM_SHIPPING)
+                    .putExtras(extras);
+        } else {
+            return CustomerAppSellerTransactionActivity.getIntentReadyToShip(context, extras);
+        }
     }
 
-    @DeepLink(Constants.Applinks.SELLER_STATUS)
+    @DeepLink(ApplinkConst.SELLER_STATUS)
     public static Intent getCallingIntentSellerStatus(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ActivitySellingTransaction.class)
-                .setData(uri.build())
-                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_SHIPPING_STATUS)
-                .putExtras(extras);
+        if (GlobalConfig.isSellerApp()) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return new Intent(context, ActivitySellingTransaction.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_SHIPPING_STATUS)
+                    .putExtras(extras);
+        } else {
+            return CustomerAppSellerTransactionActivity.getIntentShipped(context, extras);
+        }
     }
 
-    @DeepLink(Constants.Applinks.SELLER_HISTORY)
+    @DeepLink(ApplinkConst.SELLER_HISTORY)
     public static Intent getCallingIntentSellerHistory(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        if (GlobalConfig.isSellerApp()) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return new Intent(context, ActivitySellingTransaction.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_TRANSACTION_LIST)
+                    .putExtras(extras);
+        } else {
+            return CustomerAppSellerTransactionActivity.getIntentAllTransaction(context, extras);
+        }
+    }
+
+    @DeepLink(ApplinkConst.SellerApp.SALES)
+    public static Intent getCallingIntent(Context context, Bundle extras) {
+        if (GlobalConfig.isSellerApp()) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            Intent intent = new Intent(context, ActivitySellingTransaction.class);
+            return intent
+                    .setData(uri.build())
+                    .putExtras(extras);
+        } else {
+            return ApplinkUtils.getSellerAppApplinkIntent(context, extras);
+        }
+    }
+
+    public static Intent createIntent(Context context, int tab) {
         return new Intent(context, ActivitySellingTransaction.class)
-                .setData(uri.build())
-                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_TRANSACTION_LIST)
-                .putExtras(extras);
+                .putExtra(EXTRA_STATE_TAB_POSITION, tab);
+    }
+
+    public static Intent createIntent(Context context, int tab, String query) {
+        Intent intent = createIntent(context, tab);
+        intent.putExtra(EXTRA_QUERY, query);
+        return intent;
     }
 
     @Override
@@ -115,14 +179,36 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        checkLogin();
+    }
+
+    private void checkLogin() {
+        if (getApplication() instanceof TkpdCoreRouter) {
+            if (!SessionHandler.isV4Login(this)) {
+                startActivity(((TkpdCoreRouter) getApplication()).getLoginIntent(this));
+                AppWidgetUtil.sendBroadcastToAppWidget(this);
+                finish();
+            } else if (!SessionHandler.isUserHasShop(this)) {
+                startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
+                AppWidgetUtil.sendBroadcastToAppWidget(this);
+                finish();
+            }
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         clearNotif();
         inflateView(R.layout.activity_shop_transaction_v2);
-        initView();
+        setView();
         initVariable();
         setAdapter();
         openTab();
+
+        setTrackerWidget();
 
         mReceiver = new DownloadResultReceiver(new Handler());
         mReceiver.setReceiver(this);
@@ -130,30 +216,52 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         fragmentManager = getFragmentManager();
     }
 
-    private void initView() {
-        sellerTickerView = (TextView) findViewById(R.id.seller_ticker);
-        sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setOffscreenPageLimit(5);
-        indicator = (TabLayout) findViewById(R.id.indicator);
+    private void setTrackerWidget() {
+        boolean fromWidget = getIntent().getBooleanExtra(FROM_WIDGET_TAG, false);
+        if (fromWidget) {
+            UnifyTracking.eventAccessAppViewWidget(this);
+        }
     }
 
-    private void initSellerTicker() {
-        GTMContainer gtmContainer = GTMContainer.newInstance(this);
+    @Override
+    public int getDrawerPosition() {
+        return 0;
+    }
 
-        if (gtmContainer.getString("is_show_ticker_sales").equalsIgnoreCase("true")) {
-            String message = gtmContainer.getString("ticker_text_sales_rich");
-            showTickerGTM(message);
-        } else {
-            showTickerGTM(null);
+    private void setDrawerPosition(int position) {
+        switch (position) {
+            case TAB_POSITION_SELLING_NEW_ORDER:
+                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_NEW_ORDER);
+                break;
+            case TAB_POSITION_SELLING_CONFIRM_SHIPPING:
+                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING);
+                break;
+            case TAB_POSITION_SELLING_SHIPPING_STATUS:
+                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS);
+                break;
+            case TAB_POSITION_SELLING_TRANSACTION_LIST:
+                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST);
+                break;
+            case TAB_POSITION_SELLING_OPPORTUNITY:
+                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST);
+                break;
+            default:
+                break;
         }
+    }
 
+    private void setView() {
+        sellerTickerView = findViewById(R.id.ticker);
+        sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
+        sellerTickerView.setVisibility(View.GONE);
+        mViewPager = findViewById(R.id.pager);
+        indicator = findViewById(R.id.indicator);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        initSellerTicker();
+        setDrawerPosition(mViewPager.getCurrentItem());
     }
 
     protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span) {
@@ -162,7 +270,6 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         int flags = strBuilder.getSpanFlags(span);
         ClickableSpan clickable = new ClickableSpan() {
             public void onClick(View view) {
-                Log.d("Seller Page", "URL Clicked" + span);
                 if (span.getURL().equals("com.tokopedia.sellerapp")) {
                     startNewActivity(span.getURL());
                 } else {
@@ -211,39 +318,38 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
             sellerTickerView.setText(strBuilder);
             sellerTickerView.setMovementMethod(LinkMovementMethod.getInstance());
             sellerTickerView.setVisibility(View.VISIBLE);
-            hideTickerOpportunity(getIntent().getExtras().getInt("tab"));
+            hideTickerOpportunity(getIntent().getExtras().getInt(EXTRA_STATE_TAB_POSITION));
         } else {
             sellerTickerView.setVisibility(View.GONE);
         }
 
     }
 
-
     private void initVariable() {
         CONTENT = new String[]{getString(R.string.title_dashboard_sell),
+                getString(R.string.title_opportunity_list),
                 getString(R.string.title_tab_new_order),
                 getString(R.string.title_shipping_confirmation),
                 getString(R.string.title_shipping_status),
-                getString(R.string.title_transaction_list),
-                getString(R.string.title_opportunity_list)};
+                getString(R.string.title_transaction_list)
+        };
         for (String aCONTENT : CONTENT) indicator.addTab(indicator.newTab().setText(aCONTENT));
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
         fragmentList = new ArrayList<>();
-//        fragmentList.add(FragmentPeopleTxCenter.createInstance(FragmentPeopleTxCenter.SHOP));
-//        fragmentList.add(FragmentShopNewOrderV2.createInstance()); //TODO UNCOMMENT
         fragmentList.add(FragmentSellingTxCenter.createInstance(FragmentSellingTxCenter.SHOP));
+        String query = "";
+        if (getIntent().hasExtra(EXTRA_QUERY)) {
+            query = getIntent().getStringExtra(EXTRA_QUERY);
+        }
+        fragmentList.add(OpportunityListFragment.newInstance(query));
         fragmentList.add(FragmentSellingNewOrder.createInstance());
         fragmentList.add(FragmentSellingShipping.createInstance());
         fragmentList.add(FragmentSellingStatus.newInstance());
         fragmentList.add(FragmentSellingTransaction.newInstance());
-        fragmentList.add(OpportunityListFragment.newInstance());
-
-//        fragmentList.add(FragmentShopTxStatusV2.createInstanceStatus(R.layout.fragment_shipping_status, FragmentShopTxStatusV2.INSTANCE_STATUS));
-//        fragmentList.add(FragmentShopTxStatusV2.createInstanceTransaction(R.layout.fragment_shop_transaction_list, FragmentShopTxStatusV2.INSTANCE_TX));
+        mViewPager.setOffscreenPageLimit(fragmentList.size());
     }
 
     private void setAdapter() {
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setAdapter(new SectionsPagerAdapter(getFragmentManager()));
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -255,9 +361,8 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
             public void onPageSelected(int position) {
                 setDrawerPosition(position);
                 if (indicator.getTabAt(position) != null) {
-                    UnifyTracking.eventShopTabSelected(indicator.getTabAt(position).getText().toString());
+                    UnifyTracking.eventShopTabSelected(ActivitySellingTransaction.this, indicator.getTabAt(position).getText().toString());
                 }
-                initSellerTicker();
             }
 
             @Override
@@ -276,32 +381,10 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
 
     private void openTab() {
         try {
-            mViewPager.setCurrentItem(getIntent().getExtras().getInt("tab"));
-            setDrawerPosition(getIntent().getExtras().getInt("tab"));
+            mViewPager.setCurrentItem(getIntent().getExtras().getInt(EXTRA_STATE_TAB_POSITION));
+            setDrawerPosition(getIntent().getExtras().getInt(EXTRA_STATE_TAB_POSITION));
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    private void setDrawerPosition(int position) {
-        switch (position) {
-            case SellerRouter.TAB_POSITION_SELLING_NEW_ORDER:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_NEW_ORDER);
-                break;
-            case SellerRouter.TAB_POSITION_SELLING_CONFIRM_SHIPPING:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING);
-                break;
-            case SellerRouter.TAB_POSITION_SELLING_SHIPPING_STATUS:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS);
-                break;
-            case SellerRouter.TAB_POSITION_SELLING_TRANSACTION_LIST:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST);
-                break;
-            case 5:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST);
-                break;
-            default:
-                break;
         }
     }
 
@@ -402,12 +485,13 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!GlobalConfig.isSellerApp()) {
             getMenuInflater().inflate(R.menu.cart_and_search, menu);
-            LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), "NOTIFICATION_DATA");
-            int CartCache = Cache.getInt("is_has_cart");
+            LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), DrawerHelper.DRAWER_CACHE);
+            int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
-                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart_active);
+                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_cart_white_new_active);
             } else {
-                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart);
+                menu.findItem(R.id.action_cart).setIcon(R.drawable.
+                        ic_cart_white_new);
             }
             return true;
         } else {
@@ -439,6 +523,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
 //        }
 //    }
 
+    @Override
     public void SellingAction(int type, Bundle data) {
         switch (type) {
             case SellingService.CONFIRM_MULTI_SHIPPING:
@@ -454,7 +539,29 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         }
     }
 
-    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot()) {
+            Intent homeIntent = null;
+            if (GlobalConfig.isSellerApp()) {
+                homeIntent = SellerAppRouter.getSellerHomeActivity(this);
+            } else {
+                homeIntent = HomeRouter.getHomeActivity(this);
+            }
+            startActivity(homeIntent);
+            finish();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        // Do not put super, avoid crash transactionTooLarge
+    }
+
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -468,16 +575,6 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         @Override
         public int getCount() {
             return fragmentList.size();
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
-            startActivity(HomeRouter.getHomeActivity(this));
-            finish();
-        } else {
-            super.onBackPressed();
         }
     }
 }

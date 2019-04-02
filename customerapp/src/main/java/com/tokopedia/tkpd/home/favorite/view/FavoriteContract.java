@@ -31,6 +31,8 @@ interface FavoriteContract {
 
         void hideRefreshLoading();
 
+        void stopTracePerformanceMonitoring();
+
         boolean isLoading();
 
         void showLoadMoreLoading();
@@ -54,6 +56,8 @@ interface FavoriteContract {
         void validateMessageError();
 
         void showErrorAddFavoriteShop();
+
+        void stopLoadingFavoriteShop();
     }
 
     interface Presenter extends CustomerPresenter<View> {

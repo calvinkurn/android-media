@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+
+        android:drawable="@drawable/star_background_stroke" />
+    <item
+        android:bottom="@dimen/dp_7"
+        android:drawable="@drawable/star_background_inner"
+        android:left="@dimen/dp_7"
+        android:right="@dimen/dp_7"
+        android:top="@dimen/dp_7" />
+
+</layer-list>

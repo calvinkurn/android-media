@@ -9,6 +9,7 @@ import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.inbox.rescenter.create.fragment.ChooseTroubleFragment;
 import com.tokopedia.inbox.rescenter.create.listener.CreateResCenterListener;
 import com.tokopedia.inbox.rescenter.create.model.passdata.ActionParameterPassData;
+import com.tokopedia.inbox.rescenter.createreso.view.fragment.CreateResolutionCenterFragment;
 
 /**
  * Created on 6/16/16.
@@ -23,10 +24,14 @@ public class CreateResCenterImpl implements CreateResCenterPresenter {
 
     @Override
     public void initFragment(@NonNull Context context, Uri uriData, Bundle bundleData) {
-        listener.inflateFragment(
-                ChooseTroubleFragment.newInstance(generatePassData(bundleData, uriData)),
-                ChooseTroubleFragment.class.getSimpleName()
-        );
+        listener.inflateFragment(CreateResolutionCenterFragment.newInstance(generatePassData(bundleData, uriData)),
+                CreateResolutionCenterFragment.class.getSimpleName());
+    }
+
+    @Override
+    public void initRecomplaintFragment(@NonNull Context context, String orderId, String resolutionId) {
+        listener.inflateFragment(CreateResolutionCenterFragment.newRecomplaintInstance(orderId, resolutionId),
+                CreateResolutionCenterFragment.class.getSimpleName());
     }
 
     private ActionParameterPassData generatePassData(Bundle bundleData, Uri uriData) {

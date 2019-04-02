@@ -6,6 +6,10 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_product_list">
 
+    <!-- REMOVE THIS FILE FROM TKPDCORE -->
+    <!-- HotlistAdapter tkpddiscovery not yet use this -->
+    <!-- if anyone still use this, create your own xml or reuse listveiw_hotlist_product.xml if necessary -->
+
     <LinearLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
@@ -28,7 +32,7 @@
                 android:layout_height="110dp"
                 android:adjustViewBounds="true"
                 android:gravity="center"
-                android:src="@drawable/ic_loading_toped" />
+                app:srcCompat="@drawable/loading_page" />
         </android.support.v7.widget.CardView>
 
         <LinearLayout
@@ -79,13 +83,17 @@
                     android:id="@+id/text_discount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:textSize="@dimen/fontvvvs"
-                    android:padding="@dimen/margin_vvvs"
-                    android:layout_marginLeft="@dimen/margin_vs"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/fontvvs"
+                    android:paddingTop="@dimen/margin_vvvs"
+                    android:paddingBottom="@dimen/margin_vvvs"
+                    android:paddingLeft="@dimen/padding_vvs"
+                    android:paddingRight="@dimen/padding_vvs"
+                    android:layout_marginLeft="@dimen/media_grid_spacing"
                     android:layout_marginStart="@dimen/margin_vs"
                     android:textColor="@color/white"
                     android:background="@drawable/bg_rounded_corners_red"
+                    tools:text="10%OFF"
                     android:visibility="gone"/>
 
             </LinearLayout>
@@ -95,7 +103,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/rating"
@@ -142,12 +151,12 @@
                 android:layout_marginTop="2dp"
                 android:orientation="horizontal">
 
-                <TextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/location"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:drawableLeft="@drawable/ic_place_black_24dp"
+                    app:drawableLeftCompat="@drawable/ic_icon_location_grey"
                     android:gravity="center_vertical"
                     android:textSize="@dimen/text_size_xsmall"
                     android:fontFamily="sans-serif"

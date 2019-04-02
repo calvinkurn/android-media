@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinator_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:elevation="0dp">
+
+        <com.tokopedia.design.text.SearchInputView
+            android:id="@+id/search_input_view"
+            android:layout_marginTop="@dimen/dp_14"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|snap|enterAlways" />
+
+        <com.tokopedia.design.label.LabelView
+            android:id="@+id/date_label_view"
+            style="@style/LabelLayout.TopAdsLabelView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_64"
+            android:paddingTop="@dimen/dp_6"
+            app:lv_content_color="@color/tkpd_main_green"
+            app:lv_image="@drawable/ic_top_ads_kalender"
+            app:lv_title="@string/label_date_period"
+            app:lv_content_max_width_percentage="0.4"
+            android:visibility="gone"
+            app:layout_scrollFlags="scroll|snap|enterAlways"/>
+
+        <View
+            android:id="@+id/app_bar_separator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@drawable/bg_list_separator"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:clipToPadding="false"
+            android:paddingTop="@dimen/dp_12" />
+
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+    <LinearLayout
+        android:id="@+id/container_action_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/dp_20"
+        app:layout_anchor="@id/recycler_view"
+        app:layout_anchorGravity="bottom|center_horizontal"
+        app:layout_behavior="com.tokopedia.seller.common.widget.QuickReturnFooterBehavior">
+
+        <com.tokopedia.design.button.BottomActionView
+            android:id="@+id/bottom_action_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:bav_icon_1="@drawable/ic_sort"
+            app:bav_icon_2="@drawable/ic_bottom_action_filter"
+            app:bav_label_1="@string/title_sort_by"
+            app:bav_label_2="@string/filter"
+            app:bav_1_display="true"
+            app:bav_2_display="true"
+            />
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

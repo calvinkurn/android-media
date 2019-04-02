@@ -12,7 +12,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.util.MethodChecker;
 
@@ -24,14 +23,18 @@ import java.util.UUID;
  */
 public class UploadImageDialog {
 
-    private static final int REQUEST_CAMERA = 1;
-    private static final int REQUEST_GALLERY = 2;
+    public static final int REQUEST_CAMERA = 1;
+    public static final int REQUEST_GALLERY = 2;
+    private static final int RESULT_CODE = 323;
+
     private final Context context;
+    private Activity activity;
     private Fragment fragment;
     private String cameraFileLoc;
 
     public interface UploadImageDialogListener {
         void onSuccess(String data);
+
         void onFailed();
     }
 
@@ -40,9 +43,9 @@ public class UploadImageDialog {
         this.context = fragment.getActivity();
     }
 
-    public void openImagePicker() {
-        Intent imageGallery = new Intent(context, GalleryBrowser.class);
-        startActivity(imageGallery, REQUEST_GALLERY);
+    public UploadImageDialog(Activity activity) {
+        this.activity = activity;
+        this.context = activity;
     }
 
     public void openCamera() {
@@ -56,7 +59,11 @@ public class UploadImageDialog {
     }
 
     private void startActivity(Intent intent, int requestCode) {
-        fragment.startActivityForResult(intent, requestCode);
+        if (fragment != null)
+            fragment.startActivityForResult(intent, requestCode);
+
+        else if (activity != null)
+            activity.startActivityForResult(intent, requestCode);
     }
 
     public File getOutputMediaFile() {
@@ -88,9 +95,9 @@ public class UploadImageDialog {
     }
 
     public void onResult(int requestCode, int resultCode, Intent intent, UploadImageDialogListener listener) {
-        if(requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY) {
+        if (requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY) {
             switch (resultCode) {
-                case GalleryBrowser.RESULT_CODE:
+                case RESULT_CODE:
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inPreferredConfig = Bitmap.Config.ARGB_8888;
                     BitmapFactory.Options checksize = new BitmapFactory.Options();

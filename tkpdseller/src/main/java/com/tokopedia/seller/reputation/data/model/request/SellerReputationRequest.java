@@ -99,9 +99,6 @@ public class SellerReputationRequest {
             pageValueJsonObject.put(NUMBER, page);
             pageValueJsonObject.put(SIZE, perPage);
         } catch (JSONException e) {
-            e.printStackTrace();
-            Log.e(TAG, e.getLocalizedMessage());
-
             // remove old parameter
             pageValueJsonObject.remove(NUMBER);
             pageValueJsonObject.remove(SIZE);
@@ -111,9 +108,6 @@ public class SellerReputationRequest {
             filterValueJsonObject.put(START_DATE, startDate);
             filterValueJsonObject.put(DUE_DATE, endDate);
         } catch (Exception ex) {
-            ex.printStackTrace();
-            Log.e(TAG, ex.getLocalizedMessage());
-
             // remove old parameter
             filterValueJsonObject.remove(START_DATE);
             filterValueJsonObject.remove(DUE_DATE);

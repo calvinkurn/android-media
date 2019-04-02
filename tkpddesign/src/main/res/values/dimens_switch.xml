@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="switch_tumb_size">28dp</dimen>
+    <dimen name="switch_track_radius">18dp</dimen>
+    <dimen name="switch_track_width">56dp</dimen>
+    <dimen name="switch_track_height">26dp</dimen>
+</resources>

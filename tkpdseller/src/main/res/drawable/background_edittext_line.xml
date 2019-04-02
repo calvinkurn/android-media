@@ -10,7 +10,7 @@
                 <shape android:shape="rectangle" >
                     <stroke
                         android:width="0.5dp"
-                        android:color="@color/font_top_ads_green" />
+                        android:color="@color/tkpd_main_green" />
 
                     <solid android:color="#00FFFFFF" />
 
@@ -33,7 +33,7 @@
                 <shape android:shape="rectangle" >
                     <stroke
                         android:width="0.5dp"
-                        android:color="@color/font_top_ads_green" />
+                        android:color="@color/tkpd_main_green" />
 
                     <solid android:color="#00FFFFFF" />
 

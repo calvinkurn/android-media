@@ -3,7 +3,7 @@
 
 <!--     "shadow" -->
 <!--     <item> -->
-<!-- <bitmap android:src="@drawable/card_shadow" > -->
+<!-- <bitmap app:srcCompat="@drawable/card_shadow" > -->
 <!-- </bitmap> -->
 <!-- </item>  -->
 

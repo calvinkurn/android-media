@@ -1,41 +1,27 @@
 package com.tokopedia.seller.opportunity.snapshot.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.Fragment;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ProgressBar;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.PreviewProductImage;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.replacement.OpportunityService;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.opportunity.data.factory.ActionReplacementSourceFactory;
-import com.tokopedia.seller.opportunity.data.factory.OpportunityDataSourceFactory;
-import com.tokopedia.seller.opportunity.data.mapper.OpportunityFilterMapper;
-import com.tokopedia.seller.opportunity.data.mapper.OpportunityListMapper;
-import com.tokopedia.seller.opportunity.domain.repository.ReplacementRepositoryImpl;
-import com.tokopedia.seller.opportunity.domain.interactor.AcceptReplacementUseCase;
-import com.tokopedia.seller.opportunity.presentation.ActionViewData;
-import com.tokopedia.seller.opportunity.snapshot.customview.ButtonView;
+import com.tokopedia.seller.opportunity.di.component.DaggerOpportunityComponent;
+import com.tokopedia.seller.opportunity.di.component.OpportunityComponent;
+import com.tokopedia.seller.opportunity.di.module.OpportunityModule;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.opportunity.snapshot.customview.DescriptionView;
 import com.tokopedia.seller.opportunity.snapshot.customview.DetailInfoView;
 import com.tokopedia.seller.opportunity.snapshot.customview.FreeReturnView;
@@ -45,6 +31,8 @@ import com.tokopedia.seller.opportunity.snapshot.customview.ShopInfoView;
 import com.tokopedia.seller.opportunity.snapshot.listener.SnapShotFragmentView;
 import com.tokopedia.seller.opportunity.snapshot.presenter.SnapShotFragmentImpl;
 import com.tokopedia.seller.opportunity.snapshot.presenter.SnapShotFragmentPresenter;
+
+import javax.inject.Inject;
 
 
 /**
@@ -66,14 +54,17 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
     PictureView pictureView;
     DescriptionView descriptionView;
     ShopInfoView shopInfoView;
-    ButtonView buttonView;
     ProgressBar progressBar;
     FreeReturnView freeReturnView;
 
     private ProductPass productPass;
     private ProductDetailData productData;
-    private TkpdProgressDialog progressDialog;
     private String opportunityId;
+
+    private OpportunityComponent opportunityComponent;
+
+    @Inject
+    SnapShotFragmentPresenter presenter;
 
 
     public static Fragment newInstance(ProductPass productPass, String opportunityId) {
@@ -95,7 +86,6 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
         pictureView = (PictureView) view.findViewById(R.id.view_picture);
         descriptionView = (DescriptionView) view.findViewById(R.id.view_desc);
         shopInfoView = (ShopInfoView) view.findViewById(R.id.view_shop_info);
-        buttonView = (ButtonView) view.findViewById(R.id.view_buy);
         progressBar = (ProgressBar) view.findViewById(R.id.view_progress);
         freeReturnView = (FreeReturnView) view.findViewById(R.id.view_free_return);
         return view;
@@ -110,14 +100,11 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
 
     @Override
     protected void onFirstTimeLaunched() {
-        Log.d(TAG, "onFirstTimeLaunched");
         if (productData != null) {
-            Log.d(TAG, "productData != null");
             onProductDetailLoaded(productData);
         } else {
-            Log.d(TAG, "productData == null");
             presenter.processDataPass(productPass);
-            presenter.requestProductDetail(context, productPass, INIT_REQUEST, false);
+            presenter.requestProductDetail(opportunityId, productPass, INIT_REQUEST, false);
         }
     }
 
@@ -136,7 +123,6 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
         this.descriptionView.renderData(productData);
         this.shopInfoView.renderData(productData);
         this.freeReturnView.renderData(productData);
-        this.buttonView.renderData(productData);
     }
 
     @Override
@@ -165,25 +151,18 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
 
     @Override
     protected void initialPresenter() {
-
-        OpportunityService opportunityService = new OpportunityService();
-
-        ReplacementRepositoryImpl repository = new ReplacementRepositoryImpl(
-                new ActionReplacementSourceFactory(context),
-                new OpportunityDataSourceFactory(context,
-                        opportunityService,
-                        new OpportunityListMapper(),
-                        new OpportunityFilterMapper(),
-                        new GlobalCacheManager())
-        );
-        AcceptReplacementUseCase acceptReplacementUseCase = new AcceptReplacementUseCase(
-                new JobExecutor(), new UIThread(), repository);
-
-        presenter = new SnapShotFragmentImpl(this, acceptReplacementUseCase);
+        opportunityComponent.inject(this);
+        presenter.attachView(this);
     }
 
     @Override
     protected void initialListener(Activity activity) {
+        if (activity != null && activity instanceof BaseActivity){
+            opportunityComponent = DaggerOpportunityComponent.builder()
+                    .opportunityModule(new OpportunityModule())
+                    .appComponent(((BaseActivity) activity).getApplicationComponent())
+                    .build();
+        }
     }
 
     @Override
@@ -210,7 +189,6 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
         descriptionView.setListener(this);
         shopInfoView.setListener(this);
         freeReturnView.setListener(this);
-        buttonView.setListener(this);
 
     }
 
@@ -243,13 +221,15 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
 
     @Override
     public void showProductDetailRetry() {
-        if (productPass != null && !productPass.getProductName().isEmpty()) {
-            NetworkErrorHelper.createSnackbarWithAction(getActivity(),
-                    initializationErrorListener()).showRetrySnackbar();
-        } else {
-            NetworkErrorHelper.showEmptyState(getActivity(),
-                    getActivity().findViewById(R.id.root_view),
-                    initializationErrorListener());
+        if (getActivity() != null && productPass != null && presenter != null) {
+            if (!productPass.getProductName().isEmpty()) {
+                NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                        initializationErrorListener()).showRetrySnackbar();
+            } else if (getActivity().findViewById(R.id.root_view) != null) {
+                NetworkErrorHelper.showEmptyState(getActivity(),
+                        getActivity().findViewById(R.id.root_view),
+                        initializationErrorListener());
+            }
         }
     }
 
@@ -257,7 +237,7 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
         return new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.requestProductDetail(context, productPass, INIT_REQUEST, false);
+                presenter.requestProductDetail(opportunityId, productPass, INIT_REQUEST, false);
             }
         };
     }
@@ -285,80 +265,24 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
                 initializationErrorListener());
     }
 
-    private void navigateShopActivity(Bundle bundle) {
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        intent.putExtras(bundle);
-        startActivity(intent);
+    private void navigateShopActivity(String shopId) {
+        Intent intent = ((SellerModuleRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopId);
+        context.startActivity(intent);
     }
 
     @Override
-    public void onProductShopNameClicked(Bundle bundle) {
-        navigateShopActivity(bundle);
+    public void onProductShopNameClicked(String shopId) {
+        navigateShopActivity(shopId);
     }
 
     @Override
-    public void onProductShopRatingClicked(Bundle bundle) {
-        navigateShopActivity(bundle);
+    public void onProductShopRatingClicked(String shopId) {
+        navigateShopActivity(shopId);
     }
 
     @Override
-    public void onProductShopAvatarClicked(Bundle bundle) {
-        navigateShopActivity(bundle);
-    }
-
-    @Override
-    public void onActionConfirmClicked() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(R.string.message_dialog_accept_opportunity);
-        builder.setPositiveButton(R.string.action_agree, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                presenter.acceptOpportunity();
-                dialogInterface.dismiss();
-            }
-        });
-        builder.setNegativeButton(R.string.action_back, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        Dialog dialog = builder.create();
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.show();
-    }
-
-    @Override
-    public void showLoadingProgress() {
-        if (progressDialog == null && getActivity() != null)
-            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
-
-        if (progressDialog != null && getActivity() != null)
-            progressDialog.showDialog();
-    }
-
-    @Override
-    public String getOpportunityId() {
-        return opportunityId;
-    }
-
-    @Override
-    public void onSuccessTakeOpportunity(ActionViewData actionViewData) {
-        finishLoadingProgress();
-        CommonUtils.UniversalToast(getActivity(), actionViewData.getMessage());
-        getActivity().setResult(Activity.RESULT_OK);
-        getActivity().finish();
-    }
-
-    private void finishLoadingProgress() {
-        if (progressDialog != null)
-            progressDialog.dismiss();
-    }
-
-    @Override
-    public void onErrorTakeOpportunity(String errorMessage) {
-        finishLoadingProgress();
-        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    public void onProductShopAvatarClicked(String shopId) {
+        navigateShopActivity(shopId);
     }
 
 }

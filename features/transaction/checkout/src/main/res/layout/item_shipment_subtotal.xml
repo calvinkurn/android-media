@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:visibility="visible">
+
+    <RelativeLayout
+        android:id="@+id/rl_cart_sub_total"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:foreground="?selectableItemBackground"
+        android:padding="@dimen/dp_16">
+
+        <TextView
+            android:id="@+id/tv_cart_sub_total"
+            style="@style/TextSmallMediumBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/label_sub_total"
+            tools:ignore="SmallSp" />
+
+        <ImageView
+            android:id="@+id/iv_detail_option_chevron"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginStart="@dimen/dp_5"
+            app:srcCompat="@drawable/ic_keyboard_arrow_down_24dp"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/tv_sub_total_price"
+            style="@style/TextSmallMediumBlack70"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/iv_detail_option_chevron"
+            android:layout_toStartOf="@id/iv_detail_option_chevron"
+            tools:text="Rp200.000" />
+
+        <TextView
+            android:id="@+id/tv_shipment_option"
+            style="@style/TextSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="@dimen/dp_84"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:gravity="end"
+            android:textColor="@color/medium_green"
+            android:visibility="gone"
+            tools:text="Go-send Instan" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_shipment_cost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:visibility="visible"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/tv_total_item"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_16"
+            tools:text="Harga (1 Barang)" />
+
+        <TextView
+            android:id="@+id/tv_total_item_price"
+            style="@style/TextSmallMediumBlack70"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_toEndOf="@id/tv_total_item"
+            android:layout_toRightOf="@id/tv_total_item"
+            android:gravity="end"
+            tools:text="Rp1.400.000" />
+
+        <TextView
+            android:id="@+id/tv_shipping_fee"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_total_item"
+            android:layout_marginBottom="@dimen/dp_16"
+            tools:text="Ongkos Kirim (1kg)" />
+
+        <TextView
+            android:id="@+id/tv_shipping_fee_price"
+            style="@style/TextSmallMediumBlack70"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/tv_total_item"
+            android:gravity="end"
+            tools:text="Rp10.000" />
+
+        <TextView
+            android:id="@+id/tv_insurance_fee"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_shipping_fee"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:text="@string/label_insurance_price" />
+
+        <TextView
+            android:id="@+id/tv_insurance_fee_price"
+            style="@style/TextSmallMediumBlack70"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/tv_shipping_fee"
+            android:gravity="end"
+            tools:text="Rp 20.000" />
+
+        <TextView
+            android:id="@+id/tv_purchase_protection_label"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_insurance_fee"
+            android:layout_marginBottom="@dimen/dp_16"
+            tools:text="Proteksi Gadget (3 Barang)" />
+
+        <TextView
+            android:id="@+id/tv_purchase_protection_fee"
+            style="@style/TextSmallMediumBlack70"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/tv_insurance_fee"
+            android:gravity="end"
+            tools:text="Rp 2.000" />
+
+        <TextView
+            android:id="@+id/tv_additional_fee"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_purchase_protection_label"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:text="@string/label_seller_additional_cost" />
+
+        <TextView
+            android:id="@+id/tv_additional_fee_price"
+            style="@style/TextSmallMediumBlack70"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/tv_purchase_protection_label"
+            android:gravity="end"
+            tools:text="Rp 19.000" />
+
+        <TextView
+            android:id="@+id/tv_promo_text"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_additional_fee"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:text="@string/label_promo"
+            android:visibility="gone"
+            tools:text="Promo bla bla bla" />
+
+        <TextView
+            android:id="@+id/tv_promo_price"
+            style="@style/TextSmallMediumBlack70"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/tv_insurance_fee"
+            android:gravity="end"
+            android:visibility="gone"
+            tools:text="Rp100.000" />
+
+    </RelativeLayout>
+
+</LinearLayout>

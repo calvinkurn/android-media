@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/dp_16">
+
+    <TextView
+        android:id="@+id/tv_bottom_sheet_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginBottom="@dimen/dp_24"
+        android:drawableStart="@drawable/ic_close"
+        android:drawableLeft="@drawable/ic_close"
+        android:drawablePadding="@dimen/dp_16"
+        android:text="@string/select_bad_reason"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.design.text.Chips
+        android:id="@+id/tv_bad_reason_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bad_reason_1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_bottom_sheet_title" />
+
+    <com.tokopedia.design.text.Chips
+        android:id="@+id/tv_bad_reason_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bad_reason_2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_bad_reason_1" />
+
+    <com.tokopedia.design.text.Chips
+        android:id="@+id/tv_bad_reason_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bad_reason_3"
+        app:layout_constraintLeft_toRightOf="@+id/tv_bad_reason_2"
+        app:layout_constraintTop_toBottomOf="@+id/tv_bad_reason_1" />
+
+    <com.tokopedia.design.text.Chips
+        android:id="@+id/tv_bad_reason_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bad_reason_4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_bad_reason_3" />
+
+    <com.tokopedia.design.text.Chips
+        android:id="@+id/tv_bad_reason_5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bad_reason_5"
+        app:layout_constraintLeft_toRightOf="@+id/tv_bad_reason_4"
+        app:layout_constraintTop_toBottomOf="@+id/tv_bad_reason_3" />
+
+    <com.tokopedia.design.text.Chips
+        android:id="@+id/tv_bad_reason_6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bad_reason_6"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_bad_reason_5" />
+
+    <com.tokopedia.design.text.Chips
+        android:id="@+id/tv_custom_reason"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/other_reason"
+        app:layout_constraintLeft_toRightOf="@+id/tv_bad_reason_6"
+        app:layout_constraintTop_toBottomOf="@+id/tv_bad_reason_5" />
+
+    <TextView
+        android:id="@+id/tv_label_custom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_24"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:text="@string/enter_other_reason"
+        android:textColor="@color/black_56"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_custom_reason" />
+
+    <EditText
+        android:id="@+id/ed_other_reason"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginRight="@dimen/dp_16"
+        android:hint="@string/type_other_reason"
+        android:textSize="@dimen/sp_16"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_label_custom" />
+
+    <TextView
+        android:id="@+id/btn_send"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginLeft="@dimen/new_margin_med"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginRight="@dimen/new_margin_med"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:background="@drawable/rounded_rectangle_grey_solid"
+        android:clickable="false"
+        android:gravity="center"
+        android:text="@string/kirim"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_13"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ed_other_reason" />
+
+
+</android.support.constraint.ConstraintLayout>

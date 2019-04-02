@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.bignerdranch.android.multiselector.MultiSelector;
 import com.bignerdranch.android.multiselector.SwappingHolder;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;

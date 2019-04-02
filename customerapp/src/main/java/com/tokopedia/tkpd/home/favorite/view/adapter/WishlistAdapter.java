@@ -12,17 +12,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.WishlistItem;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * @author Kulomady on 1/27/17.
@@ -67,14 +69,28 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UnifyTracking.eventFavoriteView(item.getName());
+                eventFavoriteView(item.getName());
                 Context context = view.getContext();
-                Intent intent
-                        = ProductDetailRouter
-                        .createInstanceProductDetailInfoActivity(context, item.getProductId());
+                Intent intent = getProductIntent(context, item.getProductId());
                 context.startActivity(intent);
             }
         };
+    }
+
+    public void eventFavoriteView(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.FAVORITE,
+                AppEventTracking.Category.FAVORITE,
+                AppEventTracking.Action.VIEW_WISHLIST,
+                label);
+    }
+
+    private Intent getProductIntent(Context context, String productId){
+        if (context != null) {
+            return RouteManager.getIntent(context,ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
+        }
     }
 
     public void setData(List<WishlistItem> data) {
@@ -84,30 +100,33 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
     }
 
     private void setBadges(WishlistAdapter.ViewHolder holder, List<String> stringList) {
-        if (holder.badgesContainer.getChildCount() == 0)
-            for (String bagdeUrl : stringList) {
-                LuckyShopImage.loadImage(holder.getContext(), bagdeUrl, holder.badgesContainer);
-            }
+        holder.badgesContainer.removeAllViews();
+        for (String bagdeUrl : stringList) {
+            LuckyShopImage.loadImage(holder.getContext(), bagdeUrl, holder.badgesContainer);
+        }
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.product_name)
         TextView productName;
-        @BindView(R.id.product_price)
         TextView productPrice;
-        @BindView(R.id.product_shop)
         TextView shopName;
-        @BindView(R.id.product_image)
         ImageView productImage;
-        @BindView(R.id.main_content)
         LinearLayout productLayout;
-        @BindView(R.id.badges_container)
         LinearLayout badgesContainer;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            initView(itemView);
+        }
+
+        private void initView(View itemView) {
+            productName = itemView.findViewById(R.id.product_name);
+            productPrice = itemView.findViewById(R.id.product_price);
+            shopName = itemView.findViewById(R.id.product_shop);
+            productImage = itemView.findViewById(R.id.product_image);
+            productLayout = itemView.findViewById(R.id.main_content);
+            badgesContainer = itemView.findViewById(R.id.badges_container);
         }
 
         public Context getContext() {

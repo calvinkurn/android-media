@@ -3,13 +3,13 @@ package com.tokopedia.seller.reputation.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.seller.topads.view.model.TypeBasedModel;
+import com.tokopedia.base.list.seller.common.util.ItemType;
 
 /**
  * @author normansyahputa on 3/27/17.
  */
 
-public class EmptySeparatorModel implements Parcelable, TypeBasedModel {
+public class EmptySeparatorModel implements Parcelable, ItemType {
     public static final int TYPE = 12118412;
     public static final Parcelable.Creator<EmptySeparatorModel> CREATOR = new Parcelable.Creator<EmptySeparatorModel>() {
         @Override

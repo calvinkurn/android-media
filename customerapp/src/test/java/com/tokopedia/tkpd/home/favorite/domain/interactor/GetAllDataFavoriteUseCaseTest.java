@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.home.favorite.domain.interactor;
 
+import android.content.Context;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -25,9 +27,11 @@ public class GetAllDataFavoriteUseCaseTest {
     @Mock
     private GetFavoriteShopUsecase getFavoriteShopUsecase;
     @Mock
-    private GetWishlistUsecase getWishlistUsecase;
+    private GetWishlistUtil getWishlistUtil;
     @Mock
     private GetTopAdsShopUseCase getTopAdsShopUseCase;
+    @Mock
+    private Context context;
 
     private GetAllDataFavoriteUseCase getAllDataFavoriteUseCase;
 
@@ -36,10 +40,11 @@ public class GetAllDataFavoriteUseCaseTest {
         MockitoAnnotations.initMocks(this);
 
         getAllDataFavoriteUseCase = new GetAllDataFavoriteUseCase(
+                context,
                 threadExecutor,
                 postExecutionThread,
                 getFavoriteShopUsecase,
-                getWishlistUsecase,
+                getWishlistUtil,
                 getTopAdsShopUseCase);
 
     }

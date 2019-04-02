@@ -66,16 +66,14 @@ public class OtherProductsView extends BaseView<ProductDetailData, ProductDetail
     }
 
     public void renderOtherProduct(List<ProductOther> productOtherList) {
-        layoutOther.removeAllViews();
         if (productOtherList!=null && productOtherList.size()>0) {
+            setVisibility(VISIBLE);
             for (ProductOther productOther : productOtherList) {
                 OtherProdItemView otherProdItemView = new OtherProdItemView(getContext());
                 otherProdItemView.renderData(productOther);
                 otherProdItemView.setOnClickListener(new OtherProductsView.ClickOtherProduct(productOther));
                 layoutOther.addView(otherProdItemView);
             }
-        } else {
-            setVisibility(GONE);
         }
     }
 

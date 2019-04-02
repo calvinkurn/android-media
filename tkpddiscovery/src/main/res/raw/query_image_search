@@ -1,0 +1,84 @@
+query image_search($image: String!, $params: String!) {
+  image_search(image: $image, params: $params) {
+    header {
+      total_data
+      total_data_text
+      process_time
+      additional_params
+    }
+    data {
+      source
+      share_url
+      q
+      suggestion_text {
+        text
+        query
+      }
+      redirection {
+        redirect_url
+        department_id
+      }
+      suggestions {
+        suggestion
+        total_data
+      }
+      suggestion_instead {
+        suggestion_instead
+        current_keyword
+        total_data
+      }
+      catalogs {
+        id
+        name
+        price
+        price_min
+        price_max
+        count_product
+        description
+        image_url
+        url
+        department_id
+      }
+      products {
+        id
+        name
+        url
+        image_url
+        image_url_700
+        price
+        shop {
+          id
+          name
+          url
+          is_gold_shop
+          is_official
+          location
+          city
+          reputation
+          clover
+        }
+        condition
+        department_id
+        rating
+        count_review
+        courier_count
+        original_price
+        discount_percentage
+        whole_sale_price {
+          quantity_min
+          quantity_max
+          price
+        }
+        labels {
+            title
+            color
+        }
+        badges {
+          title
+          image_url
+        }
+        is_featured
+      }
+    }
+  }
+}

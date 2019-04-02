@@ -24,7 +24,7 @@ public class AllTxFilter {
         data.setMonthEnd(c.get(Calendar.MONTH) + 1);
         data.setYearEnd(c.get(Calendar.YEAR));
 
-        c.add(Calendar.DAY_OF_MONTH, -30);
+        c.add(Calendar.DAY_OF_MONTH, -180);
         data.setDayStart(c.get(Calendar.DAY_OF_MONTH));
         data.setMonthStart(c.get(Calendar.MONTH) + 1);
         data.setYearStart(c.get(Calendar.YEAR));

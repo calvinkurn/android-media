@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_16"
+    android:layout_marginLeft="@dimen/dp_8"
+    android:layout_marginRight="@dimen/dp_8"
+    app:cardCornerRadius="@dimen/card_corner_deals_item"
+    app:cardElevation="4dp">
+
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_8">
+
+
+        <ImageView
+            android:id="@+id/iv_product"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/image_width_deal"
+            android:scaleType="centerCrop"
+            android:src="@color/grey_1100"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/tv_hot_deal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@drawable/details_header_background"
+            android:paddingBottom="@dimen/dp_3"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_3"
+            android:text="@string/hot_deal"
+            style="@style/TextView.Micro11.FontMedium.White"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_deal_intro"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
+            android:ellipsize="end"
+            android:lines="2"
+            android:maxLines="2"
+            style="@style/TextView.Small.FontMedium.BlackPrimary"
+            app:layout_constraintBottom_toBottomOf="@+id/ll_brand"
+            app:layout_constraintLeft_toRightOf="@+id/ll_brand"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_product"
+            tools:text="1 Set Jumbo Bento for 2 persons ddfdfdsfdfdsfdsfdon Weekdays (Monday - Friday)" />
+
+
+        <LinearLayout
+            android:id="@+id/ll_brand"
+            android:layout_width="@dimen/image_width_brand_deals_card"
+            android:layout_height="@dimen/image_width_brand_deals_card"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="154dp"
+            android:background="@drawable/background_brand_logo"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/cv_brand"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/border_width"
+                app:cardCornerRadius="@dimen/dp_8">
+
+                <ImageView
+                    android:id="@+id/iv_brand"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter" />
+
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_tag"
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_sales_price"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_sales_price"
+            app:srcCompat="@drawable/ic_hotlist" />
+
+
+        <TextView
+            android:id="@+id/tv_brand_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_24"
+            android:ellipsize="end"
+            style="@style/TextView.Micro"
+            android:textColor="@color/black_38"
+            android:lines="1"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_tag"
+            app:layout_constraintLeft_toRightOf="@+id/iv_tag"
+            app:layout_constraintTop_toTopOf="@+id/iv_tag"
+            app:layout_constraintRight_toLeftOf="@+id/tv_sales_price"
+            tools:text="Bakerzin" />
+
+
+        <TextView
+            android:id="@+id/tv_off"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@drawable/background_lightgreen_oval"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dp_2"
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_2"
+            style="@style/TextView.Micro11.Bold.Red"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_deal_intro"
+            tools:text="20% OFF" />
+
+
+        <TextView
+            android:id="@+id/tv_mrp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_4"
+            android:gravity="end"
+            style="@style/TextView.Micro.Black40"
+            android:textSize="@dimen/sp_10"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_off"
+            app:layout_constraintRight_toLeftOf="@+id/tv_off"
+            app:layout_constraintTop_toTopOf="@+id/tv_off"
+            tools:text="Rp50.000.000" />
+
+        <TextView
+            android:id="@+id/tv_sales_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_8"
+            android:includeFontPadding="false"
+            android:textColor="@color/red_800"
+            style="@style/TextView.Medium.FontMedium"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_off"
+            tools:text="Rp40.000.000" />
+
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>
+

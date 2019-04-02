@@ -13,6 +13,11 @@ import com.tokopedia.inbox.rescenter.detailv2.data.pojo.DetailResCenterLastSolut
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.DetailResCenterOrder;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.DetailResCenterResolution;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.DetailResCenterShop;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.LastResponse;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.LastSolutionResponse;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.NextActionDetailResponse;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.NextActionDetailStepResponse;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.NextActionResponse;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.AddressDomainModel;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.AwbAttachmentDomainModel;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ButtonDomainModel;
@@ -24,6 +29,11 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionHistoryDoma
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionHistoryItemDomainModel;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ShippingDomainModel;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.SolutionDomainModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.LastDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.LastSolutionDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDetailDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDetailStepDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +45,7 @@ import rx.functions.Func1;
  * Created by hangnadi on 3/9/17.
  */
 
+@Deprecated
 public class DetailResCenterMapper implements Func1<Response<TkpdResponse>, DetailResCenter> {
 
     public DetailResCenterMapper() {
@@ -48,6 +59,7 @@ public class DetailResCenterMapper implements Func1<Response<TkpdResponse>, Deta
                 DetailResCenterEntity entity
                         = response.body().convertDataObj(DetailResCenterEntity.class);
                 domainModel.setSuccess(true);
+                domainModel.setNextAction(entity.getNextAction() != null ? mappingNextActionDomain(entity.getNextAction()) : null);
                 domainModel.setAddress(mappingAddress(entity));
                 domainModel.setButton(mappingButton(entity));
                 domainModel.setProductData(mappingProductData(entity.getLast().getComplainedProduct()));
@@ -86,6 +98,44 @@ public class DetailResCenterMapper implements Func1<Response<TkpdResponse>, Deta
         data.setAddressID(entity.getLast().getAddress().getAddressId());
         data.setConversationID(entity.getLast().getAddress().getDetail().getConversationId());
         return data;
+    }
+
+    private NextActionDomain mappingNextActionDomain(NextActionResponse response) {
+        return new NextActionDomain(
+                response.getLast(),
+                response.getDetail() != null ?
+                        mappingNextActionDetailDomain(response.getDetail()) :
+                        null,
+                response.getProblem());
+    }
+
+    private NextActionDetailDomain mappingNextActionDetailDomain(NextActionDetailResponse response) {
+        return new NextActionDetailDomain(response.getSolution(),
+                response.getLast() != null ?
+                        mappingLastDomain(response.getLast()) :
+                        null,
+                response.getStep() != null ?
+                        mappingNextActionDetailStepDomainList(response.getStep()) :
+                        null);
+    }
+
+    private LastDomain mappingLastDomain(LastResponse response) {
+        return new LastDomain(response.getSolution() != null ?
+                mappingLastSolutionDomain(response.getSolution()) :
+                null,
+                response.getProblem());
+    }
+    private List<NextActionDetailStepDomain> mappingNextActionDetailStepDomainList(
+            List<NextActionDetailStepResponse> responseList) {
+        List<NextActionDetailStepDomain> domain = new ArrayList<>();
+        for (NextActionDetailStepResponse response : responseList) {
+            domain.add(new NextActionDetailStepDomain(response.getStatus(), response.getName()));
+        }
+        return domain;
+    }
+
+    private LastSolutionDomain mappingLastSolutionDomain(LastSolutionResponse response) {
+        return new LastSolutionDomain(response.getId(), response.getName(), response.getAmount());
     }
 
     private ShippingDomainModel mappingAwbReturData(List<DetailResCenterLastShipping> entity) {

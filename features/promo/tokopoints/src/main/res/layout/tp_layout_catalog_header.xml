@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container_point_detail"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/tp_padding_regular"
+    android:paddingEnd="@dimen/tp_padding_medium"
+    android:paddingLeft="@dimen/tp_padding_medium"
+    android:paddingRight="@dimen/tp_padding_medium"
+    android:visibility="gone"
+    android:paddingStart="@dimen/tp_padding_medium"
+    android:paddingTop="@dimen/tp_padding_regular">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/img_points_stack"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:layout_constraintBottom_toBottomOf="@+id/text_my_coupon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text_my_coupon"
+        app:srcCompat="@drawable/ic_tp_point_stack" />
+
+    <TextView
+        android:id="@+id/text_point_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/tp_margin_small"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/tp_text_size_regular"
+        app:layout_constraintBottom_toBottomOf="@+id/text_my_coupon"
+        app:layout_constraintStart_toEndOf="@+id/img_points_stack"
+        app:layout_constraintTop_toTopOf="@+id/text_my_coupon" />
+
+    <TextView
+        android:id="@+id/text_my_coupon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_tp_gray_outline"
+        android:gravity="center"
+        android:paddingBottom="@dimen/tp_padding_small"
+        android:paddingLeft="@dimen/tp_padding_regular"
+        android:paddingRight="@dimen/tp_padding_regular"
+        android:paddingStart="@dimen/tp_padding_regular"
+        android:paddingTop="@dimen/tp_padding_small"
+        android:text="@string/tp_label_my_coupon"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/tp_text_size_xsmall"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_goneMarginEnd="@dimen/tp_padding_regular" />
+
+</android.support.constraint.ConstraintLayout>

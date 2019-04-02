@@ -1,8 +1,8 @@
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout_nav"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,16 +11,25 @@
         android:outlineProvider="bounds"
         android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/app_bar"
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tkpd_main_green"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="@style/AppBarTheme"
-            app:titleTextAppearance="@style/ToolbarText"
-            app:subtitleTextAppearance="@style/ToolbarSubtitleText"/>
+            app:elevation="@dimen/dp_10">
+
+            <android.support.v7.widget.Toolbar
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/app_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/tkpd_main_green"
+                android:minHeight="?attr/actionBarSize"
+                app:theme="@style/AppBarTheme"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:titleTextAppearance="@style/ToolbarText"
+                app:subtitleTextAppearance="@style/ToolbarSubtitleText"/>
+
+        </android.support.design.widget.AppBarLayout>
 
         <FrameLayout
             android:id="@+id/parent_view"
@@ -29,7 +38,6 @@
 
     </LinearLayout>
 
-    <include layout="@layout/drawer_layout"
-        />
+    <include layout="@layout/drawer_layout" />
 
 </android.support.v4.widget.DrawerLayout>

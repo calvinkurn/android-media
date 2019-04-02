@@ -19,9 +19,10 @@ import android.view.ViewGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.util.MethodChecker;
 
+@Deprecated
 public class HeaderHotAdapter extends PagerAdapter {
 	private Context context;
 	private int dp;

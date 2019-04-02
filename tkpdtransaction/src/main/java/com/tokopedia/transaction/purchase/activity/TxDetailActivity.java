@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.IntentService;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,19 +18,28 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.customView.OrderStatusView;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.adapter.TxProductListAdapter;
@@ -84,6 +94,8 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     TextView btnTrackOrder;
     @BindView(R2.id.complain_but)
     TextView btnComplainOrder;
+    @BindView(R2.id.btn_do_complain)
+    TextView btnDoComplain;
     @BindView(R2.id.upload_proof)
     TextView btnUploadProof;
     @BindView(R2.id.btn_request_cancel_order)
@@ -96,6 +108,18 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     View holderFormSender;
     @BindView(R2.id.order_status_layout)
     LinearLayout holderOrderStatus;
+    @BindView(R2.id.instant_courier_driver_layout)
+    LinearLayout instantCourierDriverLayout;
+    @BindView(R2.id.driver_photo)
+    ImageView driverPhoto;
+    @BindView(R2.id.driver_name)
+    TextView driverName;
+    @BindView(R2.id.driver_phone)
+    TextView driverPhone;
+    @BindView(R2.id.driver_license)
+    TextView driverLicense;
+    @BindView(R2.id.btn_call_driver)
+    TextView btnCallOnDemandDriver;
 
     private OrderData orderData;
     private TkpdProgressDialog progressDialog;
@@ -201,6 +225,71 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
                 orderData.getOrderShipment().getShipmentProduct()));
         tvDestinationDetail.setText(orderData.getOrderDestination().getDetailDestination()
                 .replace("&amp;", "&"));
+        if (orderData.getDriverInfo() != null
+                && !orderData.getDriverInfo().getDriverName().isEmpty()) {
+            instantCourierDriverLayout.setVisibility(View.VISIBLE);
+            ImageHandler.loadImageCircle2(this, driverPhoto, orderData.getDriverInfo().getDriverPhoto());
+            driverName.setText(orderData.getDriverInfo().getDriverName());
+            driverPhone.setText(orderData.getDriverInfo().getDriverPhone());
+            btnCallOnDemandDriver.setOnClickListener(getClickListenerCallDriver());
+            if (orderData.getDriverInfo().getLicenseNumber().isEmpty()) {
+                driverLicense.setVisibility(View.GONE);
+            } else {
+                driverLicense.setVisibility(View.VISIBLE);
+                driverLicense.setText(orderData.getDriverInfo().getLicenseNumber());
+            }
+        } else instantCourierDriverLayout.setVisibility(View.GONE);
+    }
+
+    @NonNull
+    private View.OnClickListener getClickListenerCallDriver() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new BottomSheetCallAction.Builder(TxDetailActivity.this)
+                        .actionListener(new BottomSheetCallAction.ActionListener() {
+                            @Override
+                            public void onCallAction1Clicked(BottomSheetCallAction.CallActionData callActionData) {
+                                openDialCaller(callActionData.getPhoneNumber());
+                            }
+
+                            @Override
+                            public void onCallAction2Clicked(BottomSheetCallAction.CallActionData callActionData) {
+                                openSmsApplication(callActionData.getPhoneNumber());
+                            }
+                        })
+                        .callActionData(
+                                new BottomSheetCallAction.CallActionData().setPhoneNumber(
+                                        orderData.getDriverInfo().getDriverPhone()
+                                ).setLabelAction1(
+                                        getString(R.string.label_call_ondemand_driver_logistic_action_1)
+                                ).setLabelAction2(
+                                        getString(R.string.label_call_ondemand_driver_logistic_action_2)
+                                )
+                        ).build().show();
+            }
+        };
+    }
+
+    void openSmsApplication(String phoneNumber) {
+        Intent smsIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + phoneNumber));
+        try {
+            startActivity(smsIntent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+            showToastMessage(getString(R.string.error_message_sms_app_not_found));
+        }
+    }
+
+    void openDialCaller(String phoneNumber) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phoneNumber));
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+            showToastMessage(getString(R.string.error_message_phone_dialer_app_not_found));
+        }
     }
 
     private void renderActionButton() {
@@ -222,10 +311,16 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
                         ? View.VISIBLE : View.GONE
         );
 
-        btnRejectOrder.setVisibility(orderData.getOrderButton().getButtonOpenDispute() != null
-                && orderData.getOrderButton().getButtonOpenDispute().equals("1")
-                ? View.VISIBLE : View.GONE);
 
+        btnRejectOrder.setVisibility(View.GONE);
+
+        if (orderData.getOrderButton().getButtonResCenterGoTo().equals("1")) {
+            btnDoComplain.setVisibility(View.GONE);
+        } else {
+            btnDoComplain.setVisibility(orderData.getOrderButton().getButtonComplaintReceived().equals("1")
+                    || orderData.getOrderButton().getButtonComplaintNotReceived().equals("1")
+                    ? View.VISIBLE : View.GONE);
+        }
         btnComplainOrder.setVisibility(orderData.getOrderButton().getButtonResCenterGoTo() != null
                 && orderData.getOrderButton().getButtonResCenterGoTo().equals("1")
                 ? View.VISIBLE : View.GONE);
@@ -314,7 +409,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
 
     @OnClick(R2.id.complain_but)
     void actionShowComplain() {
-        presenter.processShowComplain(this, orderData.getOrderButton());
+        presenter.processShowComplain(this, orderData.getOrderButton(), orderData.getOrderShop());
     }
 
     @OnClick(R2.id.ask_seller)
@@ -329,14 +424,35 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
 
     @OnClick(R2.id.receive_btn)
     void actionConfirmDeliver() {
-        presenter.processConfirmDeliver(this, orderData);
-        UnifyTracking.eventReceivedShipping();
+        presenter.processFinish(this, orderData);
+        eventReceivedShipping();
+    }
+
+    public static void eventReceivedShipping () {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.RECEIVED,
+                AppEventTracking.Category.RECEIVED,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.CONFIRMATION);
+    }
+
+    @OnClick(R2.id.btn_do_complain)
+    void actionComplain() {
+        presenter.processComplain(this, orderData);
     }
 
     @OnClick(R2.id.track_btn)
     void actionTracking() {
         presenter.processTrackOrder(this, orderData);
-        UnifyTracking.eventTrackOrder();
+        eventTrackOrder();
+    }
+
+    public static void eventTrackOrder() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.STATUS,
+                AppEventTracking.Category.STATUS,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.TRACK);
     }
 
     @OnClick(R2.id.btn_request_cancel_order)
@@ -371,9 +487,12 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
 
     @Override
     public void actionToProductInfo(ProductPass productPass) {
-        Intent intent = ProductDetailRouter
-                .createInstanceProductDetailInfoActivity(this, productPass);
+        Intent intent = getProductIntent(productPass.getProductId());
         navigateToActivity(intent);
+    }
+
+    private Intent getProductIntent(String productId){
+            return RouteManager.getIntent(this,ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
     }
 
     @Override
@@ -489,5 +608,8 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
         }
     }
 
-
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

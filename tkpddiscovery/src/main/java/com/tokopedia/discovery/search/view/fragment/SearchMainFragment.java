@@ -1,54 +1,67 @@
 package com.tokopedia.discovery.search.view.fragment;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.R2;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.autocomplete.HostAutoCompleteAdapter;
+import com.tokopedia.discovery.autocomplete.HostAutoCompleteFactory;
+import com.tokopedia.discovery.autocomplete.HostAutoCompleteTypeFactory;
+import com.tokopedia.discovery.autocomplete.DefaultAutoCompleteViewModel;
+import com.tokopedia.discovery.autocomplete.TabAutoCompleteViewModel;
+import com.tokopedia.discovery.autocomplete.di.DaggerAutoCompleteComponent;
+import com.tokopedia.discovery.autocomplete.di.AutoCompleteComponent;
 import com.tokopedia.discovery.catalog.analytics.AppScreen;
+import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.search.SearchPresenter;
 import com.tokopedia.discovery.search.view.SearchContract;
-import com.tokopedia.discovery.search.view.adapter.SearchPageAdapter;
-import com.tokopedia.discovery.search.view.adapter.viewmodel.ShopViewModel;
+import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
+import javax.inject.Inject;
 
 /**
  * @author erry on 23/02/17.
  */
 
-public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchContract.View {
+public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchContract.View, ItemClickListener {
     public static final int PAGER_POSITION_PRODUCT = 0;
     public static final int PAGER_POSITION_SHOP = 1;
 
-    private Unbinder unbinder;
+
     public static final String FRAGMENT_TAG = "SearchHistoryFragment";
     public static final String INIT_QUERY = "INIT_QUERY";
     private static final String SEARCH_INIT_KEY = "SEARCH_INIT_KEY";
+    private static final String SEARCH_IS_OFFICIAL = "SEARCH_IS_OFFICIAL";
 
-    @BindView(R2.id.tabs)
-    TabLayout tabLayout;
-    @BindView(R2.id.view_pager)
-    ViewPager viewPager;
+    private RecyclerView recyclerView;
+    private LinearLayoutManager layoutManager;
 
+    @Inject
     SearchPresenter presenter;
-    private SearchPageAdapter pageAdapter;
+
+    private HostAutoCompleteAdapter adapter;
     private String mSearch = "";
+    private boolean mIsOfficial = false;
     private String networkErrorMessage;
+    private boolean onTabShop;
 
     public static SearchMainFragment newInstance() {
         
@@ -72,7 +85,11 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initResources();
-        presenter = new SearchPresenter(getActivity());
+        AutoCompleteComponent component = DaggerAutoCompleteComponent.builder()
+                .baseAppComponent(((MainApplication) getActivity().getApplication()).getBaseAppComponent())
+                .build();
+        component.inject(this);
+        component.inject(presenter);
         setRetainInstance(true);
     }
 
@@ -84,39 +101,53 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_universearch, container, false);
-        unbinder = ButterKnife.bind(this, parentView);
+        recyclerView = parentView.findViewById(R.id.list);
         prepareView();
         presenter.attachView(this);
         presenter.initializeDataSearch();
         return parentView;
     }
 
-    private void prepareView(){
-        pageAdapter = new SearchPageAdapter(getChildFragmentManager(), getActivity());
-        viewPager.setOffscreenPageLimit(2);
-        viewPager.setAdapter(pageAdapter);
-        tabLayout.setupWithViewPager(viewPager);
+    private void prepareView() {
+        HostAutoCompleteTypeFactory typeFactory = new HostAutoCompleteFactory(
+                this,
+                getChildFragmentManager()
+        );
+        layoutManager =
+                new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false) {
+                    @Override
+                    public boolean canScrollVertically() {
+                        return false;
+                    }
+                };
+        adapter = new HostAutoCompleteAdapter(typeFactory);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.scrollToPosition(0);
+        recyclerView.setNestedScrollingEnabled(false);
     }
 
     public void setCurrentTab(final int pos) {
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-                if (viewPager != null) {
-                    viewPager.setCurrentItem(pos);
-                }
+
             }
         });
     }
 
     public int getCurrentTab() {
-        return viewPager.getCurrentItem();
+        if (layoutManager.findFirstCompletelyVisibleItemPosition() == 1) {
+            return isOnTabShop() ? SearchMainFragment.PAGER_POSITION_SHOP : SearchMainFragment.PAGER_POSITION_PRODUCT;
+        } else {
+            return SearchMainFragment.PAGER_POSITION_PRODUCT;
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
         presenter.detachView();
     }
 
@@ -126,17 +157,14 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     }
 
     @Override
-    public void showSearchResult(final List<Visitable> list) {
-        SearchResultFragment resultFragment = pageAdapter.getRegisteredFragment(0);
-        resultFragment.clearData();
-        SearchResultFragment shopFragment = pageAdapter.getRegisteredFragment(1);
-        shopFragment.clearData();
-        for (Visitable visitable : list) {
-            if(visitable instanceof ShopViewModel){
-                shopFragment.addSearchResult(visitable);
-            } else {
-                resultFragment.addSearchResult(visitable);
-            }
+    public void showAutoCompleteResult(DefaultAutoCompleteViewModel defaultAutoCompleteViewModel,
+                                       TabAutoCompleteViewModel tabAutoCompleteViewModel) {
+        adapter.setDefaultViewModel(defaultAutoCompleteViewModel);
+        adapter.setSuggestionViewModel(tabAutoCompleteViewModel);
+        if (defaultAutoCompleteViewModel.getList().isEmpty()) {
+            recyclerView.scrollToPosition(1);
+        } else {
+            recyclerView.scrollToPosition(0);
         }
     }
 
@@ -150,7 +178,8 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
         super.onViewStateRestored(savedInstanceState);
         if(savedInstanceState!=null) {
             mSearch = savedInstanceState.getString(SEARCH_INIT_KEY);
-            presenter.search(mSearch);
+            mIsOfficial = savedInstanceState.getBoolean(SEARCH_IS_OFFICIAL);
+            presenter.search(mSearch, mIsOfficial);
         }
     }
 
@@ -158,11 +187,13 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(SEARCH_INIT_KEY, mSearch);
+        outState.putBoolean(SEARCH_IS_OFFICIAL, mIsOfficial);
     }
 
-    public void search(String query){
+    public void search(String query, boolean isOfficial){
         this.mSearch = query;
-        presenter.search(mSearch);
+        this.mIsOfficial = isOfficial;
+        presenter.search(mSearch, mIsOfficial);
     }
 
     public void deleteAllRecentSearch(){
@@ -171,5 +202,94 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 
     public void deleteRecentSearch(String keyword){
         presenter.deleteRecentSearchItem(keyword);
+    }
+
+    private void dropKeyBoard() {
+        if (getActivity() != null && getActivity() instanceof DiscoveryActivity) {
+            ((DiscoveryActivity) getActivity()).dropKeyboard();
+        }
+    }
+
+    @Override
+    public void onItemClicked(String applink, String webUrl) {
+        onItemClicked(applink, webUrl, true);
+    }
+
+    @Override
+    public void onItemClicked(String applink, String webUrl, boolean shouldFinishActivity) {
+        dropKeyBoard();
+
+        if (isActivityAnApplinkRouter()) {
+            handleItemClickedIfActivityAnApplinkRouter(applink, webUrl, shouldFinishActivity);
+        } else {
+            openWebViewURL(webUrl, getActivity());
+            finishActivityIfRequired(shouldFinishActivity);
+        }
+    }
+
+    private boolean isActivityAnApplinkRouter() {
+        return getActivity() != null && getActivity().getApplicationContext() instanceof ApplinkRouter;
+    }
+
+    private void handleItemClickedIfActivityAnApplinkRouter(String applink, String webUrl, boolean shouldFinishActivity) {
+        ApplinkRouter router = ((ApplinkRouter) getActivity().getApplicationContext());
+        if (router.isSupportApplink(applink)) {
+            handleRouterSupportApplink(router, applink, shouldFinishActivity);
+        } else {
+            openWebViewURL(webUrl, getActivity());
+            finishActivityIfRequired(shouldFinishActivity);
+        }
+    }
+
+    private void handleRouterSupportApplink(ApplinkRouter router, String applink, boolean shouldFinishActivity) {
+        finishActivityIfRequired(shouldFinishActivity);
+        router.goToApplinkActivity(getActivity(), applink);
+    }
+
+    private void finishActivityIfRequired(boolean shouldFinishActivity) {
+        if(shouldFinishActivity)
+            getActivity().finish();
+    }
+
+    public void openWebViewURL(String url, Context context) {
+        if (!TextUtils.isEmpty(url) && context != null) {
+            Intent intent = new Intent(context, BannerWebView.class);
+            intent.putExtra("url", url);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onItemSearchClicked(String keyword, String categoryId, boolean isOfficial) {
+        dropKeyBoard();
+        if (!TextUtils.isEmpty(categoryId)) {
+            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(keyword, categoryId, isOfficial);
+        } else {
+            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(keyword, isOfficial);
+        }
+    }
+
+    @Override
+    public void copyTextToSearchView(String text) {
+        ((DiscoveryActivity) getActivity()).setSearchQuery(text + " ");
+    }
+
+    @Override
+    public void onDeleteRecentSearchItem(String keyword) {
+        ((DiscoveryActivity) getActivity()).deleteRecentSearch(keyword);
+    }
+
+    @Override
+    public void onDeleteAllRecentSearch() {
+        ((DiscoveryActivity) getActivity()).deleteAllRecentSearch();
+    }
+
+    @Override
+    public void setOnTabShop(boolean onTabShop) {
+        this.onTabShop = onTabShop;
+    }
+
+    public boolean isOnTabShop() {
+        return onTabShop;
     }
 }

@@ -17,7 +17,9 @@ public class TopAdsShopItem {
     private String luckyShop;
     private String shopUri;
     private String shopImageCover;
+    private String shopImageCoverEcs;
     private String shopImageUrl;
+    private String shopImageEcs;
     private String shopDomain;
 
     private boolean isSelected;
@@ -119,6 +121,14 @@ public class TopAdsShopItem {
         this.shopImageCover = shopImageCover;
     }
 
+    public String getShopImageCoverEcs() {
+        return shopImageCoverEcs;
+    }
+
+    public void setShopImageCoverEcs(String shopImageCoverEcs) {
+        this.shopImageCoverEcs = shopImageCoverEcs;
+    }
+
     public String getShopImageUrl() {
         return shopImageUrl;
     }
@@ -133,5 +143,13 @@ public class TopAdsShopItem {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public void setShopImageEcs(String sEcs) {
+        this.shopImageEcs = sEcs;
+    }
+
+    public String getShopImageEcs() {
+        return shopImageEcs;
     }
 }

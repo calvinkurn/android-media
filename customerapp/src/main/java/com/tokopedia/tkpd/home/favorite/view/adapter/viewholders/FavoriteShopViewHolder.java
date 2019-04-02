@@ -2,22 +2,21 @@ package com.tokopedia.tkpd.home.favorite.view.adapter.viewholders;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
-
-import butterknife.BindView;
-import butterknife.OnClick;
+import com.tokopedia.track.TrackApp;
 
 /**
  * @author kulomady on 1/24/17.
@@ -29,18 +28,31 @@ public class FavoriteShopViewHolder extends AbstractViewHolder<FavoriteShopViewM
 
     private FavoriteShopViewModel favoriteShop;
     private Context context;
-    @BindView(R.id.shop_avatar)
-    ImageView avatarImageView;
-    @BindView(R.id.shop_name)
-    TextView nameTextView;
-    @BindView(R.id.location)
-    TextView locationTextview;
-    @BindView(R.id.fav_button)
-    ImageView favoriteImageView;
+    private ImageView avatarImageView;
+    private TextView nameTextView;
+    private TextView locationTextview;
+    private ImageView favoriteImageView;
+    private ImageView badgeIcon;
 
     public FavoriteShopViewHolder(View itemView) {
         super(itemView);
+        initView(itemView);
         context = itemView.getContext();
+    }
+
+    private void initView(View itemView) {
+        avatarImageView = itemView.findViewById(R.id.shop_avatar);
+        nameTextView = itemView.findViewById(R.id.shop_name);
+        locationTextview = itemView.findViewById(R.id.location);
+        favoriteImageView = itemView.findViewById(R.id.fav_button);
+        badgeIcon = itemView.findViewById(R.id.image_badge);
+        View shopLayout = itemView.findViewById(R.id.shop_layout);
+        shopLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onShopLayoutClicked();
+            }
+        });
     }
 
     @Override
@@ -58,14 +70,25 @@ public class FavoriteShopViewHolder extends AbstractViewHolder<FavoriteShopViewM
             ImageHandler.loadImageFit2(
                     itemView.getContext(), avatarImageView, favoriteShop.getShopAvatarImageUrl());
         }
+        if(favoriteShop.getBadgeUrl() != null && !favoriteShop.getBadgeUrl().isEmpty()) {
+            badgeIcon.setVisibility(View.VISIBLE);
+            ImageHandler.loadImageFit2(itemView.getContext(), badgeIcon, favoriteShop.getBadgeUrl());
+        } else {
+            badgeIcon.setVisibility(View.GONE);
+        }
     }
 
-    @OnClick(R.id.shop_layout)
     void onShopLayoutClicked() {
-        UnifyTracking.eventFavoriteShop(favoriteShop.getShopName());
-        Intent intent = new Intent(context, ShopInfoActivity.class);
-        Bundle bundle = ShopInfoActivity.createBundle(favoriteShop.getShopId(), "");
-        intent.putExtras(bundle);
+        eventFavoriteShop();
+        Intent intent = ShopPageActivity.createIntent(context, favoriteShop.getShopId());
         context.startActivity(intent);
+    }
+
+    public void eventFavoriteShop() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.FAVORITE,
+                AppEventTracking.Category.HOMEPAGE.toLowerCase(),
+                AppEventTracking.Action.CLICK_SHOP_FAVORITE,
+                "");
     }
 }

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/partial_merchant_voucher_detail_loading" />
+
+    <LinearLayout
+        android:id="@+id/vgContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:orientation="vertical">
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/scrollViewContent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/dp_4">
+
+                <ImageView
+                    android:id="@+id/ivVoucherBanner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:minHeight="@dimen/dp_85"
+                    tools:src="@drawable/bg_rect_rounded_white_shadow" />
+
+                <TextView
+                    android:id="@+id/tvVoucherTitle"
+                    style="@style/TextView.Title.Bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginRight="@dimen/dp_16"
+                    tools:text="Lebaran Extra Cashback 20.000" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:orientation="horizontal">
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:layout_width="@dimen/dp_20"
+                        android:layout_height="@dimen/dp_20"
+                        android:layout_marginRight="@dimen/dp_8"
+                        app:srcCompat="@drawable/ic_price_green" />
+
+                    <TextView
+                        android:id="@+id/tvMinTransactionLabel"
+                        style="@style/TextView.Small.BlackSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/dp_8"
+                        android:text="@string/min_transaction_colon" />
+
+                    <TextView
+                        android:id="@+id/tvMinTransaction"
+                        style="@style/TextView.Small.Bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="Rp200.000" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:orientation="horizontal">
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:layout_width="@dimen/dp_20"
+                        android:layout_height="@dimen/dp_20"
+                        android:layout_marginRight="@dimen/dp_8"
+                        app:srcCompat="@drawable/ic_clock_green" />
+
+                    <TextView
+                        style="@style/TextView.Small.BlackSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/dp_8"
+                        android:text="@string/valid_thru_colon" />
+
+                    <TextView
+                        android:id="@+id/tvValidThru"
+                        style="@style/TextView.Small.Bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="31 Dec 2018" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/vgVoucherStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/TextView.Small.BlackSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/dp_8"
+                        android:text="@string/status_colon" />
+
+                    <TextView
+                        android:id="@+id/tvVoucherStatus"
+                        style="@style/TextView.Small.Bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/dp_8"
+                        tools:text="Diterapkan pada keranjang" />
+
+                    <TextView
+                        android:id="@+id/tvSeeCart"
+                        style="@style/TextView.Small.Green"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/dp_4"
+                        android:text="@string/see" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvTncLabel"
+                    style="@style/TextView.Title.Bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_36"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:text="@string/terms_and_conditions" />
+
+                <WebView
+                    android:id="@+id/webViewTnc"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+
+        <LinearLayout
+            android:id="@+id/btnContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <!-- //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release-->
+            <!--<Button
+                android:id="@+id/btnUseVoucher"
+                style="@style/Button.Submit.Green.Full"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_16"
+                android:text="@string/use_voucher" />-->
+
+            <!-- //TOGGLE_MVC_OFF -->
+            <Button
+                android:id="@+id/btnUseVoucher"
+                style="@style/Button.Submit.Green.Full"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_16"
+                android:text="@string/copy_to_clipboard" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

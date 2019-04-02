@@ -10,7 +10,9 @@ public class TopAdsShopItem {
     private String shopId;
     private String shopName;
     private String shopCoverUrl;
+    private String shopCoverEcs;
     private String shopImageUrl;
+    private String shopImageEcs;
     private String shopLocation;
     private boolean isFav;
     private String shopClickUrl;
@@ -47,6 +49,14 @@ public class TopAdsShopItem {
 
     public void setShopCoverUrl(String shopCoverUrl) {
         this.shopCoverUrl = shopCoverUrl;
+    }
+
+    public String getShopCoverEcs() {
+        return shopCoverEcs;
+    }
+
+    public void setShopCoverEcs(String shopCoverEcs) {
+        this.shopCoverEcs = shopCoverEcs;
     }
 
     public String getShopImageUrl() {
@@ -87,5 +97,13 @@ public class TopAdsShopItem {
 
     public void setAdKey(String adKey) {
         this.adKey = adKey;
+    }
+
+    public void setShopImageEcs(String shopImageEcs) {
+        this.shopImageEcs = shopImageEcs;
+    }
+
+    public String getShopImageEcs() {
+        return shopImageEcs;
     }
 }

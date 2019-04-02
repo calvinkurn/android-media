@@ -16,19 +16,18 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.var.NotificationVariable;
 import com.tokopedia.seller.customadapter.ListViewOrderStatus;
 import com.tokopedia.seller.customadapter.ListViewShopOrderDetail;
 import com.tokopedia.seller.selling.model.orderShipping.OrderCustomer;
@@ -107,7 +106,6 @@ ShippingConfirmationDetail extends TActivity {
     private TkpdProgressDialog mProgressDialog;
     private BroadcastReceiver onComplete;
     private Dialog dialog;
-    private NotificationVariable notif;
 
     ShippingConfirmDetModel shippingConfirmDetModel;
     ArrayList<ShippingConfirmDetModel.Data> dataProducts = new ArrayList<>();
@@ -116,7 +114,7 @@ ShippingConfirmationDetail extends TActivity {
     OrderShippingList orderData;
     String invoice_uri;
     String invoice_pdf;
-    String UserID;
+    String userId;
 
     private String OrderId;
 
@@ -132,9 +130,6 @@ ShippingConfirmationDetail extends TActivity {
         initView();
         compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
 
-        notif = MainApplication.getNotifInstance();
-        notif.setContext(this);
-
         ConfirmButton.setVisibility(View.GONE);
         CancelButton.setVisibility(View.GONE);
 
@@ -147,12 +142,7 @@ ShippingConfirmationDetail extends TActivity {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position,
                                     long arg3) {
-                startActivity(
-                        ProductDetailRouter.createInstanceProductDetailInfoActivity(
-                                ShippingConfirmationDetail.this,
-                                getProductDataToPass(dataProducts.get(position))
-                        )
-                );
+                startActivity(getProductIntent(dataProducts.get(position).ProductId));
             }
         });
 
@@ -168,13 +158,17 @@ ShippingConfirmationDetail extends TActivity {
         OrderStatus.setAdapter(OrderAdapter);
 
         orderData = Parcels.unwrap(getIntent().getExtras().getParcelable(ORDER));
-        UserID = getIntent().getExtras().getString(USER_ID);
+        userId = getIntent().getExtras().getString(USER_ID);
         invoice_uri = getIntent().getExtras().getString(INVOICE_URI1);
         invoice_pdf = getIntent().getExtras().getString(INVOICE_PDF1);
 
         setDataToViewV4();
 
 
+    }
+
+    private Intent getProductIntent(String productId){
+        return RouteManager.getIntent(this,ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
     }
 
     private void initView(){
@@ -437,7 +431,11 @@ ShippingConfirmationDetail extends TActivity {
     }
 
     public void onBuyerClick() {
-        startActivity(PeopleInfoNoDrawerActivity.createInstance(ShippingConfirmationDetail.this, UserID));
+        if (this.getApplicationContext() instanceof SellerModuleRouter) {
+            startActivity(((SellerModuleRouter) this.getApplicationContext())
+                    .getTopProfileIntent(this,
+                            userId));
+        }
     }
 
     private void Loading() {

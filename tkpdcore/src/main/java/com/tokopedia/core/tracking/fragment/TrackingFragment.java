@@ -15,8 +15,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.tracking.adapter.TrackingHistoryAdapter;
 import com.tokopedia.core.tracking.listener.TrackingFragmentView;

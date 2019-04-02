@@ -13,7 +13,10 @@ import java.util.List;
 
 /**
  * Created by m.normansyah on 03/12/2015.
+ *
+ * This class is too complicated
  */
+@Deprecated
 @Parcel
 public class ImageModel {
     // this is for url / path from sdcard
@@ -59,6 +62,40 @@ public class ImageModel {
     public ImageModel(){
     }
 
+    public static ImageModelType getTypeEnum(int type) {
+        if (type == ImageModelType.ACTIVE.getType()) {
+            return ImageModelType.ACTIVE;
+        } else if (type == ImageModelType.INACTIVE.getType()) {
+            return ImageModelType.INACTIVE;
+        } else {//if(type == ImageModelType.SELECTED.getType()){
+            return ImageModelType.SELECTED;
+        }
+    }
+
+    public static int calculateDefaults(List<ImageModel> imageModels) {
+        int count = 0;
+        for (ImageModel temp :
+                imageModels) {
+            if (temp.isDefault()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static List<Integer> determineDefault(List<ImageModel> imageModels) {
+        List<Integer> result = new ArrayList<>();
+        int count = 0;
+        for (ImageModel temp :
+                imageModels) {
+            if (temp.isDefault()) {
+                result.add(count);
+            }
+            count++;
+        }
+        return result;
+    }
+
     public String getPath() {
         return path;
     }
@@ -76,10 +113,8 @@ public class ImageModel {
     }
 
     public boolean isDefault(){
-        if(resId != 0)
-            return true;
+        return resId != 0;
 
-        return false;
     }
 
     public long getDbId() {
@@ -90,31 +125,12 @@ public class ImageModel {
         this.dbId = dbId;
     }
 
-    public static ImageModelType getTypeEnum(int type){
-        if(type == ImageModelType.ACTIVE.getType()){
-            return ImageModelType.ACTIVE;
-        }else if(type == ImageModelType.INACTIVE.getType()){
-            return ImageModelType.INACTIVE;
-        }else {//if(type == ImageModelType.SELECTED.getType()){
-            return ImageModelType.SELECTED;
-        }
-    }
-
     public ImageModelType getTypeEnum(){
         return getTypeEnum(type);
     }
 
     public int getType() {
         return type;
-    }
-
-    public ArrayList<Integer> getTypes() {
-        return types;
-    }
-
-    public void clearAll(){
-        if(types != null)
-            types.clear();
     }
 
     public void setType(int type) {
@@ -127,26 +143,18 @@ public class ImageModel {
         types.add(type);
     }
 
+    public ArrayList<Integer> getTypes() {
+        return types;
+    }
+
+    public void clearAll() {
+        if (types != null)
+            types.clear();
+    }
+
     public PictureDB getGambar(){
         return DbManagerImpl.getInstance().getGambarById(dbId);
     }
-
-
-    //    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//
-//        ImageModel that = (ImageModel) o;
-//
-//        return !(path != null ? !path.equals(that.path) : that.path != null);
-//
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return path != null ? path.hashCode() : 0;
-//    }
 
     @Override
     public String toString() {
@@ -154,44 +162,29 @@ public class ImageModel {
         return String.format(formatHere, path, DbManagerImpl.getInstance().getGambarById(dbId));
     }
 
-    public static int calculateDefaults(List<ImageModel> imageModels){
-        int count = 0;
-        for (ImageModel temp :
-                imageModels) {
-            if (temp.isDefault()){
-                count++;
-            }
-        }
-        return count;
-    }
-
-    public static List<Integer> determineDefault(List<ImageModel> imageModels){
-        List<Integer> result = new ArrayList<>();
-        int count = 0;
-        for (ImageModel temp :
-                imageModels) {
-            if (temp.isDefault()){
-                result.add(count);
-            }
-            count++;
-        }
-        return result;
-    }
-
     /**
      * use this for specific object
      */
     public static class ImageModelParc implements Parcelable {
+        public static final Parcelable.Creator<ImageModelParc> CREATOR = new Parcelable.Creator<ImageModelParc>() {
+            @Override
+            public ImageModelParc createFromParcel(android.os.Parcel source) {
+                return new ImageModelParc(source);
+            }
+
+            @Override
+            public ImageModelParc[] newArray(int size) {
+                return new ImageModelParc[size];
+            }
+        };
         // this is for url / path from sdcard
         String path;
-
         // this is for drawable
         int resId;
 
+        // this is for state such as active, highlight and other
         //this is for db - special case
         long dbId;
-
-        // this is for state such as active, highlight and other
         /**
          * please refer to
          * {@link com.tokopedia.core.myproduct.model.constant.ImageModelType#ACTIVE}
@@ -199,8 +192,19 @@ public class ImageModel {
          * {@link com.tokopedia.core.myproduct.model.constant.ImageModelType#SELECTED}
          */
         int type = ImageModelType.INACTIVE.getType();
-
         ArrayList<Integer> types = new ArrayList<>();
+
+        public ImageModelParc() {
+        }
+
+        protected ImageModelParc(android.os.Parcel in) {
+            this.path = in.readString();
+            this.resId = in.readInt();
+            this.dbId = in.readLong();
+            this.type = in.readInt();
+            this.types = new ArrayList<Integer>();
+            in.readList(this.types, Integer.class.getClassLoader());
+        }
 
         @Override
         public int describeContents() {
@@ -215,29 +219,5 @@ public class ImageModel {
             dest.writeInt(this.type);
             dest.writeList(this.types);
         }
-
-        public ImageModelParc() {
-        }
-
-        protected ImageModelParc(android.os.Parcel in) {
-            this.path = in.readString();
-            this.resId = in.readInt();
-            this.dbId = in.readLong();
-            this.type = in.readInt();
-            this.types = new ArrayList<Integer>();
-            in.readList(this.types, Integer.class.getClassLoader());
-        }
-
-        public static final Parcelable.Creator<ImageModelParc> CREATOR = new Parcelable.Creator<ImageModelParc>() {
-            @Override
-            public ImageModelParc createFromParcel(android.os.Parcel source) {
-                return new ImageModelParc(source);
-            }
-
-            @Override
-            public ImageModelParc[] newArray(int size) {
-                return new ImageModelParc[size];
-            }
-        };
     }
 }

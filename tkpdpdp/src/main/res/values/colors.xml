@@ -63,6 +63,7 @@
 
     <color name="colorBlue">#4D90FE</color>
 
+
     <color name="fab_background_tint">#FFEEEEEE</color>
     <color name="fab_drawable_tint">@android:color/white</color>
     <color name="mini_fab_drawable_tint">@android:color/black</color>
@@ -71,9 +72,6 @@
 
     <color name="background_transparent">#99000000</color>
 
-    <color name="colorPrimary">#2BAF2B</color>
-    <color name="colorPrimaryDark">#0A8F08</color>
-    <color name="colorAccent">#2BAF2B</color>
     <color name="text_error">#FFFF6E6E</color>
 
     <color name="digital_voucher">#8a000000</color>
@@ -86,6 +84,25 @@
     <color name="white_grey">#fbfbfb</color>
     <color name="grey_toolbar_icon">#666666</color>
     <color name="price_pdp">#ff5722</color>
-    <color name="empty_stock_pdp">#c0000000</color>
+    <color name="blue_official_store">#8109c1</color>
+    <color name="empty_stock_pdp">#80000000</color>
 
+    <color name="promo_widget_pdp">#f8f8f8</color>
+    <color name="white_70">#bfffffff</color>
+
+    <color name="red_snackbar">#fffdebec</color>
+    <color name="red_snackbar_border">#f05f68</color>
+
+    <color name="shadow_color_1">#00CCCCCC</color>
+    <color name="shadow_color_2">#10CCCCCC</color>
+    <color name="shadow_color_3">#15CCCCCC</color>
+    <color name="shadow_color_4">#20CCCCCC</color>
+    <color name="shadow_color_5">#25CCCCCC</color>
+
+    <color name="pdp_text_color">@color/black_70</color>
+    <color name="pdp_line_color">#e0e0e0</color>
+    <color name="pdp_cashback_bg_color">#daf5db</color>
+    <color name="pdp_cashback_text_color">#42b549</color>
+    <color name="pdp_text_sub_title_color">#61000000</color>
+    <color name="pdp_bg_gray">#f6f6f6</color>
 </resources>

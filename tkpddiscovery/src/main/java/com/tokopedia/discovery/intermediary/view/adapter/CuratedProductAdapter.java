@@ -17,7 +17,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.util.MethodChecker;
@@ -27,9 +26,6 @@ import com.tokopedia.discovery.intermediary.domain.model.LabelModel;
 import com.tokopedia.discovery.intermediary.domain.model.ProductModel;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by alifa on 3/30/17.
@@ -93,22 +89,14 @@ public class CuratedProductAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public static class ViewHolderProductitem extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.product_image)
-        ImageView productImage;
-        @BindView(R2.id.title)
-        TextView title;
-        @BindView(R2.id.price)
-        TextView price;
-        @BindView(R2.id.label_container)
-        FlowLayout labelContainer;
-        @BindView(R2.id.shop_name)
-        TextView shopName;
-        @BindView(R2.id.location)
-        TextView location;
-        @BindView(R2.id.badges_container)
-        LinearLayout badgesContainer;
-        @BindView(R2.id.container)
-        RelativeLayout container;
+        private ImageView productImage;
+        private TextView title;
+        private TextView price;
+        private FlowLayout labelContainer;
+        private TextView shopName;
+        private TextView location;
+        private LinearLayout badgesContainer;
+        private RelativeLayout container;
 
         private Context context;
         private ProductModel data;
@@ -116,8 +104,19 @@ public class CuratedProductAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         public ViewHolderProductitem(Context context, View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            initView(itemView);
             this.context = context;
+        }
+
+        private void initView(View view) {
+            productImage = view.findViewById(R.id.product_image);
+            title = view.findViewById(R.id.title);
+            price = view.findViewById(R.id.price);
+            labelContainer = view.findViewById(R.id.label_container);
+            shopName = view.findViewById(R.id.shop_name);
+            location = view.findViewById(R.id.location);
+            badgesContainer = view.findViewById(R.id.badges_container);
+            container = view.findViewById(R.id.container);
         }
 
         public void bindData(ProductModel data, ViewHolderProductitem viewHolder) {
@@ -140,12 +139,12 @@ public class CuratedProductAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             viewHolder.labelContainer.removeAllViews();
             if (data.getLabels() != null) {
                 for (LabelModel label : data.getLabels()) {
-                    View view = LayoutInflater.from(context).inflate(com.tokopedia.core.R.layout.label_layout, null);
-                    TextView labelText = (TextView) view.findViewById(com.tokopedia.core.R.id.label);
+                    View view = LayoutInflater.from(context).inflate(com.tokopedia.core2.R.layout.label_layout, null);
+                    TextView labelText = (TextView) view.findViewById(com.tokopedia.core2.R.id.label);
                     labelText.setText(label.getTitle());
                     if (!label.getColor().toLowerCase().equals("#ffffff")) {
-                        labelText.setBackgroundResource(com.tokopedia.core.R.drawable.bg_label);
-                        labelText.setTextColor(ContextCompat.getColor(context, com.tokopedia.core.R.color.white));
+                        labelText.setBackgroundResource(com.tokopedia.core2.R.drawable.bg_label);
+                        labelText.setTextColor(ContextCompat.getColor(context, com.tokopedia.core2.R.color.white));
                         ColorStateList tint = ColorStateList.valueOf(Color.parseColor(label.getColor()));
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             labelText.setBackgroundTintList(tint);

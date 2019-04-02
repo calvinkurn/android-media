@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/digital_padding_16">
+
+    <TextView
+        android:id="@+id/tv_label_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@null"
+        android:paddingLeft="@null"
+        android:paddingRight="@null"
+        android:paddingStart="@null"
+        android:text="@string/label_title_price_info_digital"
+        android:textSize="@dimen/sp_14"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal"
+        tools:ignore="RelativeOverlap">
+
+        <TextView
+            android:id="@+id/tv_price_new"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="@null"
+            android:paddingLeft="@dimen/dp_3"
+            android:paddingRight="@null"
+            android:paddingStart="@dimen/dp_3"
+            android:textSize="@dimen/sp_14"
+            tools:text="Rp.100.000"/>
+
+        <TextView
+            android:id="@+id/tv_price_origin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingEnd="@null"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingRight="@null"
+            android:paddingStart="@dimen/dp_10"
+            android:textSize="@dimen/sp_10"
+            tools:text="Rp.100.000"/>
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.model.orderShipping.OrderProduct;
 
@@ -198,13 +198,13 @@ public class ListViewShopTxDetailProdListV2 extends BaseAdapter{
         holder.ProductPrice.setText(model.Price);
         holder.TotalOrder.setText(" x " + model.TotalOrder + " Barang");
         holder.TotalPrice.setText(model.TotalPrice);
-        ImageHandler.loadImageRounded2(context, holder.ProductImage, model.ImageUrl);
+        ImageHandler.loadImageRounded2(holder.TotalPrice.getContext(), holder.ProductImage, model.ImageUrl);
 //        ImageHandler.LoadImageRounded(holder.ProductImage, model.ImageUrl);
         //holder.Message.setMovementMethod(new ScrollingMovementMethod());
         if(CommonUtils.checkNullForZeroJson(model.Message)){
             holder.Message.setText(model.Message);
         }else {
-            holder.Message.setText("Tidak ada keterangan");
+            holder.Message.setText("-");
         }
     }
 

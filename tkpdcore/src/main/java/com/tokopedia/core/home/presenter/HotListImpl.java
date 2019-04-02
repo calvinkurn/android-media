@@ -2,21 +2,24 @@ package com.tokopedia.core.home.presenter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.URLParser;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.home.model.HotListViewModel;
 import com.tokopedia.core.network.apiservices.search.HotListService;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -37,6 +40,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcels;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,10 +71,15 @@ public class HotListImpl implements HotList {
     private Context mContext;
     private CompositeSubscription subscription = new CompositeSubscription();
 
+    public static final String HOTLIST_HOME_ENHANCE_ANALYTIC = "HOTLIST_HOME_ENHANCE_ANALYTIC";
+    private static final String LAST_POSITION_ENHANCE_HOTLIST_HOME = "LAST_POSITION_ENHANCE_HOTLIST_HOME";
+    private final LocalCacheHandler cache;
+
     public HotListImpl(HotListView hotListView) {
         Log.i(TAG, messageTAG + "HotListImpl(HotListView hotListView)  ");
         this.hotListView = hotListView;
         mPaging = new PagingHandler();
+        this.cache = new LocalCacheHandler(hotListView.getContext(), HOTLIST_HOME_ENHANCE_ANALYTIC);
     }
 
     @Override
@@ -86,16 +95,8 @@ public class HotListImpl implements HotList {
     }
 
     @Override
-    public void setLocalyticFlow(Context context) {
-        if (context != null)
-            CommonUtils.dumper("LocalTag : hot list");
-        String screenName = context.getString(R.string.home_hot_list);
-        ScreenTracking.screenLoca(screenName);
-    }
-
-    @Override
     public void sendAppsFlyerData(Context context) {
-        ScreenTracking.sendAFGeneralScreenEvent(Jordan.AF_SCREEN_HOME_HOTLIST);
+        ScreenTracking.sendAFGeneralScreenEvent(hotListView.getContext(), Jordan.AF_SCREEN_HOME_HOTLIST);
     }
 
     @Override
@@ -220,14 +221,14 @@ public class HotListImpl implements HotList {
         Map<String, String> params = new HashMap<String, String>();
         params.put(QUERY_KEY, "");
         params.put(PAGE_KEY, mPaging.getPage() + "");
-        params.put(PER_PAGE_KEY, PER_PAGE_VALUE + "");
+        params.put(PER_PAGE_KEY, 15 + "");
         AuthService service = new HotListService();
         subscription.add(
                 ((HotListService) service).getApi().getHotList(AuthUtil.generateParams(mContext, params))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())
-                        .subscribe(new Subscriber(DownloadServiceConstant.HOTLIST))
+                        .subscribe(new Subscriber(mPaging.getPage(), DownloadServiceConstant.HOTLIST))
         );
 
         //[START] remove fetching data from internet to local
@@ -340,32 +341,36 @@ public class HotListImpl implements HotList {
         if (temp == null) {
             throw new RuntimeException("invalid passing data !!! at " + HotListImpl.class.getSimpleName());
         }
-        urlParser = new URLParser(temp.getHotListProductUrl());
-        Log.d(TAG, "urlParser type " + urlParser.getType());
-        switch (urlParser.getType()) {
-            case HOT_KEY:
-                Bundle bundle = new Bundle();
-                bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, urlParser.getHotAlias());
-                bundle.putString(BrowseProductRouter.EXTRA_SOURCE, BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
-                hotListView.moveToOtherActivity(bundle);
-                break;
-            case CATALOG_KEY:
-                hotListView.moveToOtherActivity(
-                        DetailProductRouter.getCatalogDetailActivity(mContext, urlParser.getHotAlias()));
-                break;
-            default:
-                bundle = new Bundle();
-                bundle.putString(BrowseProductRouter.DEPARTMENT_ID,
-                        urlParser.getDepIDfromURI(mContext));
 
-                bundle.putInt(BrowseProductRouter.FRAGMENT_ID,
-                        BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-
-                bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
-                bundle.putString(BrowseProductRouter.EXTRA_SOURCE, BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
-                hotListView.moveToOtherActivity(bundle);
-
-                break;
+        if (hotListView.isSupportApplink(temp.getHotListApplinks())) {
+            hotListView.openApplink(temp.getHotListApplinks());
+        } else {
+            String url = temp.getHotListProductUrl();
+            urlParser = new URLParser(url);
+            Log.d(TAG, "urlParser type " + urlParser.getType());
+            switch (urlParser.getType()) {
+                case HOT_KEY:
+                    hotListView.openHotlistActivity(temp.getHotListProductUrl());
+                    break;
+                case CATALOG_KEY:
+                    hotListView.startIntentActivity(
+                            DetailProductRouter.getCatalogDetailActivity(mContext, urlParser.getHotAlias()));
+                    break;
+                case TOPPICKS_KEY:
+                    if (!TextUtils.isEmpty(url)) {
+                        hotListView.startIntentActivity(TopPicksWebView.newInstance(mContext, url));
+                    }
+                    break;
+                case CATEGORY:
+                    hotListView.openCategory(url);
+                    break;
+                case SEARCH:
+                    hotListView.openSearch(url);
+                    break;
+                default:
+                    hotListView.openWebView(url);
+                    break;
+            }
         }
     }
 
@@ -427,11 +432,13 @@ public class HotListImpl implements HotList {
     }
 
     private class Subscriber extends rx.Subscriber<Response<TkpdResponse>> {
+        private final int currentRequestPage;
         int type;
         ErrorListener listener;
 
-        public Subscriber(int type) {
+        public Subscriber(int currentPage, int type) {
             this.type = type;
+            this.currentRequestPage = currentPage;
             listener = new ErrorListener(type);
         }
 
@@ -469,6 +476,9 @@ public class HotListImpl implements HotList {
                     int nextPage = mPaging.getPage();
 
                     // add to real container data
+                    if (currentRequestPage == 1) {
+                        LocalCacheHandler.clearCache(hotListView.getContext(), HOTLIST_HOME_ENHANCE_ANALYTIC);
+                    }
                     List<RecyclerViewItem> items = (List<RecyclerViewItem>) parseJSON(type, jsonObject);
                     cache(jsonObject, nextPage - 1);
 
@@ -586,9 +596,13 @@ public class HotListImpl implements HotList {
                     List<RecyclerViewItem> temps = new ArrayList<>();
                     try {
                         JSONArray listHot = new JSONArray(response.getString(LIST_KEY));
-                        java.lang.reflect.Type listType = new TypeToken<List<HotListModel>>() {
+                        Type listType = new TypeToken<List<HotListModel>>() {
                         }.getType();
-                        temps = new GsonBuilder().create().fromJson(listHot.toString(), listType);
+
+                        List<HotListModel> list = CacheUtil.convertStringToListModel(listHot.toString(), listType);
+                        trackingHotlist(list);
+
+                        return list;
                     } catch (JSONException json) {
                         Log.e(TAG, HotListImpl.class.getSimpleName() + " is error : " + json.getLocalizedMessage());
                     }
@@ -611,5 +625,43 @@ public class HotListImpl implements HotList {
                     break;
             }
         }
+    }
+
+    private void trackingHotlist(List<HotListModel> list) {
+        int positionHotlist = cache.getInt(LAST_POSITION_ENHANCE_HOTLIST_HOME, 0);
+        List<Object> listtracking = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            positionHotlist++;
+            HotListModel model = list.get(i);
+            model.setTrackerEnhanceName(String.format("/hotlist - promo %d", positionHotlist));
+            model.setTrackerEnhancePosition(positionHotlist);
+            list.set(i, model);
+
+            listtracking.add(
+                    DataLayer.mapOf(
+                            "id", model.getHotListId(),
+                            "name", model.getTrackerEnhanceName(),
+                            "creative", model.getHotListName(),
+                            "position", String.valueOf(model.getTrackerEnhancePosition())
+                    )
+            );
+            cache.putInt(LAST_POSITION_ENHANCE_HOTLIST_HOME, positionHotlist);
+            cache.applyEditor();
+        }
+        UnifyTracking.eventTrackingEnhancedEcommerce(hotListView.getContext(),
+                DataLayer.mapOf(
+                        "event", "promoView",
+                        "eventCategory", "homepage",
+                        "eventAction", "hotlist tab - banner impression",
+                        "eventLabel", "",
+                        "ecommerce", DataLayer.mapOf(
+                                "promoView", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
+                                                listtracking.toArray(new Object[listtracking.size()])
+                                        )
+                                )
+                        )
+                )
+        );
     }
 }

@@ -1,7 +1,8 @@
 package com.tokopedia.transaction.exception;
 
-import com.tokopedia.core.network.retrofit.response.ResponseStatus;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+
+import com.tokopedia.network.constant.ErrorNetMessage;
+import com.tokopedia.network.constant.ResponseStatus;
 
 import java.io.IOException;
 

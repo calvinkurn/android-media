@@ -7,11 +7,15 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterActivity;
+import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResCenterActivity;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inbox.facade.Facade;
 import com.tokopedia.inbox.rescenter.inbox.facade.FacadeImpl;
@@ -23,6 +27,7 @@ import com.tokopedia.inbox.rescenter.inbox.model.ResCenterHeader;
 import com.tokopedia.inbox.rescenter.inbox.model.ResCenterInboxData;
 import com.tokopedia.inbox.rescenter.inbox.model.ResCenterInboxDataPass;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
+import com.tokopedia.track.TrackApp;
 
 import java.util.Map;
 
@@ -61,9 +66,23 @@ public class InboxResCenterImpl implements InboxResCenterPresenter {
     }
 
     @Override
-    public void setActionOnItemListClickListener(Context context, String resolutionID) {
-        context.startActivity(DetailResCenterActivity.newInstance(context, resolutionID));
-        UnifyTracking.eventResolutionDetail(getResCenterTabModel().titleFragment);
+    public void setActionOnItemListClickListener(Context context, String resolutionID, String shopName, String username) {
+        if (username.equals("")) {
+            //current user as buyer, need seller shopname
+            context.startActivity(DetailResChatActivity.newBuyerInstance(context, resolutionID, shopName));
+        } else {
+            //current user as seller, need buyer username
+            context.startActivity(DetailResChatActivity.newSellerInstance(context, resolutionID, username));
+        }
+        eventResolutionDetail(getResCenterTabModel().titleFragment);
+    }
+
+    public void eventResolutionDetail(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION,
+                AppEventTracking.Action.VIEW,
+                label);
     }
 
     @Override

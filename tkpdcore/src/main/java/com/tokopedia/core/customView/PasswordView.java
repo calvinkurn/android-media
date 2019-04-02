@@ -11,7 +11,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import static android.graphics.Typeface.SANS_SERIF;
 
@@ -60,8 +60,8 @@ public class PasswordView extends AppCompatEditText {
 
         // Make sure to mutate so that if there are multiple password fields, they can have
         // different visibilities.
-        eye = ContextCompat.getDrawable(getContext(), R.drawable.ic_remove_red_eye_24dp).mutate();
-        eyeWithStrike = ContextCompat.getDrawable(getContext(), R.drawable.ic_visibility_off_black_24dp).mutate();
+        eye = ContextCompat.getDrawable(getContext(), R.drawable.ic_unify_icon_password_hidden_eye_opened).mutate();
+        eyeWithStrike = ContextCompat.getDrawable(getContext(), R.drawable.ic_unify_icon_password_hidden_eye_closed).mutate();
         eyeWithStrike.setAlpha(VISIBLITY_DISABLED);
         eye.setAlpha(VISIBLITY_DISABLED);
         setup();

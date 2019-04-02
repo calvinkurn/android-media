@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_yellow_border_yelow"
     android:layout_marginBottom="@dimen/padding_small"
@@ -31,11 +33,11 @@
         android:layout_height="1dp"
         android:background="@color/grey_500" />
 
-    <TextView
+    <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/transaction_detail_toggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableRight="@drawable/ic_chevron_down"
+        app:drawableRightCompat="@drawable/ic_chevron_down"
         android:drawablePadding="@dimen/padding_small"
         android:text="Detail Pemesanan"
         android:padding="@dimen/padding_small"
@@ -62,7 +64,7 @@
             android:layout_alignParentLeft="true"
             android:text="@string/title_payment_method"
             android:textStyle="bold"
-            android:textSize="@dimen/font_small"/>
+            android:textSize="@dimen/sp_14"/>
     
         <TextView
             android:id="@+id/pay_method"
@@ -72,7 +74,7 @@
             android:layout_alignParentRight="true"
             android:gravity="right"
             android:text="Rp 20.000,-"
-            android:textSize="@dimen/font_small"/>
+            android:textSize="@dimen/sp_14"/>
     
         <TextView
             android:id="@+id/title_total_payment"
@@ -83,7 +85,7 @@
             android:layout_marginTop="@dimen/margin_small"
             android:text="@string/title_total_invoice"
             android:textStyle="bold"
-            android:textSize="@dimen/font_small"/>
+            android:textSize="@dimen/sp_14"/>
     
         <TextView
             android:id="@+id/total_payment"
@@ -95,7 +97,7 @@
             android:layout_marginTop="@dimen/margin_small"
             android:layout_toRightOf="@id/title_total_payment"
             android:text="Rp 20.000,-"
-            android:textSize="@dimen/font_small"/>
+            android:textSize="@dimen/sp_14"/>
     
         <TextView
             android:id="@+id/head_title_total_voucher"
@@ -106,7 +108,7 @@
             android:layout_marginTop="@dimen/margin_small"
             android:text="@string/title_use_voucher"
             android:textStyle="bold"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:visibility="gone"/>
     
         <TextView
@@ -118,7 +120,7 @@
             android:gravity="right"
             android:layout_below="@id/total_payment"
             android:text="Rp 20.000,-"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:visibility="gone"/>
     
         <TextView
@@ -129,7 +131,7 @@
             android:layout_marginTop="@dimen/margin_small"
             android:layout_below="@id/total_voucher"
             android:text="@string/title_use_total_balance"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold"
             android:visibility="gone" />
     
@@ -139,7 +141,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_below="@id/total_voucher"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:text="Rp 20.000,-"
             android:gravity="right"
             android:layout_marginTop="@dimen/margin_small"
@@ -154,7 +156,7 @@
             android:layout_marginTop="@dimen/margin_small"
             android:text="@string/title_final_total"
             android:textStyle="bold"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:visibility="gone" />
     
         <TextView
@@ -166,7 +168,7 @@
             android:gravity="right"
             android:layout_below="@id/total_tokopedia_balance"
             android:text="Rp 20.000,-"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:visibility="gone" />
         <TextView
             android:id="@+id/title_loyalty_points"
@@ -177,7 +179,7 @@
             android:layout_marginTop="@dimen/margin_small"
             android:text="@string/loyalty_points_info"
             android:textStyle="bold"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:visibility="gone" />
 
         <TextView
@@ -189,7 +191,7 @@
             android:gravity="right"
             android:layout_below="@id/final_invoice"
             android:text="Rp 20.000,-"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:visibility="gone"/>
     </RelativeLayout>
 </LinearLayout>

@@ -11,6 +11,8 @@ import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsGetModel;
 import com.tokopedia.inbox.rescenter.shipping.view.InputShippingView;
 
 import static com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity.EXTRA_PARAM_CONVERSATION_ID;
+import static com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity.EXTRA_PARAM_EDIT;
+import static com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity.EXTRA_PARAM_FROM_CHAT;
 import static com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity.EXTRA_PARAM_RESOLUTION_ID;
 import static com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity.EXTRA_PARAM_SHIPPING_ID;
 import static com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity.EXTRA_PARAM_SHIPPING_REFNUM;
@@ -36,6 +38,8 @@ public class InputShippingImpl implements InputShippingPresenter {
             paramsModel.setConversationID(bundleExtras.getString(EXTRA_PARAM_CONVERSATION_ID, ""));
             paramsModel.setShippingID(bundleExtras.getString(EXTRA_PARAM_SHIPPING_ID, ""));
             paramsModel.setShippingRefNum(bundleExtras.getString(EXTRA_PARAM_SHIPPING_REFNUM, ""));
+            paramsModel.setFromChat(bundleExtras.getBoolean(EXTRA_PARAM_FROM_CHAT, false));
+            paramsModel.setEdit(bundleExtras.getBoolean(EXTRA_PARAM_EDIT, false));
         } else if (uriData != null) {
             throw new RuntimeException("unhandled extra uri data");
         } else {

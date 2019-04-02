@@ -8,8 +8,8 @@ import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.manage.people.address.listener.MPAddressActivityListener;
@@ -118,9 +118,14 @@ public class ManagePeopleAddressActivity extends BasePresenterActivity<ManagePeo
     @Override
     public void setFilterViewVisibility(boolean isAble) {
         if (isAble) {
-            fab.setVisibility(View.VISIBLE);
+            fab.show();
         } else {
-            fab.setVisibility(View.GONE);
+            fab.hide();
         }
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

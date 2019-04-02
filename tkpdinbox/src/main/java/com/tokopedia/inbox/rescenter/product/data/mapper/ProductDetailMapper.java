@@ -30,6 +30,8 @@ public class ProductDetailMapper implements Func1<Response<TkpdResponse>, Produc
                 domainData.setTrouble(entity.getTrouble().getName());
                 domainData.setTroubleReason(entity.getRemark());
                 domainData.setQuantity(entity.getCount());
+                domainData.setTroubleAmountString(entity.getRefundAmount().getIdr());
+                domainData.setTroubleAmount(entity.getRefundAmount().getInteger());
                 domainData.setAttachment(
                         entity.getAttachments() != null && !entity.getAttachments().isEmpty() ?
                                 mappingAttachment(entity.getAttachments()) : null

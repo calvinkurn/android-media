@@ -8,6 +8,7 @@ import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.autocomplete.TabAutoCompleteCallback;
 import com.tokopedia.discovery.search.view.fragment.SearchResultFragment;
 
 /**
@@ -19,17 +20,24 @@ public class SearchPageAdapter extends FragmentStatePagerAdapter {
     private String[] TITLE;
     private SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
 
-    public SearchPageAdapter(FragmentManager fm, Context context) {
+    public SearchPageAdapter(FragmentManager fm,
+                             Context context,
+                             ItemClickListener clickListener,
+                             TabAutoCompleteCallback tabAutoCompleteListener) {
         super(fm);
         TITLE = new String[]{
+                context.getString(R.string.title_all),
                 context.getString(R.string.title_product),
                 context.getString(R.string.title_shop)
         };
+        for (int i = 0; i < 3; i++) {
+            registeredFragments.put(i, SearchResultFragment.newInstance(TITLE[i], i, clickListener, tabAutoCompleteListener));
+        }
     }
 
     @Override
     public Fragment getItem(int position) {
-        return SearchResultFragment.newInstance();
+        return registeredFragments.get(position);
     }
 
     @Override

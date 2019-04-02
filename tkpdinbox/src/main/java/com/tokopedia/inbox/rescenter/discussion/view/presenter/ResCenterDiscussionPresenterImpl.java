@@ -1,17 +1,11 @@
 package com.tokopedia.inbox.rescenter.discussion.view.presenter;
 
-import android.content.Context;
-
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.discussion.domain.interactor.CreatePictureUseCase;
-import com.tokopedia.inbox.rescenter.discussion.domain.interactor.GenerateHostUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.GetResCenterDiscussionUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.LoadMoreDiscussionUseCase;
-import com.tokopedia.inbox.rescenter.discussion.domain.interactor.ReplyDiscussionSubmitUseCase;
-import com.tokopedia.inbox.rescenter.discussion.domain.interactor.ReplyDiscussionValidationUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.SendDiscussionUseCase;
-import com.tokopedia.inbox.rescenter.discussion.domain.interactor.UploadImageUseCase;
+import com.tokopedia.inbox.rescenter.discussion.domain.interactor.SendDiscussionV2UseCase;
 import com.tokopedia.inbox.rescenter.discussion.view.listener.ResCenterDiscussionView;
 import com.tokopedia.inbox.rescenter.discussion.view.subscriber.GetDiscussionSubscriber;
 import com.tokopedia.inbox.rescenter.discussion.view.subscriber.LoadMoreSubscriber;
@@ -33,35 +27,21 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
     private GetResCenterDiscussionUseCase getDiscussionUseCase;
     private LoadMoreDiscussionUseCase loadMoreUseCase;
     private SendDiscussionUseCase sendDiscussionUseCase;
-    private ReplyDiscussionValidationUseCase replyDiscussionValidationUseCase;
-    private GenerateHostUseCase generateHostUseCase;
-    private UploadImageUseCase uploadImageUseCase;
-    private CreatePictureUseCase createPictureUseCase;
-    private ReplyDiscussionSubmitUseCase replyDiscussionSubmitUseCase;
-
+    private SendDiscussionV2UseCase sendDiscussionV2UseCase;
     private SendReplyDiscussionParam pass;
-    private Context context;
 
     @Inject
     public ResCenterDiscussionPresenterImpl(ResCenterDiscussionView viewListener,
                                             GetResCenterDiscussionUseCase getDiscussionUseCase,
                                             LoadMoreDiscussionUseCase loadMoreDiscussionUseCase,
                                             SendDiscussionUseCase sendDiscussionUseCase,
-                                            ReplyDiscussionValidationUseCase replyDiscussionValidationUseCase,
-                                            GenerateHostUseCase generateHostUseCase,
-                                            UploadImageUseCase uploadImageUseCase,
-                                            CreatePictureUseCase createPictureUseCase,
-                                            ReplyDiscussionSubmitUseCase replyDiscussionSubmitUseCase,
+                                            SendDiscussionV2UseCase sendDiscussionV2UseCase,
                                             SendReplyDiscussionParam sendReplyDiscussionParam) {
         this.viewListener = viewListener;
         this.getDiscussionUseCase = getDiscussionUseCase;
         this.loadMoreUseCase = loadMoreDiscussionUseCase;
         this.sendDiscussionUseCase = sendDiscussionUseCase;
-        this.replyDiscussionValidationUseCase = replyDiscussionValidationUseCase;
-        this.generateHostUseCase = generateHostUseCase;
-        this.uploadImageUseCase = uploadImageUseCase;
-        this.createPictureUseCase = createPictureUseCase;
-        this.replyDiscussionSubmitUseCase = replyDiscussionSubmitUseCase;
+        this.sendDiscussionV2UseCase = sendDiscussionV2UseCase;
         this.pass = sendReplyDiscussionParam;
     }
 
@@ -89,6 +69,29 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
             sendDiscussionUseCase.execute(getSendReplyRequestParams(),
                     new ReplyDiscussionSubscriber(viewListener));
         }
+    }
+
+    @Override
+    public void sendReplySupportVideo() {
+        viewListener.setViewEnabled(false);
+        viewListener.showLoadingProgress();
+        if (isValid()) {
+            sendDiscussionV2UseCase.execute(
+                    getSendReplyParams(),
+                    new ReplyDiscussionSubscriber(viewListener)
+            );
+        }
+    }
+
+    private RequestParams getSendReplyParams() {
+        RequestParams params = RequestParams.create();
+        params.putString(SendDiscussionV2UseCase.PARAM_RESOLUTION_ID, viewListener.getResolutionID());
+        params.putString(SendDiscussionV2UseCase.PARAM_MESSAGE, pass.getMessage());
+        params.putInt(SendDiscussionV2UseCase.PARAM_FLAG_RECEIVED, pass.getFlagReceived());
+        if (pass.getAttachment() != null && pass.getAttachment().size() > 0) {
+            params.putObject(SendDiscussionV2UseCase.PARAM_ATTACHMENT, pass.getAttachment());
+        }
+        return params;
     }
 
     private RequestParams getSendReplyRequestParams() {
@@ -126,11 +129,7 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
         loadMoreUseCase.unsubscribe();
         getDiscussionUseCase.unsubscribe();
         sendDiscussionUseCase.unsubscribe();
-        generateHostUseCase.unsubscribe();
-        uploadImageUseCase.unsubscribe();
-        replyDiscussionValidationUseCase.unsubscribe();
-        createPictureUseCase.unsubscribe();
-        replyDiscussionSubmitUseCase.unsubscribe();
+        sendDiscussionV2UseCase.unsubscribe();
     }
 
     @Override

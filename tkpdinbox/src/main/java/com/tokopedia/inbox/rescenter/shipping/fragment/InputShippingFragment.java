@@ -2,49 +2,67 @@ package com.tokopedia.inbox.rescenter.shipping.fragment;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.Fragment;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core2.R2;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.create.customdialog.BaseUploadImageDialog;
 import com.tokopedia.inbox.rescenter.shipping.customadapter.AttachmentAdapter;
 import com.tokopedia.inbox.rescenter.shipping.customadapter.ShippingSpinnerAdapter;
 import com.tokopedia.inbox.rescenter.shipping.customdialog.UploadImageShippingResCenterDialog;
+import com.tokopedia.inbox.rescenter.shipping.di.DaggerResolutionShippingComponent;
+import com.tokopedia.inbox.rescenter.shipping.di.ResolutionShippingComponent;
 import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsGetModel;
 import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingFragmentImpl;
 import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingFragmentPresenter;
 import com.tokopedia.inbox.rescenter.shipping.view.InputShippingFragmentView;
+import com.tokopedia.inbox.util.analytics.InboxAnalytics;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import okhttp3.OkHttpClient;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+import retrofit2.Retrofit;
+
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
 
 /**
  * Created by hangnadi on 12/13/16.
@@ -55,6 +73,8 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
     public static final String EXTRA_PARAM_ATTACHMENT = "params_attachment";
     public static final String EXTRA_PARAM_MODEL = "params_model";
+    public static final String URL_IMG = "https://ecs7.tokopedia.net/img/android/others/img_awb_example.png";
+    private static final int REQUEST_CODE_IMAGE_RESI = 3124;
 
     @BindView(R2.id.ref_number)
     EditText shippingRefNum;
@@ -68,11 +88,17 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     View loadingView;
     @BindView(R2.id.main_view)
     View mainView;
+    @BindView(R2.id.confirm_button)
+    TextView confirmButton;
+    ImageView imgAwb;
 
     private AttachmentAdapter attachmentAdapter;
     private InputShippingParamsGetModel paramsModel;
     private UploadImageShippingResCenterDialog uploadImageDialog;
     private ArrayList<AttachmentResCenterVersion2DB> attachmentData;
+    private ResolutionShippingComponent daggerShippingComponent;
+
+    private boolean isConfirmButtonEnabled = false;
 
     public static Fragment newInstance(InputShippingParamsGetModel model) {
         InputShippingFragment fragment = new InputShippingFragment();
@@ -84,12 +110,25 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
     @OnClick(R2.id.confirm_button)
     public void setOnConfirmButtonClick() {
+        if (paramsModel.isFromChat()) {
+            if (paramsModel.isEdit())
+                TrackApp.getInstance().getGTM().sendGeneralEvent(
+                        InboxAnalytics.eventResoChatClickSaveEditAWB(paramsModel.getResolutionID()).getEvent());
+            else
+                TrackApp.getInstance().getGTM().sendGeneralEvent(
+                        InboxAnalytics.eventResoChatClickSaveInputAWB(paramsModel.getResolutionID()).getEvent());
+        }
         presenter.onConfirrmButtonClick();
     }
 
     @Override
     public void dropKeyBoard() {
         KeyboardHandler.DropKeyboard(getActivity(), getView());
+    }
+
+    @Override
+    public Retrofit getRetrofit() {
+        return daggerShippingComponent.uploadWsV4Retrofit();
     }
 
     @Override
@@ -189,6 +228,8 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
     @Override
     protected void initView(View view) {
+        imgAwb = (ImageView) view.findViewById(R.id.img_awb);
+        ImageHandler.LoadImage(imgAwb, URL_IMG);
         renderAttachmentAdapter();
     }
 
@@ -227,18 +268,114 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
                 EditText shippingRefNum = (EditText) view;
                 if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     if(motionEvent.getRawX() >= (shippingRefNum.getRight() - shippingRefNum.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        presenter.onScanBarcodeClick();
+                        InputShippingFragmentPermissionsDispatcher.scanBarcodeClickWithCheck(InputShippingFragment.this);
                         return true;
                     }
                 }
                 return false;
             }
         });
+
+        shippingRefNum.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                presenter.onShippingRefChanged(editable);
+            }
+        });
+
+        shippingSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                presenter.onShippingSpinnerChanged(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        attachmentAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                presenter.onListAttachmentChanged(attachmentAdapter.getItemCount());
+            }
+
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount) {
+                super.onItemRangeChanged(positionStart, itemCount);
+                presenter.onListAttachmentChanged(attachmentAdapter.getItemCount());
+            }
+
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
+                super.onItemRangeChanged(positionStart, itemCount, payload);
+                presenter.onListAttachmentChanged(attachmentAdapter.getItemCount());
+            }
+
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+                presenter.onListAttachmentChanged(attachmentAdapter.getItemCount());
+            }
+
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                super.onItemRangeRemoved(positionStart, itemCount);
+                presenter.onListAttachmentChanged(attachmentAdapter.getItemCount());
+            }
+
+            @Override
+            public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+                super.onItemRangeMoved(fromPosition, toPosition, itemCount);
+                presenter.onListAttachmentChanged(attachmentAdapter.getItemCount());
+            }
+        });
+    }
+
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    public void scanBarcodeClick() {
+        presenter.onScanBarcodeClick(getActivity());
     }
 
     @Override
     public void renderInputShippingRefNum(String text) {
         shippingRefNum.setText(text);
+    }
+
+    @Override
+    public void setConfirmButtonEnabled() {
+        if(!isConfirmButtonEnabled) {
+            confirmButton.setClickable(true);
+            confirmButton.setEnabled(true);
+            confirmButton.setBackground(MethodChecker.getDrawable(getActivity(),R.drawable.bg_button_save_enable));
+            confirmButton.setTextColor(MethodChecker.getColor(getActivity(),R.color.white));
+
+            isConfirmButtonEnabled = true;
+        }
+    }
+
+    @Override
+    public void setConfirmButtonDisabled() {
+        if(isConfirmButtonEnabled) {
+            confirmButton.setClickable(false);
+            confirmButton.setEnabled(false);
+            confirmButton.setBackground(MethodChecker.getDrawable(getActivity(),R.drawable.bg_button_save_disable));
+            confirmButton.setTextColor(MethodChecker.getColor(getActivity(),R.color.black_38));
+
+            isConfirmButtonEnabled = false;
+        }
     }
 
     @Override
@@ -285,19 +422,21 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         presenter.onActivityResult(requestCode, resultCode, data);
-        uploadImageDialog.onResult(requestCode, resultCode, data, new BaseUploadImageDialog.UploadImageDialogListener() {
-            @Override
-            public void onSuccess(List<AttachmentResCenterVersion2DB> data) {
-                attachmentData.clear();
-                attachmentData.addAll(data);
-                attachmentAdapter.notifyDataSetChanged();
-            }
+        if (requestCode == REQUEST_CODE_IMAGE_RESI && resultCode == Activity.RESULT_OK && data!= null) {
+            uploadImageDialog.processImageDataFromGallery(data, new BaseUploadImageDialog.UploadImageDialogListener() {
+                @Override
+                public void onSuccess(List<AttachmentResCenterVersion2DB> data) {
+                    attachmentData.clear();
+                    attachmentData.addAll(data);
+                    attachmentAdapter.notifyDataSetChanged();
+                }
 
-            @Override
-            public void onFailed() {
-                showErrorMessage(getActivity().getString(com.tokopedia.core.R.string.error_gallery_valid));
-            }
-        });
+                @Override
+                public void onFailed() {
+                    showErrorMessage(getActivity().getString(com.tokopedia.core2.R.string.error_gallery_valid));
+                }
+            });
+        }
     }
 
     @Override
@@ -308,33 +447,17 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
     @Override
     public void onClickAddAttachment(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(context.getString(com.tokopedia.core.R.string.dialog_upload_option));
-        builder.setPositiveButton(context.getString(com.tokopedia.core.R.string.title_gallery), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                InputShippingFragmentPermissionsDispatcher.actionImagePickerWithCheck(InputShippingFragment.this);
-            }
-        }).setNegativeButton(context.getString(com.tokopedia.core.R.string.title_camera), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                InputShippingFragmentPermissionsDispatcher.actionCameraWithCheck(InputShippingFragment.this);
-            }
-        });
-
-        Dialog dialog = builder.create();
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.show();
+        openImagePicker();
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
-    public void actionCamera() {
-        uploadImageDialog.openCamera();
-    }
-
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void actionImagePicker() {
-        uploadImageDialog.openImagePicker();
+    private void openImagePicker() {
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+                new int[]{TYPE_GALLERY, TYPE_CAMERA}, com.tokopedia.imagepicker.picker.gallery.type.GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
+                null
+                , null);
+        Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
+        startActivityForResult(intent, REQUEST_CODE_IMAGE_RESI);
     }
 
     @Override
@@ -414,5 +537,13 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
         listPermission.add(Manifest.permission.CAMERA);
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+    }
+
+    @Override
+    protected void initInjector() {
+        super.initInjector();
+        daggerShippingComponent = DaggerResolutionShippingComponent.builder()
+                .appComponent(((MainApplication) (getActivity().getApplication())).getAppComponent())
+                .build();
     }
 }

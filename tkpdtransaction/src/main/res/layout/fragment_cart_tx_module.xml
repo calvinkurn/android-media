@@ -1,15 +1,14 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_cart_fragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/layout_cart_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/padding_small">
+        android:padding="@dimen/dp_10">
 
         <ProgressBar
             android:id="@+id/pb_main_loading"
@@ -19,20 +18,19 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center"
             android:visibility="gone"
-            tools:visibility="visible" />
+            tools:visibility="visible"/>
 
         <TextView
             android:id="@+id/tv_ticker_gtm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginBottom="@dimen/dp_10"
             android:background="@drawable/bg_yellow_border_yelow"
             android:maxLines="3"
-            android:padding="@dimen/padding_small"
+            android:padding="@dimen/dp_10"
             android:visibility="gone"
             tools:text="vhashkjalsla asbhdkashahs askjdhasjdhas asdbaksdlasd"
-            tools:visibility="visible" />
-
+            tools:visibility="visible"/>
 
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/nsv_container"
@@ -49,12 +47,27 @@
                 android:orientation="vertical">
 
                 <android.support.v7.widget.CardView
+                    android:id="@+id/promo_code_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/padding_small"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    app:cardCornerRadius="4dp">
+
+                    <include
+                        layout="@layout/promo_activation_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_ticker_gtm"/>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_10"
                     app:cardBackgroundColor="@color/white"
                     app:cardElevation="2dp"
-                    app:contentPadding="@dimen/padding_small">
+                    app:contentPadding="@dimen/dp_10">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -65,10 +78,10 @@
                             android:id="@+id/holder_error"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_marginBottom="@dimen/dp_10"
                             android:background="@color/holder_error"
                             android:orientation="vertical"
-                            android:padding="@dimen/padding_small"
+                            android:padding="@dimen/dp_10"
                             android:visibility="gone"
                             tools:visibility="visible">
 
@@ -77,11 +90,11 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:layout_marginBottom="@dimen/margin_vs"
+                                android:layout_marginBottom="@dimen/dp_5"
                                 android:gravity="center"
                                 android:text="@string/label_error_message_1_count_notif"
                                 android:textColor="@color/tkpd_dark_red"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"/>
 
                             <TextView
                                 android:id="@+id/tv_error_2"
@@ -90,32 +103,44 @@
                                 android:layout_gravity="center"
                                 android:gravity="center"
                                 android:text="@string/label_error_message_2_count_notif"
-                                android:textColor="@color/label_color" />
+                                android:textColor="@color/label_color"/>
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_vs"
-                            android:layout_marginTop="@dimen/margin_small">
+                            android:layout_marginBottom="@dimen/dp_5"
+                            android:layout_marginTop="@dimen/dp_10"
+                            android:orientation="horizontal">
 
                             <TextView
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_weight="1"
                                 android:text="@string/label_transaction_total_payment"
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/font_large"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"/>
 
                             <TextView
                                 android:id="@+id/tv_total_payment"
-                                android:layout_width="match_parent"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_weight="1"
                                 android:gravity="end"
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/font_large"
                                 android:textStyle="bold"
-                                tools:text="Rp 200.000,-" />
+                                tools:text="Rp 200.000,-"/>
+
+                            <ProgressBar
+                                android:id="@+id/total_payment_loading"
+                                android:layout_width="@dimen/img_thumb_bit_small"
+                                android:layout_height="@dimen/img_thumb_bit_small"
+                                android:layout_gravity="end"
+                                android:layout_weight="0.2"
+                                android:visibility="gone"/>
+
                         </LinearLayout>
 
                         <LinearLayout
@@ -126,11 +151,11 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/et_tkpd_balance"
-                                android:layout_marginEnd="@dimen/margin_small"
-                                android:layout_marginRight="@dimen/margin_small"
+                                android:layout_marginEnd="@dimen/dp_10"
+                                android:layout_marginRight="@dimen/dp_10"
                                 android:text="@string/label_transaction_info_deposit_tokopedia"
                                 android:textColor="@color/label_color"
-                                android:textSize="@dimen/fontvs" />
+                                android:textSize="@dimen/fontvs"/>
 
                             <TextView
                                 android:id="@+id/tv_deposit_tokopedia"
@@ -139,7 +164,7 @@
                                 android:gravity="end"
                                 android:textColor="@color/label_color"
                                 android:textSize="@dimen/fontvs"
-                                tools:text="Rp 2.000.213,-" />
+                                tools:text="Rp 2.000.213,-"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -147,23 +172,23 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:paddingBottom="@dimen/margin_vs">
+                            android:paddingBottom="@dimen/dp_5">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/title_loyalty_points"
                                 android:textColor="@color/label_color"
-                                android:textSize="@dimen/fontvs" />
+                                android:textSize="@dimen/fontvs"/>
 
                             <TextView
                                 android:id="@+id/cart_loyalty_point_balance"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginEnd="@dimen/margin_small"
-                                android:layout_marginRight="@dimen/margin_small"
+                                android:layout_marginEnd="@dimen/dp_10"
+                                android:layout_marginRight="@dimen/dp_10"
                                 android:textSize="@dimen/fontvs"
-                                android:visibility="gone" />
+                                android:visibility="gone"/>
 
                             <TextView
                                 android:id="@+id/tv_loyalty_balance"
@@ -172,23 +197,23 @@
                                 android:gravity="end"
                                 android:textColor="@color/label_color"
                                 android:textSize="@dimen/fontvs"
-                                tools:text="Rp 2.000.213,-" />
+                                tools:text="Rp 2.000.213,-"/>
                         </LinearLayout>
 
                         <android.support.v4.widget.Space
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/margin_med" />
+                            android:layout_height="@dimen/dp_20"/>
 
                         <RelativeLayout
                             android:id="@+id/btn_payment_method"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/saldo_left_wrapper"
-                            android:layout_marginBottom="@dimen/margin_small"
-                            android:layout_marginTop="@dimen/margin_med"
+                            android:layout_marginBottom="@dimen/dp_10"
+                            android:layout_marginTop="@dimen/dp_20"
                             android:background="@drawable/cards_ui_selected"
                             android:gravity="center"
-                            android:padding="@dimen/padding_small"
+                            android:padding="@dimen/dp_10"
                             android:visibility="gone">
 
                             <ImageView
@@ -196,13 +221,13 @@
                                 android:layout_width="55sp"
                                 android:layout_height="28sp"
                                 android:layout_centerVertical="true"
-                                android:layout_marginEnd="@dimen/margin_vs"
-                                android:layout_marginRight="@dimen/margin_vs"
+                                android:layout_marginEnd="@dimen/dp_5"
+                                android:layout_marginRight="@dimen/dp_5"
                                 android:layout_toLeftOf="@+id/tv_desc_btn_payment_method"
                                 android:layout_toStartOf="@+id/tv_desc_btn_payment_method"
                                 android:visibility="gone"
                                 tools:ignore="ContentDescription"
-                                tools:src="@drawable/icon_bca" />
+                                tools:src="@drawable/icon_bca"/>
 
                             <TextView
                                 android:id="@+id/tv_desc_btn_payment_method"
@@ -210,36 +235,36 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerHorizontal="true"
                                 android:layout_centerInParent="true"
-                                android:drawablePadding="@dimen/padding_small"
+                                android:drawablePadding="@dimen/dp_10"
                                 android:gravity="center"
                                 android:text="Pilih metode pembayaran dulu"
                                 android:textColor="@color/href_link"
-                                android:textSize="@dimen/font_small"
+                                android:textSize="@dimen/sp_14"
                                 android:textStyle="bold"
-                                tools:ignore="HardcodedText" />
+                                tools:ignore="HardcodedText"/>
 
                             <ImageView
                                 android:layout_width="@dimen/small_dp"
                                 android:layout_height="@dimen/small_dp"
                                 android:layout_centerVertical="true"
-                                android:layout_marginLeft="@dimen/margin_vs"
-                                android:layout_marginStart="@dimen/margin_vs"
+                                android:layout_marginLeft="@dimen/dp_5"
+                                android:layout_marginStart="@dimen/dp_5"
                                 android:layout_toEndOf="@+id/tv_desc_btn_payment_method"
                                 android:layout_toRightOf="@+id/tv_desc_btn_payment_method"
                                 android:background="@drawable/overflow_selected"
-                                android:src="@drawable/chevron_down"
-                                tools:ignore="ContentDescription" />
+                                app:srcCompat="@drawable/chevron_down"
+                                tools:ignore="ContentDescription"/>
                         </RelativeLayout>
 
                         <TextView
                             android:id="@+id/tv_info_payment_method"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_marginBottom="@dimen/dp_10"
                             android:background="@color/green_200"
-                            android:padding="@dimen/margin_vs"
+                            android:padding="@dimen/dp_5"
                             android:visibility="gone"
-                            tools:text="Tidak dikenakan biaya" />
+                            tools:text="Tidak dikenakan biaya"/>
 
                         <LinearLayout
                             android:id="@+id/holder_use_deposit"
@@ -248,8 +273,8 @@
                             android:layout_below="@+id/payment_label"
                             android:gravity="center"
                             android:orientation="horizontal"
-                            android:paddingBottom="@dimen/margin_vs"
-                            android:paddingTop="@dimen/margin_small"
+                            android:paddingBottom="@dimen/dp_5"
+                            android:paddingTop="@dimen/dp_10"
                             android:visibility="gone">
 
                             <TextView
@@ -259,7 +284,7 @@
                                 android:textColor="@color/label_color"
                                 android:textSize="@dimen/fonts"
                                 android:textStyle="bold"
-                                android:visibility="visible" />
+                                android:visibility="visible"/>
 
                             <EditText
                                 android:id="@+id/et_use_deposit"
@@ -268,8 +293,16 @@
                                 android:hint="@string/title_use_tokopedia_balance"
                                 android:inputType="number"
                                 android:textSize="@dimen/fonts"
-                                android:visibility="visible" />
+                                android:visibility="visible"/>
                         </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tv_insurance_terms"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/dp_10"
+                            android:visibility="gone"
+                            tools:text="Dengan membayar, saya menyetujui syarat dan ketentuan asuransi"/>
 
                         <TextView
                             android:id="@+id/btn_checkout"
@@ -279,14 +312,79 @@
                             android:gravity="center"
                             android:text="@string/tittle_checkout"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/font_small"
-                            android:textStyle="bold" />
+                            android:textSize="@dimen/sp_14"
+                            android:textStyle="bold"/>
 
-                        <CheckBox
+                        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                      xmlns:app="http://schemas.android.com/apk/res-auto"
+                                      xmlns:tools="http://schemas.android.com/tools"
+                                      android:id="@+id/promo_result"
+                                      android:layout_width="match_parent"
+                                      android:layout_height="wrap_content"
+                                      android:layout_marginBottom="@dimen/dp_10"
+                                      android:layout_marginTop="@dimen/dp_10"
+                                      android:background="@drawable/white_button_rounded"
+                                      android:padding="@dimen/dp_10"
+                                      android:visibility="gone"
+                                      tools:visibility="visible">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="8"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content">
+
+                                    <TextView
+                                        android:id="@+id/label_promo_type"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textStyle="bold"
+                                        tools:text="Kode Voucher: "/>
+
+                                    <TextView
+                                        android:id="@+id/voucher_code"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:ellipsize="end"
+                                        android:lines="1"
+                                        android:textColor="@color/orange"
+                                        tools:text="GRATISJNE10"/>
+
+                                </LinearLayout>
+
+                                <TextView
+                                    android:id="@+id/voucher_description"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    tools:text="Potensi mendapatkan potongan ongkos kirim "/>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/cancel_promo_layout"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center_vertical|right">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    app:srcCompat="@drawable/navigation_cancel"/>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!--<CheckBox
                             android:id="@+id/cb_use_voucher"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/btn_height"
-                            android:layout_marginTop="@dimen/margin_small"
+                            android:layout_marginTop="@dimen/dp_10"
                             android:text="@string/title_use_promo_code"
                             android:textColor="@color/black"
                             android:textSize="@dimen/fontvs"
@@ -303,17 +401,17 @@
                             <TextView
                                 android:id="@+id/btn_check_voucher"
                                 android:layout_width="wrap_content"
-                                android:layout_height="@dimen/margin_vl"
+                                android:layout_height="@dimen/dp_40"
                                 android:layout_alignParentEnd="true"
                                 android:layout_alignParentRight="true"
-                                android:layout_marginLeft="@dimen/margin_small"
-                                android:layout_marginStart="@dimen/margin_small"
+                                android:layout_marginLeft="@dimen/dp_10"
+                                android:layout_marginStart="@dimen/dp_10"
                                 android:background="@drawable/green_button_rounded"
                                 android:gravity="center"
-                                android:padding="@dimen/margin_small"
+                                android:padding="@dimen/dp_10"
                                 android:text="@string/title_check"
                                 android:textColor="@color/white"
-                                android:textSize="@dimen/font_small"
+                                android:textSize="@dimen/sp_14"
                                 android:textStyle="bold" />
 
                             <android.support.design.widget.TextInputLayout
@@ -326,7 +424,7 @@
                                 <EditText
                                     android:id="@+id/et_voucher_code"
                                     android:layout_width="match_parent"
-                                    android:layout_height="@dimen/margin_vl"
+                                    android:layout_height="@dimen/dp_40"
                                     android:hint="@string/label_transaction_hint_form_voucher_code"
                                     android:lines="1" />
 
@@ -340,7 +438,40 @@
                                 android:layout_below="@id/til_et_voucher_code"
                                 tools:text="Total bolo bolo" />
 
-                        </RelativeLayout>
+                        </RelativeLayout>-->
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/instant_promo_placeholder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardElevation="2dp"
+                    app:contentPadding="@dimen/dp_10"
+                    tools:visibility="gone">
+
+                    <LinearLayout
+                        android:id="@+id/instant_insert_voucher_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/instant_insert_voucher_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            tools:text="Ini tes kode Promo instant"/>
+
+                        <TextView
+                            android:id="@+id/instant_insert_voucher_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            tools:text="Gunakan Sekarang"/>
 
                     </LinearLayout>
 
@@ -350,11 +481,11 @@
                     android:id="@+id/cv_cash_back"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/padding_small"
+                    android:layout_marginBottom="@dimen/dp_10"
                     android:visibility="gone"
                     app:cardBackgroundColor="@color/white"
                     app:cardElevation="2dp"
-                    app:contentPadding="@dimen/padding_small"
+                    app:contentPadding="@dimen/dp_10"
                     tools:visibility="visible">
 
                     <RelativeLayout
@@ -369,7 +500,7 @@
                             android:layout_weight="1"
                             android:text="@string/label_transaction_potential_cashback"
                             android:textColor="@color/green_500"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"/>
 
                         <TextView
                             android:id="@+id/tv_cash_back_value"
@@ -382,17 +513,17 @@
                             android:gravity="end"
                             android:textColor="@color/green_500"
                             android:textStyle="bold"
-                            tools:text="5000" />
+                            tools:text="5000"/>
                     </RelativeLayout>
                 </android.support.v7.widget.CardView>
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/padding_small"
+                    android:layout_marginBottom="@dimen/dp_10"
                     app:cardBackgroundColor="@color/white"
                     app:cardElevation="2dp"
-                    app:contentPadding="@dimen/padding_small">
+                    app:contentPadding="@dimen/dp_10">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -407,7 +538,7 @@
                             android:textColor="@color/black"
                             android:textSize="@dimen/font_medium"
                             android:textStyle="bold"
-                            tools:text="Berdonasi untuk sesama Top100" />
+                            tools:text="Berdonasi untuk sesama Top100"/>
 
                         <CheckBox
                             android:id="@+id/donasi_checkbox"
@@ -418,13 +549,13 @@
                             android:textColor="@color/label_color"
                             android:textSize="@dimen/fontvs"
                             android:textStyle="bold"
-                            tools:text="Donasi Rp 100" />
+                            tools:text="Donasi Rp 100"/>
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="@dimen/btn_height"
                             android:layout_below="@id/donasi_title"
-                            android:layout_marginLeft="@dimen/margin_small"
+                            android:layout_marginLeft="@dimen/dp_10"
                             android:layout_toRightOf="@id/donasi_checkbox">
 
                             <ImageView
@@ -432,7 +563,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
-                                android:background="@drawable/info_icon" />
+                                android:background="@drawable/info_icon"/>
 
                         </LinearLayout>
 
@@ -443,7 +574,7 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_cart"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
 

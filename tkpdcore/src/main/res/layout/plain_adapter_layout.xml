@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/plain_adapter_main_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginLeft="@dimen/padding_small"
+    android:layout_marginStart="@dimen/padding_small"
+    android:paddingTop="@dimen/padding_vs"
+    android:paddingBottom="@dimen/padding_vs">
+
+    <TextView
+        android:id="@+id/plain_adapter_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorBlack"
+        tools:text="Account Bank"
+        android:layout_marginBottom="@dimen/padding_small"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/grey_500"/>
+
+</LinearLayout>

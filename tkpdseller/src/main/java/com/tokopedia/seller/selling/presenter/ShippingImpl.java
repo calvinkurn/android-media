@@ -15,8 +15,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
 import com.tokopedia.seller.ShippingConfirmationDetail;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
@@ -30,6 +30,8 @@ import com.tokopedia.seller.selling.model.ModelParamSelling;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingData;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.core.util.ValidationTextUtil;
+import com.tokopedia.seller.selling.view.listener.SellingTransaction;
+import com.tokopedia.transaction.common.TransactionRouter;
 
 import org.parceler.Parcel;
 import org.parceler.Parcels;
@@ -131,7 +133,9 @@ public class ShippingImpl extends Shipping {
 
     @Override
     public void updateListDataChecked(int position, boolean selected) {
-        (modelList.get(position)).Checked = selected;
+        if (position >= 0 && position < modelList.size()) {
+            (modelList.get(position)).Checked = selected;
+        }
         view.notifyDataSetChanged(modelList);
     }
 
@@ -357,8 +361,9 @@ public class ShippingImpl extends Shipping {
 
     @Override
     public void onOpenDetail(int pos, Context context) {
-        Model model = modelList.get(pos);
-        context.startActivity(ShippingConfirmationDetail.createInstance(context, model.orderShippingList, model.Permission, model.BuyerId, model.PdfUri, model.Pdf));
+        Intent intent = ((TransactionRouter)MainApplication
+                .getAppContext()).goToOrderDetail(context, modelList.get(pos).OrderId);
+        context.startActivity(intent);
     }
 
     private void finishTimeout() {
@@ -417,7 +422,7 @@ public class ShippingImpl extends Shipping {
                 modelParamSellings.add(modelParamSelling);
             }
             bundle.putParcelable(SellingService.MODEL_PARAM_SELLING_KEY, Parcels.wrap(modelParamSellings));
-            ((ActivitySellingTransaction) context).SellingAction(SellingService.CONFIRM_MULTI_SHIPPING, bundle);
+            ((SellingTransaction) context).SellingAction(SellingService.CONFIRM_MULTI_SHIPPING, bundle);
             view.clearMultiSelector();
         }
     }
@@ -455,17 +460,19 @@ public class ShippingImpl extends Shipping {
 
     @Override
     public void updateRefNumBarcode(int getBarcodePosition, String barcode) {
-        modelList.get(getBarcodePosition).RefNum = barcode;
-        view.notifyDataSetChanged(modelList);
+        if (getBarcodePosition >= 0 && getBarcodePosition < modelList.size()) {
+            modelList.get(getBarcodePosition).RefNum = barcode;
+            view.notifyDataSetChanged(modelList);
+        }
     }
 
     @Override
     public void moveToDetail(int position) {
-        Intent intent = new Intent(context, SellingDetailActivity.class);
-        intent.putExtra(SellingDetailActivity.DATA_EXTRA, Parcels.wrap(modelList.get(position)));
-        intent.putExtra(SellingDetailActivity.TYPE_EXTRA, SellingDetailActivity.Type.SHIPING);
-        view.moveToDetailResult(intent, FragmentSellingShipping.REQUEST_CODE_PROCESS_RESULT);
-//        context.startActivity(intent);
+        if(modelList != null && position >= 0 && modelList.get(position) != null) {
+            Intent intent = ((TransactionRouter)MainApplication
+                    .getAppContext()).goToOrderDetail(context, modelList.get(position).OrderId);
+            view.moveToDetailResult(intent, FragmentSellingShipping.REQUEST_CODE_PROCESS_RESULT);
+        }
     }
 
     @Override

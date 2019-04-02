@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginBottom="@dimen/margin_small"
     android:background="@drawable/cards_ui_2"
     android:padding="@dimen/se_img_pad"
@@ -26,6 +27,7 @@
         />
 
     <android.support.design.widget.TextInputLayout
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_small">
@@ -37,14 +39,14 @@
             android:hint="@string/title_messenger"
             android:gravity="left|start"
             android:inputType="text"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/fonts" />
 
     </android.support.design.widget.TextInputLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_small">
+        android:layout_marginBottom="@dimen/margin_sm">
 
         <TextView
             android:id="@+id/change_email_button"
@@ -52,41 +54,67 @@
             android:layout_width="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:text="@string/link_change_email"
+            android:text="@string/string_change"
             android:background="@drawable/tab_selector"
-            android:textSize="@dimen/font_small"
-            android:textColor="@color/green_800"
-            android:textStyle="bold"
+            android:textSize="@dimen/fonts"
+            android:textColor="@color/tkpd_main_green"
             android:layout_centerVertical="true" />
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_email"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
             android:layout_toLeftOf="@id/change_email_button"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/margin_vs">
+            android:layout_marginRight="@dimen/margin_med"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_small"
+                android:textStyle="normal"
+                android:textColor="@color/black_38"
+                android:text="@string/title_email"
+                />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/email"
-                android:hint="@string/title_email"
+                android:hint="@string/title_email_input"
                 android:focusable="false"
                 android:enabled="false"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/text_size_l_medium"
                 android:inputType="textEmailAddress" />
 
-        </android.support.design.widget.TextInputLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_email"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/text_size_l_medium"
+                tools:text="shinta.purnawan@tokopedia.com"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_email_hint"
+                android:textColor="@color/black_38"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:textSize="@dimen/text_size_small"
+                android:text="@string/title_email_hint"
+                tools:visibility="visible"/>
+
+        </LinearLayout>
 
     </RelativeLayout>
+
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_sm"
         android:id="@+id/phone_section">
 
         <TextView
@@ -95,44 +123,11 @@
             android:layout_width="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:text="@string/link_change_phone"
+            android:text="@string/string_change"
             android:background="@drawable/tab_selector"
-            android:textSize="@dimen/font_small"
-            android:textColor="@color/green_800"
-            android:textStyle="bold"
+            android:textSize="@dimen/fonts"
+            android:textColor="@color/tkpd_main_green"
             android:layout_centerVertical="true" />
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_hp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_toLeftOf="@id/change_hp_button"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/margin_med">
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/phone"
-                android:hint="@string/title_hp"
-                android:focusable="false"
-                android:enabled="false"
-                android:inputType="phone"
-                android:textSize="@dimen/font_small"
-                android:drawableRight="@drawable/ic_check"
-                />
-
-        </android.support.design.widget.TextInputLayout>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:id="@+id/phone_verification_section">
 
         <TextView
             android:id="@+id/verify_phone_button"
@@ -142,31 +137,96 @@
             android:layout_alignParentEnd="true"
             android:text="@string/button_verify"
             android:background="@drawable/tab_selector"
-            android:textSize="@dimen/font_small"
-            android:textColor="@color/green_800"
-            android:textStyle="bold"
+            android:textSize="@dimen/fonts"
+            android:textColor="@color/tkpd_main_green"
             android:layout_centerVertical="true" />
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_verification"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_toLeftOf="@id/verify_phone_button"
+            android:layout_toLeftOf="@id/change_hp_button"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/margin_med">
+            android:layout_marginRight="@dimen/margin_med"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_small"
+                    android:textStyle="normal"
+                    android:textColor="@color/black_38"
+                    android:text="@string/title_hp"
+                    android:layout_marginRight="@dimen/margin_vvs"
+                    />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_verified_phone_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/bg_rounded_verification"
+                    android:drawablePadding="4dp"
+                    android:paddingEnd="@dimen/padding_ms"
+                    android:paddingLeft="@dimen/padding_ms"
+                    android:paddingRight="@dimen/padding_ms"
+                    android:paddingStart="@dimen/padding_ms"
+                    android:text="@string/string_verified"
+                    android:textColor="@color/tkpd_main_green"
+                    android:textSize="@dimen/text_size_xsmall"
+                    android:textStyle="normal"
+                    android:fontFamily="sans-serif-medium"
+                    app:drawableLeftCompat="@drawable/ic_check_green_12dp"
+                    />
+
+
+
+            </LinearLayout>
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/verification"
-                android:textSize="@dimen/font_small"
-                android:hint="@string/title_hp"
-                />
+                android:id="@+id/phone"
+                android:focusable="false"
+                android:enabled="false"
+                android:textSize="@dimen/text_size_l_medium"
+                android:inputType="phone" />
 
-        </android.support.design.widget.TextInputLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_phone"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/text_size_l_medium"
+                android:layout_marginTop="@dimen/margin_vs"
+                tools:text="099999999"/>
+
+        </LinearLayout>
 
     </RelativeLayout>
+
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:textColor="@color/black_54"
+        android:lineSpacingExtra="6sp"
+        android:text="@string/check_email_change_phone_number"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:drawablePadding="16dp"
+        android:background="@drawable/yellor_rounded_background"
+        app:drawableLeftCompat="@drawable/ic_unify_icon_waktu_time_hourglass"
+        android:id="@+id/check_email_info"
+        android:visibility="gone"
+        />
 
 </LinearLayout>

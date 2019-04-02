@@ -7,8 +7,6 @@ package com.tokopedia.inbox.rescenter.historyawb.view.presenter;
 public interface HistoryShippingFragmentPresenter {
     void onFirstTimeLaunch();
 
-    void doActionTrack(String shippingRefNumber, String shipmentID);
-
     void refreshPage();
 
     void setOnDestroyView();

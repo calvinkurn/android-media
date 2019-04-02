@@ -1,4 +1,3 @@
-
 package com.tokopedia.inbox.rescenter.discussion.data.pojo.generatehost;
 
 import com.google.gson.annotations.Expose;

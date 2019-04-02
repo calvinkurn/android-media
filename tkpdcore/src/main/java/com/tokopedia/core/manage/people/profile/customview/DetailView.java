@@ -1,35 +1,31 @@
 package com.tokopedia.core.manage.people.profile.customview;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.manage.people.profile.model.DataUser;
 import com.tokopedia.core.manage.people.profile.model.Profile;
 import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileFragmentPresenter;
 import com.tokopedia.core.var.TkpdState;
-
-import butterknife.BindView;
 
 /**
  * Created on 6/9/16.
  */
 public class DetailView extends BaseView<Profile, ManagePeopleProfileFragmentPresenter> {
 
-    @BindView(R2.id.user_name)
-    public EditText userName;
-    @BindView(R2.id.birth_date)
+    public TextView userName;
+    public TextView btnChangeName;
     public EditText birthDate;
-    @BindView(R2.id.gender)
     public RadioGroup genderRadioGroup;
-    @BindView(R2.id.hobbies)
     public EditText hobby;
 
     public DetailView(Context context) {
@@ -56,9 +52,20 @@ public class DetailView extends BaseView<Profile, ManagePeopleProfileFragmentPre
     }
 
     @Override
+    protected void initView(Context context) {
+        View view = LayoutInflater.from(context).inflate(getLayoutView(),this, true);
+        userName = (TextView) view.findViewById(R.id.user_name);
+        btnChangeName = (TextView) view.findViewById(R.id.change_name_button);
+        birthDate = (EditText) view.findViewById(R.id.birth_date);
+        genderRadioGroup = (RadioGroup) view.findViewById(R.id.gender);
+        hobby = (EditText) view.findViewById(R.id.hobbies);
+    }
+
+    @Override
     public void renderData(@NonNull Profile profile) {
         DataUser dataUser = profile.getDataUser();
         renderUserName(dataUser.getFullName());
+        renderChangeNameButton(dataUser.isUserGeneratedName());
         renderBirthDate(dataUser);
         renderGender(dataUser.getGender());
         renderHobby(dataUser.getHobby());
@@ -76,32 +83,43 @@ public class DetailView extends BaseView<Profile, ManagePeopleProfileFragmentPre
         }
     }
 
+    private void renderChangeNameButton(boolean isUserGeneratedName) {
+        btnChangeName.setVisibility(isUserGeneratedName ? VISIBLE : GONE);
+        btnChangeName.setOnClickListener(new ChangeNameListener());
+    }
+
     private void renderUserName(String fullName) {
         userName.setText(fullName);
     }
 
     private void renderBirthDate(DataUser dataUser) {
         birthDate.setText(generateDate(dataUser.getBirthDay(), dataUser.getBirthMonth(), dataUser.getBirthYear()));
-        birthDate.setOnClickListener(new BirthDateClick(dataUser));
+        birthDate.setOnClickListener(new BirthDateClick(getContext(), dataUser, birthDate));
     }
 
-    private StringBuilder generateDate(String birthDay, String birthMonth, String birthYear) {
-        return new StringBuilder().append(getBirthDay(birthDay)).append("/").append(getBirthMonth(birthMonth)).append("/").append(getBirthYear(birthYear));
+    private static StringBuilder generateDate(String birthDay,
+                                              String birthMonth,
+                                              String birthYear) {
+        return new StringBuilder().append(getBirthDay(birthDay))
+                .append("/")
+                .append(getBirthMonth(birthMonth))
+                .append("/")
+                .append(getBirthYear(birthYear));
     }
 
-    private boolean isValid(String param) {
+    private static boolean isValid(String param) {
         return param != null && !param.isEmpty();
     }
 
-    private int getBirthDay(String birthDay) {
+    private static int getBirthDay(String birthDay) {
         return isValid(birthDay) ? Integer.parseInt(birthDay) : 1;
     }
 
-    private int getBirthMonth(String birthMonth) {
+    private static int getBirthMonth(String birthMonth) {
         return isValid(birthMonth) ? Integer.parseInt(birthMonth) : 1;
     }
 
-    private int getBirthYear(String birthYear) {
+    private static int getBirthYear(String birthYear) {
         return isValid(birthYear) ? Integer.parseInt(birthYear) : 1989;
     }
 
@@ -110,19 +128,23 @@ public class DetailView extends BaseView<Profile, ManagePeopleProfileFragmentPre
         this.presenter = presenter;
     }
 
-    private class BirthDateClick implements OnClickListener {
+    private static class BirthDateClick implements OnClickListener {
 
+        private final Context context;
         private final DataUser dataUser;
+        private final EditText birthDate;
 
-        public BirthDateClick(DataUser dataUser) {
+        public BirthDateClick(Context context, DataUser dataUser, EditText birthDate) {
+            this.context = context;
             this.dataUser = dataUser;
+            this.birthDate = birthDate;
         }
 
         @Override
         public void onClick(View view) {
             DatePickerUtil datePicker =
                     new DatePickerUtil(
-                            (Activity) getContext(),
+                            CommonUtils.getActivity(context),
                             getBirthDay(dataUser.getBirthDay()),
                             getBirthMonth(dataUser.getBirthMonth()),
                             getBirthYear(dataUser.getBirthYear())
@@ -130,22 +152,24 @@ public class DetailView extends BaseView<Profile, ManagePeopleProfileFragmentPre
             datePicker.SetMaxYear(2002);
             datePicker.SetMinYear(1936);
             datePicker.SetShowToday(false);
-            datePicker.DatePickerCalendar(new DatePickerUtil.onDateSelectedListener() {
-                @Override
-                public void onDateSelected(int year, int month, int dayOfMonth) {
-                    birthDate.setText(
-                            generateDate(
-                                    checkNumber(dayOfMonth),
-                                    checkNumber(month),
-                                    checkNumber(year)
-                            )
-                    );
-                }
-            });
+            datePicker.DatePickerCalendar((year, month, dayOfMonth) -> birthDate.setText(
+                    generateDate(
+                            checkNumber(dayOfMonth),
+                            checkNumber(month),
+                            checkNumber(year)
+                    )
+            ));
         }
 
         public String checkNumber(int number) {
             return number <= 9 ? "0" + number : String.valueOf(number);
+        }
+    }
+
+    private class ChangeNameListener implements OnClickListener {
+        @Override
+        public void onClick(View view) {
+            presenter.setOnChangeNameClick(getContext());
         }
     }
 }

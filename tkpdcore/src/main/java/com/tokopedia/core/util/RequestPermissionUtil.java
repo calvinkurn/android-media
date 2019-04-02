@@ -6,9 +6,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import java.util.List;
 
@@ -16,16 +17,21 @@ import permissions.dispatcher.PermissionRequest;
 
 /**
  * Created by Nisie on 8/5/16.
+ * Deprecated. Use from tkpdabstraction instead.
  */
+@Deprecated
 public class RequestPermissionUtil {
 
     public static void onPermissionDenied(Context context, List<String> listPermission) {
         String allPermission = "";
         for (int i = 0; i < listPermission.size(); i++) {
-            if (i == listPermission.size() - 1)
-                allPermission += getPermissionName(context, listPermission.get(i));
-            else
-                allPermission += getPermissionName(context, listPermission.get(i)) + ", ";
+            String permission = getPermissionName(context, listPermission.get(i));
+            if (!TextUtils.isEmpty(permission)) {
+                if (i == listPermission.size() - 1)
+                    allPermission += permission;
+                else
+                    allPermission += String.format("%s, ", permission);
+            }
         }
         if (!allPermission.equals(""))
             Toast.makeText(context, context.getString(R.string.permission_multi_denied) + " untuk " + allPermission, Toast.LENGTH_LONG).show();
@@ -46,8 +52,12 @@ public class RequestPermissionUtil {
                 return context.getString(R.string.permission_contacts);
             case Manifest.permission.ACCESS_FINE_LOCATION:
                 return context.getString(R.string.permission_location);
+            case Manifest.permission.ACCESS_COARSE_LOCATION:
+                return context.getString(R.string.permission_location);
             case Manifest.permission.GET_ACCOUNTS:
                 return context.getString(R.string.permission_accounts);
+            case Manifest.permission.CALL_PHONE:
+                return context.getString(R.string.permission_phone);
             default:
                 return "";
         }
@@ -74,7 +84,14 @@ public class RequestPermissionUtil {
                 Toast.makeText(context, R.string.permission_get_accounts_denied, Toast.LENGTH_LONG).show();
                 break;
             case Manifest.permission.READ_SMS:
+            case Manifest.permission.RECEIVE_SMS:
                 Toast.makeText(context, R.string.permission_sms_denied, Toast.LENGTH_LONG).show();
+                break;
+            case Manifest.permission.SEND_SMS:
+                Toast.makeText(context, R.string.permission_send_sms_denied, Toast.LENGTH_LONG).show();
+                break;
+            case Manifest.permission.CALL_PHONE:
+                Toast.makeText(context, R.string.permission_phone_denied, Toast.LENGTH_LONG).show();
                 break;
             default:
                 Toast.makeText(context, R.string.permission_multi_denied, Toast.LENGTH_LONG).show();
@@ -104,7 +121,14 @@ public class RequestPermissionUtil {
                 Toast.makeText(context, R.string.permission_get_accounts_neverask, Toast.LENGTH_LONG).show();
                 break;
             case Manifest.permission.READ_SMS:
+            case Manifest.permission.RECEIVE_SMS:
                 Toast.makeText(context, R.string.permission_sms_neverask, Toast.LENGTH_LONG).show();
+                break;
+            case Manifest.permission.SEND_SMS:
+                Toast.makeText(context, R.string.permission_send_sms_neverask, Toast.LENGTH_LONG).show();
+                break;
+            case Manifest.permission.CALL_PHONE:
+                Toast.makeText(context, R.string.permission_phone_neverask, Toast.LENGTH_LONG).show();
                 break;
             default:
                 Toast.makeText(context, R.string.permission_multi_neverask, Toast.LENGTH_LONG).show();
@@ -122,7 +146,7 @@ public class RequestPermissionUtil {
                                        String permission) {
         new android.support.v7.app.AlertDialog.Builder(context)
                 .setMessage(getNeedPermissionMessage(permission))
-                .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         request.proceed();
@@ -141,7 +165,7 @@ public class RequestPermissionUtil {
                                        List<String> permission) {
         new android.support.v7.app.AlertDialog.Builder(context)
                 .setMessage(getNeedPermissionMessage(permission))
-                .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         request.proceed();
@@ -175,6 +199,11 @@ public class RequestPermissionUtil {
             case Manifest.permission.GET_ACCOUNTS:
                 return R.string.need_permission_get_accounts;
             case Manifest.permission.READ_SMS:
+            case Manifest.permission.RECEIVE_SMS:
+                return R.string.need_permission_SMS;
+            case Manifest.permission.SEND_SMS:
+                return R.string.need_permission_send_SMS;
+            case Manifest.permission.CALL_PHONE:
                 return R.string.need_permission_SMS;
             default:
                 return R.string.need_permission_multi;

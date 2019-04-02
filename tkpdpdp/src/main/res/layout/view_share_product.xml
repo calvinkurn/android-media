@@ -5,9 +5,9 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
-    android:paddingEnd="@dimen/margin_small"
-    android:paddingBottom="@dimen/margin_small"
-    android:paddingStart="@dimen/margin_small">
+    android:paddingEnd="@dimen/dp_10"
+    android:paddingBottom="@dimen/dp_10"
+    android:paddingStart="@dimen/dp_10">
 
     <TextView
         android:layout_width="match_parent"
@@ -15,7 +15,7 @@
         android:layout_gravity="center"
         android:background="@drawable/btn_share_transaparent"
         android:gravity="center"
-        android:padding="@dimen/padding_small"
+        android:padding="@dimen/dp_10"
         android:text="SHARE"
         android:textColor="@color/green_300"
         android:textSize="@dimen/font_medium"

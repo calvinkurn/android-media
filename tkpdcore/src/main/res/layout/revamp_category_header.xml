@@ -2,10 +2,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginBottom="@dimen/margin_vs"
+    android:background="@color/tkpd_bg_color"
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/banner_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <com.tkpd.library.ui.widget.TouchViewPager
+            android:id="@+id/view_pager_intermediary"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_revamp_category"/>
+
+        <com.tkpd.library.viewpagerindicator.CirclePageIndicator
+            android:id="@+id/indicator_intermediary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:padding="@dimen/padding_small"/>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/image_header_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/item_revamp_category">
 
@@ -60,7 +87,7 @@
             android:layout_height="20dp"
             android:gravity="center_vertical"
             android:visibility="visible"
-            android:src="@drawable/ic_expand_more_black_24dp"/>
+            app:srcCompat="@drawable/ic_expand_more_black_24dp"/>
 
     </LinearLayout>
 
@@ -85,9 +112,15 @@
             android:layout_height="@dimen/med_dp"
             android:gravity="center_vertical"
             android:visibility="visible"
-            android:src="@drawable/ic_expand_less_grey_24dp"/>
+            app:srcCompat="@drawable/ic_expand_less_grey_24dp"/>
 
     </LinearLayout>
+
+    <com.tokopedia.topads.sdk.widget.TopAdsBannerView
+        android:id="@+id/topAdsBannerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_vvvs" />
 
     <TextView
         android:id="@+id/total_product"
@@ -99,6 +132,7 @@
         android:textSize="@dimen/font_medium"
         android:layout_marginLeft="@dimen/margin_small"
         android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/margin_vvvs"
         android:textAlignment="viewStart"
         android:visibility="gone"
         android:layout_weight="1"/>

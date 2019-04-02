@@ -1,49 +1,68 @@
 package com.tokopedia.tkpd.deeplink.activity;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.TaskStackBuilder;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.localytics.android.Localytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.intentservice.ProductInfoResultReceiver;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
 import com.tokopedia.core.product.listener.FragmentDetailParent;
 import com.tokopedia.core.product.listener.ReportFragmentListener;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepository;
+import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepositoryImpl;
+import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
 
+import rx.Observable;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+
+import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
+
 /**
  * @author by Angga.Prasetiyo on 14/12/2015.
- *         modified Alvarisi
+ * modified Alvarisi
  */
 public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> implements
         DeepLinkView, DeepLinkWebViewHandleListener,
@@ -60,15 +79,9 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     private static final String EXTRA_STATE_APP_WEB_VIEW = "EXTRA_STATE_APP_WEB_VIEW";
     private static final String APPLINK_URL = "url";
     private Bundle mExtras;
+    private boolean isNeedToUseToolbarWithOptions;
+    private View mainView;
 
-    @DeepLink(Constants.Applinks.WEBVIEW)
-    public static Intent getCallingIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, DeepLinkActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_APP_WEB_VIEW, true)
-                .putExtras(extras);
-    }
 
     @Override
     public String getScreenName() {
@@ -78,8 +91,9 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initDeepLink();
+        startAnalytics().subscribe(getObserver());
         isAllowFetchDepartmentView = true;
+        presenter.sendAuthenticatedEvent(uriData, getScreenName());
     }
 
     @Override
@@ -94,7 +108,9 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     protected void initialPresenter() {
-        presenter = new DeepLinkPresenterImpl(this);
+        DeeplinkRepository deeplinkRepository = new DeeplinkRepositoryImpl(this, new GlobalCacheManager());
+        MapUrlUseCase mapUrlUseCase = new MapUrlUseCase(deeplinkRepository);
+        presenter = new DeepLinkPresenterImpl(this, mapUrlUseCase);
     }
 
     @Override
@@ -104,7 +120,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     protected void initView() {
-
+        mainView = findViewById(R.id.main_view);
     }
 
     @Override
@@ -123,14 +139,93 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
-    public void shareProductInfo(@NonNull ShareData shareData) {
-        replaceFragment(ProductShareFragment.newInstance(shareData),
-                ProductShareFragment.class.getSimpleName());
+    public void shareProductInfo(@NonNull LinkerData shareData) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_view,
+                        ProductShareFragment.newInstance(shareData, false),
+                        ProductShareFragment.class.getSimpleName())
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
     public void hideActionBar() {
         getSupportActionBar().hide();
+    }
+
+    @Override
+    public void actionChangeToolbarWithBackToNative() {
+        isNeedToUseToolbarWithOptions = true;
+        getSupportActionBar().setHomeAsUpIndicator(com.tokopedia.core2.R.drawable.ic_webview_back_button);
+        toolbar.setBackgroundResource(com.tokopedia.core2.R.color.white);
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core2.R.style.WebViewToolbarText);
+        setSupportActionBar(toolbar);
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public void goToActivity(Class<? extends Activity> activityClass, Bundle bundle) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
+
+        if (getApplicationContext() instanceof TkpdCoreRouter) {
+            taskStackBuilder.addNextIntent(
+                    ((TkpdCoreRouter) getApplicationContext()).getHomeIntent(this)
+            );
+        }
+
+        taskStackBuilder.addNextIntent(
+                new Intent(this, activityClass).putExtras(bundle)
+        );
+
+        taskStackBuilder.startActivities();
+        finish();
+    }
+
+    @Override
+    public void goToPage(Intent destination) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
+
+        if (getApplicationContext() instanceof TkpdCoreRouter) {
+            taskStackBuilder.addNextIntent(
+                    ((TkpdCoreRouter) getApplicationContext()).getHomeIntent(this)
+            );
+        }
+
+        taskStackBuilder.addNextIntent(
+                destination
+        );
+
+        taskStackBuilder.startActivities();
+        finish();
+    }
+
+    @Override
+    public void networkError(final Uri uriData) {
+        NetworkErrorHelper.showEmptyState(this, mainView, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.processDeepLinkAction(DeepLinkActivity.this, uriData);
+            }
+        });
+    }
+
+    @Override
+    public void showLoading() {
+        showProgressService();
+    }
+
+    @Override
+    public void finishLoading() {
+        if (progressDialog != null && progressDialog.isProgress()) progressDialog.dismiss();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (isNeedToUseToolbarWithOptions) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(com.tokopedia.core2.R.menu.menu_web_view, menu);
+        }
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -146,7 +241,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     public void jumpOtherProductDetail(ProductPass productPass) {
         if (getApplication() instanceof PdpRouter) {
-            ((PdpRouter) getApplication()).goToProductDetail(this, productPass);
+            RouteManager.route(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productPass.getProductId());
         }
     }
 
@@ -161,7 +256,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     public void onWebViewProgressLoad() {
     }
-
 
     @Override
     public void inflateFragment(Fragment fragment, String tag) {
@@ -179,7 +273,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         fragmentTransaction.replace(R.id.main_view, fragment, tag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
-
     }
 
     @Override
@@ -188,12 +281,19 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         if (id == android.R.id.home) {
             onBackPressed();
             return true;
+        } else if (id == com.tokopedia.core2.R.id.menu_home) {
+            onBackPressed();
+            return true;
+        } else if (id == com.tokopedia.core2.R.id.menu_help) {
+            Intent intent = InboxRouter.getContactUsActivityIntent(this);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void catchToWebView(String url) {
+        actionChangeToolbarWithBackToNative();
         getFragmentManager().beginTransaction()
                 .replace(R.id.main_view, FragmentGeneralWebView.createInstance(url))
                 .commit();
@@ -204,13 +304,18 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
         } else {
-            Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
-            this.startActivity(intent);
-            this.finish();
+            if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_INTERNAL, false)) {
+                super.onBackPressed();
+            } else {
+                Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+                this.startActivity(intent);
+                this.finish();
+            }
         }
     }
 
-    private void initDeepLink() {
+    @Override
+    public void initDeepLink() {
         if (uriData != null || getIntent().getBooleanExtra(EXTRA_STATE_APP_WEB_VIEW, false)) {
             if (getIntent().getBooleanExtra(DeepLink.IS_DEEP_LINK, false)) {
                 Bundle bundle = getIntent().getExtras();
@@ -218,24 +323,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
                 presenter.actionGotUrlFromApplink(uriData);
             } else {
                 presenter.checkUriLogin(uriData);
-                if (presenter.isLandingPageWebView(uriData)) {
-                    CommonUtils.dumper("GAv4 Escape HADES webview");
-                    presenter.processDeepLinkAction(uriData);
-                } else {
-                    if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
-                        CommonUtils.dumper("GAv4 Entering HADES");
-                        showProgressService();
-                    } else {
-                        CommonUtils.dumper("GAv4 Escape HADES non webview");
-                        presenter.processDeepLinkAction(uriData);
-                    }
-                }
-            }
-
-        } else {
-            if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
-                CommonUtils.dumper("GAv4 Entering HADES null Uri");
-                showProgressService();
+                presenter.processDeepLinkAction(DeepLinkActivity.this, uriData);
             }
         }
     }
@@ -261,22 +349,14 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     public void onResume() {
         super.onResume();
         isAllowFetchDepartmentView = true;
-        sendNotifLocalyticsCallback(getIntent());
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        sendNotifLocalyticsCallback(intent);
-    }
-
-    private void sendNotifLocalyticsCallback(Intent intent) {
-        Bundle bundle = intent.getExtras();
-        if (bundle != null) {
-            if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)) {
-                TrackingUtils.eventLocaNotificationCallback(getIntent());
-                Localytics.onNewIntent(this, intent);
-            }
+        CommonUtils.dumper("FCM onNewIntent " + intent.getData());
+        if (intent.getData() != null) {
+            uriData = intent.getData();
         }
     }
 
@@ -288,7 +368,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
-    public void deliverCatalogShareData(ShareData shareData) {
+    public void deliverCatalogShareData(LinkerData shareData) {
 
     }
 
@@ -320,5 +400,38 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     private void onReceiveResultSuccess(Fragment fragment, Bundle resultData, int resultCode) {
         ((FragmentDetailParent) fragment).onSuccessAction(resultData, resultCode);
+    }
+
+    private Observable<Void> startAnalytics() {
+        return Observable.just(true).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<Boolean, Void>() {
+                    @Override
+                    public Void call(Boolean aBoolean) {
+                        TrackingUtils.sendAppsFlyerDeeplink(DeepLinkActivity.this);
+                        return null;
+                    }
+                });
+    }
+
+    private Observer<Void> getObserver() {
+        return new Observer<Void>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+                if (uriData != null) {
+                    presenter.mapUrlToApplink(uriData);
+                }
+            }
+        };
     }
 }

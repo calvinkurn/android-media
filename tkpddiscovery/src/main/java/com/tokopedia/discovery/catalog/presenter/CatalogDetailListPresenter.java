@@ -3,10 +3,13 @@ package com.tokopedia.discovery.catalog.presenter;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.catalog.interactor.CatalogDataInteractor;
 import com.tokopedia.discovery.catalog.interactor.ICataloDataInteractor;
 import com.tokopedia.discovery.catalog.listener.ICatalogDetailListView;
@@ -104,18 +107,22 @@ public class CatalogDetailListPresenter implements ICatalogDetailListPresenter {
 
     @Override
     public void goToShopPage(CatalogDetailItemShop shop) {
-        Intent intent = new Intent(view.getActivity(), ShopInfoActivity.class);
-        intent.putExtras(ShopInfoActivity.createBundle(shop.getId(), shop.getDomain()));
+        Intent intent = ((DiscoveryRouter) view.getActivity().getApplication()).getShopPageIntent(view.getActivity(), shop.getId());
         view.getActivity().startActivity(intent);
     }
 
     @Override
     public void goToProductDetailPage(CatalogDetailItemProduct product) {
-        view.getActivity().startActivity(
-                ProductDetailRouter.createInstanceProductDetailInfoActivity(
-                        view.getActivity(), getProductDataToPass(product)
-                )
+        view.getActivity().startActivity(getProductIntent(product.getId())
         );
+    }
+
+    private Intent getProductIntent(String productId){
+        if (view.getActivity() != null) {
+            return RouteManager.getIntent(view.getActivity(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
+        }
     }
 
     private ProductPass getProductDataToPass(CatalogDetailItemProduct product) {

@@ -2,7 +2,6 @@ package com.tokopedia.discovery.catalog.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,17 +9,13 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.catalog.listener.ICatalogSpecSectionChanged;
 import com.tokopedia.discovery.catalog.model.SpecChild;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * @author anggaprasetiyo on 10/18/16.
@@ -102,27 +97,33 @@ class CatalogSpecAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     static class SpecChildHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.tv_label)
-        TextView tvLabel;
-        @BindView(R2.id.tv_value)
-        TextView tvValue;
+        private TextView tvLabel;
+        private TextView tvValue;
 
         SpecChildHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            initView(itemView);
+        }
+
+        private void initView(View view) {
+            tvLabel = view.findViewById(R.id.tv_label);
+            tvValue = view.findViewById(R.id.tv_value);
         }
     }
 
     static class SectionHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.tv_name)
-        TextView tvName;
-        @BindView(R2.id.toggle_button_section)
-        ToggleButton toggleButton;
+        private TextView tvName;
+        private ToggleButton toggleButton;
 
         SectionHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            initView(itemView);
+        }
+
+        private void initView(View view) {
+            tvName = view.findViewById(R.id.tv_name);
+            toggleButton = view.findViewById(R.id.toggle_button_section);
         }
     }
 

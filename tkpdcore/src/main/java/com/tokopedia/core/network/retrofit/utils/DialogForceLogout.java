@@ -9,7 +9,7 @@ import com.drew.lang.annotations.NotNull;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.gcm.NotificationModHandler;
 
 /**
@@ -19,7 +19,6 @@ public class DialogForceLogout {
     private static final String TAG = DialogForceLogout.class.getSimpleName();
     private static final String IS_DIALOG_SHOWN_STORAGE = "IS_DIALOG_SHOWN_STORAGE";
     private static final String IS_DIALOG_SHOWN = "IS_DIALOG_SHOWN";
-
 
     public static void createShow(Context context, @Nullable final ActionListener listener) {
             AlertDialog alertDialog = create(context, listener);
@@ -40,14 +39,11 @@ public class DialogForceLogout {
                         LoginManager.getInstance().logOut();
                         setIsDialogShown(context, false);
                         NotificationModHandler.clearCacheAllNotification(context);
+
                     }
                 });
         dialog.setCancelable(false);
         return dialog.create();
-    }
-
-    public interface ActionListener {
-        void onDialogClicked();
     }
 
     public static void setIsDialogShown(Context context, Boolean status) {
@@ -59,5 +55,9 @@ public class DialogForceLogout {
     public static Boolean isDialogShown(Context context) {
         LocalCacheHandler cache = new LocalCacheHandler(context, IS_DIALOG_SHOWN_STORAGE);
         return cache.getBoolean(IS_DIALOG_SHOWN, false);
+    }
+
+    public interface ActionListener {
+        void onDialogClicked();
     }
 }

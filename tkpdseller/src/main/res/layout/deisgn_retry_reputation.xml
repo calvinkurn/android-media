@@ -14,7 +14,6 @@
         android:layout_marginTop="28dp"
         android:layout_marginBottom="20dp"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_empty_penalti_reputasi"
         app:srcCompat="@drawable/ic_empty_penalti_reputasi" />
 
     <TextView
@@ -25,7 +24,7 @@
         android:layout_centerHorizontal="true"
         android:text="@string/reputation_history_label_good_job"
         android:layout_marginBottom="2dp"
-        android:textColor="@color/thirty_eight_percent_black"
+        android:textColor="@color/font_black_disabled_38"
         android:textSize="14sp"
         android:textStyle="bold" />
 
@@ -40,7 +39,7 @@
         android:gravity="center"
         android:text="@string/reputation_history_label_info_no_penalty"
         android:textAlignment="gravity"
-        android:textColor="@color/thirty_eight_percent_black"
+        android:textColor="@color/font_black_disabled_38"
         android:textSize="12sp" />
 
     <LinearLayout
@@ -61,15 +60,6 @@
             android:text="@string/reputation_history_label_change_date"
             android:textColor="@color/tkpd_main_green"
             android:textSize="14sp" />
-
-        <ImageView
-            android:id="@+id/calendar_arrow_icon"
-            android:layout_width="@dimen/topads_arrow_left_width"
-            android:layout_height="@dimen/topads_arrow_left_height"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            app:srcCompat="@drawable/ic_arrow_right" />
     </LinearLayout>
 
 </RelativeLayout>

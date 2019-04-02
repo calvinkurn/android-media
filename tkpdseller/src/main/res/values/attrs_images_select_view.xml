@@ -5,6 +5,5 @@
         <attr name="primaryImageString" format="reference" />
         <attr name="imageLimit" format="integer" />
         <attr name="titleString" format="reference" />
-        <attr name="addImageString" format="reference" />
     </declare-styleable>
 </resources>

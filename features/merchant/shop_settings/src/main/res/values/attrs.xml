@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RadioButtonLabelView">
+        <attr name="rblv_title" format="string" />
+        <attr name="rblv_title_text_size" format="dimension" />
+        <attr name="rblv_title_color" format="color" />
+        <attr name="rblv_title_text_style">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="ImageLabelView">
+        <attr name="ilv_title" format="string" />
+        <attr name="ilv_title_text_size" format="dimension" />
+        <attr name="ilv_title_color" format="color" />
+        <attr name="ilv_title_text_style">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+        </attr>
+        <attr name="ilv_drawable" format="reference" />
+        <attr name="ilv_content_hint" format="string" />
+    </declare-styleable>
+
+</resources>

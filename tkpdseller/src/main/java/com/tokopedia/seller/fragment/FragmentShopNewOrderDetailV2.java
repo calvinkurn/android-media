@@ -15,7 +15,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,17 +28,24 @@ import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
-import com.tokopedia.core.R;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.v4.NetworkConfig;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.model.ModelParamSelling;
@@ -61,6 +67,7 @@ import com.tokopedia.seller.selling.orderReject.model.ModelRejectOrder;
 import com.tokopedia.seller.selling.presenter.listener.SellingView;
 import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
 import com.tokopedia.seller.util.NewOrderDialogBuilder;
+import com.tokopedia.track.TrackApp;
 
 import org.parceler.Parcels;
 
@@ -286,7 +293,8 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         } catch (NullPointerException e) {
             e.printStackTrace();
             Toast.makeText(activity, activity.getString(R.string.title_verification_timeout) + "\n" + activity.getString(R.string.message_verification_timeout), Toast.LENGTH_LONG).show();
-            Crashlytics.log(0, "NullPointerException FragmentShopNewOrderDetailV2.java", e.toString());
+            if (!GlobalConfig.DEBUG)
+                Crashlytics.log(0, "NullPointerException FragmentShopNewOrderDetailV2.java", e.toString());
             activity.finish();
         }
     }
@@ -399,11 +407,17 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
             holder.viewDefaultDestination.setVisibility(View.VISIBLE);
             holder.viewPickupLocationCourier.setVisibility(View.GONE);
         }
-        if (payment.getPaymentProcessDayLeft() > 0 && orderDetail.getDetailPartialOrder().equals("1"))
-            holder.PartialButton.setVisibility(View.VISIBLE);
-        holder.Deadline.setText(payment.getPaymentProcessDueDate());
-        if (payment.getPaymentProcessDayLeft() < 0)
-            holder.AcceptButton.setVisibility(View.GONE);
+
+        if (payment != null) {
+            if (payment.getPaymentProcessDayLeft() != null && payment.getPaymentProcessDayLeft() > 0 && orderDetail.getDetailPartialOrder().equals("1"))
+                holder.PartialButton.setVisibility(View.VISIBLE);
+            else if (payment.getPaymentProcessDayLeft() < 0)
+                holder.AcceptButton.setVisibility(View.GONE);
+            holder.Deadline.setText(payment.getPaymentProcessDueDate());
+        } else {
+            holder.Deadline.setText(orderDetail.getDetailPayDueDate());
+        }
+
         if (permission.equals("0")) {
             holder.AcceptButton.setVisibility(View.GONE);
             holder.RejectButton.setVisibility(View.GONE);
@@ -424,14 +438,19 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         holder.ProductListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(
-                        ProductDetailRouter
-                                .createInstanceProductDetailInfoActivity(
-                                        getActivity(), getProductDataToPass(position)));
+                startActivity(getProductIntent(order.getOrderProducts().get(position).getProductId().toString()));
             }
         });
         ListViewHelper.getListViewSize(holder.ProductListView);
 
+    }
+
+    private Intent getProductIntent(String productId) {
+        if (getContext() != null) {
+            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
+        }
     }
 
     private void loadViewHolder() {
@@ -451,20 +470,23 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = InboxRouter.getSendMessageActivityIntent(getActivity());
-                Bundle bundle = new Bundle();
-                bundle.putString(InboxRouter.PARAM_USER_ID, order.getOrderCustomer().getCustomerId());
-                bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, order.getOrderCustomer().getCustomerName());
-                bundle.putString(InboxRouter.PARAM_CUSTOM_SUBJECT,
-                        order.getOrderDetail().getDetailInvoice());
-                bundle.putString(InboxRouter.PARAM_CUSTOM_MESSAGE,
-                        MethodChecker.fromHtml(
-                                getString(R.string.custom_content_message_ask_seller)
-                                        .replace("XXX",
-                                                order.getOrderDetail().getDetailPdfUri())).toString()
-                );
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+                    Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                            .getAskBuyerIntent(getActivity(),
+                                    order.getOrderCustomer().getCustomerId(),
+                                    order.getOrderCustomer().getCustomerName(),
+                                    order.getOrderDetail().getDetailInvoice(),
+                                    MethodChecker.fromHtml(
+                                            getString(R.string.custom_content_message_ask_seller)
+                                                    .replace("XXX",
+                                                            order.getOrderDetail()
+                                                                    .getDetailPdfUri())).toString(),
+                                    TkpdInboxRouter.TX_ASK_BUYER,
+                                    order.getOrderCustomer().getCustomerImage());
+                    startActivity(intent);
+                }
+
+
             }
         };
     }
@@ -479,9 +501,10 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
     }
 
     private void actionOpenBuyer() {
-        startActivity(
-                PeopleInfoNoDrawerActivity.createInstance(getActivity(), userId)
-        );
+        if (getActivity().getApplicationContext() instanceof SellerModuleRouter) {
+            startActivity(((SellerModuleRouter) getActivity().getApplicationContext())
+                    .getTopProfileIntent(getActivity(), userId));
+        }
     }
 
 
@@ -490,9 +513,17 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
             @Override
             public void onClick(View v) {
                 createAcceptDialog();
-                UnifyTracking.eventAcceptOrder();
+                eventAcceptOrder();
             }
         };
+    }
+
+    public void eventAcceptOrder() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.NEW_ORDER,
+                AppEventTracking.Category.NEW_ORDER,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.ACCEPT_ORDER);
     }
 
     private View.OnClickListener onRejectListener() {
@@ -500,9 +531,17 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
             @Override
             public void onClick(View v) {
                 createRejectDialog();
-                UnifyTracking.eventRejectOrder();
+                eventRejectOrder();
             }
         };
+    }
+
+    public void eventRejectOrder() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.NEW_ORDER,
+                AppEventTracking.Category.NEW_ORDER,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.REJECT_ORDER);
     }
 
     private View.OnClickListener onPartialListener() {
@@ -654,7 +693,6 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
     }
 
     private void onProceedFailed(String messageError) {
-        Log.e(TAG, "onProceedFailed " + messageError);
         if (messageError.toLowerCase().contains("pesanan tidak valid")) {
             holder.AcceptButton.setEnabled(false);
             holder.AcceptButton.setBackgroundResource(R.drawable.btn_shop);
@@ -675,7 +713,6 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(getClass().getSimpleName(), "onActivityResult requestCode " + requestCode + " resultcode " + resultCode);
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQ_REJECT_ORDER:

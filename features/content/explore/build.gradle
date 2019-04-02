@@ -1,0 +1,53 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+project.ext {
+    artifactId = 'explore'
+    groupId = 'com.tokopedia.explore'
+    versionName = "${tkpdExploreVersion}"
+    artifactName = "explore-release"
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation project(rootProject.ext.features.kol)
+
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.analytics)
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation rootProject.ext.miscDependencies.multiDex
+
+
+    implementation project(rootProject.ext.libraries.track)
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+}
+
+apply from: '../../../publish_local.gradle'

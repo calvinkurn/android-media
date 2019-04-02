@@ -1,8 +1,10 @@
 package com.tokopedia.tkpd.home.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.var.RecyclerViewItem;
 
 import java.util.List;
@@ -14,6 +16,8 @@ public interface WishList {
     String TAG = "MNORMANSYAH";
     String messageTAG = "WishList : ";
     String WISHLIST_MODEL = "WISHLIST_MODEL";
+    String WISHLIST_ENTITY = "WISHLIST_ENTITY";
+    String PAGINATION_MODEL = "PAGINATION_MODEL";
 
     void initDataInstance(Context context);
 
@@ -46,13 +50,6 @@ public interface WishList {
     void loadMore(Context context);
 
     /**
-     * send Data to Localitycs
-     * @param context
-     * @param screenName
-     */
-    void setLocalyticFlow(Context context, String screenName);
-
-    /**
      * do some activities in onSavedInstanceState
      * @param saved
      */
@@ -77,11 +74,11 @@ public interface WishList {
 
     void fetchDataFromCache(final Context context);
 
-    void setData(com.tokopedia.core.network.entity.wishlist.WishlistData wishlistData);
+    void setData(GqlWishListDataResponse gqlWishListDataResponse);
 
-    void deleteWishlist(Context context, String productId);
+    void deleteWishlist(Context context, String productId, int position);
 
-    void addToCart(Context context, String productId);
+    void addToCart(Activity activity, String productId);
 
     boolean isLoadedFirstPage();
 
@@ -92,4 +89,6 @@ public interface WishList {
     void fetchDataAfterClearSearch(Context context);
 
     void refreshDataOnSearch(CharSequence query);
+
+    void onResume(Context context);
 }

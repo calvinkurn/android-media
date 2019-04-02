@@ -21,6 +21,8 @@ import com.tokopedia.inbox.rescenter.historyaction.view.presenter.HistoryActionF
 import com.tokopedia.inbox.rescenter.historyaction.view.presenter.HistoryActionFragmentView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -33,11 +35,13 @@ public class HistoryActionFragment extends BaseDaggerFragment
 
     private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
     private static final String EXTRA_PARAM_VIEW_DATA = "extra_view_data";
+    private static final String EXTRA_PARAM_RESOLUTION_STATUS = "resolution_status";
 
     private RecyclerView recyclerview;
     private HistoryActionAdapter adapter;
 
     private String resolutionID;
+    private int resolutionStatus;
 
     private ArrayList<HistoryActionViewItem> viewData;
 
@@ -75,6 +79,16 @@ public class HistoryActionFragment extends BaseDaggerFragment
     @Override
     public void setResolutionID(String resolutionID) {
         this.resolutionID = resolutionID;
+    }
+
+    @Override
+    public void setResolutionStatus(int resolutionStatus) {
+        this.resolutionStatus = resolutionStatus;
+    }
+
+    @Override
+    public int getResolutionStatus() {
+        return resolutionStatus;
     }
 
     @Override
@@ -124,7 +138,12 @@ public class HistoryActionFragment extends BaseDaggerFragment
     @Override
     public void onGetHistoryAwbFailed(String messageError) {
         setLoadingView(false);
-        setErrorMessage(messageError);
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.onFirstTimeLaunch();
+            }
+        });
     }
 
     @Override
@@ -148,7 +167,9 @@ public class HistoryActionFragment extends BaseDaggerFragment
 
     @Override
     public void renderData() {
-        adapter.setArraylist(getViewData());
+        ArrayList<HistoryActionViewItem> dataList = getViewData();
+        Collections.reverse(dataList);
+        adapter.setArraylist(dataList, getResolutionStatus());
         adapter.notifyDataSetChanged();
     }
 
@@ -156,12 +177,14 @@ public class HistoryActionFragment extends BaseDaggerFragment
     public void onSaveState(Bundle state) {
         state.putString(EXTRA_PARAM_RESOLUTION_ID, getResolutionID());
         state.putParcelableArrayList(EXTRA_PARAM_VIEW_DATA, getViewData());
+        state.putInt(EXTRA_PARAM_RESOLUTION_STATUS, getResolutionStatus());
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
         setResolutionID(savedState.getString(EXTRA_PARAM_RESOLUTION_ID));
         setViewData(savedState.<HistoryActionViewItem>getParcelableArrayList(EXTRA_PARAM_VIEW_DATA));
+        setResolutionStatus(savedState.getInt(EXTRA_PARAM_RESOLUTION_STATUS));
     }
 
     @Override

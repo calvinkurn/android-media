@@ -8,7 +8,7 @@ import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.manage.people.profile.datamanager.NetworkParam;
 import com.tokopedia.core.manage.people.profile.interactor.UploadImageProfile;
 import com.tokopedia.core.manage.people.profile.model.PeopleProfilePass;
@@ -197,10 +197,14 @@ public class ManagePeopleProfileIntentService extends IntentService {
                             public PeopleProfilePass call(PeopleProfilePass peopleProfilePass, Response<TkpdResponse> response) {
                                 if (response.isSuccessful()) {
                                     Profile temp = response.body().convertDataObj(Profile.class);
-
-                                    if (temp.isSuccess()) {
-                                        peopleProfilePass.setSuccess(true);
+                                    if (temp != null) {
+                                        if (temp.isSuccess()) {
+                                            peopleProfilePass.setSuccess(true);
+                                        } else {
+                                            throw new RuntimeException(response.body().getErrorMessages().get(0));
+                                        }
                                     } else {
+                                        peopleProfilePass.setSuccess(false);
                                         throw new RuntimeException(response.body().getErrorMessages().get(0));
                                     }
                                 } else {

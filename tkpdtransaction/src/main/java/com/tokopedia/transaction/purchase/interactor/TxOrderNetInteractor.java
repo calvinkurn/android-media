@@ -80,6 +80,12 @@ public interface TxOrderNetInteractor {
     void requestCancelOrder(@NonNull TKPDMapParam<String, String> params,
                             RequestCancelOrderListener listener);
 
+    void showCancelTransactionDialog(@NonNull TKPDMapParam<String, String> params,
+                           CancelTransactionDialogListener listener);
+
+    void cancelTransaction(@NonNull TKPDMapParam<String, String> params,
+                           CancelTransactionListener listener);
+
     void unSubscribeObservable();
 
     interface PaymentActionListener {
@@ -210,5 +216,26 @@ public interface TxOrderNetInteractor {
         void onNoConnection(String message);
     }
 
+    interface CancelTransactionDialogListener {
+        void onSuccess(String message);
+
+        void onError(String message);
+
+        void onTimeout(String message);
+
+        void onNoConnection(String message);
+    }
+
+    interface CancelTransactionListener{
+        void onSuccess(String message);
+
+        void onPaymentExpired(String message);
+
+        void onError(String message);
+
+        void onTimeout(String message);
+
+        void onNoConnection(String message);
+    }
 
 }

@@ -13,44 +13,37 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.entity.home.recentView.RecentView;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.home.adapter.viewholder.EmptyViewHolder;
+import com.tokopedia.tkpd.home.adapter.viewholder.WishListTopAdsViewHolder;
+import com.tokopedia.tkpd.home.adapter.viewmodel.EmptySearchItem;
+import com.tokopedia.tkpd.home.adapter.viewmodel.EmptyStateItem;
+import com.tokopedia.tkpd.home.adapter.viewmodel.TopAdsWishlistItem;
 import com.tokopedia.tkpd.home.presenter.WishListView;
-import com.tokopedia.tkpdpdp.ProductInfoActivity;
-import com.tokopedia.topads.sdk.base.Config;
-import com.tokopedia.topads.sdk.base.Endpoint;
-import com.tokopedia.topads.sdk.domain.TopAdsParams;
-import com.tokopedia.topads.sdk.domain.model.Data;
-import com.tokopedia.topads.sdk.domain.model.Product;
-import com.tokopedia.topads.sdk.domain.model.Shop;
-import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
-import com.tokopedia.topads.sdk.view.TopAdsView;
+import com.tokopedia.tkpd.home.wishlist.analytics.WishlistAnalytics;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Nisie on 16/06/15.
@@ -62,7 +55,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
     private Context context;
     private WishListView wishlistView;
     private OnWishlistActionButtonClicked actionButtonClicked;
-
+    private WishlistAnalytics wishlistAnalytics;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -99,11 +92,11 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         }
     }
 
-    public WishListProductAdapter(Context context, List<RecyclerViewItem> data) {
+    public WishListProductAdapter(Context context, List<RecyclerViewItem> data, WishlistAnalytics wishlistAnalytics) {
         super(context, data);
         this.context = context;
         this.data = data;
-
+        this.wishlistAnalytics = wishlistAnalytics;
     }
 
     public void setActionButtonClicked(OnWishlistActionButtonClicked actionButtonClicked) {
@@ -115,8 +108,8 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
     }
 
 
-    public void setSearchNotFound() {
-        data.add(new EmptySearchItem());
+    public void setSearchNotFound(String query) {
+        data.add(new EmptySearchItem(query));
     }
 
     public void setEmptyState() {
@@ -137,21 +130,17 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                 return createEmptySearch(viewGroup);
             case TkpdState.RecyclerView.VIEW_EMPTY_STATE:
                 return createEmptyState(viewGroup);
+            case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
+                return createTopAds(viewGroup);
             default:
                 return super.onCreateViewHolder(viewGroup, viewType);
         }
     }
 
-    public static class EmptyStateItem extends RecyclerViewItem {
-        public EmptyStateItem() {
-            setType(TkpdState.RecyclerView.VIEW_EMPTY_STATE);
-        }
-    }
-
-    public static class EmptySearchItem extends RecyclerViewItem {
-        public EmptySearchItem() {
-            setType(TkpdState.RecyclerView.VIEW_EMPTY_SEARCH);
-        }
+    private RecyclerView.ViewHolder createTopAds(ViewGroup parent) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.layout_wishlist_topads, null);
+        return new WishListTopAdsViewHolder(view);
     }
 
     public RecyclerView.ViewHolder createEmptyState(ViewGroup parent) {
@@ -180,65 +169,6 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         });
     }
 
-    public static class EmptyViewHolder extends RecyclerView.ViewHolder implements
-            TopAdsItemClickListener {
-        @BindView(R.id.topads)
-        TopAdsView topAdsView;
-        @BindView(R.id.action_btn)
-        Button actionBtn;
-        private Context context;
-        private final String WISHLISH_SRC = "wishlist";
-
-        public EmptyViewHolder(View itemView, View.OnClickListener clickListener) {
-            super(itemView);
-            context = itemView.getContext();
-            ButterKnife.bind(this, itemView);
-            TopAdsParams params = new TopAdsParams();
-            params.getParam().put(TopAdsParams.KEY_SRC, WISHLISH_SRC);
-            Config topAdsconfig = new Config.Builder()
-                    .setSessionId(GCMHandler.getRegistrationId(context))
-                    .setUserId(SessionHandler.getLoginID(context))
-                    .withPreferedCategory()
-                    .setEndpoint(Endpoint.PRODUCT)
-                    .topAdsParams(params)
-                    .build();
-            topAdsView.setConfig(topAdsconfig);
-            topAdsView.setAdsItemClickListener(this);
-            actionBtn.setOnClickListener(clickListener);
-        }
-
-        public void loadTopAds() {
-            topAdsView.loadTopAds();
-        }
-
-        @Override
-        public void onProductItemClicked(Product product) {
-            ProductItem data = new ProductItem();
-            data.setId(product.getId());
-            data.setName(product.getName());
-            data.setPrice(product.getPriceFormat());
-            data.setImgUri(product.getImage().getM_url());
-            Bundle bundle = new Bundle();
-            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
-            bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-            intent.putExtras(bundle);
-            context.startActivity(intent);
-        }
-
-        @Override
-        public void onShopItemClicked(Shop shop) {
-            Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
-            Intent intent = new Intent(context, ShopInfoActivity.class);
-            intent.putExtras(bundle);
-            context.startActivity(intent);
-        }
-
-        @Override
-        public void onAddFavorite(Data data) {
-
-        }
-    }
-
     private ViewHolder createProductView(ViewGroup viewGroup) {
         View itemLayoutView = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.listview_product_item, null);
@@ -258,9 +188,17 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
             case TkpdState.RecyclerView.VIEW_WISHLIST:
                 bindWishlistViewHolder((ViewHolder) viewHolder, position);
                 break;
+            case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
+                TopAdsWishlistItem topAdsWishlistItem = (TopAdsWishlistItem) data.get(position);
+                ((WishListTopAdsViewHolder) viewHolder).renderTopAds(topAdsWishlistItem.getTopAdsModel(),
+                        topAdsWishlistItem.getQuery());
+                break;
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
+                EmptySearchItem emptySearchItem = (EmptySearchItem) data.get(position);
+                ((EmptyViewHolder) viewHolder).loadTopAds(emptySearchItem.getQuery());
+                break;
             case TkpdState.RecyclerView.VIEW_EMPTY_STATE:
-                ((EmptyViewHolder) viewHolder).loadTopAds();
+                ((EmptyViewHolder) viewHolder).loadTopAds("");
                 break;
             default:
                 super.onBindViewHolder(viewHolder, position);
@@ -268,17 +206,23 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     private void bindProductViewHolder(ViewHolder viewHolder, int position) {
-        if (data.get(position) !=null && data.get(position) instanceof ProductItem) {
+        if (data.get(position) != null && data.get(position) instanceof ProductItem) {
             ProductItem product = (ProductItem) data.get(position);
             viewHolder.productName.setText(Html.fromHtml(product.name));
             viewHolder.productPrice.setText(product.price);
             viewHolder.shopName.setText(Html.fromHtml(product.shop));
-            viewHolder.location.setText(product.getShopLocation());
+            if (product.getOfficial()) {
+                viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core2.R.drawable.ic_icon_authorize_grey, 0, 0, 0);
+                viewHolder.location.setText(context.getResources().getString(com.tokopedia.core2.R.string.authorized));
+            } else {
+                viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core2.R.drawable.ic_icon_location_grey_wishlist, 0, 0, 0);
+                viewHolder.location.setText(product.getShopLocation());
+            }
             setProductImage(viewHolder, product.getImgUri());
             setBadges(viewHolder, product);
             setLabels(viewHolder, product);
             viewHolder.mainContent.setOnClickListener(onProductItemClicked(position));
-        } else if (data.get(position) !=null && data.get(position) instanceof RecentView) {
+        } else if (data.get(position) != null && data.get(position) instanceof RecentView) {
             RecentView product = (RecentView) data.get(position);
             viewHolder.productName.setText(Html.fromHtml(product.getProductName()));
             viewHolder.productPrice.setText(product.getProductPrice());
@@ -296,14 +240,20 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         viewHolder.productName.setText(Html.fromHtml(product.name));
         viewHolder.productPrice.setText(product.price);
         viewHolder.shopName.setText(Html.fromHtml(product.shop));
-        viewHolder.location.setText(product.getShopLocation());
+        if (product.getOfficial()) {
+            viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core2.R.drawable.ic_icon_authorize_grey, 0, 0, 0);
+            viewHolder.location.setText(context.getResources().getString(com.tokopedia.core2.R.string.authorized));
+        } else {
+            viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core2.R.drawable.ic_icon_location_grey_wishlist, 0, 0, 0);
+            viewHolder.location.setText(product.getShopLocation());
+        }
         setProductImage(viewHolder, product.getImgUri());
         setBadges(viewHolder, product);
         setLabels(viewHolder, product);
 
         if (product.getIsWishlist()) {
             viewHolder.wishlistContent.setVisibility(View.VISIBLE);
-            viewHolder.deleteWishlistBut.setOnClickListener(onDeleteWishlistClicked(product.getId()));
+            viewHolder.deleteWishlistBut.setOnClickListener(onDeleteWishlistClicked(product.getId(), position));
 
             if (product.getIsAvailable()) {
                 setBuyButtonAvailable(viewHolder.buyWishlistBut);
@@ -323,24 +273,27 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
             public void onClick(View view) {
                 if (data.get(position) instanceof ProductItem) {
                     ProductItem product = (ProductItem) data.get(position);
-                    UnifyTracking.eventWishlistView(product.getName());
-
+                    UnifyTracking.eventWishlistView(view.getContext(), product.getName());
+                    wishlistAnalytics.trackEventClickOnProductWishlist(String.valueOf(position+1), product.getProductAsObjectDataLayerForWishlistClick(position+1));
                     Bundle bundle = new Bundle();
-                    Intent intent = new Intent(context, ProductInfoActivity.class);
-                    bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data.get(position));
-                    intent.putExtras(bundle);
+                    Intent intent = getProductIntent(((ProductItem) data.get(position)).id);
                     context.startActivity(intent);
                 } else if (data.get(position) instanceof RecentView) {
                     RecentView product = (RecentView) data.get(position);
-                    UnifyTracking.eventWishlistView(product.getProductName());
-                    context.startActivity(
-                            ProductDetailRouter.createInstanceProductDetailInfoActivity(
-                                    context, getProductDataToPass((RecentView) data.get(position))
-                            )
-                    );
+                    UnifyTracking.eventWishlistView(view.getContext(), product.getProductName());
+                    Intent intent = getProductIntent(((ProductItem) data.get(position)).id);
+                    context.startActivity(intent);
                 }
             }
         };
+    }
+
+    private Intent getProductIntent(String productId){
+        if (context != null) {
+            return RouteManager.getIntent(context,ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
+        }
     }
 
     private void setBadges(ViewHolder holder, ProductItem data) {
@@ -423,6 +376,9 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                     return TkpdState.RecyclerView.VIEW_WISHLIST;
                 }
             }
+            if (data.get(position) instanceof TopAdsWishlistItem) {
+                return TkpdState.RecyclerView.VIEW_TOP_ADS_LIST;
+            }
         }
         if (isLastItemPosition(position) || data.size() == 0) {
             return super.getItemViewType(position);
@@ -443,12 +399,13 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         return (position + 1) % 2 == 0;
     }
 
-    private View.OnClickListener onDeleteWishlistClicked(final String productId) {
+    private View.OnClickListener onDeleteWishlistClicked(final String productId, final int position) {
         return new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if (wishlistView != null) wishlistView.displayDeleteWishlistDialog(productId);
+                if (wishlistView != null)
+                    wishlistView.displayDeleteWishlistDialog(productId, position);
             }
         };
     }
@@ -457,7 +414,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventWishlistBuy();
+                UnifyTracking.eventWishlistBuy(v.getContext());
                 if (wishlistView != null) wishlistView.displayAddToCart(productId);
             }
         };
@@ -470,7 +427,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     private void setBuyButtonAvailable(TextView buyButtonUnavailable) {
-        buyButtonUnavailable.setBackgroundResource(R.drawable.btn_buy);
+        buyButtonUnavailable.setBackgroundResource(R.drawable.rect_orange);
         buyButtonUnavailable.setTextColor(getColor(context, R.color.white));
         buyButtonUnavailable.setText(R.string.title_buy);
     }

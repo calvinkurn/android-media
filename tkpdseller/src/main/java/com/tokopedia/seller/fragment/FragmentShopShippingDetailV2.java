@@ -2,7 +2,6 @@ package com.tokopedia.seller.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -34,19 +33,23 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
-import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.ShippingConfirmationDetail;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
@@ -61,6 +64,8 @@ import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShop;
 import com.tokopedia.seller.selling.presenter.listener.SellingView;
 import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
+import com.tokopedia.seller.selling.view.fragment.CustomScannerBarcodeActivity;
+import com.tokopedia.track.TrackApp;
 
 import org.parceler.Parcels;
 
@@ -314,40 +319,46 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         productListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(ProductDetailRouter
-                        .createInstanceProductDetailInfoActivity(
-                                getActivity(), getProductDataToPass(position)));
+                startActivity(getProductIntent(orderShippingList.getOrderProducts().get(position).getProductId().toString()));
             }
         });
         askBuyer.setOnClickListener(onAskBuyerClickListener());
         ListViewHelper.getListViewSize(productListView);
     }
 
+    private Intent getProductIntent(String productId){
+        if (getContext() != null) {
+            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
+        }
+    }
+
     private View.OnClickListener onAskBuyerClickListener() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = InboxRouter.getSendMessageActivityIntent(getActivity());
-                Bundle bundle = new Bundle();
-                bundle.putString(InboxRouter.PARAM_USER_ID, orderShippingList.getOrderCustomer().getCustomerId());
-                bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, orderShippingList.getOrderCustomer().getCustomerName());
-                bundle.putString(InboxRouter.PARAM_CUSTOM_SUBJECT,
-                        orderShippingList.getOrderDetail().getDetailInvoice());
-                bundle.putString(InboxRouter.PARAM_CUSTOM_MESSAGE,
-                        MethodChecker.fromHtml(
-                                getString(R.string.custom_content_message_ask_seller)
-                                        .replace("XXX",
-                                                orderShippingList.getOrderDetail().getDetailPdfUri())).toString()
-                );
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+                    Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                            .getAskBuyerIntent(getActivity(),
+                                    orderShippingList.getOrderCustomer().getCustomerId(),
+                                    orderShippingList.getOrderCustomer().getCustomerName(),
+                                    orderShippingList.getOrderDetail().getDetailInvoice(),
+                                    MethodChecker.fromHtml(
+                                            getString(R.string.custom_content_message_ask_seller)
+                                                    .replace("XXX",
+                                                            orderShippingList.getOrderDetail()
+                                                                    .getDetailPdfUri())).toString(),
+                                    TkpdInboxRouter.TX_ASK_BUYER,
+                                    orderShippingList.getOrderCustomer().getCustomerImage());
+                    startActivity(intent);
+                }
             }
         };
     }
 
 
-
-    private void initView(View view){
+    private void initView(View view) {
         invoice = (TextView) view.findViewById(R.id.invoice_text);
         buyerName = (TextView) view.findViewById(R.id.buyer_name);
         courier = (TextView) view.findViewById(R.id.courier);
@@ -361,7 +372,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         detailButton = (TextView) view.findViewById(R.id.detail_button);
         referenceNumber = (EditText) view.findViewById(R.id.ship_ref_number);
         cancelButton = (TextView) view.findViewById(R.id.cancel_button);
-        senderName = (TextView)view.findViewById(R.id.sender_name);
+        senderName = (TextView) view.findViewById(R.id.sender_name);
         senderPhone = (TextView) view.findViewById(R.id.sender_phone);
         errorSpinner = (TextView) view.findViewById(R.id.error_spinner);
         switchCourier = (CheckBox) view.findViewById(R.id.checkBoxSwitchCourier);
@@ -437,14 +448,23 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     public void onBuyerName() {
-        startActivity(
-                PeopleInfoNoDrawerActivity.createInstance(getActivity(), userId)
-        );
+        if (getActivity().getApplicationContext() instanceof SellerModuleRouter) {
+            startActivity(((SellerModuleRouter) getActivity().getApplicationContext())
+                    .getTopProfileIntent(getActivity(), userId));
+        }
     }
 
     public void onDetailClick() {
-        UnifyTracking.eventConfirmShippingDetails();
+        eventConfirmShippingDetails();
         startActivity(ShippingConfirmationDetail.createInstance(getActivity(), orderShippingList, permission, userId, invoiceUrl, invoicePdf));
+    }
+
+    public void eventConfirmShippingDetails() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CONFIRM_SHIPPING,
+                AppEventTracking.Category.SHIPPING,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.DETAILS);
     }
 
     public void onAgencySelect(int position) {
@@ -469,7 +489,6 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     public void onConfirmClick() {
         if (checkConfirmationError()) {
             confirmShipping();
-            TrackingUtils.eventLoca(getActivity().getString(R.string.shipping_confirmation));
         }
     }
 
@@ -483,7 +502,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onScanBarcode() {
-        startActivityForResult(CommonUtils.requestBarcodeScanner(), REQUEST_CODE_BARCODE);
+        CommonUtils.requestBarcodeScanner(this, CustomScannerBarcodeActivity.class);
     }
 
     public void cancelDialog() {
@@ -517,7 +536,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     private void cancelShipping(String remark) {
-        UnifyTracking.eventConfirmShippingCancel();
+        eventConfirmShippingCancel();
         bundle = new Bundle();
         ModelParamSelling modelParamSelling = new ModelParamSelling();
         modelParamSelling.setActionType("reject");
@@ -533,6 +552,15 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 //        facadeAction.cancelShipping(remark, onProcessShippingListener());
     }
 
+    public static void eventConfirmShippingCancel() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CONFIRM_SHIPPING,
+                AppEventTracking.Category.SHIPPING,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.CANCEL);
+    }
+
+
     private void confirmShipping() {
         bundle = new Bundle();
         ModelParamSelling modelParamSelling = new ModelParamSelling();
@@ -544,8 +572,16 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         modelParamSelling.setShipmentName(getAgencyName());
         modelParamSelling.setSpId(getServiceId());
         bundle.putParcelable(SellingService.MODEL_PARAM_SELLING_KEY, Parcels.wrap(modelParamSelling));
-        UnifyTracking.eventConfirmShipping();
+        eventConfirmShipping();
         ((SellingDetailActivity) getActivity()).SellingAction(SellingService.CONFIRM_SHIPPING, bundle);
+    }
+
+    public void eventConfirmShipping() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CONFIRM_SHIPPING,
+                AppEventTracking.Category.SHIPPING,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.CONFIRMATION);
     }
 
     private boolean checkConfirmationError() {
@@ -624,7 +660,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         scanBarcode.setClickable(false);
         switchCourier.setClickable(false);
         isConfirmDone = true;
-        if(!isAfterSaveInstance) {
+        if (!isAfterSaveInstance) {
             getActivity().setResult(getActivity().RESULT_OK);
 //            ((SellingDetailActivity) getActivity()).notifyChangeShipping();
         }
@@ -643,12 +679,8 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        referenceNumber.setText(CommonUtils.getBarcode(requestCode, resultCode, data));
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if(requestCode == REQUEST_CODE_BARCODE) {
-                referenceNumber.setText(CommonUtils.getBarcode(data));
-            }
-        }
     }
 
     @Override
@@ -688,14 +720,27 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     @Override
-    public void setData(int type, Bundle data) {
+    public void setData(final int type, Bundle data) {
         switch (type) {
             case SellingService.CONFIRM_SHIPPING:
             case SellingService.CANCEL_SHIPPING:
                 Data result = Parcels.unwrap(data.getParcelable(SellingService.MODEL_CONFIRM_SHIPPING_KEY));
+                progressDialog.dismiss();
                 if (result.getIsSuccess() == 1) {
-                    progressDialog.dismiss();
                     finishShipping(false);
+                }else{
+                    NetworkErrorHelper.showDialog(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            if (bundle != null) {
+                                if(type == SellingService.CONFIRM_SHIPPING) {
+                                    ((SellingDetailActivity) getActivity()).SellingAction(SellingService.CONFIRM_SHIPPING, bundle);
+                                }else{
+                                    ((SellingDetailActivity) getActivity()).SellingAction(SellingService.CANCEL_SHIPPING, bundle);
+                                }
+                            }
+                        }
+                    });
                 }
                 break;
         }
@@ -791,31 +836,31 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onPermissionDenied(getActivity(),listPermission);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
     }
 
     @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -824,7 +869,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 
     private ProductPass getProductDataToPass(int position) {

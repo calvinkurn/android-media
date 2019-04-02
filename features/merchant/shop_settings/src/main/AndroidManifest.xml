@@ -1,0 +1,58 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.shop.settings">
+
+    <application android:label="@string/app_name">
+        <activity
+            android:name=".basicinfo.view.activity.ShopSettingsInfoActivity"
+            android:label="@string/shop_settings_manage_shop_info"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".basicinfo.view.activity.ShopEditBasicInfoActivity"
+            android:label="@string/shop_settings_basic_info"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".basicinfo.view.activity.ShopEditScheduleActivity"
+            android:label="@string/shop_settings_shop_status"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".address.view.ShopSettingsAddressActivity"
+            android:label="@string/shop_settings_manage_address"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".etalase.view.activity.ShopSettingsEtalaseActivity"
+            android:label="@string/shop_settings_manage_etalase"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".notes.view.activity.ShopSettingsNotesActivity"
+            android:label="@string/shop_settings_manage_notes"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".address.view.ShopSettingAddressAddEditActivity"
+            android:label="@string/shop_settings_add_address"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".notes.view.activity.ShopSettingNotesAddEditActivity"
+            android:label="@string/shop_settings_add_note"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".etalase.view.activity.ShopSettingsEtalaseAddEditActivity"
+            android:label="@string/shop_settings_add_etalase"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait"/>
+
+    </application>
+
+</manifest>

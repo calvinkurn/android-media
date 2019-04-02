@@ -3,11 +3,9 @@ package com.tokopedia.transaction.purchase.activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.IntentService;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,12 +15,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -63,6 +59,8 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     public static final String EXTRA_MESSAGE_ERROR_GET_INVOICE = "EXTRA_MESSAGE_ERROR_GET_INVOICE";
     public static final int RESULT_INVOICE_FAILED = 2;
     public static final int REQUEST_EDIT_PAYMENT = 42;
+    private static final int KLIK_BCA_MODE = 1;
+    private static final String IMAGE_URL = "image_url";
 
     private TxVerData txVerData;
     private TxVerInvoiceAdapter invoiceAdapter;
@@ -156,7 +154,6 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
             case 2:
                 holderAccountBankInfo.setVisibility(View.GONE);
                 btnEditPayment.setVisibility(View.GONE);
-                tvPaymentCode.setVisibility(View.VISIBLE);
                 tvPaymentCode.setText(String.format("Kode %s : %s",
                         txVerData.getBankName(), txVerData.getUserAccountName()));
                 break;
@@ -233,13 +230,15 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     @Override
     public void renderInvoiceList(List<Detail> detail) {
         invoiceAdapter.addAllInvoiceList(detail);
+        if(presenter.getTypePaymentMethod(txVerData) != KLIK_BCA_MODE
+                && !tvPaymentCode.getText().toString().isEmpty()) {
+            tvPaymentCode.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public void renderErrorGetInvoiceData(String message) {
-        setResult(RESULT_INVOICE_FAILED,
-                new Intent().putExtra(EXTRA_MESSAGE_ERROR_GET_INVOICE, message));
-        finish();
+
     }
 
     @Override
@@ -271,9 +270,9 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
                 case ImageUploadHandler.REQUEST_CODE:
                     String imagePath = null;
                     //noinspection deprecation
-                    if (data != null && data.getStringExtra(GalleryBrowser.IMAGE_URL) != null) {
+                    if (data != null && data.getStringExtra(IMAGE_URL) != null) {
                         //noinspection deprecation
-                        imagePath = data.getExtras().getString(GalleryBrowser.IMAGE_URL, null);
+                        imagePath = data.getExtras().getString(IMAGE_URL, null);
                     } else if (imageUploadHandler != null &&
                             imageUploadHandler.getCameraFileloc() != null) {
                         imagePath = imageUploadHandler.getCameraFileloc();
@@ -295,41 +294,15 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     @OnClick(R2.id.upload_button)
     void actionUploadProof() {
         imageUploadHandler = ImageUploadHandler.createInstance(this);
-        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
-        myAlertDialog.setMessage(getString(R.string.dialog_upload_option));
-        myAlertDialog.setPositiveButton(getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                TxVerDetailActivityPermissionsDispatcher.onActionImagePickerWithCheck(
-                        TxVerDetailActivity.this
-                );
-            }
-        });
-        myAlertDialog.setNegativeButton(getString(R.string.title_camera), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                TxVerDetailActivityPermissionsDispatcher.onActionCameraWithCheck(
-                        TxVerDetailActivity.this
-                );
 
-            }
-        });
-        Dialog dialog = myAlertDialog.create();
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.show();
     }
 
     @SuppressLint("InlinedApi")
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void onActionCamera() {
         imageUploadHandler.actionCamera();
     }
 
-    @SuppressLint("InlinedApi")
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void onActionImagePicker() {
-        imageUploadHandler.actionImagePicker();
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
@@ -341,11 +314,12 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     }
 
     @SuppressLint("InlinedApi")
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showRationaleForStorageAndCamera(final PermissionRequest request) {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onShowRationale(this, request, listPermission);
     }
@@ -381,21 +355,23 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     }
 
     @SuppressLint("InlinedApi")
-    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onPermissionDenied(this, listPermission);
     }
 
     @SuppressLint("InlinedApi")
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showNeverAskForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onNeverAskAgain(this, listPermission);
     }
@@ -406,5 +382,10 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
                 this, detailInvoice != null ? detailInvoice.getUrl() : "",
                 detailInvoice != null ? detailInvoice.getInvoice() : ""
         );
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

@@ -46,6 +46,9 @@ public class DataUser implements Parcelable {
     @SerializedName("user_image_100")
     @Expose
     private String userImage100;
+    @SerializedName("user_generated_name")
+    @Expose
+    private boolean isUserGeneratedName;
 
     /**
      *
@@ -253,6 +256,17 @@ public class DataUser implements Parcelable {
         this.userImage100 = userImage100;
     }
 
+    public boolean isUserGeneratedName() {
+        return isUserGeneratedName;
+    }
+
+    public void setUserGeneratedName(boolean userGeneratedName) {
+        isUserGeneratedName = userGeneratedName;
+    }
+
+    public DataUser() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -272,9 +286,7 @@ public class DataUser implements Parcelable {
         dest.writeString(this.gender);
         dest.writeString(this.userImage);
         dest.writeString(this.userImage100);
-    }
-
-    public DataUser() {
+        dest.writeByte(this.isUserGeneratedName ? (byte) 1 : (byte) 0);
     }
 
     protected DataUser(Parcel in) {
@@ -290,6 +302,7 @@ public class DataUser implements Parcelable {
         this.gender = in.readString();
         this.userImage = in.readString();
         this.userImage100 = in.readString();
+        this.isUserGeneratedName = in.readByte() != 0;
     }
 
     public static final Creator<DataUser> CREATOR = new Creator<DataUser>() {

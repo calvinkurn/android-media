@@ -1,8 +1,7 @@
 package com.tokopedia.discovery.search.view.fragment;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,63 +9,91 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
-import com.tokopedia.core.R2;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
-import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.activity.BrowseProductActivity;
+import com.tokopedia.discovery.autocomplete.OnScrollListenerAutocomplete;
+import com.tokopedia.discovery.autocomplete.TabAutoCompleteCallback;
 import com.tokopedia.discovery.catalog.analytics.AppScreen;
-import com.tokopedia.discovery.search.domain.model.SearchItem;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.search.view.adapter.SearchAdapter;
 import com.tokopedia.discovery.search.view.adapter.factory.SearchAdapterTypeFactory;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 /**
  * @author erry on 23/02/17.
  */
 
-public class SearchResultFragment extends TkpdBaseV4Fragment
-        implements ItemClickListener {
+public class SearchResultFragment extends TkpdBaseV4Fragment {
 
     private static final String TAG = SearchResultFragment.class.getSimpleName();
-    private Unbinder unbinder;
+    private static final String ARGS_INSTANCE_NAME = "ARGS_INSTANCE_NAME";
+    private static final String DEFAULT_INSTANCE_TPE = "unknown";
+    private static final String ARGS_INSTANCE_TYPE = "ARGS_INSTANCE_TYPE";
     private SearchAdapter adapter;
     private LinearLayoutManager layoutManager;
+    private ItemClickListener clickListener;
+    private TabAutoCompleteCallback tabAutoCompleteListener;
+    private String instanceType;
+    private int instanceIndex;
 
-    @BindView(R2.id.list)
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
 
-    public static SearchResultFragment newInstance() {
+    public SearchResultFragment() {
+    }
+
+    public static SearchResultFragment newInstance(String tabName,
+                                                   int tabIndex,
+                                                   ItemClickListener clickListener,
+                                                   TabAutoCompleteCallback tabAutoCompleteListener) {
 
         Bundle args = new Bundle();
+        args.putString(ARGS_INSTANCE_NAME, tabName);
+        args.putInt(ARGS_INSTANCE_TYPE, tabIndex);
 
         SearchResultFragment fragment = new SearchResultFragment();
+        fragment.setCallBackListener(clickListener);
+        fragment.setHostListener(tabAutoCompleteListener);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    private void setHostListener(TabAutoCompleteCallback tabAutoCompleteListener) {
+        this.tabAutoCompleteListener = tabAutoCompleteListener;
+    }
+
+    private void setCallBackListener(ItemClickListener clickListener) {
+        this.clickListener = clickListener;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        instanceType = getArguments().getString(ARGS_INSTANCE_NAME, DEFAULT_INSTANCE_TPE);
+        instanceIndex = getArguments().getInt(ARGS_INSTANCE_TYPE);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_search_result, container, false);
-        unbinder = ButterKnife.bind(this, parentView);
+        initView(parentView);
         prepareView(parentView);
         return parentView;
+    }
+
+    private void initView(View view) {
+        recyclerView = view.findViewById(R.id.list);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (tabAutoCompleteListener != null) {
+            tabAutoCompleteListener.onAdapterReady(instanceIndex, adapter);
+        }
     }
 
     @Override
@@ -77,7 +104,6 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
     }
 
     public void addSearchResult(Visitable visitable) {
@@ -86,13 +112,21 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
         }
     }
 
+    public void addBulkSearchResult(List<Visitable> list) {
+        if (adapter != null) {
+            adapter.addAll(list);
+        }
+    }
+
     private void prepareView(View view) {
-        SearchAdapterTypeFactory typeFactory = new SearchAdapterTypeFactory(this);
+        SearchAdapterTypeFactory typeFactory = new SearchAdapterTypeFactory(instanceType, clickListener);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         adapter = new SearchAdapter(typeFactory);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
+        recyclerView.addOnScrollListener(new OnScrollListenerAutocomplete(view.getContext(), view));
     }
 
     public void clearData() {
@@ -101,58 +135,4 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
         }
     }
 
-    @Override
-    public void onItemClicked(SearchItem item) {
-        probeAnalytics(item);
-        if (item.getEventAction().equals("shop") && item.getApplink() != null) {
-            List<String> segments = Uri.parse(item.getApplink()).getPathSegments();
-            if (segments != null && segments.size() > 0) {
-                Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-                intent.putExtras(ShopInfoActivity.createBundle(segments.get(0), ""));
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getActivity().startActivity(intent);
-            }
-        } else if (item.getSc() != null && !item.getSc().isEmpty()) {
-            ((BrowseProductActivity) getActivity()).sendQuery(item.getKeyword(), item.getSc());
-        } else {
-            ((BrowseProductActivity) getActivity()).sendQuery(item.getKeyword());
-        }
-    }
-
-
-    private void probeAnalytics(SearchItem item){
-        switch (item.getEventAction())
-        {
-            case AppEventTracking.GTM.SEARCH_AUTOCOMPLETE :
-                UnifyTracking.eventClickAutoCompleteSearch(item.getKeyword());
-                break;
-            case AppEventTracking.GTM.SEARCH_HOTLIST :
-                UnifyTracking.eventClickHotListSearch(item.getKeyword());
-                break;
-            case AppEventTracking.GTM.SEARCH_RECENT :
-                UnifyTracking.eventClickRecentSearch(item.getKeyword());
-                break;
-            case AppEventTracking.GTM.SEARCH_POPULAR :
-                UnifyTracking.eventClickPopularSearch(item.getKeyword());
-                break;
-            case AppEventTracking.GTM.SEARCH_AUTOCOMPLETE_IN_CAT :
-                UnifyTracking.eventClickAutoCompleteCategory(item.getSc(), item.getKeyword());
-                break;
-        }
-    }
-
-    @Override
-    public void copyTextToSearchView(String text) {
-        ((BrowseProductActivity) getActivity()).setSearchQuery(text + " ");
-    }
-
-    @Override
-    public void onDeleteRecentSearchItem(SearchItem item) {
-        ((BrowseProductActivity) getActivity()).deleteRecentSearch(item.getKeyword());
-    }
-
-    @Override
-    public void onDeleteAllRecentSearch() {
-        ((BrowseProductActivity) getActivity()).deleteAllRecentSearch();
-    }
 }

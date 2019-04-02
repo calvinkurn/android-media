@@ -17,9 +17,10 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewParent;
-import android.webkit.WebView;
 
-public class NestedWebView extends WebView implements NestedScrollingChild {
+import com.tokopedia.core.util.TkpdWebView;
+
+public class NestedWebView extends TkpdWebView implements NestedScrollingChild {
     private int mLastY;
     private final int[] mScrollOffset = new int[2];
     private final int[] mScrollConsumed = new int[2];

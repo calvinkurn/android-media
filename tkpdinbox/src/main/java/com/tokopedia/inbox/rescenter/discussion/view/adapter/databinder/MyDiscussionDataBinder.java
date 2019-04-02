@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.core.PreviewProductImage;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
@@ -97,10 +97,10 @@ public class MyDiscussionDataBinder extends DataBinder<MyDiscussionDataBinder.Vi
                 return new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (imageUpload.getImgThumb() != null && !imageUpload.getImgThumb().equals("")) {
-                            openProductPreview(list, position);
-                        } else if (imageUpload.getUrl() != null && !imageUpload.getUrl().equals("")) {
+                        if (imageUpload.isVideo()) {
                             openVideoPlayer(imageUpload.getUrl());
+                        } else {
+                            openProductPreview(list, position);
                         }
                     }
                 };

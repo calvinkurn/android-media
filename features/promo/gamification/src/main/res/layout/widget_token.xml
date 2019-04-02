@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/imagefull"
+        android:layout_width="@dimen/width_egg"
+        android:layout_height="@dimen/height_egg"
+        android:scaleType="fitCenter"
+        android:layout_gravity="center"
+        tools:srcCompat="@drawable/ic_empty_egg" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/imageleft"
+        android:layout_width="@dimen/width_egg"
+        android:layout_height="@dimen/height_egg"
+        android:layout_marginRight="0dp"
+        android:layout_marginEnd="0dp"
+        android:scaleType="fitCenter"
+        tools:srcCompat="@drawable/ic_empty_egg"
+        android:layout_gravity="center"/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/imageright"
+        android:layout_width="@dimen/width_egg"
+        android:layout_height="@dimen/height_egg"
+        android:layout_marginLeft="0dp"
+        android:layout_marginStart="0dp"
+        android:scaleType="fitCenter"
+        tools:srcCompat="@drawable/ic_empty_egg"
+        android:layout_gravity="center"/>
+
+
+    <com.tokopedia.gamification.cracktoken.customview.MaskedHeightImageView
+        android:id="@+id/imagecracked"
+        android:layout_width="@dimen/width_egg"
+        android:layout_height="@dimen/height_egg"
+        android:scaleType="fitCenter"
+        tools:srcCompat="@drawable/ic_empty_egg"
+        android:layout_gravity="center"/>
+
+
+</merge>

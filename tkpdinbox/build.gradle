@@ -1,110 +1,96 @@
 apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
-apply plugin: 'com.jfrog.artifactory'
-apply plugin: 'maven-publish'
+apply plugin: 'com.jakewharton.butterknife'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
 
-def getArtifactVersionCode() {
-    return project.hasProperty('artifactVersion') ? artifactVersion : '1.998';
+repositories {
+    maven { url 'https://hansel.io/maven' }
 }
 
-def getTkpdCore() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
-}
-
-publishing {
-    publications {
-        aar(MavenPublication) {
-            groupId 'com.tokopedia.inbox'
-            artifactId 'inbox'
-            version getArtifactVersionCode()
-            artifact("$buildDir/outputs/aar/tkpdinbox-release.aar")
-            pom.withXml {
-                def dependenciesNode = asNode().appendNode('dependencies')
-
-                configurations.compile.allDependencies.each {
-                    if (it.group != null && it.name != null) {
-                        def dependencyNode = dependenciesNode.appendNode('dependency')
-                        dependencyNode.appendNode('groupId', it.group)
-                        dependencyNode.appendNode('artifactId', it.name)
-                        dependencyNode.appendNode('version', it.version)
-                    }
-                }
-            }
+buildscript {
+    repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        mavenCentral()
+        jcenter()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
+            exclude group: 'com.android.tools.build', module: 'gradle'
         }
+        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
-artifactory {
-    contextUrl = rootProject.ext.artifactoryUrl
-    publish {
-        repository {
-            repoKey = 'libs-release-local'
-
-            username = artifactory_username
-            password = artifactory_password
-        }
-        defaults {
-            publications('aar')
-            publishArtifacts = true
-
-            properties = ['qa.level': 'basic', 'q.os': 'android', 'dev.team': 'core']
-            publishPom = true
-        }
-    }
-}
-
-
-android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion "25.0.0"
-
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-
-    configurations.all {
-        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
-    }
+project.ext {
+    artifactId = 'inbox'
+    groupId = 'com.tokopedia.inbox'
+    versionName = "2.22"
+    artifactName ="tkpdinbox-release"
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile getTkpdCore()
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.libraries.bottomSheetBuilder)
+    
+    implementation project(rootProject.ext.libraries.track)
 
-    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.cacheApi)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.pushNotif)
+    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
-    compile rootProject.ext.butterKnifeDependencies.butterKnife
-    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
-    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation (rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
+    }
 
-    provided rootProject.ext.miscDependencies.javaxAnnotation
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.networkDependencies.glide
 
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testCompile 'junit:junit:4.12'
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+
+    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
+
+    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+
+    implementation rootProject.ext.butterKnifeDependencies.butterKnife
+    annotationProcessor  rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    implementation rootProject.ext.miscDependencies.parcelerApi
+    annotationProcessor rootProject.ext.miscDependencies.parceler
+    implementation rootProject.ext.miscDependencies.scannerZxing
+
+    implementation rootProject.ext.playServicesDependencies.maps
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation rootProject.ext.viewDependencies.appIntro
+    implementation project(rootProject.ext.libraries.core_legacy)
 }
+
+apply from: '../publish_local.gradle'

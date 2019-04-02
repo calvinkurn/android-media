@@ -9,15 +9,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customView.EndLessScrollBehavior;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
@@ -26,6 +25,7 @@ import com.tokopedia.core.manage.people.address.adapter.ManagePeopleAddressAdapt
 import com.tokopedia.core.manage.people.address.listener.MPAddressActivityListener;
 import com.tokopedia.core.manage.people.address.listener.MPAddressFragmentListener;
 import com.tokopedia.core.manage.people.address.model.AddressModel;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.manage.people.address.presenter.ManagePeopleAddressFragmentImpl;
 import com.tokopedia.core.manage.people.address.presenter.ManagePeopleAddressFragmentPresenter;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -58,6 +58,8 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
     private MPAddressActivityListener listener;
     private ManagePeopleAddressAdapter adapter;
     private RefreshHandler refreshHandler;
+
+    private Token token;
 
     public static Fragment newInstance() {
         ManagePeopleAddressFragment fragment = new ManagePeopleAddressFragment();
@@ -329,10 +331,17 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
     @Override
     public void openFormAddressView(AddressModel data) {
         if (data == null) {
-            startActivityForResult(AddAddressActivity.createInstance(getActivity()), ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
+            startActivityForResult(AddAddressActivity.createInstance(getActivity(), this.token),
+                    ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
         } else {
-            startActivityForResult(AddAddressActivity.createInstance(getActivity(), data), ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
+            startActivityForResult(AddAddressActivity.createInstance(getActivity(), data, this.token),
+                    ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
         }
+    }
+
+    @Override
+    public void setToken(Token token) {
+        this.token = token;
     }
 
     @Override
@@ -342,7 +351,7 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
             NetworkErrorHelper.removeEmptyState(getView());
             presenter.setAllowConnection(true);
             presenter.setActionOnRefreshing(getActivity());
-        }else if(resultCode == ManageAddressConstant.RESULT_ERROR){
+        } else if(resultCode == ManageAddressConstant.RESULT_ERROR){
             showErrorMessageSnackBar(data.getExtras().getString("message"));
         }
     }

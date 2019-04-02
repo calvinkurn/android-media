@@ -1,70 +1,58 @@
 <resources>
-
-    <string-array name="filter_status_list_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
+    <string-array name="product_weight_entries">
+        <item>Gram</item>
+        <item>Kg</item>
+    </string-array>
+    <string-array name="product_weight_values">
+        <item>@string/product_weight_value_gram</item>
+        <item>@string/product_weight_value_kg</item>
     </string-array>
 
-    <string-array name="filter_status_list_names">
-        <item>@string/label_top_ads_all_status</item>
-        <item>@string/label_top_ads_active</item>
-        <item>@string/label_top_ads_not_sent</item>
-        <item>@string/label_top_ads_not_active</item>
+    <string-array name="product_stock_status_entries">
+        <item>Selalu Tersedia</item>
+        <item>Stok Terbatas</item>
+        <item>Stok Kosong</item>
+    </string-array>
+    <string-array name="product_stock_status_values">
+        <item>@string/product_stock_available_value</item>
+        <item>@string/product_stock_limited_value</item>
+        <item>@string/product_stock_not_available_value</item>
     </string-array>
 
-    <string-array name="top_ads_keyword_filter_status_list_values">
-        <item>0</item>
-        <item>1</item>
-        <item>3</item>
+    <string-array name="product_condition_entries">
+        <item>Baru</item>
+        <item>Bekas</item>
+    </string-array>
+    <string-array name="product_condition_values">
+        <item>@string/product_condition_value_new</item>
+        <item>@string/product_condition_value_recon</item>
     </string-array>
 
-    <string-array name="top_ads_keyword_filter_status_list_names">
-        <item>@string/label_top_ads_all_status</item>
-        <item>@string/label_top_ads_active</item>
-        <item>@string/label_top_ads_not_active</item>
+    <string-array name="product_insurance_entries">
+        <item>Opsional</item>
+        <item>Ya</item>
+    </string-array>
+    <string-array name="product_insurance_values">
+        <item>@string/product_insurance_value_optional</item>
+        <item>@string/product_insurance_value_yes</item>
     </string-array>
 
-    <string-array name="filter_group_name_list_values">
-        <item>0</item>
-        <item>-1</item>
-        <item>-2</item>
+    <string-array name="product_free_returns_entries">
+        <item>Ya</item>
+        <item>Tidak</item>
+    </string-array>
+    <string-array name="product_free_returns_values">
+        <item>@string/product_free_return_values_active</item>
+        <item>@string/product_free_return_values_inactive</item>
     </string-array>
 
-    <string-array name="filter_group_name_list_names">
-        <item>@string/label_top_ads_all_product</item>
-        <item>@string/label_top_ads_inside_group</item>
-        <item>@string/label_top_ads_outside_group</item>
+    <string-array name="product_pre_order_entries">
+        <item>Hari</item>
+        <item>Minggu</item>
     </string-array>
-
-    <string-array name="filter_status_promo_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>3</item>
-        <item>2</item>
-    </string-array>
-
-    <string-array name="filter_status_promo_list_names">
-        <item>@string/label_top_ads_all_status</item>
-        <item>@string/label_top_ads_not_promoted_yet</item>
-        <item>@string/label_top_ads_outside_group</item>
-        <item>@string/label_top_ads_inside_group</item>
-    </string-array>
-
-    <string-array name="top_ads_keyword_type_positive_list_values" >
-        <item>11</item>
-        <item>21</item>
-    </string-array>
-
-    <string-array name="top_ads_keyword_type_list_names" >
-        <item>Phrase Match</item>
-        <item>Exact Match</item>
-    </string-array>
-
-    <string-array name="top_ads_keyword_type_negative_list_values" >
-        <item>12</item>
-        <item>22</item>
+    <string-array name="product_pre_order_values">
+        <item>@string/product_pre_order_value_day</item>
+        <item>@string/product_pre_order_value_week</item>
     </string-array>
 
 </resources>

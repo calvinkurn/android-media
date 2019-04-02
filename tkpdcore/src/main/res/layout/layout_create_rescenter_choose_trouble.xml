@@ -34,7 +34,8 @@
             android:id="@id/view_desc"
             android:layout_marginTop="@dimen/margin_small"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:hint="@string/prompt_desc_trouble">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/box_desc"
@@ -43,8 +44,8 @@
                 android:maxLines="2"
                 android:minLines="2"
                 android:gravity="center_vertical"
-                android:textSize="@dimen/font_small"
-                android:hint="@string/prompt_desc_trouble"/>
+                android:textSize="@dimen/sp_14"
+                />
 
         </android.support.design.widget.TextInputLayout>
 

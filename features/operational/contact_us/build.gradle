@@ -1,0 +1,64 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'io.hansel.preprocessor.module'
+project.ext {
+    artifactId = 'contactus'
+    groupId = 'com.tokopedia.contactus'
+    versionName = "${tkpdContactUsVersion}"
+    artifactName = "contactus-release"
+}
+
+buildscript {
+    repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url 'https://hansel.io/maven' }
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT') {
+            exclude group: 'com.android.tools.build', module: 'gradle'
+        }
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.inbox)
+
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.coreNetwork)
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation rootProject.ext.butterKnifeDependencies.butterKnife
+    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+
+    implementation rootProject.ext.viewDependencies.expandableTextview
+
+    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation project(rootProject.ext.libraries.core_legacy)
+}

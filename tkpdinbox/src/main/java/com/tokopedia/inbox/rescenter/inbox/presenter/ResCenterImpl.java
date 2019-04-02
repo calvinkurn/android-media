@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.router.InboxRouter;
@@ -63,7 +63,7 @@ public class ResCenterImpl implements ResCenterPresenter {
     }
 
     private boolean isHasShop(Context context) {
-        return !(SessionHandler.getShopID(context).equals("0") || SessionHandler.getShopID(context).equals(""));
+        return SessionHandler.isUserHasShop(context);
     }
 
     @Override

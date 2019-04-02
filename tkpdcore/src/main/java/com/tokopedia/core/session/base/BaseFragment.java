@@ -49,6 +49,12 @@ public abstract class BaseFragment<T extends Base> extends Fragment implements B
         return this.parentView = onCreateView(parentView, savedInstanceState);
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        presenter.initData(getActivity());
+    }
+
     public View onCreateView(View parentView, Bundle savedInstanceState){ return parentView; }
 
     protected void customView(){
@@ -63,7 +69,6 @@ public abstract class BaseFragment<T extends Base> extends Fragment implements B
     public void onResume() {
         super.onResume();
         presenter.subscribe();
-        presenter.initData(getActivity());
     }
 
     @Override

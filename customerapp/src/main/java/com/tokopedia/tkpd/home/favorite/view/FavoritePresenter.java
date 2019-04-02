@@ -9,10 +9,11 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.AddFavoriteShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetAllDataFavoriteUseCase;
-import com.tokopedia.tkpd.home.favorite.domain.interactor.GetInitialDataPageUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteShopUsecase;
+import com.tokopedia.tkpd.home.favorite.domain.interactor.GetInitialDataPageUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetTopAdsShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.model.DataFavorite;
 import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
@@ -21,7 +22,6 @@ import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShopItem;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.DataFavoriteMapper;
-import com.tokopedia.tkpd.home.favorite.view.viewmodel.EmptyWishlistViewModel;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopItem;
 
@@ -43,7 +43,7 @@ public class FavoritePresenter
 
     private final GetInitialDataPageUsecase getInitialDataPageUsecase;
     private final GetTopAdsShopUseCase getTopAdsShopUseCase;
-    private final AddFavoriteShopUseCase addFavoriteShopUseCase;
+    private final ToggleFavouriteShopUseCase toggleFavouriteShopUseCase;
     private final GetAllDataFavoriteUseCase getAllDataFavoriteUseCase;
     private final GetFavoriteShopUsecase getFavoriteShopUsecase;
     private DataFavoriteMapper favoriteMapper;
@@ -52,14 +52,14 @@ public class FavoritePresenter
     @Inject
     FavoritePresenter(GetInitialDataPageUsecase getInitialDataPageUsecase,
                       GetTopAdsShopUseCase getTopAdsShopUseCase,
-                      AddFavoriteShopUseCase addFavoriteShopUseCase,
+                      ToggleFavouriteShopUseCase toggleFavouriteShopUseCase,
                       GetAllDataFavoriteUseCase getAllDataFavoriteUseCase,
                       GetFavoriteShopUsecase getFavoriteShopUsecase,
                       DataFavoriteMapper favoriteMapper) {
 
         this.getInitialDataPageUsecase = getInitialDataPageUsecase;
         this.getTopAdsShopUseCase = getTopAdsShopUseCase;
-        this.addFavoriteShopUseCase = addFavoriteShopUseCase;
+        this.toggleFavouriteShopUseCase = toggleFavouriteShopUseCase;
         this.getAllDataFavoriteUseCase = getAllDataFavoriteUseCase;
         this.getFavoriteShopUsecase = getFavoriteShopUsecase;
         this.favoriteMapper = favoriteMapper;
@@ -79,7 +79,7 @@ public class FavoritePresenter
         getTopAdsShopUseCase.unsubscribe();
         getAllDataFavoriteUseCase.unsubscribe();
         getFavoriteShopUsecase.unsubscribe();
-        addFavoriteShopUseCase.unsubscribe();
+        toggleFavouriteShopUseCase.unsubscribe();
     }
 
     @Override
@@ -90,11 +90,7 @@ public class FavoritePresenter
 
     @Override
     public void addFavoriteShop(View view, TopAdsShopItem shopItem) {
-        RequestParams params = RequestParams.create();
-        params.putString(AddFavoriteShopUseCase.KEY_AD, shopItem.getAdKey());
-        params.putString(AddFavoriteShopUseCase.KEY_SHOP_ID, shopItem.getShopId());
-        params.putString(AddFavoriteShopUseCase.KEY_SRC, AddFavoriteShopUseCase.DEFAULT_VALUE_SRC);
-        addFavoriteShopUseCase.execute(params, new AddFavoriteShopSubscriber(view, shopItem));
+        toggleFavouriteShopUseCase.execute(ToggleFavouriteShopUseCase.createRequestParam(shopItem.getShopId()), new AddFavoriteShopSubscriber(view, shopItem));
     }
 
     @Override
@@ -116,18 +112,21 @@ public class FavoritePresenter
 
     @Override
     public void onSaveDataBeforeRotate(Bundle outState) {
-        pagingHandler.onSavedInstanceState(outState);
+
     }
 
     @Override
     public void onViewStateRestored(Bundle outState) {
-        if (outState != null) {
-            pagingHandler.onCreate(outState);
-        }
+
     }
 
     private void setNextPaging(PagingHandler.PagingHandlerModel pagingModel) {
-        pagingHandler.setHasNext(PagingHandler.CheckHasNext(pagingModel));
+        if (pagingModel != null) {
+            pagingHandler.setHasNext(PagingHandler.CheckHasNext(pagingModel));
+        } else {
+            pagingHandler.setHasNext(false);
+            getView().stopLoadingFavoriteShop();
+        }
     }
 
     private void validateFavoriteShopErrorNetwork(DataFavorite dataFavorite) {
@@ -198,18 +197,6 @@ public class FavoritePresenter
         }
     }
 
-    private void addWishlist(DataFavorite dataFavorite, List<Visitable> dataFavoriteItemList) {
-        if (dataFavorite != null) {
-            if (dataFavorite.getWishListData() != null) {
-                validateWishlistErrorNetwork(dataFavorite.getWishListData());
-                dataFavoriteItemList.add(
-                        favoriteMapper.prepareDataWishlist(dataFavorite.getWishListData()));
-            } else {
-                dataFavoriteItemList.add(new EmptyWishlistViewModel());
-            }
-        }
-    }
-
     private void returnPagingHandlerToPreviousPage() {
         final int firstPage = 1;
         int currentPage = pagingHandler.getPage();
@@ -247,12 +234,12 @@ public class FavoritePresenter
             getView().hideRefreshLoading();
             getView().showInitialDataPage(getDataFavoriteViewModel(dataFavorite));
             getView().validateMessageError();
+            getView().stopTracePerformanceMonitoring();
         }
 
         @NonNull
         private List<Visitable> getDataFavoriteViewModel(DataFavorite dataFavorite) {
             List<Visitable> elementList = new ArrayList<>();
-            addWishlist(dataFavorite, elementList);
             addTopAdsShop(dataFavorite, elementList);
             addFavoriteShop(dataFavorite, elementList);
 
@@ -282,7 +269,6 @@ public class FavoritePresenter
         @Override
         public void onNext(DataFavorite dataFavorite) {
             List<Visitable> dataFavoriteItemList = new ArrayList<>();
-            addWishlist(dataFavorite, dataFavoriteItemList);
             addTopAdsShop(dataFavorite, dataFavoriteItemList);
             addFavoriteShop(dataFavorite, dataFavoriteItemList);
             getView().refreshDataFavorite(dataFavoriteItemList);
@@ -312,12 +298,14 @@ public class FavoritePresenter
                 setNextPaging(favoriteShop.getPagingModel());
                 List<Visitable> elementList = favoriteMapper.prepareListFavoriteShop(favoriteShop);
                 getView().showMoreDataFavoriteShop(elementList);
+            } else {
+                setNextPaging(favoriteShop.getPagingModel());
             }
         }
 
     }
 
-    private class AddFavoriteShopSubscriber extends Subscriber<FavShop> {
+    private class AddFavoriteShopSubscriber extends Subscriber<Boolean> {
 
         private final View view;
         private TopAdsShopItem shopItem;
@@ -328,8 +316,12 @@ public class FavoritePresenter
         }
 
         @Override
-        public void onCompleted() {
+        public void onStart() {
+            view.setEnabled(false);
+        }
 
+        @Override
+        public void onCompleted() {
         }
 
         @Override
@@ -339,9 +331,9 @@ public class FavoritePresenter
         }
 
         @Override
-        public void onNext(FavShop favShop) {
+        public void onNext(Boolean isValid) {
             view.clearAnimation();
-            if (favShop.isValid()) {
+            if (isValid) {
                 FavoriteShopViewModel favoriteShopViewModel = new FavoriteShopViewModel();
                 favoriteShopViewModel.setShopId(shopItem.getShopId());
                 favoriteShopViewModel.setShopName(shopItem.getShopName());

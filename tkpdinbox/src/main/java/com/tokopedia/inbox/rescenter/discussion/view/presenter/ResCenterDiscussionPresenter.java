@@ -13,6 +13,8 @@ public interface ResCenterDiscussionPresenter {
 
     void sendReply();
 
+    void sendReplySupportVideo();
+
     void setDiscussionText(String discussionText);
 
     void loadMore();

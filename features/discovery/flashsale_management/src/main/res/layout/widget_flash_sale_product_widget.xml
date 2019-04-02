@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_4"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="@dimen/dp_2"
+    app:cardPreventCornerOverlap="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/grey_300"
+            android:paddingTop="@dimen/dp_6"
+            android:paddingBottom="@dimen/dp_6"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:visibility="gone"
+            tools:visibility="visible">
+            <ImageView
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
+                android:src="@drawable/ic_info_black"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="@dimen/dp_8"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/TextView.Micro.BlackSecondary"
+                tools:text="Maaf produk diberhentikan dalam Flash Sale karena Seller menaikkan harga normal sebelum Flash Sale dimulai."/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8"
+            android:foreground="?android:attr/selectableItemBackground">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="@dimen/dp_96"
+                android:layout_height="@dimen/dp_96"
+                android:layout_gravity="top"
+                android:layout_marginRight="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_4"
+                app:cardElevation="@dimen/dp_0"
+                app:cardCornerRadius="@dimen/dp_4"
+                app:cardPreventCornerOverlap="false"
+                app:cardUseCompatPadding="true">
+
+                <ImageView
+                    android:id="@+id/ivProduct"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/ic_launcher"
+                    tools:src="@tools:sample/avatars" />
+
+                <TextView
+                    android:id="@+id/tvPercentOff"
+                    style="@style/TextView.Micro.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|end"
+                    android:background="@drawable/rect_red_rounded"
+                    android:paddingLeft="@dimen/dp_8"
+                    android:paddingTop="@dimen/dp_2"
+                    android:paddingRight="@dimen/dp_8"
+                    android:paddingBottom="@dimen/dp_2"
+                    android:layout_marginRight="@dimen/dp_2"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:text="@string/x_percent_off"
+                    android:textColor="@color/red_500"
+                    android:textSize="@dimen/sp_11"
+                    tools:text="12% OFF" />
+
+                <FrameLayout
+                    android:id="@+id/vgBlackMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/black_70" >
+                    <TextView
+                        android:id="@+id/tvMessage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/TextView.Micro"
+                        android:padding="@dimen/dp_2"
+                        android:layout_gravity="center"
+                        android:textColor="@color/white"
+                        tools:text="Kuota Kategori Terpenuhi"
+                        android:gravity="center"/>
+                </FrameLayout>
+            </android.support.v7.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_2"
+                    android:orientation="horizontal"
+                    android:baselineAligned="true">
+
+                    <TextView
+                        android:id="@+id/tvDepartmentName"
+                        style="@style/TextView.Micro.BlackSecondary"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        tools:text="Electronic > Audio"
+                        android:layout_gravity="center_vertical"/>
+
+                    <TextView
+                        android:id="@+id/tvStatus"
+                        style="@style/TextView.Micro.WhitePrimary"
+                        android:layout_width="wrap_content"
+                        android:minWidth="@dimen/dp_72"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/rect_gray_rounded_left"
+                        android:paddingLeft="@dimen/dp_12"
+                        android:paddingTop="@dimen/dp_4"
+                        android:paddingRight="@dimen/dp_12"
+                        android:paddingBottom="@dimen/dp_4"
+                        android:text="@string/flash_sale_rejected"
+                        tools:text="@string/flash_sale_rejected"
+                        android:gravity="center"
+                        android:layout_gravity="center_vertical"/>
+
+                    <ImageView
+                        android:id="@+id/ivCheckMark"
+                        android:layout_width="@dimen/dp_24"
+                        android:layout_height="@dimen/dp_24"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_check"
+                        android:layout_marginRight="@dimen/dp_8"/>
+                </LinearLayout>
+
+                <TextView
+                    style="@style/TextView.Small"
+                    android:id="@+id/tvProductName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_4"
+                    android:paddingRight="@dimen/dp_16"
+                    android:paddingEnd="@dimen/dp_16"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    tools:text="Xiaomi Redmi 5 Plus (4GB/64GB) Gold (HMI-RSP-64GOL)" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_4"
+                    android:baselineAligned="true"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvStrikePrice"
+                        style="@style/TextView.Micro.BlackSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/dp_8"
+                        tools:text="Rp2.783.000" />
+
+                    <TextView
+                        android:id="@+id/tvFinalPrice"
+                        style="@style/TextView.Small.OrangeRed.Bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="Rp2.783.000" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvStock"
+                        style="@style/TextView.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        tools:text="Stok 500" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

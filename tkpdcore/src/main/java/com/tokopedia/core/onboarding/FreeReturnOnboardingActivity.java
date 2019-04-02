@@ -8,7 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.onboarding.fragment.OnBoardingFragment;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
@@ -50,6 +50,11 @@ public class FreeReturnOnboardingActivity extends BaseOnboardingActivity {
                         | View.SYSTEM_UI_FLAG_IMMERSIVE);
 
         setFlowAnimation();
+    }
+
+    @Override
+    public void onSkipPressed() {
+        onDonePressed();
     }
 
     @Override

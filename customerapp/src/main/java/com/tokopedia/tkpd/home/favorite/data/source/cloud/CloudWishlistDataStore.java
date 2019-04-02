@@ -2,17 +2,30 @@ package com.tokopedia.tkpd.home.favorite.data.source.cloud;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
-import com.tokopedia.core.base.common.service.MojitoService;
-import com.tokopedia.core.base.utils.HttpResponseValidator;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.graphql.data.ObservableFactory;
+import com.tokopedia.graphql.data.model.CacheType;
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.data.mapper.WishlistMapper;
 import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
 
-import retrofit2.Response;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import rx.Observable;
+
+import static com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUtil.KEY_COUNT;
+import static com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUtil.KEY_PAGE;
+import static com.tokopedia.tkpd.home.presenter.WishListImpl.ITEM_COUNT;
+import static com.tokopedia.tkpd.home.presenter.WishListImpl.PAGE_NO;
 
 /**
  * @author Kulomady on 1/18/17.
@@ -20,31 +33,35 @@ import rx.Observable;
 public class CloudWishlistDataStore {
 
     private Context context;
-    private MojitoService mojitoService;
-    private Gson gson;
 
-    public CloudWishlistDataStore(Context context, Gson gson, MojitoService mojitoService) {
+    public CloudWishlistDataStore(Context context) {
         this.context = context;
-        this.gson = gson;
-        this.mojitoService = mojitoService;
+        GraphqlClient.init(context);
     }
 
     public Observable<DomainWishlist> getWishlist(String userId, TKPDMapParam<String, Object> param) {
-        return mojitoService.getWishlist(userId, param)
-                .doOnNext(HttpResponseValidator
-                        .validate(new HttpResponseValidator.HttpValidationListener() {
-                            @Override
-                            public void OnPassValidation(Response<String> response) {
-                                saveResponseToCache(response);
-                            }
-                        }))
-                .map(new WishlistMapper(context, gson));
+
+        Map<String, Object> variables = new HashMap<>();
+
+        variables.put(PAGE_NO, param.get(KEY_PAGE));
+        variables.put(ITEM_COUNT, param.get(KEY_COUNT));
+
+        GraphqlRequest graphqlRequest = new GraphqlRequest(
+                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_wishlist),
+                GqlWishListDataResponse.class,
+                variables, false);
+
+        List<GraphqlRequest> graphqlRequestList = new ArrayList<>();
+        graphqlRequestList.add(graphqlRequest);
+
+        GraphqlCacheStrategy graphqlCacheStrategy =
+                new GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build();
+
+        Observable<GraphqlResponse> observable = ObservableFactory.create(graphqlRequestList,
+                graphqlCacheStrategy);
+
+        return observable
+                .map(new WishlistMapper(context));
     }
 
-    private void saveResponseToCache(Response<String> response) {
-        new GlobalCacheManager()
-                .setKey(TkpdCache.Key.WISHLIST)
-                .setValue(response.body())
-                .store();
-    }
 }

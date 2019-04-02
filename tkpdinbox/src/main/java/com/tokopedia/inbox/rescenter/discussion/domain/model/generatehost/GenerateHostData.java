@@ -8,6 +8,7 @@ public class GenerateHostData {
 
     private String uploadHost;
     private String serverId;
+    private String token;
     private Integer userId;
 
     public String getUploadHost() {
@@ -26,11 +27,19 @@ public class GenerateHostData {
         this.serverId = serverId;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public Integer getUserId() {
+        return userId;
     }
 }

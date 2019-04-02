@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="light_blue">#3494F9</color>
+    <color name="white_shadow">#E0E0E0</color>
+    <color name="yellow_ticker">#ecdb77</color>
+
+    <color name="bg_warning_red">#fce3e4</color>
+    <color name="bg_warning_grey">#fffcd3</color>
+    <color name="text_warning_red">#d30b16</color>
+    <color name="text_warning_grey">#8b000000</color>
+    <color name="text_cart_item_error_red">#d30b16</color>
+    <color name="dropshipper_bg">#2ef5a623</color>
+    <color name="bg_upload_awb">#fde18e</color>
+    <color name="bg_redeem_btn">#b4000000</color>
+    <color name="grey_1100">#f6f6f6</color>
+    <color name="black_38">#60000000</color>
+    <color name="black_39">#b3000000</color>
+    <color name="black_40">#8a000000</color>
+    <color name="black_50">#33000000</color>
+    <color name="yellow_100">#fffbcd</color>
+    <color name="yellow_200">#ecdb77</color>
+    <color name="valid_date_bg">#f6f6f6</color>
+    <color name="tkpd_survey_icon_gray">#979797</color>
+    <color name="tradein_blue_bom">#ccebff</color>
+    <color name="tradein_blue_text_bom">#009bff</color>
+</resources>

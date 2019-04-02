@@ -1,0 +1,83 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['targetModuleName': 'TkpdStream']
+            }
+        }
+    }
+}
+
+project.ext {
+    artifactId = 'groupchat'
+    groupId = 'com.tokopedia.groupchat'
+    versionName = "${tkpdGroupchatVersion}"
+    artifactName ="groupchat-release"
+}
+
+dependencies {
+    
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.features.vote)
+
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.userSession)
+
+    implementation rootProject.ext.networkDependencies.glide
+    implementation project(rootProject.ext.libraries.websocket)
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+
+    implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
+        exclude group: "com.android.support"
+    }
+
+    implementation rootProject.ext.playServicesDependencies.analytics
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation project(rootProject.ext.libraries.youtubeutil)
+    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
+
+    implementation(rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
+    }
+}
+
+apply from: '../../../publish_local.gradle'
+

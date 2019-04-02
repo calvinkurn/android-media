@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">Payment Management System</string>
+    <string name="payment_label_view_invoice">Invoice</string>
+    <string name="payment_label_how_to_pay">Cara Pembayaran</string>
+    <string name="payment_label_cancel_transaction">Batalkan Transaksi</string>
+    <string name="payment_label_change_bca_user_id">Ubah KlikBCA User ID</string>
+    <string name="payment_label_change_account_detail">Ubah Akun Bank</string>
+    <string name="payment_label_upload_proof">Unggah Bukti Pembayaran</string>
+    <string name="payment_label_klikbcaid">KlikBCA ID</string>
+    <string name="payment_label_payment_code">Kode Pembayaran</string>
+    <string name="payment_label_virtual_account_number">Nomor Virtual Account</string>
+    <string name="payment_label_total">Total</string>
+    <string name="payment_label_method_payment">Metode Pembayaran</string>
+    <string name="payment_label_close">Tutup</string>
+    <string name="payment_title_yes">Ya</string>
+    <string name="payment_label_no">Tidak</string>
+    <string name="payment_title_payment_status">Menunggu Pembayaran</string>
+    <string name="payment_label_helper_change_click_bca">User ID KlikBCA Anda saat ini adalah %1$s</string>
+    <string name="payment_label_hint_click_bca_user_id">KlikBCA User ID</string>
+    <string name="payment_label_use">Terapkan</string>
+    <string name="payment_title_activity_change_clik_bca">Ubah KlikBCA User ID</string>
+    <string name="payment_label_dest_bank">Bank Tujuan</string>
+    <string name="payment_label_account_number">Nomor Rekening</string>
+    <string name="payment_label_account_name">Nama Pemilik Rekening</string>
+    <string name="payment_label_account_number_hint">Nomor sesuai buku tabungan</string>
+    <string name="payment_label_account_name_hint">Nama sesuai buku tabungan</string>
+    <string name="payment_title_activity_change_detail_account">Ubah Detail Rekening</string>
+    <string name="payment_label_notes_optional">Catatan (Opsional)</string>
+    <string name="payment_title_activity_upload_proof">Unggah Bukti Pembayaran</string>
+    <string name="payment_title_upload_proof">Unggah Bukti Pembayaran</string>
+    <string name="payment_label_choose_image">Pilih Gambar</string>
+    <string name="payment_title_activity_dest_bank">Pilih Bank Tujuan</string>
+    <string name="payment_title_activity_invoice">Invoice</string>
+    <string name="payment_label_acc_sender">Rekening Pengirim</string>
+    <string name="payment_label_acc_dest">Rekening Tujuan</string>
+    <string name="payment_label_name_acc_formated">a.n %1$s</string>
+    <string name="payment_title_activity_howtopay">Cara Pembayaran</string>
+    <string name="payment_label_help_proof">Pastikan bukti pembayaran menampilkan</string>
+    <string name="payment_label_help_proof_date">Tanggal/Waktu Transfer</string>
+    <string name="payment_label_help_proof_example_date">contoh : tgl. 04/06/19 jam 07:24:06</string>
+    <string name="payment_label_help_proof_success_status">Status Berhasil</string>
+    <string name="payment_label_help_proof_example_success_status">contoh : Transfer BERHASIL, transaksi SUKSES</string>
+    <string name="payment_label_help_proof_receiver">Detail Penerima</string>
+    <string name="payment_label_help_proof_example_receiver">contoh : Transfer ke Rekening PT Tokopedia</string>
+    <string name="payment_label_help_proof_total_transfer">Jumlah Transfer</string>
+    <string name="payment_label_help_proof_example_total">contoh : Rp 123.456,00</string>
+    <string name="payment_label_format_image">(format .JPG .JPEG .PNG max 10 MB)</string>
+    <string name="payment_label_help_upload_proof">Unggah bukti pembayaran dapat mempercepat verifikasi pembayaran</string>
+    <string name="payment_label_confirmation_upload_image">Apakah kamu yakin ingin mengunggah gambar ini sebagai bukti pembayaran?</string>
+    <string name="payment_label_choose_another_image">Pilih Gambar Lain</string>
+    <string name="payment_label_finish">Selesai</string>
+    <string name="payment_label_succes_upload_proof">Bukti fisik pembayaran berhasil diunggah</string>
+    <string name="payment_label_save_image">Simpan Gambar</string>
+    <string name="payment_label_error_empty_user_id">User ID Klik BCA harus diisi</string>
+
+    <string-array name="payment_list_bank_name">
+        <item>BCA</item>
+        <item>MANDIRI</item>
+        <item>BNI</item>
+        <item>BRI</item>
+        <item>CIMB</item>
+    </string-array>
+
+    <string-array name="payment_list_bank_code">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+</resources>

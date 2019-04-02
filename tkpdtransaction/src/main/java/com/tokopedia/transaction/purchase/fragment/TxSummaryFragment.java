@@ -75,15 +75,6 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
         return fragment;
     }
 
-    @SuppressWarnings("unused")
-    public static TxSummaryFragment createInstanceSales() {
-        TxSummaryFragment fragment = new TxSummaryFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(EXTRA_INSTANCE_TYPE, INSTANCE_TYPE_SALES);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
     @Override
     protected boolean isRetainInstance() {
         return false;
@@ -143,21 +134,21 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
 
     @Override
     protected void initialVar() {
-
+        refreshHandler.startRefresh();
     }
 
     @Override
     protected void setActionVar() {
-        presenter.getNotificationFromNetwork(context);
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (presenter == null) {
+        if (presenter == null && getActivity()!= null) {
             initialPresenter();
         }
-        if (isVisibleToUser && getActivity() != null)
+        if (isVisibleToUser && getActivity() != null) {
             presenter.getNotificationPurcase(getActivity());
+        }
         super.setUserVisibleHint(isVisibleToUser);
     }
 
@@ -170,22 +161,28 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
     @Override
     public void onItemClicked(TxSummaryItem txSummaryItem) {
         switch (txSummaryItem.getIndex()) {
-            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION:
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_CONFIRMED:
                 listener.OnMenuClick(
-                        TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION,
-                        TransactionPurchaseRouter.ALL_STATUS_FILTER_ID
+                        TransactionPurchaseRouter.TAB_POSITION_PURCHASE_CONFIRMED,
+                        TransactionPurchaseRouter.TRANSACTION_CONFIRMED_FILTER_ID
                 );
                 break;
-            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER:
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_PROCESSED:
                 listener.OnMenuClick(
-                        TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER,
-                        TransactionPurchaseRouter.ALL_STATUS_FILTER_ID
+                        TransactionPurchaseRouter.TAB_POSITION_PURCHASE_PROCESSED,
+                        TransactionPurchaseRouter.TRANSACTION_PROCESSED_FILTER_ID
                 );
                 break;
-            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER:
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SHIPPED:
                 listener.OnMenuClick(
-                        TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER,
-                        TransactionPurchaseRouter.ALL_STATUS_FILTER_ID
+                        TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SHIPPED,
+                        TransactionPurchaseRouter.TRANSACTION_SHIPPED_FILTER_ID
+                );
+                break;
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVERED:
+                listener.OnMenuClick(
+                        TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVERED,
+                        TransactionPurchaseRouter.TRANSACTION_DELIVERED_FILTER_ID
                 );
                 break;
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER:

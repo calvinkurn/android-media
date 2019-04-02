@@ -1,0 +1,116 @@
+<resources>
+    <string name="app_name">TopChat</string>
+
+    <!-- attach invoice -->
+    <string name="string_attach_invoice_activity_title">Pilih Transaksi</string>
+    <string name="total_invoice">Total: </string>
+
+    <string name="string_attach_product_choose_button_text">Pilih (%1$s/%2$s)</string>
+    <!--Chat List -->
+    <string name="title_personal">Personal</string>
+    <string name="title_community">Channel</string>
+    <string name="chat_title">Chat ( %d )</string>
+    <string name="chat_title_without_notif">Chat</string>
+    <string name="no_existing_chat"> Tidak Ada Chat</string>
+    <string name="no_existing_chat_user"> Tidak ada pengguna atau chat
+yang ditemukan</string>
+    <string name="please_try_chat"> Silakan mengirim chat untuk\nmemulai percakapan</string>
+    <string name="old_message_warn"> Pesan ini dikirim menggunakan Chat versi lama, dengan subjek: </string>
+    <string name="delete_message_warn"> Jumlah pesan yang bisa dihapus hanya </string>
+    <string name="delete_confirmation">Apakah anda yakin menghapus %1$d pesan?</string>
+    <string name="delete_choose">"Pilih chat yang dihapus"</string>
+    <string name="connected_websocket">"Terhubung!"</string>
+    <string name="is_typing">"sedang mengetik"</string>
+    <string name="just_now">"baru saja"</string>
+    <string name="delete_error">"Gagal mengirim pesan."</string>
+    <string name="delete_chat">"Hapus chat?"</string>
+    <string name="forever_deleted_chat">"Chat akan terhapus selamanya"</string>
+    <string name="search_chat_user">"Cari chat atau pengguna"</string>
+    <string name="resend">"Kirim Ulang"</string>
+    <string name="delete">"Hapus"</string>
+    <string name="cancel">"Batal"</string>
+    <string name="cancel_bottom_sheet">Batal</string>
+    <string name="time_machine">Untuk melihat percakapan sebelumnya,\nkunjungi Riwayat
+        Pesan</string>
+    <string name="string_general_error">Terjadi kesalahan, mohon coba kembali.</string>
+    <string name="error_no_connection_retrying">Terjadi gangguan pada koneksi. Mencoba
+        menghubungkan…</string>
+    <string name="title_time_machine_message">Tokopedia</string>
+    <string name="security_info_chat">Mohon berhati-hati bila pengguna lain meminta Anda berkomunikasi dan bertransaksi di luar Tokopedia.</string>
+    <string name="security_info_chat_link">Cek panduan keamanan disini.</string>
+
+    <!-- Chat Room -->
+    <string name="time_machine_chat">Untuk melihat percakapan sebelumnya, kunjungi\nRiwayat
+        Pesan</string>
+    <string name="chat_yesterday_date">Kemarin</string>
+    <string name="chat_today_date">Hari ini</string>
+    <string name="undersize_image">Ukuran Dimensi Gambar Minimal Lebar 300px dan Tinggi 100px</string>
+    <string name="oversize_image">Ukuran gambar maksimal 15Mb</string>
+
+    <!-- Chat Template -->
+    <string name="add_template_chat_title">Tambah Template Pesan</string>
+    <string name="edit_template_chat_title">Ubah Template Pesan</string>
+    <string name="limited_template_chat_warning">Hapus salah satu template untuk bisa membuat template baru.</string>
+    <string name="minimum_template_chat_warning">Minimal harus memiliki 1 template.</string>
+    <string name="success_add_template_chat">Berhasil menambahkan template pesan</string>
+    <string name="success_edit_template_chat">Berhasil mengubah template pesan</string>
+    <string name="success_delete_template_chat">Template berhasil dihapus</string>
+    <string name="success_rearrange_template_chat">Berhasil mengubah urutan template</string>
+    <string name="success_switch_template_chat">Berhasil mengubah urutan template</string>
+    <string name="hint_template_chat">Silakan tambahkan template untuk membantu Anda melakukan Chat tanpa perlu mengetik pesan yang sama berulang kali.
+        \n\nContoh:\nHalo, barang ini ready ya. Silakan diorder</string>
+    <string name="delete_chat_template">"Hapus template?"</string>
+    <string name="forever_deleted_template">"Template akan terhapus selamanya"</string>
+    <string name="minimal_char_template">"Template pesan minimal 5 karakter"</string>
+    <string name="maximal_char_template">"Template pesan maksimal %1$d karakter"</string>
+    <string name="title_info_list_template">"Kelola Template Pesan"</string>
+    <string name="body_info_list_template">"Ubah dengan tekan tombol edit, atau atur urutan dengan tahan dan geser tombol drag."</string>
+    <string name="caption_switch_template">"Buat hingga 5 template untuk membantu Anda melakukan Chat tanpa perlu mengetik pesan yang sama berulang kali"</string>
+    <string name="title_reason_bottom_sheet">Beritahu kami apa yang salah?</string>
+    <string name="template_subtitle_attach_product">Toko %s</string>
+    <string name="topchat_online_status_desc">Online</string>
+    <string name="topchat_online_minutes_ago">Terakhir online %1$d menit yang lalu</string>
+    <string name="topchat_online_hours_ago">Terakhir online %1$d jam yang lalu</string>
+    <string name="topchat_online_days_ago">Terakhir online %1$d hari yang lalu</string>
+    <string name="topchat_online_months_ago">Terakhir online %1$d bulan yang lalu</string>
+    <string name="delete_chat_default_error_message">Hapus chat gagal!</string>
+    <string name="follow_store">Follow Toko</string>
+    <string name="already_follow_store">Following</string>
+    <string name="view_profile_container_string">Lihat Profil %s</string>
+    <string name="delete_conversation">Hapus Percakapan</string>
+    <string name="chat_incoming_settings">Atur Penerimaan Chat</string>
+    <string name="delete_chat_question">Hapus chat?</string>
+    <string name="delete_chat_warning_message">Chat akan terhapus selamanya</string>
+
+    <string name="chat_promotion_text">Chat Promosi</string>
+    <string name="chat_information_text">Berisi informasi promo, notifikasi harga, dan penawaran menarik lainnya</string>
+    <string name="chat_promotion_blocked_validity">Anda berhenti menerima chat promosi dari %1$s hingga %2$s</string>
+    <string name="chat_personal_text">Chat Personal</string>
+    <string name="chat_personal_info_text">Berisi tanggapan langsung dari penjual atas pertanyaan Anda</string>
+    <string name="chat_personal_blocked_validity">Anda berhenti menerima chat personal dari %1$s hingga %2$s</string>
+    <string name="enable_chat_settings">Kembali Menerima Chat</string>
+    <string name="enable_chat_personal_settings" formatted="false">Anda berhenti menerima semua chat dari %s</string>
+    <string name="disable_chat_personal_settings" formatted="false">Anda kembali menerima semua chat dari %s</string>
+    <string name="enable_chat_promotion_settings" formatted="false">Anda berhenti menerima chat promosi dari %s</string>
+    <string name="disable_chat_promotion_settings" formatted="false">Anda kembali menerima chat promosi dari %s</string>
+    <string name="enable_chat_promotion_blocked_settings">Anda wajib mengaktifkan penerimaan chat personal untuk menerima chat promosi</string>
+    <string name="chat_blocked_text">Anda berhenti menerima %1$s dari %2$s hingga %3$s</string>
+    <string name="enable_chat_toast">Anda berhasil menerima %1$s dari %2$s</string>
+    <string name="error_chat_message">Mohon maaf, terjadi kendala teknis, cobalah beberapa saat lagi</string>
+    <string name="bm_title">Broadcast Chat</string>
+    <string name="bm_showcase_desc">Promosikan barang atau toko melalui chat ke followers Anda dengan fitur baru ini</string>
+
+    <string name="success_add_to_cart">Berhasil menambahkan ke cart</string>
+
+    <string name="mark_as_read">Tandai sudah dibaca</string>
+    <string name="mark_as_unread">Tandai belum dibaca</string>
+
+    <string name="option_organize_chat">Atur Chat</string>
+    <string name="option_broadcast">Broadcast Chat</string>
+    <string name="drawer_title_setting">Pengaturan</string>
+
+    <string name="title_understand">Mengerti</string>
+    <string name="title_save">Simpan</string>
+
+
+</resources>

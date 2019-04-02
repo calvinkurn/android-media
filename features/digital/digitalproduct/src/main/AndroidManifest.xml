@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.digital">
+
+    <uses-permission android:name="android.permission.NFC" />
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true">
+        <activity
+            android:name=".product.view.activity.DigitalProductActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.White"/>
+        <activity
+            android:name=".product.view.activity.DigitalChooserActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+        <activity
+            android:name=".categorylist.view.activity.DigitalCategoryListActivity"
+            android:label="@string/title_activity_category_list_digital_module"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+        <activity
+            android:name=".product.view.activity.DigitalUssdActivity"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".product.view.activity.DigitalSearchNumberActivity"
+            android:label="Nomor Favorit"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+        <activity android:name=".product.view.activity.DigitalYoutubeActivity" />
+
+        <activity
+            android:name=".newcart.presentation.activity.DigitalCartActivity"
+            android:theme="@style/Theme.White"
+            android:label="@string/digital_cart_toolbart_title"
+            android:screenOrientation="portrait" />
+    </application>
+
+</manifest>

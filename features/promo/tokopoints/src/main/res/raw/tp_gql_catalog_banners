@@ -1,0 +1,11 @@
+query hachikoCatalogQuery($device: Int) {
+  banners: slides(device: $device) {
+    slides {
+      id
+      title
+      imageUrl: image_url
+      redirectUrl: redirect_url
+      promoCode: promo_code
+    }
+  }
+}

@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.search.view.adapter.factory.SearchTypeFactory;
 
 import java.util.ArrayList;
@@ -58,6 +58,12 @@ public class SearchAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public void addList(Visitable visitable){
         this.list.add(visitable);
         notifyItemInserted(list.size());
+    }
+
+    public void addAll(List<Visitable> list) {
+        int positionStart = this.list.size();
+        this.list.addAll(list);
+        notifyItemRangeInserted(positionStart, list.size());
     }
 
     public void clearData() {

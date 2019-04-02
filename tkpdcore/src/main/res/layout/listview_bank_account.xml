@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="@dimen/margin_small"
-                android:background="@drawable/cards_ui_2"
-                android:orientation="vertical"
-                android:padding="@dimen/padding_small">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginBottom="@dimen/margin_small"
+    android:background="@drawable/cards_ui_2"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_small">
 
     <ImageView
         android:id="@+id/bank_icon"
@@ -29,7 +30,7 @@
         android:layout_marginRight="@dimen/margin_small"
         android:background="@drawable/overflow_selected"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_clear_36dp"
+        app:srcCompat="@drawable/ic_clear_36dp"
         tools:ignore="ContentDescription,RtlHardcoded"/>
 
     <ImageView
@@ -42,7 +43,7 @@
         android:layout_toStartOf="@id/delete_bank"
         android:background="@drawable/overflow_selected"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_create_36dp"
+        app:srcCompat="@drawable/ic_create_36dp"
         tools:ignore="ContentDescription"/>
 
     <ImageView
@@ -54,7 +55,7 @@
         android:layout_toLeftOf="@id/edit_bank"
         android:layout_toStartOf="@id/edit_bank"
         android:background="@drawable/overflow_selected"
-        android:src="@drawable/ic_done_36dp"
+        app:srcCompat="@drawable/ic_done_36dp"
         tools:ignore="ContentDescription"/>
 
     <TextView

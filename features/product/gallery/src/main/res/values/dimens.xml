@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="gallery_item_spacing">8dp</dimen>
+    <dimen name="review_gallery_default_padding">12dp</dimen>
+    <dimen name="picture_detail_viewer_back_button_size">16dp</dimen>
+    <dimen name="review_image_slider_rating_width">78dp</dimen>
+    <dimen name="review_image_slider_rating_height">14dp</dimen>
+    <dimen name="review_image_slider_item_image_view_vertical_spacing">44dp</dimen>
+</resources>

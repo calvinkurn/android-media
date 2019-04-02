@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.inbox.rescenter.create.model.responsedata.CreateResCenterFormData;
 
 import java.util.List;
@@ -61,7 +61,9 @@ public class TroubleSpinnerAdapter extends ArrayAdapter<CreateResCenterFormData.
         if (position == 0) {
             holderDropDown.textView.setText(getContext().getString(R.string.index_spinner_0_default));
         } else {
-            holderDropDown.textView.setText(getItem(position - 1).getTroubleText());
+            if (getItem(position -1) != null) {
+                holderDropDown.textView.setText(getItem(position - 1).getTroubleText());
+            }
         }
 
         return localView;

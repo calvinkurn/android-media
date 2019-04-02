@@ -8,7 +8,25 @@ import android.os.Parcelable;
  */
 
 public class StatusData implements Parcelable {
+    public static final Parcelable.Creator<StatusData> CREATOR = new Parcelable.Creator<StatusData>() {
+        @Override
+        public StatusData createFromParcel(Parcel source) {
+            return new StatusData(source);
+        }
+
+        @Override
+        public StatusData[] newArray(int size) {
+            return new StatusData[size];
+        }
+    };
     private String statusText;
+
+    public StatusData() {
+    }
+
+    protected StatusData(Parcel in) {
+        this.statusText = in.readString();
+    }
 
     public String getStatusText() {
         return statusText;
@@ -27,23 +45,4 @@ public class StatusData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.statusText);
     }
-
-    public StatusData() {
-    }
-
-    protected StatusData(Parcel in) {
-        this.statusText = in.readString();
-    }
-
-    public static final Parcelable.Creator<StatusData> CREATOR = new Parcelable.Creator<StatusData>() {
-        @Override
-        public StatusData createFromParcel(Parcel source) {
-            return new StatusData(source);
-        }
-
-        @Override
-        public StatusData[] newArray(int size) {
-            return new StatusData[size];
-        }
-    };
 }

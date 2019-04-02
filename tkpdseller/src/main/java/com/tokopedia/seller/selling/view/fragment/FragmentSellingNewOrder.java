@@ -1,11 +1,12 @@
 package com.tokopedia.seller.selling.view.fragment;
 
+import android.appwidget.AppWidgetManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,12 +17,15 @@ import android.widget.AdapterView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
@@ -31,6 +35,7 @@ import com.tokopedia.seller.selling.presenter.NewOrderView;
 import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
 import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
 import com.tokopedia.seller.selling.view.viewHolder.OrderViewHolder;
+import com.tokopedia.track.TrackApp;
 
 import java.util.List;
 
@@ -100,7 +105,7 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
                 viewHolder.setOnItemClickListener(new BaseSellingViewHolder.OnItemClickListener() {
                     @Override
                     public void onItemClicked(int position) {
-                        UnifyTracking.eventNewOrderDetail();
+                        eventNewOrderDetail();
                         if (adapter.isLoading()) {
                             getPaging().setPage(getPaging().getPage() - 1);
                             presenter.finishConnection();
@@ -121,6 +126,14 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
                 return new OrderViewHolder(view);
             }
         };
+    }
+
+    public static void eventNewOrderDetail() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.NEW_ORDER,
+                AppEventTracking.Category.NEW_ORDER,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.ORDER_DETAIL);
     }
 
     @Override
@@ -151,6 +164,7 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
         if (resultCode == getActivity().RESULT_OK) {
             switch (requestCode) {
                 case PROCESS_ORDER:
+                    AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
                     shouldRefreshList = true;
                     break;
             }
@@ -218,9 +232,7 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     public void setUserVisibleHint(boolean isVisibleToUser) {
         initPresenter();
         presenter.getOrderList(isVisibleToUser);
-        ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_NEWORDER);
-        ScreenTracking.eventLoca(AppScreen.SCREEN_LOCA_NEWORDER);
-        ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_NEW_ORDER);
+        ScreenTracking.screen(MainApplication.getAppContext(), AppScreen.SCREEN_TX_SHOP_NEW_ORDER);
         super.setUserVisibleHint(isVisibleToUser);
     }
 

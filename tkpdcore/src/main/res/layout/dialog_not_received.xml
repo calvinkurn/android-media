@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="300dp"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:padding="25dp">
+
+    <TextView
+        android:id="@+id/tvNotReceivedTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/string_notreceived_title"
+        android:textColor="@color/color_complain_header"
+        android:textSize="@dimen/text_size_large"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tvNotReceivedBody"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_med"
+        android:text="@string/string_notreceived_body"
+        android:textColor="@color/color_complain_body"
+        android:textSize="@dimen/text_size_medium"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="@dimen/margin_med"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnRefund"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:text="@string/string_notreceived_refund"
+            android:textAllCaps="false"
+            android:textColor="@color/color_complain_body"
+            android:textSize="@dimen/text_size_medium"
+            android:textStyle="bold"/>
+
+        <Button
+            android:id="@+id/btnCheckCourier"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:text="@string/string_notreceived_check_courier"
+            android:textAllCaps="false"
+            android:textColor="@color/medium_green"
+            android:textSize="@dimen/text_size_medium"
+            android:textStyle="bold"/>
+    </LinearLayout>
+</LinearLayout>

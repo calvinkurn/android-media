@@ -7,14 +7,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.ValidationTextUtil;
 import com.tokopedia.seller.facade.FacadeShopTransaction;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingData;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
+import com.tokopedia.transaction.common.TransactionRouter;
 
 import org.parceler.Parcels;
 
@@ -53,7 +56,7 @@ public class NewOrderImpl extends NewOrder {
     @Override
     public void initData(@NonNull Context context) {
         view.initListener();
-        if(!isAfterRotate) {
+        if (!isAfterRotate) {
             if (isAllowLoading()) {
                 addLoading();
             }
@@ -148,15 +151,18 @@ public class NewOrderImpl extends NewOrder {
     }
 
 
-
     @Override
     public void moveToDetail(int position) {
-        Intent intent = new Intent(context, SellingDetailActivity.class);
-        intent.putExtra(SellingDetailActivity.DATA_EXTRA, Parcels.wrap(listDatas.get(position)));
-        intent.putExtra(SellingDetailActivity.DATA_EXTRA2, modelNewOrder.Permission);
-        intent.putExtra(SellingDetailActivity.TYPE_EXTRA, SellingDetailActivity.Type.NEW_ORDER);
-//        context.startActivity(intent);
-        view.moveToDetailResult(intent, FragmentSellingNewOrder.PROCESS_ORDER);
+        if (listDatas != null && position >= 0 && listDatas.get(position) != null) {
+            Intent intent = ((TransactionRouter) MainApplication.getAppContext())
+                    .goToOrderDetail(
+                            context,
+                            listDatas.get(position)
+                                    .getOrderDetail()
+                                    .getDetailOrderId()
+                                    .toString());
+            view.moveToDetailResult(intent, FragmentSellingNewOrder.PROCESS_ORDER);
+        }
     }
 
     private void requestGetNewOrder() {
@@ -231,8 +237,10 @@ public class NewOrderImpl extends NewOrder {
         return new FacadeShopTransaction.GetNewOrderListener() {
             @Override
             public void OnSuccess(Model model, OrderShippingData Result) {
-                if (view.getPaging().getPage() == 1)
+                if (view.getPaging().getPage() == 1) {
+                    AppWidgetUtil.sendBroadcastToAppWidget(context);
                     clearData();
+                }
                 view.getPaging().setNewParameter(Result.getPaging());
                 finishConnection();
                 modelNewOrder = model;

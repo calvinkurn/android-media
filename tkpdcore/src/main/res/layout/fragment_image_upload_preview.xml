@@ -1,48 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/padding_small">
+    android:orientation="vertical"
+    android:background="@color/white">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.tkpd.library.ui.widget.TouchViewPager
+        android:id="@+id/preview_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/cards_ui"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"/>
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/preview_image"
+    <com.tokopedia.design.text.TkpdHintTextInputLayout
+        android:id="@+id/textInputLayoutName"
+        style="@style/HintTextInputLayout"
+        android:layout_marginTop="@dimen/dp_16"
+        android:hint="@string/image_description"
+        android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_12">
+
+        <EditText
+            android:id="@+id/image_description"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:maxLength="@integer/default_caption_character" />
 
-            <EditText
-                android:id="@+id/image_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="2"
-                android:maxLength="@integer/default_caption_character"
-                android:hint="@string/image_description" />
+    </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/image_upload_list"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/img_thumb_holder"
-                android:scrollbars="horizontal"
-                android:visibility="visible" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/image_upload_list"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/img_thumb_holder"
+        android:scrollbars="horizontal"
+        android:visibility="visible"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"/>
 
-            <TextView
-                android:id="@+id/submit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vs"
-                android:background="@drawable/green_button"
-                android:gravity="center"
-                android:padding="@dimen/padding_small"
-                android:text="@string/title_save"
-                android:textColor="@color/white"
-                android:textSize="@dimen/font_large" />
+    <Button
+        android:id="@+id/submit"
+        style="@style/Button.Submit.Green"
+        android:layout_width="match_parent"
+        android:foreground="?attr/selectableItemBackground"
+        android:lineSpacingExtra="7sp"
+        android:text="@string/title_save"
+        android:layout_marginTop="@dimen/dp_16"/>
 
-    </LinearLayout>
-</RelativeLayout>
+</LinearLayout>

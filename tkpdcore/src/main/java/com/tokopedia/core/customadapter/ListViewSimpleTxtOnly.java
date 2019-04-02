@@ -2,7 +2,7 @@ package com.tokopedia.core.customadapter;
 
 import java.util.ArrayList;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import android.app.Activity;
 import android.view.LayoutInflater;

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/top_ads_margin_layout"
+            android:orientation="vertical">
+
+            <com.tokopedia.design.text.SpinnerTextView
+                android:id="@+id/spinner_text_view_top_ads_keyword_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/top_ads_margin_layout"
+                android:layout_marginBottom="@dimen/top_ads_margin_layout_small"
+                app:spinner_hint_appearence="@style/TextAppearence.App.TextInputLayout.Small"
+                app:spinner_hint="@string/top_ads_keyword_label_type" />
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/text_input_layout_top_ads_keyword"
+                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.Small"
+                style="@style/TextInputLayout"
+                android:layout_marginBottom="@dimen/top_ads_margin_layout_small"
+                android:hint="@string/label_top_ads_keyword">
+
+                <EditText
+                    android:id="@+id/edit_text_top_ads_keyword"
+                    style="@style/EditText"
+                    android:layout_width="match_parent" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_layout_cost_per_click"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/text_input_layout_top_ads_cost_per_click"
+                    style="@style/TextInputLayout"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.Small"
+                    android:layout_marginBottom="@dimen/top_ads_margin_layout_very_small"
+                    android:hint="@string/top_ads_keyword_cost_per_click">
+
+                    <com.tokopedia.seller.common.widget.PrefixEditText
+                        android:id="@+id/edit_text_top_ads_cost_per_click"
+                        style="@style/EditText.Currency"
+                        android:layout_width="match_parent"
+                        app:prefix="@string/top_ads_label_currency_rupiah_editext" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/text_view_top_ads_max_price_description"
+                    style="@style/TextView.Small.BlackSecondary"
+                    android:layout_marginBottom="@dimen/top_ads_margin_layout_small"
+                    android:maxLines="3"
+                    android:text="@string/top_ads_label_price_desc" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/button_submit"
+        style="@style/Button.Submit.Green"
+        android:text="@string/label_top_ads_save" />
+
+</LinearLayout>

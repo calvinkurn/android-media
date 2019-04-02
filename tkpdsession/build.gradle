@@ -1,115 +1,90 @@
 apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
-apply plugin: 'com.jfrog.artifactory'
-apply plugin: 'maven-publish'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'io.hansel.preprocessor.module'
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.14.1'
+repositories {
+    maven { url 'https://hansel.io/maven' }
 }
-
-
-def getArtifactVersionCode() {
-    return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
-}
-
-def getTkpdCore() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
-}
-
-publishing {
-    publications {
-        aar(MavenPublication) {
-            groupId 'com.tokopedia.session'
-            artifactId 'session'
-            version getArtifactVersionCode()
-            artifact("$buildDir/outputs/aar/tkpdsession-release.aar")
-            pom.withXml {
-                def dependenciesNode = asNode().appendNode('dependencies')
-
-                configurations.compile.allDependencies.each {
-                    if (it.group != null && it.name != null) {
-                        def dependencyNode = dependenciesNode.appendNode('dependency')
-                        dependencyNode.appendNode('groupId', it.group)
-                        dependencyNode.appendNode('artifactId', it.name)
-                        dependencyNode.appendNode('version', it.version)
-                    }
-                }
-            }
-        }
-    }
-}
-
-artifactory {
-    contextUrl = rootProject.ext.artifactoryUrl
-    publish {
-        repository {
-            repoKey = 'libs-release-local'
-
-            username = artifactory_username
-            password = artifactory_password
-        }
-        defaults {
-            publications('aar')
-            publishArtifacts = true
-
-            properties = ['qa.level': 'basic', 'q.os': 'android', 'dev.team': 'core']
-            publishPom = true
-        }
-    }
-}
-
-
 buildscript {
     repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
+        maven { url 'https://hansel.io/maven' }
     }
     dependencies {
-        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
+        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
+            exclude group: 'com.android.tools.build', module: 'gradle'
+        }
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
-
-android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion "25.0.0"
-
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
+project.ext {
+    artifactId = 'session'
+    groupId = 'com.tokopedia.session'
+    versionName = "2.22"
+    artifactName ="tkpdsession-release"
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile getTkpdCore()
+    
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.features.updateinactivephone)
+    implementation project(rootProject.ext.features.phoneVerification)
 
-    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.libraries.coreNetwork)
 
-    provided rootProject.ext.miscDependencies.javaxAnnotation
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.playServicesDependencies.auth
 
-    compile rootProject.ext.butterKnifeDependencies.butterKnife
-    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testCompile 'junit:junit:4.12'
+    implementation rootProject.ext.miscDependencies.parcelerApi
+    annotationProcessor rootProject.ext.miscDependencies.parceler
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation(rootProject.ext.miscDependencies.facebook) {
+        exclude group: 'com.android.support'
+    }
+
+    implementation (rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
+    }
+
+    implementation rootProject.ext.viewDependencies.appIntro
+
+    implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+
+    implementation rootProject.ext.butterKnifeDependencies.butterKnife
+    annotationProcessor  rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
 }
+
+apply from: '../publish_local.gradle'

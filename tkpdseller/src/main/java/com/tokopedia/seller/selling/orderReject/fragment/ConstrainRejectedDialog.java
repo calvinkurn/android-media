@@ -13,8 +13,7 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.orderReject.ConfirmRejectOrderActivity;
 import com.tokopedia.seller.selling.orderReject.adapter.ProductListAdapter;
@@ -86,7 +85,6 @@ public class ConstrainRejectedDialog extends DialogFragment {
     }
 
     public boolean validateForm(){
-        Log.d("Info Text Reason", "length "+reasonTxt.getText().toString().length());
         if(reasonTxt.getText().toString().isEmpty()){
             reasonTxt.setError(getString(R.string.desc_should_not_empty));
             return false;

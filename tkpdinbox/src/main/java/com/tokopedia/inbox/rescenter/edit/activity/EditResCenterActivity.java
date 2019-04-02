@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.DetailResCenterData;
@@ -240,5 +240,10 @@ public class EditResCenterActivity extends BasePresenterActivity<EditResCenterPr
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

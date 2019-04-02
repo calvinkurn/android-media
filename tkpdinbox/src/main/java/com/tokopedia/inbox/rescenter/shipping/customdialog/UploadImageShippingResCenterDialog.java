@@ -13,7 +13,10 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.create.customdialog.BaseUploadImageDialog;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
 
+import java.util.ArrayList;
 import java.util.UUID;
+
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
 /**
  * Created by hangnadi on 12/15/16.
@@ -47,11 +50,17 @@ public class UploadImageShippingResCenterDialog extends BaseUploadImageDialog {
     }
 
     @Override
-    protected void processImageDataFromGallery(Intent intent, UploadImageDialogListener listener) {
-        cache.setImageLocalPath(intent.getStringExtra(ImageGallery.EXTRA_URL))
-                .setImageUUID(UUID.randomUUID().toString())
-                .save();
-        listener.onSuccess(LocalCacheManager.AttachmentShippingResCenter.Builder(resolutionID).getCache());
+    public void processImageDataFromGallery(Intent intent, UploadImageDialogListener listener) {
+        ArrayList<String> imageUrlOrPathList = intent.getStringArrayListExtra(PICKER_RESULT_PATHS);
+        if (imageUrlOrPathList!= null && imageUrlOrPathList.size() > 0) {
+            cache.setImageLocalPath(imageUrlOrPathList.get(0))
+                    .setImageUUID(UUID.randomUUID().toString())
+                    .save();
+            listener.onSuccess(LocalCacheManager.AttachmentShippingResCenter.Builder(resolutionID).getCache());
+        }else{
+            listener.onFailed();
+        }
+
     }
 
     public interface onRemoveAttachmentListener {

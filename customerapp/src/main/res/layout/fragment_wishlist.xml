@@ -10,16 +10,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_margin="10dp">
+        app:cardElevation="0dp"
+        app:cardCornerRadius="4dp"
+        android:layout_margin="@dimen/padding_small">
 
         <android.support.v7.widget.SearchView
             android:id="@+id/wishlist_search_edittext"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             app:iconifiedByDefault="false"
-            app:queryBackground="@color/transparent"
+            app:queryBackground="@android:color/transparent"
             app:queryHint="@string/hint_search_wishlist"
-            app:searchIcon="@drawable/ic_favorite" />
+            app:searchIcon="@drawable/icon_magnifier" />
     </android.support.v7.widget.CardView>
 
     <ProgressBar

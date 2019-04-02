@@ -1,0 +1,37 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+project.ext {
+    artifactId = "${artifactIdLogisticData}"
+    groupId = "${groupIdLogistic}"
+    versionName = "${logisticGroupVersion}"
+    artifactName = "${artifactIdLogisticData}-release"
+}
+
+dependencies {
+    implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation rootProject.ext.playServicesDependencies.maps
+
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.cacheApi)
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+}

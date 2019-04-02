@@ -47,16 +47,10 @@ public class NewShopView extends BaseView<ProductDetailData, ProductDetailView> 
     @Override
     public void renderData(@NonNull ProductDetailData data) {
         if (SessionHandler.isV4Login(getContext())) {
-            switch (SessionHandler.getShopID(getContext())) {
-                case "0":
-                    setVisibility(View.VISIBLE);
-                    break;
-                case "":
-                    setVisibility(View.VISIBLE);
-                    break;
-                default:
-                    setVisibility(View.GONE);
-                    break;
+            if (SessionHandler.isUserHasShop(getContext())){
+                setVisibility(View.GONE);
+            } else {
+                setVisibility(View.VISIBLE);
             }
         } else {
             setVisibility(View.VISIBLE);

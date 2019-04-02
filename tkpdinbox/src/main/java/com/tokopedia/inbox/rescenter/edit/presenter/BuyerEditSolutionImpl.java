@@ -2,8 +2,7 @@ package com.tokopedia.inbox.rescenter.edit.presenter;
 
 import android.content.Context;
 
-import com.drew.lang.annotations.NotNull;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.rescenter.edit.facade.NetworkParam;
 import com.tokopedia.inbox.rescenter.edit.interactor.RetrofitInteractor;
@@ -29,7 +28,7 @@ public class BuyerEditSolutionImpl implements BuyerEditSolutionPresenter {
     }
 
     @Override
-    public void setOnSubmitClick(@NotNull Context context) {
+    public void setOnSubmitClick(Context context) {
         if (isValid(context)) {
             postEditResolution(context);
         }
@@ -112,7 +111,7 @@ public class BuyerEditSolutionImpl implements BuyerEditSolutionPresenter {
     }
 
     @Override
-    public void onFirstTimeLaunched(@NotNull Context context, final ActionParameterPassData passData) {
+    public void onFirstTimeLaunched(Context context, final ActionParameterPassData passData) {
         listener.showLoading(true);
         listener.showMainView(false);
         retrofit.getSolution(context,

@@ -2,9 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/cards_ui_2"
     android:padding="@dimen/padding_small"
     android:gravity="center"
+    android:layout_marginBottom="@dimen/padding_small"
     android:orientation="vertical">
 
     <LinearLayout
@@ -102,7 +104,7 @@
             android:text="Transaksi Sukses"
             android:gravity="center_horizontal"
             android:textStyle="bold"
-            android:textSize="@dimen/font_small"/>
+            android:textSize="@dimen/sp_14"/>
 
         <TextView
             android:id="@+id/total_transaction"
@@ -126,7 +128,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:src="@drawable/icon_no_transaction" />
+            app:srcCompat="@drawable/icon_no_transaction" />
 
         <TextView
             android:id="@+id/no_transaction_message"
@@ -135,7 +137,7 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@id/no_transaction"
             android:text="Message Here"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold"
             android:padding="@dimen/padding_small"/>
 

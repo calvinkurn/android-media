@@ -6,6 +6,11 @@ import com.tokopedia.core.util.DataBinder;
 /**
  * Created by Nisie on 1/22/16.
  */
+
+/**
+ * Use base adapter with visitor pattern from tkpd abstraction
+ */
+@Deprecated
 public class BaseLinearRecyclerViewAdapter extends DataBindAdapter{
 
     public static final int VIEW_LOADING = 999;

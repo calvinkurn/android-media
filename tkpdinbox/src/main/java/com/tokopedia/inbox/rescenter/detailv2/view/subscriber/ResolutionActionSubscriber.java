@@ -14,9 +14,11 @@ import rx.Subscriber;
 public class ResolutionActionSubscriber extends Subscriber<ResolutionActionDomainData> {
 
     private final DetailResCenterFragmentView fragmentView;
+    private String action;
 
-    public ResolutionActionSubscriber(DetailResCenterFragmentView fragmentView) {
+    public ResolutionActionSubscriber(DetailResCenterFragmentView fragmentView, String action) {
         this.fragmentView = fragmentView;
+        this.action = action;
     }
 
     @Override
@@ -36,7 +38,7 @@ public class ResolutionActionSubscriber extends Subscriber<ResolutionActionDomai
     @Override
     public void onNext(ResolutionActionDomainData data) {
         if (data.isSuccess()) {
-            fragmentView.doOnActionSucess();
+            fragmentView.doOnActionSuccess(action);
         } else {
             fragmentView.doOnActionError(data.getMessageError());
         }

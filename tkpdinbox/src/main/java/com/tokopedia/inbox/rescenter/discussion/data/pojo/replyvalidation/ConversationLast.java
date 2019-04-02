@@ -11,7 +11,7 @@ public class ConversationLast {
     private String userImg;
     @SerializedName("conversation_id")
     @Expose
-    private int conversationId;
+    private String conversationId;
     @SerializedName("user_label_id")
     @Expose
     private int userLabelId;
@@ -78,11 +78,11 @@ public class ConversationLast {
         this.userImg = userImg;
     }
 
-    public int getConversationId() {
+    public String getConversationId() {
         return conversationId;
     }
 
-    public void setConversationId(int conversationId) {
+    public void setConversationId(String conversationId) {
         this.conversationId = conversationId;
     }
 

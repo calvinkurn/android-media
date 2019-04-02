@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ProgressBar
         style="?android:attr/progressBarStyleSmall"
@@ -27,7 +28,7 @@
         android:layout_width="15dp"
         android:layout_height="15dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/remove_thin"
+        app:srcCompat="@drawable/remove_thin"
         android:background="@color/white"
         android:layout_alignTop="@id/attachment"
         android:layout_alignRight="@id/attachment"

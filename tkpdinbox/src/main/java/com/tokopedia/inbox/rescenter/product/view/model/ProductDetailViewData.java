@@ -17,6 +17,8 @@ public class ProductDetailViewData implements Parcelable {
     private String productThumbUrl;
     private String trouble;
     private String troubleReason;
+    private String troubleAmountString;
+    private int troubleAmount;
     private int quantity;
 
     public ProductDetailViewData() {
@@ -54,6 +56,21 @@ public class ProductDetailViewData implements Parcelable {
         this.productThumbUrl = productThumbUrl;
     }
 
+    public String getTroubleAmountString() {
+        return troubleAmountString;
+    }
+
+    public void setTroubleAmountString(String troubleAmountString) {
+        this.troubleAmountString = troubleAmountString;
+    }
+
+    public int getTroubleAmount() {
+        return troubleAmount;
+    }
+
+    public void setTroubleAmount(int troubleAmount) {
+        this.troubleAmount = troubleAmount;
+    }
 
     public String getTrouble() {
         return trouble;
@@ -92,6 +109,8 @@ public class ProductDetailViewData implements Parcelable {
         dest.writeString(this.productThumbUrl);
         dest.writeString(this.trouble);
         dest.writeString(this.troubleReason);
+        dest.writeString(this.troubleAmountString);
+        dest.writeInt(this.troubleAmount);
         dest.writeInt(this.quantity);
     }
 
@@ -102,6 +121,8 @@ public class ProductDetailViewData implements Parcelable {
         this.productThumbUrl = in.readString();
         this.trouble = in.readString();
         this.troubleReason = in.readString();
+        this.troubleAmountString = in.readString();
+        this.troubleAmount = in.readInt();
         this.quantity = in.readInt();
     }
 

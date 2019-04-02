@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.shopinfo.models.productmodel.Product;
 import com.tokopedia.core.util.getproducturlutil.GetProductUrlUtil;
@@ -83,14 +83,16 @@ public class ProductAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     private void bindProduct(ViewHolder holder, final int position) {
-        holder.name.setText(list.get(position).getProductName());
-        ImageHandler.LoadImage(holder.image, list.get(position).getProductImage());
-        holder.main.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onGetUrl(list.get(position).getProductUrl());
-            }
-        });
+        if (position < list.size()) {
+            holder.name.setText(list.get(position).getProductName());
+            ImageHandler.LoadImage(holder.image, list.get(position).getProductImage());
+            holder.main.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onGetUrl(list.get(position).getProductUrl());
+                }
+            });
+        }
     }
 
     @Override

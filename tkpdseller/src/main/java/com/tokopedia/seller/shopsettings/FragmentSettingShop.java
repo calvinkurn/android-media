@@ -10,19 +10,15 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
-import com.tokopedia.seller.shopsettings.address.activity.ManageShopAddress;
-import com.tokopedia.seller.shopsettings.payment.PaymentEditor;
-import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
-import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
-import com.tokopedia.seller.shop.ShopEditorActivity;
-import com.tokopedia.seller.shop.presenter.ShopSettingView;
+import com.tokopedia.shop.common.router.ShopSettingRouter;
 
 import java.util.ArrayList;
 
@@ -51,14 +47,12 @@ public class FragmentSettingShop extends TkpdFragment{
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View mainView = inflater.inflate(R.layout.fragment_manage_general, container, false);
 		Name.clear();
 		ResID.clear();
 		Name.add(getString(R.string.title_shop_information_menu));
 		Name.add(getString(R.string.title_shipping_menu));
-		Name.add(getString(R.string.title_payment_menu));
 		Name.add(getString(R.string.title_etalase_menu));
 		Name.add(getString(R.string.title_notes_menu));
 		Name.add(getString(R.string.title_location_menu));
@@ -74,44 +68,36 @@ public class FragmentSettingShop extends TkpdFragment{
 		lvManage.setOnItemClickListener(new OnItemClickListener(){
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int pos,
-					long arg3) {
-				Intent intent = null;
-				switch(pos) {
-					case 0:
-                        intent = new Intent(getActivity(), ShopEditorActivity.class);
-                        intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
-                        UnifyTracking.eventManageShopInfo();
-						startActivityForResult(intent, 0);
-						break;
-					case 1:
-						intent = new Intent(getActivity(), EditShippingActivity.class);
-						UnifyTracking.eventManageShopShipping();
-						startActivity(intent);
-						break;
-					case 2:
-						UnifyTracking.eventManageShopPayment();
-						intent = new Intent(getActivity(), PaymentEditor.class);
-						startActivity(intent);
-						break;
-					case 3:
-						UnifyTracking.eventManageShopEtalase();
-						intent = new Intent(getActivity(), EtalaseShopEditor.class);
-						startActivity(intent);
-						break;
-					case 4:
-						UnifyTracking.eventManageShopNotes();
-						intent = new Intent(getActivity(), ManageShopNotesActivity.class);
-						startActivity(intent);
-						break;
-					case 5:
-						UnifyTracking.eventManageShopLocation();
-						intent = new Intent(getActivity(), ManageShopAddress.class);
-						startActivity(intent);
-						break;
+			public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
+				if (getActivity().getApplication() instanceof ShopSettingRouter){
+					ShopSettingRouter router = (ShopSettingRouter) getActivity().getApplication();
+
+					Intent intent;
+					switch(pos) {
+						case 0:
+							UnifyTracking.eventManageShopInfo(getActivity());
+							startActivityForResult(router.getManageShopBasicDataIntent(getActivity()), 0);
+							break;
+						case 1:
+							intent = new Intent(getActivity(), EditShippingActivity.class);
+							UnifyTracking.eventManageShopShipping(getActivity());
+							startActivity(intent);
+							break;
+						case 2:
+							UnifyTracking.eventManageShopEtalase(getActivity());
+							startActivity(router.getManageShopEtalaseIntent(getActivity()));
+							break;
+						case 3:
+							UnifyTracking.eventManageShopNotes(getActivity());
+							startActivity(router.getManageShopNotesIntent(getActivity()));
+							break;
+						case 4:
+							UnifyTracking.eventManageShopLocation(getActivity());
+							startActivity(router.getManageShopLocationIntent(getActivity()));
+							break;
+					}
 				}
 			}
-			
 		});
 		return mainView;
 	}
@@ -119,9 +105,8 @@ public class FragmentSettingShop extends TkpdFragment{
 	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser) {
 		if (isVisibleToUser && isAdded() && getActivity() !=null) {
-			ScreenTracking.screen(getScreenName());
+			ScreenTracking.screen(MainApplication.getAppContext(),getScreenName());
 		}
 		super.setUserVisibleHint(isVisibleToUser);
 	}
 }
-	

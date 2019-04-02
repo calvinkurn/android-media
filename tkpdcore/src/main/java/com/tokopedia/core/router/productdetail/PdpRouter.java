@@ -1,11 +1,24 @@
 package com.tokopedia.core.router.productdetail;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
+import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
+import com.tokopedia.transaction.common.sharedata.AddToCartResult;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
+import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
+
+import java.util.ArrayList;
+
+import rx.Observable;
 
 /**
  * @author madi on 5/15/17.
@@ -13,15 +26,39 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 
 public interface PdpRouter {
 
-    void gotToProductDetail(Context context);
+    void openImagePreview(Context context, ArrayList<String> images, int position);
 
-    void goToProductDetail(Context context, String productUrl);
+    Intent getProductReputationIntent(Context context, String productId, String productName);
 
-    void goToProductDetail(Context context, ProductPass productPass);
+    Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest, boolean isOneClickShipment);
 
-    void goToProductDetail(Context context, ShareData shareData);
+    Intent getCartIntent(Activity activity);
 
-    void goToAddProductDetail(Context context);
+    Intent getCheckoutIntent(Context context, ShipmentFormRequest shipmentFormRequest);
 
-    Fragment getProductDetailInstanceDeeplink(Context context, @NonNull ProductPass productPass);
+    Intent getExpressCheckoutIntent(Activity activity, AtcRequestParam atcRequestParam);
+
+    Intent getLoginIntent(Context context);
+
+    Intent getShopPageIntent(Context context, String shopId);
+
+    Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
+
+    void goToCreateTopadsPromo(Context context, String productId, String shopId, String sourceCreateTopadsManageProduct);
+
+    int getCartCount(Context context);
+
+    Intent getProductTalk(Context context, String productId);
+
+    Intent getCheckoutIntent(Context context, String deviceid);
+
+    void eventClickFilterReview(Context context,
+                                String filterName,
+                                String productId);
+
+    void eventImageClickOnReview(Context context,
+                                 String productId,
+                                 String reviewId);
+
+    void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate);
 }

@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:id="@+id/container_main_upload"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/container_helper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/text_format_image"
+            android:layout_alignParentTop="true">
+
+            <ScrollView
+                android:id="@+id/container_help_upload_proof"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/container_help_upload_fast_proof"
+                android:layout_alignParentTop="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/dp_16">
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dp_8"
+                        android:text="@string/payment_label_help_proof"
+                        app:fontSize="micro" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dp_8">
+
+                        <View
+                            android:id="@+id/circle_green"
+                            android:layout_width="@dimen/dp_6"
+                            android:layout_height="@dimen/dp_6"
+                            android:layout_margin="@dimen/dp_7"
+                            android:layout_marginRight="@dimen/dp_5"
+                            android:background="@drawable/circle_green" />
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:id="@+id/label_date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/dp_8"
+                            android:layout_toRightOf="@+id/circle_green"
+                            android:text="@string/payment_label_help_proof_date"
+                            app:fontSize="micro"
+                            app:weight="medium" />
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignLeft="@+id/label_date"
+                            android:layout_below="@id/label_date"
+                            android:text="@string/payment_label_help_proof_example_date"
+                            app:fontSize="micro" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dp_8">
+
+                        <View
+                            android:id="@+id/circle_green_2"
+                            android:layout_width="@dimen/dp_6"
+                            android:layout_height="@dimen/dp_6"
+                            android:layout_margin="@dimen/dp_7"
+                            android:layout_marginRight="@dimen/dp_5"
+                            android:background="@drawable/circle_green" />
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:id="@+id/label_date_2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/dp_8"
+                            android:layout_toRightOf="@+id/circle_green_2"
+                            android:text="@string/payment_label_help_proof_success_status"
+                            app:fontSize="micro"
+                            app:weight="medium" />
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignLeft="@+id/label_date_2"
+                            android:layout_below="@id/label_date_2"
+                            android:text="@string/payment_label_help_proof_example_success_status"
+                            app:fontSize="micro" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dp_8">
+
+                        <View
+                            android:id="@+id/circle_green_3"
+                            android:layout_width="@dimen/dp_6"
+                            android:layout_height="@dimen/dp_6"
+                            android:layout_margin="@dimen/dp_7"
+                            android:layout_marginRight="@dimen/dp_5"
+                            android:background="@drawable/circle_green" />
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:id="@+id/label_date_3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/dp_8"
+                            android:layout_toRightOf="@+id/circle_green_3"
+                            android:text="@string/payment_label_help_proof_receiver"
+                            app:fontSize="micro"
+                            app:weight="medium" />
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignLeft="@+id/label_date_3"
+                            android:layout_below="@id/label_date_3"
+                            android:text="@string/payment_label_help_proof_example_receiver"
+                            app:fontSize="micro" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dp_8">
+
+                        <View
+                            android:id="@+id/circle_green_4"
+                            android:layout_width="@dimen/dp_6"
+                            android:layout_height="@dimen/dp_6"
+                            android:layout_margin="@dimen/dp_7"
+                            android:layout_marginRight="@dimen/dp_5"
+                            android:background="@drawable/circle_green" />
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:id="@+id/label_date_4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/dp_8"
+                            android:layout_toRightOf="@+id/circle_green_4"
+                            android:text="@string/payment_label_help_proof_total_transfer"
+                            app:fontSize="micro"
+                            app:weight="medium" />
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignLeft="@+id/label_date_4"
+                            android:layout_below="@id/label_date_4"
+                            android:text="@string/payment_label_help_proof_example_total"
+                            app:fontSize="micro" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </ScrollView>
+
+            <LinearLayout
+                android:id="@+id/container_help_upload_fast_proof"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="@dimen/dp_16"
+                android:background="@color/grey_200"
+                android:padding="@dimen/dp_8">
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="@string/payment_label_help_upload_proof"
+                    app:fontSize="micro" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/container_image_helper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/text_format_image"
+            android:padding="@dimen/dp_16"
+            android:visibility="gone">
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/text_confirmation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:gravity="center_horizontal"
+                android:text="@string/payment_label_confirmation_upload_image"
+                app:fontSize="small" />
+
+            <FrameLayout
+                android:id="@+id/container_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/text_confirmation">
+
+                <ImageView
+                    android:id="@+id/image_payment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/dp_10"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_coupon_image" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/iv_action_image"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_gravity="top|end"
+                    android:background="@drawable/circle_white"
+                    android:padding="@dimen/dp_5"
+                    app:srcCompat="@drawable/ic_check_green_payment" />
+            </FrameLayout>
+        </RelativeLayout>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/text_format_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/button_save_choose_another_image"
+            android:layout_centerHorizontal="true"
+            android:text="@string/payment_label_format_image"
+            app:fontSize="small" />
+
+        <com.tokopedia.design.component.ButtonCompat
+            android:id="@+id/button_save_choose_another_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/button_save"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:maxHeight="52dp"
+            android:text="@string/payment_label_choose_another_image"
+            android:visibility="gone"
+            app:buttonCompatSize="big"
+            app:buttonCompatType="secondary" />
+
+        <com.tokopedia.design.component.ButtonCompat
+            android:id="@+id/button_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:maxHeight="52dp"
+            android:text="@string/payment_label_choose_image"
+            app:buttonCompatSize="big"
+            app:buttonCompatType="primary" />
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone" />
+
+</RelativeLayout>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:background="@color/white"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:subtitleTextAppearance="?subtitleTextAppearance"
+        app:titleTextAppearance="?titleTextAppearance"
+        app:elevation="0dp" >
+
+        <com.tokopedia.design.text.SearchInputView
+            android:id="@+id/searchInputView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:siv_search_hint="@string/shop_product_search_hint"/>
+
+    </android.support.v7.widget.Toolbar>
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipeToRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <android.support.design.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white">
+
+            <include
+                android:id="@+id/shopPageLoadingState"
+                layout="@layout/partial_shop_page_loading_state"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/shopPageErrorState"
+                layout="@layout/partial_empty_page_error"
+                android:visibility="gone" />
+
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/appBarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+                <include
+                    layout="@layout/partial_shop_page_header"
+                    android:id="@+id/shopPageHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="bottom"
+                    app:layout_scrollFlags="scroll"/>
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tabLayout"
+                    style="@style/TabBar.White"
+                    app:tabMode="scrollable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    app:layout_scrollFlags="enterAlways"/>
+
+            </android.support.design.widget.AppBarLayout>
+
+            <com.tokopedia.abstraction.base.view.widget.TouchViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:can_swipe="false"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+
+        </android.support.design.widget.CoordinatorLayout>
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+</android.support.v7.widget.LinearLayoutCompat>

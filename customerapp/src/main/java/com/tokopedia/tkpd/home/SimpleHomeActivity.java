@@ -1,36 +1,33 @@
 package com.tokopedia.tkpd.home;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
-import android.widget.Toast;
 
-import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.tkpd.R;
-
-import com.tokopedia.core.analytics.AppEventTracking;
+import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ProductHistoryFragment;
 import com.tokopedia.tkpd.home.fragment.WishListFragment;
 import com.tokopedia.tkpd.home.presenter.SimpleHome;
 import com.tokopedia.tkpd.home.presenter.SimpleHomeImpl;
 import com.tokopedia.tkpd.home.presenter.SimpleHomeView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 public class SimpleHomeActivity extends TActivity
         implements SimpleHomeView {
@@ -39,14 +36,23 @@ public class SimpleHomeActivity extends TActivity
     public static final int INVALID_FRAGMENT = 0;
     public static final int WISHLIST_FRAGMENT = 1;
     public static final int PRODUCT_HISTORY_FRAGMENT = 2;
-
-    @BindView(R.id.simple_home_toolbar)
-    Toolbar toolbar;
-
     SimpleHome simpleHome;
 
     FragmentManager supportFragmentManager;
-    private Unbinder unbinder;
+
+    @DeepLink({Constants.Applinks.WISHLIST, ApplinkConst.WISHLIST})
+    public static Intent getWishlistApplinkIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return newWishlistInstance(context)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
+
+    public static Intent newWishlistInstance(Context context) {
+        Intent intent = new Intent(context, SimpleHomeActivity.class);
+        intent.putExtra(SimpleHomeActivity.FRAGMENT_TYPE, SimpleHomeActivity.WISHLIST_FRAGMENT);
+        return intent;
+    }
 
     @Override
     public String getScreenName() {
@@ -61,7 +67,8 @@ public class SimpleHomeActivity extends TActivity
             getWindow().setStatusBarColor(getResources().getColor(R.color.green_600));
         }
         setContentView(R.layout.activity_simple_home);
-        unbinder = ButterKnife.bind(this);
+        initToolbar();
+        initGraphqlLib();
 
         supportFragmentManager = getSupportFragmentManager();
         supportFragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -77,12 +84,16 @@ public class SimpleHomeActivity extends TActivity
         simpleHome = new SimpleHomeImpl(this);
         simpleHome.fetchExtras(getIntent());
         simpleHome.fetchDataAfterRotate(savedInstanceState);
-        initToolbar();
+
+    }
+
+    private void initGraphqlLib() {
+        GraphqlClient.init(this);
     }
 
     @Override
     public void setTitle(int fragmentType) {
-        switch (fragmentType){
+        switch (fragmentType) {
             case WISHLIST_FRAGMENT:
                 toolbar.setTitle(getString(R.string.title_wishlist));
                 break;
@@ -94,22 +105,28 @@ public class SimpleHomeActivity extends TActivity
 
     @Override
     public void initFragment(int fragmentType) {
-        switch (fragmentType){
+        switch (fragmentType) {
             case WISHLIST_FRAGMENT:
                 if (isFragmentCreated(WishListFragment.FRAGMENT_TAG)) {
                     Log.d(TAG, messageTAG + WishListFragment.class.getSimpleName() + " is created !!!");
                     Fragment wishListFragment = WishListFragment.newInstance();
+                    if (getIntent().hasExtra(Constants.FROM_APP_SHORTCUTS)) {
+                        boolean isFromAppShortCut = getIntent().getBooleanExtra(WishListFragment.FROM_APP_SHORTCUTS, false);
+                        Bundle args = new Bundle();
+                        args.putBoolean(WishListFragment.FROM_APP_SHORTCUTS, isFromAppShortCut);
+                        wishListFragment.setArguments(args);
+                    }
                     moveToFragment(wishListFragment, true, WishListFragment.FRAGMENT_TAG);
-                }else {
+                } else {
                     Log.d(TAG, messageTAG + WishListFragment.class.getSimpleName() + " is not created !!!");
                 }
                 break;
             case PRODUCT_HISTORY_FRAGMENT:
-                if(isFragmentCreated(ProductHistoryFragment.FRAGMENT_TAG)) {
+                if (isFragmentCreated(ProductHistoryFragment.FRAGMENT_TAG)) {
                     Log.d(TAG, messageTAG + ProductHistoryFragment.class.getSimpleName() + " is created !!!");
                     Fragment productHistory = ProductHistoryFragment.newInstance();
                     moveToFragment(productHistory, true, ProductHistoryFragment.FRAGMENT_TAG);
-                }else {
+                } else {
                     Log.d(TAG, messageTAG + ProductHistoryFragment.class.getSimpleName() + " is not created !!!");
                 }
                 break;
@@ -120,7 +137,7 @@ public class SimpleHomeActivity extends TActivity
     public void moveToFragment(Fragment fragment, boolean isAddToBackStack, String TAG) {
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.simple_home_container, fragment, TAG);
-        if(isAddToBackStack)
+        if (isAddToBackStack)
             fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
@@ -131,66 +148,37 @@ public class SimpleHomeActivity extends TActivity
      */
     @Override
     public boolean isFragmentCreated(String tag) {
-        return supportFragmentManager.findFragmentByTag(tag)==null;
+        return supportFragmentManager.findFragmentByTag(tag) == null;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        sendNotifLocalyticsCallback();
         invalidateOptionsMenu();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-        simpleHome.saveDataBeforeRotate(outState);
-    }
-
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        simpleHome.saveDataBeforeRotate(outState);
+        // Do not put super, avoid crash transactionTooLarge
     }
 
     @Override
     public void initToolbar() {
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.cart_only, menu);
-        LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), "NOTIFICATION_DATA");
-        int CartCache = Cache.getInt("is_has_cart");
-        if (CartCache > 0) {
-            menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart_active);
-        } else {
-            menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart);
-        }
-        return true;
+        setupToolbar();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.home:
-                Log.d(TAG, messageTAG + " R.id.home !!!");
-                return true;
-            case android.R.id.home:
-                Log.d(TAG, messageTAG+" android.R.id.home !!!");
-                getSupportFragmentManager().popBackStack();
-                return true;
-            case R.id.action_cart:
-                return onCartOptionSelected(this);
+        if (item.getItemId() == R.id.home) {
+            Log.d(TAG, messageTAG + " R.id.home !!!");
+            return true;
+        } else if (item.getItemId() == android.R.id.home) {
+            Log.d(TAG, messageTAG + " android.R.id.home !!!");
+            getSupportFragmentManager().popBackStack();
+            return true;
+        } else if (item.getItemId() == R.id.action_cart) {
+            return onCartOptionSelected(this);
         }
 
         return super.onOptionsItemSelected(item);
@@ -199,15 +187,10 @@ public class SimpleHomeActivity extends TActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        sendNotifLocalyticsCallback();
     }
 
-    private void sendNotifLocalyticsCallback() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)){
-                TrackingUtils.eventLocaNotificationCallback(getIntent());
-            }
-        }
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

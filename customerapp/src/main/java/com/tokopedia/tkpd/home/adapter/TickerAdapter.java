@@ -18,16 +18,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.network.entity.home.Ticker;
-import com.tokopedia.core.network.entity.topPicks.Item;
+import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.home.beranda.domain.model.Ticker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.core.home.BannerWebView;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Nisie on 7/18/16.
@@ -58,38 +54,26 @@ public class TickerAdapter extends RecyclerView.Adapter<TickerAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.announcement_ticker_container)
         RelativeLayout announcementContainer;
-
-        @BindView(R.id.ticker_title)
-        TextView title;
-
-        @BindView(R.id.ticker_message)
         TextView message;
-
-        @BindView(R.id.btn_close)
         ImageView btnClose;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            announcementContainer = (RelativeLayout) itemView.findViewById(R.id.announcement_ticker_container);
+            message = (TextView) itemView.findViewById(R.id.ticker_message);
+            btnClose = (ImageView) itemView.findViewById(R.id.btn_close);
         }
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(
-                LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_ticker, parent, false));
+                LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_ticker_home, parent, false));
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        if (tickers.get(position).getTitle() != null && tickers.get(position).getTitle().length() == 0) {
-            holder.title.setVisibility(View.GONE);
-        } else {
-            holder.title.setVisibility(View.VISIBLE);
-            holder.title.setText(tickers.get(position).getTitle());
-        }
         holder.message.setText(tickers.get(position).getMessage());
         holder.message.setMovementMethod(new SelectableSpannedMovementMethod());
 

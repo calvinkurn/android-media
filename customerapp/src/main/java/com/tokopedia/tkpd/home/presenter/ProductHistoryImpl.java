@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
-import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.entity.home.recentView.RecentViewData;
 import com.tokopedia.core.rxjava.RxUtils;
@@ -125,13 +124,6 @@ public class ProductHistoryImpl implements ProductHistory {
     }
 
     @Override
-    public void setLocalyticFlow(Context context, String screenName) {
-        if (context != null) {
-            ScreenTracking.screenLoca(screenName);
-        }
-    }
-
-    @Override
     public void saveDataBeforeRotate(Bundle saved) {
         mPaging.onSavedInstanceState(saved);
         saved.putParcelable(PRODUCT_HISTORY_MODEL, Parcels.wrap(data));
@@ -201,7 +193,7 @@ public class ProductHistoryImpl implements ProductHistory {
         productHistoryView.displayPull(false);
 
         data.addAll(recentViewData.getData().getRecentView());
-        mPaging.setHasNext(false);// PagingHandler.CheckHasNext(productFeedData.getData().getPagingHandlerModel())
+        mPaging.setHasNext(false);// PagingHandler.CheckHasNext(productFeedData.receiveData().getPagingHandlerModel())
 
         if (mPaging.CheckNextPage()) {
             productHistoryView.displayLoadMore(true);

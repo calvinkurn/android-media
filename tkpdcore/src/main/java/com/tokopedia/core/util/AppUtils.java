@@ -8,19 +8,11 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
 import android.view.Window;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.R;
-import com.tokopedia.core.deposit.interactor.WithdrawRetrofitInteractor;
-import com.tokopedia.core.deposit.interactor.WithdrawRetrofitInteractorImpl;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.invoice.activity.InvoiceRendererActivity;
 import com.tokopedia.core.invoice.model.InvoiceRenderParam;
-
-import java.util.HashMap;
 
 public class AppUtils {
 
@@ -30,7 +22,7 @@ public class AppUtils {
         builder.setPositiveButton(context.getString(R.string.title_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                downloadInvoiceWSV4(context, InvoiceRenderParam.instanceFromUrl(PDFUri, null, null), false);
+                downloadInvoiceWSV4(context, InvoiceRenderParam.instanceFromUrl(PDFUri, null, null), false, false);
             }
         });
         builder.setNegativeButton(context.getString(R.string.title_no), null);
@@ -41,15 +33,19 @@ public class AppUtils {
     }
 
     public static void InvoiceDialog(final Context context, final String url, final String invoiceNum) {
-        showInvoiceDialog(context, url, invoiceNum, false);
+        showInvoiceDialog(context, url, invoiceNum, false, false);
+    }
+
+    public static void InvoiceDialog(final Context context, final String url, final String invoiceNum, boolean seller) {
+        showInvoiceDialog(context, url, invoiceNum, false, seller);
     }
 
     public static void InvoiceDialogDeeplink(final Context context, final String url, final String invoiceNum) {
-        showInvoiceDialog(context, url, invoiceNum, true);
+        showInvoiceDialog(context, url, invoiceNum, true, false);
     }
 
     private static void showInvoiceDialog(final Context context, final String url, final String invoiceNum,
-                                          final boolean callback) {
+                                          final boolean callback, final boolean seller) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(invoiceNum);
         builder.setPositiveButton(context.getString(R.string.dialog_ask_download_inv),
@@ -59,7 +55,8 @@ public class AppUtils {
                     public void onClick(DialogInterface dialog, int which) {
                         downloadInvoiceWSV4(context,
                                 InvoiceRenderParam.instanceFromUrl(url, null, null),
-                                callback
+                                callback,
+                                seller
                         );
                     }
                 });
@@ -90,53 +87,11 @@ public class AppUtils {
         InvoiceDialog(context, PDFUri, Invoice);
     }
 
-    private static void downloadInvoiceWSV4(Context context, InvoiceRenderParam param, Boolean callback) {
-        Intent intent = InvoiceRendererActivity.newInstance(context, param);
+    private static void downloadInvoiceWSV4(Context context, InvoiceRenderParam param, Boolean callback, boolean seller) {
+        Intent intent = InvoiceRendererActivity.newInstance(context, param, seller);
         context.startActivity(intent);
         if(callback){
             ((Activity) context).finish();
         }
     }
-
-    public static void sendOTP(final Context context) {
-        final TkpdProgressDialog loading = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
-        loading.showDialog();
-        WithdrawRetrofitInteractor networkInteractor = new WithdrawRetrofitInteractorImpl();
-        networkInteractor.sendOTP(context, new HashMap<String, String>(), new WithdrawRetrofitInteractor.SendOTPListener() {
-            @Override
-            public void onSuccess(String message) {
-                CommonUtils.UniversalToast(context, message);
-                loading.dismiss();
-
-            }
-
-            @Override
-            public void onTimeout(String message) {
-                CommonUtils.UniversalToast(context, message);
-                loading.dismiss();
-
-            }
-
-            @Override
-            public void onError(String error) {
-                CommonUtils.UniversalToast(context, error);
-                loading.dismiss();
-            }
-
-            @Override
-            public void onNullData() {
-
-            }
-
-            @Override
-            public void onNoNetworkConnection() {
-                SnackbarManager.make((Activity) context,
-                        context.getString(R.string.msg_no_connection),
-                        Snackbar.LENGTH_LONG).show();
-                loading.dismiss();
-
-            }
-        });
-    }
-
 }

@@ -5,7 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.WindowManager;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import butterknife.ButterKnife;
 
@@ -13,6 +13,10 @@ import butterknife.ButterKnife;
  * @author by alifa on 5/5/17.
  */
 
+/**
+ * Extends one of BaseActivity from tkpd abstraction eg:BaseSimpleActivity, BaseStepperActivity, BaseTabActivity, etc
+ */
+@Deprecated
 public abstract class BasePresenterNoLayoutActivity<P> extends BaseActivity {
     protected P presenter;
     protected boolean isAfterRotate;
@@ -39,18 +43,12 @@ public abstract class BasePresenterNoLayoutActivity<P> extends BaseActivity {
             setupURIPass(getIntent().getData());
         }
         initialPresenter();
-        initViews();
-        initView();
         initVar();
         setViewListener();
         setActionVar();
     }
 
     protected void setupVar(Bundle savedInstanceState) { /*leave empty*/ }
-
-    protected void initViews() {
-        ButterKnife.bind(this);
-    }
 
     protected void setupVar() { /*leave empty*/ }
 
@@ -96,11 +94,6 @@ public abstract class BasePresenterNoLayoutActivity<P> extends BaseActivity {
      * Initial presenter, sesuai dengan Type param class
      */
     protected abstract void initialPresenter();
-
-    /**
-     * initial wiew atau widget
-     */
-    protected abstract void initView();
 
     /**
      * view / widgetnya mau diapain?

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@drawable/bg_line_separator"
+        android:orientation="vertical"
+        android:showDividers="middle">
+
+        <com.tokopedia.seller.common.widget.LabelView
+            android:id="@+id/etalase"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:content_color="@color/tkpd_main_green"
+            app:title="@string/title_etalase" />
+
+        <com.tokopedia.seller.common.widget.LabelView
+            android:id="@+id/category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:content_color="@color/tkpd_main_green"
+            app:title="@string/title_category" />
+
+        <com.tokopedia.seller.common.widget.LabelView
+            android:id="@+id/condition"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:content_color="@color/tkpd_main_green"
+            app:title="@string/title_condition" />
+
+        <com.tokopedia.seller.common.widget.LabelView
+            android:id="@+id/catalog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:content_color="@color/tkpd_main_green"
+            app:title="@string/title_catalog" />
+
+        <com.tokopedia.seller.common.widget.LabelView
+            android:id="@+id/product_picture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:content_color="@color/tkpd_main_green"
+            app:title="@string/title_picture_product" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_submit"
+        style="@style/Button.Submit.Green.Full"
+        android:text="@string/title_save" />
+
+</LinearLayout>

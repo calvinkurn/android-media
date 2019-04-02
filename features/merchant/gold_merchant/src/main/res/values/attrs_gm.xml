@@ -1,0 +1,18 @@
+<resources>
+
+    <declare-styleable name="ArrowPercentageView">
+        <attr name="arrow_percentage_value" format="float" />
+        <attr name="arrow_percentage_text_size" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="GMStatisticSummaryView">
+        <attr name="gm_statistic_summary_title" format="string" />
+        <attr name="gm_statistic_summary_content" format="string" />
+        <attr name="gm_statistic_summary_percentage" format="float" />
+        <attr name="gm_statistic_summary_percentage_size" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="LineChartContainerWidget">
+        <attr name="subtitle" format="string" />
+    </declare-styleable>
+</resources>

@@ -35,8 +35,6 @@ public interface DataManager {
      */
     void getListBank(Context context, DataReceiver dataReceiver);
 
-    void getListDepartment2(Context context, DataReceiver dataReceiver, int departmentId);
-
     /**
      * get all list of shipping city used {@link com.tokopedia.core.discovery.fragment.FragmentBrowseProduct}
      * or any browse related to it.
@@ -54,7 +52,6 @@ public interface DataManager {
         public void setCities(List<City> cities){}
         public void setProvinces(List<Province> provinces){}
         public void setBank(List<Bank> banks){}
-        public void setDepartments(List<CategoryDB> departments){}
         public void setShippingCity(List<District> districts){}
         public void onNetworkError(String message){}
         public void onMessageError(String message){}

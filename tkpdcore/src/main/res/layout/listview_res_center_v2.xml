@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
     android:background="@drawable/cards_ui_selected"
-    android:orientation="horizontal" >
+    android:orientation="horizontal">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -57,13 +58,13 @@
             android:layout_marginTop="@dimen/margin_vs"
             android:orientation="horizontal">
 
-            <TextView
+            <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/text_free_return"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:text="@string/title_free_return"
-                android:drawableLeft="@drawable/ic_badge_free_return"
+                app:drawableLeftCompat="@drawable/ic_badge_free_return"
                 android:drawablePadding="@dimen/padding_vs"
                 android:gravity="center_vertical"
                 android:textColor="@color/time_color"

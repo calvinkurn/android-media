@@ -1,129 +1,99 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'io.hansel.preprocessor.module'
+
 buildscript {
     repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
+        maven { url 'https://hansel.io/maven' }
     }
     dependencies {
-        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
-    }
-}
-
-apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
-apply plugin: 'com.jakewharton.butterknife'
-apply plugin: 'com.jfrog.artifactory'
-apply plugin: 'maven-publish'
-apply plugin: 'maven'
-
-def getArtifactVersionCode() {
-    return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
-}
-
-def getTkpdCore() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
-}
-
-def getTopAdsSdk() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.topads : project(':tkpdtopadssdk');
-}
-
-publishing {
-    publications {
-        aar(MavenPublication) {
-            groupId 'com.tokopedia.transaction'
-            artifactId 'transaction'
-            version getArtifactVersionCode()
-            artifact("$buildDir/outputs/aar/tkpdtransaction-release.aar")
-            pom.withXml {
-                def dependenciesNode = asNode().appendNode('dependencies')
-
-                configurations.compile.allDependencies.each {
-                    if (it.group != null && it.name != null) {
-                        def dependencyNode = dependenciesNode.appendNode('dependency')
-                        dependencyNode.appendNode('groupId', it.group)
-                        dependencyNode.appendNode('artifactId', it.name)
-                        dependencyNode.appendNode('version', it.version)
-                    }
-                }
-            }
+        classpath('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT') {
+            exclude group: 'com.android.tools.build', module: 'gradle'
         }
+        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
-artifactory {
-    contextUrl = rootProject.ext.artifactoryUrl
-    publish {
-        repository {
-            repoKey = 'libs-release-local'
-
-            username = artifactory_username
-            password = artifactory_password
-        }
-        defaults {
-            publications('aar')
-            publishArtifacts = true
-
-            properties = ['qa.level': 'basic', 'q.os': 'android', 'dev.team': 'core']
-            publishPom = true
-        }
-    }
-}
-
-
-android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion "25.0.0"
-
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    dexOptions {
-        javaMaxHeapSize "4g"
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-
-    configurations.all {
-        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
-    }
+project.ext {
+    artifactId = 'transaction'
+    groupId = 'com.tokopedia.transaction'
+    versionName = "2.22"
+    artifactName = "tkpdtransaction-release"
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.transactiondata)
+    implementation project(rootProject.ext.features.logisticanalytics)
+    implementation project(rootProject.ext.features.transactionanalytics)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.sessioncommon)
+    implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.loyalty)
+    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation project(rootProject.ext.features.resourcesCommon)
 
-    compile getTkpdCore()
-    compile getTopAdsSdk()
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.fingerprint)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.linker)
+    implementation project(rootProject.ext.features.logisticdistrictrecommendation)
+    implementation project(rootProject.ext.features.logisticinputreceiptshipment)
+    implementation project(rootProject.ext.features.logisticCommon)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.travelCalendar)
+    implementation project(rootProject.ext.libraries.coreNetwork)
 
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testCompile 'junit:junit:4.12'
+    implementation rootProject.ext.networkDependencies.glide
 
-    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
-    compile rootProject.ext.butterKnifeDependencies.butterKnife
-    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
 
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.playServicesDependencies.base
 
-    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation rootProject.ext.miscDependencies.scannerZxing
+
+    implementation rootProject.ext.analyticsDependencies.appsflyer
+
+    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
+
+    implementation rootProject.ext.viewDependencies.appIntro
+
+    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+
+    implementation rootProject.ext.butterKnifeDependencies.butterKnife
+    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    implementation(group: 'com.bca.widget', name: 'oneclick', version: '1.0', ext: 'aar')
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation project(rootProject.ext.libraries.commonNetwork)
 
 }
 
+apply from: '../publish_local.gradle'

@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="search_layover_bg">#50000000</color>
+    <color name="search_layover_bg">#baa0a7be</color>
+    <color name="light_green1">#F3FEF3</color>
+    <color name="light_blue1">#ddebef</color>
+    <color name="light_red1">#ffe6e6</color>
+    <color name="light_yellow1">#f5f5cd</color>
+    <color name="color_item_preview_border">#e0e0e0</color>
 </resources>

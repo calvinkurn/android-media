@@ -21,8 +21,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
@@ -42,6 +44,7 @@ import com.tokopedia.inbox.rescenter.edit.model.responsedata.ActionParameterPass
 import com.tokopedia.inbox.rescenter.edit.presenter.SellerEditResCenterImpl;
 import com.tokopedia.inbox.rescenter.edit.presenter.SellerEditResCenterPresenter;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -335,7 +338,7 @@ public class SellerEditResCenterFormFragment extends BasePresenterFragment<Selle
         dialog.show();
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void actionCamera() {
         uploadImageDialog.openCamera();
     }
@@ -427,9 +430,17 @@ public class SellerEditResCenterFormFragment extends BasePresenterFragment<Selle
 
     @Override
     public void setActivityResult() {
-        UnifyTracking.eventResolutionEditSolution();
+        eventResolutionEditSolution();
         Intent intent = new Intent();
         getActivity().setResult(Activity.RESULT_OK, intent);
+    }
+
+    public void eventResolutionEditSolution() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.EDIT_SOLUTION);
     }
 
     @Override
@@ -450,11 +461,12 @@ public class SellerEditResCenterFormFragment extends BasePresenterFragment<Selle
                 SellerEditResCenterFormFragment.this, requestCode, grantResults);
     }
 
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showRationaleForStorageAndCamera(final PermissionRequest request) {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
     }
@@ -484,20 +496,22 @@ public class SellerEditResCenterFormFragment extends BasePresenterFragment<Selle
         RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onPermissionDenied(getActivity(),listPermission);
     }
 
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showNeverAskForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
     }

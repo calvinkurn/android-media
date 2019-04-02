@@ -1,0 +1,14 @@
+{
+  tokopointsDynamicLink() {
+    layoutType
+    links {
+      id
+      backgroundColor
+      backgroundURL
+      text
+      fontColor
+      url
+      appLink
+    }
+  }
+}

@@ -2,16 +2,17 @@ package com.tokopedia.seller.opportunity.snapshot.presenter;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.seller.opportunity.snapshot.listener.SnapShotFragmentView;
 
 /**
  * Created by hangnadi on 3/1/17.
  */
-public interface SnapShotFragmentPresenter {
-    void processDataPass(ProductPass productPass);
+public abstract class SnapShotFragmentPresenter extends BaseDaggerPresenter<SnapShotFragmentView>{
+    public abstract void processDataPass(ProductPass productPass);
 
-    void requestProductDetail(Context context, ProductPass productPass, int type, boolean forceNetwork);
-
-    void acceptOpportunity();
+    public abstract void requestProductDetail(String opportunityId, ProductPass productPass,
+                                              int type, boolean forceNetwork);
 
 }

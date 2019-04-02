@@ -2,7 +2,10 @@ package com.tokopedia.tkpd.home.presenter;
 
 import android.support.v7.widget.GridLayoutManager;
 
+import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
+import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.var.RecyclerViewItem;
+import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 
 import java.util.List;
 
@@ -85,11 +88,11 @@ public interface WishListView {
 
     void displayContentList(boolean isShow);
 
-    void setSearchNotFound();
+    void setSearchNotFound(String query);
 
     void displayLoading(boolean isShow);
 
-    void displayDeleteWishlistDialog(String productId);
+    void displayDeleteWishlistDialog(String productId, int position);
 
     void displayAddToCart(String productId);
 
@@ -97,11 +100,20 @@ public interface WishListView {
 
     void dismissProgressDialog();
 
-    void onSuccessDeleteWishlist(String searchTerm);
+    void onSuccessDeleteWishlist(String searchTerm, int position);
 
     void displayErrorNetwork(Boolean isAction);
+
+    void showAddToCartMessage(String message);
+
+    void showAddToCartErrorMessage(String message);
 
     String getUserId();
 
     void clearSearchView();
+
+    void sendAddToCartAnalytics(Wishlist dataDetail, AddToCartResult addToCartResult);
+
+    void sendWishlistImpressionAnalysis(GqlWishListDataResponse.GqlWishList wishListData, int currentSize);
+
 }

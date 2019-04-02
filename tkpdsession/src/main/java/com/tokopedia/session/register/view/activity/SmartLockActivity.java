@@ -1,5 +1,6 @@
 package com.tokopedia.session.register.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
@@ -21,11 +22,15 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.session.R;
+import com.tokopedia.track.TrackApp;
+
 
 public class SmartLockActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
+
 
     private static final String TAG = "SmartLock";
     public static final int RC_SAVE = 1;
@@ -125,36 +130,41 @@ public class SmartLockActivity extends AppCompatActivity implements
                 .setAccountTypes(TOKOPEDIA_PROVIDER)
                 .setPasswordLoginSupported(true)
                 .build();
-
-        Auth.CredentialsApi.request(mGoogleApiClient, request).setResultCallback(
-                new ResultCallback<CredentialRequestResult>() {
-                    @Override
-                    public void onResult(CredentialRequestResult credentialRequestResult) {
-                        mIsRequesting = false;
-                        Status status = credentialRequestResult.getStatus();
-                        if (credentialRequestResult.getStatus().isSuccess()) {
-                            // Successfully read the credential without any user interaction, this
-                            // means there was only a single credential and the user has auto
-                            // sign-in enabled.
-                            Credential credential = credentialRequestResult.getCredential();
-                            processRetrievedCredential(credential);
-                        } else if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
-                            // This is most likely the case where the user has multiple saved
-                            // credentials and needs to pick one.
-                            resolveResult(status, RC_READ);
-                        } else if (status.getStatusCode() == CommonStatusCodes.SIGN_IN_REQUIRED) {
-                            // This is most likely the case where the user does not currently
-                            // have any saved credentials and thus needs to provide a username
-                            // and password xto sign in.
-                            Log.d(TAG, "Sign in required");
-                            goToContent();
-                        } else {
-                            Log.w(TAG, "Unrecognized status code: " + status.getStatusCode());
-                            goToContent();
+        if (mGoogleApiClient.isConnected()) {
+            Auth.CredentialsApi.request(mGoogleApiClient, request).setResultCallback(
+                    new ResultCallback<CredentialRequestResult>() {
+                        @Override
+                        public void onResult(CredentialRequestResult credentialRequestResult) {
+                            mIsRequesting = false;
+                            Status status = credentialRequestResult.getStatus();
+                            if (credentialRequestResult.getStatus().isSuccess()) {
+                                // Successfully read the credential without any user interaction, this
+                                // means there was only a single credential and the user has auto
+                                // sign-in enabled.
+                                Credential credential = credentialRequestResult.getCredential();
+                                processRetrievedCredential(credential);
+                            } else if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
+                                // This is most likely the case where the user has multiple saved
+                                // credentials and needs to pick one.
+                                resolveResult(status, RC_READ);
+                            } else if (status.getStatusCode() == CommonStatusCodes.SIGN_IN_REQUIRED) {
+                                // This is most likely the case where the user does not currently
+                                // have any saved credentials and thus needs to provide a username
+                                // and password xto sign in.
+                                Log.d(TAG, "Sign in required");
+                                goToContent();
+                            } else {
+                                Log.w(TAG, "Unrecognized status code: " + status.getStatusCode());
+                                goToContent();
+                            }
                         }
                     }
-                }
-        );
+            );
+        } else {
+            mIsRequesting = false;
+            Log.d(TAG, "Google Api Client is not connected yet");
+            goToContent();
+        }
     }
 
     private void processRetrievedCredential(Credential credential) {
@@ -163,7 +173,9 @@ public class SmartLockActivity extends AppCompatActivity implements
             bundle.putString(SmartLockActivity.USERNAME, credential.getId());
             bundle.putString(SmartLockActivity.PASSWORD, credential.getPassword());
             setResult(RESULT_OK, new Intent().putExtras(bundle));
-            Auth.CredentialsApi.disableAutoSignIn(mGoogleApiClient);
+            if (mGoogleApiClient!=null && mGoogleApiClient.isConnected()) {
+                Auth.CredentialsApi.disableAutoSignIn(mGoogleApiClient);
+            }
             finish();
         } else {
             // This is likely due to the credential being changed outside of
@@ -211,15 +223,23 @@ public class SmartLockActivity extends AppCompatActivity implements
         } else if (requestCode == RC_SAVE) {
             Log.d(TAG, "Result code: " + resultCode);
             if (resultCode == RESULT_OK) {
-                UnifyTracking.eventSmartLock(AppEventTracking.EventLabel.SAVE_PASSWORD);
+                eventSmartLock(AppEventTracking.EventLabel.SAVE_PASSWORD);
                 Log.d(TAG, "Credential Save: OK");
             } else {
-                UnifyTracking.eventSmartLock(AppEventTracking.EventLabel.NEVER);
+                eventSmartLock(AppEventTracking.EventLabel.NEVER);
                 Log.e(TAG, "Credential Save Failed");
             }
             goToContent();
         }
         mIsResolving = false;
+    }
+
+    public void eventSmartLock(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.SUCCESS_SMART_LOCK,
+                AppEventTracking.Category.SMART_LOCK,
+                AppEventTracking.Action.SUCCESS,
+                label);
     }
 
     private void goToContent() {

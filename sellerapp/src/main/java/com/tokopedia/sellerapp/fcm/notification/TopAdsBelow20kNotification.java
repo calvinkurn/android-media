@@ -7,8 +7,8 @@ import android.os.Bundle;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gcm.base.BaseNotification;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.seller.topads.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.sellerapp.R;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_TITLE;
@@ -37,7 +37,7 @@ public class TopAdsBelow20kNotification extends BaseNotification {
         mNotificationPass.title = data.getString(ARG_NOTIFICATION_TITLE, mContext.getString(R.string.title_push_notif_general));
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-        UnifyTracking.eventPushNotifLowTopadsReceived();
+        UnifyTracking.eventPushNotifLowTopadsReceived(mContext);
     }
 
     @Override

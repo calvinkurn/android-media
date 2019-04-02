@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.WholesalePriceDB;
 import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;

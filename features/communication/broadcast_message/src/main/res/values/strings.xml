@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">broadcast message</string>
+    <string name="template_bm_quota">Kuota Broadcast Chat: </string>
+    <string name="template_bm_quota_refill">Kuota akan ditambahkan kembali pada %1$s</string>
+    <string name="template_bm_quota_valid_usage">Kuota berlaku hingga %1$s</string>
+    <string name="content_empty_string">Sebarkan pesan promosi seputar produk atau toko secara eksklusif melalui chat langsung ke followers Anda</string>
+    <string name="button_text_empty">Buat Pesan</string>
+    <string name="bm_list_title">Broadcast Chat</string>
+    <string name="recipient">Penerima:</string>
+    <string name="upload">Upload Banner Promosi</string>
+    <string name="desc_linked_image">Gambar akan memiliki link yang terhubung dengan toko Anda</string>
+    <string name="attach_my_product">Lampirkan produk saya</string>
+    <string name="message_label">Isi Pesan</string>
+    <string name="message_content_desc">Sampaikan informasi promo toko Anda  secara jelas dan singkat</string>
+    <string name="bm_continue">Lanjutkan</string>
+    <string name="preview_desc">Ini adalah tampilan yang akan diterima followers Anda</string>
+    <string name="see_now">Cek Sekarang</string>
+    <string name="temp_message">Cek www.tokopedia/modostore.com. Ulang tahun Tokopedia yang ke 9, Toko Modo Store akan ada kejutan menarik di tanggal 17 Agustus ini. Nantikan ya!</string>
+    <string name="time_template">%1$s  •</string>
+    <string name="temp_message_time">10:00  •</string>
+    <string name="create_bm">Tambah Broadcast Chat</string>
+    <string name="bm_choose_picture">Pilih Gambar</string>
+    <string name="preview_bm">Preview</string>
+    <string name="send_message">Kirim</string>
+    <string name="sent">Terkirim</string>
+    <string name="sending">Sedang mengirim</string>
+    <string name="sent_on_template">pada %1$s</string>
+    <string name="send_progress_template">(%1$d / %2$d)</string>
+    <string name="message_read">Pesan dibaca:</string>
+    <string name="read_progress_template">%1$d / %2$d</string>
+    <string name="retry">Ulangi</string>
+    <string name="dialog_title_cancel_create_bm">Batalkan sebar pesan?</string>
+    <string name="dialog_descr_cancel_create_bm">Pesan yang telah Anda buat tidak bisa disimpan dan akan dihapus</string>
+    <string name="dialog_ok_cancel_create_bm">Ya, Batalkan</string>
+    <string name="dialog_no_cancel_create_bm">Tidak</string>
+    <string name="empty_attached_product">Harap lampirkan produk atau nonaktifkan \'Lampirkan produk saya\'</string>
+    <string name="optional">(opsional)</string>
+    <plurals name="template_follower">
+        <item quantity="zero">%d follower</item>
+        <item quantity="one">%d follower</item>
+        <item quantity="other">%d followers</item>
+    </plurals>
+</resources>

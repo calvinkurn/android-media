@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:gravity="center_vertical">
+
+            <ImageButton
+                android:id="@+id/top_bar_close_button"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/ic_filter_detail_close" />
+
+            <TextView
+                android:id="@+id/top_bar_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="32dp"
+                android:text="@string/filter"
+                style="@style/TextView.TitleBig.Bold" />
+
+            <TextView
+                android:id="@+id/top_bar_button_reset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_button_reset_text"
+                style="@style/TextView.Small.Green.Bold"
+                />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/dynamic_filter_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="7dp"
+                android:background="@drawable/bottom_sheet_filter_top_bar_shadow" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="7dp"
+                android:background="@drawable/bottom_sheet_filter_bottom_bar_shadow"
+                android:layout_alignParentBottom="true"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white">
+
+            <TextView
+                android:id="@+id/button_finish"
+                android:layout_width="match_parent"
+                android:padding="@dimen/dp_16"
+                android:gravity="center"
+                android:layout_margin="@dimen/dp_16"
+                android:background="@drawable/bg_round_corner_solid_green"
+                style="@style/TextView.Small.WhitePrimary.Bold"
+                />
+
+            <ProgressBar
+                android:id="@+id/filterProgressBar"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateTint="@color/white"
+                android:visibility="gone"
+                android:layout_centerInParent="true" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</merge>

@@ -2,7 +2,7 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="@dimen/padding_small"
+                android:padding="@dimen/dp_10"
                 tools:context=".purchase.activity.TxHistoryActivity">
 
     <android.support.v7.widget.RecyclerView
@@ -10,6 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="@android:color/transparent"
-        android:dividerHeight="@dimen/margin_vs"/>
+        android:dividerHeight="@dimen/dp_5"/>
 
 </RelativeLayout>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="@dimen/tp_padding_medium">
+
+    <TextView
+        android:id="@+id/text_header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/tp_label_send_coupon_as_gift"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/tp_text_size_medium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/img_gift"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_24"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_header"
+        app:srcCompat="@drawable/ic_tp_gift" />
+
+    <TextView
+        android:id="@+id/text_point_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/tp_margin_medium"
+        android:layout_marginStart="@dimen/tp_margin_medium"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/tp_text_size_small"
+        app:layout_constraintStart_toEndOf="@+id/img_gift"
+        app:layout_constraintTop_toTopOf="@+id/img_gift" />
+
+    <TextView
+        android:id="@+id/text_point_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_2"
+        android:textColor="@color/medium_green"
+        android:textSize="@dimen/tp_text_size_regular"
+        app:layout_constraintStart_toStartOf="@+id/text_point_label"
+        app:layout_constraintTop_toBottomOf="@+id/text_point_label" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/img_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_24"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_point_value"
+        app:srcCompat="@drawable/ic_tp_contact" />
+
+    <TextView
+        android:id="@+id/text_for"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/tp_margin_medium"
+        android:layout_marginStart="@dimen/tp_margin_medium"
+        android:text="@string/tp_label_for"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/tp_text_size_xsmall"
+        android:visibility="visible"
+        app:layout_constraintStart_toEndOf="@+id/img_user"
+        app:layout_constraintTop_toTopOf="@+id/img_user" />
+
+    <TextView
+        android:id="@+id/text_for_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/tp_text_size_regular"
+        app:layout_constraintStart_toStartOf="@+id/text_for"
+        app:layout_constraintTop_toBottomOf="@+id/text_for" />
+
+    <TextView
+        android:id="@+id/text_notes_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/tp_margin_medium"
+        android:layout_marginStart="@dimen/tp_margin_medium"
+        android:layout_marginTop="@dimen/dp_8"
+        android:text="@string/tp_label_message"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/tp_text_size_xsmall"
+        android:visibility="visible"
+        app:layout_constraintStart_toEndOf="@+id/img_user"
+        app:layout_constraintTop_toBottomOf="@+id/text_for_value" />
+
+    <TextView
+        android:id="@+id/text_notes_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/tp_text_size_regular"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/text_for"
+        app:layout_constraintTop_toBottomOf="@+id/text_notes_label" />
+
+    <Button
+        android:id="@+id/button_send_now"
+        android:layout_width="0dp"
+        android:layout_height="42dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/dp_32"
+        android:layout_weight="1"
+        android:background="@drawable/bg_button_green"
+        android:gravity="center"
+        android:text="@string/tp_label_send_now"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/tp_text_size_small"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_notes_value" />
+
+    <ProgressBar
+        android:id="@+id/progress_send_now"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/button_send_now"
+        app:layout_constraintLeft_toLeftOf="@+id/button_send_now"
+        app:layout_constraintRight_toRightOf="@+id/button_send_now"
+        app:layout_constraintTop_toTopOf="@+id/button_send_now" />
+
+</android.support.constraint.ConstraintLayout>

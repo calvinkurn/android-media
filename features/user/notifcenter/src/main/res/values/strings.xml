@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_notif_center">Update</string>
+    <string name="notif_today">Hari Ini</string>
+    <string name="notif_yesterday">Kemarin</string>
+    <string name="notif_filter">Filter</string>
+    <string name="notif_cancel">Batalkan</string>
+    <string name="notif_no_info">Tidak ada info baru</string>
+    <string name="notif_no_info_desc">Dapatkan info seputar transaksi penjualan &amp; pembelian, promo, event, update produk, fitur &amp; layanan terbaru untuk Anda.</string>
+</resources>

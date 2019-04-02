@@ -1,0 +1,24 @@
+query topAdsCreditHistory($shopId: Int!, $userId: Int!, $startDate: String, $endDate: String) {
+    topadsCreditHistory(shopId: $shopId, userId: $userId, startDate: $startDate, endDate: $endDate){
+        data{
+            total_used
+            total_addition
+            total_used_fmt
+            total_addition_fmt
+            credit_history {
+                amount
+                amount_fmt
+                date
+                show_timestamp
+                description
+                is_reduction
+                transaction_type
+            }
+        }
+        errors {
+            code
+            detail
+            title
+        }
+    }
+}

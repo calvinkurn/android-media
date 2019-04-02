@@ -9,22 +9,21 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.tkpd.R;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.home.presenter.HotList;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.tkpd.R;
+import com.tokopedia.track.TrackApp;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+import java.util.Map;
 
 /**
  * Created by m.normansyah on 28/10/2015.
@@ -34,35 +33,17 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
     HotList hotList;
 
     public final class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.hotprod_img)
         ImageView mImageofProduct;
-        @BindView(R.id.hotprod_name)
         TextView mNameOfProduct;
-        @BindView(R.id.hotprod_price)
         TextView mPrice;
-        @BindView(R.id.hot_list_cardview_listproduct)
         CardView cardView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            try {
-                ButterKnife.bind(this, itemView);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        @OnClick(R.id.hot_list_cardview_listproduct)
-        public void hotListClick(View v) {
-            if (itemView.getContext() != null) {
-                RecyclerViewItem temp = data.get(getAdapterPosition());
-
-                HotListModel hlm = (HotListModel) data.get(getAdapterPosition());
-                UnifyTracking.eventHotlist(hlm.getHotListName());
-                TrackingUtils.eventLoca(AppScreen.EVENT_CLICKED_HOTLIST);
-                TrackingUtils.sendMoEngageClickHotListEvent(hlm);
-                hotList.moveToOtherActivity(temp);
-            }
+            mImageofProduct = (ImageView) itemView.findViewById(R.id.hotprod_img);
+            mNameOfProduct = (TextView) itemView.findViewById(R.id.hotprod_name);
+            mPrice = (TextView) itemView.findViewById(R.id.hotprod_price);
+            cardView = (CardView) itemView.findViewById(R.id.hot_list_cardview_listproduct);
         }
 
         public Context getContext() {
@@ -91,15 +72,57 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
             return;
         switch (getItemViewType(position)) {
             case TkpdState.RecyclerView.VIEW_STANDARD:
-                HotListModel temp = ((HotListModel) data.get(position));
-                ImageHandler.loadImageFit2(((ViewHolder) viewHolder).getContext(), ((ViewHolder) viewHolder).mImageofProduct, temp.getHotListBiggerImage());
-                ((ViewHolder) viewHolder).mNameOfProduct.setText(temp.getHotListName());
-                ((ViewHolder) viewHolder).mPrice.setText(temp.getHotListPrice());
+                final HotListModel hotListModel = ((HotListModel) data.get(position));
+                ImageHandler.loadImageFit2(((ViewHolder) viewHolder).getContext(), ((ViewHolder) viewHolder).mImageofProduct, hotListModel.getHotListBiggerImage());
+                ((ViewHolder) viewHolder).mNameOfProduct.setText(hotListModel.getHotListName());
+                ((ViewHolder) viewHolder).mPrice.setText(hotListModel.getHotListPrice());
+                ((ViewHolder) viewHolder).cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        trackingEnhanceEccommerce(view.getContext(), hotListModel);
+                        sendMoEngageClickHotListEvent(view.getContext(), hotListModel);
+                        hotList.moveToOtherActivity(hotListModel);
+                    }
+                });
                 break;
             default:
                 super.onBindViewHolder(viewHolder, position);
                 break;
         }
+    }
+
+    public void sendMoEngageClickHotListEvent(Context context, HotListModel hotListModel) {
+        Map<String, Object> value = DataLayer.mapOf(
+                AppEventTracking.MOENGAGE.LOGIN_STATUS, RouterUtils.getRouterFromContext(context).legacySessionHandler().isV4Login(),
+                AppEventTracking.MOENGAGE.HOTLIST_NAME, hotListModel.getHotListName(),
+                AppEventTracking.MOENGAGE.HOTLIST_ID, hotListModel.getHotListId()
+        );
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.CLICK_HOTLIST);
+
+    }
+
+    private void trackingEnhanceEccommerce(Context context, HotListModel model) {
+        UnifyTracking.eventTrackingEnhancedEcommerce(
+                context,
+                DataLayer.mapOf(
+                        "event", "promoClick",
+                        "eventCategory", "homepage",
+                        "eventAction", "hotlist tab - banner click",
+                        "eventLabel", model.getHotListName(),
+                        "ecommerce", DataLayer.mapOf(
+                                "promoClick", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
+                                                DataLayer.mapOf(
+                                                        "id", model.getHotListId(),
+                                                        "name", model.getTrackerEnhanceName(),
+                                                        "creative", model.getHotListName(),
+                                                        "position", String.valueOf(model.getTrackerEnhancePosition())
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
     }
 
 

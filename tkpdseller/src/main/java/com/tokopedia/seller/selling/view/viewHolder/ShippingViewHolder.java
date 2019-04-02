@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -13,8 +14,8 @@ import android.widget.TextView;
 
 import com.bignerdranch.android.multiselector.MultiSelector;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.seller.selling.presenter.ShippingImpl;
@@ -206,9 +207,13 @@ public class ShippingViewHolder extends BaseSellingViewHolder<ShippingImpl.Model
 
     private void setDeadLine(OrderShippingList model) {
         Deadline.setText(model.getOrderDeadline().getDeadlineShipping());
-        deadlineColoredBorder.setBackgroundColor(Color.parseColor(model
-                .getOrderDeadline()
-                .getDeadlineColor()));
+        try {
+            deadlineColoredBorder.setBackgroundColor(Color.parseColor(model
+                    .getOrderDeadline()
+                    .getDeadlineColor()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

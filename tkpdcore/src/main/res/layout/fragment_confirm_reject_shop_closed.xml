@@ -175,7 +175,7 @@
                             android:layout_width="36dp"
                             android:layout_height="36dp"
                             android:padding="8dp"
-                            android:src="@drawable/chevron_down" />
+                            app:srcCompat="@drawable/chevron_down" />
                     </LinearLayout>
 
 

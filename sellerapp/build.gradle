@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
-apply plugin: 'android-apt'
 apply plugin: 'io.fabric'
+apply plugin: 'io.hansel.preprocessor'
 
 def getDpiId(String density) {
 
@@ -15,15 +15,19 @@ def getAPKArchiveFolder(variant) {
 }
 
 def allowSplit() {
-    return gradle.startParameter.taskNames.contains("assembleRelease") &&
-            !project.hasProperty('tkpdBuildType');
+    return gradle.startParameter.taskNames.contains("assembleLiveProdRelease") &&
+            (project.hasProperty('tkpdBuildType') && tkpdBuildType == "productionsplit")
 }
 
 def allowDistribution() {
-    if ( project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
+    if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
         return "true";
     }
     return "false";
+}
+
+def allowProguard() {
+    return project.hasProperty('tkpdBuildType')
 }
 
 def getTkpdVersionCode() {
@@ -44,6 +48,10 @@ def renameAPKFile(variant, density, versionCode) {
     return fileName;
 }
 
+def devMode() {
+    return !project.hasProperty('tkpdBuildType')
+}
+
 def archiveAPK(variant, output) {
 
     String density = output.getFilter(com.android.build.OutputFile.DENSITY);
@@ -58,10 +66,13 @@ def archiveAPK(variant, output) {
 
 buildscript {
     repositories {
+        mavenCentral()
         maven { url 'https://maven.fabric.io/public' }
+        maven { url 'https://hansel.io/maven' }
     }
     dependencies {
         classpath 'io.fabric.tools:gradle:1.+'
+        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
@@ -69,18 +80,19 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 1000404;
-        defaultVersionName = "1.0.4";
+        defaultVersionCode = 1320404;
+        defaultVersionName = "1.3.2";
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion '25'
+    buildToolsVersion rootProject.ext.buildToolsVersion
     useLibrary 'org.apache.http.legacy'
     sourceSets {
 
-        packagingOptions {
-            exclude 'META-INF/LICENSE.txt'
-        }
 
         main {
             java.srcDirs = ['src/main/java']
@@ -88,16 +100,10 @@ android {
             aidl.srcDirs = ['src/main/java']
             renderscript.srcDirs = ['src/main/java']
             res.srcDirs = ['src/main/res']
+            assets.srcDirs = ['assets', 'src/main/assets', 'src/main/assets/']
         }
 
-        String sharedTestDir = 'src/sharedTest/java'
-        test {
-            java.srcDir sharedTestDir
-        }
-        androidTest {
-            java.srcDir sharedTestDir
-        }
-
+        androidTest.setRoot('tests')
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
@@ -113,19 +119,30 @@ android {
         }
     }
 
+
     buildTypes {
         debug {
+            signingConfig signingConfigs.debug
             minifyEnabled false
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles 'proguard-rules.txt'
+            ext.enableHansel=false
         }
         release {
+            if (devMode()) {
+                signingConfig signingConfigs.debug
+            }
+            ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            if (allowProguard()) {
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            } else {
+                proguardFiles 'proguard-rules.txt'
+            }
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
             if (allowSplit()) {
@@ -152,25 +169,6 @@ android {
         }
     }
 
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        multiDexEnabled = true
-        applicationId "com.tokopedia.sellerapp"
-        resConfigs "en", "id"
-        versionCode getTkpdVersionCode()
-        versionName getTkpdVersionName()
-        vectorDrawables.useSupportLibrary = true
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
-
-
-    dexOptions {
-        javaMaxHeapSize "4g"
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-    }
     splits {
         density {
             enable allowSplit()
@@ -179,23 +177,54 @@ android {
         }
     }
 
-    productFlavors {
-        staging {
-            applicationIdSuffix ".staging"
-            versionNameSuffix "-staging"
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        multiDexEnabled = true
+        applicationId "com.tokopedia.sellerapp"
+        versionCode getTkpdVersionCode()
+        versionName getTkpdVersionName()
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
         }
-        alpha {
-            applicationIdSuffix ".alpha"
-            versionNameSuffix "-alpha"
-        }
-        live {
-
+        packagingOptions {
+            exclude "lib/arm64-v8a/libgnustl_shared.so"
         }
     }
 
+
+    dexOptions {
+        javaMaxHeapSize "8g"
+        keepRuntimeAnnotatedClasses false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     configurations.all {
+        resolutionStrategy.force 'com.android.support:multidex:1.0.3'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
         resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
+    }
+
+    // Specifies 4 flavor dimensions.
+    flavorDimensions "tier", "client"
+
+    productFlavors {
+        staging {
+            dimension "tier"
+        }
+        live {
+            dimension "tier"
+        }
+        dev {
+            dimension "client"
+        }
+        prod {
+            dimension "client"
+        }
     }
 }
 
@@ -205,89 +234,186 @@ repositories {
     }
 }
 
-dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    /*compile (rootProject.ext.tkpdDependencies.inbox) {
-            exclude group: 'com.tokopedia.core'
-        }
-        compile (rootProject.ext.tkpdDependencies.discovery) {
-            exclude group: 'com.tokopedia.core'
-        }
-        compile (rootProject.ext.tkpdDependencies.transaction) {
-            exclude group: 'com.tokopedia.core'
-        }
-        compile (rootProject.ext.tkpdDependencies.seller) {
-            exclude group: 'com.tokopedia.core'
-        }
-        compile (rootProject.ext.tkpdDependencies.session) {
-            exclude group: 'com.tokopedia.core'
-        }
-        compile (rootProject.ext.tkpdDependencies.core)*/
-    compile project(':tkpddiscovery')
-    compile project(':tkpdseller')
-    compile project(':tkpdsession')
-    compile project(':tkpdpayment')
-    compile project(':tkpdinbox')
+afterEvaluate {
+    dependencies {
+        liveDevImplementation rootProject.ext.instabugDependencies.instabug
+        stagingDevImplementation rootProject.ext.instabugDependencies.instabug
+    }
+}
 
-    compile (rootProject.ext.miscDependencies.trueCaller) {
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    implementation project(rootProject.ext.libraries.pushNotif)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.cacheApi)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.datePickerRange)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.baseListSeller)
+    implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
+    implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.track)
+    
+
+    implementation project(rootProject.ext.features.commonDigital)
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.shopPage)
+    implementation project(rootProject.ext.features.mitraToppers)
+    implementation project(rootProject.ext.features.goldMerchantCommon)
+    implementation project(rootProject.ext.features.goldMerchantResource)
+    implementation project(rootProject.ext.features.goldMerchant)
+    implementation project(rootProject.ext.features.goldMerchantSubscribe)
+    implementation project(rootProject.ext.features.topAdsDashboard)
+    implementation project(rootProject.ext.features.topAdsManagementCommon)
+    implementation project(rootProject.ext.features.topAdsManagement)
+    implementation project(rootProject.ext.features.seller)
+    implementation project(rootProject.ext.features.session)
+    implementation project(rootProject.ext.features.productDetail)
+    implementation project(rootProject.ext.features.inbox)
+    implementation project(rootProject.ext.features.reputation)
+    implementation project(rootProject.ext.features.reputationCommon)
+    implementation project(rootProject.ext.features.transaction)
+    implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.transactiondata)
+    implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.profile)
+    implementation project(rootProject.ext.features.contactUs)
+    implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.features.logout)
+    implementation project(rootProject.ext.features.userIdentification)
+    implementation project(rootProject.ext.features.userIdentificationCommon)
+    implementation project(rootProject.ext.features.logisticdistrictrecommendation)
+    implementation project(rootProject.ext.features.saldodetails)
+    implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.linker)
+    implementation project(rootProject.ext.features.logisticuploadawb)
+    implementation project(rootProject.ext.features.logisticdata)
+    implementation project(rootProject.ext.features.logisticgeolocation)
+    implementation project(rootProject.ext.features.tracking)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.config)
+    implementation project(rootProject.ext.features.topchat)
+    implementation project(rootProject.ext.features.chatbot)
+    implementation project(rootProject.ext.features.chatcommon)
+    implementation project(rootProject.ext.features.settingbank)
+    implementation project(rootProject.ext.features.changepassword)
+    implementation project(rootProject.ext.features.attachproduct)
+    implementation project(rootProject.ext.features.talk)
+    implementation project(rootProject.ext.features.productDetailRevamp)
+    implementation project(rootProject.ext.features.productManageItem)
+    implementation project(rootProject.ext.features.productDraftDatabase)
+    implementation project(rootProject.ext.features.productManageList)
+    implementation project(rootProject.ext.features.broadcastMessage)
+    implementation project(rootProject.ext.features.broadcastMessageCommon)
+    implementation project(rootProject.ext.features.kol)
+    implementation project(rootProject.ext.features.kolCommon)
+    implementation project(rootProject.ext.features.flashsaleManagement)
+    implementation project(rootProject.ext.features.flashsaleManagementCommon)
+    implementation project(rootProject.ext.features.merchantVoucher)
+    implementation project(rootProject.ext.features.categoryCommon)
+
+    implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.commonDigital)
+    implementation project(rootProject.ext.features.digitalproduct)
+    implementation project(rootProject.ext.features.shopOpen)
+    implementation project(rootProject.ext.features.shopSettings)
+    implementation project(rootProject.ext.features.withdraw)
+    implementation project(rootProject.ext.features.paymentSetting)
+
+    implementation project(rootProject.ext.features.changePhoneNumber)
+    implementation project(rootProject.ext.features.phoneVerification)
+    implementation project(rootProject.ext.features.updateinactivephone)
+    implementation project(rootProject.ext.features.loginregister)
+    implementation project(rootProject.ext.features.sessioncommon)
+    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
+
+    implementation(rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
     }
 
-    compile('de.hdodenhof:circleimageview:2.1.0') {
-        exclude group: 'com.android.support', module: 'support-annotations'
+    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
+
+    implementation(rootProject.ext.analyticsDependencies.moengage) {
+        exclude group: 'com.moengage', module: 'moe-push-gcm'
     }
-    compile(rootProject.ext.miscDependencies.smoothAppBarLayout) {
+
+    implementation(rootProject.ext.analyticsDependencies.moengageMSG) {
+        exclude group: 'com.android.support'
+    }
+
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.firebase.config
+    implementation rootProject.ext.firebase.messaging
+
+    implementation rootProject.ext.supportLibDependencies.cardViewV7
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation rootProject.ext.networkDependencies.retrofit
+    implementation rootProject.ext.networkDependencies.converterGson
+    implementation rootProject.ext.networkDependencies.adapterRxJava
+    implementation rootProject.ext.networkDependencies.okHttp
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
+
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.scannerZxing
+    implementation rootProject.ext.miscDependencies.multiDex
+
+    implementation rootProject.ext.miscDependencies.rxAndroid
+    implementation rootProject.ext.miscDependencies.rxJava
+    implementation rootProject.ext.miscDependencies.rxJavaMath
+
+    implementation project(rootProject.ext.libraries.fingerprint)
+
+    implementation(rootProject.ext.miscDependencies.imagecropper) {
         exclude group: "com.android.support"
     }
-    compile 'com.daimajia.numberprogressbar:library:1.2@aar'
-    compile rootProject.ext.butterKnifeDependencies.butterKnife
-    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+    implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
+        exclude group: 'com.android.support'
+    }
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
-    provided rootProject.ext.miscDependencies.javaxAnnotation
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
+        exclude group: "com.android.support"
+    }
 
-    // Required -- JUnit 4 framework
-    testCompile rootProject.ext.testDependencies.junit
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
 
-    // Optional -- Mockito framework
-    testCompile rootProject.ext.testDependencies.mockitorCore
+    implementation rootProject.ext.viewDependencies.appIntro
 
-    testCompile rootProject.ext.miscDependencies.rxJava
+    implementation('de.hdodenhof:circleimageview:2.1.0') {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
 
-    androidTestCompile rootProject.ext.miscDependencies.rxJava
+    implementation rootProject.ext.butterKnifeDependencies.butterKnife
+    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
-    androidTestCompile rootProject.ext.testDependencies.uiautomator
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    androidTestCompile rootProject.ext.testDependencies.spoon
-    androidTestCompile rootProject.ext.testDependencies.androidAnnotation
-
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
-    androidTestCompile (rootProject.ext.testDependencies.androidTestRunner){
-        exclude module: 'support-annotations'
-    }
-    androidTestCompile (rootProject.ext.testDependencies.androidRulesVersion){
-        exclude module: 'support-annotations'
-    }
-
-    androidTestCompile (rootProject.ext.testDependencies.espressoIntents){
-        exclude group: 'com.android.support', module: 'support-annotations'
-    }
-
-    androidTestCompile rootProject.ext.testDependencies.retrofitMock
-    androidTestCompile rootProject.ext.testDependencies.retrofitMockWebser
-
-    androidTestApt rootProject.ext.miscDependencies.daggerCompiler
-    androidTestCompile rootProject.ext.miscDependencies.dagger
-    androidTestCompile rootProject.ext.miscDependencies.gson
-    androidTestCompile rootProject.ext.miscDependencies.parcelerApi
-    androidTestApt rootProject.ext.miscDependencies.parceler
-
-    androidTestCompile rootProject.ext.testDependencies.dexMaker
-    androidTestCompile(rootProject.ext.testDependencies.dexMakerMockito) {
-        exclude group: 'org.hamcrest', module: 'hamcrest-core'
-    }
+    testImplementation rootProject.ext.testDependencies.junit
 }

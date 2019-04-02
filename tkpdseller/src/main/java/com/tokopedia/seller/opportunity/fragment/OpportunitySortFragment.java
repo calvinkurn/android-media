@@ -3,7 +3,6 @@ package com.tokopedia.seller.opportunity.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -11,11 +10,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.gson.reflect.TypeToken;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.adapter.OpportunitySortAdapter;
 import com.tokopedia.seller.opportunity.adapter.viewmodel.SimpleCheckListItemModel;
+import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.seller.opportunity.viewmodel.SortingTypeViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,14 +31,14 @@ import java.util.List;
 
 public class OpportunitySortFragment extends BasePresenterFragment {
 
-    public static final String SELECTED_VALUE = "SELECTED_VALUE";
-    public static final String SELECTED_KEY = "SELECTED_KEY";
+    public static final String SELECTED_SORT = "SELECTED_SORT";
     public static final String SELECTED_POSITION = "SELECTED_POSITION";
     public static final String ARGS_LIST_SORT = "ARGS_LIST_SORT";
 
     OpportunitySortAdapter adapter;
     List<SortingTypeViewModel> listSort;
     RecyclerView sortRecyclerView;
+    private SaveInstanceCacheManager saveInstanceCacheManager;
 
     public static OpportunitySortFragment createInstance(Bundle extras) {
         OpportunitySortFragment fragment = new OpportunitySortFragment();
@@ -44,8 +49,10 @@ public class OpportunitySortFragment extends BasePresenterFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
         if (savedInstanceState != null)
-            listSort = savedInstanceState.getParcelableArrayList(ARGS_LIST_SORT);
+            listSort = saveInstanceCacheManager.get(ARGS_LIST_SORT,
+                    (new TypeToken<List<SortingTypeViewModel>>() {}).getType(), new ArrayList<>());
         else if (getArguments().getParcelableArrayList(ARGS_LIST_SORT) != null)
             listSort = getArguments().getParcelableArrayList(ARGS_LIST_SORT);
         else {
@@ -66,7 +73,8 @@ public class OpportunitySortFragment extends BasePresenterFragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(ARGS_LIST_SORT, new ArrayList<Parcelable>(listSort));
+        saveInstanceCacheManager.onSave(outState);
+        saveInstanceCacheManager.put(ARGS_LIST_SORT, listSort);
         super.onSaveInstanceState(outState);
     }
 
@@ -147,16 +155,26 @@ public class OpportunitySortFragment extends BasePresenterFragment {
     private OpportunitySortAdapter.SimpleCheckListListener onItemSelectedListener() {
         return new OpportunitySortAdapter.SimpleCheckListListener() {
             @Override
+            public void onItemSelected(int adapterPosition, SimpleCheckListItemModel item) {
 
-            public void onItemSelected(int position, String value, String key) {
+                UnifyTracking.eventOpportunity(
+                        getActivity(),
+                        OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY,
+                        OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                        AppEventTracking.Action.SUBMIT,
+                        item.getTitle()
+                );
 
                 Intent intent = new Intent();
-                intent.putExtra(SELECTED_VALUE, value);
-                intent.putExtra(SELECTED_KEY, key);
-                intent.putExtra(SELECTED_POSITION, position);
-
+                Bundle bundle = new Bundle();
+                FilterPass filterPass = new FilterPass(item.getKey(), item.getValue(), item
+                        .getTitle());
+                bundle.putParcelable(SELECTED_SORT, filterPass);
+                bundle.putInt(SELECTED_POSITION, adapterPosition);
+                intent.putExtras(bundle);
                 getActivity().setResult(Activity.RESULT_OK, intent);
                 getActivity().finish();
+
             }
         };
     }

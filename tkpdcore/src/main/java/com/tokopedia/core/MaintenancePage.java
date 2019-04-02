@@ -15,6 +15,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.core2.R;
 
 import java.util.HashMap;
 import java.util.Map;

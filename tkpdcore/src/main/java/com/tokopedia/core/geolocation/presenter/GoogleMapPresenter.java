@@ -61,4 +61,6 @@ public interface GoogleMapPresenter {
     void onDestroy();
 
     void prepareDetailDestination(View view);
+
+    void onMapReady();
 }

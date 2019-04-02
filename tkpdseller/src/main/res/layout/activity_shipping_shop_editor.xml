@@ -6,9 +6,9 @@
 
     <include
         android:id="@+id/include_loading"
+        layout="@layout/loader"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        layout="@layout/loader"
         android:gravity="center"
         android:visibility="gone" />
 
@@ -17,8 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/padding_small"
-        android:paddingRight="@dimen/padding_small" 
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_10"
         >
 
         <ExpandableListView
@@ -31,8 +31,8 @@
             android:choiceMode="singleChoice"
             android:clipToPadding="false"
             android:divider="@android:color/transparent"
-            android:groupIndicator="@android:color/transparent"
-            android:dividerHeight="1dp" />
+            android:dividerHeight="1dp"
+            android:groupIndicator="@android:color/transparent" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -81,7 +81,7 @@ public class ProductDetailCacheManager implements DbFlowOperation<ProductDetailM
                 .where(ProductDetailModelDB_Table.productID.is(productID))
                 .querySingle();
 
-        if (isExpired(cache.expiredTime)) {
+        if (cache!=null && isExpired(cache.expiredTime)) {
             throw new RuntimeException("Cache is expired");
         } else {
             this.productData = cache.productData;

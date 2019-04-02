@@ -1,0 +1,75 @@
+<resources>
+    <string name="app_name">Design</string>
+
+    <!-- GENERAL ACTION -->
+    <string name="label_manage">Atur</string>
+    <string name="label_change">Ubah</string>
+    <string name="label_edit">Edit</string>
+    <string name="label_save">Simpan</string>
+    <string name="label_open">Buka</string>
+    <string name="label_close">Tutup</string>
+    <string name="label_cancel">Batal</string>
+    <string name="label_yes">Ya</string>
+    <string name="label_login_button">Masuk</string>
+
+    <string name="label_browse_file">Browse File</string>
+    <string name="label_see_all">Lihat Semua</string>
+
+    <string name="label_share">Bagikan</string>
+
+    <string name="product_default_counter_text">0</string>
+    <string name="text_ticker_action_close">Tutup</string>
+    <string name="search_hint_default">Cari</string>
+    <string name="search_input_hint">Cari Event/Lokasi</string>
+    <string name="top_ads_range_date_text">%1$s - %2$s</string>
+
+    <string name="reputation_shop_point">%1$s point</string>
+    <string name="price_range_separator_symbol">-</string>
+    <string name="empty_search_result_title_template">Oops, $1 tidak ditemukan</string>
+    <string name="empty_search_result_content_template">Hasil pencarian untuk \"$1\" tidak ditemukan</string>
+
+    <string name="counter_pattern">%1$d / %2$d</string>
+    <string name="checkbox_use_promo_code">Gunakan Kode Promo Tokopedia</string>
+    <string name="title_success_get_voucher">Anda mendapatkan promo:</string>
+    <string name="button_cancel_voucher">Batalkan</string>
+    <string name="notes_voucher">* Hanya berlaku untuk satu kali pembayaran.\n** Sisa nilai promo
+        tidak dapat dikembalikan (hangus) apabila
+        melewati masa kadaluarsa."</string>
+    <string name="kode_voucher">Kode Promo</string>
+    <string name="error_voucher">Kode promo tidak ditemukan</string>
+    <string name="use_voucher">Gunakan</string>
+    <string name="empty_voucher">Masukkan kode promo terlebih dahulu</string>
+    <string name="all_promo">Lihat Semua Promo</string>
+    <string name="use_promo_code_or_coupon">Gunakan Kode Promo atau Kupon</string>
+    <string name="use_promo_code">Gunakan Kode Promo</string>
+    <string name="my_coupon">Kupon Saya: </string>
+    <string name="promo_code">Kode Promo: </string>
+    <string name="button_copy_voucher_code">Salin Kode</string>
+    <string name="success_copy_voucher_code">Kode Tersalin!</string>
+    <string name="buyer_reputation">Reputasi Pembeli</string>
+    <string name="buyer_reputation_given_by_seller">Nilai pembeli yang diberikan penjual</string>
+    <string name="close">Tutup</string>
+    <string name="seller_reputation">Reputasi Toko</string>
+    <string name="seller_reputation_given_by_buyer">Nilai toko yang diberikan pembeli</string>
+    <string name="point">Poin</string>
+    <string name="no_reputation_yet">Belum ada nilai reputasi</string>
+    <string name="label_send_to_pick_up_booth">Kirim ke Gerai Pengambilan</string>
+    <string name="label_edit_pickup">Ubah Gerai</string>
+    <string name="empty_search_result_default">Pencarian tidak ditemukan</string>
+
+    <string name="edit">Ubah</string>
+    <string name="label_filter">Filter</string>
+
+    <string name="button_cancel">Batal</string>
+    <string name="button_delete">Hapus</string>
+    <string name="button_send">Kirim</string>
+
+    <string name="label_official_store">Official Store</string>
+    <string name="label_gold_merchant">Gold Merchant</string>
+    <string name="label_regular_merchant">Regular Merchant</string>
+    <string name="title_delete">Hapus</string>
+
+    <string name="intro_seller_saldo_finish_string">Selesai</string>
+    <string name="tokopedia_domain" translatable="false">www.tokopedia.com</string>
+
+</resources>

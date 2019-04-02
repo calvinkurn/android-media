@@ -7,6 +7,7 @@ import com.tokopedia.core.base.adapter.exception.TypeNotSupportedException;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.model.ErrorNetworkModel;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
+import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.base.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.core.base.adapter.viewholders.ErrorNetworkViewHolder;
@@ -17,6 +18,10 @@ import com.tokopedia.core.base.adapter.viewholders.LoadingViewholder;
  * @author Kulomady on 1/25/17.
  */
 
+/**
+ * Use BaseAdapter (visitable pattern) from tkpd abstraction
+ */
+@Deprecated
 public class BaseAdapterTypeFactory implements AdapterTypeFactory {
 
     @Override
@@ -48,6 +53,11 @@ public class BaseAdapterTypeFactory implements AdapterTypeFactory {
             throw TypeNotSupportedException.create("Layout not supported");
         }
         return creatViewHolder;
+    }
+
+    @Override
+    public int type(RetryModel retryModel) {
+        return 0;
     }
 
 

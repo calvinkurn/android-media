@@ -14,6 +14,7 @@ public class FavoriteShopItem {
     private String adKey;
     private String adR;
     private String shopClickUrl;
+    private String badgeUrl;
 
     public String getName() {
         return name;
@@ -85,5 +86,13 @@ public class FavoriteShopItem {
 
     public void setShopClickUrl(String shopClickUrl) {
         this.shopClickUrl = shopClickUrl;
+    }
+
+    public String getBadgeUrl() {
+        return badgeUrl;
+    }
+
+    public void setBadgeUrl(String badgeUrl) {
+        this.badgeUrl = badgeUrl;
     }
 }

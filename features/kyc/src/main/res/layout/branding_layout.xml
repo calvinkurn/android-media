@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/branding_container"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/clr_f8f8f8"
+    android:gravity="center"
+    android:padding="@dimen/dp_9">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_16"
+        android:src="@drawable/ic_lock" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_12"
+        android:text="@string/branding"
+        android:textColor="@color/black_54" />
+
+    <ImageView
+        android:layout_width="@dimen/dp_36"
+        android:layout_height="@dimen/dp_12"
+        android:paddingLeft="@dimen/dp_5"
+        android:src="@drawable/ic_ovo_logo_purple" />
+</LinearLayout>

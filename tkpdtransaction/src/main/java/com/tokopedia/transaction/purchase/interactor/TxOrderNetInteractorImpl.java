@@ -3,6 +3,7 @@ package com.tokopedia.transaction.purchase.interactor;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.network.apiservices.payment.PaymentTransactionService;
 import com.tokopedia.core.network.apiservices.transaction.TXOrderActService;
 import com.tokopedia.core.network.apiservices.transaction.TXOrderService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -11,6 +12,8 @@ import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.exception.HttpErrorException;
 import com.tokopedia.transaction.exception.ResponseErrorException;
+import com.tokopedia.transaction.exception.ResponseRuntimeException;
+import com.tokopedia.transaction.purchase.domain.TxVerificationRepository;
 import com.tokopedia.transaction.purchase.model.ConfirmationData;
 import com.tokopedia.transaction.purchase.model.response.cancelform.CancelFormData;
 import com.tokopedia.transaction.purchase.model.response.formconfirmpayment.FormConfPaymentData;
@@ -42,11 +45,15 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
     private final CompositeSubscription compositeSubscription;
     private final TXOrderService txOrderService;
     private final TXOrderActService txOrderActService;
+    private final PaymentTransactionService paymentTransactionService;
+    private final TxVerificationRepository verificationRepository;
 
     public TxOrderNetInteractorImpl() {
         compositeSubscription = new CompositeSubscription();
         txOrderService = new TXOrderService();
         txOrderActService = new TXOrderActService();
+        paymentTransactionService = new PaymentTransactionService();
+        verificationRepository = new TxVerificationRepository(paymentTransactionService);
     }
 
     @Override
@@ -330,6 +337,66 @@ public class TxOrderNetInteractorImpl implements TxOrderNetInteractor {
                         .unsubscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(subscriber)
+        );
+    }
+
+    @Override
+    public void showCancelTransactionDialog(@NonNull TKPDMapParam<String, String> params,
+                                            final CancelTransactionDialogListener listener) {
+        Observable<String> observable = verificationRepository
+                .processCancelDialogResponse(params);
+
+        compositeSubscription.add(
+                observable.subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<String>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                if(e instanceof ResponseRuntimeException)
+                                    listener.onError(e.getMessage());
+                                else listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                            }
+
+                            @Override
+                            public void onNext(String message) {
+                                listener.onSuccess(message);
+                            }
+                        })
+        );
+    }
+
+    @Override
+    public void cancelTransaction(@NonNull TKPDMapParam<String, String> params, final CancelTransactionListener listener) {
+        Observable<String> observable = verificationRepository.processCancelTransaction(params);
+
+        compositeSubscription.add(
+                observable.subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<String>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                if(e instanceof ResponseRuntimeException)
+                                    listener.onError(e.getMessage());
+                                else listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                            }
+
+                            @Override
+                            public void onNext(String message) {
+                                listener.onSuccess(message);
+                            }
+                        })
         );
     }
 

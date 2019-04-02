@@ -1,12 +1,9 @@
 package com.tokopedia.tkpd.home.favorite.view.viewmodel;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.tkpd.home.favorite.domain.model.DataWishlist;
-import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShopItem;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
-import com.tokopedia.tkpd.home.favorite.domain.model.WishListBadge;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,32 +27,8 @@ public class DataFavoriteMapper {
         favoriteShopViewModel.setShopAvatarImageUrl(favoriteShop.getIconUri());
         favoriteShopViewModel.setShopLocation(favoriteShop.getLocation());
         favoriteShopViewModel.setFavoriteShop(favoriteShop.isFav());
+        favoriteShopViewModel.setBadgeUrl(favoriteShop.getBadgeUrl());
         return favoriteShopViewModel;
-    }
-
-    public WishlistViewModel prepareDataWishlist(DomainWishlist wishListData) {
-        WishlistViewModel wishlistViewModel = new WishlistViewModel();
-        ArrayList<WishlistItem> wishlistItems = new ArrayList<>();
-        if (wishListData != null && wishListData.getData() != null) {
-            for (DataWishlist dataWishlist : wishListData.getData()) {
-                WishlistItem wishlistItem = new WishlistItem();
-                wishlistItem.setName(dataWishlist.getName());
-                wishlistItem.setPrice(dataWishlist.getPrice());
-                wishlistItem.setShopName(dataWishlist.getShop_name());
-                wishlistItem.setProductId(dataWishlist.getId());
-                wishlistItem.setProductImage(dataWishlist.getProductImageUrl());
-                ArrayList<String> badges = new ArrayList<>();
-                if (dataWishlist.getBadges() !=null) {
-                    for (WishListBadge badge : dataWishlist.getBadges()) {
-                        badges.add(badge.getImgUrl());
-                    }
-                }
-                wishlistItem.setBadgeImageUrl(badges);
-                wishlistItems.add(wishlistItem);
-            }
-        }
-        wishlistViewModel.setWishlistItems(wishlistItems);
-        return wishlistViewModel;
     }
 
     public TopAdsShopViewModel prepareDataTopAdsShop(TopAdsShop adsShop) {
@@ -71,7 +44,9 @@ public class DataFavoriteMapper {
                 shopItem.setAdKey(item.getAdRefKey());
                 shopItem.setShopClickUrl(item.getShopClickUrl());
                 shopItem.setShopCoverUrl(item.getShopImageCover());
+                shopItem.setShopCoverEcs(item.getShopImageCoverEcs());
                 shopItem.setShopImageUrl(item.getShopImageUrl());
+                shopItem.setShopImageEcs(item.getShopImageEcs());
                 shopItem.setShopLocation(item.getShopLocation());
                 shopItem.setFav(item.isSelected());
                 shopItems.add(shopItem);

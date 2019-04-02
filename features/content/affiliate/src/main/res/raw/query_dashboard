@@ -1,0 +1,30 @@
+query GetDashboard() {
+  affiliatedProduct {
+    products {
+      id
+      image
+      name
+      isActive
+      totalSold
+      totalClick
+      commission
+    }
+    pagination{
+      nextCursor
+    }
+  }
+  affiliateStats{
+    totalCommission
+    productClick
+    profileView
+    productSold
+  }
+  affiliateCheck{
+    isAffiliate
+    status
+  }
+  affiliatePostQuota{
+    formatted
+    number
+  }
+}

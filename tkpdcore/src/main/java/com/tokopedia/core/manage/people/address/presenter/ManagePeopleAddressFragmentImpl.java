@@ -122,6 +122,7 @@ public class ManagePeopleAddressFragmentImpl implements ManagePeopleAddressFragm
         this.setNextPageStatus(getPeopleAddress.getPaging());
         fragmentListener.setRefreshView(true);
         fragmentListener.showCache(getPeopleAddress.getList());
+        fragmentListener.setToken(getPeopleAddress.getToken());
     }
 
     private void setNextPageStatus(Paging paging) {
@@ -170,12 +171,21 @@ public class ManagePeopleAddressFragmentImpl implements ManagePeopleAddressFragm
     public void setOnSuccessInitAddressList(GetPeopleAddress data) {
         this.setNextPageStatus(data.getPaging());
         fragmentListener.replaceCache(data.getList());
+        fragmentListener.setToken(data.getToken());
+    }
+
+    @Override
+    public void setOnEmptyAddressList(GetPeopleAddress data) {
+        fragmentListener.clearCurrentList();
+        fragmentListener.setNoResultView(true);
+        fragmentListener.setToken(data.getToken());
     }
 
     @Override
     public void setOnSuccessLoadMoreData(GetPeopleAddress data) {
         this.setNextPageStatus(data.getPaging());
         fragmentListener.addAddressItemList(data.getList());
+        fragmentListener.setToken(data.getToken());
     }
 
     @Override

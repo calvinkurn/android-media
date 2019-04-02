@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@color/white">
+
+    <ViewFlipper
+        android:id="@+id/container_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:measureAllChildren="false">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/tp_margin_large" />
+
+        <android.support.design.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/app_bar_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                app:elevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_scrollFlags="scroll">
+
+                    <include layout="@layout/tp_layout_catalog_header" />
+
+                    <include layout="@layout/tp_layout_catalog_banner_pager" />
+                </LinearLayout>
+
+
+            </android.support.design.widget.AppBarLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <android.support.design.widget.AppBarLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white">
+
+                    <com.tokopedia.design.component.Tabs
+                        android:id="@+id/tabs_sort_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tabIndicatorColor="@color/tkpd_main_green"
+                        app:tabMode="scrollable"
+                        app:tabSelectedTextColor="@color/tkpd_main_green"
+                        app:tabTextAppearance="@style/TokoPointsTabs"
+                        app:tabTextColor="@color/black_38" />
+                </android.support.design.widget.AppBarLayout>
+
+                <include layout="@layout/tp_layout_catalog_flash_timer" />
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/view_pager_sort_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/container_fab_egg_token"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="@dimen/tp_margin_large"
+                android:background="@color/transparent"
+                android:visibility="gone"
+                app:layout_behavior="com.tokopedia.tokopoints.view.util.QuickReturnFloaterBehavior">
+
+                <include layout="@layout/tp_layout_floating_token" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/bottom_view_membership"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <include layout="@layout/tp_bottomview_membership" />
+            </LinearLayout>
+
+        </android.support.design.widget.CoordinatorLayout>
+
+        <include layout="@layout/layout_tp_network_error_large" />
+    </ViewFlipper>
+</FrameLayout>

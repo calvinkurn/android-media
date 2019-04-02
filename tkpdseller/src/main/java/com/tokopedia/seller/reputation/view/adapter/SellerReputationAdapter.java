@@ -1,14 +1,14 @@
 package com.tokopedia.seller.reputation.view.adapter;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,17 +16,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.base.list.seller.common.util.ItemType;
+import com.tokopedia.base.list.seller.view.old.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.utils.DateHeaderFormatter;
-import com.tokopedia.seller.gmstat.utils.DateUtilHelper;
-import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
+import com.tokopedia.seller.reputation.util.DateHeaderFormatter;
+import com.tokopedia.seller.reputation.view.helper.DateUtilHelper;
 import com.tokopedia.seller.reputation.view.helper.ReputationHeaderViewHelper;
 import com.tokopedia.seller.reputation.view.model.EmptyListModel;
 import com.tokopedia.seller.reputation.view.model.EmptySeparatorModel;
 import com.tokopedia.seller.reputation.view.model.ReputationReviewModel;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
-import com.tokopedia.seller.topads.view.model.TypeBasedModel;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
     private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
     private static final String TAG = "SellerReputationAdapter";
     private final Context context;
-    private ArrayList<TypeBasedModel> list;
+    private ArrayList<ItemType> list;
     private Fragment fragment;
 
     public SellerReputationAdapter(Context context) {
@@ -69,7 +69,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
         switch (viewType) {
             case ReputationReviewModel.VIEW_DEPOSIT:
                 View itemLayoutView = LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.listview_seller_reputation, viewGroup, false);
+                        .inflate(R.layout.item_seller_reputation, viewGroup, false);
                 return new ViewHolder(itemLayoutView);
             case SetDateHeaderModel.TYPE:
                 itemLayoutView = LayoutInflater.from(viewGroup.getContext())
@@ -119,14 +119,21 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
             if (list.get(position) != null && list.get(position) instanceof ReputationReviewModel) {
                 ReputationReviewModel reputationReviewModel =
                         (ReputationReviewModel) list.get(position);
-                Log.d(TAG, String.format("bindDeposit %d %s", position, reputationReviewModel.getData().toString()));
                 ReputationReviewModel.Data data = reputationReviewModel.getData();
                 holder.date.setText(data.getDate());
                 String information = data.getInformation();
-                int i = information.indexOf("I");
-
-                holder.description.setText(information.substring(0, i));
-                holder.tvInvoice.setText(information.substring(i));
+                int indexOfI = 0;
+                if (!TextUtils.isEmpty(information)) {
+                    indexOfI = information.indexOf("I");
+                }
+                String descriptionText = "";
+                String invoiceText = "";
+                if (indexOfI > 0) {
+                    descriptionText = information.substring(0, indexOfI);
+                    invoiceText = information.substring(indexOfI);
+                }
+                holder.description.setText(descriptionText);
+                holder.tvInvoice.setText(invoiceText);
                 holder.penaltyScore.setText(decimalFormat.format(data.getPenaltyScore()));
             }
         }
@@ -171,7 +178,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
         notifyItemInserted(0);
     }
 
-    public void addAllWithoutNotify(List<TypeBasedModel> datas) {
+    public void addAllWithoutNotify(List<ItemType> datas) {
         list.addAll(datas);
     }
 
@@ -182,9 +189,9 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
     public SetDateHeaderModel getHeaderModel() {
         if (getDataSize() > 0) {
-            TypeBasedModel typeBasedModel = list.get(SET_DATE_MODEL_POSITION);
-            if (typeBasedModel != null && typeBasedModel instanceof SetDateHeaderModel) {
-                SetDateHeaderModel setDateHeaderModel = (SetDateHeaderModel) typeBasedModel;
+            ItemType itemType = list.get(SET_DATE_MODEL_POSITION);
+            if (itemType != null && itemType instanceof SetDateHeaderModel) {
+                SetDateHeaderModel setDateHeaderModel = (SetDateHeaderModel) itemType;
                 return setDateHeaderModel;
             }
         }
@@ -197,19 +204,19 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
     private ArrayList<Parcelable> reformatParcelable() {
         ArrayList<Parcelable> parcelables = new ArrayList<>();
-        for (TypeBasedModel typeBasedModel : list) {
-            switch (typeBasedModel.getType()) {
+        for (ItemType itemType : list) {
+            switch (itemType.getType()) {
                 case ReputationReviewModel.VIEW_DEPOSIT:
-                    parcelables.add((ReputationReviewModel) typeBasedModel);
+                    parcelables.add((ReputationReviewModel) itemType);
                     break;
                 case SetDateHeaderModel.TYPE:
-                    parcelables.add((SetDateHeaderModel) typeBasedModel);
+                    parcelables.add((SetDateHeaderModel) itemType);
                     break;
                 case EmptySeparatorModel.TYPE:
-                    parcelables.add((EmptySeparatorModel) typeBasedModel);
+                    parcelables.add((EmptySeparatorModel) itemType);
                     break;
                 case EmptyListModel.TYPE:
-                    parcelables.add((EmptyListModel) typeBasedModel);
+                    parcelables.add((EmptyListModel) itemType);
                     break;
                 default:
                     throw new IllegalArgumentException("error in " + TAG);
@@ -220,8 +227,8 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
     public void restoreParcelable(ArrayList<Parcelable> parcelables) {
         for (Parcelable parcelable : parcelables) {
-            if (parcelable != null && parcelable instanceof TypeBasedModel) {
-                list.add((TypeBasedModel) parcelable);
+            if (parcelable != null && parcelable instanceof ItemType) {
+                list.add((ItemType) parcelable);
             }
         }
 
@@ -258,7 +265,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
         public SellerDateHeaderViewHolder(View itemView) {
             super(itemView);
             dateHeaderFormatter = new DateHeaderFormatter(
-                    itemView.getResources().getStringArray(R.array.month_names_abrev)
+                    itemView.getResources().getStringArray(R.array.lib_date_picker_month_entries)
             );
             reputationViewHelper = new ReputationHeaderViewHelper(itemView);
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -279,8 +286,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
         public void onClickHeader() {
             if (fragment != null) {
-                reputationViewHelper.setSelectionType(DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE);
-                reputationViewHelper.onClick(fragment, true);
+                reputationViewHelper.onClick(fragment);
                 return;
             }
         }
@@ -346,8 +352,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
                 @Override
                 public void onClick(View v) {
                     if (getFragment() != null) {
-                        dateUtilHelper.setSelectionType(DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE);
-                        dateUtilHelper.onClick(fragment, true);
+                        dateUtilHelper.onClick(fragment);
                     }
                 }
             });

@@ -1,6 +1,7 @@
 package com.tokopedia.core.home.fragment;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -18,8 +19,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -36,6 +37,11 @@ import java.net.URLEncoder;
 public class BrandsWebViewFragment extends Fragment {
     private static final String EXTRA_URL = "url";
     private static final String FORMAT_UTF_8 = "UTF-8";
+    private static final String KEYWORD_PL_SUFFIX = ".pl";
+    private static final String KEYWORD_LOGIN = "login";
+    private static final String KEYWORD_OFFICIAL_STORE = "tokopedia.com/official-store";
+    private static final String KEYWORD_APPAUTH = "appauth";
+    private static final String FLAG_APP = "?flag_app=1";
 
     private TkpdWebView webview;
     private ProgressBar progressBar;
@@ -167,11 +173,10 @@ public class BrandsWebViewFragment extends Fragment {
     private boolean overrideUrl(String url) {
         if ((Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()) ||
                 Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost()))
-                && !url.endsWith(".pl")
-                && !url.contains("login")
-                && !url.contains("official-store")
-                && !url.contains("appauth")
-                && !url.contains("promo")) {
+                && !url.endsWith(KEYWORD_PL_SUFFIX)
+                && !url.contains(KEYWORD_LOGIN)
+                && !url.contains(KEYWORD_OFFICIAL_STORE)
+                && !url.contains(KEYWORD_APPAUTH)) {
             switch ((DeepLinkChecker.getDeepLinkType(url))) {
                 case DeepLinkChecker.BROWSE:
                     DeepLinkChecker.openBrowse(url, getActivity());
@@ -180,7 +185,7 @@ public class BrandsWebViewFragment extends Fragment {
                     DeepLinkChecker.openHot(url, getActivity());
                     return true;
                 case DeepLinkChecker.HOT_LIST:
-                    DeepLinkChecker.openHomepage(getActivity(),  HomeRouter.INIT_STATE_FRAGMENT_HOTLIST);
+                    DeepLinkChecker.openHomepage(getActivity(), HomeRouter.INIT_STATE_FRAGMENT_HOTLIST);
                     return true;
                 case DeepLinkChecker.CATALOG:
                     DeepLinkChecker.openCatalog(url, getActivity());
@@ -190,6 +195,16 @@ public class BrandsWebViewFragment extends Fragment {
                     return true;
                 case DeepLinkChecker.SHOP:
                     DeepLinkChecker.openShop(url, getActivity());
+                    return true;
+                case DeepLinkChecker.ETALASE:
+                    Intent intent = new Intent(getActivity(), BannerWebView.class);
+                    intent.putExtra(BannerWebView.EXTRA_URL, url + FLAG_APP);
+                    startActivity(intent);
+                    return true;
+                case DeepLinkChecker.PROMO:
+                    intent = new Intent(getActivity(), BannerWebView.class);
+                    intent.putExtra(BannerWebView.EXTRA_URL, url + FLAG_APP);
+                    startActivity(intent);
                     return true;
                 default:
                     return false;

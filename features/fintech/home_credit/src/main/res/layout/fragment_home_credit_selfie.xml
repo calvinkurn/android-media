@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.activity.HomeCreditRegisterActivity">
+
+    <FrameLayout
+        android:id="@+id/hc_camera_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.otaliastudios.cameraview.CameraView
+            android:id="@+id/camera"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:keepScreenOn="true"
+            app:cameraAudio="on"
+            app:cameraGestureLongTap="none"
+            app:cameraGesturePinch="zoom"
+            app:cameraGestureScrollHorizontal="exposureCorrection"
+            app:cameraGestureScrollVertical="none"
+            app:cameraGestureTap="focusWithMarker"
+            app:cameraGrid="off"
+            app:cameraPlaySounds="true"
+            app:cameraSessionType="picture" />
+
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/iv_image_captured"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:visibility="gone" />
+
+    <com.tokopedia.design.component.CircleOverlayView
+        android:id="@+id/cicleOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/dp_20">
+
+        <ImageView
+            android:id="@+id/button_cancel"
+            android:layout_width="@dimen/dp_28"
+            android:layout_height="@dimen/dp_28"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/ic_close_white" />
+
+        <TextView
+            android:id="@+id/desc_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/button_cancel"
+            android:layout_marginTop="@dimen/dp_12"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/dp_4"
+            android:text="@string/hc_selfie_title"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_16" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/desc_1"
+            android:layout_marginTop="@dimen/dp_5"
+            android:padding="@dimen/dp_4"
+            android:text="@string/hc_selfie_desc"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_12" />
+
+        <include
+            layout="@layout/camera_action_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true" />
+
+    </RelativeLayout>
+
+
+</FrameLayout>

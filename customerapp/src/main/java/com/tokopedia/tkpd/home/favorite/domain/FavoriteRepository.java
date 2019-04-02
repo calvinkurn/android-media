@@ -18,7 +18,7 @@ public interface FavoriteRepository {
 
     Observable<DomainWishlist> getFreshWishlist(TKPDMapParam<String, Object> params);
 
-    Observable<FavoriteShop> getFirstPageFavoriteShop(TKPDMapParam<String,String> params);
+    Observable<FavoriteShop> getFirstPageFavoriteShop(TKPDMapParam<String, String> params);
 
     Observable<FavoriteShop> getFavoriteShop(
             TKPDMapParam<String, String> param);
