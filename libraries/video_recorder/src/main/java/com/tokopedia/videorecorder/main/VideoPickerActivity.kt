@@ -41,7 +41,6 @@ open class VideoPickerActivity: BaseSimpleActivity(),
         //video recorder const
         const val VIDEOS_RESULT = "video_result"
         const val VIDEO_MAX_SIZE = 50000L //50 mb
-        const val VIDEO_MAX_DURATION_MS = 60000 //ms = 1 minute
 
         //flag
         var isVideoSourcePicker = false
@@ -66,14 +65,10 @@ open class VideoPickerActivity: BaseSimpleActivity(),
     //runtime permission handle
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
-    private var videoDuration = 0
-
     override fun getLayoutRes(): Int = R.layout.activity_video_picker
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //force use portrait orientation
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
 
         //init runtime permission
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -146,13 +141,8 @@ open class VideoPickerActivity: BaseSimpleActivity(),
         adapter.destroyAllView()
         adapter = viewPagerAdapter()
         vpVideoPicker.adapter = adapter
-        vpVideoPicker.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {}
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-
-            override fun onPageSelected(position: Int) {
-                currentSelectedTab = position
-            }
+        vpVideoPicker.addOnPageChangeListener(PageChangeCallback {
+            position -> currentSelectedTab = position
         })
         setupTabLayout()
     }
@@ -178,7 +168,7 @@ open class VideoPickerActivity: BaseSimpleActivity(),
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
         //select first tab for startup
-        tabPicker.getTabAt(0)?.select()
+        selectCurrentPage(currentSelectedTab)
     }
 
     @SuppressLint("MissingPermission")
@@ -198,10 +188,9 @@ open class VideoPickerActivity: BaseSimpleActivity(),
         FileUtils.deleteCacheDir()
     }
 
-    private fun playVideoPreview(mediaPlayer: MediaPlayer) {
+    private fun playVideoPreview() {
         if (videoPreview.isPlaying) return
         if (File(videoPath).exists()) {
-            resizeVideo(mediaPlayer.videoWidth, mediaPlayer.videoHeight)
             videoPreview.start()
         }
     }
@@ -209,10 +198,10 @@ open class VideoPickerActivity: BaseSimpleActivity(),
     private fun cancelVideo() {
         onVideoVisible()
         videoPreview.stopPlayback()
+        videoPreview.setVideoURI(null)
         setupViewPager()
 
-        tabPicker.getTabAt(1)?.select()
-        vpVideoPicker.currentItem = 1
+        selectCurrentPage(currentSelectedTab)
 
         if (!isVideoSourcePicker) {
             if (File(videoPath).exists()) {
@@ -221,12 +210,13 @@ open class VideoPickerActivity: BaseSimpleActivity(),
         }
     }
 
+    private fun selectCurrentPage(index: Int) {
+        tabPicker.getTabAt(index)?.select()
+        vpVideoPicker.currentItem = index
+    }
+
     protected open fun onVideoDoneClicked() {
-        if (isVideoSourcePicker && videoPreview.duration > VIDEO_MAX_DURATION_MS) {
-            videoDuration = videoPreview.duration
-        } else {
-            onFinishPicked(videoPath)
-        }
+        onFinishPicked(videoPath)
     }
 
     private fun onFinishPicked(file: String) {
@@ -243,57 +233,35 @@ open class VideoPickerActivity: BaseSimpleActivity(),
 
     override fun onVideoTaken(filePath: String) {
         if (filePath.isNotEmpty()) {
+            onPreviewVideoVisible()
+
             val uriFile = Uri.parse(filePath)
             isVideoSourcePicker = false
             videoPath = filePath
-            onPreviewVideoVisible()
+
             videoPreview.setVideoURI(uriFile)
             videoPreview.setOnPreparedListener { mp ->
                 mp.isLooping = true //loop
-                playVideoPreview(mp)
+                playVideoPreview()
             }
         }
     }
 
-    private fun resizeVideo(mVideoWidth: Int, mVideoHeight: Int) {
-        var videoWidth = mVideoWidth
-        var videoHeight = mVideoHeight
-        val displaymetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displaymetrics)
-
-        val heightRatio = videoHeight.toFloat() / displaymetrics.widthPixels.toFloat()
-        val widthRatio = videoWidth.toFloat() / displaymetrics.heightPixels.toFloat()
-
-        if (videoWidth > videoHeight) {
-            videoWidth = Math.ceil((videoWidth.toFloat() * widthRatio).toDouble()).toInt()
-            videoHeight = Math.ceil((videoHeight.toFloat() * widthRatio).toDouble()).toInt()
-        } else {
-            videoWidth = Math.ceil((videoWidth.toFloat() * heightRatio).toDouble()).toInt()
-            videoHeight = Math.ceil((videoHeight.toFloat() * heightRatio).toDouble()).toInt()
-        }
-
-        videoPreview.setSize(videoWidth, videoHeight)
-        videoPreview.holder.setFixedSize(videoWidth, videoHeight)
-    }
-
     override fun onPreviewVideoVisible() {
         layoutPreview.show()
-        containerPager.hide()
-        vpVideoPicker.hide()
-        tabPicker.hide()
+        containerPicker.hide()
         btnDone.show()
-        if (isVideoSourcePicker) {
-            btnDeleteVideo.text = getString(R.string.vidpick_btn_back)
+
+        btnDeleteVideo.text = if (isVideoSourcePicker) {
+            getString(R.string.vidpick_btn_back)
         } else {
-            btnDeleteVideo.text = getString(R.string.vidpick_btn_delete)
+            getString(R.string.vidpick_btn_delete)
         }
     }
 
     override fun onVideoVisible() {
+        containerPicker.show()
         layoutPreview.hide()
-        containerPager.show()
-        vpVideoPicker.show()
-        tabPicker.show()
         btnDone.hide()
     }
 
@@ -313,7 +281,5 @@ open class VideoPickerActivity: BaseSimpleActivity(),
     }
 
     override fun getMaxFileSize(): Long = VIDEO_MAX_SIZE
-
-    override fun videoMaxDuration(): Int = videoDuration
 
 }

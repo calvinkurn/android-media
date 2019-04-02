@@ -7,9 +7,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <RelativeLayout
-        android:id="@+id/containerPager"
+        android:id="@+id/containerPicker"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:visibility="visible"
+        tools:visibility="visible">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/vpVideoPicker"
@@ -21,8 +24,6 @@
             android:id="@+id/tabPicker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipChildren="false"
-            android:clipToPadding="false"
             style="@style/VideoPickerTab"
             app:tabGravity="fill"
             app:tabIndicatorColor="@null"
@@ -36,14 +37,11 @@
         android:id="@+id/layoutPreview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
+        android:background="@android:color/white"
         android:visibility="gone"
         tools:visibility="visible">
 
-        <com.tokopedia.videoplayer.view.widget.VideoPlayerView
+        <VideoView
             android:id="@+id/videoPreview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
