@@ -10,6 +10,7 @@ import android.graphics.RectF;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
@@ -23,6 +24,10 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask;
 
 import android.view.ViewTreeObserver;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author by errysuprayogi on 3/27/17.
  */
@@ -35,6 +40,7 @@ public class ImpressedImageView extends AppCompatImageView {
     private ViewHintListener hintListener;
     private int offset;
     private ViewTreeObserver.OnScrollChangedListener scrollChangedListener;
+    private static final ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
 
     public ImpressedImageView(Context context) {
         super(context);
@@ -82,20 +88,25 @@ public class ImpressedImageView extends AppCompatImageView {
             @Override
             public void onScrollChanged() {
                 setScrollChangedListener(this);
-                if (isVisible(getView())) {
-                    if (holder != null && !holder.isInvoke()) {
-                        if(hintListener!=null){
-                            hintListener.onViewHint();
+                worker.schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isVisible(getView())) {
+                            if (holder != null && !holder.isInvoke()) {
+                                if(hintListener!=null){
+                                    hintListener.onViewHint();
+                                }
+                                if(holder instanceof ProductImage){
+                                    new ImpresionTask().execute(((ProductImage) holder).getM_url());
+                                } else if(holder instanceof CpmImage){
+                                    new ImpresionTask().execute(((CpmImage) holder).getFullUrl());
+                                }
+                                holder.invoke();
+                            }
+                            revoke();
                         }
-                        if(holder instanceof ProductImage){
-                            new ImpresionTask().execute(((ProductImage) holder).getM_url());
-                        } else if(holder instanceof CpmImage){
-                            new ImpresionTask().execute(((CpmImage) holder).getFullUrl());
-                        }
-                        holder.invoke();
                     }
-                    revoke();
-                }
+                }, 300, TimeUnit.MILLISECONDS);
             }
         });
     }
@@ -119,9 +130,10 @@ public class ImpressedImageView extends AppCompatImageView {
 
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-        float X = location[0];
-        float Y = location[1];
-        if (screen.top <= Y && screen.bottom >= Y && screen.left <= X && screen.right >= X) {
+        int offset = 100;
+        float X = location[0] + offset;
+        float Y = location[1] + offset;
+        if (screen.top <= Y && screen.bottom >= Y && (screen.left) <= X && (screen.right) >= X) {
             return true;
         } else {
             return false;
