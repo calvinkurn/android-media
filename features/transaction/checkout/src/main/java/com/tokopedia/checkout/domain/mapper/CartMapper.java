@@ -280,38 +280,40 @@ public class CartMapper implements ICartMapper {
         AutoApplyStackData autoApplyStackData = new AutoApplyStackData();
         if (cartDataListResponse.getAutoapplyStack() != null) {
             autoApplyStackData = new AutoApplyStackData();
-            if (cartDataListResponse.getAutoapplyStack().getCodes().size() > 0) {
-                autoApplyStackData.setCode(cartDataListResponse.getAutoapplyStack().getCodes().get(0));
-            }
-            autoApplyStackData.setDiscountAmount(cartDataListResponse.getAutoapplyStack().getDiscountAmount());
-            autoApplyStackData.setIsCoupon(cartDataListResponse.getAutoapplyStack().getIsCoupon());
-            if (cartDataListResponse.getAutoapplyStack().getMessage() != null) {
-                autoApplyStackData.setMessageSuccess(cartDataListResponse.getAutoapplyStack().getMessage().getText());
-                autoApplyStackData.setState(cartDataListResponse.getAutoapplyStack().getMessage().getState());
-            }
-            autoApplyStackData.setPromoCodeId(cartDataListResponse.getAutoapplyStack().getPromoCodeId());
-            autoApplyStackData.setSuccess(cartDataListResponse.getAutoapplyStack().isSuccess());
-            autoApplyStackData.setTitleDescription(cartDataListResponse.getAutoapplyStack().getTitleDescription());
-            if (cartDataListResponse.getAutoapplyStack().getVoucherOrders() != null) {
-                if (cartDataListResponse.getAutoapplyStack().getVoucherOrders().size() > 0) {
-                    List<VoucherOrdersItemData> voucherOrdersItemDataList = new ArrayList<>();
-                    for (VoucherOrdersItem voucherOrdersItem : cartDataListResponse.getAutoapplyStack().getVoucherOrders()) {
-                        VoucherOrdersItemData voucherOrdersItemData = new VoucherOrdersItemData();
-                        voucherOrdersItemData.setCode(voucherOrdersItem.getCode());
-                        voucherOrdersItemData.setSuccess(voucherOrdersItem.isSuccess());
-                        voucherOrdersItemData.setUniqueId(voucherOrdersItem.getUniqueId());
-                        voucherOrdersItemData.setCartId(voucherOrdersItem.getCartId());
-                        voucherOrdersItemData.setShopId(voucherOrdersItem.getShopId());
-                        voucherOrdersItemData.setIsPO(voucherOrdersItem.getIsPo());
-                        voucherOrdersItemData.setAddressId(voucherOrdersItem.getAddressId());
-                        voucherOrdersItemData.setType(voucherOrdersItem.getType());
-                        voucherOrdersItemData.setCashbackWalletAmount(voucherOrdersItem.getCashbackWalletAmount());
-                        voucherOrdersItemData.setDiscountAmount(voucherOrdersItem.getDiscountAmount());
-                        voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
-                        voucherOrdersItemData.setMessageData(convertToMessageData(voucherOrdersItem.getMessage()));
-                        voucherOrdersItemDataList.add(voucherOrdersItemData);
+            if (cartDataListResponse.getAutoapplyStack().getCodes() != null) {
+                if (cartDataListResponse.getAutoapplyStack().getCodes().size() > 0) {
+                    autoApplyStackData.setCode(cartDataListResponse.getAutoapplyStack().getCodes().get(0));
+                }
+                autoApplyStackData.setDiscountAmount(cartDataListResponse.getAutoapplyStack().getDiscountAmount());
+                autoApplyStackData.setIsCoupon(cartDataListResponse.getAutoapplyStack().getIsCoupon());
+                if (cartDataListResponse.getAutoapplyStack().getMessage() != null) {
+                    autoApplyStackData.setMessageSuccess(cartDataListResponse.getAutoapplyStack().getMessage().getText());
+                    autoApplyStackData.setState(cartDataListResponse.getAutoapplyStack().getMessage().getState());
+                }
+                autoApplyStackData.setPromoCodeId(cartDataListResponse.getAutoapplyStack().getPromoCodeId());
+                autoApplyStackData.setSuccess(cartDataListResponse.getAutoapplyStack().isSuccess());
+                autoApplyStackData.setTitleDescription(cartDataListResponse.getAutoapplyStack().getTitleDescription());
+                if (cartDataListResponse.getAutoapplyStack().getVoucherOrders() != null) {
+                    if (cartDataListResponse.getAutoapplyStack().getVoucherOrders().size() > 0) {
+                        List<VoucherOrdersItemData> voucherOrdersItemDataList = new ArrayList<>();
+                        for (VoucherOrdersItem voucherOrdersItem : cartDataListResponse.getAutoapplyStack().getVoucherOrders()) {
+                            VoucherOrdersItemData voucherOrdersItemData = new VoucherOrdersItemData();
+                            voucherOrdersItemData.setCode(voucherOrdersItem.getCode());
+                            voucherOrdersItemData.setSuccess(voucherOrdersItem.isSuccess());
+                            voucherOrdersItemData.setUniqueId(voucherOrdersItem.getUniqueId());
+                            voucherOrdersItemData.setCartId(voucherOrdersItem.getCartId());
+                            voucherOrdersItemData.setShopId(voucherOrdersItem.getShopId());
+                            voucherOrdersItemData.setIsPO(voucherOrdersItem.getIsPo());
+                            voucherOrdersItemData.setAddressId(voucherOrdersItem.getAddressId());
+                            voucherOrdersItemData.setType(voucherOrdersItem.getType());
+                            voucherOrdersItemData.setCashbackWalletAmount(voucherOrdersItem.getCashbackWalletAmount());
+                            voucherOrdersItemData.setDiscountAmount(voucherOrdersItem.getDiscountAmount());
+                            voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
+                            voucherOrdersItemData.setMessageData(convertToMessageData(voucherOrdersItem.getMessage()));
+                            voucherOrdersItemDataList.add(voucherOrdersItemData);
+                        }
+                        autoApplyStackData.setVoucherOrders(voucherOrdersItemDataList);
                     }
-                    autoApplyStackData.setVoucherOrders(voucherOrdersItemDataList);
                 }
             }
         }
