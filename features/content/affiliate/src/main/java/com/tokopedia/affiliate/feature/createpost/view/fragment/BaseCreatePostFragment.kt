@@ -85,7 +85,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     override fun onStart() {
         super.onStart()
-        affiliateAnalytics.analyticTracker.sendScreen(activity, screenName)
+        affiliateAnalytics.analyticTracker.sendScreenAuthenticated(screenName)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

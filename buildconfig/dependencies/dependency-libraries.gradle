@@ -77,7 +77,6 @@ ext {
             abstraction       : ":tkpdabstraction",
             design            : ":tkpddesign",
             track             : ":libraries:track",
-            trackinterface    : ":libraries:trackinterface",
             graphView         :":libraries:graph_view",
             iris              : ":libraries:iris",
 //            iris              : ":libraries:iris_no_op",

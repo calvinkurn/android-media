@@ -6,9 +6,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -125,7 +123,6 @@ public class ExploreFragment
     private RemoteConfig remoteConfig;
     private PerformanceMonitoring performanceMonitoring;
 
-    private CollapsingToolbarLayout toolbar;
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
     private ImageView ivBack, ivBantuan, ivProfile;
@@ -171,7 +168,6 @@ public class ExploreFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_af_explore, container, false);
-        toolbar = view.findViewById(R.id.toolbar);
         rvExplore = view.findViewById(R.id.rv_explore);
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         searchView = view.findViewById(R.id.search_input_view);
@@ -203,7 +199,6 @@ public class ExploreFragment
     }
 
     private void initView() {
-        ViewCompat.setElevation(toolbar, getResources().getDimension(R.dimen.dp_4));
         layoutEmpty.setVisibility(View.GONE);
         dropKeyboard();
         initEmptyResultModel();
@@ -338,7 +333,7 @@ public class ExploreFragment
     @Override
     public void onStart() {
         super.onStart();
-        affiliateAnalytics.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
+        affiliateAnalytics.getAnalyticTracker().sendScreenAuthenticated(getScreenName());
     }
 
     private void loadFirstData(boolean isPullToRefresh) {
@@ -386,14 +381,19 @@ public class ExploreFragment
                                        RecyclerView.State state) {
                 super.getItemOffsets(outRect, view, parent, state);
                 int position = parent.getChildAdapterPosition(view);
+
+                if (position == 0) {
+                    outRect.top = (int) getResources().getDimension(R.dimen.dp_16);
+                }
+
                 Visitable visitable = adapter.getData().get(position);
                 if (visitable instanceof ExploreProductViewModel
                         && view.getLayoutParams() instanceof GridLayoutManager.LayoutParams) {
                     int spanIndex = ((GridLayoutManager.LayoutParams) view.getLayoutParams()).getSpanIndex();
                     if (spanIndex == 0) {
-                        outRect.left = (int) getResources().getDimension(R.dimen.dp_4);
+                        outRect.left = (int) getResources().getDimension(R.dimen.dp_12);
                     } else {
-                        outRect.right = (int) getResources().getDimension(R.dimen.dp_4);
+                        outRect.right = (int) getResources().getDimension(R.dimen.dp_12);
                     }
                 }
             }
