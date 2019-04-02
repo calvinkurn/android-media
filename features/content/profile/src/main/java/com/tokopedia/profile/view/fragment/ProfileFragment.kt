@@ -346,7 +346,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onSuccessShouldChangeUsername(shouldChange: Boolean, link: String) {
         if (shouldChange) {
-            val usernameInputFragment = UsernameInputFragment()
+            val usernameInputFragment = UsernameInputFragment.createInstance(
+                    profileHeader?.affiliateName ?: ""
+            )
             usernameInputFragment.show(
                     childFragmentManager,
                     UsernameInputFragment::class.java.simpleName
