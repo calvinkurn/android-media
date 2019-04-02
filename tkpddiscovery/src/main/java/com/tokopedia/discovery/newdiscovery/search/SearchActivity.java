@@ -272,10 +272,9 @@ public class SearchActivity extends DiscoveryActivity
     private void handleIntentWithProductViewModel(ProductViewModel productViewModel) {
         this.searchParameter = productViewModel.getSearchParameter();
 
-        setLastQuerySearchView(productViewModel.getQuery());
+        setLastQuerySearchView(searchParameter.getSearchQuery());
         loadSection(productViewModel, forceSwipeToShop);
-        setToolbarTitle(productViewModel.getQuery());
-        bottomSheetFilterView.setFilterResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
+        setToolbarTitle(searchParameter.getSearchQuery());
 
         isHandlingIntent = false;
     }
@@ -808,7 +807,7 @@ public class SearchActivity extends DiscoveryActivity
 
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
-        handleIntentWithProductViewModel(productViewModel);
         stopPerformanceMonitoring();
+        handleIntentWithProductViewModel(productViewModel);
     }
 }
