@@ -1,20 +1,20 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
-    android:width="68dp"
-    android:height="67dp"
-    android:viewportWidth="68"
-    android:viewportHeight="67">
+    android:width="67dp"
+    android:height="66dp"
+    android:viewportWidth="67"
+    android:viewportHeight="66">
   <path
-      android:pathData="M2.349,33.345a31.724,31.592 0,1 0,63.448 0a31.724,31.592 0,1 0,-63.448 0z"
-      android:strokeWidth="3.113"
-      android:strokeColor="#FFF"
+      android:pathData="M2.343,32.8394a31.2285,31.0983 0,1 0,62.457 0a31.2285,31.0983 0,1 0,-62.457 0z"
+      android:strokeWidth="3.11284611"
+      android:strokeColor="#FFFFFF"
       android:fillType="evenOdd">
     <aapt:attr name="android:fillColor">
       <gradient 
-          android:startY="1.7530022"
-          android:startX="34.073"
-          android:endY="65.55365"
-          android:endX="34.073"
+          android:startY="1.234062"
+          android:startX="33.5715"
+          android:endY="64.54497"
+          android:endX="33.5715"
           android:type="linear">
         <item android:offset="0" android:color="#00000000"/>
         <item android:offset="1" android:color="#FF000000"/>
@@ -22,7 +22,9 @@
     </aapt:attr>
   </path>
   <path
-      android:pathData="M41.954,37.327l-9.958,4.958a4.05,4.05 0,0 1,-5.855 -3.625v-9.917a4.05,4.05 0,0 1,5.855 -3.626l9.958,4.959a4.05,4.05 0,0 1,0 7.25z"
-      android:fillColor="#FFF"
-      android:fillType="evenOdd"/>
+      android:pathData="M41.3299,36.7593L31.5273,41.6402C29.5562,42.6216 27.1627,41.8194 26.1813,39.8483C25.9064,39.2962 25.7633,38.6879 25.7633,38.0712L25.7633,28.3095C25.7633,26.1075 27.5483,24.3225 29.7503,24.3225C30.367,24.3225 30.9753,24.4656 31.5273,24.7405L41.3299,29.6213C43.301,30.6028 44.1033,32.9963 43.1218,34.9674C42.7353,35.7437 42.1062,36.3728 41.3299,36.7593Z"
+      android:strokeWidth="1"
+      android:fillColor="#FFFFFF"
+      android:fillType="evenOdd"
+      android:strokeColor="#00000000"/>
 </vector>

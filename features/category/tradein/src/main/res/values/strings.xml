@@ -1,38 +1,37 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">tradein</string>
     <string name="header_section_price">Kisaran harga jual HP Anda</string>
     <string name="not_elligible_price_high">Mohon maaf, harga device Anda lebih tinggi dari device Anda pilih. Baca Selengkapnya</string>
     <string name="not_elligible">Mohon maaf, model HP Anda belum dapat digunakan untuk tukar tambah.</string>
     <string name="model_not_found">Tidak dapat menemukan model HP</string>
     <string name="go_to_product_details">Kembali Ke Detail Produk</string>
-    <string name="text_price_holder">Harga Hp kamu Rp %1$d</string>
+    <string name="text_price_holder">Harga Hp kamu %1$s</string>
     <string name="trade_in_exchange">Beli HP baru dengan tukar HP kamu.</string>
     <string name="text_check_functionality">Mulai Cek Fungsi</string>
     <string name="noclick">Action-No-Click</string>
     <string name="tukar_tambah_sekarang_juga">Tukar tambah sekarang juga!</string>
-    <string name="text_permission_description">Dengan klik <b>setuju</b>, kamu memberikan izin untuk :\n• Model perangkat dan IME.
+    <string name="text_permission_description">Dengan klik <b>setuju</b>, kamu memberikan izin untuk :\n• Model perangkat dan IMEI.
         \n• Menyalakan WiFi
         \n• Akses accelero meter</string>
-    <string name="tradein_tnc">1. Hanya berlaku untuk pengguna baru yang belum pernah berbelanja di Tokopedia.
-
-\n\n2. Pengguna baru yang melakukan transaksi di Toko tanpa Power Badge akan mendapatkan Cashback OVO Points 10\%% hingga Rp50,000.
-
-\n\n3. Mulai tanggal 21 Januari 2019 pukul 10.00 WIB, pengguna baru akan mendapatkan Ekstra Cashback OVO Points 10\%% hingga Rp50,000  khusus untuk pembelanjaan di Toko dengan Power Badge.
-
-\n\n4. Promo berlaku selama periode 1 – 31 Januari 2019 untuk pembelanjaan produk di Marketplace dan Official Store.
-
-\n\n5. Hanya berlaku di  aplikasi Android &amp; IOS  Tokopedia versi terbaru. Satu pengguna Tokopedia hanya bisa mengikuti promo ini sebanyak 1 (satu) kali transaksi selama periode promo.
-
-\n\n6. Untuk mendapatkan Cashback, pengguna harus melakukan aktivasi OVO. Jika tidak mengaktifkan dalam 7 hari setelah mengikuti promo, Cashback akan hangus.
-
-\n\n7. Cashback dihitung dari harga produk, tidak termasuk ongkir.
-
-\n\n8. Minimum transaksi Rp100.000.</string>
+    <string name="tradein_tnc" tools:ignore="TypographyOther">1. Tukar Tambah adalah fitur yang memungkinkan pembeli melakukan pembelian handphone baru dengan cara menukar handphone lama miliknya. Fitur ini bisa diakses dari situs resmi atau aplikasi Tokopedia.
+\n\n2. Tukar Tambah tersedia untuk pembeli yang tinggal di wilayah Jabodetabek
+\n\n3. Pembeli setuju dengan syarat dan ketentuan yang berlaku, termasuk bersedia mencatumkan nomor IMEI handphone lama, menjalankan tes diagnosa untuk mengetahui kondisi handphone lama, juga meng-upload foto diri bersama KTP.
+\n\n4. Pembeli akan mendapat diskon sebesar harga perkiraan dari handphone lama yang ditampilkan di  situs resmi atau aplikasi Tokopedia.
+\n\n5. Pembeli wajib melunasi atau membayar sisa pembayaran sesuai nominal yang dicantumkan dengan metode yang disediakan.
+\n\n6. Pembeli setuju untuk dikenakan biaya pembatalan jika: (a) pembeli menolak menerima handphone baru yang diantarkan oleh kurir; (b) terdapat perbedaan nomor IMEI handphone lama antara yang dicantumkan sebelumnya dengan yang diserahkan ke kurir; (c) pembeli tidak berada di tempat dan waktu yang telah disepakati bersama kurir.
+\n\n7. Berikut biaya pembatalan yang ditanggung oleh pembeli jika terjadi tiga hal di atas: (a) handphone baru di bawah Rp1.000.000 dikenakan biaya pembatalan Rp110.000; (b) handphone baru antara Rp1.000.000 – Rp3.000.000 dikenakan biaya pembatalan Rp160.000; (c) handphone baru antara Rp3.000.001 – Rp7.000.000 dikenakan biaya pembatalan Rp210.000; (d) handphone baru di atas Rp7.000.000 dikenakan biaya pembatalan Rp260.000.
+\n\n8. Biaya pembatalan akan dipotong langsung dari total nominal refund yang diterima pembeli setelah terjadi pembatalan.
+\n\n9. Biaya pembatalan TIDAK DIKENAKAN ke pembeli jika terbukti handphone baru tidak sesuai dengan pesanan atau mengalami cacat produksi atau kerusakan lain yang tidak disebabkan oleh pembeli.
+\n\n10. Pembeli bertanggung jawab penuh atas handphone lama yang digunakan sebagai bagian dari Tukar Tambah. Tokopedia tidak bertanggung jawab pada seluruh informasi dan data pribadi yang melekat pada handphone lama.
+\n\n11. Pembeli memahami dan menyetujui bahwa layanan transaksi Tukar Tambah dan pengiriman handphone baru dilakukan oleh PT Laku6 Online Indonesia selaku mitra resmi Tokopedia.
+\n\n12. Saat ini fitur tukar tambah hanya bisa dilakukan untuk pembelian handphone baru yang harganya lebih tinggi dibandingkan harga handphone lama. Tidak semua model handphone dapat melakukan tukar tambah.
+\n\n13. Pembeli memahami dan menyetujui bahwa Tokopedia berhak meneruskan data yang diberikan oleh pembeli ke mitra resmi sebagai bagian dari proses verifikasi.
+\n\n14. Syarat &amp; Ketentuan ini adalah bagian terpisah dari Syarat dan Ketentuan Tokopedia, dan dapat diubah atau diperbaruhi tanpa pemberitahuan sebelumnya. Tokopedia menyarankan agar pembeli membaca dengan teliti dan memeriksanya kembali sebelum melakukan transaksi..</string>
     <string name="text_request_access">Meminta Izin Akses</string>
     <string name="accept">Setuju</string>
     <string name="depends_on_test">Harga final sesuai dengan hasil test.</string>
     <string name="price_elligible">Selamat! HP kamu memenuhi persyaratan.</string>
-    <string name="price_valid_until">Harga final berlaku sampai %1$s</string>
+    <string name="price_valid_until">Harga final berlaku sampai %1$s WIB</string>
     <string name="text_model">HP Kamu:  </string>
     <string name="text_final_price">Harga Jual:  </string>
     <string name="tukar_tambah">Tukar Tambah</string>
@@ -40,6 +39,9 @@
     <string name="total_price">Total Harga Barang</string>
     <string name="buy_now">Beli Sekarang</string>
     <string name="do_ktp">Lanjut Foto KTP</string>
+    <string name="available_at">Khusus Jabodetabek</string>
     <string name="harga_tnc_kyc"><![CDATA[Dengan lanjut foto KTP, Kamu menyetujui Syarat & Ketentuan tukar tambah Tokopedia.]]></string>
     <string name="harga_tnc"><![CDATA[Dengan klik beli sekarang, Kamu menyetujui Syarat & Ketentuan tukar tambah Tokopedia.]]></string>
+    <string name="text_not_upto_15min">Tidak sampai 15 menit
+        \nCek fungsi dan fisik HP Kamu lalu foto KTP</string>
 </resources>

@@ -11,6 +11,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.FeedRecommendationViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
@@ -46,7 +47,8 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                              private val imagePostListener: ImagePostViewHolder.ImagePostListener?,
                              private val youtubePostListener: YoutubeViewHolder.YoutubePostListener?,
                              private val pollOptionListener: PollAdapter.PollOptionListener?,
-                             private val gridItemListener: GridPostAdapter.GridItemListener?)
+                             private val gridItemListener: GridPostAdapter.GridItemListener?,
+                             private val videoViewListener: VideoViewHolder.VideoViewListener?)
     : BaseAdapterTypeFactory(), ProfileTypeFactory, KolPostTypeFactory, DynamicFeedTypeFactory {
 
     override fun type(viewModel: ProfileHeaderViewModel): Int {
@@ -124,7 +126,8 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                         imagePostListener!!,
                         youtubePostListener!!,
                         pollOptionListener!!,
-                        gridItemListener!!) as AbstractViewHolder< Visitable<*>>
+                        gridItemListener!!,
+                        videoViewListener!!) as AbstractViewHolder< Visitable<*>>
             FeedRecommendationViewHolder.LAYOUT ->
                 FeedRecommendationViewHolder(parent, recommendationCardListener!!, cardTitleListener!!) as AbstractViewHolder<Visitable<*>>
             BannerViewHolder.LAYOUT ->

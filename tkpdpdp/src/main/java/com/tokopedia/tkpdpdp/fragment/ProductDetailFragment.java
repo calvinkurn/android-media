@@ -45,17 +45,18 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.track.TrackApp;import com.tokopedia.track.TrackApp;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
@@ -760,7 +761,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     protected void initialVar() {
-        checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart(getAnalyticTracker());
+        checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart();
         appIndexHandler = new AppIndexHandler(getActivity());
         firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         loading = new ProgressDialog(getActivity());
@@ -771,13 +772,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         else
             initialPresenter();
 
-    }
-
-    private AnalyticTracker getAnalyticTracker() {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
-            return ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
-        }
-        return null;
     }
 
     @Override
@@ -1074,7 +1068,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 if (!TextUtils.isEmpty(dataObj) && !TextUtils.isEmpty(fireBaseRemoteMsg)) {
                     productData.setProductShareDescription(FindAndReplaceHelper.findAndReplacePlaceHolders(fireBaseRemoteMsg,
                             ProductData.PLACEHOLDER_REFERRAL_CODE, dataObj));
-                    TrackingUtils.sendMoEngagePDPReferralCodeShareEvent(getActivity(), KEY_OTHER);
+                    sendMoEngagePDPReferralCodeShareEvent(getActivity(), KEY_OTHER);
 
                 }
                 executeProductShare(productData);
@@ -1089,6 +1083,14 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         ((PdpRouter) (getActivity().getApplicationContext())).getDynamicShareMessage(getActivity(), actionCreator,
                 (ActionUIDelegate<String, String>) getActivity());
 
+    }
+
+    public void sendMoEngagePDPReferralCodeShareEvent(Context context,String channel) {
+        Map<String, Object> value = DataLayer.mapOf(
+                AppEventTracking.MOENGAGE.CHANNEL, channel,
+                AppEventTracking.MOENGAGE.SOURCE, AppEventTracking.MOENGAGE.PDP_SHARE
+        );
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.REFERRAL_SHARE_EVENT);
     }
 
 
@@ -1177,9 +1179,18 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (productData.getInfo().getHasVariant()
                 && productVariant != null
                 && variantLevel1 != null) {
-            UnifyTracking.eventClickVariant(getActivity(), generateVariantString());
+            eventClickVariant(getActivity(), generateVariantString());
         }
 
+    }
+
+    public void eventClickVariant(Context context, String eventLabel) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PDP,
+                AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
+                AppEventTracking.Action.CLICK_VARIANTS,
+                eventLabel
+        ).getEvent());
     }
 
     @Override
@@ -1279,6 +1290,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                                 .replace(PRODUCT_ID, String.valueOf(affiliate.getProductId()))
                                 .replace(AD_ID, String.valueOf(affiliate.getAdId()))
                 );
+                getActivity().finish();
             } else {
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("login", true);
@@ -1751,11 +1763,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         (getActivity());
                 navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_LOGIN);
                 if (productData.getInfo().getHasVariant())
-                    UnifyTracking.eventClickCartVariant(getActivity(), generateVariantString());
+                    eventClickCartVariant();
             } else {
                 startActivity(TransactionCartRouter.createInstanceCartActivity(getActivity()));
                 if (productData.getInfo().getHasVariant())
-                    UnifyTracking.eventClickCartVariant(getActivity(), generateVariantString());
+                    eventClickCartVariant();
             }
             return true;
         } else if (i == R.id.action_report) {
@@ -1770,6 +1782,14 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void eventClickCartVariant(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                "clickPDP",
+                "product detail page",
+                "click - cart button on sticky header",
+                generateVariantString());
     }
 
     @Override

@@ -341,19 +341,6 @@ public class CollapsingTabLayout extends TabLayout {
         Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
         textView.setTypeface(typeface);
         textView.setText(tabItemDataList.get(position).getTitle());
-        textView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-
-            @Override
-            public void onGlobalLayout() {
-                ViewTreeObserver obs = textView.getViewTreeObserver();
-                obs.removeOnGlobalLayoutListener(this);
-                if (textView.getLineCount() > 1) {
-                    textView.setGravity(Gravity.TOP);
-                } else {
-                    textView.setGravity(Gravity.BOTTOM);
-                }
-            }
-        });
         ImageView imageView = (ImageView) rootView.findViewById(R.id.tabBackgroundImage);
         ImageHandler.loadImageWithoutPlaceholder(imageView, tabItemDataList.get(position).getImageUrl());
         int dp16 = rootView.getResources().getDimensionPixelSize(R.dimen.dp_16);

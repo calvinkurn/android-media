@@ -115,6 +115,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
             hideFullPageLoading()
             flightBookingPresenter.renderUi(flightBookingCartData, true)
         }
+        flightBookingPresenter.fetchTickerData()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

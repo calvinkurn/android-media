@@ -349,6 +349,9 @@
 -keep class com.tokopedia.core.network.exception.model.** { *; }
 -keep class com.tokopedia.events.data.entity.response.** { *; }
 
+#tradein
+-keep class viewmodel.** { *; }
+
 #image search
 -keep class com.tokopedia.discovery.imagesearch.domain.model.** { *; }
 

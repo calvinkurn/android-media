@@ -11,17 +11,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.experimental.CoroutineContext
 
 
 /**
  * @author okasurya on 10/2/18.
  */
-class IrisAnalytics(context: Context) : Iris {
+class IrisAnalytics(context: Context) : Iris, CoroutineScope {
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO
     private val trackingRepository: TrackingRepository = TrackingRepository(context)
     private val session: Session = IrisSession(context)
 
     override fun setService(config: Configuration) {
-        GlobalScope.launchCatchError(block = {
+        launchCatchError(block = {
             setWorkManager(config)
         }) {
             // no-op
@@ -29,7 +32,7 @@ class IrisAnalytics(context: Context) : Iris {
     }
 
     override fun resetService(config: Configuration) {
-        GlobalScope.launchCatchError(block = {
+        launchCatchError(block = {
             WorkManager.getInstance().cancelAllWorkByTag(WORKER_SEND_DATA)
             setWorkManager(config)
         }) {
@@ -38,7 +41,7 @@ class IrisAnalytics(context: Context) : Iris {
     }
 
     override fun saveEvent(map: Map<String, Any>) {
-        GlobalScope.launchCatchError(context = Dispatchers.IO, block = {
+        launchCatchError(block = {
             // convert map to json then save as string
             val event = JSONObject(map).toString()
             val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
@@ -49,7 +52,7 @@ class IrisAnalytics(context: Context) : Iris {
     }
 
     override fun sendEvent(map: Map<String, Any>) {
-        GlobalScope.launchCatchError(context = Dispatchers.IO, block = {
+        launchCatchError(block = {
             val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(),
                     session)
             if (isSuccess && BuildConfig.DEBUG) {

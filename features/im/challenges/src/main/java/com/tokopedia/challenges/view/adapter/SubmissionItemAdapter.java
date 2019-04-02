@@ -65,7 +65,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.context = parent.getContext();
-        analytics = new ChallengesGaAnalyticsTracker(context);
+        analytics = new ChallengesGaAnalyticsTracker();
         LayoutInflater inflater = LayoutInflater.from(
                 parent.getContext());
         RecyclerView.ViewHolder holder = null;

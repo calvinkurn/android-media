@@ -8,7 +8,6 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
-import android.support.graphics.drawable.VectorDrawableCompat
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
@@ -24,6 +23,12 @@ class HomeMainToolbar : MainToolbar {
     var toolbarType: Int = 0
 
     var shadowApplied: Boolean = false
+
+    private lateinit var wishlistCrossfader: TransitionDrawable
+
+    private lateinit var notifCrossfader: TransitionDrawable
+
+    private lateinit var inboxCrossfader: TransitionDrawable
 
     lateinit var wishlistBitmapWhite: BitmapDrawable
 
@@ -67,16 +72,6 @@ class HomeMainToolbar : MainToolbar {
         }
     }
 
-    private lateinit var toolbarShadowBitmap: BitmapDrawable
-
-    private lateinit var toolbarWhiteBitmap: BitmapDrawable
-
-    private lateinit var wishlistCrossfader: TransitionDrawable
-
-    private lateinit var notifCrossfader: TransitionDrawable
-
-    private lateinit var inboxCrossfader: TransitionDrawable
-
     private fun initToolbarIcon() {
         wishlistBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_wishlist_white)
         notifBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_notif_white)
@@ -103,7 +98,10 @@ class HomeMainToolbar : MainToolbar {
         if(isShadowApplied()){
             shadowApplied = false
             val pL = toolbar.paddingLeft
-            var pT = ViewHelper.getStatusBarHeight(context)
+            var pT = 0
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                pT = ViewHelper.getStatusBarHeight(context)
+            }
             val pR = toolbar.paddingRight
             val pB = 0
             toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.white))
@@ -115,13 +113,14 @@ class HomeMainToolbar : MainToolbar {
         if(!isShadowApplied()){
             shadowApplied = true
             val pL = toolbar.paddingLeft
-            var pT = ViewHelper.getStatusBarHeight(context)
+            var pT = 0
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                pT = ViewHelper.getStatusBarHeight(context)
+            }
             val pR = toolbar.paddingRight
             val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
 
             toolbar!!.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
-//            toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.white))
-
             toolbar!!.setPadding(pL, pT, pR, pB)
         }
     }
@@ -149,17 +148,7 @@ class HomeMainToolbar : MainToolbar {
 
     fun getBitmapDrawableFromVectorDrawable(context: Context, drawableId: Int): BitmapDrawable {
         return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            val vectorDrawableCompat =
-                    VectorDrawableCompat.create(context.getResources(), drawableId, null)
-            val bitmap = Bitmap.createBitmap(
-                    vectorDrawableCompat!!.intrinsicWidth,
-                    vectorDrawableCompat.intrinsicHeight,
-                    Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(bitmap)
-            vectorDrawableCompat.setBounds(0, 0, canvas.width, canvas.height)
-            vectorDrawableCompat.draw(canvas)
-
-            BitmapDrawable(resources, bitmap)
+            ContextCompat.getDrawable(context, drawableId) as BitmapDrawable
         } else BitmapDrawable(context.resources, getBitmapFromVectorDrawable(context, drawableId))
     }
 
