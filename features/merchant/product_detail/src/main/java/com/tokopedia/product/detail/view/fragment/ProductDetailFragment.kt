@@ -1075,7 +1075,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productInfo?.run {
             productDetailTracking.sendScreen(basic.shopID.toString(),
                     shopInfo?.goldOS?.shopTypeString ?: "", productId ?: "")
-            productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, this, productInfoP2.shopInfo, trackerAttribution)
+            productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, this, productInfoP2.shopInfo, trackerAttribution,
+                    tradeInParams?.isEligible==1, tradeInParams?.usedPrice>0)
             productDetailTracking.sendMoEngageOpenProduct(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
                     ?: "")
             productDetailTracking.eventAppsFylerOpenProduct(this)
@@ -1209,7 +1210,22 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 tradeInParams.isPreorder = false
             tradeInParams.isOnCampaign = productInfoP1.productInfo.hasActiveCampaign
             tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
-            tv_trade_in.setOnClickListener { goToNormalCheckout(TRADEIN_BUY) }
+            tv_trade_in.setOnClickListener {
+                goToNormalCheckout(TRADEIN_BUY)
+                tradeInParams?.let {
+                    if(tradeInParams.usedPrice>0)
+                        productDetailTracking.sendGeneralEvent(" clickPDP",
+                                "product detail page",
+                                "click trade in widget",
+                                "after diagnostic")
+                    else
+                        productDetailTracking.sendGeneralEvent(" clickPDP",
+                                "product detail page",
+                                "click trade in widget",
+                                "before diagnostic")
+
+                }
+            }
         }
         activity?.invalidateOptionsMenu()
     }

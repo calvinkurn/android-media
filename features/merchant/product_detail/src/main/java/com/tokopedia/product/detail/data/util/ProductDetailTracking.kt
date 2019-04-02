@@ -362,7 +362,14 @@ class ProductDetailTracking() {
         return ""
     }
 
-    fun eventEnhanceEcommerceProductDetail(trackerListName: String?, productInfo: ProductInfo?, shopInfo: ShopInfo?, trackerAttribution: String?) {
+    fun eventEnhanceEcommerceProductDetail(trackerListName: String?, productInfo: ProductInfo?, shopInfo: ShopInfo?, trackerAttribution: String?,
+                                           isTradeIn : Boolean, isDiagnosed : Boolean) {
+            val dimension55 = if(isTradeIn && isDiagnosed)
+                "true diagnostic"
+            else if(isTradeIn && !isDiagnosed)
+                "true non diagnostic"
+            else
+                "false"
         TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(DataLayer.mapOf(
             "event", "viewProduct",
             "eventCategory", "product page",
@@ -379,7 +386,8 @@ class ProductDetailTracking() {
                 "brand", "none / other",
                 "category", getEnhanceCategoryFormatted(productInfo?.category?.detail),
                 "variant", "none / other",
-                "dimension38", trackerAttribution ?: "none / other"))).apply {
+                "dimension38", trackerAttribution ?: "none / other",
+                "dimension55",dimension55))).apply {
             if (trackerListName?.isNotEmpty() == true) {
                 put("actionField", DataLayer.mapOf("list", trackerListName))
             }
@@ -487,6 +495,13 @@ class ProductDetailTracking() {
                 }
             }
         )
+    }
+
+    fun sendGeneralEvent(event: String, category: String, action: String, label: String) {
+        TrackApp.getInstance()?.gtm?.sendGeneralEvent(event,
+                category,
+                action,
+                label)
     }
 
     ////////////////////////////////////////////////////////////////
