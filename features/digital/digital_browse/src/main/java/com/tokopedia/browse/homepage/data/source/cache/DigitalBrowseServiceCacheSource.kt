@@ -36,7 +36,7 @@ constructor(private val cacheManager: CacheManager) {
             val data = CacheUtil.convertStringToModel<DigitalBrowseMarketplaceData>(jsonString, type)
             return Observable.just(data)
         } else {
-            throw RuntimeException("Cache has expired")
+            return Observable.error(RuntimeException("Cache has expired"))
         }
     }
 
