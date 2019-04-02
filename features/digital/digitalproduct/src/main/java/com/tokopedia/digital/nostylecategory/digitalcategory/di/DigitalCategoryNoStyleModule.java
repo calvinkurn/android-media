@@ -38,8 +38,8 @@ public class DigitalCategoryNoStyleModule {
 
     @Provides
     @DigitalCategoryNoStyleScope
-    DigitalAnalytics provideDigitalAnalytics(AbstractionRouter abstractionRouter, @ApplicationContext Context context) {
-        return new DigitalAnalytics(abstractionRouter.getAnalyticTracker(), context);
+    DigitalAnalytics provideDigitalAnalytics() {
+        return new DigitalAnalytics();
     }
 
 }

@@ -302,6 +302,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
         super.onViewCreated(view, savedInstanceState);
         initView();
         flightBookingReviewPresenter.onViewCreated();
+        flightBookingReviewPresenter.fetchTickerData();
         stopTrace();
     }
 

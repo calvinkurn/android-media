@@ -88,7 +88,7 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.context = parent.getContext();
-        dealsAnalytics=new DealsAnalytics(context.getApplicationContext());
+        dealsAnalytics=new DealsAnalytics();
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.category_item, parent, false);
 

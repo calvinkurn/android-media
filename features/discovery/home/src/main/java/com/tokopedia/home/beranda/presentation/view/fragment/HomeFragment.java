@@ -33,13 +33,11 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
@@ -53,6 +51,7 @@ import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.helper.ViewHelper;
 import com.tokopedia.home.beranda.listener.ActivityStateListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeEggListener;
@@ -86,12 +85,13 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.searchbar.HomeMainToolbar;
 import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ViewHelper;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
-import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -265,10 +265,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
         }
 
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+        //status bar background compability
+        statusBarBackground.getLayoutParams().height = ViewHelper.getStatusBarHeight(getActivity());
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            statusBarBackground.setVisibility(View.INVISIBLE);
+        } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             statusBarBackground.setVisibility(View.VISIBLE);
         } else {
-            statusBarBackground.setVisibility(View.INVISIBLE);
+            statusBarBackground.setVisibility(View.GONE);
         }
 
         initEggDragListener();
@@ -409,7 +413,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                homeFeedPagerAdapter.getHomeFeedFragmentList().get(tab.getPosition()).scrollToTop();
+                HomeFeedFragment homeFeedFragment = homeFeedPagerAdapter.getRegisteredFragment(tab.getPosition());
+                if (homeFeedFragment != null) {
+                    homeFeedFragment.scrollToTop();
+                }
                 homeFeedsTabLayout.resetCollapseState();
             }
         });
@@ -696,14 +703,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onDigitalMoreClicked(int pos) {
-        AnalyticTracker tracker = HomePageTracking.getTracker(getActivity());
+        Analytics tracker = HomePageTracking.getTracker(getActivity());
         if (tracker != null) {
-            tracker.sendEventTracking(
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                     DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
                     DigitalEventTracking.Category.DIGITAL_HOMEPAGE,
                     DigitalEventTracking.Action.CLICK_SEE_ALL_PRODUCTS,
                     ""
-            );
+            ));
         }
     }
 
@@ -1295,16 +1302,20 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (homeMainToolbar == null)
             return null;
         ArrayList<ShowCaseObject> list = new ArrayList<>();
+        int statusBarHeight = ViewHelper.getStatusBarHeight(getActivity());
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            statusBarHeight = 0;
+        }
         list.add(new ShowCaseObject(homeMainToolbar.getBtnNotification(),
                 getString(R.string.sc_notif_title),
                 getString(R.string.sc_notif_desc))
         .withCustomTarget(new int[]{
                 homeMainToolbar.getBtnNotification().getLeft(),
                 homeMainToolbar.getBtnNotification().getTop()
-                + ViewHelper.getStatusBarHeight(getActivity()),
+                + statusBarHeight,
                 homeMainToolbar.getBtnNotification().getRight(),
                 homeMainToolbar.getBtnNotification().getBottom()
-                + ViewHelper.getStatusBarHeight(getActivity())
+                + statusBarHeight
         }));
         list.add(new ShowCaseObject(homeMainToolbar.getBtnWishlist(),
                 getString(R.string.sc_wishlist_title),
@@ -1312,10 +1323,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 .withCustomTarget(new int[]{
                 homeMainToolbar.getBtnWishlist().getLeft(),
                 homeMainToolbar.getBtnWishlist().getTop()
-                        + ViewHelper.getStatusBarHeight(getActivity()),
+                        + statusBarHeight,
                 homeMainToolbar.getBtnWishlist().getRight(),
                 homeMainToolbar.getBtnWishlist().getBottom()
-                        + ViewHelper.getStatusBarHeight(getActivity())
+                        + statusBarHeight
         }));
         return list;
     }

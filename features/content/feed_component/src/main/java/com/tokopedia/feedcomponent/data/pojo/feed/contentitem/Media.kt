@@ -42,5 +42,8 @@ data class Media(
         val tags: List<Tag> = ArrayList(),
         @SerializedName("tracking")
         @Expose
-        val tracking: List<Tracking> = ArrayList()
+        val tracking: List<Tracking> = ArrayList(),
+        @SerializedName("videos")
+        @Expose
+        val videoList: List<Video> = ArrayList()
 )

@@ -17,6 +17,7 @@ query RateEstimate($weight: Float!, $domain: String!, $origin: String) {
           }
           shop {
               district_name
+              city_name
           }
           texts {
               text_min_price

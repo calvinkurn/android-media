@@ -88,7 +88,8 @@ class ProductFullDescriptionFragment: BaseDaggerFragment() {
             }
 
             val descr = it.getString(PARAM_PRODUCT_DESCR, "")
-            val descFormatted = MethodChecker.fromHtml(if (descr.isNotBlank()) descr else NO_DESCRIPTION)
+            val descFormatted = MethodChecker.fromHtml(if (descr.isNotBlank())
+                descr.replace("(\r\n|\n)".toRegex(), "<br />") else NO_DESCRIPTION)
 
             txt_product_descr.text =  descFormatted
 

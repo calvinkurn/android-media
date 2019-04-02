@@ -6,7 +6,6 @@ import android.app.ProgressDialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -29,7 +28,6 @@ import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.GlobalConfig
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -86,6 +84,7 @@ import com.tokopedia.product.detail.view.fragment.partialview.*
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
 import com.tokopedia.product.detail.view.util.FlingBehavior
+import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
 import com.tokopedia.product.detail.view.widget.CountDrawable
 import com.tokopedia.product.report.view.dialog.ReportDialogFragment
@@ -128,9 +127,9 @@ import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
 import model.TradeInParams
+import view.customview.TradeInTextView
 import viewmodel.TradeInBroadcastReceiver
 import javax.inject.Inject
-import view.customview.TradeInTextView
 
 class ProductDetailFragment : BaseDaggerFragment() {
     private var productId: String? = null
@@ -169,6 +168,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private var shopCod: Boolean = false
     private var shouldShowCod = false
     private lateinit var tradeInParams: TradeInParams
+    private lateinit var tradeInBroadcastReceiver: TradeInBroadcastReceiver
 
     var loadingProgressDialog: ProgressDialog? = null
     val errorBottomsheets: ErrorBottomsheets by lazy {
@@ -307,9 +307,16 @@ class ProductDetailFragment : BaseDaggerFragment() {
         initializePartialView(view)
         initView()
 
-        val tradeInBroadcastReceiver = TradeInBroadcastReceiver()
-        tradeInBroadcastReceiver.setBroadcastListener { tv_trade_in_promo.visible() }
-        LocalBroadcastManager.getInstance(context!!).registerReceiver(tradeInBroadcastReceiver, IntentFilter(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE))
+        tradeInBroadcastReceiver = TradeInBroadcastReceiver()
+        tradeInBroadcastReceiver.setBroadcastListener {
+            if (tv_trade_in_promo != null) {
+                tv_trade_in_promo.visible()
+                tv_available_at?.visible()
+            }
+        }
+        context?.let {
+            LocalBroadcastManager.getInstance(context!!).registerReceiver(tradeInBroadcastReceiver, IntentFilter(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE))
+        }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
@@ -318,6 +325,11 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         appbar.addOnOffsetChangedListener { _, verticalOffset -> swipe_refresh_layout.isEnabled = (verticalOffset == 0) }
         swipe_refresh_layout.setOnRefreshListener { loadProductData(true) }
+
+        if (isAffiliate){
+            actionButtonView.gone()
+            base_btn_affiliate.visible()
+        }
 
         merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(object : MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
             override val isOwner: Boolean
@@ -942,6 +954,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun renderAffiliate(pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
         if (isAffiliate) {
             base_btn_affiliate.visible()
+            loadingAffiliate.gone()
+            getCommission.visible()
+            commission.visible()
+            commission.text = pdpAffiliate.commissionValueDisplay
             btn_affiliate.setOnClickListener { onAffiliateClick(pdpAffiliate, false) }
             actionButtonView.gone()
         } else {
@@ -963,6 +979,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                         ApplinkConst.AFFILIATE_CREATE_POST,
                         pdpAffiliate.productId.toString(),
                         pdpAffiliate.adId.toString())
+                it.finish()
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                         REQUEST_CODE_LOGIN)
@@ -975,7 +992,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
         activity?.let {
             startActivity(RatesEstimationDetailActivity.createIntent(it,
                 shopInfo!!.shopCore.domain, productInfo!!.basic.weight,
-                    productInfo!!.basic.weightUnit, productInfoViewModel.multiOrigin.origin))
+                    productInfo!!.basic.weightUnit,
+                    if (productInfoViewModel.multiOrigin.isFulfillment)
+                        productInfoViewModel.multiOrigin.origin else null))
         }
     }
 
@@ -990,7 +1009,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     (productInfoViewModel.isShopOwner(data.basic.shopID)
                             || shopInfo.allowManage),
                     data.preorder)
-            actionButtonView.visibility = shopInfo.statusInfo.shopStatus == 1
+            actionButtonView.visibility = !isAffiliate && shopInfo.statusInfo.shopStatus == 1
             headerView.showOfficialStore(shopInfo.goldOS.isOfficial == 1)
             view_picture.renderShopStatus(shopInfo, productInfo?.basic?.status
                     ?: ProductStatusTypeDef.ACTIVE)
@@ -1111,7 +1130,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorGetProductInfo(throwable: Throwable) {
-        context?.let { ToasterError.make(coordinator, ErrorHandler.getErrorMessage(it, throwable)).show() }
+        context?.let { ToasterError.make(coordinator, ProductDetailErrorHandler.getErrorMessage(it, throwable)).show() }
     }
 
     private fun onSuccessGetProductInfo(productInfoP1: ProductInfoP1) {
@@ -1162,7 +1181,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productInfoP1.productInfo.category.detail.forEach { detail: Category.Detail ->
             if (detail.name.equals("Handphone")) {
                 isHandPhone = true
-                categoryId = detail.id.toInt()
+                val handfone = 24
+                categoryId = if (detail.id.isNotEmpty())
+                    detail.id.toInt()
+                else
+                    handfone
+
             }
         }
         tradeInParams = TradeInParams()
@@ -1170,7 +1194,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
             tradeInParams.categoryId = categoryId
             tradeInParams.deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
             val userSession = UserSession(activity)
-            tradeInParams.userId = userSession.userId.toInt()
+            tradeInParams.userId = if (userSession.userId.isNotEmpty())
+                userSession.userId.toInt()
+            else
+                0
             tradeInParams.setPrice(productInfoP1.productInfo.basic.price.toInt())
             tradeInParams.productId = productInfoP1.productInfo.basic.id
             tradeInParams.shopId = productInfoP1.productInfo.basic.shopID
@@ -1182,7 +1209,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 tradeInParams.isPreorder = false
             tradeInParams.isOnCampaign = productInfoP1.productInfo.hasActiveCampaign
             tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
-            tv_trade_in.setOnClickListener {goToNormalCheckout(TRADEIN_BUY) }
+            tv_trade_in.setOnClickListener { goToNormalCheckout(TRADEIN_BUY) }
         }
         activity?.invalidateOptionsMenu()
     }
@@ -1224,7 +1251,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun onFailFavoriteShop(t: Throwable) {
         context?.let {
-            ToasterError.make(view, ErrorHandler.getErrorMessage(it, t))
+            ToasterError.make(view, ProductDetailErrorHandler.getErrorMessage(it, t))
                     .setAction(R.string.retry_label) { onShopFavoriteClick() }
         }
         productShopView.toggleClickableFavoriteBtn(true)
@@ -1239,7 +1266,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun showToastError(throwable: Throwable) {
         activity?.run {
             ToasterError.make(findViewById(android.R.id.content),
-                    ErrorHandler.getErrorMessage(context, throwable),
+                ProductDetailErrorHandler.getErrorMessage(this, throwable),
                     ToasterError.LENGTH_LONG)
                     .show()
         }
@@ -1637,5 +1664,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
         outState.putString(SAVED_NOTE, userInputNotes)
         outState.putInt(SAVED_QUANTITY, userInputQuantity)
         outState.putString(SAVED_VARIANT, userInputVariant)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        context?.let {
+            LocalBroadcastManager.getInstance(it).unregisterReceiver(tradeInBroadcastReceiver)
+        }
     }
 }

@@ -31,9 +31,9 @@ public class GetRecomendationUseCase extends UseCase<RecomendationEntity.Recomen
     public static final String PAGE_NUMBER = "pageNumber";
     public static final String X_DEVICE = "xDevice";
     public static final String PAGE_NAME = "pageName";
-    public static final String DEFAULT_VALUE_X_SOURCE = "inbox";
+    public static final String DEFAULT_VALUE_X_SOURCE = "android";
     public static final String DEFAULT_VALUE_X_DEVICE = "android";
-    public static final String DEFAULT_PAGE_NAME = "default";
+    public static final String DEFAULT_PAGE_NAME = "inbox";
     private final GraphqlUseCase graphqlUseCase;
     private final Context context;
     private UserSessionInterface userSession;
