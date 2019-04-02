@@ -7,43 +7,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <RelativeLayout
-        android:id="@+id/layoutPreview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:visibility="gone"
-        tools:visibility="visible">
-
-        <com.tokopedia.videoplayer.view.widget.VideoPlayerView
-            android:id="@+id/videoPreview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_100"
-            android:background="@drawable/bg_dark_shadow_270"
-            android:layout_alignParentBottom="true"/>
-
-        <Button
-            android:id="@+id/btnDeleteVideo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_32"
-            android:textSize="@dimen/sp_16"
-            android:background="@null"
-            android:text="@string/vidpick_btn_delete"
-            android:textAllCaps="false"
-            android:focusable="true"
-            android:clickable="true"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:foreground="?selectableItemBackground"
-            android:layout_alignParentBottom="true"/>
-
-    </RelativeLayout>
-
-    <RelativeLayout
         android:id="@+id/containerPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -65,6 +28,50 @@
             app:tabIndicatorColor="@null"
             app:tabMinWidth="@dimen/image_picker_tab_min_width"
             app:tabMode="fixed"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layoutPreview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.tokopedia.videoplayer.view.widget.VideoPlayerView
+            android:id="@+id/videoPreview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_100"
+            android:background="@drawable/bg_dark_shadow_270"
+            android:layout_alignParentBottom="true"/>
+
+        <Button
+            android:id="@+id/btnDeleteVideo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_32"
+            android:textSize="@dimen/sp_16"
+            android:background="@null"
+            android:text="@string/vidpick_btn_delete"
+            android:textAllCaps="false"
+            android:focusable="true"
+            android:clickable="true"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:foreground="?selectableItemBackground"
             android:layout_alignParentBottom="true"/>
 
     </RelativeLayout>

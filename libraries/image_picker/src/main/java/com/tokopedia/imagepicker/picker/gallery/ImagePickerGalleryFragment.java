@@ -57,6 +57,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     public static final String ARGS_MIN_RESOLUTION = "args_min_resolution";
 
     public static final String SAVED_ALBUM_TITLE_ID = "svd_album_title_id";
+    public static final int MAX_VIDEO_DURATION_MS = 60000;
 
     public static final int ALBUM_REQUEST_CODE = 932;
 
@@ -86,6 +87,8 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         ArrayList<String> getImagePath();
 
         long getMaxFileSize();
+
+        int videoMaxDuration();
     }
 
     @SuppressLint("MissingPermission")
@@ -301,6 +304,10 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
             int minVideoResolution = item.getMinimumVideoResolution();
             if ((file.length() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
                 NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_video_size_reached));
+                return false;
+            }
+            if (onImagePickerGalleryFragmentListener.videoMaxDuration() > MAX_VIDEO_DURATION_MS) {
+                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_video_duration_reached));
                 return false;
             }
         } else {
