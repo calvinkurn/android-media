@@ -275,7 +275,7 @@ public class TopAdsGtmTracker {
                     "eventLabel", keyword,
                     "ecommerce", DataLayer.mapOf(
                             "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/searchproduct - topads productlist"),
-                                    "product", DataLayer.listOf(DataLayer.mapOf(
+                                    "products", DataLayer.listOf(DataLayer.mapOf(
                                             "name", product.getName(),
                                             "id", product.getId(),
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
