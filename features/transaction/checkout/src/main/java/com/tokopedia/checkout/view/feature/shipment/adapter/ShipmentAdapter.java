@@ -38,6 +38,7 @@ import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
@@ -540,7 +541,11 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
                 }
             }
-            shipmentCartItemModel.setHasLogisticPromo(newCourierItemData.getLogPromoCode() != null);
+            if (newCourierItemData.getLogPromoCode() != null) {
+                VoucherLogisticItemUiModel logPromo = new VoucherLogisticItemUiModel();
+                logPromo.setCode(newCourierItemData.getLogPromoCode());
+                shipmentCartItemModel.setVoucherLogisticItemUiModel(logPromo);
+            }
             updateShipmentCostModel();
             checkDataForCheckout();
         }

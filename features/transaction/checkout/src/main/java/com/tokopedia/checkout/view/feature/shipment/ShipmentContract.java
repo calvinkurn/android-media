@@ -137,6 +137,8 @@ public interface ShipmentContract {
 
         void onFailedClearPromoStack(boolean ignoreAPIResponse);
 
+        void resetCourier(int position);
+
         Promo generateCheckPromoFirstStepParam();
     }
 
@@ -254,6 +256,8 @@ public interface ShipmentContract {
         // void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isOneClickShipment);
 
         // void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast, boolean isOneClickShipment);
+
+        void processCheckPromoStackingLogisticPromo(int cartPosition);
 
         void processCheckPromoStackingCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast);
 

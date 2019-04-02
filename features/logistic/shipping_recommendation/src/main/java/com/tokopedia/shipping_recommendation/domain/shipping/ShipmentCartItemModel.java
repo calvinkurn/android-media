@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.promocheckout.common.domain.model.promostacking.response.VoucherOrdersItem;
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
@@ -81,8 +82,8 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     // promo stacking
     private boolean hasPromoList;
-    private boolean hasLogisticPromo;
     private VoucherOrdersItemUiModel voucherOrdersItemUiModel;
+    private VoucherLogisticItemUiModel voucherLogisticItemUiModel;
 
     public ShipmentCartItemModel() {
     }
@@ -131,8 +132,8 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         isBlackbox = in.readByte() != 0;
         addressId = in.readInt();
         hasPromoList = in.readByte() != 0;
-        hasLogisticPromo = in.readByte() != 0;
         voucherOrdersItemUiModel = in.readParcelable(VoucherOrdersItem.class.getClassLoader());
+        voucherLogisticItemUiModel = in.readParcelable(VoucherLogisticItemUiModel.class.getClassLoader());
     }
 
     @Override
@@ -180,8 +181,8 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (isBlackbox ? 1 : 0));
         dest.writeInt(addressId);
         dest.writeByte((byte) (hasPromoList ? 1 : 0));
-        dest.writeByte((byte) (hasLogisticPromo ? 1 : 0));
         dest.writeParcelable(voucherOrdersItemUiModel, flags);
+        dest.writeParcelable(voucherLogisticItemUiModel, flags);
     }
 
     @Override
@@ -246,7 +247,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setAddressId(shipmentCartItemModel.getAddressId());
         newShipmentCartItemModel.setHasPromoList(shipmentCartItemModel.getHasPromoList());
         newShipmentCartItemModel.setVoucherOrdersItemUiModel(shipmentCartItemModel.getVoucherOrdersItemUiModel());
-
+        newShipmentCartItemModel.setVoucherLogisticItemUiModel(shipmentCartItemModel.getVoucherLogisticItemUiModel());
         return newShipmentCartItemModel;
     }
 
@@ -596,12 +597,12 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.voucherOrdersItemUiModel = voucherOrdersItemUiModel;
     }
 
-    public boolean isHasLogisticPromo() {
-        return hasLogisticPromo;
+    public VoucherLogisticItemUiModel getVoucherLogisticItemUiModel() {
+        return voucherLogisticItemUiModel;
     }
 
-    public void setHasLogisticPromo(boolean hasLogisticPromo) {
-        this.hasLogisticPromo = hasLogisticPromo;
+    public void setVoucherLogisticItemUiModel(VoucherLogisticItemUiModel voucherLogisticItemUiModel) {
+        this.voucherLogisticItemUiModel = voucherLogisticItemUiModel;
     }
 
     @Override
@@ -639,6 +640,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(getIsBlackbox(), that.getIsBlackbox())
                 .append(getAddressId(), that.getAddressId())
                 .append(getVoucherOrdersItemUiModel(), that.getVoucherOrdersItemUiModel())
+                .append(getVoucherLogisticItemUiModel(), that.getVoucherLogisticItemUiModel())
                 .isEquals();
     }
 
@@ -671,6 +673,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(getIsBlackbox())
                 .append(getAddressId())
                 .append(getVoucherOrdersItemUiModel())
+                .append(getVoucherLogisticItemUiModel())
                 .toHashCode();
     }
 }

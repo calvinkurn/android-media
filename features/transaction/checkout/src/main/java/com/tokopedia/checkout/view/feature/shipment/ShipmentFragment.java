@@ -85,6 +85,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiMod
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -1949,7 +1950,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onLogisticPromoChosen(CourierItemData courierData, int cartPosition) {
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartPosition, courierData);
+        // todo: ini harusnya dihandle setelah sukses apply
         shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
+        shipmentPresenter.processCheckPromoStackingLogisticPromo(cartPosition);
     }
 
     @Override
@@ -2325,6 +2328,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
             }
 
+            VoucherLogisticItemUiModel voucherLogisticItemUiModel = shipmentCartItemModel.getVoucherLogisticItemUiModel();
+            if (voucherLogisticItemUiModel != null) {
+                ArrayList<String> arr = new ArrayList<>();
+                arr.add(voucherLogisticItemUiModel.getCode());
+                order.setCodes(arr);
+            }
+
             order.setUniqueId(shipmentCartItemModel.getCartString());
             order.setShopId(shipmentCartItemModel.getShopId());
             order.setShippingId(shipmentCartItemModel.getShippingId());
@@ -2385,6 +2395,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             promoStackingData.setDescription("");
             shipmentAdapter.updateItemPromoStackVoucher(promoStackingData);
         }
+    }
+
+    @Override
+    public void resetCourier(int position) {
+        shipmentAdapter.resetCourier(position);
     }
 
     @Override

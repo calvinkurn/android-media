@@ -939,6 +939,34 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }*/
 
     @Override
+    public void processCheckPromoStackingLogisticPromo(int cartPosition) {
+        getView().showLoading();
+        Promo promo = getView().generateCheckPromoFirstStepParam();
+        checkPromoStackingCodeUseCase.setParams(promo);
+        checkPromoStackingCodeUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().hideLoading();
+                e.printStackTrace();
+                if (getView() != null) {
+                    getView().showToastError(e.getMessage());
+                    getView().resetCourier(cartPosition);
+                }
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                getView().hideLoading();
+            }
+        });
+    }
+
+    @Override
     public void processCheckPromoStackingCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast) {
         Promo promo = getView().generateCheckPromoFirstStepParam();
         ArrayList<String> listCodes = new ArrayList<>();

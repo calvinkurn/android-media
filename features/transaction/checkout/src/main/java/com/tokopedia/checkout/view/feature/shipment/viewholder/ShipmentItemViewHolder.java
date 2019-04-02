@@ -455,7 +455,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderShippingType(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, RatesDataConverter ratesDataConverter, ArrayList<ShowCaseObject> showCaseObjectList) {
-        if (shipmentCartItemModel.isHasLogisticPromo()) {
+        if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
             renderLogisticPromo(shipmentCartItemModel, recipientAddressModel);
         } else if (shipmentCartItemModel.isUseCourierRecommendation()) {
             if (shipmentCartItemModel.getIsBlackbox()) {
