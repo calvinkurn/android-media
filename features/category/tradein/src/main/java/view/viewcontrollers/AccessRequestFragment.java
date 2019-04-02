@@ -65,7 +65,7 @@ public class AccessRequestFragment extends DialogFragment {
         accessRequestListener = (IAccessRequestListener) activity;
     }
 
-    public class AccessRequestClickListener implements View.OnClickListener {
+   public class AccessRequestClickListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
