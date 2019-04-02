@@ -52,6 +52,8 @@ public interface ShippingDurationContract {
         void setRecipientAddressModel(RecipientAddressModel recipientAddressModel);
 
         RecipientAddressModel getRecipientAddressModel();
+
+        CourierItemData convertToCourierModel(LogisticPromoViewModel promoModel);
     }
 
 }

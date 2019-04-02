@@ -1023,6 +1023,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 }))
     }
 
+    override fun onLogisticPromoChosen(courierData: CourierItemData, cartPosition: Int) {
+        // Haven't discussed yet
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_GEOLOCATION) {
             val locationPass = data?.extras?.getParcelable<LocationPass>(LogisticCommonConstant.EXTRA_EXISTING_LOCATION)

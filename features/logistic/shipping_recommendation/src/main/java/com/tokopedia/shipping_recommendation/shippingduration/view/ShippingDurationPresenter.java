@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.shipping_recommendation.R;
 import com.tokopedia.shipping_recommendation.domain.ShippingParam;
+import com.tokopedia.shipping_recommendation.domain.shipping.LogisticPromoViewModel;
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
@@ -175,6 +176,17 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
             shippingDurationViewModelList = new ArrayList<>();
         }
         return shippingDurationViewModelList;
+    }
+
+    @Override
+    public CourierItemData convertToCourierModel(LogisticPromoViewModel promoModel) {
+        CourierItemData result = new CourierItemData();
+        result.setShipperId(promoModel.getShipperId());
+        result.setShipperProductId(promoModel.getShipperProductId());
+        result.setServiceName(promoModel.getShipperDesc());
+        result.setName(promoModel.getShipperName());
+        result.setPromoCode(promoModel.getPromoCode());
+        return result;
     }
 
     @Override

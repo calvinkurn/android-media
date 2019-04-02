@@ -22,6 +22,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shipping_recommendation.R;
 import com.tokopedia.shipping_recommendation.domain.ShippingParam;
+import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
 import com.tokopedia.shipping_recommendation.domain.shipping.LogisticPromoViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
@@ -66,6 +67,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     private boolean isChooseCourierTraceStopped;
 
     private boolean isDisableCourierPromo;
+    private int mCartPosition = -1;
 
     @Inject
     ShippingDurationContract.Presenter presenter;
@@ -145,14 +147,14 @@ public class ShippingDurationBottomsheet extends BottomSheets
         if (getArguments() != null) {
             RecipientAddressModel recipientAddressModel = getArguments().getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL);
             presenter.setRecipientAddressModel(recipientAddressModel);
-            int cartPosition = getArguments().getInt(ARGUMENT_CART_POSITION);
+            mCartPosition = getArguments().getInt(ARGUMENT_CART_POSITION);
             int selectedServiceId = getArguments().getInt(ARGUMENT_SELECTED_SERVICE_ID);
             int codHistory = getArguments().getInt(ARGUMENT_COD_HISTORY);
             if (recipientAddressModel != null) {
                 mCornerId = recipientAddressModel.isCornerAddress() ? recipientAddressModel.getId() : "";
             }
             isDisableCourierPromo = getArguments().getBoolean(ARGUMENT_DISABLE_PROMO_COURIER);
-            setupRecyclerView(cartPosition);
+            setupRecyclerView(mCartPosition);
             ShipmentDetailData shipmentDetailData = getArguments().getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA);
             ShippingParam shippingParam = getArguments().getParcelable(ARGUMENT_SHIPPING_PARAM);
             List<ShopShipment> shopShipments = getArguments().getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST);
@@ -349,7 +351,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
         tkpdDialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "heyo", Toast.LENGTH_SHORT).show();
+                CourierItemData courierData = presenter.convertToCourierModel(data);
+                shippingDurationBottomsheetListener.onLogisticPromoChosen(courierData, mCartPosition);
             }
         });
         tkpdDialog.show();
