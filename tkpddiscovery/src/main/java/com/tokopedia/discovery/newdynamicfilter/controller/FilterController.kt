@@ -83,8 +83,7 @@ class FilterController {
         val iterator = optionsForFilterViewState.listIterator()
         var optionHasBeenAddedOrReplaced = false
 
-        while (iterator.hasNext()
-            && !optionHasBeenAddedOrReplaced) {
+        while (iterator.hasNext()) {
             val existingOption = iterator.next()
 
             if(existingOption.key == option.key) {

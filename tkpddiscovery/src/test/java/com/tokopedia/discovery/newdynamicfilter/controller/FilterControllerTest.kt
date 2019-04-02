@@ -240,8 +240,8 @@ class FilterControllerTest {
 
         locationOptions.add(jakartaOption)
         locationOptions.add(jakartaBaratOption)
-        locationOptions.add(jabodetabekOption)
         locationOptions.add(tangerangOption)
+        locationOptions.add(jabodetabekOption)
         locationOptions.add(bandungOption)
         filterList.add(createFilterWithOptions(locationOptions))
 
