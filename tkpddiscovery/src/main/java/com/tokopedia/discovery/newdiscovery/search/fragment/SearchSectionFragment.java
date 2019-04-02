@@ -523,7 +523,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         super.onSaveInstanceState(outState);
         outState.putInt(EXTRA_SPAN_COUNT, getSpanCount());
         outState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
-        outState.putParcelableArrayList(EXTRA_FILTER, getFilters());
+//        outState.putParcelableArrayList(EXTRA_FILTER, getFilters());
         outState.putParcelableArrayList(EXTRA_SORT, getSort());
         outState.putSerializable(EXTRA_SELECTED_FILTER, getSelectedFilter());
         outState.putSerializable(EXTRA_SELECTED_SORT, getSelectedSort());
