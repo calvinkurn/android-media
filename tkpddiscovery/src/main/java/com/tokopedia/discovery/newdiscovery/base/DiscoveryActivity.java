@@ -334,7 +334,8 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
         onSearchingStart(searchQuery);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
-        getPresenter().requestProduct(searchParameter, isForceSearch(), isRequestOfficialStoreBanner());
+
+        initiateSearchFromPresenter();
     }
 
     private void updateSearchParameterBeforeSearchIfNotEmpty(String searchQuery, String categoryId) {
@@ -368,6 +369,10 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         if(!TextUtils.isEmpty(categoryId)) {
             searchParameter.set(SearchApiConst.SC, categoryId);
         }
+    }
+
+    protected void initiateSearchFromPresenter() {
+        getPresenter().requestProduct(searchParameter, isForceSearch(), isRequestOfficialStoreBanner());
     }
 
     public void deleteAllRecentSearch() {
@@ -632,6 +637,10 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
         super.onHandleResponseSearch(productViewModel);
+        stopPerformanceMonitoring();
+    }
+
+    protected void stopPerformanceMonitoring() {
         if (performanceMonitoring != null) {
             performanceMonitoring.stopTrace();
         }

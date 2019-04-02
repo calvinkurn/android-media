@@ -800,4 +800,15 @@ public class SearchActivity extends DiscoveryActivity
         super.onSearchingStart(keyword);
         hideBottomNavigation();
     }
+
+    @Override
+    protected void initiateSearchFromPresenter() {
+        getPresenter().initiateSearch(searchParameter, isForceSearch());
+    }
+
+    @Override
+    public void onHandleResponseSearch(ProductViewModel productViewModel) {
+        handleIntentWithProductViewModel(productViewModel);
+        stopPerformanceMonitoring();
+    }
 }

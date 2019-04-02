@@ -61,6 +61,16 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
         requestParams.putBoolean(SearchApiConst.RELATED, relatedSearchEnabled);
     }
 
+    @Override
+    public void initiateSearch(SearchParameter searchParameter, boolean forceSearch) {
+        super.initiateSearch(searchParameter, forceSearch);
+
+        RequestParams requestParams = createInitiateSearchRequestParams(searchParameter, forceSearch);
+
+        GqlSearchHelper.initiateSearch(context, requestParams, graphqlUseCase,
+                new InitiateSearchSubscriber(getBaseDiscoveryView(), searchParameter, forceSearch));
+    }
+
     private RequestParams createInitiateSearchRequestParams(SearchParameter searchParameter, boolean isForceSearch) {
         RequestParams requestParams = RequestParams.create();
 

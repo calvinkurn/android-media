@@ -58,5 +58,6 @@ public interface BaseDiscoveryContract {
 
         void requestImageSearch(String filePath);
 
+        void initiateSearch(SearchParameter searchParameter, boolean forceSearch);
     }
 }
