@@ -26,7 +26,6 @@ import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.channel.view.activity.ChannelActivity
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage
-import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity.PAUSE_RESUME_TRESHOLD_TIME
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
@@ -651,6 +650,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat)
             }
 
+            viewState.autoPlayVideo()
+
             if (notifReceiver == null) {
                 notifReceiver = object : BroadcastReceiver() {
                     override fun onReceive(context: Context, intent: Intent) {
@@ -679,14 +680,17 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     private fun canResume(): Boolean {
-        return timeStampAfterResume == 0L || timeStampAfterResume > 0
-                && System.currentTimeMillis() - timeStampAfterResume > PAUSE_RESUME_TRESHOLD_TIME
+//        return timeStampAfterResume == 0L || timeStampAfterResume > 0
+//                && System.currentTimeMillis() - timeStampAfterResume > PAUSE_RESUME_TRESHOLD_TIME
+        return true
     }
 
     private fun canPause(): Boolean {
-        return (timeStampAfterPause == 0L || (timeStampAfterPause > 0
-                && System.currentTimeMillis() - timeStampAfterPause > PAUSE_RESUME_TRESHOLD_TIME
-                && canResume()))
+//        return (timeStampAfterPause == 0L || (timeStampAfterPause > 0
+//                && System.currentTimeMillis() - timeStampAfterPause > PAUSE_RESUME_TRESHOLD_TIME
+//                && canResume()))
+
+        return true
     }
 
     private fun kickIfIdleForTooLong() {

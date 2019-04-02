@@ -52,6 +52,8 @@ import com.tokopedia.gamification.floating.data.entity.GamiFloatingButtonEntity;
 import com.tokopedia.gamification.floating.listener.OnDragTouchListener;
 import com.tokopedia.gamification.floating.view.contract.FloatingEggContract;
 import com.tokopedia.gamification.floating.view.presenter.FloatingEggPresenter;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.gamification.util.HexValidator;
 
 import javax.inject.Inject;

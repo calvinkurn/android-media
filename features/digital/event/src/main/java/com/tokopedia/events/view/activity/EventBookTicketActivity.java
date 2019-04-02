@@ -94,7 +94,7 @@ public class EventBookTicketActivity
         super.onCreate(savedInstanceState);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(EventModuleRouter.ACTION_CLOSE_ACTIVITY);
-        eventsAnalytics = new EventsAnalytics(getApplicationContext());
+        eventsAnalytics = new EventsAnalytics();
         LocalBroadcastManager.getInstance(this).registerReceiver(finishReceiver, intentFilter);
     }
 

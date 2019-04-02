@@ -27,10 +27,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -58,6 +56,8 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import rx.subscriptions.CompositeSubscription;
+
 import static com.tokopedia.logisticaddaddress.AddressConstants.EDIT_PARAM;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_ADDRESS;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST;
@@ -65,7 +65,6 @@ import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_INSTANCE_T
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_PLATFORM_PAGE;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT;
-import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_DEFAULT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
@@ -128,11 +127,16 @@ public class AddAddressFragment extends BaseDaggerFragment
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
     private boolean isFromMarketPlaceCartEmptyAddressFirst;
 
-    @Inject AddAddressContract.Presenter mPresenter;
-    @Inject @LogisticUserSessionQualifier UserSessionInterface userSession;
-    @Inject PerformanceMonitoring performanceMonitoring;
+    @Inject
+    AddAddressContract.Presenter mPresenter;
+    @Inject
+    @LogisticUserSessionQualifier
+    UserSessionInterface userSession;
+    @Inject
+    PerformanceMonitoring performanceMonitoring;
 
     private int instanceType;
+    private CompositeSubscription compositeSubscription;
 
     public static AddAddressFragment newInstance(Bundle extras) {
         Bundle bundle = new Bundle(extras);
@@ -190,6 +194,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        compositeSubscription.unsubscribe();
         mPresenter.detachView();
     }
 
@@ -253,6 +258,7 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
+        compositeSubscription = new CompositeSubscription();
         BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
         DaggerAddressComponent.builder()
                 .baseAppComponent(appComponent)
@@ -268,6 +274,11 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void stopPerformaceMonitoring() {
         performanceMonitoring.stopTrace();
+    }
+
+    @Override
+    public CompositeSubscription getCompositeSubscription() {
+        return compositeSubscription;
     }
 
     @Override
@@ -722,11 +733,9 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     protected void initialVar() {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
-            AnalyticTracker analyticTracker = ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
-            checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress(analyticTracker);
-            checkoutAnalyticsMultipleAddress = new CheckoutAnalyticsMultipleAddress(analyticTracker);
-        }
+
+        checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress();
+        checkoutAnalyticsMultipleAddress = new CheckoutAnalyticsMultipleAddress();
         if (isEdit() && address != null) {
             receiverNameEditText.setText(address.getReceiverName());
             addressTypeEditText.setText(address.getAddressName());
