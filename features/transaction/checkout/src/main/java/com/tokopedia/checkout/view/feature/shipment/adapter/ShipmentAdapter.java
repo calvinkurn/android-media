@@ -718,7 +718,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             Object itemAdapter = shipmentDataList.get(i);
                             if (itemAdapter instanceof PromoStackingData) {
                                 ((PromoStackingData) itemAdapter).setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(dataUiModel.getMessage().getState()));
-                                ((PromoStackingData) itemAdapter).setTitle(dataUiModel.getMessage().getText());
+                                ((PromoStackingData) itemAdapter).setTitle(dataUiModel.getTitleDescription());
+                                ((PromoStackingData) itemAdapter).setDescription(dataUiModel.getMessage().getText());
                                 ((PromoStackingData) itemAdapter).setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
                                 notifyItemChanged(i);
                             }
