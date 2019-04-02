@@ -12,38 +12,23 @@ import kotlinx.android.synthetic.main.item_profile_empty.view.*
 /**
  * @author by milhamj on 31/10/18.
  */
-class ProfileEmptyViewHolder(val v: View, val listener: OnEmptyItemClickedListener) : AbstractViewHolder<ProfileEmptyViewModel>(v) {
-
+class ProfileEmptyViewHolder(val v: View) : AbstractViewHolder<ProfileEmptyViewModel>(v) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_profile_empty
 
         private const val PATH_FORMAT = "%s/%s/%s/%s.jpg"
         private const val ANDROID_IMAGE_URL = "https://ecs7.tokopedia.net/img/android"
-        private const val IMAGE_FOLDER = "profile"
-        private const val IMAGE_SIZE = "xxxhdpi"
-        private const val IMAGE_NAME = "img_empty_profile"
+        private const val IMAGE_NAME = "af_teaser"
     }
     override fun bind(element: ProfileEmptyViewModel?) {
         val imageUrl = String.format(
                 PATH_FORMAT,
                 ANDROID_IMAGE_URL,
-                IMAGE_FOLDER,
-                IMAGE_SIZE,
+                IMAGE_NAME,
+                DisplayMetricUtils.getScreenDensity(itemView.context),
                 IMAGE_NAME
         )
         ImageHandler.loadImage2(itemView.image, imageUrl, R.drawable.ic_loading_image)
-        itemView.card_image.setOnClickListener(onEmptyItemClicked())
-        itemView.tv_see_more_product.setOnClickListener(onEmptyItemClicked())
-    }
-
-    private fun onEmptyItemClicked() : View.OnClickListener {
-        return View.OnClickListener {
-            listener.onEmptyComponentClicked()
-        }
-    }
-
-    interface OnEmptyItemClickedListener {
-        fun onEmptyComponentClicked()
     }
 }
