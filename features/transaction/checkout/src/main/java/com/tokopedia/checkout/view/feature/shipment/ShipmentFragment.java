@@ -1771,8 +1771,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentAdapter.setShippingCourierViewModels(shippingCourierViewModels, recommendedCourier, cartItemPosition);
                 if (!TextUtils.isEmpty(recommendedCourier.getPromoCode())) {
                     checkCourierPromo(recommendedCourier, cartItemPosition);
-                } else {
-                    showToastError("Terjadi kesalahan. Ulangi beberapa saat lagi.");
                 }
             }
         }
@@ -2083,8 +2081,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
             order.setUniqueId(shipmentCartItemModel.getCartString());
             order.setShopId(shipmentCartItemModel.getShopId());
-            order.setShippingId(shipmentCartItemModel.getShippingId());
-            order.setSpId(shipmentCartItemModel.getSpId());
+            if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+                order.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId());
+                order.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId());
+            }
             order.setInsurancePrice(shipmentCartItemModel.isInsurance() ? 1 : 0);
             orders.add(order);
         }
