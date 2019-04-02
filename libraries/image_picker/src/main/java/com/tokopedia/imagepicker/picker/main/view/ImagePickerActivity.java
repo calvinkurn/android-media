@@ -650,8 +650,4 @@ public class ImagePickerActivity extends BaseSimpleActivity
         outState.putStringArrayList(SAVED_IMAGE_DESCRIPTION, imageDescriptionList);
     }
 
-    @Override
-    public int videoMaxDuration() {
-        return 0;
-    }
 }
