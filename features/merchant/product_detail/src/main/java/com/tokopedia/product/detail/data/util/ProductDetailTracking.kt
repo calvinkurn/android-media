@@ -14,13 +14,13 @@ import java.util.*
 class ProductDetailTracking() {
 
     fun sendScreen(shopID: String, shopType: String, productId: String) {
-        TrackApp.getInstance()?.gtm?.sendScreenAuthenticated(
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(
             PRODUCT_DETAIL_SCREEN_NAME,
             shopID, shopType, "/product", productId)
     }
 
     fun eventTalkClicked() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK,
@@ -362,14 +362,7 @@ class ProductDetailTracking() {
         return ""
     }
 
-    fun eventEnhanceEcommerceProductDetail(trackerListName: String?, productInfo: ProductInfo?, shopInfo: ShopInfo?, trackerAttribution: String?,
-                                           isTradeIn : Boolean, isDiagnosed : Boolean) {
-        val dimension55 = if(isTradeIn && isDiagnosed)
-            "true diagnostic"
-        else if(isTradeIn && !isDiagnosed)
-            "true non diagnostic"
-        else
-            "false"
+    fun eventEnhanceEcommerceProductDetail(trackerListName: String?, productInfo: ProductInfo?, shopInfo: ShopInfo?, trackerAttribution: String?) {
         TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(DataLayer.mapOf(
             "event", "viewProduct",
             "eventCategory", "product page",
@@ -386,8 +379,7 @@ class ProductDetailTracking() {
                 "brand", "none / other",
                 "category", getEnhanceCategoryFormatted(productInfo?.category?.detail),
                 "variant", "none / other",
-                "dimension38", trackerAttribution ?: "none / other",
-                "dimension55",dimension55))).apply {
+                "dimension38", trackerAttribution ?: "none / other"))).apply {
             if (trackerListName?.isNotEmpty() == true) {
                 put("actionField", DataLayer.mapOf("list", trackerListName))
             }
@@ -495,13 +487,6 @@ class ProductDetailTracking() {
                 }
             }
         )
-    }
-
-    fun sendGeneralEvent(event: String, category: String, action: String, label: String) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(event,
-                category,
-                action,
-                label)
     }
 
     ////////////////////////////////////////////////////////////////
