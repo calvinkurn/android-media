@@ -53,7 +53,6 @@ import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.Child
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
-import com.tokopedia.track.TrackApp
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
@@ -185,12 +184,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             if (tradeInParams != null && tradeInParams!!.isEligible == 1) {
                 tv_trade_in.visible()
                 tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
-                if (tradeInParams!!.usedPrice > 0) {
-                    tv_trade_in.setOnClickListener {
-                        goToHargaFinal()
-                        trackClickTradeIn()
-                    }
-                }
+                if (tradeInParams!!.usedPrice > 0)
+                    tv_trade_in.setOnClickListener { goToHargaFinal() }
             }
         }
         originalProduct = productInfoAndVariant
@@ -226,35 +221,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
         intent.putExtra(TradeInParams.TRADE_IN_PARAMS, tradeInParams)
         startActivityForResult(intent, TradeInHomeActivity.TRADEIN_HOME_REQUEST)
-    }
-
-    fun trackClickTradeIn() {
-        val whichbutton: String
-        if (action == ATC_ONLY)
-            whichbutton = "tambah keranjang"
-        else
-            whichbutton = "beli"
-        tradeInParams?.let {
-            val label: String
-            if (tradeInParams!!.usedPrice > 0)
-                label = "after diagnostic"
-            else
-                label = "before diagnostic"
-
-            sendGeneralEvent("clickPDP",
-                    "product detail page",
-                    "click trade in widget on variants page - "
-                            + whichbutton,
-                    label)
-
-        }
-    }
-
-    private fun sendGeneralEvent(event:String, category:String, action:String, label : String){
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(event,
-                category,
-                action,
-                label)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -507,26 +473,15 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 addToCart()
             } else if (action == TRADEIN_BUY) {
                 if (tradeInParams != null) {
-                    val label : String
                     if (tradeInParams!!.usedPrice > 0) {
                         goToHargaFinal()
-                        label = "after diagnostic"
-                    } else {
-                        tv_trade_in.setTrackListener(null)
+                    } else
                         tv_trade_in.performClick()
-                        label = "before diagnostic"
-                    }
-                    sendGeneralEvent("clickPDP",
-                            "product detail page",
-                            "click trade in button on variants page",
-                            label
-                    )
                 }
             } else {
                 doBuyOrPreorder()
             }
         }
-        tv_trade_in.setTrackListener { trackClickTradeIn() }
         button_cart.setOnClickListener {
             if (hasError()) {
                 return@setOnClickListener
@@ -628,12 +583,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         addToCart(true, onFinish = { message: String?, cartId: String? ->
             onFinishAddToCart()
             selectedProductInfo?.run {
-                normalCheckoutTracking.eventClickBuyTradeIn(
-                        originalProduct,
-                        selectedVariantId ?: "",
-                        this, quantity,
-                        shopId, shopType, shopName, cartId,
-                        trackerAttribution, trackerListName)
+                normalCheckoutTracking.eventClickBuyInVariant(
+                    originalProduct,
+                    selectedVariantId ?: "",
+                    this, quantity,
+                    shopId, shopType, shopName, cartId,
+                    trackerAttribution, trackerListName)
             }
             activity?.run {
                 val intent = router.getCheckoutIntent(this, deviceid)
