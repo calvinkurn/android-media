@@ -32,7 +32,7 @@ data class Property(
 
         @SerializedName("image")
         @Expose
-        val image: String = "",
+        val image: Image = Image(),
 
         @SerializedName("star")
         @Expose
@@ -81,5 +81,27 @@ data class Property(
             @SerializedName("longitude")
             @Expose
             val longitude: Float = 0f
+    )
+
+    data class Image(
+            @SerializedName("isLogoPhoto")
+            @Expose
+            val isLogoPhoto: Boolean = false,
+
+            @SerializedName("urlSquare60")
+            @Expose
+            val urlSquare60: String = "",
+
+            @SerializedName("mainPhoto")
+            @Expose
+            val mainPhoto: Boolean = false,
+
+            @SerializedName("urlOriginal")
+            @Expose
+            val urlOriginal: String = "",
+
+            @SerializedName("urlMax300")
+            @Expose
+            val urlMax300: String = ""
     )
 }

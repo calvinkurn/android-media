@@ -1,4 +1,4 @@
-package com.tokopedia.hotel.search.presentation
+package com.tokopedia.hotel.search.presentation.activity
 
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
