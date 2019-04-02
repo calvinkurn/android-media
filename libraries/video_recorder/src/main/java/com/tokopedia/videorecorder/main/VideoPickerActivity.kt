@@ -41,7 +41,6 @@ open class VideoPickerActivity: BaseSimpleActivity(),
         //video recorder const
         const val VIDEOS_RESULT = "video_result"
         const val VIDEO_MAX_SIZE = 50000L //50 mb
-        const val VIDEO_MAX_DURATION_MS = 60000 //ms = 1 minute
 
         //flag
         var isVideoSourcePicker = false
@@ -142,13 +141,8 @@ open class VideoPickerActivity: BaseSimpleActivity(),
         adapter.destroyAllView()
         adapter = viewPagerAdapter()
         vpVideoPicker.adapter = adapter
-        vpVideoPicker.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {}
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-
-            override fun onPageSelected(position: Int) {
-                currentSelectedTab = position
-            }
+        vpVideoPicker.addOnPageChangeListener(PageChangeCallback {
+            position -> currentSelectedTab = position
         })
         setupTabLayout()
     }
@@ -244,6 +238,7 @@ open class VideoPickerActivity: BaseSimpleActivity(),
             val uriFile = Uri.parse(filePath)
             isVideoSourcePicker = false
             videoPath = filePath
+
             videoPreview.setVideoURI(uriFile)
             videoPreview.setOnPreparedListener { mp ->
                 mp.isLooping = true //loop
@@ -253,18 +248,19 @@ open class VideoPickerActivity: BaseSimpleActivity(),
     }
 
     override fun onPreviewVideoVisible() {
-        containerPager.hide()
         layoutPreview.show()
+        containerPicker.hide()
         btnDone.show()
-        if (isVideoSourcePicker) {
-            btnDeleteVideo.text = getString(R.string.vidpick_btn_back)
+
+        btnDeleteVideo.text = if (isVideoSourcePicker) {
+            getString(R.string.vidpick_btn_back)
         } else {
-            btnDeleteVideo.text = getString(R.string.vidpick_btn_delete)
+            getString(R.string.vidpick_btn_delete)
         }
     }
 
     override fun onVideoVisible() {
-        containerPager.show()
+        containerPicker.show()
         layoutPreview.hide()
         btnDone.hide()
     }

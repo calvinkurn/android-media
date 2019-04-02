@@ -7,6 +7,33 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <RelativeLayout
+        android:id="@+id/containerPicker"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:visibility="visible"
+        tools:visibility="visible">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vpVideoPicker"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/tabPicker"/>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabPicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/VideoPickerTab"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@null"
+            app:tabMinWidth="@dimen/image_picker_tab_min_width"
+            app:tabMode="fixed"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/layoutPreview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -43,33 +70,6 @@
             android:textStyle="bold"
             android:textColor="@android:color/white"
             android:foreground="?selectableItemBackground"
-            android:layout_alignParentBottom="true"/>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/containerPager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:visibility="visible"
-        tools:visibility="visible">
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/vpVideoPicker"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/tabPicker"/>
-
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabPicker"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/VideoPickerTab"
-            app:tabGravity="fill"
-            app:tabIndicatorColor="@null"
-            app:tabMinWidth="@dimen/image_picker_tab_min_width"
-            app:tabMode="fixed"
             android:layout_alignParentBottom="true"/>
 
     </RelativeLayout>
