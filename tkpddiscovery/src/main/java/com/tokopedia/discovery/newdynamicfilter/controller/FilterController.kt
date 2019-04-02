@@ -1,7 +1,5 @@
 package com.tokopedia.discovery.newdynamicfilter.controller
 
-import android.os.Parcel
-import android.os.Parcelable
 import android.text.TextUtils
 import com.tokopedia.core.discovery.model.Filter
 import com.tokopedia.core.discovery.model.LevelThreeCategory
@@ -12,7 +10,7 @@ import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper
 import java.util.*
 
-class FilterController() : Parcelable {
+class FilterController {
 
     private val filterParameter = mutableMapOf<String, String>()
     private val filterViewState = mutableSetOf<String>()
@@ -20,26 +18,6 @@ class FilterController() : Parcelable {
 
     private var pressedSliderMinValueState = -1
     private var pressedSliderMaxValueState = -1
-
-    constructor(parcel: Parcel) : this() {
-        resetStatesBeforeLoad()
-
-        val filterViewStateList = mutableListOf<String>()
-
-        parcel.readMap(filterParameter, String::class.java.classLoader)
-        parcel.readList(filterViewStateList, String::class.java.classLoader)
-        parcel.readList(filterList, Filter::class.java.classLoader)
-        pressedSliderMinValueState = parcel.readInt()
-        pressedSliderMaxValueState = parcel.readInt()
-
-        loadFilterViewStateFromParcel(filterViewStateList)
-    }
-
-    private fun loadFilterViewStateFromParcel(filterViewStateList: List<String>) {
-        for(viewState in filterViewStateList) {
-            filterViewState.add(viewState)
-        }
-    }
 
     fun initFilterController(filterParameter: Map<String, String>? = mapOf(),
                              filterList: List<Filter>? = listOf()) {
@@ -105,8 +83,7 @@ class FilterController() : Parcelable {
         val iterator = optionsForFilterViewState.listIterator()
         var optionHasBeenAddedOrReplaced = false
 
-        while (iterator.hasNext()
-            && !optionHasBeenAddedOrReplaced) {
+        while (iterator.hasNext()) {
             val existingOption = iterator.next()
 
             if(existingOption.key == option.key) {
@@ -458,28 +435,6 @@ class FilterController() : Parcelable {
                 newFilterParameterValueList.joinToString(separator = OptionHelper.VALUE_SEPARATOR)
         } else {
             filterParameter.remove(key)
-        }
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeMap(filterParameter)
-        parcel.writeList(filterViewState.toList())
-        parcel.writeList(filterList)
-        parcel.writeInt(pressedSliderMinValueState)
-        parcel.writeInt(pressedSliderMaxValueState)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<FilterController> {
-        override fun createFromParcel(parcel: Parcel): FilterController {
-            return FilterController(parcel)
-        }
-
-        override fun newArray(size: Int): Array<FilterController?> {
-            return arrayOfNulls(size)
         }
     }
 }

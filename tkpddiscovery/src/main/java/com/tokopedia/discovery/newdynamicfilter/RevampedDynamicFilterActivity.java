@@ -64,8 +64,6 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     public static final String FILTER_SELECTED_CATEGORY_ID_PREF = "filter_selected_category_id";
     public static final String FILTER_SELECTED_CATEGORY_NAME_PREF = "filter_selected_category_name";
 
-    public static final String FILTER_CONTROLLER = "filter_controller";
-
     public static Intent createInstance(Context context, String filterID, HashMap<String, String> searchParameter, @Nullable FilterFlagSelectedModel flagFilterHelper) {
         Intent intent = new Intent(context, RevampedDynamicFilterActivity.class);
         intent.putExtra(EXTRA_FILTER_LIST, filterID);
@@ -229,7 +227,6 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
         selectedCategoryId = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_ID_PREF);
         selectedCategoryName = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_NAME_PREF);
         selectedCategoryRootId = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_ROOT_ID_PREF);
-        filterController = savedInstanceState.getParcelable(FILTER_CONTROLLER);
     }
 
     private void loadLastFilterStateFromPreference() {
@@ -252,7 +249,6 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(FILTER_CONTROLLER, filterController);
 
         outState.putSerializable(FILTER_CHECKED_STATE_PREF, savedCheckedState);
         outState.putSerializable(FILTER_TEXT_PREF, savedTextInput);

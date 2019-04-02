@@ -51,8 +51,6 @@ import static com.tokopedia.core.discovery.model.Option.KEY_CATEGORY;
 
 public class BottomSheetFilterView extends BaseCustomView implements BottomSheetDynamicFilterView {
 
-    public static final String FILTER_CONTROLLER = "filter_controller";
-
     private RecyclerView filterMainRecyclerView;
     private DynamicFilterAdapter filterMainAdapter;
     private TextView buttonReset;
@@ -101,16 +99,6 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     public void setCallback(Callback callback) {
         this.callback = callback;
-    }
-
-    public void loadLastFilterState(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            recoverLastFilterState(savedInstanceState);
-        }
-    }
-
-    private void recoverLastFilterState(@NonNull Bundle savedInstanceState) {
-        filterController = savedInstanceState.getParcelable(FILTER_CONTROLLER);
     }
 
     public void setFilterResultCount(String formattedResultCount) {
@@ -223,10 +211,9 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         applyFilter();
     }
 
-    public void initFilterBottomSheet(Bundle savedInstanceState) {
+    public void initFilterBottomSheet() {
         initBottomSheetListener();
         initFilterMainRecyclerView();
-        loadLastFilterState(savedInstanceState);
     }
 
     private void initFilterMainRecyclerView() {
@@ -420,10 +407,6 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
                 }
             }
         });
-    }
-
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(FILTER_CONTROLLER, filterController);
     }
 
     @Override

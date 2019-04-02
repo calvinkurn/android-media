@@ -472,7 +472,8 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     private void loadMoreProduct(final int startRow) {
-        generateLoadMoreParameter(startRow);
+        SearchParameter searchParameter =
+                generateLoadMoreParameter(startRow, productViewModel.getQuery());
 
         HashMap<String, String> additionalParams
                 = NetworkParamHelper.getParamMap(productViewModel.getAdditionalParams());
@@ -480,10 +481,15 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         presenter.loadMoreData(searchParameter, additionalParams);
     }
 
-    private void generateLoadMoreParameter(int startRow) {
-        getSearchParameter().set(SearchApiConst.UNIQUE_ID, generateUniqueId());
-        getSearchParameter().set(SearchApiConst.USER_ID, generateUserId());
-        getSearchParameter().set(SearchApiConst.START, String.valueOf(startRow));
+    private SearchParameter generateLoadMoreParameter(int startRow, String query) {
+        SearchParameter searchParameter = getSearchParameter();
+        searchParameter.set(SearchApiConst.UNIQUE_ID, generateUniqueId());
+        searchParameter.set(SearchApiConst.USER_ID, generateUserId());
+        searchParameter.setSearchQuery(query);
+        searchParameter.set(SearchApiConst.START, String.valueOf(startRow));
+        searchParameter.set(SearchApiConst.SC, getSearchParameter().get(SearchApiConst.SC));
+
+        return searchParameter;
     }
 
     private String generateUserId() {
