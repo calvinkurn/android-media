@@ -68,8 +68,8 @@
 
         <RelativeLayout
             android:id="@+id/containerRecord"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_90"
+            android:layout_height="@dimen/dp_90"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/dp_16">
@@ -105,6 +105,7 @@
                 android:progressDrawable="@drawable/circular_progress_bar_green"
                 android:max="100"
                 android:layout_gravity="center"
+                android:layout_centerInParent="true"
                 android:progress="0"
                 android:rotation="-90"
                 tools:progress="55"

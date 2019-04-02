@@ -126,12 +126,14 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
 
         if (cameraView.isTakingVideo) {
             vwRecord.hide()
+            btnFlash.show()
             btnFlip.show()
             progress.hide()
-            cameraView.stopVideo()
+            cameraView.close()
             timer.cancel()
         } else {
             btnFlip.hide()
+            btnFlash.hide()
             vwRecord.show()
             progress.show()
             val file = FileUtils.videoPath(FileUtils.RESULT_DIR)
