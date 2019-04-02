@@ -2,7 +2,6 @@ package com.tokopedia.videorecorder.main
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Typeface
 import android.media.MediaPlayer
@@ -15,9 +14,6 @@ import android.util.DisplayMetrics
 import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.TextView
-import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler
-import com.github.hiteshsondhi88.libffmpeg.FFmpeg
-import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem
@@ -69,10 +65,7 @@ open class VideoPickerActivity: BaseSimpleActivity(),
     //runtime permission handle
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
-    //ffmpeg
-    private lateinit var ffmpeg: FFmpeg
-
-    private lateinit var progressDialog: ProgressDialog
+    private var videoDuration = 0
 
     override fun getLayoutRes(): Int = R.layout.activity_video_picker
 
@@ -130,13 +123,6 @@ open class VideoPickerActivity: BaseSimpleActivity(),
     }
 
     private fun initView() {
-        //init progress dialog
-        progressDialog = ProgressDialog(this)
-
-        //init ffmpeg instance
-        ffmpeg = FFmpeg.getInstance(this)
-        ffmpeg.loadBinary(object : LoadBinaryResponseHandler() {})
-
         //support actionbar
         setSupportActionBar(toolbarVideoPicker)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -221,6 +207,7 @@ open class VideoPickerActivity: BaseSimpleActivity(),
         onVideoVisible()
         videoPreview.stopPlayback()
         setupViewPager()
+        tabPicker.getTabAt(1)?.select()
         if (!isVideoSourcePicker) {
             if (File(videoPath).exists()) {
                 FileUtils.deleteCacheDir()
@@ -230,35 +217,7 @@ open class VideoPickerActivity: BaseSimpleActivity(),
 
     protected open fun onVideoDoneClicked() {
         if (isVideoSourcePicker && videoPreview.duration > VIDEO_MAX_DURATION_MS) {
-            //prepared
-            val resultFile = FileUtils.videoPath(FileUtils.RESULT_DIR).absolutePath
-            val trimQuery = VideoUtils.ffmegCommand(videoPath, resultFile)
-
-            exceptionHandler {
-                ffmpeg.execute(trimQuery, object : ExecuteBinaryResponseHandler() {
-                    override fun onSuccess(message: String?) {
-                        super.onSuccess(message)
-                        if (progressDialog.isShowing) {
-                            progressDialog.dismiss()
-                        }
-                        onFinishPicked(resultFile)
-                    }
-
-                    override fun onFailure(message: String?) {
-                        super.onFailure(message)
-                        if (progressDialog.isShowing) {
-                            progressDialog.dismiss()
-                        }
-                        showToast(applicationContext, getString(R.string.vidpick_error_message))
-                    }
-
-                    override fun onProgress(message: String?) {
-                        super.onProgress(message)
-                        progressDialog.setMessage(getString(R.string.vidpick_progress_loader))
-                        progressDialog.show()
-                    }
-                })
-            }
+            videoDuration = videoPreview.duration
         } else {
             onFinishPicked(videoPath)
         }
@@ -348,5 +307,7 @@ open class VideoPickerActivity: BaseSimpleActivity(),
     }
 
     override fun getMaxFileSize(): Long = VIDEO_MAX_SIZE
+
+    override fun videoMaxDuration(): Int = videoDuration
 
 }
