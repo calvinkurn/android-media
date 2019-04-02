@@ -60,6 +60,9 @@ public class DealsSearchPresenter
 
     @Override
     public void getDealsListBySearch(final String searchText) {
+        if (getView() == null) {
+            return;
+        }
         highlight = searchText;
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(getSearchDealsListRequestUseCase.TAG, searchText);
@@ -81,6 +84,9 @@ public class DealsSearchPresenter
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                if (getView() == null) {
+                    return;
+                }
                 Type token = new TypeToken<DataResponse<SearchResponse>>() {
                 }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);
@@ -106,6 +112,9 @@ public class DealsSearchPresenter
     public void onDestroy() {
         getSearchDealsListRequestUseCase.unsubscribe();
         getSearchNextUseCase.unsubscribe();
+        if (getSearchLocationListRequestUseCase != null) {
+            getSearchLocationListRequestUseCase.unsubscribe();
+        }
     }
 
     @Override

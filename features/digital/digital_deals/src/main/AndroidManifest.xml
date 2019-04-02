@@ -27,19 +27,22 @@
             android:label="@string/title_activity_all_brands"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".view.activity.BrandDetailsActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".view.activity.DealsLocationActivity"
-            android:label="@string/title_activity_select_locations"
             android:screenOrientation="portrait"
+            android:label="@string/title_activity_select_locations"
             android:theme="@style/Theme.White" />
+
         <activity
             android:name=".view.activity.CheckoutActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+
     </application>
 
 </manifest>

@@ -69,7 +69,7 @@ public class TrendingDealsFragment extends BaseDaggerFragment implements DealsCa
         toolbar = view.findViewById(R.id.toolbar);
         appBarLayout = view.findViewById(R.id.app_bar_layout);
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_arrow_back_black));
+        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.toolbar_back_black));
         if (!TextUtils.isEmpty(trendingDealsCallBacks.getToolBarTitle())) {
             toolbar.setTitle(trendingDealsCallBacks.getToolBarTitle());
         } else {
@@ -106,17 +106,13 @@ public class TrendingDealsFragment extends BaseDaggerFragment implements DealsCa
                     if (getActivity() != null && getActivity().getApplication() != null) {
                         UserSessionInterface userSession = new UserSession(getActivity());
                         if (userSession.isLoggedIn()) {
-                            if (adapterPosition == -1) {
-//                                startOrderListActivity();
-                            } else {
-                                if (recyclerView.getAdapter() != null)
-                                    ((DealsCategoryAdapter) recyclerView.getAdapter()).setLike(adapterPosition);
+                            if (recyclerView.getAdapter() != null) {
+                                ((DealsCategoryAdapter) recyclerView.getAdapter()).setLike(adapterPosition);
                             }
                         }
                     }
                 }
                 break;
-
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

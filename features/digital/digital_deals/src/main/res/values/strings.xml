@@ -97,5 +97,7 @@
     <string name="select_location_bottomsheet_title">Ganti lokasi</string>
     <string name="category_title">Pilih Kategori Deals</string>
     <string name="sell_all_category">Semua\nKategori</string>
+    <string name="deals_toolbar_title">Lokasi Deals</string>
+    <string name="selected_location_text">(Terpilih)</string>
 
 </resources>

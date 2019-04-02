@@ -12,4 +12,9 @@
     <color name="color_search_icon">#BDBDBD</color>
     <color name="black_70">#b3000000</color>
     <color name="red_error">#f13700</color>
+    <color name="seel_all_green_color">#03ac0e</color>
+    <color name="toolbar_title_color">#7031353b</color>
+    <color name="deal_product_text_color">#e131353b</color>
+    <color name="deal_price_price__off_color">#ff5c84</color>
+    <color name="deal_sale_price__color">#fa591d</color>
 </resources>

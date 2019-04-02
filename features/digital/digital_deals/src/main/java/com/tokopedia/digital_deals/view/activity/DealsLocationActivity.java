@@ -13,11 +13,11 @@ public class DealsLocationActivity extends BaseSimpleActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        toolbar.setVisibility(View.GONE);
     }
 
     @Override
     protected Fragment getNewFragment() {
-        toolbar.setVisibility(View.GONE);
         return null;
     }
 }

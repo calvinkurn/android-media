@@ -198,9 +198,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Drawable img = getResources().getDrawable(R.drawable.ic_search_deal);
         setDrawableTint(img);
 
-//        Drawable threeDotMenu = ContextCompat.getDrawable(getContext(), R.drawable.ic_three_dot_menu);
-//        toolbar.setOverflowIcon(threeDotMenu);
-
         searchInputView.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 
 

@@ -224,11 +224,6 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
             brandIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoriesModels);
             getView().navigateToActivity(brandIntent);
         }
-//        else if (id == R.id.see_all_promo) {
-//            dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_SEE_ALL_PROMO,
-//                    "");
-//            getView().startGeneralWebView(DealsUrl.WebUrl.PROMOURL);
-//        }
         else {
             getView().getActivity().onBackPressed();
         }
@@ -241,6 +236,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     }
 
     public void getDealsList(boolean showProgressBar) {
+        if (getView() == null) {
+            return;
+        }
         if (showProgressBar)
             getView().showProgressBar();
         params.putAll(getView().getParams().getParameters());
@@ -254,6 +252,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
             @Override
             public void onError(Throwable e) {
+                if (getView() == null) {
+                    return;
+                }
                 CommonUtils.dumper("enter error");
                 e.printStackTrace();
                 getView().hideProgressBar();
@@ -336,6 +337,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                if (getView() == null) {
+                    return;
+                }
                 isLoading = false;
                 Type token = new TypeToken<DataResponse<DealsResponse>>() {
                 }.getType();
@@ -473,6 +477,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     }
 
     public void getLocations(boolean isForFirstime) {
+        if (getView() == null) {
+            return;
+        }
         getSearchLocationListRequestUseCase.setRequestParams(RequestParams.EMPTY);
         getSearchLocationListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
@@ -482,6 +489,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
             @Override
             public void onError(Throwable e) {
+                if (getView() == null) {
+                    return;
+                }
                 CommonUtils.dumper("enter error");
                 e.printStackTrace();
                 NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
@@ -494,6 +504,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                if (getView() == null) {
+                    return;
+                }
                 Type token = new TypeToken<DataResponse<LocationResponse>>() {
                 }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);

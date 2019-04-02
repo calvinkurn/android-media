@@ -17,7 +17,7 @@ import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 
 import java.util.List;
 
-public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class PromoAdapter extends RecyclerView.Adapter<PromoAdapter.PromosViewHolder> {
 
     private List<ProductItem> productItems;
     private Context context;
@@ -31,18 +31,18 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PromosViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         this.context = parent.getContext();
         View imageLayout = LayoutInflater.from(context).inflate(R.layout.promo_item, parent, false);
-        dealsAnalytics = new DealsAnalytics(context.getApplicationContext());
+        dealsAnalytics = new DealsAnalytics();
 
-        RecyclerView.ViewHolder vh = new PromosViewHolder(imageLayout);
+        PromosViewHolder vh = new PromosViewHolder(imageLayout);
         return vh;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        ((PromosViewHolder) holder).bindData(productItems.get(position), position);
+    public void onBindViewHolder(@NonNull PromosViewHolder holder, int position) {
+        holder.bindData(productItems.get(position), position);
     }
 
     @Override
@@ -60,13 +60,10 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         void bindData(ProductItem item, int position) {
             ImageHandler.loadImage(context, promoImage, item.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
-            promoImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mPresenter.sendEventEcommerce(item.getId(), position, item.getDisplayName(), DealsAnalytics.EVENT_PROMO_CLICK
-                            , DealsAnalytics.EVENT_CLICK_PROMO_BANNER, DealsAnalytics.LIST_DEALS_TOP_BANNER);
-                    mPresenter.onClickBanner();
-                }
+            promoImage.setOnClickListener(view -> {
+                mPresenter.sendEventEcommerce(item.getId(), position, item.getDisplayName(), DealsAnalytics.EVENT_PROMO_CLICK
+                        , DealsAnalytics.EVENT_CLICK_PROMO_BANNER, DealsAnalytics.LIST_DEALS_TOP_BANNER);
+                mPresenter.onClickBanner();
             });
         }
     }
