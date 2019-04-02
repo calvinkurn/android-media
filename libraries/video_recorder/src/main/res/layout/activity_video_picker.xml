@@ -40,8 +40,8 @@
     </android.support.v7.widget.Toolbar>
 
     <RelativeLayout
-        android:id="@+id/containerPager"
         android:layout_below="@+id/toolbarVideoPicker"
+        android:id="@+id/containerPicker"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -55,8 +55,6 @@
             android:id="@+id/tabPicker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipChildren="false"
-            android:clipToPadding="false"
             style="@style/VideoPickerTab"
             app:tabGravity="fill"
             app:tabIndicatorColor="@null"
