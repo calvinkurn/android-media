@@ -3,6 +3,7 @@ package com.tokopedia.videorecorder.main
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.graphics.Typeface
 import android.media.MediaPlayer
 import android.net.Uri
@@ -71,6 +72,8 @@ open class VideoPickerActivity: BaseSimpleActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //force use portrait orientation
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
 
         //init runtime permission
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -207,7 +210,10 @@ open class VideoPickerActivity: BaseSimpleActivity(),
         onVideoVisible()
         videoPreview.stopPlayback()
         setupViewPager()
+
         tabPicker.getTabAt(1)?.select()
+        vpVideoPicker.currentItem = 1
+
         if (!isVideoSourcePicker) {
             if (File(videoPath).exists()) {
                 FileUtils.deleteCacheDir()
