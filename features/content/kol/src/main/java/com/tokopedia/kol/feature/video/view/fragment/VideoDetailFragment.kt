@@ -378,7 +378,7 @@ class VideoDetailFragment:
         when {
             like.isChecked -> {
                 likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_green)
-                likeIcon.colorFilter = null
+                likeIcon.setColorFilter(activity!!.resources.getColor(R.color.tkpd_main_green))
                 likeText.text = like.fmt
                 likeText.setTextColor(
                         MethodChecker.getColor(likeText.context, R.color.tkpd_main_green)

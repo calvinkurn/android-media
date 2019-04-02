@@ -86,6 +86,7 @@ import com.tokopedia.showcase.ShowCaseContentPosition
 import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.*
 import javax.inject.Inject
@@ -252,7 +253,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 this,
                 this,
                 this,
-                this)
+                this,
+                userSession)
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -336,6 +338,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 successPost = false
             }
         }
+        recyclerView.scrollTo(0,0)
     }
 
     override fun hideHeader() {
@@ -352,7 +355,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     UsernameInputFragment::class.java.simpleName
             )
             usernameInputFragment.onDismissListener = {
-                if (usernameInputFragment.isSuccessRegister) {
+                if (usernameInputFragment.isSuccessRegister && !TextUtils.isEmpty(link)) {
                     doShare(link)
                     profilePreference.setShouldChangeUsername(false)
                 }
@@ -660,7 +663,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         context?.let {
             val menus = createBottomMenu(it, deletable, reportable, false, object : PostMenuListener {
                 override fun onDeleteClicked() {
-                    createDeleteDialog(postId, postId).show()
+                    createDeleteDialog(positionInFeed, postId).show()
                 }
 
                 override fun onReportClick() {
@@ -691,16 +694,21 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         onGoToKolComment(positionInFeed, id, false, "")
     }
 
-    override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, iamgeUrl: String) {
-        if (activity != null) {
-            profileRouter.shareFeed(
-                    activity!!,
-                    id.toString(),
-                    url,
-                    title,
-                    iamgeUrl,
-                    description
-            )
+    override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String,
+                              url: String, iamgeUrl: String) {
+        activity?.let {
+            if (shouldChangeUsername()) {
+                presenter.shouldChangeUsername(userSession.userId.toIntOrZero())
+            } else {
+                profileRouter.shareFeed(
+                        it,
+                        id.toString(),
+                        url,
+                        title,
+                        iamgeUrl,
+                        description
+                )
+            }
         }
         profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
     }
@@ -1193,12 +1201,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun shareLink(link: String) {
-        if (isOwner && profilePreference.shouldChangeUsername()) {
+        if (shouldChangeUsername()) {
             presenter.shouldChangeUsername(userSession.userId.toIntOrZero(), link)
         } else {
             doShare(link)
         }
     }
+
+    private fun shouldChangeUsername(): Boolean = isOwner && profilePreference.shouldChangeUsername()
 
     private fun doShare(link: String) {
         val shareBody = String.format(getString(R.string.profile_share_text), link)
