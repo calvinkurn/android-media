@@ -648,6 +648,23 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         startActivityForResult(intent, REQUEST_GO_TO_SHOP)
     }
 
+    override fun followUnfollowShop() {
+        presenter.followUnfollowShop(shopId.toString(), onErrorFollowUnfollowShop(), onSuccessFollowUnfollowShop())
+    }
+
+    private fun onErrorFollowUnfollowShop(): (Throwable) -> Unit {
+        return {
+            showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
+        }
+    }
+    private fun onSuccessFollowUnfollowShop(): (Boolean) -> Unit {
+        return {
+            if(it) {
+                getViewState().isShopFollowed = !getViewState().isShopFollowed
+            }
+        }
+    }
+
     override fun onDeleteConversation() {
         showLoading()
         presenter.deleteChat(messageId, onError(), onSuccessDeleteConversation())

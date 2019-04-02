@@ -216,10 +216,10 @@ class TopChatViewStateImpl(
                         showDeleteChatDialog(headerMenuListener, alertDialog)
                     }
                     itemMenus.title == view.context.getString(R.string.follow_store) -> {
-                        headerMenuListener.onGoToShop()
+                        headerMenuListener.followUnfollowShop()
                     }
                     itemMenus.title == view.context.getString(R.string.already_follow_store) -> {
-                        headerMenuListener.onGoToShop()
+                        headerMenuListener.followUnfollowShop()
                     }
                     itemMenus.title == view.context.getString(R.string.chat_incoming_settings) -> {
                         headerMenuListener.onGoToChatSetting(chatroomViewModel.blockedStatus)

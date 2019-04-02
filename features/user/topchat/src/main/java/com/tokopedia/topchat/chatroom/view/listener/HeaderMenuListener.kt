@@ -9,6 +9,8 @@ interface HeaderMenuListener{
 
     fun onGoToShop()
 
+    fun followUnfollowShop()
+
     fun onDeleteConversation()
 
     fun onGoToChatSetting(blockedStatus: BlockedStatus)
