@@ -19,8 +19,8 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.ActionInterfaces.ActionCreator;
-import com.tokopedia.abstraction.ActionInterfaces.ActionUIDelegate;
+import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
+import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.applink.ApplinkConst;
@@ -146,6 +146,7 @@ import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.saldodetails.router.SaldoDetailsInternalRouter;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
@@ -173,7 +174,6 @@ import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.webview.SellerappWebViewActivity;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
-import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
@@ -849,20 +849,6 @@ public abstract class SellerRouterApplication extends MainApplication
         if (activity != null) {
             activity.startActivity(new Intent(activity, ProductAddNameCategoryActivity.class));
         }
-    }
-
-    @Override
-    public void goToOldProductDetailPage(@NotNull Context context, @Nullable String productId,
-                                         @Nullable String shopDomain, @Nullable String productKey,
-                                         @Nullable String trackerAttribution, @Nullable String trackerListName) {
-        ProductPass productPass = ProductPass.Builder.aProductPass()
-                .setProductId(productId)
-                .setShopDomain(shopDomain)
-                .setProductKey(productKey)
-                .setTrackerAttribution(trackerAttribution)
-                .setTrackerListName(trackerListName)
-                .build();
-        context.startActivity(ProductInfoActivity.createInstance(context, productPass));
     }
 
     @Override

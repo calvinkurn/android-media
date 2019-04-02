@@ -223,10 +223,6 @@ public interface ApplinkConst {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
     }
 
-    interface WebViewUrl {
-        String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
-    }
-
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
         String SALES = "sellerapp://sales";
