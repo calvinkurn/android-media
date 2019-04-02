@@ -31,6 +31,8 @@ public class NotifyDebitRegisterBcaUseCase extends UseCase<NotifyDebitRegisterBc
     public static final String CREDENTIAL_TYPE = "credentialType";
     public static final String CREDENTIAL_NO = "credentialNo";
     public static final String MAX_LIMIT = "maxLimit";
+    public static final String USER_AGENT = "user_agent";
+    public static final String IP_ADDRESS = "ip_address";
 
     public static final String MERCHANT_CODE = "merchantCode";
     public static final String DEVICE_ID = "deviceID";

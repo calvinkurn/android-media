@@ -100,8 +100,18 @@ public class InstantDebitBcaFragment extends BaseDaggerFragment implements Insta
     }
 
     private String getDeviceId() {
-        // ads id | user agent | IP
-        return userSession.getDeviceId() + " | " + DeviceUtil.getUserAgent() + " | " + DeviceUtil.getLocalIpAddress();
+        Map<String, String> deviceMap = new HashMap<>();
+        deviceMap.put(NotifyDebitRegisterBcaUseCase.USER_AGENT, DeviceUtil.getUserAgent());
+        deviceMap.put(NotifyDebitRegisterBcaUseCase.IP_ADDRESS, DeviceUtil.getLocalIpAddress());
+        return convertObjToJsonString(deviceMap);
+    }
+
+    private String convertObjToJsonString(Object obj) {
+        JSONObject jsonObj = new JSONObject();
+        Gson gsonObj = new Gson();
+        String data = gsonObj.toJson(obj);
+        data.replace("\"", "\\\"");
+        return data;
     }
 
     @Override
@@ -111,11 +121,7 @@ public class InstantDebitBcaFragment extends BaseDaggerFragment implements Insta
         mapCardData.put(NotifyDebitRegisterBcaUseCase.CREDENTIAL_TYPE, credentialType);
         mapCardData.put(NotifyDebitRegisterBcaUseCase.CREDENTIAL_NO, credentialNo);
         mapCardData.put(NotifyDebitRegisterBcaUseCase.MAX_LIMIT, maxLimit);
-
-        JSONObject jsonObj = new JSONObject();
-        Gson gsonObj = new Gson();
-        String debitData = gsonObj.toJson(mapCardData);
-        debitData.replace("\"", "\\\"");
+        String debitData = convertObjToJsonString(mapCardData);
 
         presenter.notifyDebitRegisterBca(debitData, getDeviceId());
     }
