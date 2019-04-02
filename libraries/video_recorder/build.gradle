@@ -19,5 +19,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.videoplayer)
     implementation rootProject.ext.miscDependencies.ffmpeg
 }

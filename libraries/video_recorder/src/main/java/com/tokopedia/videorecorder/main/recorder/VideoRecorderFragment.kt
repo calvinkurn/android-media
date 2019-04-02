@@ -56,10 +56,6 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        cameraView.mode = Mode.VIDEO
-        cameraView.addCameraListener(cameraListener())
-        cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER)
-
         //set max progress value
         progress.max = DURATION_MAX
 
@@ -78,8 +74,17 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
         }
     }
 
+    private fun cameraPrepared() {
+        cameraView.mode = Mode.VIDEO
+        cameraView.clearCameraListeners()
+        cameraView.addCameraListener(cameraListener())
+        cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER)
+    }
+
     override fun onResume() {
         super.onResume()
+        cameraPrepared()
+
         exceptionHandler {
             cameraView.open()
         }
