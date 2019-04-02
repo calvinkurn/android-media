@@ -74,7 +74,7 @@ public class AccessRequestFragment extends DialogFragment {
                 dismiss();
             }
             else
-               dismiss();
+                dismiss();
         }
     }
 
