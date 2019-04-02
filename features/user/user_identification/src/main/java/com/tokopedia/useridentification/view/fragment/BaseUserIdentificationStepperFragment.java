@@ -57,7 +57,7 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
         }
         if (getActivity() != null) {
             analytics = UserIdentificationAnalytics.createInstance();
-        }}
+        }    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
