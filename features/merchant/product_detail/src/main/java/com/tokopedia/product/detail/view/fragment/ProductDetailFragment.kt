@@ -993,7 +993,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
         activity?.let {
             startActivity(RatesEstimationDetailActivity.createIntent(it,
                 shopInfo!!.shopCore.domain, productInfo!!.basic.weight,
-                    productInfo!!.basic.weightUnit, productInfoViewModel.multiOrigin.origin))
+                    productInfo!!.basic.weightUnit,
+                    if (productInfoViewModel.multiOrigin.isFulfillment)
+                        productInfoViewModel.multiOrigin.origin else null))
         }
     }
 
