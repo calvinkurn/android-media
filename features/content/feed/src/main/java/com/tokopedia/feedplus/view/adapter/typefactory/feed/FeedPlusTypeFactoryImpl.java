@@ -72,6 +72,7 @@ import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -99,8 +100,10 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     private final GridPostAdapter.GridItemListener gridItemListener;
     private final VideoViewHolder.VideoViewListener videoViewListener;
     private final FeedAnalytics analytics;
+    private final UserSessionInterface userSession;
 
-    public FeedPlusTypeFactoryImpl(FeedPlusFragment context, FeedAnalytics analytics) {
+    public FeedPlusTypeFactoryImpl(FeedPlusFragment context, FeedAnalytics analytics,
+                                   UserSessionInterface userSession) {
         this.viewListener = context;
         this.topAdsItemClickListener = context;
         this.topAdsInfoClickListener = context;
@@ -118,6 +121,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         this.gridItemListener = context;
         this.videoViewListener = context;
         this.analytics = analytics;
+        this.userSession = userSession;
     }
 
     @Override
@@ -309,7 +313,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
                     youtubePostListener,
                     pollOptionListener,
                     gridItemListener,
-                    videoViewListener
+                    videoViewListener,
+                    userSession
             );
         }
         else if (type == FeedRecommendationViewHolder.Companion.getLAYOUT()) {

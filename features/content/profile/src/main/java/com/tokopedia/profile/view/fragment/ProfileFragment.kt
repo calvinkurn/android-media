@@ -89,6 +89,7 @@ import com.tokopedia.showcase.ShowCaseContentPosition
 import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.*
 import javax.inject.Inject
@@ -257,7 +258,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 this,
                 this,
                 this,
-                this)
+                this,
+                userSession)
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -352,13 +354,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onSuccessShouldChangeUsername(shouldChange: Boolean, link: String) {
         if (shouldChange) {
-            val usernameInputFragment = UsernameInputFragment()
+            val usernameInputFragment = UsernameInputFragment.createInstance(
+                    profileHeader?.affiliateName ?: ""
+            )
             usernameInputFragment.show(
                     childFragmentManager,
                     UsernameInputFragment::class.java.simpleName
             )
             usernameInputFragment.onDismissListener = {
-                if (usernameInputFragment.isSuccessRegister) {
+                if (usernameInputFragment.isSuccessRegister && !TextUtils.isEmpty(link)) {
                     doShare(link)
                     profilePreference.setShouldChangeUsername(false)
                 }
@@ -697,10 +701,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         onGoToKolComment(positionInFeed, id, false, "")
     }
 
-    override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, iamgeUrl: String) {
-        if (activity != null) {
+    override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String,
+                              url: String, iamgeUrl: String) {
+        activity?.let {
             profileRouter.shareFeed(
-                    activity!!,
+                    it,
                     id.toString(),
                     url,
                     title,
@@ -1203,12 +1208,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun shareLink(link: String) {
-        if (isOwner && profilePreference.shouldChangeUsername()) {
+        if (shouldChangeUsername()) {
             presenter.shouldChangeUsername(userSession.userId.toIntOrZero(), link)
         } else {
             doShare(link)
         }
     }
+
+    private fun shouldChangeUsername(): Boolean = isOwner && profilePreference.shouldChangeUsername()
 
     private fun doShare(link: String) {
         val shareBody = String.format(getString(R.string.profile_share_text), link)

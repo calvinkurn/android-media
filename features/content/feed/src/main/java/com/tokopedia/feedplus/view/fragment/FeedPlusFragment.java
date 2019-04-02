@@ -233,7 +233,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void initVar() {
-        FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this, analytics);
+        FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this, analytics, userSession);
         adapter = new FeedPlusAdapter(typeFactory);
         adapter.setOnLoadListener(totalCount -> {
             int size = adapter.getlist().size();

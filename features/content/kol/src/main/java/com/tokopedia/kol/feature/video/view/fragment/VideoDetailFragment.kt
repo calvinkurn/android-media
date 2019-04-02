@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.MediaController
 import android.widget.Toast
+import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -220,6 +221,14 @@ class VideoDetailFragment:
         videoView.setVideoURI(Uri.parse(url))
         videoView.setOnErrorListener(object : MediaPlayer.OnErrorListener{
             override fun onError(p0: MediaPlayer?, p1: Int, p2: Int): Boolean {
+
+                try {
+                    Crashlytics.logException(Throwable(String.format("%s - what : %s - extra : %s ",
+                            VideoDetailFragment::class.java.simpleName, p1.toString(), p2.toString())))
+                } catch (e: IllegalStateException) {
+                    e.printStackTrace()
+                }
+
                 when(p1) {
                     MediaPlayer.MEDIA_ERROR_UNKNOWN -> {
                         Toast.makeText(context, getString(R.string.error_unknown), Toast.LENGTH_SHORT).show()
