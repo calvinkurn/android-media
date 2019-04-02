@@ -278,7 +278,7 @@ public class SearchActivity extends DiscoveryActivity
     private void handleIntentSearch(Intent intent, SearchParameter searchParameter) {
         ProductViewModel productViewModel = intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
 
-        handleIntentActivityPaused();
+//        handleIntentActivityPaused();
 
         if (productViewModel != null) {
             handleIntentWithProductViewModel(productViewModel);
