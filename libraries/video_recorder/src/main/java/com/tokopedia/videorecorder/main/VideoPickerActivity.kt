@@ -5,11 +5,13 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Typeface
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
+import android.util.DisplayMetrics
 import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.TextView
@@ -141,8 +143,8 @@ open class VideoPickerActivity: BaseSimpleActivity(),
         supportActionBar?.title = getString(R.string.vidpick_title)
 
         //initial of adapter for viewPager and tabPicker
+        adapter = ViewPagerAdapter(supportFragmentManager)
         setupViewPager()
-        setupTabLayout()
 
         //remove recording result
         btnDeleteVideo.setOnClickListener { cancelVideo() }
@@ -152,7 +154,7 @@ open class VideoPickerActivity: BaseSimpleActivity(),
     }
 
     private fun setupViewPager() {
-        adapter = ViewPagerAdapter(supportFragmentManager)
+        adapter.destroyAllView()
         adapter = viewPagerAdapter()
         vpVideoPicker.adapter = adapter
         vpVideoPicker.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -163,6 +165,7 @@ open class VideoPickerActivity: BaseSimpleActivity(),
                 currentSelectedTab = position
             }
         })
+        setupTabLayout()
     }
 
     private fun setupTabLayout() {
@@ -206,9 +209,10 @@ open class VideoPickerActivity: BaseSimpleActivity(),
         FileUtils.deleteCacheDir()
     }
 
-    private fun playVideoPreview() {
+    private fun playVideoPreview(mediaPlayer: MediaPlayer) {
         if (videoPreview.isPlaying) return
         if (File(videoPath).exists()) {
+            resizeVideo(mediaPlayer.videoWidth, mediaPlayer.videoHeight)
             videoPreview.start()
         }
     }
@@ -216,6 +220,7 @@ open class VideoPickerActivity: BaseSimpleActivity(),
     private fun cancelVideo() {
         onVideoVisible()
         videoPreview.stopPlayback()
+        setupViewPager()
         if (!isVideoSourcePicker) {
             if (File(videoPath).exists()) {
                 FileUtils.deleteCacheDir()
@@ -280,13 +285,35 @@ open class VideoPickerActivity: BaseSimpleActivity(),
             videoPreview.setVideoURI(uriFile)
             videoPreview.setOnPreparedListener { mp ->
                 mp.isLooping = true //loop
-                playVideoPreview()
+                playVideoPreview(mp)
             }
         }
     }
 
+    private fun resizeVideo(mVideoWidth: Int, mVideoHeight: Int) {
+        var videoWidth = mVideoWidth
+        var videoHeight = mVideoHeight
+        val displaymetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displaymetrics)
+
+        val heightRatio = videoHeight.toFloat() / displaymetrics.widthPixels.toFloat()
+        val widthRatio = videoWidth.toFloat() / displaymetrics.heightPixels.toFloat()
+
+        if (videoWidth > videoHeight) {
+            videoWidth = Math.ceil((videoWidth.toFloat() * widthRatio).toDouble()).toInt()
+            videoHeight = Math.ceil((videoHeight.toFloat() * widthRatio).toDouble()).toInt()
+        } else {
+            videoWidth = Math.ceil((videoWidth.toFloat() * heightRatio).toDouble()).toInt()
+            videoHeight = Math.ceil((videoHeight.toFloat() * heightRatio).toDouble()).toInt()
+        }
+
+        videoPreview.setSize(videoWidth, videoHeight)
+        videoPreview.holder.setFixedSize(videoWidth, videoHeight)
+    }
+
     override fun onPreviewVideoVisible() {
         layoutPreview.show()
+        containerPager.hide()
         vpVideoPicker.hide()
         tabPicker.hide()
         btnDone.show()
@@ -299,6 +326,7 @@ open class VideoPickerActivity: BaseSimpleActivity(),
 
     override fun onVideoVisible() {
         layoutPreview.hide()
+        containerPager.show()
         vpVideoPicker.show()
         tabPicker.show()
         btnDone.hide()

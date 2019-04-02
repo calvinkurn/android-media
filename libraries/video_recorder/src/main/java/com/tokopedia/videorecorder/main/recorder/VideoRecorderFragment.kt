@@ -127,9 +127,9 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
         if (cameraView.isTakingVideo) {
             vwRecord.hide()
             progress.hide()
+            btnFlash.show()
             btnFlip.show()
-            btnFlash.visible(flashList.size > 0)
-            cameraView.stopVideo()
+            cameraView.close()
             timer.cancel()
         } else {
             vwRecord.show()
