@@ -6,14 +6,17 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
+import com.tokopedia.discovery.newdiscovery.domain.gql.SearchFilterProductGqlResponse;
 import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterV4UseCase;
@@ -91,7 +94,30 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
     @Override
     protected void getFilterFromNetwork(RequestParams requestParams) {
-        getDynamicFilterUseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
+        Subscriber<GraphqlResponse> subscriber = getFilterFromNetworkSubscriber();
+        GqlSearchHelper.requestDynamicFilter(context, requestParams, graphqlUseCase, subscriber);
+    }
+
+    private Subscriber<GraphqlResponse> getFilterFromNetworkSubscriber() {
+        return new DefaultSubscriber<GraphqlResponse>() {
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                getView().renderFailGetDynamicFilter();
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                SearchFilterProductGqlResponse searchFilterProductGqlResponse =
+                        graphqlResponse.getData(SearchFilterProductGqlResponse.class);
+
+                if (searchFilterProductGqlResponse != null) {
+                    DynamicFilterModel dynamicFilterModel = searchFilterProductGqlResponse.getDynamicFilterModel();
+
+                    getView().renderDynamicFilter(dynamicFilterModel);
+                }
+            }
+        };
     }
 
     @Override

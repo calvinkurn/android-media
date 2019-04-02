@@ -8,6 +8,8 @@ import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryPresenter;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.newdiscovery.domain.gql.SearchFilterProductGqlResponse;
 import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -63,6 +65,25 @@ public class GqlSearchHelper {
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
                 R.raw.gql_search_product), SearchProductGqlResponse.class, variables);
+
+        graphqlUseCase.clearRequest();
+        graphqlUseCase.setRequest(graphqlRequest);
+        graphqlUseCase.execute(subscriber);
+    }
+
+    public static void requestDynamicFilter(Context context,
+                                            RequestParams requestParams,
+                                            GraphqlUseCase graphqlUseCase,
+                                            Subscriber<GraphqlResponse> subscriber) {
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put(KEY_QUERY, requestParams.getString(SearchApiConst.Q, ""));
+        variables.put(KEY_PARAMS, UrlParamHelper.generateUrlParamString(requestParams.getParamsAllValueInString()));
+        variables.put(KEY_SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_PRODUCT);
+
+        GraphqlRequest graphqlRequest = new
+                GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.gql_search_filter_product), SearchFilterProductGqlResponse.class, variables);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.setRequest(graphqlRequest);
