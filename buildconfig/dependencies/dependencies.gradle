@@ -12,13 +12,8 @@ ext {
 
     supportLibraryVersion = '27.1.1'
     playServiceVersion = '11.0.4'
-<<<<<<< hotfix/hadiputra/rateest_fix_shop_city
-    butterKnifeVersion = '9.0.0-SNAPSHOT'
-    coroutineVersion = '1.0.0'
-=======
     butterKnifeVersion = '9.0.0'
-    coroutineVersion = '0.30.2'
->>>>>>> release_post_apollo
+    coroutineVersion = '1.0.0'
     dbFlowVersion = '3.0.1'
     retrofitVersion = '2.1.0'
     okHttpVersion = '3.8.1'
