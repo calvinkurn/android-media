@@ -500,6 +500,10 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                                             searchPassDataViewModel.flightPassengerViewModel.infant
                                     )
 
+                                    val newTotalPrice = actionCalculateCurrentTotalPrice(
+                                            t.departureTrip, t.returnTrip)
+                                    updateTotalPrice(newTotalPrice)
+
                                     view.setCartData(t)
 
                                     return flightAddToCartUseCase.createObservable(getRequestParams(price))
