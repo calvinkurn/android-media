@@ -696,18 +696,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String,
                               url: String, iamgeUrl: String) {
         activity?.let {
-            if (shouldChangeUsername()) {
-                presenter.shouldChangeUsername(userSession.userId.toIntOrZero())
-            } else {
-                profileRouter.shareFeed(
-                        it,
-                        id.toString(),
-                        url,
-                        title,
-                        iamgeUrl,
-                        description
-                )
-            }
+            profileRouter.shareFeed(
+                    it,
+                    id.toString(),
+                    url,
+                    title,
+                    iamgeUrl,
+                    description
+            )
         }
         profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
     }
