@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -196,16 +197,19 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void sendScreenAuthenticated(String screenName) {
+        if (TextUtils.isEmpty(screenName)) return;
         eventAuthenticate(null);
         sendScreen(screenName);
     }
 
     public void sendScreenAuthenticated(String screenName, Map<String, String> customDimension) {
+        if (TextUtils.isEmpty(screenName)) return;
         eventAuthenticate(customDimension);
         sendScreen(screenName, customDimension);
     }
 
     public void sendScreenAuthenticated(String screenName, String shopID, String shopType, String pageType, String productId) {
+        if (TextUtils.isEmpty(screenName)) return;
         Map<String, String> customDimension = new HashMap<>();
         customDimension.put(Authenticated.KEY_SHOP_ID_SELLER, shopID);
         customDimension.put(Authenticated.KEY_PAGE_TYPE, pageType);

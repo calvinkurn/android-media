@@ -1092,7 +1092,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onStart() {
         super.onStart();
-        HomePageTracking.sendScreen(getActivity(), getScreenName());
         sendScreen();
     }
 
