@@ -105,13 +105,12 @@ public class ExploreFragment
     private static final int ITEM_COUNT = 10;
     private static final int FULL_SPAN_COUNT = 2;
     private static final int SINGLE_SPAN_COUNT = 1;
-    private static final int LOGIN_CODE = 13;
-
 
     private static final int TIME_DEBOUNCE_MILIS = 500;
-    public static final int REQUEST_DETAIL_FILTER = 1234;
-    public static final int REQUEST_DETAIL_SORT = 2345;
-    public static final int REQUEST_CREATE_POST = 13;
+    private static final int REQUEST_DETAIL_FILTER = 1234;
+    private static final int REQUEST_DETAIL_SORT = 2345;
+    private static final int REQUEST_CREATE_POST = 1310;
+    private static final int LOGIN_CODE = 13;
 
     private ExploreAdapter adapter;
     private ExploreParams exploreParams;
