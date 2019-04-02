@@ -453,10 +453,10 @@ public class UserIdentificationAnalytics {
 
     public void eventClickTermsSuccessPage() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_TERMS_AND_CONDITION_SUCCESS_PAGE,
-                ""
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_TERMS_AND_CONDITION_SUCCESS_PAGE,
+                    ""
         ));
     }
 }
