@@ -1948,7 +1948,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onLogisticPromoChosen(CourierItemData courierData, int cartPosition) {
-
+        ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartPosition, courierData);
+        shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
     }
 
     @Override

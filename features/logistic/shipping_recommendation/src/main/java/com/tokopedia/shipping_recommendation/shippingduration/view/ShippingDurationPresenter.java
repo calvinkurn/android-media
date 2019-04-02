@@ -185,7 +185,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         result.setShipperProductId(promoModel.getShipperProductId());
         result.setServiceName(promoModel.getShipperDesc());
         result.setName(promoModel.getShipperName());
-        result.setPromoCode(promoModel.getPromoCode());
+        result.setLogPromoCode(promoModel.getPromoCode());
         return result;
     }
 

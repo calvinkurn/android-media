@@ -81,6 +81,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     // promo stacking
     private boolean hasPromoList;
+    private boolean hasLogisticPromo;
     private VoucherOrdersItemUiModel voucherOrdersItemUiModel;
 
     public ShipmentCartItemModel() {
@@ -130,6 +131,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         isBlackbox = in.readByte() != 0;
         addressId = in.readInt();
         hasPromoList = in.readByte() != 0;
+        hasLogisticPromo = in.readByte() != 0;
         voucherOrdersItemUiModel = in.readParcelable(VoucherOrdersItem.class.getClassLoader());
     }
 
@@ -178,6 +180,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (isBlackbox ? 1 : 0));
         dest.writeInt(addressId);
         dest.writeByte((byte) (hasPromoList ? 1 : 0));
+        dest.writeByte((byte) (hasLogisticPromo ? 1 : 0));
         dest.writeParcelable(voucherOrdersItemUiModel, flags);
     }
 
@@ -591,6 +594,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setVoucherOrdersItemUiModel(VoucherOrdersItemUiModel voucherOrdersItemUiModel) {
         this.voucherOrdersItemUiModel = voucherOrdersItemUiModel;
+    }
+
+    public boolean isHasLogisticPromo() {
+        return hasLogisticPromo;
+    }
+
+    public void setHasLogisticPromo(boolean hasLogisticPromo) {
+        this.hasLogisticPromo = hasLogisticPromo;
     }
 
     @Override

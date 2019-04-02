@@ -209,6 +209,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     // promostacking
     private TickerPromoStackingCheckoutView tickerPromoStackingCheckoutView;
+    private View llLogPromo;
+    private TextView tvLogPromoLabel;
+    private TextView tvLogPromoPrice;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -344,6 +347,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         // promostacking
         tickerPromoStackingCheckoutView = itemView.findViewById(R.id.voucher_merchant_holder_view);
+        llLogPromo = itemView.findViewById(R.id.layout_logistic_promo_stacking);
+        tvLogPromoLabel = itemView.findViewById(R.id.tv_logistic_promo_label);
+        tvLogPromoPrice = itemView.findViewById(R.id.tv_logistic_promo_price);
 
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
@@ -449,7 +455,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderShippingType(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, RatesDataConverter ratesDataConverter, ArrayList<ShowCaseObject> showCaseObjectList) {
-        if (shipmentCartItemModel.isUseCourierRecommendation()) {
+        if (shipmentCartItemModel.isHasLogisticPromo()) {
+            renderLogisticPromo(shipmentCartItemModel, recipientAddressModel);
+        } else if (shipmentCartItemModel.isUseCourierRecommendation()) {
             if (shipmentCartItemModel.getIsBlackbox()) {
                 renderCourierBlackbox(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(),
                         recipientAddressModel, shipmentCartItemModel.getShopShipmentList(), ratesDataConverter);
@@ -482,6 +490,42 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 );
             }
         }
+    }
+
+    private void renderLogisticPromo(ShipmentCartItemModel model, RecipientAddressModel address) {
+        RecipientAddressModel currentAddress;
+        if (address == null) {
+            currentAddress = model.getRecipientAddressModel();
+        } else {
+            currentAddress = address;
+        }
+        ShipmentDetailData detailData = model.getSelectedShipmentDetailData();
+
+        llShipmentContainer.setVisibility(View.GONE);
+        llShipmentBlackboxContainer.setVisibility(View.GONE);
+        llShipmentRecommendationContainer.setVisibility(View.VISIBLE);
+        tvChangeSelectedDuration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mActionListener.onChangeShippingDuration(model, currentAddress,
+                        model.getShopShipmentList(), getAdapterPosition());
+            }
+        });
+
+        tvTickerInfo.setVisibility(View.GONE);
+        llShipmentInfoTicker.setVisibility(View.GONE);
+        llSelectShipmentRecommendation.setVisibility(View.GONE);
+        llSelectedShipmentRecommendation.setVisibility(View.VISIBLE);
+        llShippingOptionsContainer.setVisibility(View.VISIBLE);
+        tvSelectedCourierRecommendation.setText(detailData.getSelectedCourier().getName());
+        tvSelectedDurationRecommendation.setText(detailData.getSelectedCourier().getServiceName());
+        // logistic promo has no price
+//        tvSelectedPriceRecommendation.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+//                detailData.getSelectedCourier().getShipperPrice(), false));
+        llCourierRecommendationStateLoading.setVisibility(View.GONE);
+        llLogPromo.setVisibility(View.VISIBLE);
+        tvLogPromoLabel.setText("using logistic promo");
+        tvLogPromoPrice.setText("-25000");
     }
 
     /*private void setMargin(int topMargin) {

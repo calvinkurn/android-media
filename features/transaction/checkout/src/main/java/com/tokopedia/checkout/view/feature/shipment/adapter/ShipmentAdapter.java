@@ -540,6 +540,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
                 }
             }
+            shipmentCartItemModel.setHasLogisticPromo(newCourierItemData.getLogPromoCode() != null);
             updateShipmentCostModel();
             checkDataForCheckout();
         }

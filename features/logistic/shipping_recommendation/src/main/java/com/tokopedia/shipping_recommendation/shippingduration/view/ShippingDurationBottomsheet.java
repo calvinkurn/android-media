@@ -353,6 +353,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
             public void onClick(View view) {
                 CourierItemData courierData = presenter.convertToCourierModel(data);
                 shippingDurationBottomsheetListener.onLogisticPromoChosen(courierData, mCartPosition);
+                tkpdDialog.dismiss();
+                dismiss();
             }
         });
         tkpdDialog.show();
