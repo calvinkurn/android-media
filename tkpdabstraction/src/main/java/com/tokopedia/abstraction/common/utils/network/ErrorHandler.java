@@ -15,7 +15,7 @@ import java.net.UnknownHostException;
 public class ErrorHandler {
 
     public static String getErrorMessage(final Context context, Throwable e) {
-        if(context == null){
+        if (context == null || e == null) {
             return "Terjadi kesalahan. Ulangi beberapa saat lagi";
         }
 

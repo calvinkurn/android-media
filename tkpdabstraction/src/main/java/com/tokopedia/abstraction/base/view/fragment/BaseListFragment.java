@@ -401,7 +401,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         snackBarRetry.show();
     }
 
-    private void hideSnackBarRetry() {
+    protected void hideSnackBarRetry() {
         if (snackBarRetry != null) {
             snackBarRetry.dismiss();
             snackBarRetry = null;

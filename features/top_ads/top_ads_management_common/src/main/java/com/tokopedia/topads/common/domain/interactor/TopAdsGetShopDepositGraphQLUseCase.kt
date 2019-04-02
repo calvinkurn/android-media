@@ -15,7 +15,7 @@ class TopAdsGetShopDepositGraphQLUseCase @Inject constructor(private val graphql
         val query = requestParams.getString(PARAM_QUERY, "")
         requestParams.clearValue(PARAM_QUERY)
 
-        val graphqlRequest = GraphqlRequest(query, DataDeposit.Response::class.java, requestParams.parameters)
+        val graphqlRequest = GraphqlRequest(query, DataDeposit.Response::class.java, requestParams.parameters, false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(null).flatMap { graphqlResponse ->
@@ -39,7 +39,7 @@ class TopAdsGetShopDepositGraphQLUseCase @Inject constructor(private val graphql
 
         @JvmStatic
         fun createGraphqlRequest(query: String, requestParams: RequestParams): GraphqlRequest {
-            return GraphqlRequest(query, DataDeposit.Response::class.java, requestParams.parameters)
+            return GraphqlRequest(query, DataDeposit.Response::class.java, requestParams.parameters, false)
         }
     }
 }

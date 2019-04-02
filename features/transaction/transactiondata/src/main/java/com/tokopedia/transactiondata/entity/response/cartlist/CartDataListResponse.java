@@ -28,28 +28,28 @@ public class CartDataListResponse {
     private int maxCharNote;
     @SerializedName("messages")
     @Expose
-    private Messages messages;
+    private Messages messages = new Messages();
     @SerializedName("promo_suggestion")
     @Expose
-    private PromoSuggestion promoSuggestion;
+    private PromoSuggestion promoSuggestion = new PromoSuggestion();
     @SerializedName("autoapply")
     @Expose
-    private AutoApply autoApply;
+    private AutoApply autoApply = new AutoApply();
     @SerializedName("default_promo_dialog_tab")
     @Expose
-    private String defaultPromoDialogTab;
+    private String defaultPromoDialogTab = "";
     @SerializedName("shop_group")
     @Expose
     private List<ShopGroup> shopGroups = new ArrayList<>();
     @SerializedName("donation")
     @Expose
-    private Donation donation;
+    private Donation donation = new Donation();
     @SerializedName("autoapply_v2")
     @Expose
-    private AutoapplyV2 autoapplyV2;
+    private AutoapplyV2 autoapplyV2 = new AutoapplyV2();
     @SerializedName("autoapply_stack")
     @Expose
-    private AutoapplyStack autoapplyStack;
+    private AutoapplyStack autoapplyStack = new AutoapplyStack();
 
     public AutoapplyStack getAutoapplyStack() {
         return autoapplyStack;

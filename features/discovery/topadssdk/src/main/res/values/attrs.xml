@@ -32,6 +32,6 @@
         <attr name="ads_offset" format="dimension" />
     </declare-styleable>
     <declare-styleable name="ImpressedImageView">
-        <attr name="corner_radius" format="float" />
+        <attr name="corner_radius" format="dimension" />
     </declare-styleable>
 </resources>

@@ -39,6 +39,8 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private CheckBox cbSelectShop;
     private TextView tvShopName;
     private ImageView imgShopBadge;
+    private ImageView imgFulfillment;
+    private TextView tvFulfillDistrict;
     private RecyclerView rvCartItem;
     private LinearLayout layoutError;
     private TextView tvErrorTitle;
@@ -46,7 +48,6 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private LinearLayout layoutWarning;
     private TextView tvWarningTitle;
     private TextView tvWarningDescription;
-
 
     private CartAdapter.ActionListener cartAdapterListener;
     private CartItemAdapter.ActionListener cartItemAdapterListener;
@@ -79,6 +80,8 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         layoutWarning = itemView.findViewById(R.id.layout_warning);
         tvWarningTitle = itemView.findViewById(R.id.tv_warning_title);
         tvWarningDescription = itemView.findViewById(R.id.tv_warning_description);
+        imgFulfillment = itemView.findViewById(R.id.img_shop_fulfill);
+        tvFulfillDistrict = itemView.findViewById(R.id.tv_fulfill_district);
         tickerPromoStackingCheckoutView = itemView.findViewById(R.id.voucher_merchant_holder_view);
         this.actionListener = actionListener;
     }
@@ -121,6 +124,15 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         cbSelectShop.setEnabled(!cartShopHolderData.getShopGroupData().isError());
         cbSelectShop.setChecked(cartShopHolderData.isAllSelected());
         cbSelectShop.setOnClickListener(cbSelectShopClickListener(cartShopHolderData));
+
+        if (cartShopHolderData.getShopGroupData().isFulfillment()) {
+            imgFulfillment.setVisibility(View.VISIBLE);
+            tvFulfillDistrict.setVisibility(View.VISIBLE);
+            tvFulfillDistrict.setText(cartShopHolderData.getShopGroupData().getFulfillmentName());
+        } else {
+            imgFulfillment.setVisibility(View.GONE);
+            tvFulfillDistrict.setVisibility(View.GONE);
+        }
 
     }
 
@@ -206,6 +218,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             tickerPromoStackingCheckoutView.setVisibility(View.GONE);
         }
     }
+
 
     private void renderErrorItemHeader(CartShopHolderData data) {
         if (data.getShopGroupData().isError()) {

@@ -1,5 +1,8 @@
 package com.tokopedia.transactiondata.entity.request;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -7,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * @author anggaprasetiyo on 05/03/18.
  */
 
-public class ProductDataCheckoutRequest {
+public class ProductDataCheckoutRequest implements Parcelable {
 
     @SerializedName("product_id")
     @Expose
@@ -54,6 +57,62 @@ public class ProductDataCheckoutRequest {
         cartId = builder.cartId;
         productNotes = builder.productNotes;
     }
+
+    protected ProductDataCheckoutRequest(Parcel in) {
+        productId = in.readInt();
+        isPurchaseProtection = in.readByte() != 0;
+        productQuantity = in.readInt();
+        productNotes = in.readString();
+        productName = in.readString();
+        productPrice = in.readString();
+        productBrand = in.readString();
+        productCategory = in.readString();
+        productVariant = in.readString();
+        productShopId = in.readString();
+        productShopType = in.readString();
+        productShopName = in.readString();
+        productCategoryId = in.readString();
+        productListName = in.readString();
+        productAttribution = in.readString();
+        cartId = in.readLong();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(productId);
+        dest.writeByte((byte) (isPurchaseProtection ? 1 : 0));
+        dest.writeInt(productQuantity);
+        dest.writeString(productNotes);
+        dest.writeString(productName);
+        dest.writeString(productPrice);
+        dest.writeString(productBrand);
+        dest.writeString(productCategory);
+        dest.writeString(productVariant);
+        dest.writeString(productShopId);
+        dest.writeString(productShopType);
+        dest.writeString(productShopName);
+        dest.writeString(productCategoryId);
+        dest.writeString(productListName);
+        dest.writeString(productAttribution);
+        dest.writeLong(cartId);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ProductDataCheckoutRequest> CREATOR = new Creator<ProductDataCheckoutRequest>() {
+        @Override
+        public ProductDataCheckoutRequest createFromParcel(Parcel in) {
+            return new ProductDataCheckoutRequest(in);
+        }
+
+        @Override
+        public ProductDataCheckoutRequest[] newArray(int size) {
+            return new ProductDataCheckoutRequest[size];
+        }
+    };
 
     public int getProductId() {
         return productId;

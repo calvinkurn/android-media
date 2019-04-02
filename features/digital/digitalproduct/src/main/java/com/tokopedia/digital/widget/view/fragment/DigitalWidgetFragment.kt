@@ -10,36 +10,34 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
-import com.tkpd.library.utils.CommonUtils
-import com.tkpd.library.utils.LocalCacheHandler
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.core.`var`.TkpdCache
-import com.tokopedia.core.database.manager.GlobalCacheManager
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.digital.R
-import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService
-import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService
-import com.tokopedia.digital.common.data.source.CategoryListDataSource
-import com.tokopedia.digital.common.data.source.StatusDataSource
+import com.tokopedia.digital.product.di.DigitalProductComponentInstance
 import com.tokopedia.digital.product.view.compoundview.DigitalWrapContentViewPager
-import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository
-import com.tokopedia.digital.widget.data.source.RecommendationListDataSource
-import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetUseCase
 import com.tokopedia.digital.widget.view.adapter.RechargeViewPagerAdapter
 import com.tokopedia.digital.widget.view.model.category.Category
-import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper
-import com.tokopedia.digital.widget.view.model.mapper.StatusMapper
 import com.tokopedia.digital.widget.view.presenter.DigitalWidgetContract
 import com.tokopedia.digital.widget.view.presenter.DigitalWidgetPresenter
+import com.tokopedia.user.session.UserSession
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Created by Rizky on 15/11/18.
  */
 class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
+    val WIDGET_RECHARGE_TAB_LAST_SELECTED = "WIDGET_RECHARGE_TAB_LAST_SELECTED"
 
     private lateinit var cacheHandler: LocalCacheHandler
     private var rechargeViewPagerAdapter: RechargeViewPagerAdapter? = null
-    private lateinit var digitalWidgetPresenter: DigitalWidgetPresenter
+
+    @Inject
+    lateinit var userSession: UserSession
+
+    @Inject
+    lateinit var digitalWidgetPresenter: DigitalWidgetPresenter
 
     private lateinit var tab_layout_widget: TabLayout
     private lateinit var view_pager_widget: DigitalWrapContentViewPager
@@ -75,15 +73,12 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
 
             digitalWidgetPresenter.fetchDataRechargeCategory()
         }
-
-        digitalWidgetPresenter.attachView(this)
-
         return rootview
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        digitalWidgetPresenter.attachView(this)
         digitalWidgetPresenter.fetchDataRechargeCategory()
     }
 
@@ -92,31 +87,9 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
     }
 
     override fun initInjector() {
-        cacheHandler = LocalCacheHandler(activity, TkpdCache.Key.WIDGET_RECHARGE_TAB_LAST_SELECTED)
-
-        val digitalEndpointService = DigitalEndpointService()
-        val digitalGqlApiService = DigitalGqlApiService()
-
-        val statusDataSource = StatusDataSource(digitalEndpointService,
-                GlobalCacheManager(),
-                StatusMapper())
-
-        val categoryListDataSource = CategoryListDataSource(digitalEndpointService,
-                GlobalCacheManager(),
-                CategoryMapper())
-
-        val recommendationListDataSource = RecommendationListDataSource(
-                digitalGqlApiService, context
-        )
-
-        val digitalWidgetRepository = DigitalWidgetRepository(
-                statusDataSource, categoryListDataSource, recommendationListDataSource
-        )
-
-        val digitalWidgetUseCase = DigitalWidgetUseCase(context,
-                digitalWidgetRepository)
-
-        digitalWidgetPresenter = DigitalWidgetPresenter(digitalWidgetUseCase)
+        cacheHandler = LocalCacheHandler(activity, WIDGET_RECHARGE_TAB_LAST_SELECTED)
+        DigitalProductComponentInstance.getDigitalProductComponent(activity!!.application)
+                .inject(this)
     }
 
     override fun renderDataRechargeCategory(rechargeCategory: List<Category>) {
@@ -177,7 +150,7 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
             val tv = ((tab_layout_widget.getChildAt(0) as LinearLayout)
                     .getChildAt(positionRecharge) as LinearLayout).getChildAt(1) as TextView
             tv.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    context?.resources?.let { ResourcesCompat.getDrawable(it, R.drawable.recharge_circle, null) }, null
+                    context?.resources?.let { ResourcesCompat.getDrawable(it, R.drawable.ic_digital_recharge_circle, null) }, null
             )
         }
     }
@@ -211,7 +184,7 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
     }
 
     private fun setTabSelected(categorySize: Int) {
-        val positionTab = cacheHandler.getInt(TkpdCache.Key.WIDGET_RECHARGE_TAB_LAST_SELECTED)!!
+        val positionTab = cacheHandler.getInt(WIDGET_RECHARGE_TAB_LAST_SELECTED)!!
         if (positionTab != -1 && positionTab < categorySize) {
             view_pager_widget.postDelayed({ view_pager_widget.currentItem = positionTab }, 300)
             tab_layout_widget.getTabAt(positionTab)!!.select()
@@ -221,9 +194,7 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
     }
 
     private fun hideKeyboard(v: View) {
-        CommonUtils.hideKeyboard(
-                com.tokopedia.abstraction.common.utils.view.CommonUtils.getActivity(context),
-                v)
+        KeyboardHandler.hideSoftKeyboard(activity)
     }
 
     override fun onDestroy() {

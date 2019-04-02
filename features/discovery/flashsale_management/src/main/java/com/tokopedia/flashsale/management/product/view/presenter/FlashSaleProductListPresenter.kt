@@ -1,12 +1,13 @@
 package com.tokopedia.flashsale.management.product.view.presenter
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.flashsale.management.data.FlashSaleConstant
 import com.tokopedia.flashsale.management.data.campaignlist.Criteria
 import com.tokopedia.flashsale.management.common.data.SellerStatus
 import com.tokopedia.flashsale.management.product.data.*
 import com.tokopedia.flashsale.management.product.domain.usecase.*
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import kotlinx.coroutines.experimental.*
 import java.lang.NullPointerException
 import java.lang.RuntimeException
@@ -20,7 +21,7 @@ class FlashSaleProductListPresenter @Inject constructor(val getSubmissionFlashSa
                                                         private val sellerStatusUseCase: GraphqlUseCase<SellerStatus.Response>,
                                                         val getFlashSaleTncUseCase: GetFlashSaleTncUseCase,
                                                         val submitProductUseCase: SubmitProductUseCase,
-                                                        val userSession: UserSession) {
+                                                        val userSession: UserSessionInterface) {
 
     protected var getProductListJob: Job = Job()
 

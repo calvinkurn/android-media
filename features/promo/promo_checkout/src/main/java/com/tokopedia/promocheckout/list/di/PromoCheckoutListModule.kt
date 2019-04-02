@@ -3,10 +3,10 @@ package com.tokopedia.promocheckout.list.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutRouter
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier
+import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplacePresenter
@@ -22,7 +22,7 @@ class PromoCheckoutListModule {
     fun providePresenter() : PromoCheckoutListPresenter {
         return PromoCheckoutListPresenter(GraphqlUseCase())
     }
-    
+
     @PromoCheckoutListScope
     @Provides
     fun provideMarketplacePresenter(@PromoCheckoutQualifier checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase, checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper) : PromoCheckoutListMarketplacePresenter {
@@ -32,10 +32,6 @@ class PromoCheckoutListModule {
     @PromoCheckoutListScope
     @Provides
     fun provideTrackingPromo(@ApplicationContext context: Context) : TrackingPromoCheckoutUtil{
-        if(context is TrackingPromoCheckoutRouter){
-            return TrackingPromoCheckoutUtil(context)
-        }else{
-            return TrackingPromoCheckoutUtil(null)
-        }
+        return TrackingPromoCheckoutUtil()
     }
 }

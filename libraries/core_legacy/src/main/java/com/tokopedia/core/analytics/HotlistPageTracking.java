@@ -3,8 +3,10 @@ package com.tokopedia.core.analytics;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.gcm.utils.RouterUtils;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +19,7 @@ import java.util.Map;
 public class HotlistPageTracking extends TrackingUtils {
 
     public static void eventEnhance(Context context, Map<String, Object> dataLayer) {
-        getGTMEngine(context).clearEnhanceEcommerce();
-        getGTMEngine(context).eventTrackingEnhancedEcommerce(dataLayer);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(dataLayer);
     }
 
     public static void eventHotlistSort(Context context, String sortValue) {
@@ -63,6 +64,28 @@ public class HotlistPageTracking extends TrackingUtils {
                 "click category tagging",
                 url
         ).getEvent());
+    }
+
+    public static void clickTnCButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        "event", "clickHotlist",
+                        "eventCategory", "hotlist page",
+                        "eventAction", "hotlist promo click syarat ketentuan",
+                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
+                )
+        );
+    }
+
+    public static void clickCopyButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        "event", "clickHotlist",
+                        "eventCategory", "hotlist page",
+                        "eventAction", "hotlist promo click salin kode",
+                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
+                )
+        );
     }
 
     public static void eventHotlistPromoImpression(Context context, String hotlistTitle, String title, String voucherCode) {

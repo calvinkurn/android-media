@@ -29,7 +29,9 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     private SharedPreferences sharedPrefs;
 
     public FirebaseRemoteConfigImpl(Context context) {
-        this.firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        try {
+            this.firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        } catch (Exception ignored) { } // FirebaseApp is not intialized, ignoring the error and handle it with default value
 
         if(GlobalConfig.isAllowDebuggingTools() && context != null) {
             this.sharedPrefs = context.getSharedPreferences(CACHE_NAME, Context.MODE_PRIVATE);
@@ -111,7 +113,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     public String getString(String key, String defaultValue) {
         if (isDebug()) {
             String cacheValue = sharedPrefs.getString(key, defaultValue);
-            if (!cacheValue.equalsIgnoreCase(defaultValue) && !cacheValue.isEmpty()) {
+            if (!cacheValue.isEmpty() && !cacheValue.equalsIgnoreCase(defaultValue)) {
                 return cacheValue;
             }
         }

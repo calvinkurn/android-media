@@ -57,7 +57,7 @@ public class GetTravelPassengersUseCase extends UseCase<List<TravelPassenger>> {
                     String query = GraphqlHelper.loadRawString(context.getResources(), R.raw.query_travel_get_passenger);
 
                     if (!TextUtils.isEmpty(query)) {
-                        GraphqlRequest request = new GraphqlRequest(query, ResponseTravelPassengerList.class);
+                        GraphqlRequest request = new GraphqlRequest(query, ResponseTravelPassengerList.class, false);
                         graphqlUseCase.clearRequest();
                         graphqlUseCase.addRequest(request);
                         return graphqlUseCase.createObservable(null);

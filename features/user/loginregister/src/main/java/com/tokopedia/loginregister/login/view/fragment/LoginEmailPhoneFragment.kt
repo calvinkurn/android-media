@@ -68,6 +68,7 @@ import com.tokopedia.sessioncommon.data.model.SecurityPojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
+import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
 import java.util.*
@@ -183,6 +184,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
+    override fun trackErrorLoginEmail() {
+        analytics.trackClickOnLoginButtonError()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         menu!!.add(Menu.NONE, ID_ACTION_REGISTER, 0, "")
         val menuItem = menu.findItem(ID_ACTION_REGISTER)
@@ -276,6 +281,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     emailPhoneEditText.setText(email)
                     passwordEditText.setText(pw)
                     presenter.login(email, pw)
+                    activity?.let {
+                        analytics.eventClickLoginButton(it.applicationContext)
+                    }
                 }
                 else -> showSmartLock()
             }
@@ -332,7 +340,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_EMAIL
                 presenter.login(emailPhoneEditText.text.toString().trim(),
                         passwordEditText.text.toString())
-                KeyboardHandler.hideSoftKeyboard(activity)
+                activity?.let {
+                    analytics.eventClickLoginButton(it.applicationContext)
+                    KeyboardHandler.hideSoftKeyboard(it)
+                }
                 performanceMonitoring = PerformanceMonitoring.start(LOGIN_SUBMIT_TRACE)
                 true
             } else {
@@ -620,19 +631,18 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onSuccessLoginSosmed(loginMethod: String?) {
         dismissLoadingLogin()
 
-        analytics.eventSuccessLoginSosmed(loginMethod)
-        if (activity != null) {
-            (activity!!.applicationContext as LoginRegisterRouter).setMoEUserAttributesLogin(userSession.userId,
-                    userSession.name,
-                    userSession.email,
-                    userSession.phoneNumber,
-                    userSession.isGoldMerchant,
-                    userSession.shopName,
-                    userSession.shopId,
-                    userSession.hasShop(),
-                    loginMethod
-            )
-        }
+        analytics.trackEventSuccessLoginSosmed(loginMethod)
+        TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
+            userSession.userId,
+            userSession.name,
+            userSession.email,
+            userSession.phoneNumber,
+            userSession.isGoldMerchant,
+            userSession.shopName,
+            userSession.shopId,
+            userSession.hasShop(),
+            loginMethod
+        )
         onSuccessLogin()
     }
 
@@ -640,23 +650,25 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         actionLoginMethod = "phone"
         dismissLoadingLogin()
 
+        analytics.trackLoginPhoneNumberSuccess()
         analytics.eventSuccessLogin(actionLoginMethod)
-        if (activity != null) {
-            (activity!!.applicationContext as LoginRegisterRouter).setMoEUserAttributesLogin(userSession.userId,
-                    userSession.name,
-                    userSession.email,
-                    userSession.phoneNumber,
-                    userSession.isGoldMerchant,
-                    userSession.shopName,
-                    userSession.shopId,
-                    userSession.hasShop(),
-                    actionLoginMethod
-            )
-        }
+
+        TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
+            userSession.userId,
+            userSession.name,
+            userSession.email,
+            userSession.phoneNumber,
+            userSession.isGoldMerchant,
+            userSession.shopName,
+            userSession.shopId,
+            userSession.hasShop(),
+            actionLoginMethod
+        )
         onSuccessLogin()
     }
 
     override fun onErrorLoginSosmed(loginMethodName: String, errorMessage: String) {
+        analytics.trackEventFailedLoginSosmed(loginMethodName)
         onErrorLogin(errorMessage)
     }
 
@@ -666,7 +678,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 && activity!!.intent.getBooleanExtra(IS_FROM_REGISTER, false))
     }
 
+    override fun trackSuccessValidate() {
+        analytics.trackClickOnNextSuccess()
+    }
+
     override fun onErrorValidateRegister(throwable: Throwable) {
+        analytics.trackClickOnNextFail()
         dismissLoadingLogin()
         val message = ErrorHandlerSession.getErrorMessage(context, throwable)
         partialRegisterInputView.onErrorValidate(message)
@@ -678,6 +695,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun goToLoginPhoneVerifyPage(phoneNumber: String) {
+        analytics.trackLoginPhoneNumber()
         activity?.let {
             val intent = (it.applicationContext as LoginRegisterPhoneRouter).getTokoCashOtpIntent(
                     it, phoneNumber, true, RequestOtpUseCase.MODE_SMS
@@ -705,9 +723,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         dismissLoadingLogin()
         partialRegisterInputView.showLoginEmailView(email)
         partialActionButton.setOnClickListener {
-            analytics.trackClickOnLoginButton()
-            KeyboardHandler.hideSoftKeyboard(activity)
             presenter.login(email, passwordEditText.text.toString())
+            activity?.let {
+                analytics.eventClickLoginButton(it.applicationContext)
+                KeyboardHandler.hideSoftKeyboard(it)
+            }
         }
     }
 
@@ -782,18 +802,18 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onSuccessLoginEmail() {
         dismissLoadingLogin()
         analytics.eventSuccessLoginEmail()
-        if (activity != null) {
-            (activity!!.applicationContext as LoginRegisterRouter).setMoEUserAttributesLogin(userSession.userId,
-                    userSession.name,
-                    userSession.email,
-                    userSession.phoneNumber,
-                    userSession.isGoldMerchant,
-                    userSession.shopName,
-                    userSession.shopId,
-                    userSession.hasShop(),
-                    LoginRegisterAnalytics.LABEL_EMAIL
-            )
-        }
+        analytics.trackClickOnLoginButtonSuccess()
+        TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
+            userSession.userId,
+            userSession.name,
+            userSession.email,
+            userSession.phoneNumber,
+            userSession.isGoldMerchant,
+            userSession.shopName,
+            userSession.shopId,
+            userSession.hasShop(),
+            LoginRegisterAnalytics.LABEL_EMAIL
+        )
 
         onSuccessLogin()
     }
@@ -831,6 +851,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 emailPhoneEditText.setSelection(emailPhoneEditText.text.length)
                 presenter.login(data.extras!!.getString(SmartLockActivity.USERNAME),
                         data.extras!!.getString(SmartLockActivity.PASSWORD))
+                activity?.let {
+                    analytics.eventClickLoginButton(it.applicationContext)
+                }
+            } else if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) run {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+                handleGoogleSignInResult(task)
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
                 onSuccessLogin()
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
@@ -876,6 +902,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 onSuccessLoginPhoneNumber()
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
                 onSuccessLoginPhoneNumber()
+            } else if (requestCode == REQUEST_LOGIN_PHONE
+                    || requestCode == REQUEST_CHOOSE_ACCOUNT) {
+                analytics.trackLoginPhoneNumberFailed()
+                dismissLoadingLogin()
             } else {
                 dismissLoadingLogin()
                 super.onActivityResult(requestCode, resultCode, data)

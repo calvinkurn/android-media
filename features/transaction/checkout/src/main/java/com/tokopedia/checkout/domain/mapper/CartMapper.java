@@ -99,10 +99,14 @@ public class CartMapper implements ICartMapper {
             shopGroupData.setShopType(generateShopType(shopGroup.getShop()));
             shopGroupData.setGoldMerchant(shopGroup.getShop().getGoldMerchant().isGoldBadge());
             shopGroupData.setOfficialStore(shopGroup.getShop().getIsOfficial() == 1);
+            shopGroupData.setFulfillment(shopGroup.isFulFillment());
             if (shopGroup.getShop().getIsOfficial() == 1) {
                 shopGroupData.setShopBadge(shopGroup.getShop().getOfficialStore().getOsLogoUrl());
             } else if (shopGroup.getShop().getGoldMerchant().isGoldBadge()) {
                 shopGroupData.setShopBadge(shopGroup.getShop().getGoldMerchant().getGoldMerchantLogoUrl());
+            }
+            if (shopGroup.getWarehouse() != null) {
+                shopGroupData.setFulfillmentName(shopGroup.getWarehouse().getCityName());
             }
             shopGroupData.setCartString(shopGroup.getCartString());
             shopGroupData.setHasPromoList(shopGroup.getHasPromoList());

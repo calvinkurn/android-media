@@ -88,6 +88,15 @@ public class CouponValueEntity extends BaseItem {
     @SerializedName("swipe")
     private CouponSwipeDetail swipe;
 
+    @SerializedName("isStacked")
+    private boolean isStacked;
+
+    @SerializedName("isNewCoupon")
+    private boolean isNewCoupon;
+
+    @SerializedName("stackID")
+    private String stackId;
+
     public CouponSwipeDetail getSwipe() {
         return swipe;
     }

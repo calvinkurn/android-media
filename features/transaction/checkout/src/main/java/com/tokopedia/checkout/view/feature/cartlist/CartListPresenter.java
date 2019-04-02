@@ -79,6 +79,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -796,6 +797,7 @@ public class CartListPresenter implements ICartListPresenter {
                 e.printStackTrace();
                 view.renderLoadGetCartDataFinish();
                 handleErrorinitCartList(e);
+                view.stopTrace();
             }
 
             @Override
@@ -803,9 +805,11 @@ public class CartListPresenter implements ICartListPresenter {
                 CartListPresenter.this.cartListData = cartListData;
                 view.renderLoadGetCartDataFinish();
                 if (cartListData.getShopGroupDataList().isEmpty()) {
+                    view.stopTrace();
                     view.renderEmptyCartData(cartListData);
                 } else {
                     view.renderInitialGetCartListDataSuccess(cartListData);
+                    view.stopTrace();
                 }
             }
         };
@@ -1251,7 +1255,7 @@ public class CartListPresenter implements ICartListPresenter {
                                 if (!BuildConfig.DEBUG) {
                                     Crashlytics.logException(exception);
                                 }
-                                throw exception;
+                                return Unit.INSTANCE;
                             });
 
                             resultSuccess = jsonObject.getJSONObject(CancelAutoApplyCouponUseCase.RESPONSE_DATA)

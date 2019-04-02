@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
@@ -37,8 +36,6 @@ public interface ShopComponent {
     ShopApi getShopApi();
 
     ShopWSApi ShopWSApi();
-
-    UserSession getUserSession();
 
     AbstractionRouter getAbstractionRouter();
 

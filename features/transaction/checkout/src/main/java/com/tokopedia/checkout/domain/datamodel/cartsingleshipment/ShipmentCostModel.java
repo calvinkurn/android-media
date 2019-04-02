@@ -23,6 +23,8 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
     private double promoPrice;
     private double donation;
     private String promoMessage;
+    private double emasPrice;
+    private double tradeInPrice;
     private int totalPromoStackAmount;
     private String totalPromoStackAmountStr;
 
@@ -122,6 +124,22 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         this.purchaseProtectionFee = purchaseProtectionFee;
     }
 
+    public double getEmasPrice() {
+        return emasPrice;
+    }
+
+    public void setEmasPrice(double emasPrice) {
+        this.emasPrice = emasPrice;
+    }
+
+    public double getTradeInPrice() {
+        return tradeInPrice;
+    }
+
+    public void setTradeInPrice(double tradeInPrice) {
+        this.tradeInPrice = tradeInPrice;
+    }
+
     public int getTotalPromoStackAmount() {
         return totalPromoStackAmount;
     }
@@ -155,6 +173,8 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         dest.writeString(this.promoMessage);
         dest.writeDouble(this.additionalFee);
         dest.writeDouble(this.donation);
+        dest.writeDouble(this.emasPrice);
+        dest.writeDouble(this.tradeInPrice);
         dest.writeInt(this.totalPromoStackAmount);
     }
 
@@ -172,6 +192,8 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         this.promoMessage = in.readString();
         this.additionalFee = in.readDouble();
         this.donation = in.readDouble();
+        this.emasPrice = in.readDouble();
+        this.tradeInPrice = in.readDouble();
         this.totalPromoStackAmount = in.readInt();
     }
 

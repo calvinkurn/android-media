@@ -23,7 +23,7 @@ class ChangeChatBlockSettingUseCase @Inject constructor(
     fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(resources, R.raw.chatsettings)
         val graphqlRequest = GraphqlRequest(query,
-                ChangeChatBlockPojo::class.java, requestParams)
+                ChangeChatBlockPojo::class.java, requestParams, false)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

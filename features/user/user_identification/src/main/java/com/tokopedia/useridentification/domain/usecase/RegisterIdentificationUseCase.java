@@ -40,16 +40,19 @@ public class RegisterIdentificationUseCase {
                 .mutation_register_kyc);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(query,
-                RegisterIdentificationPojo.class, params.getParameters());
+                RegisterIdentificationPojo.class, params.getParameters(), false);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
         return graphqlUseCase.createObservable(params);
     }
 
-    public static RequestParams getRequestParam() {
+    public static RequestParams getRequestParam(int projectid) {
         RequestParams param = RequestParams.create();
-        param.putInt(PROJECT_ID, KYCConstant.KYC_PROJECT_ID);
+        if (projectid > 0)
+            param.putInt(PROJECT_ID, projectid);
+        else
+            param.putInt(PROJECT_ID, KYCConstant.KYC_PROJECT_ID);
         return param;
     }
 

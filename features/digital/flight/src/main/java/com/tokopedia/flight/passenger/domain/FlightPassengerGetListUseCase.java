@@ -4,7 +4,6 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewMod
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.passenger.domain.model.ListPassengerViewModelMapper;
-import com.tokopedia.flight_dbflow.FlightPassengerDB;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -36,9 +35,10 @@ public class FlightPassengerGetListUseCase extends UseCase<List<FlightBookingPas
     @Override
     public Observable<List<FlightBookingPassengerViewModel>> createObservable(RequestParams requestParams) {
         return flightRepository.getPassengerList(requestParams.getString(PARAM_PASSENGER_ID, DEFAULT_STRING_VALUE))
-                .flatMap((Func1<List<FlightPassengerDB>, Observable<List<FlightBookingPassengerViewModel>>>) flightPassengerDbs -> Observable.just(listPassengerViewModelMapper.transform(flightPassengerDbs)))
-                .flatMap((Func1<List<FlightBookingPassengerViewModel>, Observable<List<FlightBookingPassengerViewModel>>>) flightBookingPassengerViewModelList -> Observable.from(flightBookingPassengerViewModelList)
-                        .flatMap((Func1<FlightBookingPassengerViewModel, Observable<FlightBookingPassengerViewModel>>) this::getPassportData)
+
+                .flatMap(flightPassengerDbs -> Observable.just(listPassengerViewModelMapper.transform(flightPassengerDbs)))
+                .flatMap(flightBookingPassengerViewModelList -> Observable.from(flightBookingPassengerViewModelList)
+                        .flatMap(this::getPassportData)
                         .toList());
     }
 
@@ -58,7 +58,8 @@ public class FlightPassengerGetListUseCase extends UseCase<List<FlightBookingPas
         return Observable.just(flightBookingPassengerViewModel)
                 .flatMap((Func1<FlightBookingPassengerViewModel, Observable<FlightBookingPassengerViewModel>>) flightBookingPassengerViewModel1 -> {
                     if (flightBookingPassengerViewModel1.getPassportNationality() != null) {
-                        return Observable.zip(Observable.just(flightBookingPassengerViewModel1), flightRepository.getAirportByCountryId(flightBookingPassengerViewModel1.getPassportNationality().getCountryId()),
+                        return Observable.zip(Observable.just(flightBookingPassengerViewModel1),
+                                flightRepository.getAirportByCountryId(flightBookingPassengerViewModel1.getPassportNationality().getCountryId()),
                                 (flightBookingPassengerViewModel11, nationality) -> {
                                     FlightBookingPhoneCodeViewModel passportNationality = new FlightBookingPhoneCodeViewModel();
                                     passportNationality.setCountryId(nationality.getCountryId());

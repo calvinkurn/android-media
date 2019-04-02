@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.oms.R;
 
 import java.io.ByteArrayOutputStream;
@@ -202,7 +203,11 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
         });
 
         webview.setWebChromeClient(webChromeWebviewClient);
-        webview.getSettings().setJavaScriptEnabled(true);
+        if (webview.getSettings() != null) {
+            String userAgent = String.format("%s [%s/%s]", webview.getSettings().getUserAgentString(), getString(R.string.app_android), GlobalConfig.VERSION_NAME);
+            webview.getSettings().setUserAgentString(userAgent);
+            webview.getSettings().setJavaScriptEnabled(true);
+        }
     }
 
     @Override

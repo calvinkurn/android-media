@@ -6,6 +6,10 @@ import android.graphics.BitmapFactory;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.gamification.R;
+import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
+import com.tokopedia.gamification.data.entity.CrackButtonEntity;
+import com.tokopedia.gamification.data.entity.CrackResultEntity;
+import com.tokopedia.gamification.data.entity.ResultStatusEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +18,14 @@ import java.util.List;
  * Created by hendry on 12/04/18.
  */
 
-public class GeneralErrorCrackResult extends CrackResult {
+public class GeneralErrorCrackResult extends CrackResultEntity {
 
     public GeneralErrorCrackResult(Context context) {
 
         setBenefitLabel(context.getString(R.string.error_reward_title));
 
-        List<CrackBenefit> crackBenefits = new ArrayList<>();
-        CrackBenefit crackBenefit = new CrackBenefit();
+        List<CrackBenefitEntity> crackBenefits = new ArrayList<>();
+        CrackBenefitEntity crackBenefit = new CrackBenefitEntity();
         crackBenefit.setText(context.getString(R.string.error_reward_message));
         crackBenefit.setColor(context.getString(R.string.expired_reward_color));
         crackBenefit.setSize(context.getString(R.string.expired_reward_size));
@@ -32,19 +36,19 @@ public class GeneralErrorCrackResult extends CrackResult {
         setBenefits(crackBenefits);
         setImageBitmap(errorBitmap);
 
-        CrackButton returnButton = new CrackButton();
+        CrackButtonEntity returnButton = new CrackButtonEntity();
         returnButton.setTitle(context.getString(R.string.try_again_btn));
-        returnButton.setType(CrackResult.TYPE_BTN_DISMISS);
+        returnButton.setType(CrackResultEntity.TYPE_BTN_DISMISS);
         setReturnButton(returnButton);
 
-        CrackButton ctaButton = new CrackButton();
+        CrackButtonEntity ctaButton = new CrackButtonEntity();
         ctaButton.setTitle(context.getString(R.string.return_to_home));
         ctaButton.setApplink(ApplinkConst.HOME);
-        ctaButton.setType(CrackResult.TYPE_BTN_REDIRECT);
+        ctaButton.setType(CrackResultEntity.TYPE_BTN_REDIRECT);
         setCtaButton(ctaButton);
 
-        CrackResultStatus crackResultStatus = new CrackResultStatus();
-        crackResultStatus.setCode(CrackResult.STATUS_CODE_SERVER_ERROR);
+        ResultStatusEntity crackResultStatus = new ResultStatusEntity();
+        crackResultStatus.setCode(CrackResultEntity.STATUS_CODE_SERVER_ERROR);
         setResultStatus(crackResultStatus);
     }
 }

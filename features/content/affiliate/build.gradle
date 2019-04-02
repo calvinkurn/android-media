@@ -30,6 +30,8 @@ dependencies {
 
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.kol)
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.attachproduct)
 
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.applink)
@@ -37,6 +39,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.videoRecorder)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.remoteConfig)
@@ -44,6 +47,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.cacheManager)
+    implementation project(rootProject.ext.libraries.videoUploader)
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
@@ -64,7 +69,7 @@ dependencies {
         exclude group: "com.android.support"
     }
 
-
+    implementation project(rootProject.ext.libraries.track)
 }
 
 apply from: '../../../publish_local.gradle'

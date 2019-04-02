@@ -10,24 +10,20 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.common.data.order.OrderDetailData;
-import com.tokopedia.transaction.common.data.order.OrderDetailItemData;
 import com.tokopedia.transaction.opportunity.data.pojo.CancelReplacementPojo;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButtonList;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.DataResponseCommon;
 import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
+import com.tokopedia.transaction.orders.orderdetails.data.Flags;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderDetails;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
@@ -80,7 +76,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     @Override
     public void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment) {
-        if (getView().getAppContext() == null)
+        if (getView() == null || getView().getAppContext() == null)
             return;
 
         this.orderCategory = orderCategory;
@@ -92,7 +88,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             variables.put(ORDER_ID, orderId);
             graphqlRequest = new
                     GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                    R.raw.orderdetail_marketplace), DetailsData.class, variables);
+                    R.raw.orderdetail_marketplace), DetailsData.class, variables, false);
         } else {
             variables.put(ORDER_CATEGORY, orderCategory);
             variables.put(ORDER_ID, orderId);
@@ -105,7 +101,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             variables.put(UPSTREAM, "");
             graphqlRequest = new
                     GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                    R.raw.orderdetails), DetailsData.class, variables);
+                    R.raw.orderdetails), DetailsData.class, variables, false);
         }
 
 
@@ -118,15 +114,14 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             @Override
             public void onError(Throwable e) {
-                if (getView().getAppContext() == null)
-                    return;
-                CommonUtils.dumper("error occured" + e);
-                getView().hideProgressBar();
+                if (getView() != null && getView().getAppContext() != null) {
+                    CommonUtils.dumper("error occured" + e);
+                    getView().hideProgressBar();
+                }
             }
 
             @Override
             public void onNext(GraphqlResponse response) {
-
                 if (response != null) {
                     DetailsData data = response.getData(DetailsData.class);
                     setDetailsData(data.orderDetails());
@@ -135,7 +130,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             }
         });
     }
-
 
 
     @Override
@@ -149,7 +143,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.tapactions), ActionButtonList.class, variables);
+                R.raw.tapactions), ActionButtonList.class, variables, false);
 
         orderDetailsUseCase.clearRequest();
         orderDetailsUseCase.setRequest(graphqlRequest);
@@ -168,20 +162,22 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
                     @Override
                     public void onNext(GraphqlResponse response) {
-
-                        if (response != null) {
-                            ActionButtonList data = response.getData(ActionButtonList.class);
-                            actionButtonList = data.getActionButtonList();
-                            if (actionButtonList != null)
-                                if (flag) {
-                                    view.setTapActionButton(position, actionButtonList);
-                                } else {
-                                    view.setActionButton(position, actionButtonList);
-                                }
+                        if (view != null) {
+                            if (response != null) {
+                                ActionButtonList data = response.getData(ActionButtonList.class);
+                                actionButtonList = data.getActionButtonList();
+                                if (actionButtonList != null)
+                                    if (flag) {
+                                        view.setTapActionButton(position, actionButtonList);
+                                    } else {
+                                        view.setActionButton(position, actionButtonList);
+                                    }
+                            }
                         }
                     }
                 });
     }
+
     public static final String PRODUCT_ID = "product_id";
     public static final String QUANTITY = "quantity";
     public static final String NOTES = "notes";
@@ -203,7 +199,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 quantity = item.getQuantity();
                 shopId = data.getShopInfo().getShopId();
                 notes = item.getDescription();
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.e("error parse", e.getMessage());
             }
             passenger.addProperty(PRODUCT_ID, productId);
@@ -219,7 +215,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public List<ActionButton> getActionList() {
         return actionButtonList;
     }
+
     private GraphqlUseCase buyAgainUseCase;
+
     @Override
     public void onBuyAgain(Resources resources) {
         Map<String, Object> variables = new HashMap<>();
@@ -228,7 +226,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         variables.put(PARAM, generateInputQueryBuyAgain(orderDetails));
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.buy_again), ResponseBuyAgain.class, variables);
+                R.raw.buy_again), ResponseBuyAgain.class, variables, false);
 
         buyAgainUseCase = new GraphqlUseCase();
         buyAgainUseCase.clearRequest();
@@ -242,7 +240,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             @Override
             public void onError(Throwable e) {
-                if(getView() != null) {
+                if (getView() != null && getView().getAppContext() != null) {
                     getView().hideProgressBar();
                     getView().showErrorMessage(e.getMessage());
                 }
@@ -250,13 +248,13 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             @Override
             public void onNext(GraphqlResponse objects) {
-                if(getView() != null) {
+                if (getView() != null && getView().getAppContext() != null) {
                     getView().hideProgressBar();
                     ResponseBuyAgain responseBuyAgain = objects.getData(ResponseBuyAgain.class);
-                    if(responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1){
+                    if (responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1) {
                         getView().showSucessMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
-                    }else{
-                        getView().showSucessMessage( StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(),","));
+                    } else {
+                        getView().showErrorMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     }
                 }
 
@@ -265,7 +263,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     private void setDetailsData(OrderDetails details) {
-        if (getView().getAppContext() == null)
+        if (getView() == null || getView().getAppContext() == null)
             return;
         getView().hideProgressBar();
         getView().setStatus(details.status());
@@ -279,14 +277,16 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         getView().setInvoice(details.invoice());
         getView().setOrderToken(details.orderToken());
         for (int i = 0; i < details.detail().size(); i++) {
-            if (i == 2) {
-                if (details.getDriverDetails() != null) {
-                    getView().showDriverInfo(details.getDriverDetails());
+            if ((orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
+                if (i == 2) {
+                    if (details.getDriverDetails() != null) {
+                        getView().showDriverInfo(details.getDriverDetails());
+                    }
                 }
-            }
-            if (i == details.detail().size()-1) {
-                if (!TextUtils.isEmpty(details.getDropShipper().getDropShipperName()) && !TextUtils.isEmpty(details.getDropShipper().getDropShipperPhone())) {
-                    getView().showDropshipperInfo(details.getDropShipper());
+                if (i == details.detail().size() - 1) {
+                    if (!TextUtils.isEmpty(details.getDropShipper().getDropShipperName()) && !TextUtils.isEmpty(details.getDropShipper().getDropShipperPhone())) {
+                        getView().showDropshipperInfo(details.getDropShipper());
+                    }
                 }
             }
             getView().setDetail(details.detail().get(i));
@@ -297,10 +297,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setShopInfo(details.getShopInfo());
         }
         if (details.getItems() != null && details.getItems().size() > 0) {
-            getView().setItems(details.getItems());
-        }
-        if (details.getItems() != null && details.getItems().size() > 0) {
-            getView().setItems(details.getItems());
+            Flags flags = details.getFlags();
+            if (flags != null)
+                getView().setItems(details.getItems(), flags.isIsOrderTradeIn());
+            else
+                getView().setItems(details.getItems(), false);
         }
         if (details.additionalInfo().size() > 0) {
             getView().setAdditionInfoVisibility(View.VISIBLE);
@@ -348,6 +349,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
 
     public void updateOrderCancelReason(String cancelReason, String orderId, int cancelOrReplacement, String url) {
+        if (getView() == null || getView().getAppContext() == null)
+            return;
 
         UserSession userSession = new UserSession(getView().getAppContext());
         String userId = userSession.getUserId();
@@ -372,34 +375,38 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
                                             @Override
                                             public void onError(Throwable e) {
-                                                CommonUtils.dumper(e.getStackTrace());
-                                                getView().showErrorMessage(e.getMessage());
-                                                getView().hideProgressBar();
-                                                getView().finishOrderDetail();
+                                                if (getView() != null && getView().getAppContext() != null) {
+                                                    CommonUtils.dumper(e.getStackTrace());
+                                                    getView().showErrorMessage(e.getMessage());
+                                                    getView().hideProgressBar();
+                                                    getView().finishOrderDetail();
+                                                }
                                             }
 
                                             @Override
                                             public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
-                                                Type token = new TypeToken<DataResponseCommon<CancelReplacementPojo>>() {
-                                                }.getType();
-                                                RestResponse restResponse = typeDataResponseMap.get(token);
-                                                DataResponseCommon dataResponse = restResponse.getData();
-                                                CancelReplacementPojo cancelReplacementPojo = (CancelReplacementPojo) dataResponse.getData();
-                                                if (!TextUtils.isEmpty(cancelReplacementPojo.getMessageStatus()))
-                                                    getView().showSucessMessage(cancelReplacementPojo.getMessageStatus());
-                                                else if (dataResponse.getErrorMessage() != null && !dataResponse.getErrorMessage().isEmpty())
-                                                    getView().showErrorMessage((String) dataResponse.getErrorMessage().get(0));
-                                                else if ((dataResponse.getMessageStatus() != null && !dataResponse.getMessageStatus().isEmpty()))
-                                                    getView().showSucessMessage((String) dataResponse.getMessageStatus().get(0));
-                                                getView().hideProgressBar();
-                                                getView().finishOrderDetail();
+                                                if (getView() != null && getView().getAppContext() != null) {
+                                                    Type token = new TypeToken<DataResponseCommon<CancelReplacementPojo>>() {
+                                                    }.getType();
+                                                    RestResponse restResponse = typeDataResponseMap.get(token);
+                                                    DataResponseCommon dataResponse = restResponse.getData();
+                                                    CancelReplacementPojo cancelReplacementPojo = (CancelReplacementPojo) dataResponse.getData();
+                                                    if (!TextUtils.isEmpty(cancelReplacementPojo.getMessageStatus()))
+                                                        getView().showSucessMessage(cancelReplacementPojo.getMessageStatus());
+                                                    else if (dataResponse.getErrorMessage() != null && !dataResponse.getErrorMessage().isEmpty())
+                                                        getView().showErrorMessage((String) dataResponse.getErrorMessage().get(0));
+                                                    else if ((dataResponse.getMessageStatus() != null && !dataResponse.getMessageStatus().isEmpty()))
+                                                        getView().showSucessMessage((String) dataResponse.getMessageStatus().get(0));
+                                                    getView().hideProgressBar();
+                                                    getView().finishOrderDetail();
+                                                }
                                             }
                                         }
         );
     }
 
     public void finishOrder(String orderId, String url) {
-        if (getView().getAppContext() == null)
+        if (getView() == null || getView().getAppContext() == null)
             return;
         UserSession userSession = new UserSession(getView().getAppContext());
         String userId = userSession.getUserId();
@@ -420,32 +427,47 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             @Override
             public void onError(Throwable e) {
-                if (getView().getAppContext() == null)
-                    return;
-                CommonUtils.dumper(e.getStackTrace());
-                getView().hideProgressBar();
-                getView().showErrorMessage(e.getMessage());
-                getView().finishOrderDetail();
+                if (getView() != null && getView().getAppContext() != null) {
+                    CommonUtils.dumper(e.getStackTrace());
+                    getView().hideProgressBar();
+                    getView().showErrorMessage(e.getMessage());
+                    getView().finishOrderDetail();
+                }
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
-                if (getView().getAppContext() == null)
-                    return;
-                Type token = new TypeToken<DataResponseCommon<CancelReplacementPojo>>() {
-                }.getType();
-                RestResponse restResponse = typeDataResponseMap.get(token);
-                DataResponseCommon dataResponse = restResponse.getData();
-                CancelReplacementPojo cancelReplacementPojo = (CancelReplacementPojo) dataResponse.getData();
-                if (!TextUtils.isEmpty(cancelReplacementPojo.getMessageStatus()))
-                    getView().showSucessMessage(cancelReplacementPojo.getMessageStatus());
-                else if (dataResponse.getErrorMessage() != null && !dataResponse.getErrorMessage().isEmpty())
-                    getView().showErrorMessage((String) dataResponse.getErrorMessage().get(0));
-                else if ((dataResponse.getMessageStatus() != null && !dataResponse.getMessageStatus().isEmpty()))
-                    getView().showSucessMessage((String) dataResponse.getMessageStatus().get(0));
-                getView().hideProgressBar();
-                getView().finishOrderDetail();
+                if (getView() != null && getView().getAppContext() != null) {
+                    Type token = new TypeToken<DataResponseCommon<CancelReplacementPojo>>() {
+                    }.getType();
+                    RestResponse restResponse = typeDataResponseMap.get(token);
+                    DataResponseCommon dataResponse = restResponse.getData();
+                    CancelReplacementPojo cancelReplacementPojo = (CancelReplacementPojo) dataResponse.getData();
+                    if (!TextUtils.isEmpty(cancelReplacementPojo.getMessageStatus()))
+                        getView().showSucessMessage(cancelReplacementPojo.getMessageStatus());
+                    else if (dataResponse.getErrorMessage() != null && !dataResponse.getErrorMessage().isEmpty())
+                        getView().showErrorMessage((String) dataResponse.getErrorMessage().get(0));
+                    else if ((dataResponse.getMessageStatus() != null && !dataResponse.getMessageStatus().isEmpty()))
+                        getView().showSucessMessage((String) dataResponse.getMessageStatus().get(0));
+                    getView().hideProgressBar();
+                    getView().finishOrderDetail();
+                }
             }
         });
+    }
+
+    @Override
+    public void detachView() {
+        orderDetailsUseCase.unsubscribe();
+        if (postCancelReasonUseCase != null) {
+            postCancelReasonUseCase.unsubscribe();
+        }
+        if (finishOrderUseCase != null) {
+            finishOrderUseCase.unsubscribe();
+        }
+        if (buyAgainUseCase != null) {
+            buyAgainUseCase.unsubscribe();
+        }
+        super.detachView();
     }
 }

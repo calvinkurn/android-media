@@ -13,9 +13,11 @@ class TopAdsCreditHistoryActivity: BaseSimpleActivity(), HasComponent<TopAdsDash
     override fun getComponent(): TopAdsDashboardComponent = DaggerTopAdsDashboardComponent.builder().baseAppComponent(
             (application as BaseMainApplication).baseAppComponent).build()
 
-    override fun getNewFragment() = TopAdsCreditHistoryFragment.createInstance()
+    override fun getNewFragment() = TopAdsCreditHistoryFragment.createInstance(intent.getBooleanExtra(PARAM_IS_FROM_SELECTION, false))
 
     companion object {
-        fun createInstance(context: Context) = Intent(context, TopAdsCreditHistoryActivity::class.java)
+        private const val PARAM_IS_FROM_SELECTION = "is_from_selection"
+        fun createInstance(context: Context, isFromSelection: Boolean = false) = Intent(context, TopAdsCreditHistoryActivity::class.java)
+                .putExtra(PARAM_IS_FROM_SELECTION, isFromSelection)
     }
 }

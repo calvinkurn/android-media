@@ -3,11 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
+    <View
+        android:id="@+id/view_separator"
+        android:background="@color/grey_default_background"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
         android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -47,7 +51,7 @@
     <com.tokopedia.design.viewpager.WrapContentViewPager
         android:id="@+id/view_pager_channel"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_120"
+        android:layout_height="@dimen/dp_128"
         android:background="@color/white" />
 
     <com.tokopedia.design.viewpager.WrapContentViewPager

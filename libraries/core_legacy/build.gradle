@@ -40,7 +40,8 @@ project.ext {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(rootProject.ext.libraries.trackinterface)
+    implementation project(rootProject.ext.libraries.track)
+    
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
@@ -60,6 +61,7 @@ dependencies {
     implementation rootProject.ext.firebase.performance
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.analyticsDependencies.installRef
+    implementation rootProject.ext.analyticsDependencies.moengageFirebase
     implementation (rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-gcm'
     }
@@ -88,7 +90,14 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-
+    implementation "com.moengage:moengagesdk:3.3.00"
+    implementation "com.moengage:pushbase:3.2.00"
+    implementation "com.moengage:moe-push-firebase:3.2.00"
+    implementation "com.moengage:inapp:3.2.02"
+    implementation "com.moengage:moe-location-lib:5.2.02"
+    implementation "com.moengage:addon-messaging:3.2.01"
+    implementation "com.moengage:addon-realtime-trigger:2.2.00"
+    implementation "com.moengage:integration-verifier:1.0.00"
 }
 
 apply plugin: 'com.google.gms.google-services'

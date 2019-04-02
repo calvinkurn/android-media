@@ -140,4 +140,8 @@ public class CartUseCaseModule {
         return new CancelAutoApplyCouponUseCase(iCartRepository);
     }
 
+    @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
 }

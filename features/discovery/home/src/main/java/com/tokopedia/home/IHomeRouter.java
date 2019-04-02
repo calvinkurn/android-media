@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
-import com.tokopedia.topads.sdk.domain.model.Product;
 
 import rx.Observable;
 
@@ -40,14 +38,6 @@ public interface IHomeRouter {
 
     void goToWallet(Context context, String url);
 
-    void goToProductDetail(Context context,
-                           String productId,
-                           String imageSourceSingle,
-                           String name,
-                           String price);
-
-    void goToProductDetail(Context context, String productUrl);
-
     void goToTokoCash(String appLinkBalance, Activity activity);
 
     void actionOpenGeneralWebView(Activity activity, String mobileUrl);
@@ -66,12 +56,6 @@ public interface IHomeRouter {
 
     Intent getInstantLoanIntent(Context context);
 
-    Intent getTopAdsProductDetailIntentForHome(Context context,
-                                                      String id,
-                                                      String name,
-                                                      String priceFormat,
-                                                      String imageMUrl);
-
     Intent getLoginIntent(Context context);
 
     Intent getHomeIntent(Context context);
@@ -80,5 +64,5 @@ public interface IHomeRouter {
 
     Intent getIntentCreateShop(Context context);
 
-    AnalyticTracker getAnalyticTracker();
+    Intent gotoQrScannerPage(boolean needResult);
 }

@@ -134,10 +134,6 @@ public class CartListModule {
     @Provides
     @CartListScope
     TrackingPromoCheckoutUtil provideTrackingPromo(@ApplicationContext Context context) {
-        if(context instanceof TrackingPromoCheckoutRouter){
-            return new TrackingPromoCheckoutUtil((TrackingPromoCheckoutRouter)context);
-        }else{
-            return new TrackingPromoCheckoutUtil(null);
-        }
+        return new TrackingPromoCheckoutUtil();
     }
 }

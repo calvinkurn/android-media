@@ -32,7 +32,7 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
         variables[SIZE] = size
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(view.contextView.resources,
-                R.raw.gql_video_recommendation), VideoRecommendationResult::class.java, variables)
+                R.raw.gql_video_recommendation), VideoRecommendationResult::class.java, variables, false)
 
         val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                 .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.`val`())

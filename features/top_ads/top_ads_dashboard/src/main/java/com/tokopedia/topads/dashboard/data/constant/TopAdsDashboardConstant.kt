@@ -26,4 +26,5 @@ object TopAdsDashboardConstant {
     const val EXTRA_LABEL = "label"
 
     const val URL_ONECLICKPROMO = "https://ta.tokopedia.com/v2/manage/oneclickpromo"
+    const val AUTO_TOPUP_INACTIVE: Int = 0
 }

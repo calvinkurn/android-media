@@ -17,6 +17,8 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ProductShipmentM
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.PurchaseProtectionPlanData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ServiceId;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Shop;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.TradeInInfo;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.AnalyticsProductCheckoutData;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
@@ -70,6 +72,22 @@ public class ShipmentMapper implements IShipmentMapper {
             cartPromoSuggestion.setText(shipmentAddressFormDataResponse.getPromoSuggestion().getText());
             cartPromoSuggestion.setVisible(shipmentAddressFormDataResponse.getPromoSuggestion().getIsVisible() == 1);
             dataResult.setCartPromoSuggestion(cartPromoSuggestion);
+        }
+
+        if (shipmentAddressFormDataResponse.getEgoldAttributes() != null) {
+            EgoldAttributeModel egoldAttributeModel = new EgoldAttributeModel();
+            egoldAttributeModel.setEligible(shipmentAddressFormDataResponse.getEgoldAttributes().isEligible());
+            if (shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldRange() != null) {
+                egoldAttributeModel.setMinEgoldRange(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldRange().getMinEgoldValue());
+                egoldAttributeModel.setMaxEgoldRange(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldRange().getMaxEgoldValue());
+            }
+            if (shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldMessage() != null) {
+                egoldAttributeModel.setTitleText(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldMessage().getTitleText());
+                egoldAttributeModel.setSubText(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldMessage().getSubText());
+                egoldAttributeModel.setTickerText(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldMessage().getTickerText());
+                egoldAttributeModel.setTooltipText(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldMessage().getTooltipText());
+            }
+            dataResult.setEgoldAttributes(egoldAttributeModel);
         }
 
         if (shipmentAddressFormDataResponse.getAutoApply() != null) {
@@ -203,6 +221,12 @@ public class ShipmentMapper implements IShipmentMapper {
                         groupShopResult.setCartString(groupShop.getCartString() != null ? groupShop.getCartString() : "");
                         groupShopResult.setHasPromoList(groupShop.isHasPromoList());
 
+                        groupShopResult.setFulfillment(groupShop.isFulfillment());
+                        if (groupShop.getWarehouse() != null) {
+                            groupShopResult.setFulfillmentId(groupShop.getWarehouse().getWarehouseId());
+                            groupShopResult.setFulfillmentName(groupShop.getWarehouse().getCityName());
+                        }
+
                         if (groupShop.getShop() != null) {
                             Shop shopResult = new Shop();
 
@@ -305,6 +329,9 @@ public class ShipmentMapper implements IShipmentMapper {
                                 analyticsProductCheckoutData.setProductCategoryId(String.valueOf(product.getProductCatId()));
                                 analyticsProductCheckoutData.setProductName(product.getProductName());
                                 analyticsProductCheckoutData.setProductPrice(String.valueOf(product.getProductPrice()));
+                                if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
+                                    analyticsProductCheckoutData.setProductPrice(String.valueOf(product.getTradeInInfo().getNewDevicePrice()));
+                                }
                                 analyticsProductCheckoutData.setProductShopId(String.valueOf(groupShop.getShop().getShopId()));
                                 analyticsProductCheckoutData.setProductShopName(groupShop.getShop().getShopName());
                                 analyticsProductCheckoutData.setProductShopType(generateShopType(groupShop.getShop()));
@@ -323,6 +350,9 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductName(product.getProductName());
                                 productResult.setProductPriceFmt(product.getProductPriceFmt());
                                 productResult.setProductPrice(product.getProductPrice());
+                                if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
+                                    productResult.setProductPrice(product.getTradeInInfo().getNewDevicePrice());
+                                }
                                 productResult.setProductWholesalePrice(product.getProductWholesalePrice());
                                 productResult.setProductWholesalePriceFmt(product.getProductWholesalePriceFmt());
                                 productResult.setProductWeightFmt(product.getProductWeightFmt());
@@ -352,6 +382,17 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductCatId(product.getProductCatId());
                                 productResult.setProductCatalogId(product.getProductCatalogId());
                                 productResult.setAnalyticsProductCheckoutData(analyticsProductCheckoutData);
+
+                                if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
+                                    TradeInInfo tradeInInfo = new TradeInInfo();
+                                    tradeInInfo.setValidTradeIn(product.getTradeInInfo().isValidTradeIn());
+                                    tradeInInfo.setNewDevicePrice(product.getTradeInInfo().getNewDevicePrice());
+                                    tradeInInfo.setNewDevicePriceFmt(product.getTradeInInfo().getNewDevicePriceFmt());
+                                    tradeInInfo.setOldDevicePrice(product.getTradeInInfo().getOldDevicePrice());
+                                    tradeInInfo.setOldDevicePriceFmt(product.getTradeInInfo().getOldDevicePriceFmt());
+
+                                    productResult.setTradeInInfo(tradeInInfo);
+                                }
 
                                 if (!mapperUtil.isEmpty(product.getPurchaseProtectionPlanData())) {
                                     PurchaseProtectionPlanData purchaseProtectionPlanData = new PurchaseProtectionPlanData();

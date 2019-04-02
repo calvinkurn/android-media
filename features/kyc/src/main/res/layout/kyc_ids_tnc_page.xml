@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dp_30"
+            android:layout_marginRight="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_24"
+            android:gravity="center_horizontal">
+
+            <LinearLayout
+                android:layout_width="@dimen/dp_160"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/cardid_holder"
+                android:layout_marginRight="@dimen/dp_20">
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/cardid_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_100"
+                    android:layout_alignParentLeft="true"
+                    app:cardCornerRadius="@dimen/dp_10">
+
+                    <ImageView
+                        android:id="@+id/cardid_img"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:foreground="@drawable/bg_transparent_black_rounded_corners"
+                        android:scaleType="centerCrop" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@color/transparent"
+                        android:drawableLeft="@drawable/ic_refresh_turqoise"
+                        android:gravity="center"
+                        android:text="@string/ulng"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_14" />
+
+                </android.support.v7.widget.CardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_marginTop="@dimen/dp_11"
+                    android:lineSpacingExtra="@dimen/sp_4"
+                    android:text="@string/phtid_crd"
+                    android:textColor="@color/clr_2d263b"
+                    android:textSize="@dimen/sp_14" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/dp_160"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/slfeid_hldr"
+                android:layout_toRightOf="@+id/cardid_holder">
+            <android.support.v7.widget.CardView
+                android:id="@+id/selfieid_container"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_100"
+                app:cardCornerRadius="@dimen/dp_10">
+
+                <ImageView
+                    android:id="@+id/selfieid_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:foreground="@drawable/bg_transparent_black_rounded_corners"
+                    android:scaleType="centerCrop" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@color/transparent"
+                    android:drawableLeft="@drawable/ic_refresh_turqoise"
+                    android:gravity="center"
+                    android:text="@string/ulng"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14" />
+
+            </android.support.v7.widget.CardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/selfieid_container"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/dp_11"
+                android:lineSpacingExtra="@dimen/sp_4"
+                android:text="@string/slfeid_crd"
+                android:textColor="@color/clr_2d263b"
+                android:textSize="@dimen/sp_14" />
+            </LinearLayout>
+
+        </RelativeLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginRight="@dimen/dp_30"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:orientation="horizontal"
+        android:id="@+id/tnc_chbxhldr"
+        android:layout_above="@+id/proceed_tnc">
+        <CheckBox
+            android:id="@+id/chkbx_tnc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/clr_4a4a4a" />
+
+        <TextView
+            android:id="@+id/txtv_tnc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_toRightOf="@+id/chkbx_tnc"
+            android:text="@string/prs_hny"
+            android:textColor="@color/clr_4a4a4a"
+            android:textSize="@dimen/sp_12" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/proceed_tnc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_30"
+        android:layout_marginBottom="@dimen/dp_50"
+        android:background="@drawable/btn_bg_rounded_corners"
+        android:enabled="false"
+        android:gravity="center"
+        android:text="@string/procs"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_14" />
+
+
+    <include
+        layout="@layout/branding_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"></include>
+</RelativeLayout>

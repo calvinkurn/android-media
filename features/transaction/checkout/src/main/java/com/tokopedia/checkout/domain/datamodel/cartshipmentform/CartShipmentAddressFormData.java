@@ -7,6 +7,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ public class CartShipmentAddressFormData implements Parcelable {
     private boolean isBlackbox;
     private CartPromoSuggestion cartPromoSuggestion;
     private AutoApplyData autoApplyData;
+    private EgoldAttributeModel egoldAttributes;
     private AutoApplyStackData autoApplyStackData;
 
     public boolean isHasError() {
@@ -162,6 +164,14 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.cod = cod;
     }
 
+    public EgoldAttributeModel getEgoldAttributes() {
+        return egoldAttributes;
+    }
+
+    public void setEgoldAttributes(EgoldAttributeModel egoldAttributes) {
+        this.egoldAttributes = egoldAttributes;
+    }
+
     public CartShipmentAddressFormData() {
     }
 
@@ -179,6 +189,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         useCourierRecommendation = in.readByte() != 0;
         cartPromoSuggestion = in.readParcelable(CartPromoSuggestion.class.getClassLoader());
         autoApplyData = in.readParcelable(AutoApplyData.class.getClassLoader());
+        egoldAttributes = in.readParcelable(EgoldAttributeModel.class.getClassLoader());
         autoApplyStackData = in.readParcelable(AutoApplyStackData.class.getClassLoader());
     }
 
@@ -197,6 +208,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
         dest.writeParcelable(cartPromoSuggestion, flags);
         dest.writeParcelable(autoApplyData, flags);
+        dest.writeParcelable(egoldAttributes, flags);
         dest.writeParcelable(autoApplyStackData, flags);
     }
 
@@ -221,7 +233,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         for (GroupAddress address : groupAddress) {
             for (GroupShop groupShop : address.getGroupShop()) {
                 for (Product product : groupShop.getProducts()) {
-                    if(product.getPurchaseProtectionPlanData() != null &&
+                    if (product.getPurchaseProtectionPlanData() != null &&
                             product.getPurchaseProtectionPlanData().isProtectionAvailable()) {
                         return true;
                     }

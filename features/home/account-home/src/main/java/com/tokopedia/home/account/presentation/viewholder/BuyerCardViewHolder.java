@@ -35,6 +35,7 @@ public class BuyerCardViewHolder extends AbstractViewHolder<BuyerCardViewModel> 
                 .progress(element.getProgress())
                 .tokopoint(element.getTokopoint())
                 .coupons(element.getCoupons())
+                .isAffliate(element.isAffiliate())
                 .build();
 
         buyerCardView.renderData(buyerCard);

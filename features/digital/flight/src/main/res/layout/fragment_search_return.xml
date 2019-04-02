@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -15,6 +16,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:dlv_icon="@drawable/ic_flight_round" />
+
+    <com.tokopedia.design.component.ticker.TickerView
+        android:id="@+id/flight_ticker_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_4"
+        android:padding="@dimen/dp_10"
+        android:visibility="gone"
+        app:tckv_content_text_size="@dimen/dp_11"
+        app:tckv_indicator_off_color="@color/grey_550"
+        app:tckv_indicator_on_color="@color/tkpd_main_green"
+        tools:visibility="visible" />
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"

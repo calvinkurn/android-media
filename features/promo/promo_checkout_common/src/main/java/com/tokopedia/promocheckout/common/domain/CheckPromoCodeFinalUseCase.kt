@@ -23,7 +23,7 @@ class CheckPromoCodeFinalUseCase(val resources: Resources, val graphqlUseCase: G
         variables[CARTS] = requestParams?.getString(CARTS, "") ?: false
         variables[ONE_CLICK_SHIPMENT] = requestParams?.getBoolean(ONE_CLICK_SHIPMENT, false) ?: false
 
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources, R.raw.check_promo_code_final), DataResponseCheckPromoCodeFinal::class.java, variables)
+        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources, R.raw.check_promo_code_final), DataResponseCheckPromoCodeFinal::class.java, variables, false)
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
                 .flatMap {

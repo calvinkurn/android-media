@@ -5,8 +5,8 @@ import android.content.res.Resources;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.gamification.cracktoken.model.CrackResult;
-import com.tokopedia.gamification.floating.view.model.TokenData;
+import com.tokopedia.gamification.data.entity.CrackResultEntity;
+import com.tokopedia.gamification.data.entity.TokenDataEntity;
 
 /**
  * Created by nabillasabbaha on 4/2/18.
@@ -15,15 +15,15 @@ import com.tokopedia.gamification.floating.view.model.TokenData;
 public interface CrackTokenContract {
 
     interface View extends CustomerView {
-        void onSuccessGetToken(TokenData tokenData);
+        void onSuccessGetToken(TokenDataEntity tokenData);
 
         void onSuccessDownloadAllAsset();
 
-        void onErrorGetToken(CrackResult throwable);
+        void onErrorGetToken(CrackResultEntity throwable);
 
-        void onSuccessCrackToken(CrackResult crackResult);
+        void onSuccessCrackToken(CrackResultEntity crackResult);
 
-        void onErrorCrackToken(CrackResult crackResult);
+        void onErrorCrackToken(CrackResultEntity crackResult);
 
         void onFinishCrackToken();
 
@@ -40,6 +40,8 @@ public interface CrackTokenContract {
         void closePage();
 
         String getSuccessRewardLabel();
+
+        void updateRewards(int points, int coupons, int loyalty);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -47,7 +49,7 @@ public interface CrackTokenContract {
 
         void getGetTokenTokopoints();
 
-        void downloadAllAsset(Context context, TokenData tokenData);
+        void downloadAllAsset(Context context, TokenDataEntity tokenData);
 
         void onLoginDataReceived();
 

@@ -4,14 +4,13 @@ import android.content.Context
 import android.text.TextUtils
 
 import com.tokopedia.abstraction.AbstractionRouter
-import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor
 
 import javax.inject.Inject
 
 class InstantLoanAuthInterceptor @Inject
-constructor(@ApplicationContext context: Context, abstractionRouter: AbstractionRouter, userSession: UserSession) : TkpdAuthInterceptor(context, abstractionRouter, userSession) {
+constructor(@ApplicationContext context: Context, abstractionRouter: AbstractionRouter) : TkpdAuthInterceptor(context, abstractionRouter) {
 
     override fun getHeaderMap(path: String, strParam: String,
                               method: String, authKey: String,

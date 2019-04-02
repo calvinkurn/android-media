@@ -59,7 +59,7 @@ public class CreatePostImageEditorActivity extends ImageEditorActivity {
     @Inject
     UploadImageUseCase<AttachmentImageModel> uploadImageUseCase;
 
-    UserSessionInterface userSession;
+    private UserSessionInterface userSession;
 
     private static final int CREATE_FORM_REQUEST = 1234;
 

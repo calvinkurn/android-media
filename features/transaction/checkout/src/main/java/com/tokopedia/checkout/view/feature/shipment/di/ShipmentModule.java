@@ -234,17 +234,13 @@ public class ShipmentModule {
     @Provides
     @ShipmentScope
     @ApplicationContext
-    Context provideContextAbstraction(Context context){
+    Context provideContextAbstraction(Context context) {
         return context;
     }
 
     @Provides
     @ShipmentScope
     TrackingPromoCheckoutUtil provideTrackingPromo(@ApplicationContext Context context) {
-        if(context instanceof TrackingPromoCheckoutRouter){
-            return new TrackingPromoCheckoutUtil((TrackingPromoCheckoutRouter)context);
-        }else{
-            return new TrackingPromoCheckoutUtil(null);
-        }
+        return new TrackingPromoCheckoutUtil();
     }
 }

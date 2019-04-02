@@ -21,8 +21,8 @@ import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
+import com.tokopedia.contactus.inboxticket2.data.model.Tickets;
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem;
-import com.tokopedia.contactus.inboxticket2.domain.Tickets;
 import com.tokopedia.contactus.inboxticket2.view.adapter.InboxDetailAdapter;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
@@ -50,6 +50,8 @@ import rx.schedulers.Schedulers;
 
 public class InboxDetailActivity extends InboxBaseActivity
         implements InboxDetailContract.InboxDetailView, ImageUploadAdapter.OnSelectImageClick {
+
+
     @BindView(R2.id.tv_ticket_title)
     TextView tvTicketTitle;
     @BindView(R2.id.tv_id_num)
@@ -88,6 +90,8 @@ public class InboxDetailActivity extends InboxBaseActivity
     TextView totalRes;
     @BindView(R2.id.tv_count_current)
     TextView currentRes;
+    @BindView(R2.id.tv_priority_label)
+    TextView tvPriorityLabel;
 
 
     private ImageUploadAdapter imageUploadAdapter;
@@ -99,6 +103,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     private boolean isCustomReason;
 
     public static final String PARAM_TICKET_ID = "ticket_id";
+    public static final String IS_OFFICIAL_STORE = "is_official_store";
 
     @DeepLink(ApplinkConst.TICKET_DETAIL)
     public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
@@ -113,6 +118,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     public static Intent getIntent(Context context, String ticketId) {
         Intent intent = new Intent(context, InboxDetailActivity.class);
         intent.putExtra(PARAM_TICKET_ID, ticketId);
+        intent.putExtra(IS_OFFICIAL_STORE, false);
         return intent;
     }
 
@@ -160,11 +166,6 @@ public class InboxDetailActivity extends InboxBaseActivity
             tvIdNum.setVisibility(View.VISIBLE);
         } else
             tvIdNum.setVisibility(View.GONE);
-        if(!TextUtils.isEmpty(ticketDetail.getInvoice())){
-            viewTransaction.setText(ticketDetail.getInvoice());
-            viewTransaction.setVisibility(View.VISIBLE);
-        } else
-            viewTransaction.setVisibility(View.GONE);
 
         if (ticketDetail.getComments() != null && ticketDetail.getComments().size() > 0) {
             detailAdapter = new InboxDetailAdapter(this, ticketDetail.getComments(), ticketDetail.isNeedAttachment(),
@@ -175,6 +176,16 @@ public class InboxDetailActivity extends InboxBaseActivity
             rvMessageList.setVisibility(View.GONE);
         }
         scrollTo(detailAdapter.getItemCount() - 1);
+
+        if (getIntent() != null && getIntent().getBooleanExtra(IS_OFFICIAL_STORE, false)) {
+            tvPriorityLabel.setVisibility(View.VISIBLE);
+            tvPriorityLabel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //opn tooltip
+                }
+            });
+        }
     }
 
     @Override
@@ -300,6 +311,29 @@ public class InboxDetailActivity extends InboxBaseActivity
                 "");
     }
 
+    @OnClick({R2.id.btn_inactive_1,R2.id.btn_inactive_2,R2.id.btn_inactive_3,R2.id.btn_inactive_4,R2.id.btn_inactive_5,})
+    void onEmojiClick(View v) {
+            if(v.getId() == R.id.btn_inactive_1) {
+                ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(1);
+                  }else if (v.getId() == R.id.btn_inactive_2) {
+                ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(2);
+            }else if (v.getId() == R.id.btn_inactive_3) {
+                ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(3);
+            }else if (v.getId() == R.id.btn_inactive_4) {
+                ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(4);
+            }else if (v.getId() == R.id.btn_inactive_5) {
+                ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(5);
+
+            }
+    }
+
+
+    @Override
+    public String getCommentID() {
+        return rateCommentID;
+    }
+
+
     @OnClick(R2.id.iv_send_button)
     void sendMessage() {
         ((InboxDetailContract.InboxDetailPresenter) mPresenter).sendMessage();
@@ -310,17 +344,12 @@ public class InboxDetailActivity extends InboxBaseActivity
                 "");
     }
 
-    @OnClick({R2.id.btn_no,
-            R2.id.btn_yes,
+    @OnClick({
             R2.id.txt_hyper,
             R2.id.tv_view_transaction})
     void onClickListener(View v) {
         int id = v.getId();
-        if (id == R.id.btn_yes) {
-            ((InboxDetailContract.InboxDetailPresenter) mPresenter).clickRate(R.id.btn_yes, rateCommentID);
-        } else if (id == R.id.btn_no) {
-            ((InboxDetailContract.InboxDetailPresenter) mPresenter).clickRate(R.id.btn_no, rateCommentID);
-        } else if (id == R.id.txt_hyper) {
+        if (id == R.id.txt_hyper) {
             setResult(RESULT_FINISH);
             ContactUsTracking.sendGTMInboxTicket("",
                     InboxTicketTracking.Category.EventInboxTicket,
@@ -497,6 +526,11 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     public String getUserMessage() {
         return edMessage.getText().toString();
+    }
+
+    @Override
+    public String getTicketID() {
+        return getIntent().getStringExtra(PARAM_TICKET_ID);
     }
 
     @Override

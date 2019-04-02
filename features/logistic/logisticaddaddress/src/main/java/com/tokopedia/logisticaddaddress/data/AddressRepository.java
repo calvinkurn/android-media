@@ -14,11 +14,9 @@ import java.util.Map;
  */
 public interface AddressRepository {
 
-    void addAddress(@NonNull Context context, @NonNull Map<String, String> params,
-                    @NonNull AddAddressListener listener);
+    void addAddress(@NonNull Map<String, String> params, @NonNull AddAddressListener listener);
 
-    void editAddress(@NonNull Context context, @NonNull Map<String, String> params,
-                     @NonNull AddAddressListener listener);
+    void editAddress(@NonNull Map<String, String> params, @NonNull AddAddressListener listener);
 
     void unsubscribe();
 

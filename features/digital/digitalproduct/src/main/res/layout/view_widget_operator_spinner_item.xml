@@ -19,7 +19,7 @@
             android:id="@+id/operator_title_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/fonts"
+            android:textSize="@dimen/sp_14"
             tools:text="Pulsa 1000" />
     </RelativeLayout>
 

@@ -7,7 +7,7 @@ import com.tokopedia.analytics.firebase.FirebaseEvent;
 import com.tokopedia.analytics.firebase.FirebaseParams;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeIconItem;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationProductViewModel;
 
 import java.util.HashMap;
@@ -61,7 +61,7 @@ public class HomeTrackingUtils {
     }
 
 
-    public static void homeUsedCaseImpression(Context context, List<LayoutSections> sectionList) {
+    public static void homeUsedCaseImpression(Context context, List<HomeIconItem> sectionList) {
         Map<String, Object> map = new HashMap<>();
         for (int i = 0; i < sectionList.size(); i++) {
             map.put(FirebaseParams.Home.ICON_NAME + "_" + i + 1, sectionList.get(i).getTitle());

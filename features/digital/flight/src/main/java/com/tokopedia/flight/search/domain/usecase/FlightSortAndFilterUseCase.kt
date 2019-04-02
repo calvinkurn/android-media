@@ -31,10 +31,10 @@ class FlightSortAndFilterUseCase @Inject constructor(
         val filterModel = requestParams.getObject(PARAM_FILTER_MODEL) as FlightFilterModel
 
         return flightSearchRepository.getSearchFilter(sortOption, filterModel)
-                .map { mapToFlightJourneyViewModel(it) }
+                .map { mapToFlightJourneyViewModel(it.journeyAndRoutes, it.specialTag) }
     }
 
-    private fun mapToFlightJourneyViewModel(it: List<JourneyAndRoutes>): List<FlightJourneyViewModel> {
+    private fun mapToFlightJourneyViewModel(it: List<JourneyAndRoutes>, specialTag: String): List<FlightJourneyViewModel> {
         val gson = Gson()
         return it.map { journeyAndRoutes ->
             val routes = journeyAndRoutes.routes.map {
@@ -110,12 +110,14 @@ class FlightSortAndFilterUseCase @Inject constructor(
                         totalNumericCombo,
                         isBestPairing,
                         beforeTotal,
+                        isShowSpecialPriceTag,
                         isRefundable,
                         isReturn,
                         fare,
                         routes,
                         flightAirlineDBS,
-                        comboId
+                        comboId,
+                        specialTag
                 )
             }
         }

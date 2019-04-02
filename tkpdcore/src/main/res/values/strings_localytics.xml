@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-    <string name="add_to_cart">Add To Cart Page</string>
     <string name="between_100k_to_200k">Between 100 000 - 200 000</string>
     <string name="between_200k_to_400k">Between 200 000 - 400 000</string>
     <string name="between_400k_to_600k">Between 400 000 - 600 000</string>

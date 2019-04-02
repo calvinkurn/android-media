@@ -1,11 +1,9 @@
 package com.tokopedia.transactiondata.apiservice;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.constant.ResponseStatus;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
@@ -28,8 +26,8 @@ public class CartApiInterceptor extends TkpdAuthInterceptor {
 
     @Inject
     public CartApiInterceptor(Context context, AbstractionRouter abstractionRouter,
-                              UserSession userSession, String authKey) {
-        super(context, abstractionRouter, userSession, authKey);
+                              String authKey) {
+        super(context, abstractionRouter, authKey);
     }
 
     @Override
@@ -84,6 +82,9 @@ public class CartApiInterceptor extends TkpdAuthInterceptor {
         mapHeader.put("Tkpd-UserId", userSession.getUserId());
         mapHeader.put("X-Device", "android");
         mapHeader.put("Tkpd-SessionId", userSession.getDeviceId());
+        mapHeader.put("Accounts-Authorization", String.format("%s %s", "Bearer",
+                userSession.getAccessToken()));
+
 
         return mapHeader;
     }

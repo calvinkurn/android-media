@@ -3,7 +3,7 @@ package com.tokopedia.flight.passenger.domain.model;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight_dbflow.FlightPassengerDB;
+import com.tokopedia.flight.passenger.data.db.FlightPassengerTable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class ListPassengerViewModelMapper {
     public ListPassengerViewModelMapper() {
     }
 
-    public FlightBookingPassengerViewModel transform(FlightPassengerDB savedPassengerEntity) {
+    public FlightBookingPassengerViewModel transform(FlightPassengerTable savedPassengerEntity) {
         FlightBookingPassengerViewModel flightBookingPassengerViewModel = new FlightBookingPassengerViewModel();
         if (savedPassengerEntity.getBirthdate() != null && !savedPassengerEntity.getBirthdate().isEmpty()) {
             flightBookingPassengerViewModel.setPassengerBirthdate(
@@ -66,10 +66,10 @@ public class ListPassengerViewModelMapper {
         return flightBookingPassengerViewModel;
     }
 
-    public List<FlightBookingPassengerViewModel> transform(List<FlightPassengerDB> savedPassengerEntityList) {
+    public List<FlightBookingPassengerViewModel> transform(List<FlightPassengerTable> savedPassengerEntityList) {
         List<FlightBookingPassengerViewModel> flightBookingPassengerViewModelList = new ArrayList<>();
 
-        for (FlightPassengerDB savedPassengerEntity : savedPassengerEntityList) {
+        for (FlightPassengerTable savedPassengerEntity : savedPassengerEntityList) {
             flightBookingPassengerViewModelList.add(this.transform(savedPassengerEntity));
         }
 

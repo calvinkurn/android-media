@@ -13,6 +13,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppe
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
 import com.tokopedia.inbox.util.analytics.InboxAnalytics;
+import com.tokopedia.track.TrackApp;
 
 /**
  * Created by yoasfs on 28/08/17.
@@ -80,13 +81,13 @@ public class SolutionDetailActivity extends BaseSimpleActivity {
     public void onBackPressed() {
         if (editAppealSolutionModel != null) {
             if (SolutionListActivity.isEditFromChatReso(editAppealSolutionModel)) {
-                UnifyTracking.eventTracking(this,InboxAnalytics.eventResoChatCloseSolutionEditDetailPage(
+                TrackApp.getInstance().getGTM().sendGeneralEvent(InboxAnalytics.eventResoChatCloseSolutionEditDetailPage(
                         editAppealSolutionModel.resolutionId,
-                        editAppealSolutionModel.getSolutionName()));
+                        editAppealSolutionModel.getSolutionName()).getEvent());
             } else {
-                UnifyTracking.eventTracking(this,InboxAnalytics.eventResoChatCloseSolutionAppealDetailPage(
+                TrackApp.getInstance().getGTM().sendGeneralEvent(InboxAnalytics.eventResoChatCloseSolutionAppealDetailPage(
                         editAppealSolutionModel.resolutionId,
-                        editAppealSolutionModel.getSolutionName()));
+                        editAppealSolutionModel.getSolutionName()).getEvent());
             }
         }
         super.onBackPressed();

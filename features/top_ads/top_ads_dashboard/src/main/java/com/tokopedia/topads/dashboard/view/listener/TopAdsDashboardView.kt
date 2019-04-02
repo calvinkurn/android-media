@@ -6,6 +6,7 @@ import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.dashboard.data.model.DashboardPopulateResponse
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.TotalAd
+import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 
 import java.util.Date
 
@@ -37,4 +38,8 @@ interface TopAdsDashboardView : CustomerView {
     fun onSuccessGetTicker(message: List<String>)
 
     fun onErrorGetTicker(e: Throwable)
+
+    fun onErrorGetAutoTopUpStatus(throwable: Throwable)
+
+    fun onSuccessGetAutoTopUpStatus(data: AutoTopUpStatus)
 }

@@ -17,7 +17,7 @@ public class GoldMerchant {
     private boolean isGoldBadge;
     @SerializedName("gold_merchant_logo_url")
     @Expose
-    private String goldMerchantLogoUrl;
+    private String goldMerchantLogoUrl = "";
 
     public int getIsGold() {
         return isGold;

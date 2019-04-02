@@ -38,6 +38,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PDP = "clickPDP";
         String PURCHASE_PROTECTION = "fintechppandroid";
         String VIEW_CART = "viewCart";
+        String CLICK_REGISTER = "clickRegister";
+        String VIEW_REGISTER = "viewRegister";
         String CLICK_CHECKOUT_EXPRESS = "clickCheckoutExpress";
         String VIEW_CHECKOUT_EXPRESS = "viewCheckoutExpress";
     }
@@ -51,7 +53,9 @@ public interface ConstantTransactionAnalytics {
         String ORDER_TRACKING = "order tracking";
         String PRODUCT_DETAIL_PAGE = "product detail page";
         String PURCHASE_PROTECTION = "fin - mp checkout";
+        String CORNER_ADDRES = "tokopedia corner address";
         String EXPRESS_CHECKOUT = "express checkout";
+        String COURIER_SELECTION_TRADE_IN = "courier selection trade in";
     }
 
     interface EventAction {
@@ -216,11 +220,27 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PURCHASE_PROTECTION_PAY = "pp - bayar click";
         String IMPRESSION_PELAJARI = "pp - pelajari impression";
 
+        //TOKOPEDIA CORNER
+        String CHOOSE_LOCATION_CORNER = "click pilih lokasi tokopedia corner";
+        String CLICK_CORNER_ADDRESS = "click alamat tokopedia corner";
+        String VIEW_CORNER_ERROR = "view tokopedia corner not available";
+        String VIEW_CORNER_PO_ERROR = "view error pre order tokopedia corner";
+
         //EXPRESS CHECKOUT
         String VIEW_EXPRESS_CHECKOUT = "view express checkout";
         String CLICK_LANJUTKAN_TANPA_TEMPLATE = "click lanjutkan tanpa template";
         String CLICK_X = "click x";
         String VIEW_ERROR_METODE_PEMBAYARAN = "view error metode pembayaran";
+
+        String CLICK_PLUS_FROM_MULTIPLE = "click + from multiple";
+        String CLICK_BUTTON_SIMPAN = "click button simpan";
+        String CLICK_BUTTON_SIMPAN_FROM_EDIT = "click button simpan from edit";
+
+        //TRADEIN
+        String VIEW_CHECKOUYT_PAGE_TRADE_IN = "view checkout page trade in";
+        String CLICK_GANTI_NOMOR = "click ganti nomor";
+        String CLICK_BUTTON_PILIH_DURASI = "click button pilih durasi";
+        String CLICK_KURIR_TRADE_IN = "click kurir trade in";
 
         //PROMO STACKING
         String CLICK_PILIH_MERCHANT_VOUCHER = "click pilih merchant voucher";

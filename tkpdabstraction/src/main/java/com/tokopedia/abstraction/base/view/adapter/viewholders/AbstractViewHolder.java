@@ -32,6 +32,13 @@ public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerVi
     public void bind(T element, @NonNull List<Object> payloads) {
     }
 
+
+    /*
+    Override this to do recycle and clear image resources
+     */
+    public void onViewRecycled() {
+    }
+
     protected String getString(@StringRes int stringRes) {
         return itemView.getContext().getString(stringRes);
     }

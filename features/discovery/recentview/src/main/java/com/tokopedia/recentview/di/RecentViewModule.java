@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
@@ -12,6 +11,8 @@ import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseI
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.recentview.data.api.RecentViewApi;
 import com.tokopedia.recentview.data.api.RecentViewUrl;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.data.interceptor.MojitoInterceptor;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -47,9 +48,8 @@ public class RecentViewModule {
     @RecentViewScope
     @Provides
     MojitoInterceptor provideMojitoInterceptor(@ApplicationContext Context context,
-                                               AbstractionRouter abstractionRouter,
-                                               UserSession userSession) {
-        return new MojitoInterceptor(context, abstractionRouter, userSession);
+                                               AbstractionRouter abstractionRouter) {
+        return new MojitoInterceptor(context, abstractionRouter);
     }
 
     @RecentViewScope
@@ -96,5 +96,10 @@ public class RecentViewModule {
     @Provides
     RemoveWishListUseCase providesTkpdRemoveWishListUseCase(@ApplicationContext Context context){
         return new RemoveWishListUseCase(context);
+    }
+
+    @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

@@ -13,6 +13,8 @@ import android.widget.ProgressBar;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -23,8 +25,6 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
@@ -62,6 +62,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
         CatalogFragmentContract.View, CatalogListener, TopAdsItemClickListener,
         TopAdsListener, SearchSectionGeneralAdapter.OnItemChangeView {
 
+    public static final String SCREEN_SEARCH_PAGE_CATALOG_TAB = "Search result - Catalog tab";
     public static final String SOURCE = BrowseApi.DEFAULT_VALUE_SOURCE_CATALOG;
 
     private static final String EXTRA_DEPARTMENT_ID = "EXTRA_DEPARTMENT_ID";
@@ -134,7 +135,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
 
     @Override
     public String getScreenNameId() {
-        return AppScreen.SCREEN_SEARCH_PAGE_CATALOG_TAB;
+        return SCREEN_SEARCH_PAGE_CATALOG_TAB;
     }
 
     @Override
@@ -270,6 +271,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
 
     @Override
     public void onEmptyButtonClicked() {
+        SearchTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
         showSearchInputView();
     }
 
@@ -525,16 +527,16 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        ProductItem data = new ProductItem();
-        data.setId(product.getId());
-        data.setName(product.getName());
-        data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_ecs());
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
+        Intent intent = getProductIntent(product.getId());
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+    }
+
+    private Intent getProductIntent(String productId){
+        if (getContext() != null) {
+            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
+        }
     }
 
     @Override

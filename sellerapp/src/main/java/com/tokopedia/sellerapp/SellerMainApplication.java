@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.webkit.URLUtil;
 
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
@@ -23,7 +24,11 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.changepassword.data.ChangePasswordUrl;
 import com.tokopedia.chat_common.network.ChatUrl;
+import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
+import com.tokopedia.core.analytics.container.GTMAnalytics;
+import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.common.category.CategoryDbFlow;
+import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -52,8 +57,10 @@ import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
 import com.tokopedia.settingbank.choosebank.data.BankListUrl;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
+import com.tokopedia.product.detail.data.util.ProductDetailConstant;
 import com.tokopedia.talk.common.data.TalkUrl;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 
 /**
@@ -96,23 +103,19 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     }
 
     private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-
-        CommonUtils.dumper("FCM moengage SELLER clicked " + deepLinkUri.toString());
-
         if (deepLinkUri != null) {
-
-            if (deepLinkUri.getScheme().equals(Constants.Schemes.HTTP) || deepLinkUri.getScheme().equals(Constants.Schemes.HTTPS)) {
+            CommonUtils.dumper("FCM moengage SELLER clicked " + deepLinkUri.toString());
+            if (URLUtil.isNetworkUrl(deepLinkUri.toString())) {
                 Intent intent = new Intent(this, DeepLinkActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(deepLinkUri.toString()));
                 startActivity(intent);
 
-            } else if (deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS_SELLER)) {
+            } else if (Constants.Schemes.APPLINKS_SELLER.equals(deepLinkUri.getScheme())) {
                 Intent intent = new Intent(this, DeepLinkHandlerActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(deepLinkUri.toString()));
                 startActivity(intent);
-
             } else {
                 CommonUtils.dumper("FCM entered no one");
             }
@@ -122,11 +125,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
             return false;
         }
 
-    }
-
-    @Override
-    public int getApplicationType() {
-        return SELLER_APPLICATION;
     }
 
     @Override
@@ -150,12 +148,21 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         }
         generateSellerAppBaseUrl();
         generateSellerAppNetworkKeys();
+
+        TrackApp.initTrackApp(this);
+
+        TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
+        TrackApp.getInstance().initializeAllApis();
+
         super.onCreate();
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
         initCacheApi();
-        GraphqlClient.init(getApplicationContext());
+        GraphqlClient.init(this);
+        NetworkClient.init(this);
         InstabugInitalize.init(this);
     }
 
@@ -204,6 +211,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         ShopUrl.BASE_ACE_URL = SellerAppBaseUrl.BASE_ACE_DOMAIN;
         ShopCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_TOME_DOMAIN;
         ShopCommonUrl.BASE_WS_URL = SellerAppBaseUrl.BASE_DOMAIN;
+        ProductDetailConstant.BASE_REST_URL = SellerAppBaseUrl.BASE_DOMAIN;
         ReputationCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_DOMAIN;
         AbstractionBaseURL.JS_DOMAIN = SellerAppBaseUrl.BASE_JS_DOMAIN;
         CatalogConstant.URL_HADES = SellerAppBaseUrl.BASE_HADES_DOMAIN;
@@ -263,4 +271,21 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     public Class<?> getDeeplinkClass() {
         return DeepLinkActivity.class;
     }
+
+
+    @Override
+    public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
+        return null;
+    }
+
+    @Override
+    public Intent getCreateResCenterActivityIntent(Context context, String orderId, int troubleId, int solutionId) {
+        return null;
+    }
+
+    //@Override
+    public Intent getInboxTicketCallingIntent(Context context) {
+        return null;
+    }
+
 }
