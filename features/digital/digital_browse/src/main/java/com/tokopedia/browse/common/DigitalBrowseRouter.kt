@@ -10,4 +10,5 @@ interface DigitalBrowseRouter {
 
     fun goToWebview(context: Context, url: String)
 
+    fun gotoSearchPage(context: Context): Intent
 }

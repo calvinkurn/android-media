@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.view.MenuItem
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.browse.DigitalBrowseComponentInstance
@@ -19,6 +20,7 @@ import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseMarketplaceFragment
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseServiceFragment
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.browse.common.DigitalBrowseRouter
 import javax.inject.Inject
 
 class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<DigitalBrowseHomeComponent> {
@@ -64,6 +66,23 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
         }
 
         return fragmentDigital
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        getMenuInflater().inflate(R.menu.menu_search, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_search) {
+            onSearchClicked()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    fun onSearchClicked() {
+        (application as DigitalBrowseRouter).gotoSearchPage(this!!))
     }
 
     private fun setupToolbar() {
