@@ -980,6 +980,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                         ApplinkConst.AFFILIATE_CREATE_POST,
                         pdpAffiliate.productId.toString(),
                         pdpAffiliate.adId.toString())
+                it.setResult(Activity.RESULT_OK)
                 it.finish()
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
