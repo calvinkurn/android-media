@@ -97,21 +97,23 @@
 
             </FrameLayout>
 
-            <ProgressBar
-                android:id="@+id/progress"
-                style="@style/ProgressBar.Tokopedia"
-                android:layout_width="@dimen/dp_72"
-                android:layout_height="@dimen/dp_72"
-                android:progressDrawable="@drawable/circular_progress_bar_green"
-                android:max="100"
-                android:layout_gravity="center"
-                android:progress="0"
-                android:rotation="-90"
-                tools:progress="55"
-                android:visibility="gone"
-                tools:visibility="visible"/>
-
         </FrameLayout>
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="@style/ProgressBar.Tokopedia"
+            android:layout_width="@dimen/dp_56"
+            android:layout_height="@dimen/dp_56"
+            android:progressDrawable="@drawable/circular_progress_bar_green"
+            android:max="100"
+            android:layout_gravity="center"
+            android:progress="0"
+            android:rotation="-90"
+            tools:progress="55"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
         <ImageButton
             android:id="@+id/btnFlip"
