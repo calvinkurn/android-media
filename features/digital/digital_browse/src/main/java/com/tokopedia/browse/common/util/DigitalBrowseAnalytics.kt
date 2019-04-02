@@ -17,6 +17,8 @@ class DigitalBrowseAnalytics @Inject
 constructor(private val analyticTracker: AnalyticTracker) {
 
     private val GENERIC_CATEGORY = "homepage"
+    private val EVENT_ACTION_LAYANAN_CLICK = "click on %s"
+
 
     fun eventClickBackOnBelanjaPage() {
         analyticTracker.sendEventTracking(
@@ -129,12 +131,26 @@ constructor(private val analyticTracker: AnalyticTracker) {
     }
 
     fun eventClickIconLayanan(analyticsModel: DigitalBrowseServiceAnalyticsModel) {
-        analyticTracker.sendEventTracking(
-                Event.CLICK_HOME_PAGE,
-                GENERIC_CATEGORY,
-                String.format(Action.CLICK_ICON_LAYANAN, analyticsModel.headerName),
-                analyticsModel.iconName + "_" + analyticsModel.headerPosition
-                        + "_" + analyticsModel.iconPosition)
+        try {
+            val promotions = ArrayList<Any>()
+            promotions.add(analyticsModel)
+
+            analyticTracker.sendEnhancedEcommerce(
+                    DataLayer.mapOf(
+                            "event", "promoClick",
+                            "eventCategory", GENERIC_CATEGORY,
+                            "eventAction", String.format(EVENT_ACTION_LAYANAN_CLICK,
+                            analyticsModel.headerName),
+                            "eventLabel", "",
+                            "ecommerce", DataLayer.mapOf(
+                            "promoClick", DataLayer.mapOf(
+                            "promotions", DataLayer.listOf(*promotions.toTypedArray()))
+                    )
+                    )
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun tranformPromotionModel(promotionItem: DigitalBrowsePopularAnalyticsModel): Any {
@@ -169,6 +185,5 @@ constructor(private val analyticTracker: AnalyticTracker) {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
     }
 }
