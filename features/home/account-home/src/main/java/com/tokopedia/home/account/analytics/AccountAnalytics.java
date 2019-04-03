@@ -2,13 +2,12 @@ package com.tokopedia.home.account.analytics;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.home.account.AccountConstants;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user_identification_common.KYCConstant;
@@ -44,6 +43,7 @@ public class AccountAnalytics {
     private UserSessionInterface userSessionInterface;
 
     public AccountAnalytics(Context context) {
+        this.context = context;
         userSessionInterface = new UserSession(context);
     }
 
@@ -179,7 +179,7 @@ public class AccountAnalytics {
     public void eventClickKYCSellerAccountPage(int status) {
 
         final Analytics analytics = TrackApp.getInstance().getGTM();
-        switch (status){
+        switch (status) {
             case KYCConstant.STATUS_REJECTED:
 
                 analytics.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -255,15 +255,18 @@ public class AccountAnalytics {
     }
 
     public void setUserAttributes(UserAttributeData data) {
-        ((AccountHomeRouter) context.getApplicationContext()).sendAnalyticsUserAttribute(data);
+        if (null != context && context.getApplicationContext() instanceof AccountHomeRouter)
+            ((AccountHomeRouter) context.getApplicationContext()).sendAnalyticsUserAttribute(data);
     }
 
     public void setPromoPushPreference(Boolean newValue) {
-        ((AccountHomeRouter) context.getApplicationContext()).setPromoPushPreference(newValue);
+        if (null != context && context.getApplicationContext() instanceof AccountHomeRouter)
+            ((AccountHomeRouter) context.getApplicationContext()).setPromoPushPreference(newValue);
     }
 
-    public void setNewsletterEmailPref(Boolean newValue){
-        ((AccountHomeRouter) context.getApplicationContext()).setNewsletterEmailPref(newValue);
+    public void setNewsletterEmailPref(Boolean newValue) {
+        if (null != context && context.getApplicationContext() instanceof AccountHomeRouter)
+            ((AccountHomeRouter) context.getApplicationContext()).setNewsletterEmailPref(newValue);
     }
 
 }
