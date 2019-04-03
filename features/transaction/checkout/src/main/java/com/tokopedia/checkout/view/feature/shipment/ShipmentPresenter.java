@@ -978,22 +978,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             if (checkPromoParam.getPromo().getCodes() != null && checkPromoParam.getPromo().getCodes().size() > 0) {
                 builder.promoCodes(checkPromoParam.getPromo().getCodes());
             }
-
-            boolean hasPromoStacking = false;
-            if (checkPromoParam.getPromo().getOrders() != null && checkPromoParam.getPromo().getOrders().size() > 0) {
-                for (Order order : checkPromoParam.getPromo().getOrders()) {
-                    if (order.getCodes() != null && order.getCodes().size() > 0) {
-                        hasPromoStacking = true;
-                        break;
-                    }
-                }
-            }
-
-            if (hasPromoStacking) {
-                builder.hasPromoStacking(true);
-            }
+            builder.hasPromoStacking(true);
         }
-
 
         return builder.build();
     }
