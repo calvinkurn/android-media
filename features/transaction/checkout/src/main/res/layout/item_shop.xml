@@ -26,8 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_1"
-            android:layout_marginRight="@dimen/dp_1"
-            android:paddingBottom="@dimen/dp_12">
+            android:layout_marginRight="@dimen/dp_1">
 
             <RelativeLayout
                 android:id="@+id/rl_shop_header"
@@ -45,8 +44,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="-5dp"
                     android:layout_marginTop="-5dp"
-                    android:layout_marginEnd="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_8"
                     android:paddingRight="@dimen/dp_8"
                     android:theme="@style/TransactionCheckbox" />
 
@@ -73,8 +70,8 @@
                         style="@style/TextSmallMediumBlack70"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_4"
                         android:layout_marginRight="@dimen/dp_4"
+                        android:layout_marginEnd="@dimen/dp_4"
                         tools:text="Loaa Store df" />
 
                     <ImageView

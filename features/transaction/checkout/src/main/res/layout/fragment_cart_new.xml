@@ -84,8 +84,6 @@
                             style="@style/TextSmallNormalBlack54"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dp_4"
-                            android:layout_marginRight="@dimen/dp_4"
                             android:lineSpacingExtra="@dimen/sp_5"
                             android:text="@string/label_select_all_product"
                             tools:ignore="RelativeOverlap" />
