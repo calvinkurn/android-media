@@ -18,6 +18,12 @@ class PromoCheckoutDetailModule {
 
     @PromoCheckoutDetailScope
     @Provides
+    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context): CheckPromoStackingCodeUseCase {
+        return CheckPromoStackingCodeUseCase(context.resources)
+    }
+
+    @PromoCheckoutDetailScope
+    @Provides
     fun providePresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                          checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
                          checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,

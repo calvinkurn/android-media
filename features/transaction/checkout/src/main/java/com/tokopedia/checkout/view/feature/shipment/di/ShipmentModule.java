@@ -180,6 +180,12 @@ public class ShipmentModule {
 
     @Provides
     @ShipmentScope
+    CheckPromoStackingCodeUseCase provideCheckPromoStackingCodeUseCase(@ApplicationContext Context context){
+        return new CheckPromoStackingCodeUseCase(context.getResources());
+    }
+
+    @Provides
+    @ShipmentScope
     ShipmentContract.Presenter provideShipmentPresenter(@PromoCheckoutQualifier CheckPromoStackingCodeFinalUseCase checkPromoStackingCodeFinalUseCase,
                                                         CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase,
                                                         CheckPromoStackingCodeMapper checkPromoStackingCodeMapper,

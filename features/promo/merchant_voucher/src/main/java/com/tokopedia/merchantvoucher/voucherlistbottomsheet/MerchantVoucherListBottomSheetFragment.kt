@@ -32,6 +32,7 @@ import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherViewUsed
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.merchantvoucher.FileUtils
+import com.tokopedia.merchantvoucher.common.di.MerchantVoucherModule
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.domain.model.promostacking.response.ResponseGetPromoStackFirst
@@ -231,6 +232,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
             DaggerMerchantVoucherComponent.builder()
                     .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                     .shopCommonModule(ShopCommonModule())
+                    .merchantVoucherModule(MerchantVoucherModule())
                     .build()
                     .inject(this@MerchantVoucherListBottomSheetFragment)
             presenter.attachView(this@MerchantVoucherListBottomSheetFragment)

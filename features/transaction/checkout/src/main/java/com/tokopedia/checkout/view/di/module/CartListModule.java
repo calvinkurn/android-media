@@ -85,6 +85,12 @@ public class CartListModule {
 
     @Provides
     @CartListScope
+    CheckPromoStackingCodeUseCase provideCheckPromoStackingCodeUseCase(@ApplicationContext Context context){
+        return new CheckPromoStackingCodeUseCase(context.getResources());
+    }
+
+    @Provides
+    @CartListScope
     ICartListPresenter provideICartListPresenter(GetCartListUseCase getCartListUseCase,
                                                  DeleteCartUseCase deleteCartUseCase,
                                                  DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,

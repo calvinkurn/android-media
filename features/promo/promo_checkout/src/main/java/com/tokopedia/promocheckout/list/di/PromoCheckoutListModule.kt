@@ -23,6 +23,12 @@ class PromoCheckoutListModule {
 
     @PromoCheckoutListScope
     @Provides
+    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context): CheckPromoStackingCodeUseCase {
+        return CheckPromoStackingCodeUseCase(context.resources)
+    }
+
+    @PromoCheckoutListScope
+    @Provides
     fun provideMarketplacePresenter(checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase, checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper) : PromoCheckoutListMarketplacePresenter {
         return PromoCheckoutListMarketplacePresenter(checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper)
     }
