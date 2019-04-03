@@ -100,6 +100,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
         super.onDestroy()
         exceptionHandler {
             cameraView.destroy()
+            timer.cancel()
         }
     }
 
@@ -128,7 +129,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
             progress.hide()
             btnFlash.show()
             btnFlip.show()
-            cameraView.close()
+            cameraView.stopVideo()
             timer.cancel()
         } else {
             vwRecord.show()
