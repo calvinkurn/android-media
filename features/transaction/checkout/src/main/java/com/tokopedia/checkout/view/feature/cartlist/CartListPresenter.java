@@ -308,11 +308,13 @@ public class CartListPresenter implements ICartListPresenter {
 
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : allCartItemData) {
-            updateCartRequestList.add(new UpdateCartRequest.Builder()
-                    .cartId(data.getOriginData().getCartId())
-                    .notes(data.getUpdatedData().getRemark())
-                    .quantity(data.getUpdatedData().getQuantity())
-                    .build());
+            if (!data.isError()) {
+                updateCartRequestList.add(new UpdateCartRequest.Builder()
+                        .cartId(data.getOriginData().getCartId())
+                        .notes(data.getUpdatedData().getRemark())
+                        .quantity(data.getUpdatedData().getQuantity())
+                        .build());
+            }
         }
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
         paramUpdate.put(UpdateCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
