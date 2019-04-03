@@ -95,12 +95,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public static final int REQUEST_CANCEL_ORDER = 101;
     public static final int REJECT_BUYER_REQUEST = 102;
     public static final int CANCEL_BUYER_REQUEST = 103;
-    
     public static final int TEXT_SIZE_TWELVE = 12;
     public static final int TEXT_SIZE_FOURTEEEN = 14;
-
-
-    
     @Inject
     OrderListDetailPresenter presenter;
     private LinearLayout mainView;
