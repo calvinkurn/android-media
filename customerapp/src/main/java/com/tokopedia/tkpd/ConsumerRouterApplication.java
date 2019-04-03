@@ -1019,6 +1019,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void setNewsletterEmailPref(Boolean newValue) {
+        TrackApp.getInstance().getMoEngage().setNewsletterEmailPref(newValue);
+    }
+
+    @Override
     public Intent getIntentOfLoyaltyActivityWithCoupon(Activity activity, String platform,
                                                        String reservationId, String reservationCode) {
         return LoyaltyActivity.newInstanceTrainCouponActive(activity, platform, "11",

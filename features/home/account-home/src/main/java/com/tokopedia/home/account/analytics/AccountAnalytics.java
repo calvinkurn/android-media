@@ -262,4 +262,8 @@ public class AccountAnalytics {
         ((AccountHomeRouter) context.getApplicationContext()).setPromoPushPreference(newValue);
     }
 
+    public void setNewsletterEmailPref(Boolean newValue){
+        ((AccountHomeRouter) context.getApplicationContext()).setNewsletterEmailPref(newValue);
+    }
+
 }

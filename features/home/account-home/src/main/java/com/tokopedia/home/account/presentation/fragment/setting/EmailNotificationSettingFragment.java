@@ -47,6 +47,12 @@ public class EmailNotificationSettingFragment extends BaseDaggerFragment impleme
     private AccountAnalytics accountAnalytics;
 
     private boolean isChanged;
+    private final static String KEY_CHAT = "flag_chat";
+    private final static String KEY_CHAT_ADMIN = "flag_chat_admin";
+    private final static String KEY_TALK = "flag_talk";
+    private final static String KEY_REVIEW = "flag_review";
+    private final static String KEY_BULLETIN = "flag_bulletin";
+    private final static String KEY_FLAG_NEWSLETTER = "flag_newsletter";
 
     public static Fragment createInstance() {
         return new EmailNotificationSettingFragment();
@@ -144,17 +150,19 @@ public class EmailNotificationSettingFragment extends BaseDaggerFragment impleme
     }
 
     @Override
-    public void onItemChange(String key) {
-        if (key.equals(getString(R.string.label_review))) {
+    public void onItemChange(String key, boolean newValue) {
+        if (KEY_REVIEW.equals(key)) {
             accountAnalytics.eventClickEmailSetting(String.format("%s %s", REVIEW, NOTIFICATION));
-        } else if (key.equals(getString(R.string.label_talk))) {
+        } else if (KEY_TALK.equals(key)) {
             accountAnalytics.eventClickEmailSetting(String.format("%s %s", DISCUSSION, NOTIFICATION));
-        } else if (key.equals(getString(R.string.label_chat))) {
+        } else if (KEY_CHAT.equals(key)) {
             accountAnalytics.eventClickEmailSetting(String.format("%s %s", CHAT, NOTIFICATION));
-        } else if (key.equals(getString(R.string.label_chat_admin))) {
+        } else if (KEY_CHAT_ADMIN.equals(key)) {
             accountAnalytics.eventClickEmailSetting(String.format("%s %s %s", CHAT, TOKOPEDIA, NOTIFICATION));
-        } else if (key.equals(getString(R.string.label_bulletin))) {
+        } else if (KEY_BULLETIN.equals(key)) {
             accountAnalytics.eventClickEmailSetting(String.format("%s %s", NEWS_LETTER, NOTIFICATION));
+        } else if (KEY_FLAG_NEWSLETTER.equals(key)) {
+            accountAnalytics.setNewsletterEmailPref(!newValue);
         }
         isChanged = true;
     }
