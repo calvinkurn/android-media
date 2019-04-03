@@ -4,6 +4,7 @@ import android.support.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.profile.R
 import com.tokopedia.profile.view.viewmodel.EmptyAffiliateViewModel
 import kotlinx.android.synthetic.main.item_profile_affiliate_empty.view.*
@@ -34,6 +35,7 @@ class EmptyAffiliateViewHolder(val v: View, val listener: OnEmptyItemClickedList
         ImageHandler.loadImage2(itemView.image, imageUrl, R.drawable.ic_loading_image)
         itemView.card_image.setOnClickListener(onEmptyItemClicked())
         itemView.tv_see_more_product.setOnClickListener(onEmptyItemClicked())
+        itemView.tv_title.text = MethodChecker.fromHtml(itemView.context.resources.getString(R.string.profile_empty_title))
     }
 
     private fun onEmptyItemClicked() : View.OnClickListener {
