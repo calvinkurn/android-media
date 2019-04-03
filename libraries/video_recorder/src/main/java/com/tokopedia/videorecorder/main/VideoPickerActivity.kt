@@ -282,4 +282,16 @@ open class VideoPickerActivity: BaseSimpleActivity(),
 
     override fun getMaxFileSize(): Long = VIDEO_MAX_SIZE
 
+    override fun initShake() {
+        //Don't allow Shake" while picking video
+    }
+
+    override fun registerShake() {
+        //Don't allow Shake" while picking video
+    }
+
+    override fun unregisterShake() {
+        //Don't allow Shake" while picking video
+    }
+
 }
