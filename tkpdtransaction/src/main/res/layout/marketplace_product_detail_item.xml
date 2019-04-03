@@ -30,8 +30,6 @@
             android:textSize="@dimen/sp_10"
             android:textStyle="bold"
             android:visibility="gone"
-            tools:layout_editor_absoluteX="10dp"
-            tools:layout_editor_absoluteY="20dp"
             tools:visibility="visible" />
 
         <ImageView
