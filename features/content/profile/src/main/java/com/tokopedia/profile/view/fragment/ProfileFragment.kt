@@ -72,10 +72,13 @@ import com.tokopedia.profile.di.DaggerProfileComponent
 import com.tokopedia.profile.view.activity.FollowingListActivity
 import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
+import com.tokopedia.profile.view.adapter.viewholder.EmptyAffiliateViewHolder
+import com.tokopedia.profile.view.adapter.viewholder.ProfileEmptyViewHolder
 import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.preference.ProfilePreference
 import com.tokopedia.profile.view.viewmodel.DynamicFeedProfileViewModel
+import com.tokopedia.profile.view.viewmodel.EmptyAffiliateViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileEmptyViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -106,7 +109,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         YoutubeViewHolder.YoutubePostListener,
         PollAdapter.PollOptionListener,
         GridPostAdapter.GridItemListener,
-        VideoViewHolder.VideoViewListener{
+        VideoViewHolder.VideoViewListener,
+        EmptyAffiliateViewHolder.OnEmptyItemClickedListener{
 
     private var userId: Int = 0
     private var afterPost: Boolean = false
@@ -254,6 +258,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 this,
                 this,
                 this,
+                this,
                 userSession)
     }
 
@@ -349,7 +354,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onSuccessShouldChangeUsername(shouldChange: Boolean, link: String) {
         if (shouldChange) {
-            val usernameInputFragment = UsernameInputFragment()
+            val usernameInputFragment = UsernameInputFragment.createInstance(
+                    profileHeader?.affiliateName ?: ""
+            )
             usernameInputFragment.show(
                     childFragmentManager,
                     UsernameInputFragment::class.java.simpleName
@@ -697,18 +704,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String,
                               url: String, iamgeUrl: String) {
         activity?.let {
-            if (shouldChangeUsername()) {
-                presenter.shouldChangeUsername(userSession.userId.toIntOrZero())
-            } else {
-                profileRouter.shareFeed(
-                        it,
-                        id.toString(),
-                        url,
-                        title,
-                        iamgeUrl,
-                        description
-                )
-            }
+            profileRouter.shareFeed(
+                    it,
+                    id.toString(),
+                    url,
+                    title,
+                    iamgeUrl,
+                    description
+            )
         }
         profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
     }
@@ -845,7 +848,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     }
 
-    //end of new feed section
+    override fun onEmptyComponentClicked() {
+        goToAffiliateExplore()
+        profileAnalytics.eventClickEmptyStateCta()
+    }
+//end of new feed section
 
     private fun initVar(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
@@ -1228,25 +1235,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun getEmptyResultModel(isOwner: Boolean, isAffiliate: Boolean): Visitable<*> {
-        val emptyResultViewModel = EmptyResultViewModel()
-        emptyResultViewModel.iconRes = R.drawable.ic_af_empty
         if (isOwner) {
-            if (isAffiliate) {
-                emptyResultViewModel.title = getString(R.string.profile_add_recommendation)
-            } else {
-                emptyResultViewModel.title = getString(R.string.profile_recommend_to_friends)
-                emptyResultViewModel.buttonTitle = getString(R.string.profile_find_out)
-                emptyResultViewModel.callback = object : BaseEmptyViewHolder.Callback {
-                    override fun onEmptyContentItemTextClicked() {
-                    }
-
-                    override fun onEmptyButtonClicked() {
-                        goToAffiliateExplore()
-                        profileAnalytics.eventClickEmptyStateCta()
-                    }
-                }
-            }
+            return EmptyAffiliateViewModel()
         } else {
+            val emptyResultViewModel = EmptyResultViewModel()
+            emptyResultViewModel.iconRes = R.drawable.ic_af_empty
             emptyResultViewModel.title = getString(R.string.profile_no_content)
             emptyResultViewModel.buttonTitle = getString(R.string.profile_see_others)
             emptyResultViewModel.callback = object : BaseEmptyViewHolder.Callback {
@@ -1257,8 +1250,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     goToExplore()
                 }
             }
+            return emptyResultViewModel
         }
-        return emptyResultViewModel
     }
 
     private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {

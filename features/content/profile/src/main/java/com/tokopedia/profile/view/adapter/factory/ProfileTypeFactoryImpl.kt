@@ -28,9 +28,11 @@ import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostYoutubeViewHolder
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.*
+import com.tokopedia.profile.view.adapter.viewholder.EmptyAffiliateViewHolder
 import com.tokopedia.profile.view.adapter.viewholder.ProfileEmptyViewHolder
 import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
+import com.tokopedia.profile.view.viewmodel.EmptyAffiliateViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileEmptyViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -50,7 +52,9 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                              private val pollOptionListener: PollAdapter.PollOptionListener?,
                              private val gridItemListener: GridPostAdapter.GridItemListener?,
                              private val videoViewListener: VideoViewHolder.VideoViewListener?,
+                             private val onEmptyItemClickedListener: EmptyAffiliateViewHolder.OnEmptyItemClickedListener,
                              private val userSession : UserSessionInterface)
+
     : BaseAdapterTypeFactory(), ProfileTypeFactory, KolPostTypeFactory, DynamicFeedTypeFactory {
 
     override fun type(viewModel: ProfileHeaderViewModel): Int {
@@ -97,6 +101,10 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
         return TopadsShopViewHolder.LAYOUT
     }
 
+    override fun type(emptyAffiliateViewModel: EmptyAffiliateViewModel): Int {
+        return EmptyAffiliateViewHolder.LAYOUT
+    }
+
     override fun setType(type: KolPostViewHolder.Type?) {
     }
 
@@ -137,6 +145,8 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                 BannerViewHolder(parent, bannerListener!!, cardTitleListener!!) as AbstractViewHolder<Visitable<*>>
             TopadsShopViewHolder.LAYOUT ->
                 TopadsShopViewHolder(parent, topadsShopListener!!, cardTitleListener!!) as AbstractViewHolder<Visitable<*>>
+            EmptyAffiliateViewHolder.LAYOUT ->
+                EmptyAffiliateViewHolder(parent, onEmptyItemClickedListener) as AbstractViewHolder< Visitable<*>>
             else -> super.createViewHolder(parent, type)
         }
     }

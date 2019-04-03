@@ -381,6 +381,10 @@ public class ExploreFragment
                 super.getItemOffsets(outRect, view, parent, state);
                 int position = parent.getChildAdapterPosition(view);
 
+                if (position < 0 || position >= adapter.getData().size()) {
+                    return;
+                }
+
                 if (position == 0) {
                     outRect.top = (int) getResources().getDimension(R.dimen.dp_16);
                 }

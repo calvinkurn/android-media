@@ -3,6 +3,7 @@ package com.tokopedia.kol.feature.postdetail.view.adapter.typefactory;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
@@ -29,6 +30,7 @@ import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
+import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.EmptyPostDetailViewHolder;
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.SeeAllCommentsViewHolder;
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.SeeAllCommentsViewModel;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -73,6 +75,11 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
         this.gridItemListener = gridItemListener;
         this.videoViewListener = videoViewListener;
         this.userSession = userSession;
+    }
+
+    @Override
+    public int type(EmptyModel viewModel) {
+        return EmptyPostDetailViewHolder.LAYOUT;
     }
 
     @Override
@@ -137,7 +144,9 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
             abstractViewHolder = new KolCommentViewHolder(view, kolCommentListener);
         else if (viewType == SeeAllCommentsViewHolder.LAYOUT)
             abstractViewHolder = new SeeAllCommentsViewHolder(view, seeAll);
-        else
+        else if (viewType == EmptyPostDetailViewHolder.LAYOUT) {
+            abstractViewHolder = new EmptyPostDetailViewHolder(view);
+        } else
             abstractViewHolder = super.createViewHolder(view, viewType);
         return abstractViewHolder;
     }

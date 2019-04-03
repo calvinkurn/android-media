@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -60,6 +61,7 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel;
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity;
 import com.tokopedia.kol.feature.postdetail.view.adapter.KolPostDetailAdapter;
+import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactory;
 import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactoryImpl;
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel;
@@ -116,7 +118,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Inject
     UserSessionInterface userSession;
 
-    @Inject
     KolPostDetailAdapter adapter;
 
     public static KolPostDetailFragment getInstance(Bundle bundle) {
@@ -180,8 +181,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
         swipeToRefresh.setOnRefreshListener(this);
 
-        adapter.setTypeFactory(new KolPostDetailTypeFactoryImpl(this, this, this, this, this, this
-                , this, this, this, userSession));
+        KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this, this, this, this, this, this
+                , this, this, this, userSession);
+        adapter = new KolPostDetailAdapter(typeFactory);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
@@ -218,6 +220,21 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onEmptyDetailFeed() {
+        adapter.showEmpty(getContext(), new BaseEmptyViewHolder.Callback() {
+            @Override
+            public void onEmptyContentItemTextClicked() {
+                presenter.getCommentFirstTime(postId);
+            }
+
+            @Override
+            public void onEmptyButtonClicked() {
+                presenter.getCommentFirstTime(postId);
+            }
+        });
+    }
+
+    @Override
     public void onSuccessGetKolPostDetail(List<Visitable> list,
                                           PostDetailViewModel postDetailViewModel) {
         adapter.setList(list);
@@ -249,7 +266,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                 likeCount.setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
             } else {
                 ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_gray);
-                likeCount.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_70));
+                likeCount.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
             }
             setLikeListener(postDetailFooterModel.isLiked());
         } else {

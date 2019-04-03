@@ -1,92 +1,54 @@
 package com.tokopedia.kol.feature.postdetail.view.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
+import com.tokopedia.kol.R;
 
 /**
  * @author by milhamj on 27/07/18.
  */
 
-public class KolPostDetailAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
+public class KolPostDetailAdapter extends BaseAdapter<KolPostDetailTypeFactory> {
 
-    private List<Visitable> list;
-    private KolPostDetailTypeFactory typeFactory;
+    private EmptyModel emptyModel;
 
-    @Inject
-    KolPostDetailAdapter() {
-        list = new ArrayList<>();
-    }
-
-    @NonNull
-    @Override
-    public AbstractViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        View view = LayoutInflater.from(context).inflate(viewType, parent, false);
-        return typeFactory.createViewHolder(view, viewType);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position) {
-        holder.bind(list.get(position));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position,
-                                 @NonNull List<Object> payloads) {
-        if (!payloads.isEmpty()) {
-            holder.bind(list.get(position), payloads);
-        } else {
-            super.onBindViewHolder(holder, position, payloads);
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        return list.size();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public int getItemViewType(int position) {
-        return list.get(position).type(typeFactory);
-    }
-
-    public void setTypeFactory(KolPostDetailTypeFactory typeFactory) {
-        this.typeFactory = typeFactory;
-    }
-
-    public List<Visitable> getList() {
-        return list;
+    public KolPostDetailAdapter(KolPostDetailTypeFactory typeFactory) {
+        super(typeFactory, new ArrayList<>());
+        this.emptyModel = new EmptyModel();
     }
 
     public void setList(List<Visitable> list) {
-        this.list.clear();
-        this.list.addAll(list);
+        this.visitables.clear();
+        this.visitables.addAll(list);
         notifyDataSetChanged();
     }
 
     public void clearData() {
         int itemCount = getItemCount();
-        this.list.clear();
+        this.visitables.clear();
         notifyItemRangeRemoved(0, itemCount);
+    }
+
+    public void showEmpty(Context context,BaseEmptyViewHolder.Callback callback ) {
+        this.visitables.clear();
+        emptyModel.setButtonTitle(context.getString(R.string.feed_post_detail_empty_button));
+        emptyModel.setTitle(context.getString(R.string.feed_post_detail_empty_title));
+        emptyModel.setContent(context.getString(R.string.feed_post_detail_empty_subtitle));
+        emptyModel.setCallback(callback);
+        this.visitables.add(emptyModel);
+        notifyDataSetChanged();
     }
 
     static class Callback extends DiffUtil.Callback {

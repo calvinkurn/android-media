@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.MediaController
 import android.widget.Toast
+import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -220,6 +221,14 @@ class VideoDetailFragment:
         videoView.setVideoURI(Uri.parse(url))
         videoView.setOnErrorListener(object : MediaPlayer.OnErrorListener{
             override fun onError(p0: MediaPlayer?, p1: Int, p2: Int): Boolean {
+
+                try {
+                    Crashlytics.logException(Throwable(String.format("%s - what : %s - extra : %s ",
+                            VideoDetailFragment::class.java.simpleName, p1.toString(), p2.toString())))
+                } catch (e: IllegalStateException) {
+                    e.printStackTrace()
+                }
+
                 when(p1) {
                     MediaPlayer.MEDIA_ERROR_UNKNOWN -> {
                         Toast.makeText(context, getString(R.string.error_unknown), Toast.LENGTH_SHORT).show()
@@ -378,23 +387,20 @@ class VideoDetailFragment:
         when {
             like.isChecked -> {
                 likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_green)
-                likeIcon.setColorFilter(activity!!.resources.getColor(R.color.tkpd_main_green))
                 likeText.text = like.fmt
                 likeText.setTextColor(
                         MethodChecker.getColor(likeText.context, R.color.tkpd_main_green)
                 )
             }
             like.value > 0 -> {
-                likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb)
-                likeIcon.setColorFilter(activity!!.resources.getColor(R.color.white))
+                likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
                 likeText.text = like.fmt
                 likeText.setTextColor(
                         MethodChecker.getColor(likeText.context, R.color.white)
                 )
             }
             else -> {
-                likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb)
-                likeIcon.setColorFilter(activity!!.resources.getColor(R.color.white))
+                likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
                 likeText.setText(R.string.kol_action_like)
                 likeText.setTextColor(
                         MethodChecker.getColor(likeIcon.context, R.color.white)
