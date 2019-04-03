@@ -32,6 +32,12 @@ public class GamiFloatingButtonEntity {
     @SerializedName("imgURL")
     @Expose
     private String imgURL;
+    @SerializedName("timerBGColor")
+    @Expose
+    private String timerBGColor;
+    @SerializedName("timerFontColor")
+    @Expose
+    private String timerFontColor;
 
     public ResultStatus getResultStatus() {
         return resultStatus;
@@ -105,4 +111,19 @@ public class GamiFloatingButtonEntity {
         this.imgURL = imgURL;
     }
 
+    public String getTimerBGColor() {
+        return timerBGColor;
+    }
+
+    public void setTimerBGColor(String timerBGColor) {
+        this.timerBGColor = timerBGColor;
+    }
+
+    public String getTimerFontColor() {
+        return timerFontColor;
+    }
+
+    public void setTimerFontColor(String timerFontColor) {
+        this.timerFontColor = timerFontColor;
+    }
 }
