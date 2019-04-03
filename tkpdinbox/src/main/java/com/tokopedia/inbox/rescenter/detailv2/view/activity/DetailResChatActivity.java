@@ -129,7 +129,7 @@ public class DetailResChatActivity
                     destinationIntent = getApplinkIntentCenter(context, resoId);
                     break;
                 case Constants.Applinks.RESCENTER:
-                    destinationIntent = new Intent(context, DetailResChatActivity.class);
+                    destinationIntent = getApplinkIntent(context, resoId);
                     break;
                 default:
                     break;
