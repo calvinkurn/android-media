@@ -35,8 +35,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.70"
                 android:orientation="vertical"
-                android:paddingLeft="@dimen/padding_buy"
-                android:paddingTop="@dimen/padding_buy">
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_16">
 
                 <TextView
                     android:id="@+id/date"
