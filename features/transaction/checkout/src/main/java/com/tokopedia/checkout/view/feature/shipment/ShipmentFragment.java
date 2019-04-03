@@ -599,11 +599,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
+    @Deprecated
     @Override
     public void renderCheckShipmentPrepareCheckoutSuccess() {
         CheckPromoParam checkPromoParam = new CheckPromoParam();
         checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
-        shipmentPresenter.processCheckout(checkPromoParam, isOneClickShipment());
+        shipmentPresenter.processCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId());
     }
 
     @Override
@@ -1040,7 +1041,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void renderChangeAddressSuccess(RecipientAddressModel selectedAddress) {
         if (shipmentAdapter.hasAppliedPromoStackCode()) {
             setCornerId(selectedAddress.getCornerId());
-            shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment(), selectedAddress.getCornerId());
+            shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment(), isTradeIn(), selectedAddress.getCornerId(), getDeviceId());
         }
         if (!TextUtils.isEmpty(selectedAddress.getCornerId()) && shipmentPresenter.getCodData() != null) {
             shipmentAdapter.removeNotifierData();
@@ -1603,15 +1604,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (shipmentAdapter != null && shipmentAdapter.getPromoGlobalStackData() != null) {
                 voucherCode = shipmentAdapter.getPromoGlobalStackData().getPromoCodeSafe();
             }
+            CheckPromoParam checkPromoParam = new CheckPromoParam();
+            checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
             switch (requestCode) {
                 case REQUEST_CODE_NORMAL_CHECKOUT:
                     shipmentPresenter.processSaveShipmentState();
-                    shipmentPresenter.processCheckout(voucherCode, isOneClickShipment(), isTradeIn(), getDeviceId());
+                    shipmentPresenter.processCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId());
                     break;
                 case REQUEST_CODE_COD:
-                    CheckPromoParam checkPromoParam = new CheckPromoParam();
-                    checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
-
                     shipmentPresenter.proceedCodCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId());
             }
 
@@ -2275,6 +2275,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                            @NotNull ArrayList<ClashingVoucherOrderUiModel> newPromoList
     ) {
         shipmentPresenter.cancelAutoApplyPromoStackAfterClash(oldPromoList, newPromoList,
-                true, isOneClickShipment(), getCornerId());
+                true, isOneClickShipment(), isTradeIn(), getCornerId(), getDeviceId());
     }
 }

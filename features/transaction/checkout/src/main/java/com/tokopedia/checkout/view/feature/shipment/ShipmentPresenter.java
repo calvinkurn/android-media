@@ -1276,8 +1276,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void cancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList,
-                                                    ArrayList<ClashingVoucherOrderUiModel> newPromoList, boolean isFromMultipleAddress, boolean isOneClickShipment, @Nullable String cornerId) {
+    public void cancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList,
+                                                    boolean isFromMultipleAddress, boolean isOneClickShipment, boolean isTradeIn,
+                                                    @Nullable String cornerId, String deviceId) {
         String corner = "";
         if (cornerId != null) {
             corner = cornerId;
@@ -1285,12 +1286,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), oldPromoList);
         clearCacheAutoApplyStackUseCase.execute(RequestParams.create(),
                 new ClearShipmentCacheAutoApplyAfterClashSubscriber(getView(), this,
-                        newPromoList, isFromMultipleAddress, isOneClickShipment, corner));
+                        newPromoList, isFromMultipleAddress, isOneClickShipment, corner, isTradeIn, deviceId));
     }
 
     @Override
     public void applyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList,
-                                          boolean isFromMultipleAddress, boolean isOneClickShipment, String cornerId) {
+                                          boolean isFromMultipleAddress, boolean isOneClickShipment,
+                                          boolean isTradeIn, String cornerId, String deviceId) {
         Promo promo = getView().generateCheckPromoFirstStepParam();
         promo.setCodes(new ArrayList<>());
         if (promo.getOrders() != null) {
@@ -1323,7 +1325,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     new CheckShipmentPromoFirstStepAfterClashSubscriber(getView(),
                             this, newPromoList.size(),
                             isFromMultipleAddress, isOneClickShipment, cornerId,
-                            newPromoList.indexOf(model)));
+                            newPromoList.indexOf(model), isTradeIn, deviceId));
         }
     }
 

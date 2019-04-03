@@ -295,10 +295,13 @@ public interface ShipmentContract {
 
         void cancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse);
 
-        void cancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList, boolean isFromMultipleAddress, boolean isOneClickShipment, String cornerId);
+        void cancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList,
+                                                 boolean isFromMultipleAddress, boolean isOneClickShipment, boolean isTradeIn,
+                                                 @Nullable String cornerId, String deviceId);
 
         void applyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList,
-                                       boolean isFromMultipleAddress, boolean isOneClickShipment, String cornerId);
+                                       boolean isFromMultipleAddress, boolean isOneClickShipment,
+                                       boolean isTradeIn, String cornerId, String deviceId);
 
         void changeShippingAddress(RecipientAddressModel recipientAddressModel, boolean isOneClickShipment);
 

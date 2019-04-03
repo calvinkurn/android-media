@@ -12,7 +12,9 @@ class CheckShipmentPromoFirstStepAfterClashSubscriber(val view: ShipmentContract
                                                       private val isFromMultipleAddress: Boolean,
                                                       private val isOneClickShipment: Boolean,
                                                       private val cornerId: String,
-                                                      private val currentPromoIndex: Int) : Subscriber<GraphqlResponse>() {
+                                                      private val currentPromoIndex: Int,
+                                                      private val isTradeIn: Boolean,
+                                                      private val deviceId: String) : Subscriber<GraphqlResponse>() {
 
     override fun onCompleted() {
 
@@ -22,7 +24,7 @@ class CheckShipmentPromoFirstStepAfterClashSubscriber(val view: ShipmentContract
         e.printStackTrace()
         if (currentPromoIndex == promoListSize - 1) {
             view?.hideLoading()
-            presenter.processInitialLoadCheckoutPage(isFromMultipleAddress, isOneClickShipment, cornerId)
+            presenter.processInitialLoadCheckoutPage(isFromMultipleAddress, isOneClickShipment, isTradeIn, cornerId, deviceId)
         }
     }
 
@@ -30,7 +32,7 @@ class CheckShipmentPromoFirstStepAfterClashSubscriber(val view: ShipmentContract
         if (currentPromoIndex == promoListSize - 1) {
             view?.hideLoading()
             presenter.setCouponStateChanged(true)
-            presenter.processInitialLoadCheckoutPage(isFromMultipleAddress, isOneClickShipment, cornerId)
+            presenter.processInitialLoadCheckoutPage(isFromMultipleAddress, isOneClickShipment, isTradeIn, cornerId, deviceId)
         }
     }
 

@@ -23,6 +23,7 @@ import rx.Subscriber;
  * Created by Irfan Khoirul on 01/11/18.
  */
 
+@Deprecated
 public class GetShipmentAddressFormPrepareCheckoutSubscriber extends Subscriber<CartShipmentAddressFormData> {
 
     private final ShipmentPresenter shipmentPresenter;
