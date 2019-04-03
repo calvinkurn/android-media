@@ -24,7 +24,7 @@ mutation get_promo_stack_first($params: PromoStackRequest) {
           clash_message
           clash_reason
           is_clashed_promos
-          option {
+          options {
             voucher_orders {
               cart_id
               code
