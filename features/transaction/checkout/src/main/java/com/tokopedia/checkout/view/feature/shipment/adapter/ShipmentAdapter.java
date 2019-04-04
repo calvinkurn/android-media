@@ -565,6 +565,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 VoucherLogisticItemUiModel logPromo = new VoucherLogisticItemUiModel();
                 logPromo.setCode(newCourierItemData.getLogPromoCode());
                 shipmentCartItemModel.setVoucherLogisticItemUiModel(logPromo);
+            } else {
+                shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
             }
             updateShipmentCostModel();
             checkDataForCheckout();
