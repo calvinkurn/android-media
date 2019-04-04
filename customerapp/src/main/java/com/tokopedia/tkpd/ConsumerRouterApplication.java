@@ -3600,9 +3600,4 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
         return baseDaggerFragment;
     }
-
-    @Override
-    public void openImagePreviewFromChat(@NotNull Context context, @NotNull ArrayList<String> listImage, @NotNull ArrayList<String> imageDesc, @NotNull String title, @NotNull String date) {
-        ImageReviewGalleryActivity.Companion.moveTo(context, listImage, 0);
-    }
 }

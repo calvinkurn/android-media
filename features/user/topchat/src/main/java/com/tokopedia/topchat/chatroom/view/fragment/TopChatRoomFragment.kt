@@ -38,6 +38,7 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
@@ -364,8 +365,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             strings.add(imageUrl)
             val topChatRouter = (it.applicationContext as TopChatRouter)
 
-            topChatRouter.openImagePreviewFromChat(it, strings, ArrayList(),
-                    opponentName, replyTime)
+            it.startActivity(ImagePreviewActivity.getCallingIntent(context!!,
+                    strings,
+                    null, 0))
         }
 
     }
