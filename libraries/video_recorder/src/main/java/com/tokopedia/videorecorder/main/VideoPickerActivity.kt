@@ -3,15 +3,11 @@ package com.tokopedia.videorecorder.main
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.graphics.Typeface
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
-import android.support.v4.view.ViewPager
-import android.util.DisplayMetrics
 import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.TextView
@@ -33,7 +29,7 @@ import java.util.*
  * github: @isfaaghyth
  * imagePickerGallery: henry
  */
-open class VideoPickerActivity: BaseSimpleActivity(),
+open class VideoPickerActivity : BaseSimpleActivity(),
         VideoPickerCallback,
         ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener {
 
@@ -139,10 +135,11 @@ open class VideoPickerActivity: BaseSimpleActivity(),
 
     private fun setupViewPager() {
         adapter.destroyAllView()
+        adapter.notifyDataSetChanged()
         adapter = viewPagerAdapter()
         vpVideoPicker.adapter = adapter
-        vpVideoPicker.addOnPageChangeListener(PageChangeCallback {
-            position -> currentSelectedTab = position
+        vpVideoPicker.addOnPageChangeListener(PageChangeCallback { position ->
+            currentSelectedTab = position
         })
         setupTabLayout()
     }
@@ -158,6 +155,7 @@ open class VideoPickerActivity: BaseSimpleActivity(),
                     textView.setTypeface(textView.typeface, Typeface.BOLD)
                 }
             }
+
             override fun onTabUnselected(tab: TabLayout.Tab) {
                 exceptionHandler {
                     val textView = ((tabPicker.getChildAt(0) as ViewGroup).getChildAt(tab.position) as ViewGroup).getChildAt(1) as TextView
@@ -199,9 +197,6 @@ open class VideoPickerActivity: BaseSimpleActivity(),
         onVideoVisible()
         videoPreview.stopPlayback()
         videoPreview.setVideoURI(null)
-        setupViewPager()
-
-        selectCurrentPage(currentSelectedTab)
 
         if (!isVideoSourcePicker) {
             if (File(videoPath).exists()) {
@@ -233,6 +228,12 @@ open class VideoPickerActivity: BaseSimpleActivity(),
 
     override fun onVideoTaken(filePath: String) {
         if (filePath.isNotEmpty()) {
+
+            adapter = ViewPagerAdapter(supportFragmentManager)
+            setupViewPager()
+            adapter.notifyDataSetChanged()
+            selectCurrentPage(currentSelectedTab)
+
             onPreviewVideoVisible()
 
             val uriFile = Uri.parse(filePath)
@@ -248,8 +249,8 @@ open class VideoPickerActivity: BaseSimpleActivity(),
     }
 
     override fun onPreviewVideoVisible() {
-        layoutPreview.show()
         containerPicker.hide()
+        layoutPreview.show()
         btnDone.show()
 
         btnDeleteVideo.text = if (isVideoSourcePicker) {
@@ -281,5 +282,17 @@ open class VideoPickerActivity: BaseSimpleActivity(),
     }
 
     override fun getMaxFileSize(): Long = VIDEO_MAX_SIZE
+
+    override fun initShake() {
+        //Don't allow Shake" while picking video
+    }
+
+    override fun registerShake() {
+        //Don't allow Shake" while picking video
+    }
+
+    override fun unregisterShake() {
+        //Don't allow Shake" while picking video
+    }
 
 }
