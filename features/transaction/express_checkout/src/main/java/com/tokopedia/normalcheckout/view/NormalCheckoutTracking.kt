@@ -93,11 +93,13 @@ class NormalCheckoutTracking {
             isTrackTradeIn = false
             return
         }
-        val productVariantString = (originalProductInfoAndVariant.productVariant
+        var productVariantString = (originalProductInfoAndVariant.productVariant
             .getOptionListString(selectedVariantId)?.joinToString(" - ")
             ?: "non variant")
-        val category : String = if(isTrackTradeIn)
+        val category : String = if(isTrackTradeIn) {
+            productVariantString = ""
             HARGA_FINAL_TRADEIN
+        }
         else
             PRODUCT_DETAIL_PAGE
         TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(
