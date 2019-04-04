@@ -502,6 +502,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             carouselIcon.setOnClickListener { }
             edit.setOnClickListener { }
         }
+        btnPlay.showWithCondition(viewModel.fileImageList.first().type == MediaType.VIDEO)
         carouselIcon.showWithCondition(viewModel.completeImageList.size > 1)
     }
 
