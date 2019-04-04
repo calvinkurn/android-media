@@ -2,20 +2,15 @@ package com.tokopedia.videorecorder.main
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
-import android.support.v4.view.ViewPager
 import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.TextView
-import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler
-import com.github.hiteshsondhi88.libffmpeg.FFmpeg
-import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem
@@ -34,15 +29,14 @@ import java.util.*
  * github: @isfaaghyth
  * imagePickerGallery: henry
  */
-open class VideoPickerActivity: BaseSimpleActivity(),
+open class VideoPickerActivity : BaseSimpleActivity(),
         VideoPickerCallback,
         ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener {
 
     companion object {
         //video recorder const
         const val VIDEOS_RESULT = "video_result"
-        const val VIDEO_MAX_SIZE = 50000L //50 mb
-        const val VIDEO_MAX_DURATION_MS = 60000 //ms = 1 minute
+        const val VIDEO_MAX_SIZE = 100000L //100 mb
 
         //flag
         var isVideoSourcePicker = false
@@ -66,11 +60,6 @@ open class VideoPickerActivity: BaseSimpleActivity(),
 
     //runtime permission handle
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
-
-    //ffmpeg
-    private lateinit var ffmpeg: FFmpeg
-
-    private lateinit var progressDialog: ProgressDialog
 
     override fun getLayoutRes(): Int = R.layout.activity_video_picker
 
@@ -128,21 +117,14 @@ open class VideoPickerActivity: BaseSimpleActivity(),
     }
 
     private fun initView() {
-        //init progress dialog
-        progressDialog = ProgressDialog(this)
-
-        //init ffmpeg instance
-        ffmpeg = FFmpeg.getInstance(this)
-        ffmpeg.loadBinary(object : LoadBinaryResponseHandler() {})
-
         //support actionbar
         setSupportActionBar(toolbarVideoPicker)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        showBackButton(true)
         supportActionBar?.title = getString(R.string.vidpick_title)
 
         //initial of adapter for viewPager and tabPicker
+        adapter = ViewPagerAdapter(supportFragmentManager)
         setupViewPager()
-        setupTabLayout()
 
         //remove recording result
         btnDeleteVideo.setOnClickListener { cancelVideo() }
@@ -151,18 +133,19 @@ open class VideoPickerActivity: BaseSimpleActivity(),
         btnDone.setOnClickListener { onVideoDoneClicked() }
     }
 
+    private fun showBackButton(show: Boolean) {
+        supportActionBar?.setDisplayHomeAsUpEnabled(show)
+    }
+
     private fun setupViewPager() {
-        adapter = ViewPagerAdapter(supportFragmentManager)
+        adapter.destroyAllView()
+        adapter.notifyDataSetChanged()
         adapter = viewPagerAdapter()
         vpVideoPicker.adapter = adapter
-        vpVideoPicker.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {}
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-
-            override fun onPageSelected(position: Int) {
-                currentSelectedTab = position
-            }
+        vpVideoPicker.addOnPageChangeListener(PageChangeCallback { position ->
+            currentSelectedTab = position
         })
+        setupTabLayout()
     }
 
     private fun setupTabLayout() {
@@ -176,6 +159,7 @@ open class VideoPickerActivity: BaseSimpleActivity(),
                     textView.setTypeface(textView.typeface, Typeface.BOLD)
                 }
             }
+
             override fun onTabUnselected(tab: TabLayout.Tab) {
                 exceptionHandler {
                     val textView = ((tabPicker.getChildAt(0) as ViewGroup).getChildAt(tab.position) as ViewGroup).getChildAt(1) as TextView
@@ -186,7 +170,7 @@ open class VideoPickerActivity: BaseSimpleActivity(),
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
         //select first tab for startup
-        tabPicker.getTabAt(0)?.select()
+        selectCurrentPage(currentSelectedTab)
     }
 
     @SuppressLint("MissingPermission")
@@ -216,6 +200,8 @@ open class VideoPickerActivity: BaseSimpleActivity(),
     private fun cancelVideo() {
         onVideoVisible()
         videoPreview.stopPlayback()
+        videoPreview.setVideoURI(null)
+
         if (!isVideoSourcePicker) {
             if (File(videoPath).exists()) {
                 FileUtils.deleteCacheDir()
@@ -223,40 +209,13 @@ open class VideoPickerActivity: BaseSimpleActivity(),
         }
     }
 
+    private fun selectCurrentPage(index: Int) {
+        tabPicker.getTabAt(index)?.select()
+        vpVideoPicker.currentItem = index
+    }
+
     protected open fun onVideoDoneClicked() {
-        if (isVideoSourcePicker && videoPreview.duration > VIDEO_MAX_DURATION_MS) {
-            //prepared
-            val resultFile = FileUtils.videoPath(FileUtils.RESULT_DIR).absolutePath
-            val trimQuery = VideoUtils.ffmegCommand(videoPath, resultFile)
-
-            exceptionHandler {
-                ffmpeg.execute(trimQuery, object : ExecuteBinaryResponseHandler() {
-                    override fun onSuccess(message: String?) {
-                        super.onSuccess(message)
-                        if (progressDialog.isShowing) {
-                            progressDialog.dismiss()
-                        }
-                        onFinishPicked(resultFile)
-                    }
-
-                    override fun onFailure(message: String?) {
-                        super.onFailure(message)
-                        if (progressDialog.isShowing) {
-                            progressDialog.dismiss()
-                        }
-                        showToast(applicationContext, getString(R.string.vidpick_error_message))
-                    }
-
-                    override fun onProgress(message: String?) {
-                        super.onProgress(message)
-                        progressDialog.setMessage(getString(R.string.vidpick_progress_loader))
-                        progressDialog.show()
-                    }
-                })
-            }
-        } else {
-            onFinishPicked(videoPath)
-        }
+        onFinishPicked(videoPath)
     }
 
     private fun onFinishPicked(file: String) {
@@ -273,10 +232,18 @@ open class VideoPickerActivity: BaseSimpleActivity(),
 
     override fun onVideoTaken(filePath: String) {
         if (filePath.isNotEmpty()) {
+
+            adapter = ViewPagerAdapter(supportFragmentManager)
+            setupViewPager()
+            adapter.notifyDataSetChanged()
+            selectCurrentPage(currentSelectedTab)
+
+            onPreviewVideoVisible()
+
             val uriFile = Uri.parse(filePath)
             isVideoSourcePicker = false
             videoPath = filePath
-            onPreviewVideoVisible()
+
             videoPreview.setVideoURI(uriFile)
             videoPreview.setOnPreparedListener { mp ->
                 mp.isLooping = true //loop
@@ -286,21 +253,22 @@ open class VideoPickerActivity: BaseSimpleActivity(),
     }
 
     override fun onPreviewVideoVisible() {
+        showBackButton(false)
+        containerPicker.hide()
         layoutPreview.show()
-        vpVideoPicker.hide()
-        tabPicker.hide()
         btnDone.show()
-        if (isVideoSourcePicker) {
-            btnDeleteVideo.text = getString(R.string.vidpick_btn_back)
+
+        btnDeleteVideo.text = if (isVideoSourcePicker) {
+            getString(R.string.vidpick_btn_back)
         } else {
-            btnDeleteVideo.text = getString(R.string.vidpick_btn_delete)
+            getString(R.string.vidpick_btn_delete)
         }
     }
 
     override fun onVideoVisible() {
+        showBackButton(true)
+        containerPicker.show()
         layoutPreview.hide()
-        vpVideoPicker.show()
-        tabPicker.show()
         btnDone.hide()
     }
 
@@ -320,5 +288,17 @@ open class VideoPickerActivity: BaseSimpleActivity(),
     }
 
     override fun getMaxFileSize(): Long = VIDEO_MAX_SIZE
+
+    override fun initShake() {
+        //Don't allow Shake" while picking video
+    }
+
+    override fun registerShake() {
+        //Don't allow Shake" while picking video
+    }
+
+    override fun unregisterShake() {
+        //Don't allow Shake" while picking video
+    }
 
 }

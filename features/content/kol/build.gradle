@@ -26,6 +26,10 @@ project.ext {
 
 dependencies {
 
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
+
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.applink)

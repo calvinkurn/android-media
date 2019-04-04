@@ -55,11 +55,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        cameraView.mode = Mode.VIDEO
-        cameraView.addCameraListener(cameraListener())
-        cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER)
-
+        cameraPrepared()
         //set max progress value
         progress.max = DURATION_MAX
 
@@ -78,8 +74,16 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
         }
     }
 
+    private fun cameraPrepared() {
+        cameraView.mode = Mode.VIDEO
+        cameraView.clearCameraListeners()
+        cameraView.addCameraListener(cameraListener())
+        cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER)
+    }
+
     override fun onResume() {
         super.onResume()
+
         exceptionHandler {
             cameraView.open()
         }
@@ -96,6 +100,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
         super.onDestroy()
         exceptionHandler {
             cameraView.destroy()
+            timer.cancel()
         }
     }
 
@@ -121,14 +126,16 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
 
         if (cameraView.isTakingVideo) {
             vwRecord.hide()
-            btnFlip.show()
             progress.hide()
+            btnFlash.show()
+            btnFlip.show()
             cameraView.stopVideo()
             timer.cancel()
         } else {
-            btnFlip.hide()
             vwRecord.show()
             progress.show()
+            btnFlip.hide()
+            btnFlash.hide()
             val file = FileUtils.videoPath(FileUtils.RESULT_DIR)
             cameraView.takeVideo(file, DURATION_MAX)
             //progress and duration countdown

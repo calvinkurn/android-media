@@ -100,7 +100,6 @@
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_8"
-                    android:tag="@string/noclick"
                     android:visibility="gone" />
                 <include layout="@layout/partial_product_full_descr"/>
                 <include layout="@layout/partial_product_shop_info"/>
@@ -221,21 +220,20 @@
                     app:fontSize="small"
                     app:textViewTheme="darkPrimary" />
 
-                <ProgressBar
-                    android:id="@+id/loadingAffiliate"
-                    style="?android:attr/progressBarStyleInverse"
-                    android:layout_width="@dimen/dp_18"
-                    android:layout_height="@dimen/dp_18"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_8"
-                    android:layout_toStartOf="@id/textView"
-                    android:layout_toLeftOf="@id/textView"
-                    android:indeterminateDrawable="@drawable/ic_progress_loading"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
-
             </RelativeLayout>
+
+            <FrameLayout
+                android:id="@+id/loadingAffiliate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@color/white">
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
+            </FrameLayout>
 
         </RelativeLayout>
 
