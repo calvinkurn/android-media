@@ -163,7 +163,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
     lateinit var productInfoViewModel: ProductInfoViewModel
     lateinit var productWarehouseViewModel: ProductWarehouseViewModel
 
-    lateinit var performanceMonitoring: PerformanceMonitoring
+    lateinit var performanceMonitoringP1: PerformanceMonitoring
+    lateinit var performanceMonitoringFull: PerformanceMonitoring
     lateinit var remoteConfig: RemoteConfig
 
     private var isAppBarCollapsed = false
@@ -248,7 +249,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        performanceMonitoring = PerformanceMonitoring.start(PDP_P1_TRACE)
+        performanceMonitoringP1 = PerformanceMonitoring.start(PDP_P1_TRACE)
+        performanceMonitoringFull = PerformanceMonitoring.start(PDP_P2_TRACE)
         if (savedInstanceState != null) {
             userInputNotes = savedInstanceState.getString(SAVED_NOTE, "")
             userInputQuantity = savedInstanceState.getInt(SAVED_QUANTITY, 1)
@@ -279,7 +281,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         productInfoViewModel.productInfoP1Resp.observe(this, Observer {
             swipe_refresh_layout.isRefreshing = false
-            performanceMonitoring.stopTrace()
+            performanceMonitoringP1.stopTrace()
             when (it) {
                 is Success -> onSuccessGetProductInfo(it.data)
                 is Fail -> onErrorGetProductInfo(it.throwable)
@@ -293,11 +295,14 @@ class ProductDetailFragment : BaseDaggerFragment() {
         })
 
         productInfoViewModel.productInfoP2resp.observe(this, Observer {
+            if(!productInfoViewModel.isUserSessionActive())
+                performanceMonitoringFull.stopTrace()
+
             it?.run { renderProductInfo2(this) }
         })
 
         productInfoViewModel.productInfoP3resp.observe(this, Observer {
-            performanceMonitoring.stopTrace()
+            performanceMonitoringFull.stopTrace()
             it?.run { renderProductInfo3(this) }
         })
 
@@ -1155,7 +1160,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGetProductInfo(productInfoP1: ProductInfoP1) {
-        performanceMonitoring = PerformanceMonitoring.start(PDP_P2_TRACE)
         val data = productInfoP1.productInfo
         productId = data.basic.id.toString()
         productInfo = data
