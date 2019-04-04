@@ -484,7 +484,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private fun updateThumbnail() {
         if (viewModel.completeImageList.isNotEmpty()) {
-            thumbnail.loadImageRounded(viewModel.completeImageList.first().path?:"", 25f)
+            btnPlay.showWithCondition(viewModel.fileImageList.first().type == MediaType.VIDEO)
+            thumbnail.loadImageRounded(viewModel.completeImageList.first().path, 25f)
             edit.show()
             carouselIcon.setOnClickListener {
                 goToMediaPreview()
@@ -502,7 +503,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             carouselIcon.setOnClickListener { }
             edit.setOnClickListener { }
         }
-        btnPlay.showWithCondition(viewModel.fileImageList.first().type == MediaType.VIDEO)
         carouselIcon.showWithCondition(viewModel.completeImageList.size > 1)
     }
 
