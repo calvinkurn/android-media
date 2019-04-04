@@ -58,14 +58,16 @@ class LogisticVoucherView : CustomVoucherView {
         LayoutInflater.from(context).inflate(R.layout.widget_merchant_voucher_view,
                 this, true)
         ivVoucherLogo.visibility = View.GONE
+        tvVoucherSubtitle.visibility = View.VISIBLE
         tvVoucherTitle.setSingleLine(false)
         btnUseVoucher.text = context.getString(R.string.use_voucher)
         btnUseVoucher.setTextColor(ContextCompat.getColor(this.context, R.color.tkpd_main_green))
         btnUseVoucher.setBackgroundResource(R.drawable.button_border_green)
     }
 
-    fun setData(title: String, desc: String) {
+    fun setData(title: String, subtitle: String, desc: String) {
         tvVoucherTitle.text = title
+        tvVoucherSubtitle.text = subtitle
         tvVoucherDesc.text = desc
     }
 

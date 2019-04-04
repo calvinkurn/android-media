@@ -16,7 +16,7 @@ class LogisticPromoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
     }
 
     fun bindData(data: LogisticPromoViewModel, listener: ShippingDurationAdapterListener) {
-        itemView.view_logistic_voucher.setData(data.title, data.description)
+        itemView.view_logistic_voucher.setData(data.title, data.shipperDesc, data.description)
         itemView.view_logistic_voucher.setUseButtonClickListener(object : View.OnClickListener{
             override fun onClick(view: View?) {
                 listener.onLogisticPromoClicked(data)
