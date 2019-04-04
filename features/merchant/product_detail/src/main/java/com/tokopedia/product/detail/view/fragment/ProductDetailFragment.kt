@@ -822,6 +822,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun loadProductData(forceRefresh: Boolean = false) {
+        if (forceRefresh){
+            otherProductView.renderData(listOf())
+            topads_carousel.gone()
+        }
         if (productId != null || (productKey != null && shopDomain != null)) {
             productInfoViewModel.getProductInfo(ProductParams(productId, shopDomain, productKey), forceRefresh)
         }
