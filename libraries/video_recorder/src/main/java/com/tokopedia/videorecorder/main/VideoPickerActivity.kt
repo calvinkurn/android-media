@@ -135,6 +135,16 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     private fun showBackButton(show: Boolean) {
         supportActionBar?.setDisplayHomeAsUpEnabled(show)
+        when (show) {
+            true -> {
+                toolbarVideoPicker.setContentInsetsRelative(0, 0)
+                toolbarVideoPicker.setContentInsetsAbsolute(0, 0)
+            }
+            false -> {
+                toolbarVideoPicker.setContentInsetsRelative(R.dimen.dp_14, 0)
+                toolbarVideoPicker.setContentInsetsAbsolute(R.dimen.dp_14, 0)
+            }
+        }
     }
 
     private fun setupViewPager() {
@@ -186,8 +196,11 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        FileUtils.deleteCacheDir()
+        if (videoPath.isNotEmpty()) {
+            FileUtils.deleteCacheDir()
+        } else {
+            super.onBackPressed()
+        }
     }
 
     private fun playVideoPreview() {
