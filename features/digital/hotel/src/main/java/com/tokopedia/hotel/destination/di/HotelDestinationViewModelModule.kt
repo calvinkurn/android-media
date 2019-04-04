@@ -1,4 +1,4 @@
-package com.tokopedia.hotel.common.di.module
+package com.tokopedia.hotel.destination.di
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
@@ -11,10 +11,15 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@HotelScope
-abstract class HotelViewModelModule{
+@HotelDestinationScope
+abstract class HotelDestinationViewModelModule{
 
     @HotelScope
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(HotelDestinationViewModel::class)
+    internal abstract fun hotelDestinationViewModel(viewModel: HotelDestinationViewModel): ViewModel
 }

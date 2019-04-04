@@ -53,7 +53,7 @@ class HotelSearchDestinationFragment: BaseListFragment<SearchDestination, Search
 
 
     override fun initInjector() {
-        getComponent(HotelComponent::class.java).inject(this)
+        getComponent(HotelDestinationComponent::class.java).inject(this)
     }
 
     override fun loadData(page: Int) {

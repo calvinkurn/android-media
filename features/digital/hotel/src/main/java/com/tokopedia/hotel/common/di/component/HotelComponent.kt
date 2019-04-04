@@ -33,10 +33,4 @@ interface HotelComponent {
 
     fun inject(hotelHomepageFragment: HotelHomepageFragment)
 
-    fun inject(hotelDestinationActivity: HotelDestinationActivity)
-
-    fun inject(hotelRecommendationFragment: HotelRecommendationFragment)
-
-    fun inject(hotelSearchDestinationFragment: HotelSearchDestinationFragment)
-
 }

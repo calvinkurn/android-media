@@ -6,13 +6,12 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.text.TextUtils
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.design.text.SearchInputView
-import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
-import com.tokopedia.hotel.common.di.component.HotelComponent
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
+import com.tokopedia.hotel.destination.di.DaggerHotelDestinationComponent
+import com.tokopedia.hotel.destination.di.HotelDestinationComponent
 import com.tokopedia.hotel.destination.view.fragment.HotelRecommendationFragment
 import com.tokopedia.hotel.destination.view.fragment.HotelSearchDestinationFragment
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
@@ -23,7 +22,7 @@ import javax.inject.Inject
  * @author by jessica on 25/03/19
  */
 
-class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelComponent>, SearchInputView.Listener,
+class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinationComponent>, SearchInputView.Listener,
         SearchInputView.ResetListener {
 
     @Inject
@@ -40,7 +39,9 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelComponent
 
     override fun isShowCloseButton(): Boolean = true
 
-    override fun getComponent(): HotelComponent = HotelComponentInstance.getHotelComponent(application)
+    override fun getComponent(): HotelDestinationComponent = DaggerHotelDestinationComponent.builder()
+            .hotelComponent(getHotelComponent())
+            .build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

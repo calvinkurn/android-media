@@ -47,7 +47,7 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        getComponent(HotelComponent::class.java).inject(this)
+        getComponent(HotelDestinationComponent::class.java).inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
