@@ -1,10 +1,13 @@
 package com.tokopedia.profile.view.adapter.viewholder
 
+import android.os.Build
 import android.support.annotation.LayoutRes
 import android.view.View
+import android.view.ViewTreeObserver
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.profile.R
 import com.tokopedia.profile.view.viewmodel.EmptyAffiliateViewModel
 import kotlinx.android.synthetic.main.item_profile_affiliate_empty.view.*
@@ -20,11 +23,26 @@ class EmptyAffiliateViewHolder(val v: View, val listener: OnEmptyItemClickedList
         val imagePath = "https://ecs7.tokopedia.net/img/android/profile/xxxhdpi/img_empty_profile.png"
     }
     override fun bind(element: EmptyAffiliateViewModel?) {
-
-        ImageHandler.loadImage2(itemView.image, imagePath, R.drawable.ic_loading_image)
         itemView.card_image.setOnClickListener(onEmptyItemClicked())
         itemView.tv_see_more_product.setOnClickListener(onEmptyItemClicked())
         itemView.tv_title.text = itemView.context.resources.getString(R.string.profile_empty_title)
+        itemView.image.viewTreeObserver.addOnGlobalLayoutListener(
+                object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        val viewTreeObserver = itemView.image.viewTreeObserver
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        } else {
+                            @Suppress("DEPRECATION")
+                            viewTreeObserver.removeGlobalOnLayoutListener(this)
+                        }
+
+                        itemView.image.maxHeight = itemView.image.width
+                        itemView.image.requestLayout()
+                    }
+                }
+        )
+        itemView.image.loadImage(imagePath)
     }
 
     private fun onEmptyItemClicked() : View.OnClickListener {
