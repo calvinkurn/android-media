@@ -175,7 +175,6 @@ public class CouponInStackBaseAdapter extends BaseAdapter<CouponValueEntity> {
             public void onNext(GraphqlResponse graphqlResponse) {
                 //handling the catalog listing and tabs
                 TokoPointPromosEntity catalogListingOuter = graphqlResponse.getData(TokoPointPromosEntity.class);
-                catalogListingOuter = new Gson().fromJson(CouponListingStackedFragment.getJson(), TokoPointPromosEntity.class);
                 if (catalogListingOuter != null) {
                     if (catalogListingOuter.getCoupon().getCoupons() != null) {
                         loadCompleted(catalogListingOuter.getCoupon().getCoupons(), catalogListingOuter);
