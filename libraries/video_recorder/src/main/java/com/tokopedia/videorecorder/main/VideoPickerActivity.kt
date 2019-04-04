@@ -53,7 +53,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     //catch videoPath uri
     private var videoGalleryPaths = arrayListOf<String>()
-    private lateinit var videoPath: String
+    private var videoPath: String = ""
 
     //saved state of tab layout
     private var currentSelectedTab: Int = 0
@@ -191,6 +191,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     private fun cancelVideo() {
         onVideoVisible()
+        videoPath.clear()
         videoPreview.stopPlayback()
         videoPreview.setVideoURI(null)
 
@@ -220,7 +221,12 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         finish()
     }
 
-    //video recorder callback
+    /**
+     * Callback from video recorder
+     * @method(onVideoTaken(file))
+     * @method(onPreviewVideoVisible)
+     * @method(onVideoVisible)
+     */
 
     override fun onVideoTaken(filePath: String) {
         if (filePath.isNotEmpty()) {
@@ -261,7 +267,13 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         btnDone.hide()
     }
 
-    //video picker callback
+    /**
+     * Callback from video picker
+     * @method(onAlbumItemClicked(item, isChecked))
+     * @method(getImagePath)
+     * @method(isMaxImageReached)
+     * @method(getMaxFileSize)
+     */
 
     override fun onAlbumItemClicked(item: MediaItem?, isChecked: Boolean) {
         //get single image
@@ -270,24 +282,22 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         onVideoTaken(videoPath)
     }
 
-    override fun isMaxImageReached(): Boolean = false
-
     override fun getImagePath(): ArrayList<String> {
         return videoGalleryPaths
     }
 
+    override fun isMaxImageReached(): Boolean = false
+
     override fun getMaxFileSize(): Long = VIDEO_MAX_SIZE
 
-    override fun initShake() {
-        //Don't allow Shake" while picking video
-    }
-
-    override fun registerShake() {
-        //Don't allow Shake" while picking video
-    }
-
-    override fun unregisterShake() {
-        //Don't allow Shake" while picking video
-    }
+    /**
+     * Don't allow Shake" while picking video
+     * @method(initShake)
+     * @method(registerShake)
+     * @method(unregisterShake)
+     */
+    override fun initShake() {}
+    override fun registerShake() {}
+    override fun unregisterShake() {}
 
 }

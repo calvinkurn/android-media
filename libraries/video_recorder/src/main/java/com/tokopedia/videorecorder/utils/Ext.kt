@@ -15,6 +15,10 @@ internal fun View.hide() {
     visibility = View.GONE
 }
 
+internal fun String.clear(): String {
+    return ""
+}
+
 internal fun View.visible(isTrue: Boolean, it: () -> Unit = { }) {
     if (isTrue) {
         visibility = View.VISIBLE
