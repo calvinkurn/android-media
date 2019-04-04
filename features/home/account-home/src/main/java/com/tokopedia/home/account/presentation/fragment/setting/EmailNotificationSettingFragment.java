@@ -52,7 +52,6 @@ public class EmailNotificationSettingFragment extends BaseDaggerFragment impleme
     private AccountAnalytics accountAnalytics;
 
     private boolean isChanged;
-    private final static String KEY_BULLETIN = "flag_bulletin";
 
     public static Fragment createInstance() {
         return new EmailNotificationSettingFragment();
@@ -159,9 +158,7 @@ public class EmailNotificationSettingFragment extends BaseDaggerFragment impleme
             accountAnalytics.eventClickEmailSetting(String.format("%s %s", CHAT, NOTIFICATION));
         } else if (SettingType.FLAG_ADMIN_MESSAGE.equals(key)) {
             accountAnalytics.eventClickEmailSetting(String.format("%s %s %s", CHAT, TOKOPEDIA, NOTIFICATION));
-        } else if (KEY_BULLETIN.equals(key)) {
-            accountAnalytics.eventClickEmailSetting(String.format("%s %s", NEWS_LETTER, NOTIFICATION));
-        } else if (SettingType.FLAG_NEWSLETTER.equals(key)) {
+        }  else if (SettingType.FLAG_NEWSLETTER.equals(key)) {
             accountAnalytics.setNewsletterEmailPref(!newValue);
         }
         isChanged = true;
