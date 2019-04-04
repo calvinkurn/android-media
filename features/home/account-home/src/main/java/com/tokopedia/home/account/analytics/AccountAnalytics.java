@@ -40,10 +40,11 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.USER;
  */
 public class AccountAnalytics {
 
-    private Context context;
+    private final Context context;
     private UserSessionInterface userSessionInterface;
 
     public AccountAnalytics(Context context) {
+        this.context = context;
         userSessionInterface = new UserSession(context);
     }
 
