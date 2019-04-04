@@ -15,4 +15,17 @@
     <!-- Action -->
     <string name="feed_content_reported">Konten berhasil dilaporkan</string>
 
+    <!-- Dialog Delete Post-->
+    <string name="card_dialog_delete_post">Hapus Kurasi</string>
+    <string name="card_dialog_after_delete_cant">Setelah dihapus, kamu tidak akan mendapat komisi dari kurasi ini</string>
+    <string name="card_dialog_title_delete">Hapus</string>
+    <string name="card_dialog_title_cancel">Batal</string>
+
+    <!-- Empty Card Detail Feed -->
+    <string name="feed_post_detail_empty_title">Duh, Halamannya ga kebuka</string>
+    <string name="feed_post_detail_empty_subtitle">Ada sedikit kendala nih. Coba beberapa
+        saat lagi ya.</string>
+    <string name="feed_post_detail_empty_button">Coba Lagi</string>
+
+
 </resources>

@@ -233,7 +233,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void initVar() {
-        FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this, analytics);
+        FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this, analytics, userSession);
         adapter = new FeedPlusAdapter(typeFactory);
         adapter.setOnLoadListener(totalCount -> {
             int size = adapter.getlist().size();
@@ -1835,14 +1835,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                              @NotNull String description, @NotNull String url,
                              @NotNull String imageUrl) {
         if (getActivity() != null) {
-            feedModuleRouter.shareFeed(
-                    getActivity(),
-                    String.valueOf(id),
-                    url,
-                    title,
-                    imageUrl,
-                    description
-            );
+            doShare(String.format("%s %s", description, url), title);
         }
 
         if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
@@ -1855,6 +1848,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     url
             );
         }
+    }
+
+    private void doShare(String body, String title) {
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, body);
+        startActivity(
+                Intent.createChooser(sharingIntent, title)
+        );
     }
 
     @Override

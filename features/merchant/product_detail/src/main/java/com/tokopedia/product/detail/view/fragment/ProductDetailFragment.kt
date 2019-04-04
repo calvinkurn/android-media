@@ -339,6 +339,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         if (isAffiliate){
             actionButtonView.gone()
             base_btn_affiliate.visible()
+            loadingAffiliate.visible()
         }
 
         merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(object : MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
@@ -989,6 +990,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                         ApplinkConst.AFFILIATE_CREATE_POST,
                         pdpAffiliate.productId.toString(),
                         pdpAffiliate.adId.toString())
+                it.setResult(Activity.RESULT_OK)
                 it.finish()
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
@@ -1075,7 +1077,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
         latestTalkView.renderData(productInfoP2.latestTalk, productInfo?.stats?.countTalk ?: 0,
                 productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
 
-        otherProductView.renderData(productInfoP2.productOthers)
+        if (!isAffiliate) {
+            otherProductView.renderData(productInfoP2.productOthers)
+        }
 
         partialVariantAndRateEstView.renderFulfillment(productInfoP2.nearestWarehouse.warehouseInfo.isFulfillment)
         if (productInfo != null && productInfoP2.nearestWarehouse.warehouseInfo.id.isNotBlank())
