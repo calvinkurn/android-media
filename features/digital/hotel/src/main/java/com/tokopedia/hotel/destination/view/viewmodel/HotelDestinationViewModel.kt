@@ -27,16 +27,15 @@ class HotelDestinationViewModel @Inject constructor(val dispatcher: CoroutineDis
     fun getCurrentLocation(activity: Activity) {
         val locationDetectorHelper = LocationDetectorHelper(
                 permissionCheckerHelper,
-                LocationServices.getFusedLocationProviderClient(activity
-                        .applicationContext),
-                activity.applicationContext)
+                LocationServices.getFusedLocationProviderClient(activity),
+                activity)
         locationDetectorHelper.getLocation(onGetLocation(), activity,
                 LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
                 activity.getString(R.string.hotel_search_need_permission))
     }
 
     private fun onGetLocation(): Function1<DeviceLocation, Unit> {
-        return { (latitude, longitude) ->
+        return { (latitude, longitude, last) ->
             Log.d("OUTPUTTT", latitude.toString() + " " + longitude.toString())
             null
         }
