@@ -309,10 +309,20 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener {
-            if (tv_trade_in_promo != null) {
-                tv_trade_in_promo.visible()
-                tv_available_at?.visible()
-            }
+            if(it) {
+                if(productInfo!=null && shopInfo!=null)
+                    productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
+                            it, tradeInParams?.usedPrice > 0)
+
+                if (tv_trade_in_promo != null) {
+                    tv_trade_in_promo.visible()
+                    tv_available_at?.visible()
+                }
+            } else
+                if(productInfo!=null && shopInfo!=null)
+                    productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
+                            it, tradeInParams?.usedPrice > 0)
+
         }
         context?.let {
             LocalBroadcastManager.getInstance(context!!).registerReceiver(tradeInBroadcastReceiver, IntentFilter(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE))
@@ -1075,12 +1085,20 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productInfo?.run {
             productDetailTracking.sendScreen(basic.shopID.toString(),
                     shopInfo?.goldOS?.shopTypeString ?: "", productId ?: "")
-            productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, this, productInfoP2.shopInfo, trackerAttribution,
-                    tradeInParams?.isEligible==1, tradeInParams?.usedPrice>0)
-            productDetailTracking.sendMoEngageOpenProduct(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
-                    ?: "")
-            productDetailTracking.eventAppsFylerOpenProduct(this)
-        }
+            var isHandPhone = false
+            this.category.detail.forEach { detail: Category.Detail ->
+                if (detail.name.equals("Handphone")) {
+                    isHandPhone = true
+                }
+            }
+            if (!isHandPhone)
+                productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, this, productInfoP2.shopInfo, trackerAttribution,
+                        false, false)
+
+                productDetailTracking.sendMoEngageOpenProduct(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
+                        ?: "")
+                productDetailTracking.eventAppsFylerOpenProduct(this)
+            }
 
     }
 

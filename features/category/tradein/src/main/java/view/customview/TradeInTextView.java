@@ -26,6 +26,7 @@ public class TradeInTextView extends ConstraintLayout {
     private TradeInTextView thisInstance;
     private ClickTrackListener trackListener;
     public static final String ACTION_TRADEIN_ELLIGIBLE = "ACTION_TRADE_IN_ELLIGIBLE";
+    public static final String EXTRA_ISELLIGIBLE = "EXTRA_ISELLIGIBLE";
 
     private View.OnClickListener clickListener = new OnClickListener() {
         @Override
