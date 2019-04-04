@@ -10,7 +10,8 @@ class DigitalBrowseServiceAnalyticsModel (
     var headerName: String = "",
     var headerPosition: Int = 0,
     var iconName: String = "",
-    var iconPosition: Int = 0
+    var iconPosition: Int = 0,
+    var isTitle : Boolean = false
 ) {
     val TRACKING_FIELD_ID = "id"
     val TRACKING_FIELD_NAME = "name"

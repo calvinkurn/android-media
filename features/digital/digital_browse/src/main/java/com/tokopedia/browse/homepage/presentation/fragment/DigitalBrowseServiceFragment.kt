@@ -28,6 +28,7 @@ import com.tokopedia.browse.homepage.presentation.contract.DigitalBrowseServiceC
 import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseServiceCategoryViewModel
 import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseServiceViewModel
 import com.tokopedia.browse.homepage.presentation.presenter.DigitalBrowseServicePresenter
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -62,11 +63,14 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
     private lateinit var viewModel: DigitalBrowseServiceViewModel
     private lateinit var serviceAdapter: DigitalBrowseServiceAdapter
 
+    private lateinit var trackingQueue: TrackingQueue
+
     override val fragmentContext: Context?
         get() = context
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        trackingQueue = TrackingQueue(activity!!)
         performanceMonitoring = PerformanceMonitoring.start(BROWSE_TRACE)
     }
 
@@ -96,6 +100,13 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
 
         if (arguments != null && arguments!!.containsKey(EXTRA_CATEGORY_ID)) {
             selectedCategoryId = arguments!!.getInt(EXTRA_CATEGORY_ID)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (::trackingQueue.isInitialized) {
+            trackingQueue.sendAll()
         }
     }
 
@@ -305,6 +316,7 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
     }
 
     override fun sendImpressionAnalytics(viewModels: List<DigitalBrowseServiceCategoryViewModel>) {
+        //create analytics model (combine data objects with their corresponding header name
         var dataObjects : ArrayList<DigitalBrowseServiceAnalyticsModel> =
                 arrayListOf<DigitalBrowseServiceAnalyticsModel>()
         var position = 1
@@ -312,13 +324,35 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
             val analyticsModel = presenter.getItemPositionInGroup(
                     this.viewModel.titleMap!!,
                     position)
+            analyticsModel.isTitle = item.isTitle
             analyticsModel.iconName = item.name?:""
             dataObjects.add(analyticsModel)
             position++
         }
 
-
-        digitalBrowseAnalytics.eventImpressionIconLayanan(dataObjects)
+        //hit impression based on their header name
+        var dataObjectsPerHeader : ArrayList<DigitalBrowseServiceAnalyticsModel> =
+                arrayListOf()
+        var currentHeader = ""
+        for (item: DigitalBrowseServiceAnalyticsModel in dataObjects) {
+            if (currentHeader.isEmpty()) {
+                currentHeader = item.headerName
+            }
+            if (!currentHeader.equals(item.headerName)) {
+                digitalBrowseAnalytics.eventImpressionIconLayanan(
+                        trackingQueue,
+                        dataObjectsPerHeader,
+                        currentHeader)
+                currentHeader = item.headerName
+                dataObjectsPerHeader.clear()
+            }
+            dataObjectsPerHeader.add(item)
+        }
+        //last header section impression
+        digitalBrowseAnalytics.eventImpressionIconLayanan(
+                trackingQueue,
+                dataObjectsPerHeader,
+                currentHeader)
     }
 
     override fun onDestroy() {

@@ -6,8 +6,10 @@ import com.tokopedia.browse.common.constant.DigitalBrowseEventTracking.Action
 import com.tokopedia.browse.common.constant.DigitalBrowseEventTracking.Event
 import com.tokopedia.browse.common.data.DigitalBrowsePopularAnalyticsModel
 import com.tokopedia.browse.common.data.DigitalBrowseServiceAnalyticsModel
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 /**
  * @author by furqan on 30/08/18.
@@ -121,13 +123,12 @@ constructor(private val analyticTracker: AnalyticTracker) {
                 tabName)
     }
 
-    fun eventImpressionIconLayanan(analyticsModel: DigitalBrowseServiceAnalyticsModel) {
-        analyticTracker.sendEventTracking(
-                Event.IMPRESSION_HOME_PAGE,
-                GENERIC_CATEGORY,
-                String.format(Action.IMPRESSION_ICON_LAYANAN, analyticsModel.headerName),
-                analyticsModel.iconName + "_" + analyticsModel.headerPosition
-                        + "_" + analyticsModel.iconPosition)
+    private fun tranformPromotionModel(promotionItem: DigitalBrowsePopularAnalyticsModel): Any {
+        return DataLayer.mapOf(
+                "id", java.lang.Long.toString(promotionItem.bannerId),
+                "name", "/belanja - Brand Pilihan",
+                "creative", promotionItem.brandName,
+                "position", Integer.toString(promotionItem.position))
     }
 
     fun eventClickIconLayanan(analyticsModel: DigitalBrowseServiceAnalyticsModel) {
@@ -153,15 +154,9 @@ constructor(private val analyticTracker: AnalyticTracker) {
         }
     }
 
-    private fun tranformPromotionModel(promotionItem: DigitalBrowsePopularAnalyticsModel): Any {
-        return DataLayer.mapOf(
-                "id", java.lang.Long.toString(promotionItem.bannerId),
-                "name", "/belanja - Brand Pilihan",
-                "creative", promotionItem.brandName,
-                "position", Integer.toString(promotionItem.position))
-    }
-
-    fun eventImpressionIconLayanan(promotionDatas: List<DigitalBrowseServiceAnalyticsModel>) {
+    fun eventImpressionIconLayanan(trackingQueue: TrackingQueue,
+                                   promotionDatas: List<DigitalBrowseServiceAnalyticsModel>,
+                                   headerName: String) {
         try {
             val promotions = ArrayList<Any>()
 
@@ -170,18 +165,16 @@ constructor(private val analyticTracker: AnalyticTracker) {
                 promotions.add(promotion)
             }
 
-            analyticTracker.sendEnhancedEcommerce(
+            trackingQueue.putEETracking(
                     DataLayer.mapOf(
                             "event", "promoView",
                             "eventCategory", GENERIC_CATEGORY,
                             "eventAction", "",
-                            "eventLabel", "",
+                            "eventLabel", headerName,
                             "ecommerce", DataLayer.mapOf(
                             "promoView", DataLayer.mapOf(
                             "promotions", DataLayer.listOf(*promotions.toTypedArray()))
-                    )
-                    )
-            )
+                    )) as HashMap<String, Any>)
         } catch (e: Exception) {
             e.printStackTrace()
         }
