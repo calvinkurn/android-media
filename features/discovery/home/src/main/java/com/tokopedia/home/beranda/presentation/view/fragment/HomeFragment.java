@@ -1106,7 +1106,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void trackScreen(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() != null) {
-            HomePageTracking.sendScreen(getActivity(), getScreenName());
             sendScreen();
         }
     }
