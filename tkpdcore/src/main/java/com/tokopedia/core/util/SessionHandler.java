@@ -41,6 +41,10 @@ import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.model.UserData;
 import com.tokopedia.linker.requests.LinkerGenericRequest;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 @Deprecated
 /**
@@ -120,7 +124,8 @@ public class SessionHandler {
         editor.putString(LOGIN_ID, user_id + "");
         editor.putBoolean(IS_LOGIN, isLogin);
         editor.apply();
-        TrackingUtils.eventPushUserID(context, getGTMLoginID(context));
+        TrackApp.getInstance().getGTM()
+                .pushUserId(getGTMLoginID(context));
     }
 
     public static void clearUserData(Context context) {
@@ -580,7 +585,8 @@ public class SessionHandler {
         editor.putString(SHOP_NAME, shopName);
         editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
         editor.apply();
-        TrackingUtils.eventPushUserID(context, getGTMLoginID(context));
+        TrackApp.getInstance().getGTM()
+                .pushUserId(getGTMLoginID(context));
         if (!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier(u_id);
 
         UserData userData = new UserData();
@@ -615,7 +621,7 @@ public class SessionHandler {
     public void forceLogout() {
         if(context != null) {
             PasswordGenerator.clearTokenStorage(context);
-            TrackingUtils.eventMoEngageLogoutUser(context);
+            TrackApp.getInstance().getMoEngage().logoutEvent();
         }
         clearUserData();
     }

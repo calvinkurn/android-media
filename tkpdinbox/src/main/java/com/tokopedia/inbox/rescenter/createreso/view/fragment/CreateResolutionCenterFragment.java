@@ -2,6 +2,7 @@ package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,7 +23,9 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.create.model.passdata.ActionParameterPassData;
@@ -37,6 +40,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
 import com.tokopedia.inbox.rescenter.di.DaggerResolutionComponent;
 import com.tokopedia.inbox.rescenter.utils.CurrencyFormatter;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -206,10 +210,17 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
         btnCreateResolution.setOnClickListener(view -> {
             presenter.createResoClicked();
-            UnifyTracking.eventCreateResoPre(getActivity());
+            eventCreateResoPre();
         });
     }
 
+    public static void eventCreateResoPre() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_CREATE_RESO,
+                AppEventTracking.EventLabel.RESO_CREATE_COMPLAINT_PRE);
+    }
 
     @Override
     public void updateView(ResultViewModel resultViewModel) {
@@ -483,20 +494,36 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
         btnBack.setOnClickListener(view -> {
             dialog.dismiss();
-            UnifyTracking.eventCreateResoUnconfirm(getActivity());
+            eventCreateResoUnconfirm();
         });
         ivClose.setOnClickListener(view -> {
             dialog.dismiss();
-            UnifyTracking.eventCreateResoUnconfirm(getActivity());
+            eventCreateResoUnconfirm();
         });
 
         btnCreateComplain.setOnClickListener(view -> {
             presenter.callCreateResolutionAPIWithAttachment();
-            UnifyTracking.eventCreateResoConfirm(getActivity());
+            eventCreateResoConfirm();
             dialog.dismiss();
         });
 
         dialog.show();
+    }
+
+    public void eventCreateResoUnconfirm() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_CREATE_RESO,
+                AppEventTracking.EventLabel.RESO_CREATE_COMPLAINT_UNCONFIRM);
+    }
+
+    public void eventCreateResoConfirm() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_CREATE_RESO,
+                AppEventTracking.EventLabel.RESO_CREATE_COMPLAINT_CONFIRM);
     }
 
     @Override

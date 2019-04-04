@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscriber;
+import com.tokopedia.track.TrackApp;
 
 /**
  * @author by milhamj on 26/02/18.
@@ -76,9 +77,7 @@ public class GetKolPostSubscriber extends Subscriber<KolProfileModel> {
                             view.getUserSession().getUserId() : "0")
             ));
 
-            view.getAbstractionRouter()
-                    .getAnalyticTracker()
-                    .sendEnhancedEcommerce(KolEnhancedTracking.getKolImpressionTracking(promotionList));
+            TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(KolEnhancedTracking.getKolImpressionTracking(promotionList));
         }
     }
 }

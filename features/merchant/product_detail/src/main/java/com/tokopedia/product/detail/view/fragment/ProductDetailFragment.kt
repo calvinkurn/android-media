@@ -28,7 +28,6 @@ import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.GlobalConfig
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -310,10 +309,20 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener {
-            if (tv_trade_in_promo != null) {
-                tv_trade_in_promo.visible()
-                tv_available_at?.visible()
-            }
+            if(it) {
+                if(productInfo!=null && shopInfo!=null)
+                    productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
+                            it, tradeInParams?.usedPrice > 0)
+
+                if (tv_trade_in_promo != null) {
+                    tv_trade_in_promo.visible()
+                    tv_available_at?.visible()
+                }
+            } else
+                if(productInfo!=null && shopInfo!=null)
+                    productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
+                            it, tradeInParams?.usedPrice > 0)
+
         }
         context?.let {
             LocalBroadcastManager.getInstance(context!!).registerReceiver(tradeInBroadcastReceiver, IntentFilter(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE))
@@ -330,6 +339,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         if (isAffiliate){
             actionButtonView.gone()
             base_btn_affiliate.visible()
+            loadingAffiliate.visible()
         }
 
         merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(object : MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
@@ -955,6 +965,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun renderAffiliate(pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
         if (isAffiliate) {
             base_btn_affiliate.visible()
+            loadingAffiliate.gone()
+            getCommission.visible()
+            commission.visible()
+            commission.text = pdpAffiliate.commissionValueDisplay
             btn_affiliate.setOnClickListener { onAffiliateClick(pdpAffiliate, false) }
             actionButtonView.gone()
         } else {
@@ -976,6 +990,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                         ApplinkConst.AFFILIATE_CREATE_POST,
                         pdpAffiliate.productId.toString(),
                         pdpAffiliate.adId.toString())
+                it.setResult(Activity.RESULT_OK)
                 it.finish()
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
@@ -989,7 +1004,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
         activity?.let {
             startActivity(RatesEstimationDetailActivity.createIntent(it,
                 shopInfo!!.shopCore.domain, productInfo!!.basic.weight,
-                    productInfo!!.basic.weightUnit, productInfoViewModel.multiOrigin.origin))
+                    productInfo!!.basic.weightUnit,
+                    if (productInfoViewModel.multiOrigin.isFulfillment)
+                        productInfoViewModel.multiOrigin.origin else null))
         }
     }
 
@@ -1060,7 +1077,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
         latestTalkView.renderData(productInfoP2.latestTalk, productInfo?.stats?.countTalk ?: 0,
                 productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
 
-        otherProductView.renderData(productInfoP2.productOthers)
+        if (!isAffiliate) {
+            otherProductView.renderData(productInfoP2.productOthers)
+        }
 
         partialVariantAndRateEstView.renderFulfillment(productInfoP2.nearestWarehouse.warehouseInfo.isFulfillment)
         if (productInfo != null && productInfoP2.nearestWarehouse.warehouseInfo.id.isNotBlank())
@@ -1070,11 +1089,20 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productInfo?.run {
             productDetailTracking.sendScreen(basic.shopID.toString(),
                     shopInfo?.goldOS?.shopTypeString ?: "", productId ?: "")
-            productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, this, productInfoP2.shopInfo, trackerAttribution)
-            productDetailTracking.sendMoEngageOpenProduct(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
-                    ?: "")
-            productDetailTracking.eventAppsFylerOpenProduct(this)
-        }
+            var isHandPhone = false
+            this.category.detail.forEach { detail: Category.Detail ->
+                if (detail.name.equals("Handphone")) {
+                    isHandPhone = true
+                }
+            }
+            if (!isHandPhone)
+                productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, this, productInfoP2.shopInfo, trackerAttribution,
+                        false, false)
+
+                productDetailTracking.sendMoEngageOpenProduct(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
+                        ?: "")
+                productDetailTracking.eventAppsFylerOpenProduct(this)
+            }
 
     }
 
@@ -1176,7 +1204,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productInfoP1.productInfo.category.detail.forEach { detail: Category.Detail ->
             if (detail.name.equals("Handphone")) {
                 isHandPhone = true
-                categoryId = detail.id.toInt()
+                val handfone = 24
+                categoryId = if (detail.id.isNotEmpty())
+                    detail.id.toInt()
+                else
+                    handfone
+
             }
         }
         tradeInParams = TradeInParams()
@@ -1184,7 +1217,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
             tradeInParams.categoryId = categoryId
             tradeInParams.deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
             val userSession = UserSession(activity)
-            tradeInParams.userId = userSession.userId.toInt()
+            tradeInParams.userId = if (userSession.userId.isNotEmpty())
+                userSession.userId.toInt()
+            else
+                0
             tradeInParams.setPrice(productInfoP1.productInfo.basic.price.toInt())
             tradeInParams.productId = productInfoP1.productInfo.basic.id
             tradeInParams.shopId = productInfoP1.productInfo.basic.shopID
@@ -1194,9 +1230,24 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 tradeInParams.isPreorder = preorderstatus
             else
                 tradeInParams.isPreorder = false
-            tradeInParams.isOnCampaign = productInfoP1.productInfo.hasActiveCampaign
+            tradeInParams.isOnCampaign = productInfoP1.productInfo.campaign.isActive
             tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
-            tv_trade_in.setOnClickListener { goToNormalCheckout(TRADEIN_BUY) }
+            tv_trade_in.setOnClickListener {
+                goToNormalCheckout(TRADEIN_BUY)
+                tradeInParams?.let {
+                    if(tradeInParams.usedPrice>0)
+                        productDetailTracking.sendGeneralEvent(" clickPDP",
+                                "product detail page",
+                                "click trade in widget",
+                                "after diagnostic")
+                    else
+                        productDetailTracking.sendGeneralEvent(" clickPDP",
+                                "product detail page",
+                                "click trade in widget",
+                                "before diagnostic")
+
+                }
+            }
         }
         activity?.invalidateOptionsMenu()
     }

@@ -13,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.pojo.common.ColorPojo
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItemTag
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
@@ -122,6 +123,12 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
 
         private fun renderTag(textView: TextView, tag: PostTagItemTag) {
             textView.text = tag.text
+            if (tag.bgColor.hex.isEmpty() || tag.bgColor.opacity.isEmpty()) {
+                tag.bgColor = getDefaultBackgroundColor()
+            }
+            if (tag.textColor.hex.isEmpty() || tag.textColor.opacity.isEmpty()) {
+                tag.textColor = getDefaultTextColor()
+            }
             textView.setTextColor(Color.parseColor(tag.textColor.hex))
             textView.background = renderDrawable(tag.bgColor.hex, tag.bgColor.opacity)
         }
@@ -129,7 +136,7 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
         private fun renderDrawable(hex: String, opacity: String): Drawable {
             val drawable = GradientDrawable()
             drawable.shape = GradientDrawable.RECTANGLE
-            drawable.cornerRadii = floatArrayOf(30f, 10f, 30f ,30f , 30f, 30f, 30f, 30f)
+            drawable.cornerRadii = floatArrayOf(30f, 30f, 30f ,30f , 30f, 30f, 30f, 30f)
             drawable.setColor(Color.parseColor(hex))
             drawable.alpha = calculateBackgroundAlpha(opacity)
             return drawable
@@ -138,6 +145,14 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
         private fun calculateBackgroundAlpha(opacityString: String) : Int {
             val floatValue = opacityString.toFloat()
             return (floatValue*100).toInt()
+        }
+
+        private fun getDefaultBackgroundColor() : ColorPojo {
+            return ColorPojo("#000", "0.7")
+        }
+
+        private fun getDefaultTextColor() : ColorPojo {
+            return ColorPojo("#fff", "1")
         }
     }
 }
