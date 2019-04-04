@@ -141,6 +141,8 @@ public interface ShipmentContract {
         Promo generateCheckPromoFirstStepParam();
 
         void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel);
+
+        void onSuccessCheckPromoFirstStep(ResponseGetPromoStackUiModel promoData);
     }
 
     interface AnalyticsActionListener {

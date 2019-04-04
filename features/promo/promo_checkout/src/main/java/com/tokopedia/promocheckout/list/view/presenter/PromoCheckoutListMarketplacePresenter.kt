@@ -41,7 +41,11 @@ class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUs
                 if (responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
                     view.onErrorCheckPromoCode(MessageErrorException(responseGetPromoStack.data.message.text))
                 } else {
-                    view.onSuccessCheckPromoStackingCode(responseGetPromoStack.data)
+                    if (responseGetPromoStack.data.clashings.isClashedPromos) {
+                        view.onClashCheckPromo(responseGetPromoStack.data.clashings)
+                    } else {
+                        view.onSuccessCheckPromoStackingCode(responseGetPromoStack.data)
+                    }
                 }
             }
 

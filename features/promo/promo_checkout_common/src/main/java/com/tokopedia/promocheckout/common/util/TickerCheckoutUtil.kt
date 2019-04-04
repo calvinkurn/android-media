@@ -8,6 +8,9 @@ val GREY = "grey"
 val GREEN = "green"
 
 val EXTRA_PROMO_DATA = "EXTRA_PROMO_DATA"
+val EXTRA_CLASHING_DATA = "EXTRA_CLASHING_DATA"
+
+val RESULT_CLASHING = 6374
 
 val MERCHANT = "merchant_voucher"
 val GLOBAL = "global"

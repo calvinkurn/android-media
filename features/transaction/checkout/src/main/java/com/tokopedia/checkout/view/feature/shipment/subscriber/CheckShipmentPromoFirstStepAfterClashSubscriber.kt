@@ -1,18 +1,21 @@
 package com.tokopedia.checkout.view.feature.shipment.subscriber
 
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.checkout.view.feature.shipment.ShipmentContract
 import com.tokopedia.checkout.view.feature.shipment.ShipmentPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
+import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import rx.Subscriber
 
 
-class CheckShipmentPromoFirstStepAfterClashSubscriber(val view: ShipmentContract.View?,
-                                                      val presenter: ShipmentPresenter,
-                                                      private val promoListSize: Int,
+class CheckShipmentPromoFirstStepAfterClashSubscriber(private val view: ShipmentContract.View?,
+                                                      private val presenter: ShipmentPresenter,
+                                                      private val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
                                                       private val isFromMultipleAddress: Boolean,
                                                       private val isOneClickShipment: Boolean,
                                                       private val cornerId: String,
-                                                      private val currentPromoIndex: Int,
                                                       private val isTradeIn: Boolean,
                                                       private val deviceId: String) : Subscriber<GraphqlResponse>() {
 
@@ -22,17 +25,23 @@ class CheckShipmentPromoFirstStepAfterClashSubscriber(val view: ShipmentContract
 
     override fun onError(e: Throwable) {
         e.printStackTrace()
-        if (currentPromoIndex == promoListSize - 1) {
-            view?.hideLoading()
-            presenter.processInitialLoadCheckoutPage(isFromMultipleAddress, isOneClickShipment, isTradeIn, cornerId, deviceId)
-        }
+        view?.hideLoading()
+        view?.showToastError(ErrorHandler.getErrorMessage(view.activityContext, e))
     }
 
     override fun onNext(response: GraphqlResponse) {
-        if (currentPromoIndex == promoListSize - 1) {
-            view?.hideLoading()
-            presenter.setCouponStateChanged(true)
-            presenter.processInitialLoadCheckoutPage(isFromMultipleAddress, isOneClickShipment, isTradeIn, cornerId, deviceId)
+        view?.hideLoading()
+        presenter.couponStateChanged = true
+        val responseGetPromoStack = checkPromoStackingCodeMapper.call(response)
+        if (responseGetPromoStack.status != "OK" || responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
+            val message = responseGetPromoStack.data.message.text
+            view?.showToastError(message);
+        } else {
+            if (responseGetPromoStack.data.clashings.isClashedPromos) {
+                view?.onClashCheckPromo(responseGetPromoStack.data.clashings)
+            } else {
+                view?.onSuccessCheckPromoFirstStep(responseGetPromoStack)
+            }
         }
     }
 

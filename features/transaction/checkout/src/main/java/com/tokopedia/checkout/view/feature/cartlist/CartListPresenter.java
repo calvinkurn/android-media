@@ -1191,7 +1191,6 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processApplyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList) {
-        view.showProgressLoading();
         Promo promo = view.generateCheckPromoFirstStepParam();
         promo.setCodes(new ArrayList<>());
         if (promo.getOrders() != null) {
@@ -1221,6 +1220,7 @@ public class CartListPresenter implements ICartListPresenter {
                     }
                 }
             }
+            view.showProgressLoading();
             checkPromoStackingCodeUseCase.setParams(promo);
             checkPromoStackingCodeUseCase.execute(RequestParams.create(),
                     new CheckPromoFirstStepAfterClashSubscriber(view, this, checkPromoStackingCodeMapper));

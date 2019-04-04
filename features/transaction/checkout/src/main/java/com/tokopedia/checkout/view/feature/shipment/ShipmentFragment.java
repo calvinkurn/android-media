@@ -1158,6 +1158,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     updateAppliedPromoStack(promoStackingData);
                 }
             }
+        } else if (resultCode == TickerCheckoutUtilKt.getRESULT_CLASHING()) {
+            Bundle bundle = data.getExtras();
+            if (bundle != null) {
+                ClashingInfoDetailUiModel clashingInfoDetailUiModel = bundle.getParcelable(TickerCheckoutUtilKt.getEXTRA_CLASHING_DATA());
+                if (clashingInfoDetailUiModel != null) {
+                    onClashCheckPromo(clashingInfoDetailUiModel);
+                }
+            }
         }
     }
 

@@ -1270,6 +1270,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (cornerId != null) {
             corner = cornerId;
         }
+        getView().showLoading();
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), oldPromoList);
         clearCacheAutoApplyStackUseCase.execute(RequestParams.create(),
                 new ClearShipmentCacheAutoApplyAfterClashSubscriber(getView(), this,
@@ -1288,7 +1289,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             }
         }
 
-        for (ClashingVoucherOrderUiModel model : newPromoList) {
+        // New promo list will always be 1
+        if (newPromoList != null && newPromoList.size() > 0) {
+            ClashingVoucherOrderUiModel model = newPromoList.get(0);
             if (TextUtils.isEmpty(model.getUniqueId())) {
                 ArrayList<String> codes = new ArrayList<>();
                 if (!TextUtils.isEmpty(model.getCode())) {
@@ -1307,12 +1310,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     }
                 }
             }
+            getView().showLoading();
             checkPromoStackingCodeUseCase.setParams(promo);
             checkPromoStackingCodeUseCase.execute(RequestParams.create(),
-                    new CheckShipmentPromoFirstStepAfterClashSubscriber(getView(),
-                            this, newPromoList.size(),
-                            isFromMultipleAddress, isOneClickShipment, cornerId,
-                            newPromoList.indexOf(model), isTradeIn, deviceId));
+                    new CheckShipmentPromoFirstStepAfterClashSubscriber(getView(), this,
+                            checkPromoStackingCodeMapper, isFromMultipleAddress, isOneClickShipment,
+                            cornerId, isTradeIn, deviceId));
         }
     }
 
