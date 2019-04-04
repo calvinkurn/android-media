@@ -174,7 +174,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                tools:text="Gratis Ongkir JNE (Promo Kurir)" />
+                android:text="@string/gratis_ongkir_promo_kurir" />
 
             <TextView
                 android:id="@+id/tv_logistic_promo_price"

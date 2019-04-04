@@ -81,6 +81,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private static final String PHONE_NUMBER_REGEX_PATTERN = "[0-9]+";
 
     private ShipmentAdapterActionListener mActionListener;
+    private Context context;
 
     private LinearLayout layoutError;
     private TextView tvErrorTitle;
@@ -221,6 +222,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     public ShipmentItemViewHolder(View itemView, ShipmentAdapterActionListener actionListener) {
         super(itemView);
         this.mActionListener = actionListener;
+        this.context = itemView.getContext();
         phoneNumberRegexPattern = Pattern.compile(PHONE_NUMBER_REGEX_PATTERN);
 
         bindViewIds(itemView);
@@ -471,6 +473,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderShippingType(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, RatesDataConverter ratesDataConverter, ArrayList<ShowCaseObject> showCaseObjectList) {
+        llLogPromo.setVisibility(View.GONE);
         if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
             renderLogisticPromo(shipmentCartItemModel, recipientAddressModel);
         } else if (shipmentCartItemModel.isUseCourierRecommendation()) {
@@ -534,13 +537,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llSelectedShipmentRecommendation.setVisibility(View.VISIBLE);
         llShippingOptionsContainer.setVisibility(View.VISIBLE);
         tvSelectedCourierRecommendation.setText(detailData.getSelectedCourier().getName());
+        tvChangeSelectedCourierRecommendation.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_disabled));
         tvSelectedDurationRecommendation.setText(detailData.getSelectedCourier().getServiceName());
         // logistic promo has no price
 //        tvSelectedPriceRecommendation.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
 //                detailData.getSelectedCourier().getShipperPrice(), false));
         llCourierRecommendationStateLoading.setVisibility(View.GONE);
         llLogPromo.setVisibility(View.VISIBLE);
-        tvLogPromoLabel.setText("using logistic promo");
         tvLogPromoPrice.setText("-25000");
     }
 

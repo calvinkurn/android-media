@@ -281,5 +281,6 @@
     <string name="checkout_module_title_promo_clashing_newly_selected">Voucher Baru Dipilih</string>
     <string name="checkout_module_title_promo_clashing_previously_selected">Voucher Sebelumnya</string>
     <string name="checkout_module_label_clasing_benefit_shop_name">Dari toko %s</string>
+    <string name="gratis_ongkir_promo_kurir">Gratis Ongkir (Promo Kurir)</string>
 
 </resources>
