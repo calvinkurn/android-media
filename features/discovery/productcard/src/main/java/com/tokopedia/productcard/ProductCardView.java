@@ -27,6 +27,9 @@ public class ProductCardView extends BaseCustomView {
     private ImpressedImageView imageView;
     private View topAdsIcon;
     private View wishlistButton;
+    private View ratingReviewContainer;
+    private ImageView ratingView;
+    private TextView reviewCountView;
 
     public ProductCardView(@NonNull Context context) {
         super(context);
@@ -52,6 +55,9 @@ public class ProductCardView extends BaseCustomView {
         imageView = view.findViewById(R.id.image);
         topAdsIcon = view.findViewById(R.id.topAdsIcon);
         wishlistButton = view.findViewById(R.id.btn_wishlist);
+        ratingReviewContainer = view.findViewById(R.id.rating_review_container);
+        ratingView = view.findViewById(R.id.rating);
+        reviewCountView = view.findViewById(R.id.review_count);
     }
 
     public void setTitle(String title) {
@@ -93,7 +99,36 @@ public class ProductCardView extends BaseCustomView {
         wishlistButton.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
+    public void setRatingReviewCount(int rating, int reviewCount) {
+        if (rating > 0) {
+            ratingReviewContainer.setVisibility(View.VISIBLE);
+            ratingView.setImageResource(getRatingDrawable(rating));
+            reviewCountView.setText("(" + Integer.toString(reviewCount) + ")");
+        } else {
+            ratingReviewContainer.setVisibility(View.GONE);
+        }
+    }
+
     public ImpressedImageView getImageView() {
         return imageView;
+    }
+
+    private int getRatingDrawable(int param) {
+        switch (param) {
+            case 0:
+                return R.drawable.ic_star_none;
+            case 1:
+                return R.drawable.ic_star_one;
+            case 2:
+                return R.drawable.ic_star_two;
+            case 3:
+                return R.drawable.ic_star_three;
+            case 4:
+                return R.drawable.ic_star_four;
+            case 5:
+                return R.drawable.ic_star_five;
+            default:
+                return R.drawable.ic_star_none;
+        }
     }
 }
