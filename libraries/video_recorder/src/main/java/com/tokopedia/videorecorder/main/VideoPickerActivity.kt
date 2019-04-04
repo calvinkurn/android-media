@@ -119,7 +119,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     private fun initView() {
         //support actionbar
         setSupportActionBar(toolbarVideoPicker)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        showBackButton(true)
         supportActionBar?.title = getString(R.string.vidpick_title)
 
         //initial of adapter for viewPager and tabPicker
@@ -131,6 +131,10 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
         //video picked
         btnDone.setOnClickListener { onVideoDoneClicked() }
+    }
+
+    private fun showBackButton(show: Boolean) {
+        supportActionBar?.setDisplayHomeAsUpEnabled(show)
     }
 
     private fun setupViewPager() {
@@ -249,6 +253,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     }
 
     override fun onPreviewVideoVisible() {
+        showBackButton(false)
         containerPicker.hide()
         layoutPreview.show()
         btnDone.show()
@@ -261,6 +266,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     }
 
     override fun onVideoVisible() {
+        showBackButton(true)
         containerPicker.show()
         layoutPreview.hide()
         btnDone.hide()
