@@ -173,7 +173,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     @Override
     public void startLocationFragment(List<Location> locationList, boolean isForFirstTime) {
         selectLocationFragment = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
-        selectLocationFragment.setContentView(new SelectLocationBottomSheet(this, isForFirstTime, locationList, this, tvCityName.getText().toString(), this));
+        selectLocationFragment.setCustomContentView(new SelectLocationBottomSheet(DealsSearchActivity.this, isForFirstTime, locationList, this, tvCityName.getText().toString(), this), "", false);
         selectLocationFragment.show();
     }
 
@@ -345,7 +345,6 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             mPresenter.onRecyclerViewScrolled(layoutManager);
         }
     };
-
 
     @Override
     protected Fragment getNewFragment() {
