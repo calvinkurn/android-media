@@ -27,7 +27,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.design)
-    
+    implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.libraries.track)
 
     implementation project(rootProject.ext.features.shopCommon)

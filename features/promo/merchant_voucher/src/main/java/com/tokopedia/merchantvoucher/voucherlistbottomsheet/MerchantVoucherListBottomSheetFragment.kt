@@ -24,21 +24,22 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.text.TkpdHintTextInputLayout
+import com.tokopedia.merchantvoucher.FileUtils
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
+import com.tokopedia.merchantvoucher.common.di.MerchantVoucherModule
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherViewUsed
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
-import com.tokopedia.merchantvoucher.FileUtils
-import com.tokopedia.merchantvoucher.common.di.MerchantVoucherModule
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.domain.model.promostacking.response.ResponseGetPromoStackFirst
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.shop.common.di.ShopCommonModule
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart
 import javax.inject.Inject
 
 /**
@@ -68,8 +69,11 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
 
     @Inject
     lateinit var presenter: MerchantVoucherListBottomsheetPresenter
+    @Inject
+    lateinit var cartPageAnalytics: CheckoutAnalyticsCart
 
     lateinit var actionListener: ActionListener
+
 
     interface ActionListener {
         fun onClashCheckPromo(clashingInfoDetailUiModel: ClashingInfoDetailUiModel)
@@ -143,6 +147,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
             hideKeyboard()
             if (textInputCoupon.text.toString().isEmpty()) {
                 textInputLayoutCoupon.error = "Kode Voucher Harus Diisi"
+                cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputFailed(textInputLayoutCoupon.error?.toString())
                 updateHeight()
             } else {
                 presenter.checkPromoFirstStep(textInputCoupon.text.toString(), cartString, promo, false)
@@ -211,6 +216,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
                 val intent = MerchantVoucherDetailActivity.createIntent(it, voucherId,
                         this, shopId.toString())
                 startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_MERCHANT_DETAIL)
+                cartPageAnalytics.eventClickDetailMerchantVoucher(merchantVoucherViewModel.voucherCode)
             }
         }
     }
@@ -275,13 +281,20 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         }
         if (isFromList) {
             ToasterError.make(layoutMerchantVoucher, messageInfo, ToasterError.LENGTH_SHORT).show()
+            cartPageAnalytics.eventClickPakaiMerchantVoucherFailed(message)
         } else {
             textInputLayoutCoupon.error = message
             updateHeight()
+            cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputFailed(message)
         }
     }
 
-    override fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackUiModel) {
+    override fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackUiModel, promoCode: String, isFromList: Boolean) {
+        if (isFromList) {
+            cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputSuccess(promoCode)
+        } else {
+            cartPageAnalytics.eventClickPakaiMerchantVoucherSuccess(promoCode)
+        }
         hideKeyboard()
         dismiss()
         actionListener.onSuccessCheckPromoFirstStep(model)

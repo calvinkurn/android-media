@@ -690,7 +690,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-    public void eventClickSubmitPromoConflict(String promoCode) {
+    public void eventClickSubmitPromoKonflik(String promoCode) {
         sendEventCategoryActionLabel(
                 EventName.CLICK_ATC,
                 EventCategory.CART,
