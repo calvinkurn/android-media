@@ -7,12 +7,13 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import com.tokopedia.track.TrackApp;
 
 /**
  * @author Angga.Prasetiyo on 26/10/2015.
@@ -103,10 +104,18 @@ public class DescriptionView extends BaseView<ProductDetailData, ProductDetailVi
         public void onClick(View v) {
             if (!isExpand) {
                 renderExpand();
-                UnifyTracking.eventPDPExpandDescription(DescriptionView.this.getContext());
+                eventPDPExpandDescription();
             } else {
                 renderCollapse();
             }
         }
+    }
+
+    public void eventPDPExpandDescription() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.PRODUCT_DETAIL_PAGE,
+                AppEventTracking.Category.PRODUCT_DETAIL,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.PRODUCT_DESCRIPTION);
     }
 }

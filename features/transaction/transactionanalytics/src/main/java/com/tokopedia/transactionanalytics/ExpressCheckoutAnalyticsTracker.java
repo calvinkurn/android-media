@@ -1,8 +1,6 @@
 package com.tokopedia.transactionanalytics;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.google.gson.JsonObject;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
 import java.util.HashMap;
 
@@ -12,8 +10,7 @@ import java.util.HashMap;
 
 public class ExpressCheckoutAnalyticsTracker extends TransactionAnalytics {
 
-    public ExpressCheckoutAnalyticsTracker(AnalyticTracker analyticTracker) {
-        super(analyticTracker);
+    public ExpressCheckoutAnalyticsTracker() {
     }
 
     public void enhanceEcommerceImpressionExpressCheckoutForm(HashMap<String, Object> data, String eventLabel) {

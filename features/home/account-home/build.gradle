@@ -50,7 +50,7 @@ dependencies {
         transitive = true
     }
 
-    implementation project(rootProject.ext.libraries.trackinterface)
+    
     implementation project(rootProject.ext.libraries.track)
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {

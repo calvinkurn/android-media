@@ -35,4 +35,5 @@ class HotelModule {
     @HotelScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
 }

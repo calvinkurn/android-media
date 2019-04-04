@@ -36,6 +36,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.features.commonTravel)
+    implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.applink)

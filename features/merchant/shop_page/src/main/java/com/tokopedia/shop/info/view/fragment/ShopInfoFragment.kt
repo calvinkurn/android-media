@@ -60,7 +60,7 @@ class ShopInfoFragment : BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        shopPageTracking = ShopPageTrackingBuyer(activity!!.application as AbstractionRouter,
+        shopPageTracking = ShopPageTrackingBuyer(
                 TrackingQueue(context!!))
     }
 

@@ -2,28 +2,6 @@ package com.tokopedia.instantloan.constant
 
 object DeviceDataKeys {
 
-    object Sms {
-        val PHONE = "phone"
-        val CONTENT = "content"
-        val TYPE = "type"
-        val TIME = "time"
-    }
-
-    object Contact {
-        val NAME = "name"
-        val PHONE = "phone"
-        val TIME = "time"
-        val TIMES = "times"
-        val LAST_TIME = "last_time"
-    }
-
-    object Call {
-        val PHONE = "phone"
-        val TYPE = "type"
-        val DURATION = "duration"
-        val TIME = "time"
-    }
-
     object Account {
         val NAME = "name"
         val TYPE = "type"
