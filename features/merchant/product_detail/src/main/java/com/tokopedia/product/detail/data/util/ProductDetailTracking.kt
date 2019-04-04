@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.data.util
 import android.net.Uri
 import android.text.TextUtils
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
@@ -382,7 +383,7 @@ class ProductDetailTracking() {
             DataLayer.mapOf(
                 "name", productInfo?.basic?.name,
                 "id", productInfo?.basic?.id,
-                "price", productInfo?.basic?.price,
+                "price", productInfo?.basic?.price?.toInt(),
                 "brand", "none / other",
                 "category", getEnhanceCategoryFormatted(productInfo?.category?.detail),
                 "variant", "none / other",
@@ -486,7 +487,8 @@ class ProductDetailTracking() {
                 put("product_name", productInfo.basic.name)
                 put("product_id", productInfo.basic.id)
                 put("product_url", productInfo.basic.url)
-                put("product_price", productInfo.basic.price)
+                put("product_price", productInfo.basic.price.toInt())
+                put("product_price_fmt", getFormattedPrice(productInfo.basic.price.toInt()))
                 put("is_official_store", isOfficialStore)
                 put("shop_id", productInfo.basic.shopID)
                 put("shop_name", shopName)
@@ -534,6 +536,10 @@ class ProductDetailTracking() {
         private const val DEFAULT_VALUE = "none / other"
         private const val VARIANT = "variant"
         private const val CATEGORY = "category"
+    }
+
+    private fun getFormattedPrice(price: Int): String {
+        return CurrencyFormatUtil.getThousandSeparatorString(price.toDouble(), false, 0).formattedString
     }
 
 }
