@@ -92,6 +92,7 @@ public class DealsSearchPresenter
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
                 SearchResponse searchResponse = (SearchResponse) dataResponse.getData();
+                getView().setSuggestedBrands(searchResponse.getBrandList());
                 getView().setTrendingDealsOrSuggestions(processSearchResponse(searchResponse), false, highlight, searchResponse.getCount());
                 checkIfToLoad(getView().getLayoutManager());
                 CommonUtils.dumper("enter onNext");
@@ -136,7 +137,7 @@ public class DealsSearchPresenter
 
     @Override
     public boolean onItemClick(int id) {
-        if (id == R.id.tv_change_city) {
+        if (id == R.id.tv_location) {
             getLocations(false);
         } else if (id == R.id.imageViewBack) {
             getView().goBack();

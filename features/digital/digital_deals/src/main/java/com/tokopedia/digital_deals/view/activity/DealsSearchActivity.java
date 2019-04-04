@@ -14,13 +14,20 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.style.ClickableSpan;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.digital_deals.R;
@@ -32,8 +39,10 @@ import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectLocationBottomSheet;
+import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealsSearchPresenter;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
@@ -41,6 +50,7 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -53,16 +63,16 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private final boolean IS_SHORT_LAYOUT = true;
 
     private CoordinatorLayout mainContent;
-    private LinearLayout noContent;
-    private LinearLayout llDeals;
-    private CoordinatorLayout baseMainContent;
+    private ScrollView noContent;
+    private LinearLayout brandLayout;
+    private LinearLayout noBrandsFound;
     private ConstraintLayout clLocation;
+    private TextView brandsHeading;
     private LinearLayoutManager layoutManager;
     private SearchInputView searchInputView;
     private RecyclerView rvDeals;
     private ImageView back;
     private TextView tvCityName;
-    private TextView tvChangeCity;
     private boolean firstTimeRefresh = true;
 
     @Inject
@@ -95,18 +105,18 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private void setUpVariables() {
         rvDeals = findViewById(R.id.rv_search_results);
         searchInputView = findViewById(R.id.search_input_view);
+        noBrandsFound = findViewById(R.id.no_brands);
         mainContent = findViewById(R.id.main_content);
+        brandsHeading = findViewById(R.id.brand_list);
         back = findViewById(R.id.imageViewBack);
         noContent = findViewById(R.id.no_content);
-        llDeals = findViewById(R.id.ll_deals);
+        brandLayout = findViewById(R.id.brand_layout);
         tvCityName = findViewById(R.id.tv_location);
-        tvChangeCity = findViewById(R.id.tv_change_city);
-        baseMainContent = findViewById(R.id.base_main_content);
         clLocation = findViewById(R.id.cl_location);
         back.setOnClickListener(this);
-        tvChangeCity.setOnClickListener(this);
+        tvCityName.setOnClickListener(this);
         searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_deals));
-        searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_14));
+        searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_16));
         searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(R.dimen.dp_18), getResources().getDimensionPixelSize(R.dimen.dp_18));
         searchInputView.setSearchImageView(getResources().getDrawable(R.drawable.ic_search_deal));
         EditText etSearch = searchInputView.findViewById(R.id.edit_text_search);
@@ -114,22 +124,19 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         rvDeals.setLayoutManager(layoutManager);
         dealsCategoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.SEARCH_PAGE, this, !IS_SHORT_LAYOUT);
         rvDeals.setAdapter(dealsCategoryAdapter);
-        etSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    back.setImageResource(R.drawable.ic_close_deals);
-                    clLocation.setVisibility(View.GONE);
-
-                    dealsCategoryAdapter.setTopDealsLayout(true);
-                    if (firstTimeRefresh)
-                        firstTimeRefresh = false;
-                    else if (!TextUtils.isEmpty(searchInputView.getSearchText()) && searchInputView.getSearchText().length() > 2)
-                        dealsCategoryAdapter.removeHeaderAndFooter();
-                    dealsCategoryAdapter.notifyDataSetChanged();
-                }
-            }
-        });
+//        etSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (hasFocus) {
+//                    dealsCategoryAdapter.setTopDealsLayout(true);
+//                    if (firstTimeRefresh)
+//                        firstTimeRefresh = false;
+//                    else if (!TextUtils.isEmpty(searchInputView.getSearchText()) && searchInputView.getSearchText().length() > 2)
+//                        dealsCategoryAdapter.removexAndFooter();
+//                    dealsCategoryAdapter.notifyDataSetChanged();
+//                }
+//            }
+//        });
 
     }
 
@@ -138,7 +145,6 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         if (text.length() > 2)
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_SEARCH_VOUCHER_OR_OUTLET, text);
         back.setImageResource(R.drawable.ic_action_back);
-        DrawableCompat.setTint(back.getDrawable(), ContextCompat.getColor(getActivity(), R.color.toolbar_home));
         mPresenter.searchSubmitted();
     }
 
@@ -146,7 +152,6 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     public void onSearchTextChanged(String text) {
         if (text.length() > 2)
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_SEARCH_VOUCHER_OR_OUTLET, text);
-        back.setImageResource(R.drawable.ic_close_deals);
         mPresenter.searchTextChanged(text);
     }
 
@@ -183,17 +188,17 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             dealsCategoryAdapter.removeHeaderAndFooter();
             dealsCategoryAdapter.notifyDataSetChanged();
             rvDeals.addOnScrollListener(rvOnScrollListener);
-            SpannableString headerString = getHeaderFormattedText(searchText, listCount);
-            if (!TextUtils.isEmpty(headerString))
-                dealsCategoryAdapter.addHeader(headerString);
+//            SpannableString headerString = getHeaderFormattedText(searchText, listCount);
+//            if (!TextUtils.isEmpty(headerString))
+//                dealsCategoryAdapter.addHeader(headerString);
             KeyboardHandler.hideSoftKeyboard(getActivity());
             rvDeals.requestFocus();
-            clLocation.setVisibility(View.VISIBLE);
+//            clLocation.setVisibility(View.VISIBLE);
             tvCityName.setText(location.getName());
         } else {
             dealsAnalytics.sendEventDealsDigitalView(DealsAnalytics.EVENT_NO_DEALS,
                     searchText);
-            llDeals.setVisibility(View.GONE);
+            rvDeals.setVisibility(View.GONE);
             noContent.setVisibility(View.VISIBLE);
         }
     }
@@ -243,31 +248,64 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                 else
                     listCount = count;
             }
-            if (isTrendingDeals) {
-                dealsCategoryAdapter.addHeader(new SpannableString(""));
-                dealsCategoryAdapter.showHighLightText(false);
-            } else {
+            if (!isTrendingDeals) {
                 rvDeals.addOnScrollListener(rvOnScrollListener);
-                dealsCategoryAdapter.showHighLightText(true);
-                dealsCategoryAdapter.setHighLightText(highlight);
             }
             dealsCategoryAdapter.notifyDataSetChanged();
 
-            llDeals.setVisibility(View.VISIBLE);
+            rvDeals.setVisibility(View.VISIBLE);
 
             noContent.setVisibility(View.GONE);
-            clLocation.setVisibility(View.GONE);
+//            clLocation.setVisibility(View.GONE);
 
         } else {
             dealsAnalytics.sendEventDealsDigitalView(DealsAnalytics.EVENT_NO_DEALS,
                     searchText);
-            llDeals.setVisibility(View.GONE);
+            rvDeals.setVisibility(View.GONE);
             noContent.setVisibility(View.VISIBLE);
-            clLocation.setVisibility(View.VISIBLE);
+//            clLocation.setVisibility(View.VISIBLE);
         }
         if (location != null)
             tvCityName.setText(location.getName());
 
+    }
+
+    @Override
+    public void setSuggestedBrands(List<Brand> brandList) {
+        if (brandList != null && brandList.size() > 0) {
+            brandLayout.setVisibility(View.VISIBLE);
+            brandsHeading.setVisibility(View.VISIBLE);
+            noBrandsFound.setVisibility(View.GONE);
+            brandLayout.removeAllViews();
+            View view;
+            int itemCount = Utils.getScreenWidth()/ (int)(getResources().getDimension(R.dimen.dp_66) + getResources().getDimension(R.dimen.dp_8));//Divide by item width including margin
+            ImageView imageViewBrandItem;
+            TextView brandName;
+            for (int index = 0; index < itemCount; index++) {
+                LayoutInflater inflater = getLayoutInflater();
+                view = inflater.inflate(R.layout.item_brand_home, brandLayout, false);
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
+                imageViewBrandItem = view.findViewById(R.id.iv_brand);
+                brandName = view.findViewById(R.id.brandName);
+                brandName.setText(brandList.get(index).getTitle());
+                ImageHandler.loadImage(this, imageViewBrandItem, brandList.get(index).getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
+                view.setLayoutParams(params);
+                brandLayout.addView(view);
+                final int position1 = index;
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent detailsIntent = new Intent(DealsSearchActivity.this, BrandDetailsActivity.class);
+                        detailsIntent.putExtra(BrandDetailsPresenter.BRAND_DATA, brandList.get(position1));
+                        startActivity(detailsIntent);
+                    }
+                });
+            }
+        } else {
+            noBrandsFound.setVisibility(View.VISIBLE);
+            brandsHeading.setVisibility(View.GONE);
+            brandLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override

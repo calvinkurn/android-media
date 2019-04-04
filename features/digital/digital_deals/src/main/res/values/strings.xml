@@ -99,5 +99,8 @@
     <string name="sell_all_category">Semua\nKategori</string>
     <string name="deals_toolbar_title">Lokasi Deals</string>
     <string name="selected_location_text">(Terpilih)</string>
+    <string name="brands_title_search">Pilihan Brand</string>
+    <string name="products_title_search">Pilihan Deals</string>
+    <string name="location_text_search">Lokasi</string>
 
 </resources>
