@@ -13,11 +13,11 @@ import com.tokopedia.hotel.destination.data.model.RecentSearch
  * @author by jessica on 01/04/19
  */
 
-class RecentSearchAdapter(val listener: RecentSearchClickListener): RecyclerView.Adapter<ViewHolder>() {
+class RecentSearchAdapter(val listener: RecentSearchClickListener): RecyclerView.Adapter<RecentSearchAdapter.ViewHolder>() {
 
-    var recentSearchList: List<RecentSearch> = listOf()
+    var recentSearchList: MutableList<RecentSearch> = arrayListOf()
 
-    fun setData(list: List<RecentSearch>) {
+    fun setData(list: MutableList<RecentSearch>) {
         recentSearchList = list
         notifyDataSetChanged()
     }
@@ -28,26 +28,35 @@ class RecentSearchAdapter(val listener: RecentSearchClickListener): RecyclerView
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(recentSearchList.get(position))
+        holder.bind(recentSearchList.get(position), position)
     }
 
     override fun getItemCount(): Int {
         return recentSearchList.size
     }
-}
 
-class ViewHolder(val itemview: View, val listener: RecentSearchClickListener): RecyclerView.ViewHolder(itemview) {
-
-    var textView: DeletableItemView
-
-    init {
-        textView = itemView.findViewById(R.id.autocomplete_chips_item)
+    fun deleteAllRecentSearch() {
+        listener.onDeleteAllRecentSearch()
     }
 
-    fun bind(data: RecentSearch) {
-        textView.setItemName(data.name)
-        textView.setOnDeleteListener { listener.onDeleteRecentSearchItem(data.name) }
-        textView.setOnTextClickListener { listener.onItemClicked(data.name, data.name, true) }
+    inner class ViewHolder(val itemview: View, val listener: RecentSearchClickListener): RecyclerView.ViewHolder(itemview) {
+
+        var textView: DeletableItemView
+
+        init {
+            textView = itemView.findViewById(R.id.autocomplete_chips_item)
+        }
+
+        fun bind(data: RecentSearch, position: Int) {
+            textView.setItemName(data.name)
+            textView.setOnDeleteListener {
+                recentSearchList.removeAt(position)
+                notifyItemRemoved(position)
+                notifyItemRangeChanged(position, itemCount)
+                listener.onDeleteRecentSearchItem(data.name)
+            }
+            textView.setOnTextClickListener { listener.onItemClicked(data.name, data.name, true) }
+        }
     }
 }
 

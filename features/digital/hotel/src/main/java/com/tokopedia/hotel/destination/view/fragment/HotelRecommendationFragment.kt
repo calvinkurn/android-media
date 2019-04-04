@@ -43,6 +43,10 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     lateinit var currentLocationTextView: TextViewCompat
+    lateinit var deleteSearchTextView: TextView
+    lateinit var recentSearchLayout: View
+
+    lateinit var recentSearchAdapter: RecentSearchAdapter
 
     override fun getScreenName(): String = ""
 
@@ -74,6 +78,8 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     }
 
     fun initRecentSearch(view: View) {
+
+        //init recyclerview
         val layoutManager = ChipsLayoutManager.newBuilder(context)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
@@ -83,21 +89,32 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
         recentSearchRecyclerView.addItemDecoration(SpacingItemDecoration(staticDimen8dp, staticDimen8dp))
         recentSearchRecyclerView.layoutManager = layoutManager
         ViewCompat.setLayoutDirection(recentSearchRecyclerView, ViewCompat.LAYOUT_DIRECTION_LTR)
-        val adapter = RecentSearchAdapter(this)
-        recentSearchRecyclerView.adapter = adapter
+        recentSearchAdapter = RecentSearchAdapter(this)
+        recentSearchRecyclerView.adapter = recentSearchAdapter
 
+
+        //init titleBar
+        recentSearchLayout = view.findViewById(R.id.recent_search_layout)
+        deleteSearchTextView = view.findViewById(R.id.delete_text_view)
+        deleteSearchTextView.setOnClickListener {
+            recentSearchAdapter.deleteAllRecentSearch()
+        }
+
+        //dummy data
         var list: MutableList<RecentSearch> = arrayListOf()
-        list.add(RecentSearch(0,"", "ABC", ""))
-        list.add(RecentSearch(0,"", "ABC123", ""))
-        list.add(RecentSearch(0,"", "ABC456", ""))
-        list.add(RecentSearch(0,"", "ABC2", ""))
-        list.add(RecentSearch(0,"", "ABC23", ""))
-        adapter.setData(list)
+        list.add(RecentSearch(0,"", "Jakarta", ""))
+        list.add(RecentSearch(0,"", "Jalan Sudirman", ""))
+        list.add(RecentSearch(0,"", "Central Park Mall", ""))
+        list.add(RecentSearch(0,"", "Bandung", ""))
+        list.add(RecentSearch(0,"", "Kyoto Japan", ""))
+        recentSearchAdapter.setData(list)
     }
 
     fun initCurrentLocationTextView() {
         currentLocationTextView.setDrawableLeft(R.drawable.ic_system_action_currentlocation_grayscale_24)
-        currentLocationTextView.setOnClickListener { destinationViewModel.getCurrentLocation(activity as HotelDestinationActivity) }
+        currentLocationTextView.setOnClickListener {
+            destinationViewModel.getCurrentLocation(activity as HotelDestinationActivity)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -111,7 +128,12 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     }
 
     override fun loadData(page: Int) {
-
+        var list: MutableList<PopularSearch> = arrayListOf()
+        list.add(PopularSearch(0, "city","","Jakarta", "Indonesia",2000))
+        list.add(PopularSearch(0, "city","","Bandung", "Indonesia",1200))
+        list.add(PopularSearch(0, "city","","Yogyakarta", "Indonesia",1300))
+        list.add(PopularSearch(0, "city","","Kuta", "Bali, Indonesia",500))
+        renderList(list)
     }
 
     override fun popularSearchClicked(popularSearch: PopularSearch) {
@@ -128,15 +150,19 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     }
 
     override fun onDeleteRecentSearchItem(keyword: String) {
-        Toast.makeText(context, "Item Delete $keyword", Toast.LENGTH_SHORT).show()
+        if (recentSearchAdapter.itemCount == 0) recentSearchLayout.visibility = View.GONE
+        //call viewModel delete recentSearch
     }
 
     override fun onDeleteAllRecentSearch() {
-
+        recentSearchLayout.visibility = View.GONE
+        //call viewModel delete all
     }
 
     override fun onItemClicked(applink: String, webUrl: String, shouldFinishActivity: Boolean) {
         Toast.makeText(context, "Item Clicked $applink", Toast.LENGTH_SHORT).show()
+        if (shouldFinishActivity) activity?.finish()
+        //pass to homepage activity
     }
 
     companion object {
