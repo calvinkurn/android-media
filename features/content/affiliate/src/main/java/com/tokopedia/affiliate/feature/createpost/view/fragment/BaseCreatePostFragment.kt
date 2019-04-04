@@ -484,8 +484,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private fun updateThumbnail() {
         if (viewModel.completeImageList.isNotEmpty()) {
-            btnPlay.showWithCondition(viewModel.fileImageList.first().type == MediaType.VIDEO)
             thumbnail.loadImageRounded(viewModel.completeImageList.first().path, 25f)
+            btnPlay.showWithCondition(viewModel.completeImageList.first().type == MediaType.VIDEO)
             edit.show()
             carouselIcon.setOnClickListener {
                 goToMediaPreview()
