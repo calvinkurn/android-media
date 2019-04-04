@@ -265,7 +265,9 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 CONTENT_VOTE -> list.add(mapPostPoll(media))
                 CONTENT_GRID -> list.add(mapPostGrid(media, template))
                 CONTENT_VIDEO -> {
-                    if (media.thumbnail.isNotBlank() && media.videoList.isNotEmpty()) {
+                    if (media.thumbnail.isNotBlank()
+                            && media.videoList.isNotEmpty()
+                            && media.videoList[0].url.isNotBlank()) {
                         list.add(mapPostVideo(media))
                     }
                 }
