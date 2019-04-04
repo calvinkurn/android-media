@@ -1,5 +1,10 @@
 package com.tokopedia.hotel.destination.view.adapter.viewholder
 
+import android.support.v4.content.ContextCompat
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.TextUtils
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -14,12 +19,12 @@ import kotlinx.android.synthetic.main.item_popular_search.view.*
 
 class PopularSearchViewHolder(val view: View, val popularSearchClickListener: PopularSearchClickListener): AbstractViewHolder<PopularSearch>(view) {
 
-    override fun bind(popularSearch: PopularSearch) {
+   override fun bind(popularSearch: PopularSearch) {
         with(itemView) {
-            popular_search_name.text = popularSearch.name
-            popular_search_location.text = popularSearch.location
-            popular_search_hotel_count.text = getString(R.string.hotel_search_popular_search_hotel_count, popularSearch.hotelCount.toString())
-            ImageHandler.loadImageWithoutPlaceholder(popular_search_image, popularSearch.image)
+            this.popular_search_name.text = popularSearch.name
+            this.popular_search_location.text = popularSearch.location
+            this.popular_search_hotel_count.text = getString(R.string.hotel_search_popular_search_hotel_count, popularSearch.hotelCount.toString())
+            ImageHandler.loadImageWithoutPlaceholder(this.popular_search_image, popularSearch.image)
         }
     }
 
