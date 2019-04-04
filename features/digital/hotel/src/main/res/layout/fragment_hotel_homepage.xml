@@ -20,7 +20,7 @@
             android:layout_height="@dimen/dp_24"
             android:layout_gravity="center"
             android:layout_marginRight="@dimen/dp_12"
-            app:srcCompat="@drawable/status_no_result" />
+            app:srcCompat="@drawable/ic_hotel_location" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -53,7 +53,7 @@
             android:layout_height="@dimen/dp_24"
             android:layout_gravity="center"
             android:layout_marginRight="@dimen/dp_12"
-            app:srcCompat="@drawable/status_no_result" />
+            app:srcCompat="@drawable/ic_hotel_calendar" />
 
         <LinearLayout
             android:layout_width="@dimen/dp_0"
@@ -82,7 +82,7 @@
             android:layout_marginLeft="@dimen/dp_6"
             android:layout_marginRight="@dimen/dp_6"
             android:background="@drawable/hotel_bg_round_grey"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:orientation="horizontal"
             android:padding="@dimen/dp_2">
 
@@ -98,7 +98,7 @@
                 android:layout_height="@dimen/dp_12"
                 android:layout_gravity="center"
                 android:layout_marginRight="@dimen/dp_12"
-                app:srcCompat="@drawable/status_no_result" />
+                app:srcCompat="@drawable/ic_hotel_night" />
 
         </LinearLayout>
 
@@ -134,7 +134,7 @@
             android:layout_height="@dimen/dp_24"
             android:layout_gravity="center"
             android:layout_marginRight="@dimen/dp_12"
-            app:srcCompat="@drawable/status_no_result" />
+            app:srcCompat="@drawable/ic_hotel_guest_room" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -144,11 +144,11 @@
             <com.tokopedia.design.component.TextViewCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/hotel_homepage_info"
+                android:text="@string/hotel_homepage_guest_info"
                 app:fontSize="micro" />
 
             <com.tokopedia.design.component.EditTextCompat
-                android:id="@+id/tv_hotel_homepage_info"
+                android:id="@+id/tv_hotel_homepage_guest_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="1 kamar, 1 dewasa, 1 anak" />
