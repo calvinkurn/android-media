@@ -141,9 +141,9 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
         mContainerMain = view.findViewById(R.id.container);
         mRecyclerView = view.findViewById(R.id.recycler_view_coupons);
         mSwipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
-        mItemDecoration = new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_12),
-                getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_12),
-                getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_12));
+        mItemDecoration = new SpacesItemDecoration(0,
+                getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_10),
+                getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_10));
     }
 
     private void initListener() {
