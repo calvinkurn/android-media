@@ -276,6 +276,6 @@ public class BaseDiscoveryActivity
     }
 
     public Boolean isPausing() {
-        return isPause && !isFinishing();
+        return isPause;
     }
 }
