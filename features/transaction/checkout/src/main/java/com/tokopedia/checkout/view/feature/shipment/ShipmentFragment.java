@@ -1554,6 +1554,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         MerchantVoucherListBottomSheetFragment merchantVoucherListBottomSheetFragment = MerchantVoucherListBottomSheetFragment.newInstance(shopId, cartString, promo);
         merchantVoucherListBottomSheetFragment.setActionListener(this);
         merchantVoucherListBottomSheetFragment.show(getFragmentManager(), "");
+        checkoutAnalyticsCourierSelection.eventClickShowMerchantVoucherList();
     }
 
     @Override
