@@ -56,7 +56,7 @@ public class TopAdsGtmTracker {
                                     "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                     "brand", "none/other",
                                     "category", "none/other",
-                                    "varian", "none/other",
+                                    "variant", "none/other",
                                     "list", "/homepage - product topads - product upload",
                                     "position", position + 1)))
             );
@@ -78,7 +78,7 @@ public class TopAdsGtmTracker {
                                             "id", product.getId(),
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
-                                            "varian", "none/other",
+                                            "variant", "none/other",
                                             "category", "none/other",
                                             "position", position + 1))))
             );
@@ -108,7 +108,7 @@ public class TopAdsGtmTracker {
                 "id", product.getId(),
                 "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                 "brand", "none/other",
-                "varian", "none/other",
+                "variant", "none/other",
                 "category", product.getCategory().getId(),
                 "list", "/searchproduct - topads  productlist",
                 "position", position));
@@ -151,7 +151,7 @@ public class TopAdsGtmTracker {
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
                                             "category", categoryBreadcrumbs,
-                                            "varian", "none/other",
+                                            "variant", "none/other",
                                             "position", position))))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -182,7 +182,7 @@ public class TopAdsGtmTracker {
                 "id", product.getId(),
                 "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                 "brand", "none/other",
-                "varian", "none/other",
+                "variant", "none/other",
                 "category", categoryBreadcrumbs,
                 "list", "/ - p2"+(isLogin?" - ":" - non login - ")+tabName+" - rekomendasi untuk anda - "+recomendationType+" - product topads",
                 "position", position));
@@ -193,7 +193,7 @@ public class TopAdsGtmTracker {
                 "id", product.getId(),
                 "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                 "brand", "none/other",
-                "varian", "none/other",
+                "variant", "none/other",
                 "category", product.getCategory().getId(),
                 "list", "/inbox - topads - rekomendasi untuk anda",
                 "position", position + 1));
@@ -281,7 +281,7 @@ public class TopAdsGtmTracker {
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
                                             "category", product.getCategory().getId(),
-                                            "varian", "none/other",
+                                            "variant", "none/other",
                                             "position", position))))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -305,7 +305,7 @@ public class TopAdsGtmTracker {
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
                                             "category", product.getCategory().getId(),
-                                            "varian", "none/other",
+                                            "variant", "none/other",
                                             "position", position + 1))))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -328,7 +328,7 @@ public class TopAdsGtmTracker {
                                     "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                     "brand", "none/other",
                                     "category", product.getCategory().getId(),
-                                    "varian", "none/other",
+                                    "variant", "none/other",
                                     "list", "/productdetail - topads",
                                     "position", position + 1)))
             );
@@ -353,7 +353,7 @@ public class TopAdsGtmTracker {
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
                                             "category", product.getCategory().getId(),
-                                            "varian", "none/other",
+                                            "variant", "none/other",
                                             "position", position + 1))))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -574,7 +574,7 @@ public class TopAdsGtmTracker {
                                     "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                     "brand", "none/other",
                                     "category", product.getCategory().getId(),
-                                    "varian", "none/other",
+                                    "variant", "none/other",
                                     "list", "/intermediary page - topads - promoted",
                                     "position", position + 1)))
             );
@@ -599,7 +599,7 @@ public class TopAdsGtmTracker {
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
                                             "category", product.getCategory().getId(),
-                                            "varian", "none/other",
+                                            "variant", "none/other",
                                             "position", position + 1))))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -622,7 +622,7 @@ public class TopAdsGtmTracker {
                                     "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                     "brand", "none/other",
                                     "category", product.getCategory().getId(),
-                                    "varian", "none/other",
+                                    "variant", "none/other",
                                     "list", "/hotlist - topads - promoted",
                                     "position", position + 1),
                                     "attribution", ""))
@@ -648,7 +648,7 @@ public class TopAdsGtmTracker {
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
                                             "category", product.getCategory().getId(),
-                                            "varian", "none/other",
+                                            "variant", "none/other",
                                             "position", position + 1))))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -671,7 +671,7 @@ public class TopAdsGtmTracker {
                                     "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                     "brand", "none/other",
                                     "category", product.getCategory().getId(),
-                                    "varian", "none/other",
+                                    "variant", "none/other",
                                     "list", "/category/" + product.getCategory().getId() + " - topads",
                                     "position", position + 1)))
             );
@@ -696,7 +696,7 @@ public class TopAdsGtmTracker {
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
                                             "category", product.getCategory().getId(),
-                                            "varian", "none/other",
+                                            "variant", "none/other",
                                             "position", position + 1),
                                             "attribution", "")))
             );
@@ -789,7 +789,7 @@ public class TopAdsGtmTracker {
                                     "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                     "brand", "none/other",
                                     "category", product.getCategory().getId(),
-                                    "varian", "none/other",
+                                    "variant", "none/other",
                                     "list", "/wishlist - product topads - product upload",
                                     "position", position + 1)))
             );
@@ -813,7 +813,7 @@ public class TopAdsGtmTracker {
                                     "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                     "brand", "none/other",
                                     "category", product.getCategory().getId(),
-                                    "varian", "none/other",
+                                    "variant", "none/other",
                                     "list", "/wishlist - product topads - product upload",
                                     "position", position + 1)))
             );
@@ -838,7 +838,7 @@ public class TopAdsGtmTracker {
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
                                             "category", product.getCategory().getId(),
-                                            "varian", "none/other",
+                                            "variant", "none/other",
                                             "position", position + 1))))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -862,7 +862,7 @@ public class TopAdsGtmTracker {
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
                                             "category", product.getCategory().getId(),
-                                            "varian", "none/other",
+                                            "variant", "none/other",
                                             "position", position + 1))))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -885,7 +885,7 @@ public class TopAdsGtmTracker {
                                     "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                     "brand", "none/other",
                                     "category", product.getCategory().getId(),
-                                    "varian", "none/other",
+                                    "variant", "none/other",
                                     "list", "/empty cart - topads",
                                     "position", position + 1)))
             );
@@ -910,7 +910,7 @@ public class TopAdsGtmTracker {
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
                                             "category", product.getCategory().getId(),
-                                            "varian", "none/other",
+                                            "variant", "none/other",
                                             "position", position + 1))))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -933,7 +933,7 @@ public class TopAdsGtmTracker {
                                     "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                     "brand", "none/other",
                                     "category", product.getCategory().getId(),
-                                    "varian", "none/other",
+                                    "variant", "none/other",
                                     "list", "/cart - topads",
                                     "position", position + 1)))
             );
@@ -958,7 +958,7 @@ public class TopAdsGtmTracker {
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
                                             "category", product.getCategory().getId(),
-                                            "varian", "none/other",
+                                            "variant", "none/other",
                                             "position", position + 1))))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -981,7 +981,7 @@ public class TopAdsGtmTracker {
                                     "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                     "brand", "none/other",
                                     "category", product.getCategory().getId(),
-                                    "varian", "none/other",
+                                    "variant", "none/other",
                                     "list", "/cart - topads",
                                     "position", position + 1)))
             );
@@ -1006,7 +1006,7 @@ public class TopAdsGtmTracker {
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
                                             "category", product.getCategory().getId(),
-                                            "varian", "none/other",
+                                            "variant", "none/other",
                                             "position", position + 1))))
             );
             tracker.sendEnhancedEcommerce(map);
@@ -1029,7 +1029,7 @@ public class TopAdsGtmTracker {
                                     "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                     "brand", "none/other",
                                     "category", product.getCategory().getId(),
-                                    "varian", "none/other",
+                                    "variant", "none/other",
                                     "list", "/recent view - topads - promoted",
                                     "position", position + 1)))
             );
@@ -1054,7 +1054,7 @@ public class TopAdsGtmTracker {
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
                                             "category", product.getCategory().getId(),
-                                            "varian", "none/other",
+                                            "variant", "none/other",
                                             "position", position + 1))))
             );
             tracker.sendEnhancedEcommerce(map);
