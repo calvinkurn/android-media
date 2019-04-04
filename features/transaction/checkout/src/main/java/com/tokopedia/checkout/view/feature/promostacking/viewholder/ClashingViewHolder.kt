@@ -48,6 +48,10 @@ class ClashingViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
                 if (isSelected) listener.onVoucherItemSelected(adapterPosition, element.isSelected)
             }
 
+            itemView.setOnClickListener {
+                itemView.rb_option_clash.isChecked = true
+            }
+
         }
     }
 
