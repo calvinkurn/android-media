@@ -22,7 +22,7 @@ class EmptyAffiliateViewHolder(val v: View, val listener: OnEmptyItemClickedList
         private const val ANDROID_IMAGE_URL = "https://ecs7.tokopedia.net/img/android"
         private const val IMAGE_FOLDER = "profile"
         private const val IMAGE_SIZE = "xxxhdpi"
-        private const val IMAGE_NAME = "img_empty_profile"
+        private const val IMAGE_NAME = "img_empty_profile.png"
     }
     override fun bind(element: EmptyAffiliateViewModel?) {
         val imageUrl = String.format(

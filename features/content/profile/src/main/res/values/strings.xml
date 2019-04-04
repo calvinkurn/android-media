@@ -64,7 +64,7 @@
     <string name="af_continue">Lanjutkan</string>
     <string name="af_see_other_product">Lihat Produk Lainnya</string>
 
-    <string name="profile_empty_title">Share barang kesukaanmu/n biar dapet komisi</string>
+    <string name="profile_empty_title">Share barang kesukaanmu\n biar dapet komisi</string>
     <string name="profile_empty_subtitle">Pilih dulu yuk barangnya</string>
     <string name="profile_empty_button">Lihat Barang Lainnya</string>
 </resources>
