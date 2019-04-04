@@ -159,11 +159,8 @@ public class BaseDiscoveryActivity
         }
         TrackingUtils.eventAppsFlyerViewListingSearch(this, afProdIds, productViewModel.getQuery(), prodIdArray);
         TrackingUtils.sendMoEngageSearchAttempt(this, productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
-
-        if (!isPausing()) {
-            finish();
-            SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
-        }
+        finish();
+        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop(), isPausing());
     }
 
     @Override
@@ -279,6 +276,6 @@ public class BaseDiscoveryActivity
     }
 
     public Boolean isPausing() {
-        return isPause;
+        return isPause && !isFinishing();
     }
 }
