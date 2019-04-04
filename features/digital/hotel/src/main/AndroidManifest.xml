@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.hotel">
 
+    <uses-feature android:name="android.hardware.location.gps" />
+    
     <application>
         <activity android:name=".homepage.presentation.activity.HotelHomepageActivity"
             android:label="@string/hotel_homepage_toolbar_title"
