@@ -45,7 +45,7 @@ public class BaseDiscoveryActivity
 
     private Boolean isPause = false;
     private boolean isStartingSearchActivityWithProductViewModel = false;
-    private ProductViewModel productViewModelForSearchActivity;
+    private ProductViewModel productViewModelForOnResume;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,23 +167,23 @@ public class BaseDiscoveryActivity
 
     protected void handleMoveToSearchActivity(ProductViewModel productViewModel) {
         if (!isPausing()) {
-            moveToSearchActivity(productViewModel);
+            finishAndMoveToSearchActivity(productViewModel);
         }
         else {
-            prepareMoveToSearchActivityOnResume(productViewModel);
+            prepareMoveToSearchActivityDuringOnResume(productViewModel);
         }
     }
 
-    private void moveToSearchActivity(ProductViewModel productViewModel) {
+    private void finishAndMoveToSearchActivity(ProductViewModel productViewModel) {
         isStartingSearchActivityWithProductViewModel = false;
 
         finish();
         SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
     }
 
-    private void prepareMoveToSearchActivityOnResume(ProductViewModel productViewModel) {
+    private void prepareMoveToSearchActivityDuringOnResume(ProductViewModel productViewModel) {
         isStartingSearchActivityWithProductViewModel = true;
-        productViewModelForSearchActivity = productViewModel;
+        productViewModelForOnResume = productViewModel;
     }
 
     @Override
@@ -297,7 +297,13 @@ public class BaseDiscoveryActivity
         super.onResume();
         isPause = false;
 
-        handleMoveToSearchActivity(productViewModelForSearchActivity);
+        handleMoveToSearchActivityOnResume();
+    }
+
+    private void handleMoveToSearchActivityOnResume() {
+        if(isStartingSearchActivityWithProductViewModel) {
+            finishAndMoveToSearchActivity(productViewModelForOnResume);
+        }
     }
 
     public Boolean isPausing() {
