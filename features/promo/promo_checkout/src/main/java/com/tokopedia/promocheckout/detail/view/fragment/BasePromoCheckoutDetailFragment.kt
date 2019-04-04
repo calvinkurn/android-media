@@ -20,6 +20,7 @@ import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.util.mapToVariantPromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.promocheckout.detail.model.PromoCheckoutDetailModel
@@ -131,6 +132,10 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
             message = e.message
         }
         NetworkErrorHelper.createSnackbarRedWithAction(activity, message, { onClickUse() }).showRetrySnackbar()
+    }
+
+    override fun onClashCheckPromo(clasingInfoDetailUiModel: ClashingInfoDetailUiModel) {
+
     }
 
     override fun onSuccessValidatePromoStacking(data: DataUiModel) {

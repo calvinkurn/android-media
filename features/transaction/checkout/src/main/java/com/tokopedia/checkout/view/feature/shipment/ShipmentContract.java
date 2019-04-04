@@ -17,6 +17,7 @@ import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
@@ -138,6 +139,10 @@ public interface ShipmentContract {
         void onFailedClearPromoStack(boolean ignoreAPIResponse);
 
         Promo generateCheckPromoFirstStepParam();
+
+        void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel);
+
+        void onSuccessCheckPromoFirstStep(ResponseGetPromoStackUiModel promoData);
     }
 
     interface AnalyticsActionListener {

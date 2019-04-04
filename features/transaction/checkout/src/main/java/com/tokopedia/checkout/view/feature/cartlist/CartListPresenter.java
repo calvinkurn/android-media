@@ -1191,7 +1191,6 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processApplyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList) {
-        view.showProgressLoading();
         Promo promo = view.generateCheckPromoFirstStepParam();
         promo.setCodes(new ArrayList<>());
         if (promo.getOrders() != null) {
@@ -1200,12 +1199,16 @@ public class CartListPresenter implements ICartListPresenter {
             }
         }
 
-        for (ClashingVoucherOrderUiModel model : newPromoList) {
+        // New promo list is array, but it will always be 1 item
+        if (newPromoList != null && newPromoList.size() > 0) {
+            ClashingVoucherOrderUiModel model = newPromoList.get(0);
             if (TextUtils.isEmpty(model.getUniqueId())) {
+                // This promo is global promo
                 ArrayList<String> codes = new ArrayList<>();
                 codes.add(model.getCode());
                 promo.setCodes(codes);
             } else {
+                // This promo is merchant promo
                 if (promo.getOrders() != null) {
                     for (Order order : promo.getOrders()) {
                         if (model.getUniqueId().equals(order.getUniqueId())) {
@@ -1217,9 +1220,10 @@ public class CartListPresenter implements ICartListPresenter {
                     }
                 }
             }
+            view.showProgressLoading();
             checkPromoStackingCodeUseCase.setParams(promo);
             checkPromoStackingCodeUseCase.execute(RequestParams.create(),
-                    new CheckPromoFirstStepAfterClashSubscriber(view, this, newPromoList.size(), newPromoList.indexOf(model)));
+                    new CheckPromoFirstStepAfterClashSubscriber(view, this, checkPromoStackingCodeMapper));
         }
     }
 

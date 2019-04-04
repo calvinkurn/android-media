@@ -15,9 +15,12 @@ import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
+import com.tokopedia.promocheckout.common.util.EXTRA_CLASHING_DATA
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
+import com.tokopedia.promocheckout.common.util.RESULT_CLASHING
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
@@ -115,6 +118,13 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         activity?.finish()
     }
 
+    override fun onClashCheckPromo(clasingInfoDetailUiModel: ClashingInfoDetailUiModel) {
+        val intent = Intent()
+        intent.putExtra(EXTRA_CLASHING_DATA, clasingInfoDetailUiModel)
+        activity?.setResult(RESULT_CLASHING, intent)
+        activity?.finish()
+    }
+
     override fun onImpressionCoupon(promoCheckoutListModel: PromoCheckoutListModel?) {
         if (pageTracking == FROM_CART) {
             trackingPromoCheckoutUtil.cartImpressionCoupon(promoCheckoutListModel?.code ?: "")
@@ -124,9 +134,18 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_DETAIL_PROMO) {
-            activity?.setResult(Activity.RESULT_OK, data)
-            activity?.finish()
+        if (requestCode == REQUEST_CODE_DETAIL_PROMO) {
+            if (resultCode == Activity.RESULT_OK) {
+                activity?.setResult(Activity.RESULT_OK, data)
+                activity?.finish()
+            } else {
+                val intent = Intent()
+                val bundle = data?.getExtras()
+                val clashingInfoDetailUiModel: ClashingInfoDetailUiModel? = bundle?.getParcelable(EXTRA_CLASHING_DATA);
+                intent.putExtra(EXTRA_CLASHING_DATA, clashingInfoDetailUiModel)
+                activity?.setResult(RESULT_CLASHING, intent)
+                activity?.finish()
+            }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }

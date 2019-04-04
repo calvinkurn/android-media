@@ -85,12 +85,6 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                             val message = responseGetPromoStack.data.message.text
                             view.onErrorCheckPromoFirstStep(message, isFromList)
                         } else {
-                            responseGetPromoStack.data.voucherOrders.forEach {
-                                if (!it.success && it.message.state.equals("red")) {
-                                    view.onErrorCheckPromoFirstStep(it.message.text, isFromList)
-                                    return
-                                }
-                            }
                             if (responseGetPromoStack.data.clashings.isClashedPromos) {
                                 view.onClashCheckPromoFirstStep(responseGetPromoStack.data.clashings)
                             } else {

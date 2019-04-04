@@ -14,6 +14,8 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
 
 import java.util.List;
 import java.util.Map;
@@ -131,9 +133,15 @@ public interface ICartListView extends IBaseView {
 
     void onSuccessClearPromoStack(int shopIndex);
 
+    void onSuccessCheckPromoFirstStep(ResponseGetPromoStackUiModel responseGetPromoStackUiModel);
+
     void onFailedClearPromoStack(boolean ignoreAPIResponse);
 
     Promo generateCheckPromoFirstStepParam();
 
     void showMerchantVoucherListBottomsheet(ShopGroupData shopGroupData);
+
+    void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel);
+
+    void onSuccessClearPromoStachAfterClash();
 }
