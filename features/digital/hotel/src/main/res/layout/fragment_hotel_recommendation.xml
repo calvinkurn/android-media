@@ -45,7 +45,10 @@
             android:id="@+id/recent_search_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_16"/>
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_16"/>
 
         <View
             android:layout_width="match_parent"
@@ -58,7 +61,10 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_16"
             />
     </LinearLayout>
 
