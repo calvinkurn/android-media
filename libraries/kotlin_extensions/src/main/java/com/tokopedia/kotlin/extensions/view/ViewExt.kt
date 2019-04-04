@@ -203,13 +203,11 @@ fun ImageView.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintL
         viewTreeObserver.addOnScrollChangedListener(
                 object : ViewTreeObserver.OnScrollChangedListener {
                     override fun onScrollChanged() {
-                        Executors.newSingleThreadScheduledExecutor().schedule({
-                            if (!holder.isInvoke && viewIsVisible(this@addOnImpressionListener)) {
-                                listener.onViewHint()
-                                holder.invoke()
-                                viewTreeObserver.removeOnScrollChangedListener(this)
-                            }
-                        }, 300, TimeUnit.MILLISECONDS)
+                        if (!holder.isInvoke && viewIsVisible(this@addOnImpressionListener)) {
+                            listener.onViewHint()
+                            holder.invoke()
+                            viewTreeObserver.removeOnScrollChangedListener(this)
+                        }
                     }
                 })
     }

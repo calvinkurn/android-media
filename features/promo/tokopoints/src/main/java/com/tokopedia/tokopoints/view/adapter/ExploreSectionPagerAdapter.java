@@ -1,11 +1,6 @@
 package com.tokopedia.tokopoints.view.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,9 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
@@ -428,6 +420,9 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
                 ((TextView) view.findViewById(R.id.text_title_banner)).setText(data.getInBannerTitle());
                 ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
+
+                setText(view.findViewById(R.id.text_title_bottom_1), data.getTitle());
+                setText(view.findViewById(R.id.text_sub_title_bottom_1), data.getSubTitle());
             }
 
             if (content.getLayoutBannerAttr().getImageList().size() > 1) {
@@ -440,6 +435,9 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
                 ((TextView) view.findViewById(R.id.text_title_banner2)).setText(data.getInBannerTitle());
                 ((TextView) view.findViewById(R.id.text_sub_title_banner2)).setText(data.getInBannerSubTitle());
+
+                setText(view.findViewById(R.id.text_title_bottom_2), data.getTitle());
+                setText(view.findViewById(R.id.text_sub_title_bottom_2), data.getSubTitle());
             }
 
             if (content.getLayoutBannerAttr().getImageList().size() > 2) {
@@ -452,6 +450,9 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
                 ((TextView) view.findViewById(R.id.text_title_banner3)).setText(data.getInBannerTitle());
                 ((TextView) view.findViewById(R.id.text_sub_title_banner3)).setText(data.getInBannerSubTitle());
+
+                setText(view.findViewById(R.id.text_title_bottom_3), data.getTitle());
+                setText(view.findViewById(R.id.text_sub_title_bottom_3), data.getSubTitle());
             }
 
         }
@@ -500,6 +501,9 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
                 ((TextView) view.findViewById(R.id.text_title_banner)).setText(data.getInBannerTitle());
                 ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
+
+                setText(view.findViewById(R.id.text_title_bottom_1), data.getTitle());
+                setText(view.findViewById(R.id.text_sub_title_bottom_1), data.getSubTitle());
             }
 
             if (content.getLayoutBannerAttr().getImageList().size() > 1) {
@@ -512,6 +516,9 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
                 ((TextView) view.findViewById(R.id.text_title_banner2)).setText(data.getInBannerTitle());
                 ((TextView) view.findViewById(R.id.text_sub_title_banner2)).setText(data.getInBannerSubTitle());
+
+                setText(view.findViewById(R.id.text_title_bottom_2), data.getTitle());
+                setText(view.findViewById(R.id.text_sub_title_bottom_2), data.getSubTitle());
             }
         }
 
@@ -559,6 +566,9 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
                 ((TextView) view.findViewById(R.id.text_title_banner)).setText(data.getInBannerTitle());
                 ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
+
+                setText(view.findViewById(R.id.text_title_bottom_1), data.getTitle());
+                setText(view.findViewById(R.id.text_sub_title_bottom_1), data.getSubTitle());
             }
 
             if (content.getLayoutBannerAttr().getImageList().size() > 1) {
@@ -571,10 +581,27 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
 
                 ((TextView) view.findViewById(R.id.text_title_banner2)).setText(data.getInBannerTitle());
                 ((TextView) view.findViewById(R.id.text_sub_title_banner2)).setText(data.getInBannerSubTitle());
+
+                setText(view.findViewById(R.id.text_title_bottom_2), data.getTitle());
+                setText(view.findViewById(R.id.text_sub_title_bottom_2), data.getSubTitle());
+
             }
         }
 
         return view;
+    }
+
+    private void setText(View view, String text) {
+        if (view == null) {
+            return;
+        }
+
+        if (view instanceof TextView && !TextUtils.isEmpty(text)) {
+            ((TextView) view).setText(text);
+            view.setVisibility(View.VISIBLE);
+        } else {
+            view.setVisibility(View.GONE);
+        }
     }
 
     View getCarousel1on1(SectionContent content) {
