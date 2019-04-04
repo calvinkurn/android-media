@@ -641,6 +641,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onVoucherMerchantPromoClicked(Object object) {
         if (object instanceof ShopGroupData) {
+            cartPageAnalytics.eventClickPilihMerchantVoucher();
             dPresenter.processUpdateCartDataPromoMerchant(getSelectedCartDataList(), (ShopGroupData) object);
         }
     }
@@ -704,6 +705,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onCancelVoucherMerchantClicked(String promoMerchantCode, int shopIndex, boolean ignoreAPIResponse) {
+        cartPageAnalytics.eventClickHapusPromoXOnTicker(promoMerchantCode);
         ArrayList<String> promoMerchantCodes = new ArrayList<>();
         promoMerchantCodes.add(promoMerchantCode);
         dPresenter.processCancelAutoApplyPromoStack(shopIndex, promoMerchantCodes, ignoreAPIResponse);
@@ -1898,6 +1900,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         ClashBottomSheetFragment clashBottomSheetFragment = ClashBottomSheetFragment.newInstance();
         clashBottomSheetFragment.setData(clashingInfoDetailUiModel);
         clashBottomSheetFragment.setActionListener(this);
+        clashBottomSheetFragment.setAnalyticsCart(cartPageAnalytics);
         clashBottomSheetFragment.show(getFragmentManager(), "");
     }
 

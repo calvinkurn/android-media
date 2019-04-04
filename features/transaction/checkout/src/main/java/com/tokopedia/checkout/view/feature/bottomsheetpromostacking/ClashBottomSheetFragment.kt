@@ -11,8 +11,9 @@ import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOptionUiModel
 import android.support.v7.widget.SimpleItemAnimator
+import com.google.gson.Gson
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel
-
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart
 
 /**
  * Created by fwidjaja on 10/03/19.
@@ -27,6 +28,7 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
     private lateinit var rvClashingOption: RecyclerView
     private lateinit var btSubmit: ButtonCompat
     private lateinit var adapter: ClashingAdapter
+    private var checkoutAnalyticsCart: CheckoutAnalyticsCart? = null
 
     interface ActionListener {
         fun onSubmitNewPromoAfterClash(oldPromoList: ArrayList<String>, newPromoList: ArrayList<ClashingVoucherOrderUiModel>)
@@ -45,6 +47,10 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
 
     fun setActionListener(actionListener: ActionListener) {
         this.actionListener = actionListener
+    }
+
+    fun setAnalyticsCart(checkoutAnalyticsCart: CheckoutAnalyticsCart) {
+        this.checkoutAnalyticsCart = checkoutAnalyticsCart
     }
 
     override fun initView(view: View) {
@@ -77,19 +83,27 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
         if (btSubmit.isEnabled) {
             btSubmit.setOnClickListener {
                 for (index in adapter.data.indices) {
-                    if (index == 0 && adapter.data[index].isSelected) {
+                    if (index == 0) {
                         val oldPromoList = ArrayList<String>()
                         adapter.data[index + 1].voucherOrders.forEach { voucherOrder ->
                             oldPromoList.add(voucherOrder.code)
                         }
-                        val newPromoList = ArrayList<String>()
-                        adapter.data[index].voucherOrders.forEach { voucherOrder ->
-                            newPromoList.add(voucherOrder.code)
+                        if (adapter.data[index].isSelected) {
+                            val newPromoList = ArrayList<String>()
+                            adapter.data[index].voucherOrders.forEach { voucherOrder ->
+                                newPromoList.add(voucherOrder.code)
+                            }
+                            if (newPromoList.size > 0) {
+                                checkoutAnalyticsCart?.eventClickSubmitPromoKonflik(newPromoList.get(0))
+                            }
+                            dismiss()
+                            actionListener.onSubmitNewPromoAfterClash(oldPromoList, adapter.data[index].voucherOrders)
+                        } else {
+                            if (oldPromoList.size > 0) {
+                                checkoutAnalyticsCart?.eventClickSubmitPromoKonflik(Gson().toJson(oldPromoList))
+                            }
+                            dismiss()
                         }
-                        dismiss()
-                        actionListener.onSubmitNewPromoAfterClash(oldPromoList, adapter.data[index].voucherOrders)
-                    } else {
-                        dismiss()
                     }
                 }
             }
@@ -119,6 +133,17 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
             }
         } else {
             adapter.notifyItemChanged(reverseIndex)
+        }
+
+        for (model: ClashingVoucherOptionUiModel in adapter.data) {
+            if (model.isSelected) {
+                val vouchers = ArrayList<String>()
+                for (voucherModel: ClashingVoucherOrderUiModel in model.voucherOrders) {
+                    vouchers.add(voucherModel.code)
+                }
+                checkoutAnalyticsCart?.eventSelectPromoPromoKonflik(Gson().toJson(vouchers))
+                break
+            }
         }
 
         setButtonSubmitVisibility()
