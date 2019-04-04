@@ -704,14 +704,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String,
                               url: String, iamgeUrl: String) {
         activity?.let {
-            profileRouter.shareFeed(
-                    it,
-                    id.toString(),
-                    url,
-                    title,
-                    iamgeUrl,
-                    description
-            )
+            doShare(url, String.format("%s %s", description, "%s"), title)
         }
         profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
     }
@@ -1218,12 +1211,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private fun shouldChangeUsername(): Boolean = isOwner && profilePreference.shouldChangeUsername()
 
     private fun doShare(link: String) {
-        val shareBody = String.format(getString(R.string.profile_share_text), link)
+        doShare(link, getString(R.string.profile_share_text), getString(R.string.profile_share_title))
+    }
+
+    private fun doShare(link: String, formatString : String, shareTitle : String) {
+        val shareBody = String.format(formatString, link)
         val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
         sharingIntent.type = TEXT_PLAIN
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody)
         startActivity(
-                Intent.createChooser(sharingIntent, getString(R.string.profile_share_title))
+                Intent.createChooser(sharingIntent, shareTitle)
         )
     }
 
