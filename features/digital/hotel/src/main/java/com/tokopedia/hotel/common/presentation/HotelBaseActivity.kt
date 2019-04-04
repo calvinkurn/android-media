@@ -5,17 +5,17 @@ import android.os.PersistableBundle
 import android.view.Menu
 import android.view.MenuItem
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.design.component.Menus
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.di.component.HotelComponent
-import com.tokopedia.hotel.common.di.component.DaggerHotelComponent
 
 /**
  * @author by furqan on 25/03/19
  */
-abstract class HotelBaseActivity: BaseSimpleActivity(), HasComponent<HotelComponent> {
+abstract class HotelBaseActivity: BaseSimpleActivity() {
+
+    private lateinit var hotelComponent: HotelComponent
     private lateinit var menus: Menus
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,11 +68,11 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HasComponent<HotelCompon
         menus.setOnActionClickListener { view -> menus.dismiss() }
 
         menus.setOnItemMenuClickListener { itemMenus, pos ->
-/*            when (pos) {
-                MENU_ORDER_LIST -> // some action
-                MENU_PROMO -> // some action
-                MENU_HELP -> // some action
-            }*/
+            /*            when (pos) {
+                            MENU_ORDER_LIST -> // some action
+                            MENU_PROMO -> // some action
+                            MENU_HELP -> // some action
+                        }*/
             menus.dismiss()
         }
 
@@ -81,13 +81,18 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HasComponent<HotelCompon
         menus.show()
     }
 
-    protected fun getHotelComponent(): HotelComponent = HotelComponentInstance.getHotelComponent(application)
+    protected fun getHotelComponent(): HotelComponent {
+        if (!::hotelComponent.isInitialized) {
+            hotelComponent = HotelComponentInstance.getHotelComponent(application)
+        }
+        return hotelComponent as HotelComponent
+    }
 
     abstract fun shouldShowOptionMenu(): Boolean
 
     companion object {
-        private const val MENU_ORDER_LIST = 0
-        private const val MENU_PROMO = 1
-        private const val MENU_HELP = 2
+        private val MENU_ORDER_LIST = 0
+        private val MENU_PROMO = 1
+        private val MENU_HELP = 2
     }
 }
