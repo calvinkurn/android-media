@@ -35,6 +35,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
@@ -711,7 +712,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         }
         totalPrice = totalItemPrice + shippingFee + insuranceFee + totalPurchaseProtectionPrice + additionalFee -
-                shipmentCostModel.getPromoPrice() - tradeInPrice - (double) shipmentCostModel.getTotalPromoStackAmount();
+                shipmentCostModel.getPromoPrice() - tradeInPrice - (double) shipmentCostModel.getTotalDiscWithoutCashback();
         shipmentCostModel.setTotalWeight(totalWeight);
         shipmentCostModel.setAdditionalFee(additionalFee);
         shipmentCostModel.setTotalItemPrice(totalItemPrice);
@@ -803,9 +804,18 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     if (isApplied) {
                         shipmentCostModel.setTotalPromoStackAmount(dataUiModel.getBenefit().getFinalBenefitAmount());
                         shipmentCostModel.setTotalPromoStackAmountStr(dataUiModel.getBenefit().getFinalBenefitAmountStr());
+
+                        int totalDiscWithoutCashback = 0;
+                        for (SummariesUiModel summariesUiModel : dataUiModel.getBenefit().getSummaries()) {
+                            if (!summariesUiModel.getType().equalsIgnoreCase("cashback")) {
+                                totalDiscWithoutCashback += summariesUiModel.getAmount();
+                            }
+                        }
+                        shipmentCostModel.setTotalDiscWithoutCashback(totalDiscWithoutCashback);
                     } else {
                         shipmentCostModel.setTotalPromoStackAmount(0);
                         shipmentCostModel.setTotalPromoStackAmountStr("-");
+                        shipmentCostModel.setTotalDiscWithoutCashback(0);
                     }
                     for (int i = 0; i < shipmentDataList.size(); i++) {
                         Object itemAdapter = shipmentDataList.get(i);

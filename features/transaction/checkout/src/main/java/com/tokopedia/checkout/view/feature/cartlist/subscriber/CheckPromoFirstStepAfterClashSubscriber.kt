@@ -33,7 +33,7 @@ class CheckPromoFirstStepAfterClashSubscriber(val view: ICartListView?,
         val responseGetPromoStack = checkPromoCodeStackingCodeMapper.call(response)
         if (responseGetPromoStack.status != "OK" || responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
             val message = responseGetPromoStack.data.message.text
-            view?.showToastMessageRed(message);
+            view?.showToastMessageRed(message)
         } else {
             if (responseGetPromoStack.data.clashings.isClashedPromos) {
                 view?.onClashCheckPromo(responseGetPromoStack.data.clashings)
