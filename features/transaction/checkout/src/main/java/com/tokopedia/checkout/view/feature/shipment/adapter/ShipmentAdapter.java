@@ -907,7 +907,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             Object shipmentData = shipmentDataList.get(i);
             if (shipmentData instanceof PromoStackingData) {
                 ((PromoStackingData) shipmentData).setState(TickerPromoStackingCheckoutView.State.EMPTY);
-                // TODO :  check apakah merchant_voucher atau merchant
                 if (!variant.isEmpty() && variant.equalsIgnoreCase("merchant_voucher")) {
                     ((PromoStackingData) shipmentData).setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
                 } else {

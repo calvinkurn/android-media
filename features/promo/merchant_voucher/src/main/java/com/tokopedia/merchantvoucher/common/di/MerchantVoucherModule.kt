@@ -20,7 +20,6 @@ class MerchantVoucherModule {
         return CheckoutAnalyticsCart()
     }
 
-
     @Provides
     @MerchantVoucherScope
     fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context): CheckPromoStackingCodeUseCase {
