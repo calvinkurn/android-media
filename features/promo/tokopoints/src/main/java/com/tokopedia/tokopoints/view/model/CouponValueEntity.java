@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.library.baseadapter.BaseItem;
+import com.tokopedia.tokopoints.view.model.section.CouponUpperLeftSection;
 
 public class CouponValueEntity extends BaseItem {
     @Expose
@@ -99,6 +100,17 @@ public class CouponValueEntity extends BaseItem {
 
     @SerializedName("redirectAppLink")
     private String redirectAppLink;
+
+    @SerializedName("upperLeftSection")
+    private CouponUpperLeftSection upperLeftSection;
+
+    public CouponUpperLeftSection getUpperLeftSection() {
+        return upperLeftSection;
+    }
+
+    public void setUpperLeftSection(CouponUpperLeftSection upperLeftSection) {
+        this.upperLeftSection = upperLeftSection;
+    }
 
     public String getRedirectAppLink() {
         return redirectAppLink;

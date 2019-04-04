@@ -1,6 +1,8 @@
 package com.tokopedia.tokopoints.view.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -49,7 +51,7 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
     private CouponListingStackedPresenter mPresenter;
 
     public class ViewHolder extends BaseVH {
-        TextView label, value, tvMinTxnValue, tvMinTxnLabel;
+        TextView label, value, tvMinTxnValue, tvMinTxnLabel, tvStackCount;
         ImageView imgBanner, imgLabel, ivMinTxn;
         public boolean isVisited = false;
         /*This section is exclusively for handling timer*/
@@ -67,6 +69,7 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
             ivMinTxn = view.findViewById(R.id.iv_rp);
             tvMinTxnValue = view.findViewById(R.id.tv_min_txn_value);
             tvMinTxnLabel = view.findViewById(R.id.tv_min_txn_label);
+            tvStackCount = view.findViewById(R.id.text_stack_count);
             progressTimer = view.findViewById(R.id.progress_timer);
             viewCouponNew = view.findViewById(R.id.view_coupon_new);
             cvShadow1 = view.findViewById(R.id.cv_shadow_1);
@@ -256,7 +259,7 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
             holder.cvShadow1.setVisibility(View.GONE);
             holder.cvShadow2.setVisibility(View.GONE);
             layoutParamsCv1.setMargins(0, 0, 0, 0);
-            layoutParamsCvData.setMargins(0, 0, 0 ,0);
+            layoutParamsCvData.setMargins(0, 0, 0, 0);
             holder.cvShadow1.setLayoutParams(layoutParamsCv1);
             holder.cvData.setLayoutParams(layoutParamsCvData);
         }
@@ -273,6 +276,32 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
             }
         });
 
+        if (item.getUpperLeftSection() == null
+                || item.getUpperLeftSection().getTextAttributes() == null
+                || item.getUpperLeftSection().getTextAttributes().isEmpty()
+                || item.getUpperLeftSection().getTextAttributes().get(0) == null
+                || TextUtils.isEmpty(item.getUpperLeftSection().getTextAttributes().get(0).getText())) {
+            holder.tvStackCount.setVisibility(View.GONE);
+        } else {
+            holder.tvStackCount.setVisibility(View.VISIBLE);
+            holder.tvStackCount.setText(item.getUpperLeftSection().getTextAttributes().get(0).getText());
+
+            if (item.getUpperLeftSection().getTextAttributes().get(0).isBold()) {
+                holder.tvStackCount.setTypeface(holder.tvStackCount.getTypeface(), Typeface.BOLD);
+            } else {
+                holder.tvStackCount.setTypeface(holder.tvStackCount.getTypeface(), Typeface.NORMAL);
+            }
+
+            if (TextUtils.isEmpty(item.getUpperLeftSection().getTextAttributes().get(0).getColor())) {
+                holder.tvStackCount.setTextColor(ContextCompat.getColor(holder.tvStackCount.getContext(), R.color.medium_green));
+            } else {
+                try {
+                    holder.tvStackCount.setTextColor(Color.parseColor(item.getUpperLeftSection().getTextAttributes().get(0).getColor()));
+                } catch (IllegalArgumentException iae) {
+                    holder.tvStackCount.setTextColor(ContextCompat.getColor(holder.tvStackCount.getContext(), R.color.medium_green));
+                }
+            }
+        }
 
         /*This section is exclusively for handling flash-sale timer*/
         if (holder.timer != null) {
