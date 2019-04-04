@@ -903,9 +903,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onError(Throwable e) {
-                getView().hideLoading();
                 e.printStackTrace();
                 if (getView() != null) {
+                    getView().hideLoading();
                     getView().showToastError(e.getMessage());
                     getView().resetCourier(cartPosition);
                 }
@@ -913,7 +913,18 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-                getView().hideLoading();
+                if (getView() != null) {
+                    getView().hideLoading();
+                    ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
+                    if (!responseGetPromoStack.getStatus().equalsIgnoreCase("OK")
+                            || TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(
+                            responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED){
+                        getView().showToastError(responseGetPromoStack.getMessage().get(0));
+                        getView().resetCourier(cartPosition);
+                    } else {
+                        // Update for success scenario here
+                    }
+                }
             }
         });
     }
