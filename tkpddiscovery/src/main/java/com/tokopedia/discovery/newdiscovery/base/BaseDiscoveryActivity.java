@@ -44,6 +44,8 @@ public class BaseDiscoveryActivity
     private int activeTabPosition;
 
     private Boolean isPause = false;
+    private boolean isStartingSearchActivityWithProductViewModel = false;
+    private ProductViewModel productViewModelForOnResume;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,10 +159,31 @@ public class BaseDiscoveryActivity
 
             }
         }
-        TrackingUtils.eventAppsFlyerViewListingSearch(this,afProdIds,productViewModel.getQuery(),prodIdArray);
+        TrackingUtils.eventAppsFlyerViewListingSearch(this, afProdIds, productViewModel.getQuery(), prodIdArray);
         TrackingUtils.sendMoEngageSearchAttempt(this, productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
+
+        handleMoveToSearchActivity(productViewModel);
+    }
+
+    protected void handleMoveToSearchActivity(ProductViewModel productViewModel) {
+        if (!isPausing()) {
+            finishAndMoveToSearchActivity(productViewModel);
+        }
+        else {
+            prepareMoveToSearchActivityDuringOnResume(productViewModel);
+        }
+    }
+
+    private void finishAndMoveToSearchActivity(ProductViewModel productViewModel) {
+        isStartingSearchActivityWithProductViewModel = false;
+
         finish();
-        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop(), isPausing());
+        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
+    }
+
+    private void prepareMoveToSearchActivityDuringOnResume(ProductViewModel productViewModel) {
+        isStartingSearchActivityWithProductViewModel = true;
+        productViewModelForOnResume = productViewModel;
     }
 
     @Override
@@ -273,6 +296,14 @@ public class BaseDiscoveryActivity
     protected void onResume() {
         super.onResume();
         isPause = false;
+
+        handleMoveToSearchActivityOnResume();
+    }
+
+    private void handleMoveToSearchActivityOnResume() {
+        if(isStartingSearchActivityWithProductViewModel) {
+            finishAndMoveToSearchActivity(productViewModelForOnResume);
+        }
     }
 
     public Boolean isPausing() {

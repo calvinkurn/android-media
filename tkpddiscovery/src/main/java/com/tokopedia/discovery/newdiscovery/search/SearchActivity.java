@@ -84,8 +84,6 @@ public class SearchActivity extends DiscoveryActivity
     private static final String DEEP_LINK_URI = "deep_link_uri";
     private static final String EXTRA_PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
     private static final String EXTRA_FORCE_SWIPE_TO_SHOP = "FORCE_SWIPE_TO_SHOP";
-    private static final String EXTRA_ACTIVITY_PAUSED = "EXTRA_ACTIVITY_PAUSED";
-    private static final String EXTRA_OFFICIAL = "EXTRA_OFFICIAL";
     private static final String EXTRA_IS_AUTOCOMPLETE= "EXTRA_IS_AUTOCOMPLETE";
     private static final String EXTRA_SEARCH_PARAMETER_MODEL = "EXTRA_SEARCH_PARAMETER_MODEL";
 
@@ -165,8 +163,7 @@ public class SearchActivity extends DiscoveryActivity
 
     public static void moveTo(AppCompatActivity activity,
                               ProductViewModel productViewModel,
-                              boolean forceSwipeToShop,
-                              boolean isActivityPaused) {
+                              boolean forceSwipeToShop) {
         if (activity != null) {
             // Set empty DynamicFilterModel as temporary solution for TransactionTooLargeException
             // Dynamic Filter Model will be loaded inside ProductListFragment for now
@@ -176,7 +173,6 @@ public class SearchActivity extends DiscoveryActivity
             Intent intent = new Intent(activity, SearchActivity.class);
             intent.putExtra(EXTRA_PRODUCT_VIEW_MODEL, productViewModel);
             intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, forceSwipeToShop);
-            intent.putExtra(EXTRA_ACTIVITY_PAUSED, isActivityPaused);
             activity.startActivity(intent);
         }
     }
@@ -252,20 +248,12 @@ public class SearchActivity extends DiscoveryActivity
     private void handleIntentSearch(Intent intent, SearchParameter searchParameter) {
         ProductViewModel productViewModel = intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
 
-        handleIntentActivityPaused();
-
         if (productViewModel != null) {
             handleIntentWithProductViewModel(productViewModel);
         } else if (!TextUtils.isEmpty(searchParameter.getSearchQuery())) {
             handleIntentWithSearchQuery(searchParameter);
         } else {
             handleIntentAutoComplete(searchParameter);
-        }
-    }
-
-    private void handleIntentActivityPaused() {
-        if (getIntent().getBooleanExtra(EXTRA_ACTIVITY_PAUSED, false)) {
-            moveTaskToBack(true);
         }
     }
 

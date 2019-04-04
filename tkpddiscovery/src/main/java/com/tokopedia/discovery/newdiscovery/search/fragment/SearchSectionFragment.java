@@ -36,6 +36,7 @@ import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.discovery.newdynamicfilter.helper.SortHelper;
 import com.tokopedia.linker.model.LinkerData;
@@ -369,7 +370,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     @Override
     public void setSelectedFilter(HashMap<String, String> selectedFilter) {
-        filterController.initFilterController(selectedFilter, getFilters());
+        List<Filter> initializedFilterList = FilterHelper.initializeFilterList(getFilters());
+        filterController.initFilterController(selectedFilter, initializedFilterList);
     }
 
     public void setFlagFilterHelper(FilterFlagSelectedModel flagFilterHelper) {
@@ -459,7 +461,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         setFilterData(pojo.getData().getFilter());
         setSortData(pojo.getData().getSort());
 
-        filterController.initFilterController(searchParameter.getSearchParameterHashMap(), getFilters());
+        List<Filter> initializedFilterList = FilterHelper.initializeFilterList(getFilters());
+        filterController.initFilterController(searchParameter.getSearchParameterHashMap(), initializedFilterList);
         initSelectedSort();
 
         if(isListEmpty) {
