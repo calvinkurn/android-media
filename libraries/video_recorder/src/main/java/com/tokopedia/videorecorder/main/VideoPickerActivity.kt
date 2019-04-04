@@ -69,24 +69,9 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         //init runtime permission
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             permissionCheckerHelper = PermissionCheckerHelper()
-            permissionCheckerHelper.checkPermissions(this,
-                    getPermissions(),
-                    object : PermissionCheckerHelper.PermissionCheckListener {
-                        override fun onPermissionDenied(permissionText: String) {
-                            permissionCheckerHelper.onPermissionDenied(this@VideoPickerActivity, permissionText)
-                            this@VideoPickerActivity.finish()
-                        }
-
-                        override fun onNeverAskAgain(permissionText: String) {
-                            permissionCheckerHelper.onNeverAskAgain(this@VideoPickerActivity, permissionText)
-                            this@VideoPickerActivity.finish()
-                        }
-
-                        override fun onPermissionGranted() {
-                            initView()
-                        }
-                    }
-            )
+            permissionCheckerHelper.request(this, getPermissions()) {
+                initView()
+            }
         } else {
             initView()
         }
@@ -197,7 +182,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     override fun onBackPressed() {
         if (videoPath.isNotEmpty()) {
-            FileUtils.deleteCacheDir()
+            cancelVideo()
         } else {
             super.onBackPressed()
         }
@@ -245,12 +230,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     override fun onVideoTaken(filePath: String) {
         if (filePath.isNotEmpty()) {
-
-            adapter = ViewPagerAdapter(supportFragmentManager)
-            setupViewPager()
-            adapter.notifyDataSetChanged()
             selectCurrentPage(currentSelectedTab)
-
             onPreviewVideoVisible()
 
             val uriFile = Uri.parse(filePath)
@@ -266,6 +246,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     }
 
     override fun onPreviewVideoVisible() {
+        layoutPreview.bringToFront()
         showBackButton(false)
         containerPicker.hide()
         layoutPreview.show()
@@ -279,6 +260,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     }
 
     override fun onVideoVisible() {
+        containerPicker.bringToFront()
         showBackButton(true)
         containerPicker.show()
         layoutPreview.hide()
