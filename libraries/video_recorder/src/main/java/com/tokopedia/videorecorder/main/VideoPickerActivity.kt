@@ -36,7 +36,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     companion object {
         //video recorder const
         const val VIDEOS_RESULT = "video_result"
-        const val VIDEO_MAX_SIZE = 50000L //50 mb
+        const val VIDEO_MAX_SIZE = 100000L //100 mb
 
         //flag
         var isVideoSourcePicker = false
