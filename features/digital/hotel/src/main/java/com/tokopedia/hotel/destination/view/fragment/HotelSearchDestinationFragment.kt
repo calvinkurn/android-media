@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.di.component.HotelComponent
+import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.data.model.SearchDestination
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
 import com.tokopedia.hotel.destination.view.adapter.SearchDestinationTypeFactory
@@ -57,6 +58,12 @@ class HotelSearchDestinationFragment: BaseListFragment<SearchDestination, Search
     }
 
     override fun loadData(page: Int) {
+        var list: MutableList<SearchDestination> = arrayListOf()
+        list.add(SearchDestination(0,"city","Hotel", "", "Hotel Mulia", "", 200))
+        list.add(SearchDestination(0,"city","Hotel", "", "Hotel Mulia", "", 200))
+        list.add(SearchDestination(0,"city","Hotel", "", "Hotel Mulia", "", 200))
+        list.add(SearchDestination(0,"city","Hotel", "", "Hotel Mulia", "", 200))
+        renderList(list, false)
     }
 
 

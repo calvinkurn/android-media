@@ -133,7 +133,7 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
         list.add(PopularSearch(0, "city","","Bandung", "Indonesia",1200))
         list.add(PopularSearch(0, "city","","Yogyakarta", "Indonesia",1300))
         list.add(PopularSearch(0, "city","","Kuta", "Bali, Indonesia",500))
-        renderList(list)
+        renderList(list, false)
     }
 
     override fun popularSearchClicked(popularSearch: PopularSearch) {
