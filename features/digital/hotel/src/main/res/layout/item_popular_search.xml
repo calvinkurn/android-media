@@ -51,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:fontSize="micro"
-                app:textViewTheme="darkDisabled"
+                app:textViewTheme="lightDisabled"
                 tools:text="Indonesia"/>
 
             <com.tokopedia.design.component.TextViewCompat
@@ -59,7 +59,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 app:fontSize="micro"
-                app:textViewTheme="darkDisabled"
+                app:textViewTheme="lightDisabled"
                 tools:text="3000+ hotel"
                 android:gravity="end"/>
         </LinearLayout>
