@@ -162,18 +162,28 @@ public class BaseDiscoveryActivity
         TrackingUtils.eventAppsFlyerViewListingSearch(this, afProdIds, productViewModel.getQuery(), prodIdArray);
         TrackingUtils.sendMoEngageSearchAttempt(this, productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
 
-        moveToSearchActivityIfNotPausing(productViewModel);
+        handleMoveToSearchActivity(productViewModel);
     }
 
-    protected void moveToSearchActivityIfNotPausing(ProductViewModel productViewModel) {
+    protected void handleMoveToSearchActivity(ProductViewModel productViewModel) {
         if (!isPausing()) {
-            finish();
-            SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop(), false);
+            moveToSearchActivity(productViewModel);
         }
         else {
-            isStartingSearchActivityWithProductViewModel = true;
-            this.productViewModelForSearchActivity = productViewModel;
+            prepareMoveToSearchActivityOnResume(productViewModel);
         }
+    }
+
+    private void moveToSearchActivity(ProductViewModel productViewModel) {
+        isStartingSearchActivityWithProductViewModel = false;
+
+        finish();
+        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
+    }
+
+    private void prepareMoveToSearchActivityOnResume(ProductViewModel productViewModel) {
+        isStartingSearchActivityWithProductViewModel = true;
+        productViewModelForSearchActivity = productViewModel;
     }
 
     @Override
@@ -287,13 +297,7 @@ public class BaseDiscoveryActivity
         super.onResume();
         isPause = false;
 
-        if(isStartingSearchActivityWithProductViewModel
-            && productViewModelForSearchActivity != null) {
-            isStartingSearchActivityWithProductViewModel = false;
-
-            finish();
-            SearchActivity.moveTo(this, productViewModelForSearchActivity, isForceSwipeToShop(), isPausing());
-        }
+        handleMoveToSearchActivity(productViewModelForSearchActivity);
     }
 
     public Boolean isPausing() {
