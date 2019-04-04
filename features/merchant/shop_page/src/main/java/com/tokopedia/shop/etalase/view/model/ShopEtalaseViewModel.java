@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef;
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel;
-import com.tokopedia.shop.etalase.data.source.cloud.model.EtalaseModel;
 import com.tokopedia.shop.etalase.view.adapter.ShopEtalaseAdapterTypeFactory;
 
 /**
@@ -33,16 +32,6 @@ public class ShopEtalaseViewModel implements Visitable<ShopEtalaseAdapterTypeFac
         setUseAce(isUseAce);
         setType(type);
         setHighlight(isHighlight);
-    }
-
-    public ShopEtalaseViewModel(EtalaseModel etalaseModel) {
-        setEtalaseBadge(etalaseModel.getEtalaseBadge());
-        setEtalaseId(etalaseModel.getEtalaseId());
-        setEtalaseName(etalaseModel.getEtalaseName());
-        setEtalaseCount(etalaseModel.getEtalaseNumProduct());
-        setUseAce(etalaseModel.getUseAce() == USE_ACE);
-        setType(ShopEtalaseTypeDef.ETALASE_CUSTOM);
-        setHighlight(false);
     }
 
     public ShopEtalaseViewModel(ShopEtalaseModel shopEtalaseModel) {

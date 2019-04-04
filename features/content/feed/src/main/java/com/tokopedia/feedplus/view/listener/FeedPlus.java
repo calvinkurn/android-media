@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -132,8 +133,6 @@ public interface FeedPlus {
 
         void onSuccessGetFeed(ArrayList<Visitable> visitables);
 
-        void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeedView);
-
         void onRetryClicked();
 
         void onShowRetryGetFeed();
@@ -147,6 +146,8 @@ public interface FeedPlus {
         void onShowEmpty();
 
         void clearData();
+
+        void setEndlessScroll();
 
         void unsetEndlessScroll();
 
@@ -184,7 +185,7 @@ public interface FeedPlus {
 
         int getAdapterListSize();
 
-        void onWhitelistClicked(String url);
+        void onWhitelistClicked(WhitelistViewModel element);
 
         void onSuccessToggleFavoriteShop(int rowNumber, int adapterPosition);
 
@@ -223,5 +224,7 @@ public interface FeedPlus {
         void toggleFavoriteShop(int rowNumber, String shopId);
 
         void toggleFavoriteShop(int rowNumber, int adapterPosition, String shopId);
+
+        void trackAffiliate(String url);
     }
 }

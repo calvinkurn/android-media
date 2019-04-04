@@ -10,6 +10,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.entity.wishlist.WishlistCheckResult;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.newdiscovery.data.repository.BannerRepository;
@@ -93,6 +94,7 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
         requestParams.putInt(TopAdsParams.KEY_ITEM, 2);
         requestParams.putString(TopAdsParams.KEY_EP, TopAdsParams.DEFAULT_KEY_EP);
         requestParams.putString(TopAdsParams.KEY_SRC, requestParams.getString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH));
+        requestParams.putBoolean(TopAdsParams.KEY_WITH_TEMPLATE, true);
         requestParams.putInt(TopAdsParams.KEY_PAGE, (searchParameter.getStartRow() /
                 Integer.parseInt(BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS) + 1));
         if (!TextUtils.isEmpty(searchParameter.getUserID())) {
@@ -101,6 +103,9 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
         if (!TextUtils.isEmpty(searchParameter.getDepartmentId())) {
             requestParams.putString(BrowseApi.SC, searchParameter.getDepartmentId());
             requestParams.putString(TopAdsParams.KEY_DEPARTEMENT_ID, searchParameter.getDepartmentId());
+        }
+        if (searchParameter.isOfficial()) {
+            requestParams.putString(SearchApiConst.OFFICIAL, String.valueOf(searchParameter.isOfficial()));
         }
         return requestParams;
     }

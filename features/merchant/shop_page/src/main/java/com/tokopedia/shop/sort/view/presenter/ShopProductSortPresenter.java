@@ -2,12 +2,11 @@ package com.tokopedia.shop.sort.view.presenter;
 
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort;
 import com.tokopedia.shop.sort.domain.interactor.GetShopProductSortUseCase;
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper;
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -23,10 +22,10 @@ public class ShopProductSortPresenter extends BaseDaggerPresenter<BaseListViewLi
 
     private final GetShopProductSortUseCase getShopProductFilterUseCase;
     private final ShopProductSortMapper shopProductFilterMapper;
-    private final UserSession userSession;
+    private final UserSessionInterface userSession;
 
     @Inject
-    public ShopProductSortPresenter(GetShopProductSortUseCase getShopProductFilterUseCase, ShopProductSortMapper shopProductMapper, UserSession userSession) {
+    public ShopProductSortPresenter(GetShopProductSortUseCase getShopProductFilterUseCase, ShopProductSortMapper shopProductMapper, UserSessionInterface userSession) {
         this.getShopProductFilterUseCase = getShopProductFilterUseCase;
         this.shopProductFilterMapper = shopProductMapper;
         this.userSession = userSession;

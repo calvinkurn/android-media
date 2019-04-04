@@ -106,7 +106,7 @@ public class FlightDetailViewModel implements Parcelable {
 
             FlightDetailRouteInfoViewModelMapper flightDetailRouteInfoViewModelMapper = new FlightDetailRouteInfoViewModelMapper();
             FlightDetailRouteViewModelMapper mapper = new FlightDetailRouteViewModelMapper(flightDetailRouteInfoViewModelMapper);
-            setRouteList(mapper.transform(flightJourneyViewModel.getRouteList(), flightJourneyViewModel.getAirlineDataList()));
+            setRouteList(mapper.transform(flightJourneyViewModel.getRouteList(), flightJourneyViewModel.getTotalTransit()));
             setDepartureTime(flightJourneyViewModel.getDepartureTime());
             setArrivalTime(flightJourneyViewModel.getArrivalTime());
             setAirlineDataList(flightJourneyViewModel.getAirlineDataList());

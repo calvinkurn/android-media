@@ -23,6 +23,7 @@ import rx.Subscriber;
  * Created by Irfan Khoirul on 01/11/18.
  */
 
+@Deprecated
 public class GetShipmentAddressFormPrepareCheckoutSubscriber extends Subscriber<CartShipmentAddressFormData> {
 
     private final ShipmentPresenter shipmentPresenter;
@@ -98,12 +99,17 @@ public class GetShipmentAddressFormPrepareCheckoutSubscriber extends Subscriber<
                 } else {
                     view.renderCheckShipmentPrepareCheckoutSuccess();
                 }
+
+                if (cartShipmentAddressFormData.getEgoldAttributes() != null &&
+                        cartShipmentAddressFormData.getEgoldAttributes().isEligible()) {
+                    shipmentPresenter.setEgoldAttributeModel(cartShipmentAddressFormData.getEgoldAttributes());
+                }
             }
         }
     }
 
     private void prepareDataAfterProcessShipmentPrepareCheckout(CartShipmentAddressFormData cartShipmentAddressFormData,
-                                                               boolean isNeedToRemoveErrorProduct) {
+                                                                boolean isNeedToRemoveErrorProduct) {
         List<ShipmentCartItemModel> newShipmentCartItemModelList = view.getShipmentDataConverter().getShipmentItems(
                 cartShipmentAddressFormData
         );

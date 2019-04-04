@@ -50,6 +50,7 @@
     <dimen name="font_tinier">10sp</dimen>
 
     <dimen name="space_chat">12dp</dimen>
+    <dimen name="space_play_chat">4dp</dimen>
     <dimen name="sprint_sale_announcement_icon_size">16dp</dimen>
     <dimen name="chat_tab_height">48dp</dimen>
     <dimen name="notification_circle_vote_size">22dp</dimen>
@@ -58,10 +59,11 @@
     <dimen name="shadow_layer_group_chat_banner">128dp</dimen>
 
     <dimen name="max_width_template">132dp</dimen>
-    <dimen name="min_width_template">52dp</dimen>
+    <dimen name="min_width_template">50dp</dimen>
     <dimen name="min_height_template">32dp</dimen>
 
     <dimen name="min_width_button_shopping">160dp</dimen>
     <dimen name="min_height_button_shopping">40dp</dimen>
     <dimen name="snackbar_height">64dp</dimen>
+    <dimen name="gc_component_width">244dp</dimen>
 </resources>

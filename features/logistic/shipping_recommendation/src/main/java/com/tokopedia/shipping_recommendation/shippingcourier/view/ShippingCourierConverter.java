@@ -38,6 +38,7 @@ public class ShippingCourierConverter {
         courierItemData.setPromoCode(shippingCourierViewModel.getProductData().getPromoCode());
         courierItemData.setChecksum(shippingCourierViewModel.getProductData().getCheckSum());
         courierItemData.setUt(shippingCourierViewModel.getProductData().getUnixTime());
+        courierItemData.setBlackboxInfo(shippingCourierViewModel.getBlackboxInfo());
         courierItemData.setSelected(true);
 
         return courierItemData;

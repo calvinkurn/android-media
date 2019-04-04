@@ -3,7 +3,6 @@ package com.tokopedia.browse.common.di
 import android.content.Context
 
 import com.tokopedia.abstraction.AbstractionRouter
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.browse.common.DigitalBrowseRouter
 import com.tokopedia.browse.common.data.DigitalBrowseRepositoryImpl
@@ -18,15 +17,6 @@ import dagger.Provides
 
 @Module
 class DigitalBrowseModule {
-
-    @DigitalBrowseScope
-    @Provides
-    fun provideAnalyticTracker(@ApplicationContext context: Context): AnalyticTracker {
-        if (context is AbstractionRouter) {
-            return (context as AbstractionRouter).analyticTracker
-        }
-        throw RuntimeException("App should implement " + AbstractionRouter::class.java.simpleName)
-    }
 
     @DigitalBrowseScope
     @Provides

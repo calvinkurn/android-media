@@ -3,6 +3,7 @@ package com.tokopedia.transactiondata.entity.response.cartlist;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,19 +20,19 @@ public class Product {
     private int productId;
     @SerializedName("product_name")
     @Expose
-    private String productName;
+    private String productName = "";
     @SerializedName("sku")
     @Expose
-    private String sku;
+    private String sku = "";
     @SerializedName("campaign_id")
     @Expose
     private int campaignId;
     @SerializedName("free_returns")
     @Expose
-    private FreeReturns freeReturns;
+    private FreeReturns freeReturns = new FreeReturns();
     @SerializedName("product_price_fmt")
     @Expose
-    private String productPriceFmt;
+    private String productPriceFmt = "";
     @SerializedName("product_price")
     @Expose
     private int productPrice;
@@ -46,16 +47,16 @@ public class Product {
     private int categoryId;
     @SerializedName("category")
     @Expose
-    private String category;
+    private String category = "";
     @SerializedName("catalog_id")
     @Expose
     private int catalogId;
     @SerializedName("wholesale_price")
     @Expose
-    private List<WholesalePrice> wholesalePrice;
+    private List<WholesalePrice> wholesalePrice = new ArrayList<>();
     @SerializedName("product_weight_fmt")
     @Expose
-    private String productWeightFmt;
+    private String productWeightFmt = "";
     @SerializedName("product_condition")
     @Expose
     private int productCondition;
@@ -64,7 +65,7 @@ public class Product {
     private int productStatus;
     @SerializedName("product_url")
     @Expose
-    private String productUrl;
+    private String productUrl = "";
     @SerializedName("product_returnable")
     @Expose
     private int productReturnable;
@@ -79,7 +80,7 @@ public class Product {
     private boolean isCod;
     @SerializedName("product_cashback")
     @Expose
-    private String productCashback;
+    private String productCashback = "";
     @SerializedName("product_min_order")
     @Expose
     private int productMinOrder;
@@ -100,13 +101,13 @@ public class Product {
     private int productPriceCurrency;
     @SerializedName("product_image")
     @Expose
-    private ProductImage productImage;
+    private ProductImage productImage = new ProductImage();
     @SerializedName("product_all_images")
     @Expose
-    private String productAllImages;
+    private String productAllImages = "";
     @SerializedName("product_notes")
     @Expose
-    private String productNotes;
+    private String productNotes = "";
     @SerializedName("product_quantity")
     @Expose
     private int productQuantity;
@@ -118,7 +119,7 @@ public class Product {
     private int productWeightUnitCode;
     @SerializedName("product_weight_unit_text")
     @Expose
-    private String productWeightUnitText;
+    private String productWeightUnitText = "";
     @SerializedName("last_update_price")
     @Expose
     private long lastUpdatePrice;
@@ -127,10 +128,10 @@ public class Product {
     private boolean isUpdatePrice;
     @SerializedName("product_preorder")
     @Expose
-    private ProductPreorder productPreorder;
+    private ProductPreorder productPreorder = new ProductPreorder();
     @SerializedName("product_showcase")
     @Expose
-    private ProductShowCase productShowcase;
+    private ProductShowCase productShowcase = new ProductShowCase();
     @SerializedName("product_finsurance")
     @Expose
     private int productFinsurance;
@@ -142,7 +143,7 @@ public class Product {
     private boolean isWishlisted;
     @SerializedName("product_tracker_data")
     @Expose
-    private ProductTrackerData productTrackerData;
+    private ProductTrackerData productTrackerData = new ProductTrackerData();
 
     public ProductTrackerData getProductTrackerData() {
         return productTrackerData;

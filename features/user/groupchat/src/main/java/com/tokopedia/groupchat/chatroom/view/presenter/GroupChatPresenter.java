@@ -20,7 +20,6 @@ import com.tokopedia.groupchat.chatroom.websocket.RxWebSocket;
 import com.tokopedia.groupchat.chatroom.websocket.WebSocketException;
 import com.tokopedia.groupchat.chatroom.websocket.WebSocketSubscriber;
 import com.tokopedia.groupchat.common.util.GroupChatErrorHandler;
-import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
@@ -227,7 +226,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         };
         Subscription subscription = RxWebSocket.get(webSocketUrl, accessToken,
                 settingGroupChat.getDelay(), settingGroupChat.getMaxRetries()
-                , settingGroupChat.getPingInterval(), groupChatToken).subscribe(subscriber);
+                , (int) settingGroupChat.getPingInterval(), groupChatToken).subscribe(subscriber);
 
         mSubscription.add(subscription);
     }

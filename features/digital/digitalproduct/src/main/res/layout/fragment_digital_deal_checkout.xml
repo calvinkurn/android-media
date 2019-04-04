@@ -78,7 +78,7 @@
                         android:layout_height="@dimen/dp_1"
                         android:background="@drawable/bg_line_separator" />
 
-                    <com.tokopedia.digital.cart.presentation.compoundview.InputPriceHolderView
+                    <com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderView
                         android:id="@+id/input_price_holder_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />

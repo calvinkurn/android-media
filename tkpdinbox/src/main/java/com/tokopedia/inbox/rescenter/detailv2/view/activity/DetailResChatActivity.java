@@ -29,6 +29,7 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.inbox.util.analytics.InboxAnalytics;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.track.TrackApp;
 
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_WEBVIEW_RESO_ENABLED_TOGGLE;
 
@@ -102,8 +103,14 @@ public class DetailResChatActivity
     public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Intent parentIntent;
-        Intent destinationIntent = new Intent(context, DetailResChatActivity.class);
+        Intent destinationIntent = null;
         String resoId = bundle.getString(PARAM_RESOLUTION_ID, "");
+        if (isToggleResoEnabled(context)) {
+            destinationIntent = getApplinkIntent(context, resoId);
+        }
+        if (destinationIntent == null) {
+            destinationIntent = new Intent(context, DetailResChatActivity.class);
+        }
         destinationIntent.putExtra(PARAM_RESOLUTION_ID, resoId);
         String userName = MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_BUYER,"")).toString();
         String shopName = MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_SELLER,"")).toString();
@@ -222,7 +229,7 @@ public class DetailResChatActivity
                 intent = DetailResCenterActivity.newBuyerInstance(DetailResChatActivity.this, resolutionId, shopName);
             }
             startActivityForResult(intent, REQUEST_GO_DETAIL);
-            UnifyTracking.eventTracking(this,InboxAnalytics.eventResoChatClickDetail(resolutionId));
+            TrackApp.getInstance().getGTM().sendGeneralEvent(InboxAnalytics.eventResoChatClickDetail(resolutionId).getEvent());
             return true;
         } else
             return super.onOptionsItemSelected(item);

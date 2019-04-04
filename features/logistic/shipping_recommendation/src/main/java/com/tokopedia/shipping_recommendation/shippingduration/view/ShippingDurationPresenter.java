@@ -1,6 +1,7 @@
 package com.tokopedia.shipping_recommendation.shippingduration.view;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -133,6 +134,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                         }
                                     }
                                 }
+
                                 shippingDurationViewModelList.addAll(shippingRecommendationData.getShippingDurationViewModels());
                                 getView().showData(shippingDurationViewModelList, shippingRecommendationData.getLogisticPromo());
                                 getView().stopTrace();
@@ -167,6 +169,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         shippingParam.setIsBlackbox(shipmentDetailData.getIsBlackbox());
         shippingParam.setIsPreorder(shipmentDetailData.getPreorder());
         shippingParam.setAddressId(shipmentDetailData.getAddressId());
+        shippingParam.setTradein(shipmentDetailData.isTradein());
         return shippingParam;
     }
 

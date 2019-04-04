@@ -27,7 +27,6 @@ import android.widget.TextView;
 import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentInnerProductListAdapter;
@@ -40,14 +39,14 @@ import com.tokopedia.logisticdata.data.constant.CourierConstant;
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
-import com.tokopedia.showcase.ShowCaseContentPosition;
-import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,14 +82,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private ShipmentAdapterActionListener mActionListener;
 
-    // private CardView cvInvoiceItem;
     private LinearLayout layoutError;
     private TextView tvErrorTitle;
     private TextView tvErrorDescription;
     private LinearLayout layoutWarning;
     private TextView tvWarningTitle;
     private TextView tvWarningDescription;
-    // private TextView tvTextSentBy;
     private TextView tvShopName;
     private LinearLayout llShippingWarningContainer;
     private ImageView ivProductImage;
@@ -202,10 +199,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private ImageView imgYellowBulb;
     private TextView tvShipmentBlackboxTickerInfo;
 
+    private TextView tvTradeInLabel;
+
     private List<Object> shipmentDataList;
     private Pattern phoneNumberRegexPattern;
     private CompositeSubscription compositeSubscription;
     private SaveStateDebounceListener saveStateDebounceListener;
+    private TextView tvFulfillName;
+    private ImageView imgFulfill;
 
     // promostacking
     private TickerPromoStackingCheckoutView tickerPromoStackingCheckoutView;
@@ -344,6 +345,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llShipmentBlackboxInfoTicker = itemView.findViewById(R.id.ll_shipment_blackbox_info_ticker);
         imgYellowBulb = itemView.findViewById(R.id.img_bulb);
         tvShipmentBlackboxTickerInfo = itemView.findViewById(R.id.tv_shipment_blackbox_ticker_info);
+        tvFulfillName = itemView.findViewById(R.id.tv_fulfill_district);
+        imgFulfill = itemView.findViewById(R.id.img_shop_fulfill);
+        tvTradeInLabel = itemView.findViewById(R.id.tv_trade_in_label);
 
         // promostacking
         tickerPromoStackingCheckoutView = itemView.findViewById(R.id.voucher_merchant_holder_view);
@@ -435,6 +439,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             this.shipmentDataList = shipmentDataList;
         }
         renderShop(shipmentCartItemModel);
+        renderFulfillment(shipmentCartItemModel);
         renderAddress(shipmentCartItemModel.getRecipientAddressModel());
         renderShippingType(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, showCaseObjectList);
         renderErrorAndWarning(shipmentCartItemModel);
@@ -442,6 +447,17 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderDropshipper(recipientAddressModel != null && recipientAddressModel.isCornerAddress());
         renderCostDetail(shipmentCartItemModel);
         renderCartItem(shipmentCartItemModel);
+    }
+
+    private void renderFulfillment(ShipmentCartItemModel model) {
+        if (model.isFulfillment()) {
+            imgFulfill.setVisibility(View.VISIBLE);
+            tvFulfillName.setVisibility(View.VISIBLE);
+            tvFulfillName.setText(model.getFulfillmentName());
+        } else {
+            imgFulfill.setVisibility(View.GONE);
+            tvFulfillName.setVisibility(View.GONE);
+        }
     }
 
     private void renderErrorAndWarning(ShipmentCartItemModel shipmentCartItemModel) {
@@ -463,8 +479,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                         recipientAddressModel, shipmentCartItemModel.getShopShipmentList(), ratesDataConverter);
                 if (showCaseObjectList.size() == 1) {
                     showCaseObjectList.add(new ShowCaseObject(llSelectShipmentRecommendation,
-                            llSelectShipmentRecommendation.getContext().getString(R.string.label_title_showcase_shipment),
-                            llSelectShipmentRecommendation.getContext().getString(R.string.label_message_showcase_shipment_courier_recommendation),
+                            llSelectShipmentRecommendation.getContext().getString(R.string.label_title_showcase_shipment_blackbox),
+                            llSelectShipmentRecommendation.getContext().getString(R.string.label_message_showcase_shipment_courier_recommendation_blackbox),
                             ShowCaseContentPosition.UNDEFINED)
                     );
                 }
@@ -554,6 +570,18 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderShop(ShipmentCartItemModel shipmentCartItemModel) {
+        boolean hasTradeInItem = false;
+        for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+            if (cartItemModel.isValidTradeIn()) {
+                hasTradeInItem = true;
+                break;
+            }
+        }
+        if (hasTradeInItem) {
+            tvTradeInLabel.setVisibility(View.VISIBLE);
+        } else {
+            tvTradeInLabel.setVisibility(View.GONE);
+        }
         if (shipmentCartItemModel.isOfficialStore() || shipmentCartItemModel.isGoldMerchant()) {
             if (!shipmentCartItemModel.getShopBadge().isEmpty()) {
                 ImageHandler.loadImageWithoutPlaceholder(imgShopBadge, shipmentCartItemModel.getShopBadge());
@@ -647,7 +675,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
 
         ivFreeReturnIcon.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
-        if (cartItemModel.isPreOrder()){
+        if (cartItemModel.isPreOrder()) {
             tvPreOrder.setText(cartItemModel.getPreOrderInfo());
             tvPreOrder.setVisibility(View.VISIBLE);
         } else {
@@ -884,10 +912,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderCourierBlackbox(ShipmentCartItemModel shipmentCartItemModel,
-                                             ShipmentDetailData shipmentDetailData,
-                                             RecipientAddressModel recipientAddressModel,
-                                             List<ShopShipment> shopShipmentList,
-                                             RatesDataConverter ratesDataConverter) {
+                                       ShipmentDetailData shipmentDetailData,
+                                       RecipientAddressModel recipientAddressModel,
+                                       List<ShopShipment> shopShipmentList,
+                                       RatesDataConverter ratesDataConverter) {
         RecipientAddressModel currentAddress;
         if (recipientAddressModel == null) {
             currentAddress = shipmentCartItemModel.getRecipientAddressModel();
@@ -933,7 +961,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     shipmentDetailData.getSelectedCourier().getShipperPrice(), false));
             llCourierBlackboxStateLoading.setVisibility(View.GONE);
             tvShipmentBlackboxTickerInfo.setVisibility(View.VISIBLE);
-            tvShipmentBlackboxTickerInfo.setText(R.string.label_hardcoded_courier_blackbox_info);
+            tvShipmentBlackboxTickerInfo.setText(shipmentCartItemModel.getBlackboxInfo());
+            if (!TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getBlackboxInfo())) {
+                tvShipmentBlackboxTickerInfo.setText(shipmentDetailData.getSelectedCourier().getBlackboxInfo());
+            } else {
+                tvShipmentBlackboxTickerInfo.setVisibility(View.GONE);
+            }
         } else {
             llSelectedShipmentBlackbox.setVisibility(View.GONE);
             llSelectShipmentBlackbox.setVisibility(View.VISIBLE);
@@ -1345,15 +1378,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
             String addressName = recipientAddressModel.getAddressName();
             String recipientName = recipientAddressModel.getRecipientName();
-            /*addressName = " (" + addressName + ")";
-            recipientName += addressName;
-            int startSpan = recipientName.indexOf(addressName);
-            int endSpan = recipientName.indexOf(addressName) + addressName.length();
-            Spannable formattedPromoMessage = new SpannableString(recipientName);
-            final int color = ContextCompat.getColor(tvRecipientName.getContext(), R.color.black_38);
-            formattedPromoMessage.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            tvRecipientName.setTypeface(Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));*/
             tvRecipientName.setText(recipientName);
             tvAddressName.setText(addressName);
             String fullAddress = recipientAddressModel.getStreet() + ", "

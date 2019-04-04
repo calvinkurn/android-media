@@ -39,5 +39,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.useCase)
 
     implementation project(rootProject.ext.features.transactiondata)
+    implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.logisticanalytics)
 }

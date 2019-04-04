@@ -1,0 +1,38 @@
+package com.tokopedia.affiliate.feature.explore.view.viewmodel
+
+import android.os.Parcel
+import android.os.Parcelable
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel
+import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreTypeFactory
+
+/**
+ * @author by yfsx on 24/09/18.
+ */
+data class ExploreProductViewModel(
+        var exploreCardViewModel: ExploreCardViewModel = ExploreCardViewModel()
+) : Visitable<ExploreTypeFactory>, Parcelable {
+
+    constructor(source: Parcel) : this(
+            source.readParcelable<ExploreCardViewModel>(
+                    ExploreCardViewModel::class.java.classLoader
+            ) ?: ExploreCardViewModel()
+    )
+
+    override fun describeContents() = 0
+
+    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeParcelable(exploreCardViewModel, 0)
+    }
+
+    companion object {
+        @JvmField
+        val CREATOR: Parcelable.Creator<ExploreProductViewModel> = object : Parcelable.Creator<ExploreProductViewModel> {
+            override fun createFromParcel(source: Parcel): ExploreProductViewModel = ExploreProductViewModel(source)
+            override fun newArray(size: Int): Array<ExploreProductViewModel?> = arrayOfNulls(size)
+        }
+    }
+
+    override fun type(typeFactory: ExploreTypeFactory?): Int = typeFactory!!.type(this)
+}

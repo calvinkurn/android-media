@@ -20,12 +20,12 @@ import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
-import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplaceContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplacePresenter
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
+import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import javax.inject.Inject
 
 class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), PromoCheckoutListMarketplaceContract.View {
@@ -98,23 +98,6 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     override fun onErrorEmptyPromoCode() {
         textInputLayoutCoupon.error = getString(R.string.promo_checkout_label_error_empty_voucher_code)
     }
-
-    /*override fun onSuccessCheckPromoCode(dataVoucher: DataVoucher) {
-        if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickUsePromoCodeSuccess(dataVoucher.code ?: "")
-        } else {
-            trackingPromoCheckoutUtil.checkoutClickUsePromoCodeSuccess(dataVoucher.code ?: "")
-        }
-        val intent = Intent()
-        val typePromo = if (dataVoucher.isCoupon == PromoData.VALUE_COUPON) PromoData.TYPE_COUPON else PromoData.TYPE_VOUCHER
-        val promoData = PromoData(typePromo, dataVoucher.code ?: "",
-                dataVoucher.message?.text ?: "", dataVoucher.titleDescription ?: "",
-                dataVoucher.cashbackAmount, dataVoucher.message?.state?.mapToStatePromoCheckout()
-                ?: TickerCheckoutView.State.EMPTY)
-        intent.putExtra(EXTRA_PROMO_DATA, promoData)
-        activity?.setResult(Activity.RESULT_OK, intent)
-        activity?.finish()
-    }*/
 
     override fun onSuccessCheckPromoStackingCode(data: DataUiModel) {
         if (pageTracking == FROM_CART) {

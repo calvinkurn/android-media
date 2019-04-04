@@ -2,10 +2,10 @@ package com.tokopedia.recentview.di;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.recentview.view.fragment.RecentViewFragment;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Component;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -26,7 +26,7 @@ public interface RecentViewComponent {
 
     HttpLoggingInterceptor httpLoggingInterceptor();
 
-    UserSession userSession();
+    UserSessionInterface userSessionInterface();
 
     void inject(RecentViewFragment fragment);
 }

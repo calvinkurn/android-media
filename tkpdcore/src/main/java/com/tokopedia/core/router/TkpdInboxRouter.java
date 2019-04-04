@@ -58,8 +58,6 @@ public interface TkpdInboxRouter {
 
     Intent getTopProfileIntent(Context context, String userId);
 
-    Intent getProductDetailIntent(Context context, ProductPass productPass);
-
     void startAddProduct(Activity activity, String shopId);
 
     Intent getHelpUsIntent(Context context);

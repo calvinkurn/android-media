@@ -7,26 +7,31 @@ import com.google.gson.annotations.SerializedName;
  * @author okasurya on 7/21/18.
  */
 public class DepositModel {
-    @SerializedName("deposit")
-    @Expose
-    private Double deposit = 0.0;
-    @SerializedName("deposit_fmt")
-    @Expose
-    private String depositFmt = "";
 
-    public Double getDeposit() {
-        return deposit;
+    @SerializedName(value = "deposit", alternate = {"buyer_usable"})
+    private long buyerUsable = 0;
+
+    @SerializedName("seller_usable")
+    private long sellerUsable = 0;
+
+    public long getBuyerUsable() {
+        return buyerUsable;
     }
 
-    public void setDeposit(Double deposit) {
-        this.deposit = deposit;
+    public void setBuyerUsable(long buyerUsable) {
+        this.buyerUsable = buyerUsable;
     }
 
-    public String getDepositFmt() {
-        return depositFmt;
+    public long getSellerUsable() {
+        return sellerUsable;
     }
 
-    public void setDepositFmt(String depositFmt) {
-        this.depositFmt = depositFmt;
+    public void setSellerUsable(long sellerUsable) {
+        this.sellerUsable = sellerUsable;
     }
+
+    public long getDepositLong() {
+        return getBuyerUsable() + getSellerUsable();
+    }
+
 }

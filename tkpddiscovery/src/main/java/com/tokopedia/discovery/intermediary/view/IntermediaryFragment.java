@@ -35,9 +35,13 @@ import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -91,6 +95,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 import com.tokopedia.topads.sdk.widget.TopAdsView;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -380,7 +385,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
             expandLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UnifyTracking.eventExpandCategoryIntermediary(getActivity(), departmentId);
+                    eventExpandCategoryIntermediary(departmentId);
                     categoryAdapter.addDataChild(childCategoryModelList
                             .subList(9, childCategoryModelList.size()));
                     expandLayout.setVisibility(View.GONE);
@@ -403,6 +408,15 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                 });
             }
         }
+    }
+
+    private void eventExpandCategoryIntermediary(String parentCategory){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCategory,
+                AppEventTracking.Action.NAVIGATION_CLICK,
+                AppEventTracking.EventLabel.EXPAND_SUB_CATEGORY
+        ).getEvent());
     }
 
     @Override
@@ -679,20 +693,23 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @Override
     public void onItemClicked(ProductModel productModel, String curatedName) {
         trackEventEnhance(createClickProductDataLayer(productModel));
-        com.tokopedia.core.var.ProductItem data = new com.tokopedia.core.var.ProductItem();
-        data.setId(String.valueOf(productModel.getId()));
-        data.setName(productModel.getName());
-        data.setPrice(productModel.getPrice());
-        data.setImgUri(productModel.getImageUrl());
-        data.setTrackerAttribution(productModel.getTrackerAttribution());
-        data.setTrackerListName(productModel.getTrackerListName());
         Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        Intent intent = getProductIntent(String.valueOf(productModel.getId()));
+        bundle.putString("tracker_attribution", productModel.getTrackerAttribution());
+        bundle.putString("tracker_list_name", productModel.getTrackerListName());
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
-        UnifyTracking.eventCuratedIntermediary(getActivity(), departmentId,
+        eventCuratedIntermediary(departmentId,
                 curatedName, productModel.getName());
+    }
+
+    public void eventCuratedIntermediary(String parentCat, String curatedProductName,
+                                                String productName) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.CURATED + " " + curatedProductName,
+                productName);
     }
 
     private Map<String, Object> createClickProductDataLayer(ProductModel product) {
@@ -725,17 +742,17 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        ProductItem data = new ProductItem();
-        data.setId(product.getId());
-        data.setName(product.getName());
-        data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_ecs());
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
+        Intent intent = getProductIntent(product.getId());
         getActivity().startActivity(intent);
         TopAdsGtmTracker.eventIntermediaryProductClick(getContext(), "", product, position);
+    }
+
+    private Intent getProductIntent(String productId){
+        if (getActivity() != null) {
+            return RouteManager.getIntent(getActivity(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -775,7 +792,15 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                         )
 
                 )));
-        UnifyTracking.eventLevelCategoryIntermediary(getActivity(), departmentId, child.getCategoryId());
+        eventLevelCategoryIntermediary(departmentId, child.getCategoryId());
+    }
+
+    public void eventLevelCategoryIntermediary(String parentCat, String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.CATEGORY_LEVEL,
+                label);
     }
 
     @Override
@@ -863,7 +888,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void onBrandClick(BrandModel brandModel, int position) {
-        UnifyTracking.eventOfficialStoreIntermediary(getActivity(), departmentId, brandModel.getBrandName());
+        eventOfficialStoreIntermediary(departmentId, brandModel.getBrandName());
         Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), brandModel.getId());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
@@ -885,6 +910,14 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                         )
 
                 )));
+    }
+
+    private void eventOfficialStoreIntermediary(String parentCat, String brandName){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.OFFICIAL_STORE_CLICK,
+                brandName);
     }
 
     @Override
@@ -985,13 +1018,14 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void sendHotlistClickEvent(HotListModel hotListModel, int pos) {
-        UnifyTracking.eventHotlistIntermediary(getContext(), departmentId, hotListModel.getTitle());
+        eventHotlistIntermediary(departmentId, hotListModel.getTitle());
         String url = hotListModel.getUrl();
         URLParser urlParser = new URLParser(url);
         switch (urlParser.getType()) {
             case HOT_KEY:
                 startActivity(
                         BrowseProductRouter.getHotlistIntent(getContext(), url));
+                break;
             case CATALOG_KEY:
                 startActivity(
                         DetailProductRouter.getCatalogDetailActivity(getContext(), urlParser.getHotAlias()));
@@ -1044,10 +1078,18 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     }
 
+    public void eventHotlistIntermediary(String parentCat, String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.HOTLIST,
+                label);
+    }
+
     private class SeeAllOfficialOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            IntermediaryAnalytics.eventClickSeeAllOfficialStores(getActivity());
+            IntermediaryAnalytics.eventClickSeeAllOfficialStores();
             viewAllOfficialStores();
         }
     }

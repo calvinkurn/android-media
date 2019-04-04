@@ -16,6 +16,8 @@ import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.GeneralReactNativeFragment;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
 
+import java.util.Set;
+
 /**
  * Created by okasurya on 1/9/18.
  */
@@ -24,13 +26,19 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
 
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
     public static final String PAGE_ID = "page_id";
-
+    public static final String SHAKE_SHAKE = "shake-shake";
     private static final String MP_FLASHSALE = "mp_flashsale";
-
+    private static boolean mAllowShake = true;
     private PermissionListener mPermissionListener;
 
     @DeepLink({Constants.Applinks.DISCOVERY_PAGE})
     public static Intent getDiscoveryPageIntent(Context context, Bundle bundle) {
+        if (bundle != null) {
+            String key = getKeyValueByCaseInsensitive(bundle);
+            if(key!= null && !key.isEmpty()){
+                mAllowShake = Boolean.parseBoolean(key);
+            }
+        }
         ReactUtils.startTracing(MP_FLASHSALE);
         return ReactNativeDiscoveryActivity.createApplinkCallingIntent(
                 context, ReactConst.Screen.DISCOVERY_PAGE,
@@ -38,6 +46,15 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
                 bundle.getString(PAGE_ID),
                 bundle
         );
+    }
+
+    private static String getKeyValueByCaseInsensitive(Bundle bundle){
+        Set<String> keySet = bundle.keySet();
+        for (String key : keySet) {
+            if (key.toLowerCase().equals(SHAKE_SHAKE))
+                return bundle.getString(key);
+        }
+        return null;
     }
 
     @Override
@@ -59,6 +76,7 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
                                                      String pageTitle,
                                                      String pageId,
                                                      Bundle extras) {
+
         Intent intent = new Intent(context, ReactNativeDiscoveryActivity.class);
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
         extras.putString(EXTRA_TITLE, pageTitle);
@@ -96,5 +114,12 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         // Do not put super, avoid crash transactionTooLarge
+    }
+
+    @Override
+    protected void registerShake() {
+        if(mAllowShake) {
+            super.registerShake();
+        }
     }
 }

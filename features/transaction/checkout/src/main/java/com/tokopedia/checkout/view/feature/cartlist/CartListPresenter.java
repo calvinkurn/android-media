@@ -5,10 +5,10 @@ import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
-import com.tokopedia.checkout.BuildConfig;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.checkout.BuildConfig;
 import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
@@ -38,8 +38,8 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.network.utils.AuthUtil;
-import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
+import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
@@ -79,6 +79,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -114,7 +115,6 @@ public class CartListPresenter implements ICartListPresenter {
     private final UpdateCartUseCase updateCartUseCase;
     private final ResetCartGetCartListUseCase resetCartGetCartListUseCase;
     private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
-    // private CheckPromoStackingCodeCartListUseCase checkPromoStackingCodeCartListUseCase = null;
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
     private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
     private final AddWishListUseCase addWishListUseCase;
@@ -128,39 +128,6 @@ public class CartListPresenter implements ICartListPresenter {
     private CartListData cartListData;
     private boolean hasPerformChecklistChange;
     private Map<Integer, Boolean> lastCheckedItem = new HashMap<>();
-
-    /*@Inject
-    public CartListPresenter(ICartListView cartListView,
-                             GetCartListUseCase getCartListUseCase,
-                             DeleteCartUseCase deleteCartUseCase,
-                             DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
-                             UpdateCartUseCase updateCartUseCase,
-                             ResetCartGetCartListUseCase resetCartGetCartListUseCase,
-                             CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
-                             CompositeSubscription compositeSubscription,
-                             CartApiRequestParamGenerator cartApiRequestParamGenerator,
-                             CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
-                             AddWishListUseCase addWishListUseCase,
-                             RemoveWishListUseCase removeWishListUseCase,
-                             UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
-                             UserSessionInterface userSessionInterface,
-                             TopAdsGqlUseCase topAdsUseCase) {
-        this.view = cartListView;
-        this.getCartListUseCase = getCartListUseCase;
-        this.compositeSubscription = compositeSubscription;
-        this.deleteCartUseCase = deleteCartUseCase;
-        this.deleteCartGetCartListUseCase = deleteCartGetCartListUseCase;
-        this.updateCartUseCase = updateCartUseCase;
-        this.resetCartGetCartListUseCase = resetCartGetCartListUseCase;
-        this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
-        this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
-        this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
-        this.addWishListUseCase = addWishListUseCase;
-        this.removeWishListUseCase = removeWishListUseCase;
-        this.updateAndReloadCartUseCase = updateAndReloadCartUseCase;
-        this.userSessionInterface = userSessionInterface;
-        this.topAdsUseCase = topAdsUseCase;
-    }*/
 
     @Inject
     public CartListPresenter(ICartListView cartListView,
@@ -341,11 +308,13 @@ public class CartListPresenter implements ICartListPresenter {
 
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : allCartItemData) {
-            updateCartRequestList.add(new UpdateCartRequest.Builder()
-                    .cartId(data.getOriginData().getCartId())
-                    .notes(data.getUpdatedData().getRemark())
-                    .quantity(data.getUpdatedData().getQuantity())
-                    .build());
+            if (!data.isError()) {
+                updateCartRequestList.add(new UpdateCartRequest.Builder()
+                        .cartId(data.getOriginData().getCartId())
+                        .notes(data.getUpdatedData().getRemark())
+                        .quantity(data.getUpdatedData().getQuantity())
+                        .build());
+            }
         }
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
         paramUpdate.put(UpdateCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
@@ -790,56 +759,6 @@ public class CartListPresenter implements ICartListPresenter {
                         .subscribe(getSubscriberCheckPromoCodeFromSuggestion(isAutoApply))
         );
 
-        /*compositeSubscription.add(
-                checkPromoStackingCodeCartListUseCase.createObservable(requestParams.EMPTY)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
-                        .subscribe(new Subscriber<GraphqlResponse>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                e.printStackTrace();
-                                view.hideLoadingDialog();
-                                if (e instanceof UnknownHostException) {
-                                    view.renderErrorCheckPromoCodeFromSuggestedPromo(
-                                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                                    );
-                                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                                    view.renderErrorCheckPromoCodeFromSuggestedPromo(
-                                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                                    );
-                                } else if (e instanceof CartResponseErrorException) {
-                                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
-                                } else if (e instanceof CartResponseDataNullException) {
-                                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
-                                } else if (e instanceof CartHttpErrorException) {
-                                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
-                                } else if (e instanceof ResponseCartApiErrorException) {
-                                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
-                                } else if (e instanceof CheckPromoCodeException) {
-                                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
-                                } else {
-                                    view.renderErrorCheckPromoCodeFromSuggestedPromo(
-                                            ErrorNetMessage.MESSAGE_ERROR_DEFAULT
-                                    );
-                                }
-                            }
-
-                            @Override
-                            public void onNext(GraphqlResponse graphqlResponse) {
-                                view.hideLoadingDialog();
-                                System.out.println("++ graphqlResponse = "+graphqlResponse.toString());
-                                // view.renderCheckPromoStackingCodeFromSuggestedPromoSuccess(responseFirstStep);
-                            }
-
-                        });*/
-
-
     }
 
     @Override
@@ -880,6 +799,7 @@ public class CartListPresenter implements ICartListPresenter {
                 e.printStackTrace();
                 view.renderLoadGetCartDataFinish();
                 handleErrorinitCartList(e);
+                view.stopTrace();
             }
 
             @Override
@@ -887,9 +807,11 @@ public class CartListPresenter implements ICartListPresenter {
                 CartListPresenter.this.cartListData = cartListData;
                 view.renderLoadGetCartDataFinish();
                 if (cartListData.getShopGroupDataList().isEmpty()) {
+                    view.stopTrace();
                     view.renderEmptyCartData(cartListData);
                 } else {
                     view.renderInitialGetCartListDataSuccess(cartListData);
+                    view.stopTrace();
                 }
             }
         };
@@ -994,10 +916,8 @@ public class CartListPresenter implements ICartListPresenter {
                     if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()
                             && deleteAndRefreshCartListData.getCartListData() != null) {
                         if (deleteAndRefreshCartListData.getCartListData().getShopGroupDataList().isEmpty()) {
-//                            processCancelAutoApplyPromoStack(CartFragment.SHOP_INDEX_DELETE_PROMO, appliedPromoOnDeletedProductList, true);
                             processInitialGetCartData(cartListData == null);
                         } else {
-//                            processCancelAutoApplyPromoStack(CartFragment.SHOP_INDEX_DELETE_PROMO, appliedPromoOnDeletedProductList, true);
                             CartListPresenter.this.cartListData = deleteAndRefreshCartListData.getCartListData();
                             view.renderInitialGetCartListDataSuccess(deleteAndRefreshCartListData.getCartListData());
                             view.onDeleteCartDataSuccess();
@@ -1008,7 +928,6 @@ public class CartListPresenter implements ICartListPresenter {
                         );
                     }
                 } else {
-//                    processCancelAutoApplyPromoStack(CartFragment.SHOP_INDEX_DELETE_PROMO, appliedPromoOnDeletedProductList, true);
                     processInitialGetCartData(cartListData == null);
                 }
             }
@@ -1206,6 +1125,7 @@ public class CartListPresenter implements ICartListPresenter {
         };
     }
 
+    @Deprecated
     private Subscriber<GraphqlResponse> getSubscriberCheckPromoStackingCodeFromSuggestion() {
         return new Subscriber<GraphqlResponse>() {
             @Override
@@ -1246,7 +1166,6 @@ public class CartListPresenter implements ICartListPresenter {
             public void onNext(GraphqlResponse graphqlResponse) {
                 view.hideProgressLoading();
                 System.out.println("++ graphqlResponse = " + graphqlResponse.toString());
-                // view.renderCheckPromoStackingCodeFromSuggestedPromoSuccess(responseFirstStep);
             }
 
         };
@@ -1338,7 +1257,7 @@ public class CartListPresenter implements ICartListPresenter {
                                 if (!BuildConfig.DEBUG) {
                                     Crashlytics.logException(exception);
                                 }
-                                throw exception;
+                                return Unit.INSTANCE;
                             });
 
                             resultSuccess = jsonObject.getJSONObject(CancelAutoApplyCouponUseCase.RESPONSE_DATA)

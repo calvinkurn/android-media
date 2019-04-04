@@ -19,12 +19,15 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerLoyaltyViewComponent;
 import com.tokopedia.loyalty.di.component.LoyaltyViewComponent;
 import com.tokopedia.loyalty.di.module.LoyaltyViewModule;
 import com.tokopedia.loyalty.listener.LoyaltyActivityTabSelectedListener;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
+import com.tokopedia.loyalty.view.LoyaltyTracking;
 import com.tokopedia.loyalty.view.adapter.GlobalMainTabSelectedListener;
 import com.tokopedia.loyalty.view.adapter.LoyaltyPagerAdapter;
 import com.tokopedia.loyalty.view.data.LoyaltyPagerItem;
@@ -35,6 +38,7 @@ import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
@@ -681,7 +685,8 @@ public class LoyaltyActivity extends BaseSimpleActivity
         super.onBackPressed();
         if (platformString.equalsIgnoreCase(MARKETPLACE_STRING))
             checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickBackArrowFromGunakanKodePromoAtauKupon();
-        loyaltyModuleRouter.sendEventCouponPageClosed();
+
+        LoyaltyTracking.sendEventCouponPageClosed();
     }
 
     private class OnTabSelectedForTrackingCheckoutMarketPlace implements

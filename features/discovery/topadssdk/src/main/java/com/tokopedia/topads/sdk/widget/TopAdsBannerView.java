@@ -189,16 +189,22 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     }
 
     private void setHeadlineDigitalData(Context context, Cpm cpm) {
-        Glide.with(context).load(cpm.getCpmImage().getFullEcs()).asBitmap().into(new SimpleTarget<Bitmap>() {
-            @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                iconImg.setImageBitmap(resource);
-                new ImpresionTask().execute(cpm.getCpmImage().getFullUrl());
-            }
-        });
-        nameTxt.setText(escapeHTML(cpm.getName() == null ? "" : cpm.getName()));
-        descriptionTxt.setText(escapeHTML(cpm.getDecription() == null ? "" : cpm.getDecription()));
-        ctaTxt.setText(cpm.getCta() == null ? "" : cpm.getCta());
+        try {
+            Glide.with(context).load(cpm.getCpmImage().getFullEcs()).asBitmap().into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    if (iconImg != null && resource != null) {
+                        iconImg.setImageBitmap(resource);
+                        new ImpresionTask().execute(cpm.getCpmImage().getFullUrl());
+                    }
+                }
+            });
+            nameTxt.setText(escapeHTML(cpm.getName() == null ? "" : cpm.getName()));
+            descriptionTxt.setText(escapeHTML(cpm.getDecription() == null ? "" : cpm.getDecription()));
+            ctaTxt.setText(cpm.getCta() == null ? "" : cpm.getCta());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void setConfig(Config config) {
@@ -247,7 +253,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
             if (adsListener != null) {
                 adsListener.onTopAdsLoaded(null);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

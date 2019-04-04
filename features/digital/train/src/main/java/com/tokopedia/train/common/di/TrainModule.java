@@ -3,7 +3,6 @@ package com.tokopedia.train.common.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
@@ -39,6 +38,8 @@ import com.tokopedia.train.station.data.TrainStationCloudDataStore;
 import com.tokopedia.train.station.data.TrainStationDataStoreNewFactory;
 import com.tokopedia.train.station.data.database.TrainStationDao;
 import com.tokopedia.train.station.domain.model.mapper.TrainStationMapper;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.concurrent.TimeUnit;
 
@@ -59,7 +60,7 @@ public class TrainModule {
 
     @Provides
     @TrainScope
-    public TrainInterceptor provideTrainInterceptor(@ApplicationContext Context context, NetworkRouter networkRouter, com.tokopedia.user.session.UserSession userSession) {
+    public TrainInterceptor provideTrainInterceptor(@ApplicationContext Context context, NetworkRouter networkRouter, UserSessionInterface userSession) {
         return new TrainInterceptor(context, networkRouter, userSession);
     }
 
@@ -100,15 +101,6 @@ public class TrainModule {
 
     @TrainScope
     @Provides
-    public AnalyticTracker provideAnalyticTracker(@ApplicationContext Context context) {
-        if (context instanceof AbstractionRouter) {
-            return ((AbstractionRouter) context).getAnalyticTracker();
-        }
-        throw new RuntimeException("App should implement " + AbstractionRouter.class.getSimpleName());
-    }
-
-    @TrainScope
-    @Provides
     public TrainDateUtil provideTrainDateUtil() {
         return new TrainDateUtil();
     }
@@ -145,8 +137,8 @@ public class TrainModule {
 
     @TrainScope
     @Provides
-    public com.tokopedia.user.session.UserSession provideUserSession(@ApplicationContext Context context) {
-        return new com.tokopedia.user.session.UserSession(context);
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 
     @TrainScope

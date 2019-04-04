@@ -7,14 +7,13 @@ import android.support.annotation.NonNull;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.network.CacheUtil;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.constant.DigitalCategoryConstant;
 import com.tokopedia.digital.common.constant.DigitalUrl;
-import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
+import com.tokopedia.digital.common.data.apiservice.DigitalGqlApi;
 import com.tokopedia.digital.common.data.entity.response.RechargeResponseEntity;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
@@ -36,18 +35,19 @@ import rx.functions.Func1;
 
 public class CategoryDetailDataSource {
 
-    private DigitalGqlApiService digitalEndpointService;
+    private DigitalGqlApi digitalGqlApi;
     private CacheManager cacheManager;
     private ProductDigitalMapper productDigitalMapper;
     private Context context;
 
-    public CategoryDetailDataSource(DigitalGqlApiService digitalEndpointService,
+    public CategoryDetailDataSource(DigitalGqlApi digitalGqlApi,
                                     CacheManager cacheManager,
-                                    ProductDigitalMapper productDigitalMapper) {
-        this.digitalEndpointService = digitalEndpointService;
+                                    ProductDigitalMapper productDigitalMapper,
+                                    Context context) {
+        this.digitalGqlApi = digitalGqlApi;
         this.cacheManager = cacheManager;
         this.productDigitalMapper = productDigitalMapper;
-        context = MainApplication.getAppContext();
+        this.context = context;
     }
 
     /**
@@ -105,7 +105,7 @@ public class CategoryDetailDataSource {
      * @return
      */
     private Observable<ProductDigitalData> getCategoryDataFromCloud(String categoryId) {
-        return digitalEndpointService.getApi().getCategory(getCategoryRequestPayload(categoryId))
+        return digitalGqlApi.getCategory(getCategoryRequestPayload(categoryId))
                 .map(response -> {
                     if(response != null && response.body() != null && response.body().size() > 0) {
                         return response.body().get(0).getData();
@@ -142,7 +142,7 @@ public class CategoryDetailDataSource {
     }
 
     public Observable<ProductDigitalData> getCategoryAndFavoritFromCloud(String categoryId, String operatorId, String clientNumber, String productId) {
-        return digitalEndpointService.getApi().getCategoryAndFavoriteList(getCategoryAndFavRequestPayload(categoryId, operatorId, clientNumber, productId))
+        return digitalGqlApi.getCategoryAndFavoriteList(getCategoryAndFavRequestPayload(categoryId, operatorId, clientNumber, productId))
                 .map(response -> {
                     RechargeResponseEntity newMappedObject = new RechargeResponseEntity();
 

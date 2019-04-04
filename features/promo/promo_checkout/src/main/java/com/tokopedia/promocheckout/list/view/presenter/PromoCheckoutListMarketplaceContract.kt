@@ -10,7 +10,6 @@ interface PromoCheckoutListMarketplaceContract {
         fun showProgressLoading()
         fun hideProgressLoading()
         fun onErrorCheckPromoCode(e: Throwable)
-        // fun onSuccessCheckPromoCode(dataVoucher: DataVoucher)
         fun onSuccessCheckPromoStackingCode(data: DataUiModel)
         fun onErrorEmptyPromoCode()
     }

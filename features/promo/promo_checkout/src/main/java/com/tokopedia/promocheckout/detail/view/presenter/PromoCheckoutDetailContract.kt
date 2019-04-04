@@ -10,13 +10,11 @@ interface PromoCheckoutDetailContract {
     interface View : CustomerView{
         fun onErroGetDetail(e: Throwable)
         fun onSuccessGetDetailPromo(promoCheckoutDetailModel: PromoCheckoutDetailModel)
-        // fun onSuccessValidatePromo(dataVoucher: DataVoucher)
         fun onSuccessValidatePromoStacking(data: DataUiModel)
         fun onErrorValidatePromo(e: Throwable)
         fun showLoading()
         fun hideLoading()
         fun onErrorCancelPromo(e: Throwable)
-        // fun onSuccessCancelPromo()
         fun onSuccessCancelPromoStacking()
         fun showProgressLoading()
         fun hideProgressLoading()
@@ -24,7 +22,6 @@ interface PromoCheckoutDetailContract {
 
     interface Presenter : CustomerPresenter<View>{
         fun getDetailPromo(codeCoupon: String, oneClickShipment: Boolean, promo: Promo?)
-        // fun validatePromoUse(codeCoupon: String, oneClickShipment : Boolean, resources: Resources)
         fun validatePromoStackingUse(promoCode: String, promo: Promo?, isFromLoadDetail: Boolean)
         fun cancelPromo(codeCoupon: String)
     }

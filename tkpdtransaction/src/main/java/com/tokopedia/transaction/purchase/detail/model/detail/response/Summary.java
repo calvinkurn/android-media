@@ -39,6 +39,12 @@ public class Summary {
     @SerializedName("cod_fee")
     @Expose
     private String codFee;
+    @SerializedName("warehouse_id")
+    @Expose
+    private int warehouseId;
+    @SerializedName("fulfill_by")
+    @Expose
+    private int fulfillBy;
 
 
     public String getItemsPrice() {
@@ -127,5 +133,21 @@ public class Summary {
 
     public void setCodFee(String codFee) {
         this.codFee = codFee;
+    }
+
+    public int getWarehouseId() {
+        return warehouseId;
+    }
+
+    public void setWarehouseId(int warehouseId) {
+        this.warehouseId = warehouseId;
+    }
+
+    public int getFulfillBy() {
+        return fulfillBy;
+    }
+
+    public void setFulfillBy(int fulfillBy) {
+        this.fulfillBy = fulfillBy;
     }
 }

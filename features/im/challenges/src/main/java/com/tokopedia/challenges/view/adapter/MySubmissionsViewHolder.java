@@ -38,7 +38,7 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         imgLikes = view.findViewById(R.id.img_likes);
         tvStatus = view.findViewById(R.id.tv_status);
         imgShare = view.findViewById(R.id.img_share);
-        analytics = new ChallengesGaAnalyticsTracker(context);
+        analytics = new ChallengesGaAnalyticsTracker();
     }
 
     void bind(SubmissionResult challengesResult, ISubmissionsViewHolderListner ISubmissionsViewHolderListner) {
@@ -70,14 +70,14 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
             intent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, Utils.checkIsPastChallenge(submissionsResult.getCollection().getEndDate()));
             context.startActivity(intent);
             analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
-                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_MYSUBMISSIONS,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_MYSUBMISSIONS,
                     ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
                     challengesResult.getCollection().getTitle());
         });
         imgShare.setOnClickListener(v -> {
             ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), submissionsResult, false);
             analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
-                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_MYSUBMISSIONS,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_MYSUBMISSIONS,
                     ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
                     challengesResult.getCollection().getTitle());
         });
@@ -96,7 +96,7 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
             }
             if (challengesResult.getCollection() != null) {
                 analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_LIKE,
-                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_MYSUBMISSIONS,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_MYSUBMISSIONS,
                         action,
                         challengesResult.getCollection().getTitle());
             }

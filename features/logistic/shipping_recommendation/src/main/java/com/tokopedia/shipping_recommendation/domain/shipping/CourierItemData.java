@@ -34,6 +34,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private String logPromoCode;
     private String checksum;
     private String ut;
+    private String blackboxInfo;
 
     public CourierItemData() {
     }
@@ -230,6 +231,10 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.ut = ut;
     }
 
+    public String getBlackboxInfo() { return blackboxInfo; }
+
+    public void setBlackboxInfo(String blackboxInfo) { this.blackboxInfo = blackboxInfo; }
+
     public String getServiceName() {
         return serviceName;
     }
@@ -279,6 +284,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         dest.writeString(this.logPromoCode);
         dest.writeString(this.checksum);
         dest.writeString(this.ut);
+        dest.writeString(this.blackboxInfo);
     }
 
     protected CourierItemData(Parcel in) {
@@ -308,6 +314,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.logPromoCode = in.readString();
         this.checksum = in.readString();
         this.ut = in.readString();
+        this.blackboxInfo = in.readString();
     }
 
     public static final Creator<CourierItemData> CREATOR = new Creator<CourierItemData>() {

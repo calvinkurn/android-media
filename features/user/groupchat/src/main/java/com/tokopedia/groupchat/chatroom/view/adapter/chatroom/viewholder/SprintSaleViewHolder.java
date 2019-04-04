@@ -30,7 +30,7 @@ public class SprintSaleViewHolder extends BaseChatViewHolder<SprintSaleAnnouncem
     @LayoutRes
     public static final int LAYOUT = R.layout.sprint_sale_holder;
     private static final int SPAN_COUNT = 2;
-    private final ChatroomContract.View.SprintSaleViewHolderListener listener;
+    private final ChatroomContract.ChatItem.SprintSaleViewHolderListener listener;
 
     private ImageView sprintSaleIcon;
     private TextView sprintSaleTitle;
@@ -39,7 +39,7 @@ public class SprintSaleViewHolder extends BaseChatViewHolder<SprintSaleAnnouncem
     private SpaceItemDecoration itemDecoration;
     private View mainLayout;
 
-    public SprintSaleViewHolder(View itemView, ChatroomContract.View.SprintSaleViewHolderListener listener) {
+    public SprintSaleViewHolder(View itemView, ChatroomContract.ChatItem.SprintSaleViewHolderListener listener) {
         super(itemView);
         this.listener = listener;
         mainLayout = itemView.findViewById(R.id.main_layout);

@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.R;
 /**
  * Created by nisie on 10/7/16.
  */
+@Deprecated
 public abstract class TkpdWebViewClient extends WebViewClient {
     @Override
     public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error) {

@@ -816,7 +816,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         List<String> departureAirportList;
         String departureAirportCode = getDepartureAirport().getAirportCode();
         if (departureAirportCode == null || departureAirportCode.equals("")) {
-            departureAirportList = Arrays.asList(getDepartureAirport().getCityAirports());
+            departureAirportList = getDepartureAirport().getCityAirports();
         } else {
             departureAirportList = new ArrayList<>();
             departureAirportList.add(departureAirportCode);
@@ -825,7 +825,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         List<String> arrivalAirportList;
         String arrivalAirportCode = getArrivalAirport().getAirportCode();
         if (arrivalAirportCode == null || arrivalAirportCode.equals("")) {
-            arrivalAirportList = Arrays.asList(getArrivalAirport().getCityAirports());
+            arrivalAirportList = getArrivalAirport().getCityAirports();
         } else {
             arrivalAirportList = new ArrayList<>();
             arrivalAirportList.add(arrivalAirportCode);

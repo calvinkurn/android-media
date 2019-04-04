@@ -20,7 +20,7 @@ class GetChatBlastSellerUseCase @Inject constructor(private val graphqlUseCase: 
 
     override fun createObservable(requestParams: RequestParams?): Observable<TopChatBlastSeller.BlastSellerList> {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_bm_list)
-        val graphqlRequest = GraphqlRequest(query, TopChatBlastSeller.Response::class.java, requestParams?.parameters)
+        val graphqlRequest = GraphqlRequest(query, TopChatBlastSeller.Response::class.java, requestParams?.parameters, false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(null).flatMap { graphqlResponse ->

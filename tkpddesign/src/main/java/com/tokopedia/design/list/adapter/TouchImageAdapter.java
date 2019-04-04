@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 
 import com.tokopedia.design.image.ImageLoader;
 import com.tokopedia.design.image.TouchImageView;
@@ -20,14 +21,12 @@ public class TouchImageAdapter extends PagerAdapter {
     }
 
     private Context context;
-    private int dp;
-    private ArrayList<String> FileLoc = new ArrayList<>();
+    private ArrayList<String> FileLoc;
     private OnImageStateChange ImageStateChangeListener;
 
-    public TouchImageAdapter(Context context, ArrayList<String> FileLoc, int dp) {
+    public TouchImageAdapter(Context context, ArrayList<String> FileLoc) {
         this.context = context;
         this.FileLoc = FileLoc;
-        this.dp = dp;
     }
 
     public void SetonImageStateChangeListener(OnImageStateChange Listener) {
@@ -44,10 +43,6 @@ public class TouchImageAdapter extends PagerAdapter {
         return view == object;
     }
 
-    private boolean isUrl(String src) {
-        return src.substring(0, 4).equals("http");
-    }
-
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         TouchImageView imageView = new TouchImageView(context, StateSize -> {
@@ -57,7 +52,7 @@ public class TouchImageAdapter extends PagerAdapter {
                 ImageStateChangeListener.OnStateZoom();
         });
         String thumbnail = FileLoc.get(position);
-        if (isUrl(thumbnail)) {
+        if (URLUtil.isNetworkUrl(thumbnail)) {
             ImageLoader.LoadImage(imageView, thumbnail);
         } else {
             imageView.setImageURI(Uri.fromFile(new File(thumbnail)));

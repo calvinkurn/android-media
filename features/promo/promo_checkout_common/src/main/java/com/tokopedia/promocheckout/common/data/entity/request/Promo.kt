@@ -3,6 +3,7 @@ package com.tokopedia.promocheckout.common.data.entity.request
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.transactiondata.entity.request.TokopediaCornerData
 
 /**
  * Created by Irfan Khoirul on 19/03/19.
@@ -28,7 +29,10 @@ data class Promo(
         var isTradeIn: Int? = 0,
 
         @SerializedName("state")
-        var state: String = ""
+        var state: String = "",
+
+        @SerializedName("tokopedia_corner_data")
+        var tokopediCornerData: TokopediaCornerData? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             arrayListOf<String>().apply {
@@ -41,7 +45,8 @@ data class Promo(
                 parcel.readList(this, Order::class.java.classLoader)
             },
             parcel.readValue(Int::class.java.classLoader) as? Int,
-            parcel.readString()
+            parcel.readString() ?: "",
+            parcel.readParcelable(TokopediaCornerData::class.java.classLoader) ?: null
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -52,6 +57,7 @@ data class Promo(
         parcel.writeList(orders)
         parcel.writeValue(skipApply)
         parcel.writeString(state)
+        parcel.writeParcelable(tokopediCornerData, flags)
     }
 
     override fun describeContents(): Int {
@@ -61,6 +67,9 @@ data class Promo(
     companion object CREATOR : Parcelable.Creator<Promo> {
         val STATE_CART = "cart"
         val STATE_CHECKOUT = "checkout"
+
+        val CART_TYPE_DEFAULT = "default"
+        val CART_TYPE_OCS = "ocs"
 
         override fun createFromParcel(parcel: Parcel): Promo {
             return Promo(parcel)

@@ -3,8 +3,8 @@ package com.tokopedia.tokopoints.view.util;
 import android.app.Activity;
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -93,51 +93,33 @@ public class AnalyticsTrackerUtil {
         String COPY_CODE = "salin kode swipe";
         String CLICK_MEM_BOTTOM = "click footer status membership";
         String CLICK_SELL_ALL_COUPON = "click kupon milik saya";
+        String CLICK_PENUKARAN_POINTS = "click penukaran point";
+        String CLICK_COUPON_SAYA = "click coupon saya";
+        String CLICK_KIRIM_SEKARANG = "click kirim sekarang";
+        String CLICK_OK_ON_SUCCESS = "click ok on success";
+        String CLICK_OK_ON_FAILED = "click ok on failed";
+        String CLICK_GUNAKAN_KUPON = "click gunakan kupon";
         String VIEW_REDEEM_SUCCESS = "view redeem success";
     }
 
     public static void sendScreenEvent(Activity context, String screenName) {
-        if (context == null) {
-            return;
-        }
-
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-
-        if (tracker == null) {
-            return;
-        }
-
-        tracker.sendScreen(context, screenName);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated( screenName);
     }
 
     public static void sendEvent(Context context, String event, String category,
                                  String action, String label) {
-        if (context == null) {
-            return;
-        }
-
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-
-        if (tracker == null) {
-            return;
-        }
-
-        tracker.sendEventTracking(event, category, action, label);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(event, category, action, label));
     }
 
     public static void sendECommerceEvent(Context context, String event, String category,
                                           String action, String label, Map<String, Map<String, List<Map<String, String>>>> ecommerce) {
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-
-        if (tracker == null)
-            return;
         HashMap<String, Object> map = new HashMap<>();
         map.put(EventKeys.EVENT, event);
         map.put(EventKeys.EVENT_CATEGORY, category);
         map.put(EventKeys.EVENT_ACTION, action);
         map.put(EventKeys.EVENT_LABEL, label);
         map.put(EventKeys.ECOMMERCE, ecommerce);
-        tracker.sendEnhancedEcommerce(map);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
     }
 
     public interface ScreenKeys {

@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.data.mapper;
 
 import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedGqlResponse;
+import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse;
 import com.tokopedia.home.beranda.domain.gql.feed.RecommendationTab;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 
@@ -13,7 +13,7 @@ import rx.functions.Func1;
 public class FeedTabMapper implements Func1<GraphqlResponse, List<FeedTabModel>> {
     @Override
     public List<FeedTabModel> call(GraphqlResponse graphqlResponse) {
-        HomeFeedGqlResponse gqlResponse = graphqlResponse.getData(HomeFeedGqlResponse.class);
+        HomeFeedTabGqlResponse gqlResponse = graphqlResponse.getData(HomeFeedTabGqlResponse.class);
         return convertToFeedTabModelList(gqlResponse.getHomeRecommendation().getRecommendationTabs());
     }
 

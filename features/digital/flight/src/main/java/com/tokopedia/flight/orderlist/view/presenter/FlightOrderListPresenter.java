@@ -2,7 +2,6 @@ package com.tokopedia.flight.orderlist.view.presenter;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
@@ -17,6 +16,7 @@ import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.mapper.FlightOrderViewModelMapper;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,9 +37,7 @@ import rx.subscriptions.CompositeSubscription;
 public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderListContract.View>
         implements FlightOrderListContract.Presenter {
 
-    private static final int MINIMUM_HOURS_CANCELLATION_DURATION = 6;
-
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private FlightGetOrdersUseCase flightGetOrdersUseCase;
     private FlightOrderViewModelMapper flightOrderViewModelMapper;
     private FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper;
@@ -48,7 +46,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     private String userResendEmail = "";
 
     @Inject
-    public FlightOrderListPresenter(UserSession userSession,
+    public FlightOrderListPresenter(UserSessionInterface userSession,
                                     FlightGetOrdersUseCase flightGetOrdersUseCase,
                                     FlightOrderViewModelMapper flightOrderViewModelMapper,
                                     FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper) {
@@ -193,35 +191,11 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     }
 
     @Override
-    public void checkIfFlightCancellable(List<FlightOrderJourney> orderJourneyList, String invoiceId, List<FlightCancellationJourney> items) {
-        boolean canGoToCancelPage = false;
-
-        for (FlightOrderJourney item : orderJourneyList) {
-            if (isDepartureDateMoreThan6Hours(
-                    FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, item.getDepartureTime()))) {
-                canGoToCancelPage = true;
-            }
-        }
-
-        if (canGoToCancelPage) {
-            getView().goToCancellationPage(invoiceId, items);
-        } else {
-            getView().showLessThan6HoursDialog();
-        }
-    }
-
-    @Override
     public void onMoreAirlineInfoClicked() {
         getView().navigateToWebview(FlightUrl.AIRLINES_CONTACT_URL);
     }
 
     private List<FlightCancellationJourney> transformOrderToCancellation(List<FlightOrderJourney> flightOrderJourney) {
         return flightOrderToCancellationJourneyMapper.transform(flightOrderJourney);
-    }
-
-    private boolean isDepartureDateMoreThan6Hours(Date departureDate) {
-        Date currentDate = FlightDateUtil.getCurrentDate();
-        long diffHours = (departureDate.getTime() - currentDate.getTime()) / TimeUnit.HOURS.toMillis(1);
-        return diffHours >= MINIMUM_HOURS_CANCELLATION_DURATION || diffHours < 0;
     }
 }

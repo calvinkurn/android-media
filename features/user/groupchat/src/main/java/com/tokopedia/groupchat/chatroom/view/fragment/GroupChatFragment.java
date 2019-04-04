@@ -21,10 +21,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -32,8 +30,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.applink.RouteManager;
-import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.text.BackEditText;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.R;
@@ -60,12 +56,10 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnoun
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.UserActionViewModel;
-import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.InteruptViewModel;
-import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
 import com.tokopedia.groupchat.chatroom.websocket.WebSocketException;
 import com.tokopedia.groupchat.common.analytics.EEPromotion;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
-import com.tokopedia.groupchat.common.design.CloseableBottomSheetDialog;
+import com.tokopedia.groupchat.common.design.ChannelCloseableBottomSheetDialog;
 import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration;
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration;
 import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
@@ -87,10 +81,11 @@ import static com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity.P
  */
 
 public class GroupChatFragment extends BaseDaggerFragment implements ChatroomContract.View,
-        ChatroomContract.View.ImageAnnouncementViewHolderListener,
-        ChatroomContract.View.VoteAnnouncementViewHolderListener,
-        ChatroomContract.View.SprintSaleViewHolderListener,
-        ChatroomContract.View.GroupChatPointsViewHolderListener {
+        ChatroomContract.ChatItem.ImageAnnouncementViewHolderListener,
+        ChatroomContract.ChatItem.VoteAnnouncementViewHolderListener,
+        ChatroomContract.ChatItem.SprintSaleViewHolderListener,
+        ChatroomContract.ChatItem.GroupChatPointsViewHolderListener,
+        ChatroomContract.QuickReply{
 
     private static final long DELAY_TIME_SPRINT_SALE = TimeUnit.SECONDS.toMillis(3);
     private static final int REQUEST_LOGIN = 111;
@@ -124,7 +119,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private Handler sprintSaleHandler;
     private Runnable sprintSaleRunnable;
-    private CloseableBottomSheetDialog pinnedMessageDialog;
+    private ChannelCloseableBottomSheetDialog pinnedMessageDialog;
 
     int newMessageCounter;
 
@@ -186,7 +181,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     private void prepareView() {
-        GroupChatTypeFactory groupChatTypeFactory = new GroupChatTypeFactoryImpl(this);
+        GroupChatTypeFactory groupChatTypeFactory = new GroupChatTypeFactoryImpl(this, this, this, this);
         adapter = GroupChatAdapter.createInstance(groupChatTypeFactory, ((GroupChatActivity) getActivity()).getList());
         QuickReplyTypeFactory quickReplyTypeFactory = new QuickReplyTypeFactoryImpl(this);
         quickReplyAdapter = new QuickReplyAdapter(quickReplyTypeFactory);
@@ -464,9 +459,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     private void showPinnedMessageBottomSheet(PinnedMessageViewModel pinnedMessage) {
-        pinnedMessageDialog = CloseableBottomSheetDialog.createInstance(getActivity(), () -> {
+        pinnedMessageDialog = ChannelCloseableBottomSheetDialog.createInstance(getActivity(), () -> {
             ((GroupChatContract.View) getActivity()).showOverlayDialogOnScreen();
-        }, new CloseableBottomSheetDialog.BackHardwareClickedListener() {
+        }, new ChannelCloseableBottomSheetDialog.BackHardwareClickedListener() {
             @Override
             public void onBackHardwareClicked() {
 
@@ -503,10 +498,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private View createPinnedMessageView(final PinnedMessageViewModel pinnedMessage) {
         ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity()).getChannelInfoViewModel();
         View view = getLayoutInflater().inflate(R.layout.layout_pinned_message_expanded, null);
-        ImageHandler.loadImageCircle2(getActivity(), (ImageView) view.findViewById(R.id.pinned_message_avatar)
-                , channelInfoViewModel.getAdminPicture(), R.drawable.ic_loading_toped_new);
-        ((TextView) view.findViewById(R.id.chat_header).findViewById(R.id.nickname))
-                .setText(channelInfoViewModel.getAdminName());
         ((TextView) view.findViewById(R.id.message)).setText(pinnedMessage.getMessage());
         ImageHandler.loadImage(getActivity(), view.findViewById(R.id.thumbnail)
                 , pinnedMessage.getThumbnail(), R.drawable.loading_page);
@@ -706,7 +697,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private void resetNewMessageCounter() {
         newMessageCounter = 0;
         chatNotificationView.setVisibility(View.GONE);
-
     }
 
     @Override
@@ -769,7 +759,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         }
 
         if (messageItem instanceof ImageAnnouncementViewModel) {
-            analytics.eventViewBannerPushPromo(
+            analytics.eventViewImageAnnouncement(
                     String.format("%s - %s"
                             , ((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getChannelId()
                             , ((ImageAnnouncementViewModel) messageItem).getRedirectUrl()));
@@ -868,16 +858,16 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     @Override
-    public void onImageAnnouncementClicked(String url) {
+    public void onImageAnnouncementClicked(ImageAnnouncementViewModel image) {
         analytics.eventClickThumbnail(String.format("%s - %s", ((GroupChatContract.View) getActivity()).
-                getChannelInfoViewModel().getChannelId(), url));
-        if (!TextUtils.isEmpty(url)) {
-            ((GroupChatModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), url);
+                getChannelInfoViewModel().getChannelId(), image.getRedirectUrl()));
+        if (!TextUtils.isEmpty(image.getRedirectUrl())) {
+            ((GroupChatModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), image.getRedirectUrl());
         }
     }
 
     @Override
-    public void onVoteComponentClicked(String type, String name) {
+    public void onVoteComponentClicked(String type, String name, String voteUrl) {
         if (getActivity() instanceof GroupChatActivity) {
             ((GroupChatActivity) getActivity()).transitionToTabVote();
         }

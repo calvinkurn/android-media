@@ -24,7 +24,9 @@ import android.widget.TextView;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -103,8 +105,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         wishList = new WishListImpl(getActivity(), this);
-        checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart(getAnalyticTracker());
-        wishlistAnalytics = new WishlistAnalytics(getAnalyticTracker());
+        checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart();
+        wishlistAnalytics = new WishlistAnalytics();
         progressDialog = new TkpdProgressDialog(getContext(), TkpdProgressDialog.NORMAL_PROGRESS);
         progressDialog.setCancelable(false);
         wishList.fetchSavedsInstance(savedInstanceState);
@@ -119,16 +121,16 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        ProductItem data = new ProductItem();
-        data.setId(product.getId());
-        data.setName(product.getName());
-        data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_url());
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
+        Intent intent = getProductIntent(product.getId());
         getActivity().startActivity(intent);
+    }
+
+    private Intent getProductIntent(String productId){
+        if (getActivity() != null) {
+            return RouteManager.getIntent(getActivity(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -179,13 +181,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         if (isFromAppShortcut) {
             wishlistAnalytics.eventWishlistShortcut();
         }
-    }
-
-    private AnalyticTracker getAnalyticTracker() {
-        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
-            return ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
-        }
-        return null;
     }
 
     private void loadWishlistData() {

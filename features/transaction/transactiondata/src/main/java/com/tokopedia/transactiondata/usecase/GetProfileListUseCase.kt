@@ -20,7 +20,7 @@ class GetProfileListUseCase @Inject constructor(@ApplicationContext val context:
 
     override fun execute(requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.query_profile_list), ProfileListGqlResponse::class.java, null)
+                R.raw.query_profile_list), ProfileListGqlResponse::class.java, null, false)
         clearRequest()
         addRequest(graphqlRequest)
 

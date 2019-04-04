@@ -17,6 +17,7 @@ import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.R.string.notif_no_info_desc
 import com.tokopedia.notifcenter.analytics.NotifCenterAnalytics
 import com.tokopedia.notifcenter.di.DaggerNotifCenterComponent
+import com.tokopedia.notifcenter.view.activity.NotifCenterActivity
 import com.tokopedia.notifcenter.view.adapter.NotifCenterAdapter
 import com.tokopedia.notifcenter.view.adapter.typefactory.NotifCenterTypeFactoryImpl
 import com.tokopedia.notifcenter.view.listener.NotifCenterContract
@@ -44,7 +45,13 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
     var canLoadMore = false
 
     companion object {
-        fun createInstance() = NotifCenterFragment()
+        fun createInstance(extras: Bundle?) : NotifCenterFragment {
+            val fragment = NotifCenterFragment()
+            extras?.let {
+                fragment.arguments = it
+            }
+            return fragment
+        }
         const val LOAD_MORE_THRESHOLD = 2
     }
 
@@ -59,7 +66,16 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
         initVar()
         initView()
         presenter.attachView(this)
-        presenter.fetchData()
+        var hitSingle = false
+        arguments?.let {
+            it.getString(NotifCenterActivity.NOTIF_ID)?.let {
+                hitSingle = true
+                presenter.fetchSingleData(it)
+            }
+        }
+        if (!hitSingle) {
+            presenter.fetchData()
+        }
     }
 
     override fun onDestroy() {
@@ -135,8 +151,8 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
         filterBtn.show()
     }
 
-    override fun openRedirectUrl(url: String) {
-        analytics.trackClickList()
+    override fun openRedirectUrl(url: String, templateKey: String) {
+        analytics.trackClickList(templateKey)
         activity?.let {
             notifCenterRouter.openRedirectUrl(it, url)
         }
@@ -172,7 +188,7 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
             filterBtn.hide(false)
             resetCursor()
             adapter.clearAllElements()
-            presenter.fetchDataWithoutCache()
+            presenter.fetchData()
         }
         filterBtn.hide(false)
         filterBtn.setButton1OnClickListener {
@@ -214,7 +230,7 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
                                 .updateFilterId(NotifFilterViewModel.FILTER_ALL_ID)
                     }
                     setMenuSelected(itemMenus.title)
-                    presenter.fetchDataWithoutCache()
+                    presenter.fetchData()
                     menus.dismiss()
                 }
 

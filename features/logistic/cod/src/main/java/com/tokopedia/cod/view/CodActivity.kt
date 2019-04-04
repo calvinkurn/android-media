@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.cod.di.DaggerCodComponent
 import com.tokopedia.logisticanalytics.CodAnalytics
+import com.tokopedia.transactiondata.constant.Constant
+import com.tokopedia.transactiondata.entity.request.CheckoutRequest
 import com.tokopedia.transactiondata.entity.response.cod.Data
 import javax.inject.Inject
 
@@ -42,7 +44,8 @@ class CodActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
         val data: Data = intent.getParcelableExtra(EXTRA_COD_DATA)
-        return CodFragment.newInstance(data)
+        val checkoutRequest: CheckoutRequest = intent.getParcelableExtra(Constant.EXTRA_CHECKOUT_REQUEST)
+        return CodFragment.newInstance(data, checkoutRequest)
     }
 
     override fun onBackPressed() {

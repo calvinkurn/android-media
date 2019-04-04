@@ -9,12 +9,10 @@ import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.otp.common.network.AccountsAuthorizationInterceptor;
 import com.tokopedia.otp.common.network.AuthorizationBearerInterceptor;
 import com.tokopedia.otp.common.network.OtpErrorInterceptor;
 import com.tokopedia.otp.common.network.OtpErrorResponse;
 import com.tokopedia.otp.common.network.WSErrorResponse;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
@@ -38,13 +36,6 @@ public class OtpNetModule {
 
     @OtpScope
     @Provides
-    public AccountsAuthorizationInterceptor provideAccountsAuthorizationInterceptor(UserSessionInterface
-                                                                                            userSession) {
-        return new AccountsAuthorizationInterceptor(userSession);
-    }
-
-    @OtpScope
-    @Provides
     public ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
         return new ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
     }
@@ -52,7 +43,7 @@ public class OtpNetModule {
     @OtpScope
     @Provides
     public FingerprintInterceptor provideFingerprintInterceptor(@ApplicationContext Context context,
-                                                                UserSession userSession) {
+                                                                UserSessionInterface userSession) {
         return new FingerprintInterceptor((NetworkRouter) context, userSession);
     }
 

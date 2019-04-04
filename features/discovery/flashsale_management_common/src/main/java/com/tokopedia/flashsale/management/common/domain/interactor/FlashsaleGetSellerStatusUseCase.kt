@@ -21,7 +21,7 @@ class FlashsaleGetSellerStatusUseCase(val graphqlUseCase: GraphqlUseCase): UseCa
         requestParams.clearValue(PARAM_QUERY)
 
 
-        val graphqlRequest = GraphqlRequest(query, SellerStatus.Response::class.java, requestParams.parameters)
+        val graphqlRequest = GraphqlRequest(query, SellerStatus.Response::class.java, requestParams.parameters, false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 

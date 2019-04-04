@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -93,9 +92,8 @@ public class CampaignModule {
 
     @Provides
     CampaignAuthInterceptor provideContactUsAuthInterceptor(@ApplicationContext Context context,
-                                                            AbstractionRouter abstractionRouter,
-                                                            UserSession userSession) {
-        return new CampaignAuthInterceptor(context, abstractionRouter, userSession);
+                                                            AbstractionRouter abstractionRouter) {
+        return new CampaignAuthInterceptor(context, abstractionRouter);
 
     }
 }

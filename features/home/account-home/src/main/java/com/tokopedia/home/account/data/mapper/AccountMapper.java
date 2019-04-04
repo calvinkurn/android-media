@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeUrl;
@@ -17,6 +18,7 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
@@ -93,8 +95,11 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
             tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getBalance());
             tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getApplink());
         }
+        tokopediaPayViewModel.setRightSaldo(true);
         tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
-        tokopediaPayViewModel.setAmountRight(accountModel.getDeposit().getDepositFmt());
+        tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat
+                (accountModel.getSaldoModel().getSaldo().getDepositLong(), false));
+
         tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
         items.add(tokopediaPayViewModel);
 
@@ -293,9 +298,13 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         shopCard.setShopId(accountModel.getShopInfo().getInfo().getShopId());
         shopCard.setShopName(accountModel.getShopInfo().getInfo().getShopName());
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopAvatar());
-        shopCard.setBalance(accountModel.getDeposit().getDepositFmt());
         shopCard.setGoldMerchant(accountModel.getShopInfo().getOwner().getGoldMerchant());
         items.add(shopCard);
+
+        SellerSaldoViewModel sellerSaldoViewModel = new SellerSaldoViewModel();
+        sellerSaldoViewModel.setBalance(CurrencyFormatUtil.convertPriceValueToIdrFormat
+                (accountModel.getSaldoModel().getSaldo().getDepositLong(), false));
+        items.add(sellerSaldoViewModel);
 
         MenuGridViewModel menuGrid = new MenuGridViewModel();
         menuGrid.setTitle(context.getString(R.string.title_menu_sales));

@@ -15,6 +15,7 @@ public class ShippingRecommendationData implements Parcelable {
     private LogisticPromoViewModel logisticPromo;
     private String errorMessage;
     private String errorId;
+    private String blackboxInfo;
 
     public ShippingRecommendationData() {
     }
@@ -51,6 +52,10 @@ public class ShippingRecommendationData implements Parcelable {
         this.logisticPromo = logisticPromo;
     }
 
+    public String getBlackboxInfo() { return blackboxInfo; }
+
+    public void setBlackboxInfo(String blackboxInfo) { this.blackboxInfo = blackboxInfo; }
+
     @Override
     public int describeContents() {
         return 0;
@@ -62,6 +67,7 @@ public class ShippingRecommendationData implements Parcelable {
         dest.writeParcelable(this.logisticPromo, flags);
         dest.writeString(this.errorMessage);
         dest.writeString(this.errorId);
+        dest.writeString(this.blackboxInfo);
     }
 
     protected ShippingRecommendationData(Parcel in) {
@@ -69,6 +75,7 @@ public class ShippingRecommendationData implements Parcelable {
         this.logisticPromo = in.readParcelable(LogisticPromoViewModel.class.getClassLoader());
         this.errorMessage = in.readString();
         this.errorId = in.readString();
+        this.blackboxInfo = in.readString();
     }
 
     public static final Creator<ShippingRecommendationData> CREATOR = new Creator<ShippingRecommendationData>() {
@@ -82,4 +89,5 @@ public class ShippingRecommendationData implements Parcelable {
             return new ShippingRecommendationData[size];
         }
     };
+
 }

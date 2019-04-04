@@ -15,16 +15,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.discovery.newdiscovery.di.module.SearchModule;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -49,6 +51,7 @@ import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,6 +85,8 @@ public class SearchActivity extends DiscoveryActivity
     private static final String EXTRA_PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
     private static final String EXTRA_FORCE_SWIPE_TO_SHOP = "FORCE_SWIPE_TO_SHOP";
     private static final String EXTRA_ACTIVITY_PAUSED = "EXTRA_ACTIVITY_PAUSED";
+    private static final String EXTRA_OFFICIAL = "EXTRA_OFFICIAL";
+    private static final String EXTRA_IS_AUTOCOMPLETE= "EXTRA_IS_AUTOCOMPLETE";
 
     private ProductListFragment productListFragment;
     private CatalogFragment catalogFragment;
@@ -113,22 +118,35 @@ public class SearchActivity extends DiscoveryActivity
     private SearchComponent searchComponent;
     private MenuItem menuChangeGrid;
 
-    private boolean profileEnabled = false;
-
     public SearchComponent getSearchComponent() {
         return searchComponent;
     }
 
-    @DeepLink(Constants.Applinks.DISCOVERY_SEARCH)
+    @DeepLink(ApplinkConst.DISCOVERY_SEARCH)
     public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
-        String departmentId = bundle.getString(BrowseApi.SC);
+        String departmentId = bundle.getString(SearchApiConst.SC);
+        boolean isOfficial = Boolean.parseBoolean(bundle.getString(SearchApiConst.OFFICIAL));
         Intent intent = new Intent(context, SearchActivity.class);
 
         if (!TextUtils.isEmpty(departmentId)) {
             intent.putExtra(DEPARTMENT_ID, departmentId);
         }
 
-        intent.putExtra(EXTRAS_SEARCH_TERM, bundle.getString(BrowseApi.Q, bundle.getString("keyword", "")));
+        intent.putExtra(EXTRA_OFFICIAL, isOfficial);
+
+        intent.putExtra(EXTRAS_SEARCH_TERM, bundle.getString(SearchApiConst.Q, bundle.getString(SearchApiConst.KEYWORD, "")));
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    @DeepLink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
+    public static Intent getCallingApplinkAutoCompleteSearchIntent(Context context, Bundle bundle) {
+        boolean isOfficial = Boolean.parseBoolean(bundle.getString(SearchApiConst.OFFICIAL));
+        Intent intent = new Intent(context, SearchActivity.class);
+
+        intent.putExtra(EXTRA_IS_AUTOCOMPLETE, true);
+        intent.putExtra(EXTRA_OFFICIAL, isOfficial);
+
         intent.putExtras(bundle);
         return intent;
     }
@@ -137,6 +155,31 @@ public class SearchActivity extends DiscoveryActivity
     protected void onResume() {
         super.onResume();
         unregisterShake();
+
+        if(!hasSearchData()) {
+            showAutoCompleteOnResume();
+        }
+    }
+
+    private boolean hasSearchData() {
+        return searchSectionPagerAdapter != null
+                && searchSectionPagerAdapter.getCount() > 0;
+    }
+
+    private void showAutoCompleteOnResume() {
+        if(searchView.isSearchOpen()) {
+            searchView.searchTextViewRequestFocus();
+            searchView.searchTextViewSetCursorSelectionAtTextEnd();
+            forceShowKeyBoard();
+        }
+        else {
+            searchView.showSearch(true, false);
+        }
+    }
+
+    private void forceShowKeyBoard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     public static Intent newInstance(Context context, Bundle bundle) {
@@ -174,18 +217,18 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void handleIntent(Intent intent) {
-        setPresenter(searchPresenter);
-        searchPresenter.attachView(this);
-        searchPresenter.setDiscoveryView(this);
+        initPresenter();
         initResources();
+
         ProductViewModel productViewModel =
                 intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
         String searchQuery = getIntent().getStringExtra(EXTRAS_SEARCH_TERM);
         String categoryId = getIntent().getStringExtra(DEPARTMENT_ID);
+        boolean isOfficial = getIntent().getBooleanExtra(EXTRA_OFFICIAL, false);
 
-        if (getIntent().getBooleanExtra(EXTRA_ACTIVITY_PAUSED, false)) {
-            moveTaskToBack(true);
-        }
+        handleIntentActivityPaused();
+
+        handleIntentAutoComplete(isOfficial);
 
         if (productViewModel != null) {
             setLastQuerySearchView(productViewModel.getQuery());
@@ -194,12 +237,12 @@ public class SearchActivity extends DiscoveryActivity
             bottomSheetFilterView.setFilterResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
         } else if (!TextUtils.isEmpty(searchQuery)) {
             if (!TextUtils.isEmpty(categoryId)) {
-                onSuggestionProductClick(searchQuery, categoryId);
+                onSuggestionProductClick(searchQuery, categoryId, isOfficial);
             } else {
-                onSuggestionProductClick(searchQuery);
+                onSuggestionProductClick(searchQuery, isOfficial);
             }
         } else {
-            searchView.showSearch(true, false);
+            searchView.showSearch(true, false, isOfficial);
         }
 
         if (intent != null &&
@@ -213,6 +256,18 @@ public class SearchActivity extends DiscoveryActivity
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent);
+    }
+
+    private void handleIntentActivityPaused() {
+        if (getIntent().getBooleanExtra(EXTRA_ACTIVITY_PAUSED, false)) {
+            moveTaskToBack(true);
+        }
+    }
+
+    private void handleIntentAutoComplete(boolean isOfficial) {
+        if(getIntent().getBooleanExtra(EXTRA_IS_AUTOCOMPLETE, false)) {
+            searchView.showSearch(true, false, isOfficial);
+        }
     }
 
     private void handleImageUri(Intent intent) {
@@ -294,7 +349,15 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void sendImageSearchFromGalleryGTM(String label) {
-        UnifyTracking.eventDiscoveryExternalImageSearch(this, label);
+        eventDiscoveryExternalImageSearch( label);
+    }
+
+    public void eventDiscoveryExternalImageSearch(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH,
+                AppEventTracking.Action.EXTERNAL_IMAGE_SEARCH,
+                "");
     }
 
     private void initInjector() {
@@ -303,6 +366,12 @@ public class SearchActivity extends DiscoveryActivity
                         .appComponent(getApplicationComponent())
                         .build();
         searchComponent.inject(this);
+    }
+
+    private void initPresenter() {
+        setPresenter(searchPresenter);
+        searchPresenter.attachView(this);
+        searchPresenter.setDiscoveryView(this);
     }
 
     private void initResources() {
@@ -325,16 +394,16 @@ public class SearchActivity extends DiscoveryActivity
         searchSectionPagerAdapter.setData(searchSectionItemList);
         viewPager.setAdapter(searchSectionPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
-        setActiveTab(forceSwipeToShop);
+        setActiveTab(forceSwipeToShop, productViewModel.isHasCatalog());
     }
 
-    private void setActiveTab(final boolean swipeToShop) {
+    private void setActiveTab(final boolean swipeToShop, final boolean hasCatalogTab) {
         viewPager.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 viewPager.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 if (swipeToShop) {
-                    viewPager.setCurrentItem(getShopTabPosition());
+                    viewPager.setCurrentItem(getShopTabPosition(hasCatalogTab));
                 } else {
                     viewPager.setCurrentItem(getActiveTabPosition());
                 }
@@ -342,8 +411,8 @@ public class SearchActivity extends DiscoveryActivity
         });
     }
 
-    private int getShopTabPosition() {
-        return viewPager.getAdapter().getCount() - 1;
+    private int getShopTabPosition(boolean hasCatalogTab) {
+        return hasCatalogTab ? 2 : 1;
     }
 
     private void populateFourTabItem(List<SearchSectionItem> searchSectionItemList,
@@ -357,10 +426,7 @@ public class SearchActivity extends DiscoveryActivity
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
         searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
-
-        if (profileEnabled) {
-            searchSectionItemList.add(new SearchSectionItem(getString(R.string.title_profile), profileListFragment));
-        }
+        searchSectionItemList.add(new SearchSectionItem(getString(R.string.title_profile), profileListFragment));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
 
@@ -421,10 +487,7 @@ public class SearchActivity extends DiscoveryActivity
 
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
-
-        if (profileEnabled) {
-            searchSectionItemList.add(new SearchSectionItem(getString(R.string.title_profile), profileListFragment));
-        }
+        searchSectionItemList.add(new SearchSectionItem(getString(R.string.title_profile), profileListFragment));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
 
@@ -475,7 +538,7 @@ public class SearchActivity extends DiscoveryActivity
     protected void prepareView() {
         super.prepareView();
 
-        viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(3);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

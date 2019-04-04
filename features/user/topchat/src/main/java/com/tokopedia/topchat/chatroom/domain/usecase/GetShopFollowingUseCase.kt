@@ -22,7 +22,7 @@ class GetShopFollowingUseCase @Inject constructor(
     fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(resources, R.raw.query_get_shop_following_status)
         val graphqlRequest = GraphqlRequest(query,
-                ShopFollowingPojo::class.java, requestParams)
+                ShopFollowingPojo::class.java, requestParams, false)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

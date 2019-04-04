@@ -9,7 +9,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.BuildConfig;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.data.mapper.FeedTabMapper;
-import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedGqlResponse;
+import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
@@ -38,7 +38,7 @@ public class GetFeedTabUseCase extends UseCase<List<FeedTabModel>> {
     @Override
     public Observable<List<FeedTabModel>> createObservable(RequestParams requestParams) {
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-        R.raw.gql_home_feed_tab), HomeFeedGqlResponse.class, requestParams.getParameters());
+        R.raw.gql_home_feed_tab), HomeFeedTabGqlResponse.class, requestParams.getParameters());
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);

@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
@@ -16,6 +15,7 @@ import com.tokopedia.topads.dashboard.di.module.TopAdsShopModule;
 import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsScope;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Component;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -50,7 +50,7 @@ public interface TopAdsComponent {
 
     AbstractionRouter abstractionRouter();
 
-    UserSession userSession();
+    UserSessionInterface userSession();
 
     HttpLoggingInterceptor httpLoggingInterceptor();
 

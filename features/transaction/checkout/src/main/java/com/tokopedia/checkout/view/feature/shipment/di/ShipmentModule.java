@@ -42,7 +42,6 @@ import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMa
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter;
-import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutRouter;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
@@ -181,6 +180,12 @@ public class ShipmentModule {
 
     @Provides
     @ShipmentScope
+    CheckPromoStackingCodeUseCase provideCheckPromoStackingCodeUseCase(@ApplicationContext Context context){
+        return new CheckPromoStackingCodeUseCase(context.getResources());
+    }
+
+    @Provides
+    @ShipmentScope
     ShipmentContract.Presenter provideShipmentPresenter(@PromoCheckoutQualifier CheckPromoStackingCodeFinalUseCase checkPromoStackingCodeFinalUseCase,
                                                         CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase,
                                                         CheckPromoStackingCodeMapper checkPromoStackingCodeMapper,
@@ -234,17 +239,13 @@ public class ShipmentModule {
     @Provides
     @ShipmentScope
     @ApplicationContext
-    Context provideContextAbstraction(Context context){
+    Context provideContextAbstraction(Context context) {
         return context;
     }
 
     @Provides
     @ShipmentScope
     TrackingPromoCheckoutUtil provideTrackingPromo(@ApplicationContext Context context) {
-        if(context instanceof TrackingPromoCheckoutRouter){
-            return new TrackingPromoCheckoutUtil((TrackingPromoCheckoutRouter)context);
-        }else{
-            return new TrackingPromoCheckoutUtil(null);
-        }
+        return new TrackingPromoCheckoutUtil();
     }
 }

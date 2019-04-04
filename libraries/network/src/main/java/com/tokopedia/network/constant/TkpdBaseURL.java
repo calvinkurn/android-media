@@ -750,6 +750,8 @@ public class TkpdBaseURL {
         public static final String PATH_CHECK_VOUCHER = "voucher/check";
         public static final String PATH_CANCEL_VOUCHER = "voucher/cancel";
         public static final String PATH_USSD = "ussd/balance";
+        public static final String PATH_SMARTCARD_INQUIRY = "smartcard/inquiry";
+        public static final String PATH_SMARTCARD_COMMAND = "smartcard/command";
     }
 
     public static class DigitalWebsite {
@@ -757,6 +759,7 @@ public class TkpdBaseURL {
         public static final String PATH_PRODUCT_LIST = "products/";
         public static final String PATH_SUBSCRIPTIONS = "subscribe/";
         public static final String PATH_FAVORITE_NUMBER = "favorite-list/";
+        public static final String PATH_MY_BILLS = "mybills/";
     }
 
     public static class HadesCategory {

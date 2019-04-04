@@ -90,6 +90,10 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
         actionSetToolbarTitle(getToolbarTitle());
     }
 
+    public Toolbar getToolbar() {
+        return toolbar;
+    }
+
     @Override
     public void actionSetToolbarTitle(String title) {
         if(!TextUtils.isEmpty(title) && getSupportActionBar() != null) {

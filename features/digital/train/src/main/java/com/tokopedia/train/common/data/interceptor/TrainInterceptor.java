@@ -2,18 +2,11 @@ package com.tokopedia.train.common.data.interceptor;
 
 import android.content.Context;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.user.session.UserSession;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -27,7 +20,7 @@ public class TrainInterceptor extends TkpdAuthInterceptor {
 
     public TrainInterceptor(@ApplicationContext Context context,
                             NetworkRouter networkRouter,
-                            UserSession userSession) {
+                            UserSessionInterface userSession) {
         super(context, networkRouter, userSession);
         this.maxRetryAttempt = 0;
     }

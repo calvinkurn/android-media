@@ -14,27 +14,27 @@ public class SearchProductGqlResponse {
 
     @SerializedName("searchProduct")
     @Expose
-    private SearchProduct searchProduct;
+    private SearchProduct searchProduct = new SearchProduct();
 
     @SerializedName("search_filter_product")
     @Expose
-    private DynamicFilterModel dynamicFilterModel;
+    private DynamicFilterModel dynamicFilterModel = new DynamicFilterModel();
 
     @SerializedName("ace_guide")
     @Expose
-    private GuidedSearchResponse guidedSearchResponse;
+    private GuidedSearchResponse guidedSearchResponse = new GuidedSearchResponse();
 
     @SerializedName("quick_filter")
     @Expose
-    private DataValue quickFilterModel;
+    private DataValue quickFilterModel = new DataValue();
 
     @SerializedName("productAds")
     @Expose
-    private TopAdsModel topAdsModel;
+    private TopAdsModel topAdsModel = new TopAdsModel();
 
     @SerializedName("headlineAds")
     @Expose
-    private CpmModel cpmModel;
+    private CpmModel cpmModel = new CpmModel();
 
     public CpmModel getCpmModel() {
         return cpmModel;
@@ -93,13 +93,13 @@ public class SearchProductGqlResponse {
         private String additionalParams;
         @SerializedName("redirection")
         @Expose
-        private Redirection redirection;
+        private Redirection redirection = new Redirection();
         @SerializedName("suggestion")
         @Expose
-        private Suggestion suggestion;
+        private Suggestion suggestion = new Suggestion();
         @SerializedName("related")
         @Expose
-        private Related related;
+        private Related related = new Related();
         @SerializedName("products")
         @Expose
         private List<Product> products = null;
@@ -355,7 +355,7 @@ public class SearchProductGqlResponse {
         private String name;
         @SerializedName("childs")
         @Expose
-        private Object childs;
+        private Object childs = new Object();
         @SerializedName("url")
         @Expose
         private String url;
@@ -445,7 +445,7 @@ public class SearchProductGqlResponse {
         private boolean wishlist;
         @SerializedName("shop")
         @Expose
-        private Shop shop;
+        private Shop shop = new Shop();
 
         public String getId() {
             return id;

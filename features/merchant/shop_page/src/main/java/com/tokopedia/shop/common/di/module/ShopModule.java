@@ -48,5 +48,4 @@ public class ShopModule {
     public ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase( @ApplicationContext Context context) {
         return new ToggleFavouriteShopUseCase(new GraphqlUseCase(), context.getResources());
     }
-
 }

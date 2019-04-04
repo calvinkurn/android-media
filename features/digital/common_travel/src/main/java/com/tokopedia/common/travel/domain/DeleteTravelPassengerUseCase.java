@@ -51,7 +51,7 @@ public class DeleteTravelPassengerUseCase extends BaseTravelPassengerUseCase<Boo
 
                     if (!TextUtils.isEmpty(query)) {
                         GraphqlRequest request = new GraphqlRequest(query, ResponseTravelDeletePassenger.class,
-                                variableGql);
+                                variableGql, false);
                         graphqlUseCase.clearRequest();
                         graphqlUseCase.addRequest(request);
                         return graphqlUseCase.createObservable(null);

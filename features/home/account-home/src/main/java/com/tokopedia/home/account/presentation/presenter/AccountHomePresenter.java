@@ -1,15 +1,14 @@
 package com.tokopedia.home.account.presentation.presenter;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
 import com.tokopedia.home.account.analytics.domain.GetUserAttributesUseCase;
-import com.tokopedia.home.account.data.model.AccountModel;
-import com.tokopedia.home.account.domain.GetAccountUseCase;
 import com.tokopedia.home.account.presentation.AccountHome;
-
-import javax.inject.Inject;
 
 import rx.Subscriber;
 
@@ -41,6 +40,11 @@ public class AccountHomePresenter extends BaseDaggerPresenter<AccountHome.View> 
 
     @Override
     public void sendUserAttributeTracker() {
+        Context context = view.getContext();
+        String saldoQuery = GraphqlHelper.loadRawString(context.getResources(), R.raw
+                .new_query_saldo_balance);
+
+        getUserAttributesUseCase.setSaldoQuery(saldoQuery);
         getUserAttributesUseCase.execute(new Subscriber<UserAttributeData>() {
             @Override
             public void onCompleted() {

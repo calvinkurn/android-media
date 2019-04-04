@@ -1,7 +1,5 @@
 package com.tokopedia.pushnotif;
 
-import android.test.suitebuilder.annotation.LargeTest;
-
 import junit.framework.TestCase;
 
 import org.junit.Test;

@@ -22,6 +22,9 @@ class ClearShipmentCacheAutoApplySubscriber(val view: ShipmentContract.View?,
     override fun onError(e: Throwable) {
         e.printStackTrace()
         view?.hideLoading()
+        if (!ignoreAPIResponse) {
+            view?.onFailedClearPromoStack(ignoreAPIResponse)
+        }
     }
 
     override fun onNext(response: GraphqlResponse) {
@@ -32,12 +35,11 @@ class ClearShipmentCacheAutoApplySubscriber(val view: ShipmentContract.View?,
                 view?.onSuccessClearPromoStack(shopIndex)
             }
         } else {
-            // TODO : buka lagi kondisinya
-            // if (responseData.success) {
+            if (responseData.successData.success) {
                 view?.onSuccessClearPromoStack(shopIndex)
-            /*} else {
-                view?.onFailedClearPromoStack(ignoreAPIResponse, shopIndex)
-            }*/
+            } else {
+                view?.onFailedClearPromoStack(ignoreAPIResponse)
+            }
         }
     }
 
