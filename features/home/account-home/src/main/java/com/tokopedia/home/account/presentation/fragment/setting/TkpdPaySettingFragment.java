@@ -27,6 +27,8 @@ import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 import com.tokopedia.navigation_common.model.VccUserStatus;
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation_common.model.WalletPref;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
@@ -38,6 +40,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT_BANK
 import static com.tokopedia.home.account.AccountConstants.Analytics.BALANCE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CREDIT_CARD;
 import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOCASH;
+import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 
 public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
 
@@ -139,11 +142,17 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
                     break;
                 case SettingConstant.SETTING_SALDO_ID:
                     accountAnalytics.eventClickPaymentSetting(BALANCE);
-                    if (pvtUserSession.hasShownSaldoIntroScreen()) {
-                        router.goToSaldo(getActivity());
+                    RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+                    if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
+                        if (pvtUserSession.hasShownSaldoIntroScreen()) {
+                            router.goToSaldo(getActivity());
+                        } else {
+                            pvtUserSession.setSaldoIntroPageStatus(true);
+                            RouteManager.route(getContext(), ApplinkConst.SALDO_INTRO);
+                        }
                     } else {
-                        pvtUserSession.setSaldoIntroPageStatus(true);
-                        RouteManager.route(getContext(), ApplinkConst.SALDO_INTRO);
+                        RouteManager.route(getActivity(), String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                                ApplinkConst.WebViewUrl.SALDO_DETAIL));
                     }
                     break;
                 case SettingConstant.SETTING_OVO_PAY_LATER_ID:

@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer;
 import android.view.View;
 
 
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tradein.R;
 
 import javax.annotation.Nullable;
@@ -24,7 +25,8 @@ public class TradeInResponseObserver implements Observer<ValidateTradeInResponse
         if (response != null && response.isEligible()) {
             tradeInTextView.setVisibility(View.VISIBLE);
             if (response.getUsedPrice() > 0) {
-                tradeInTextView.priceTextView.setText(String.format(tradeInTextView.getContext().getResources().getString(R.string.text_price_holder), response.getUsedPrice()));
+                tradeInTextView.priceTextView.setText(String.format(tradeInTextView.getContext().getResources().getString(R.string.text_price_holder),
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(response.getUsedPrice(), true)));
             } else {
                 tradeInTextView.priceTextView.setText(tradeInTextView.getContext().getResources().getString(R.string.trade_in_exchange));
             }

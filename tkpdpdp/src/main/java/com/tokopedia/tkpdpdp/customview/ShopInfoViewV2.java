@@ -15,7 +15,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
@@ -28,7 +30,9 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import com.tokopedia.track.TrackApp;
 
+import java.util.Map;
 
 
 /**
@@ -153,11 +157,26 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
     public void reverseFavorite() {
         if (isShopFavorite) {
             updateFavoriteStatus(0);
-            TrackingUtils.sendMoEngageFavoriteEvent(getContext(), productDetailData.getShopInfo().getShopName(), productDetailData.getShopInfo().getShopId(), productDetailData.getShopInfo().getShopDomain(), productDetailData.getShopInfo().getShopLocation(), productDetailData.getShopInfo().getShopIsOfficial() == 1 ? true : false, false);
         } else {
             updateFavoriteStatus(1);
-            TrackingUtils.sendMoEngageFavoriteEvent(getContext(), productDetailData.getShopInfo().getShopName(), productDetailData.getShopInfo().getShopId(), productDetailData.getShopInfo().getShopDomain(), productDetailData.getShopInfo().getShopLocation(), productDetailData.getShopInfo().getShopIsOfficial() == 1 ? true : false, true);
         }
+        sendMoEngageFavoriteEvent();
+    }
+
+    public void sendMoEngageFavoriteEvent(){
+        Map<String, Object> value = DataLayer.mapOf(
+                AppEventTracking.MOENGAGE.SHOP_NAME, productDetailData.getShopInfo().getShopName(),
+                AppEventTracking.MOENGAGE.SHOP_ID, productDetailData.getShopInfo().getShopId(),
+                AppEventTracking.MOENGAGE.SHOP_LOCATION, productDetailData.getShopInfo().getShopLocation(),
+                AppEventTracking.MOENGAGE.SHOP_URL_SLUG, productDetailData.getShopInfo().getShopDomain(),
+                AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, productDetailData.getShopInfo().getShopIsOfficial() == 1
+        );
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(
+                value,
+                !isShopFavorite ?
+                        AppEventTracking.EventMoEngage.SELLER_ADDED_FAVORITE :
+                        AppEventTracking.EventMoEngage.SELLER_REMOVE_FAVORITE
+        );
     }
 
     public void updateFavoriteStatus(int statFave) {

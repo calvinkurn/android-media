@@ -71,8 +71,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (activity != null && activity!!.applicationContext != null) {
-            analyticTracker = SettingBankAnalytics.createInstance(
-                    (activity!!.applicationContext as BankRouter).getAnalyticTracker())
+            analyticTracker = SettingBankAnalytics.createInstance()
         }
     }
 

@@ -22,8 +22,10 @@ import android.widget.TextView;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.discovery.R;
@@ -49,6 +51,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -378,7 +381,15 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void sendImageSearchFromGalleryGTM(String label) {
-        UnifyTracking.eventDiscoveryExternalImageSearch(this, label);
+        eventDiscoveryExternalImageSearch( label);
+    }
+
+    public void eventDiscoveryExternalImageSearch(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
+                AppEventTracking.Category.IMAGE_SEARCH,
+                AppEventTracking.Action.EXTERNAL_IMAGE_SEARCH,
+                "");
     }
 
     private void initInjector() {

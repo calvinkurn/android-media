@@ -29,6 +29,7 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.inbox.util.analytics.InboxAnalytics;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.track.TrackApp;
 
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_WEBVIEW_RESO_ENABLED_TOGGLE;
 
@@ -228,7 +229,7 @@ public class DetailResChatActivity
                 intent = DetailResCenterActivity.newBuyerInstance(DetailResChatActivity.this, resolutionId, shopName);
             }
             startActivityForResult(intent, REQUEST_GO_DETAIL);
-            UnifyTracking.eventTracking(this,InboxAnalytics.eventResoChatClickDetail(resolutionId));
+            TrackApp.getInstance().getGTM().sendGeneralEvent(InboxAnalytics.eventResoChatClickDetail(resolutionId).getEvent());
             return true;
         } else
             return super.onOptionsItemSelected(item);

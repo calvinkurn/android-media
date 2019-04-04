@@ -139,14 +139,15 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         tabLayout = view.findViewById(R.id.tab_home_account);
         viewPager = view.findViewById(R.id.pager_home_account);
         setAdapter();
-        if(getContext() != null) {
-            view.setPadding(0, DisplayMetricUtils.getStatusBarHeight(getContext()), 0, 0);
-        }
     }
 
     private void setToolbar(View view) {
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         View statusBarBackground = view.findViewById(R.id.status_bar_bg);
+        if (getActivity() != null) {
+            statusBarBackground.getLayoutParams().height =
+                    DisplayMetricUtils.getStatusBarHeight(getActivity());
+        }
         TextView title = toolbar.findViewById(R.id.toolbar_title);
         title.setText(getString(R.string.title_account));
         menuNotification = toolbar.findViewById(R.id.action_notification);
@@ -163,10 +164,15 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         }
 
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+        //status bar background compability
+        statusBarBackground.getLayoutParams().height =
+                DisplayMetricUtils.getStatusBarHeight(getActivity());
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            statusBarBackground.setVisibility(View.INVISIBLE);
+        } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             statusBarBackground.setVisibility(View.VISIBLE);
         } else {
-            statusBarBackground.setVisibility(View.INVISIBLE);
+            statusBarBackground.setVisibility(View.GONE);
         }
 
         setHasOptionsMenu(true);

@@ -19,15 +19,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
-import com.tokopedia.gamification.taptap.activity.TapTapTokenActivity;
 import com.tokopedia.gamification.taptap.data.entiity.RewardButton;
+import com.tokopedia.gamification.taptap.utils.TapTapAnalyticsTrackerUtil;
 import com.tokopedia.gamification.taptap.utils.TapTapConstants;
-import com.tokopedia.gamification.util.TapTapAnalyticsTrackerUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,12 +40,15 @@ public class WidgetSummaryTapTap extends FrameLayout {
     private View errorView;
     private TextView tvErrorMessage;
     private TextView tvBtnErrorOk;
+    private ImageView ivImageStar;
 
     public interface SummaryPageActionListener {
 
         void playWithPoints();
 
         void dismissDialog();
+
+        void navigateToActivity(String applink, String url);
     }
 
     public WidgetSummaryTapTap(@NonNull Context context) {
@@ -76,7 +76,9 @@ public class WidgetSummaryTapTap extends FrameLayout {
         errorView = view.findViewById(R.id.error_view);
         tvErrorMessage = view.findViewById(R.id.tv_msg);
         tvBtnErrorOk = view.findViewById(R.id.snack_ok);
+        ivImageStar = view.findViewById(R.id.image_star);
         rewardsAdapter = new RewardsAdapter(null);
+        ImageHandler.loadImageWithId(ivImageStar, R.drawable.ic_star_summary);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), R.drawable.item_divider_summary_page);
         dividerItemDecoration.setHorizontalMargin(getResources().getDimensionPixelOffset(R.dimen.dp_8));
         rvRewards.addItemDecoration(dividerItemDecoration);
@@ -163,13 +165,8 @@ public class WidgetSummaryTapTap extends FrameLayout {
             interactionListener.playWithPoints();
         } else {
             interactionListener.dismissDialog();
-            if (rewardButton.getApplink().contains("tokopedia://tokopoints")) {
-                getContext().startActivity(((GamificationRouter) getContext().getApplicationContext()).getTokoPointsIntent(getContext()));
-            } else {
-                ApplinkUtil.navigateToAssociatedPage(getContext(), rewardButton.getApplink(),
-                        rewardButton.getUrl(),
-                        TapTapTokenActivity.class);
-            }
+            interactionListener.navigateToActivity(rewardButton.getApplink(), rewardButton.getUrl());
+
 
         }
         TapTapAnalyticsTrackerUtil.sendEvent(getContext(),

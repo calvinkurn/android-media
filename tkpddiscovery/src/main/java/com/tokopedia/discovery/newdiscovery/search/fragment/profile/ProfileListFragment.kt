@@ -230,11 +230,15 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     override fun getEmptyDataViewModel(): Visitable<*> {
         SearchTracking.eventSearchNoResult(activity, query, screenName, mapOf())
 
-        return createProfileEmptySearchModel(
-                context!!,
-                query,
-                getString(R.string.title_profile)
-        )
+        activity?.run {
+            return createProfileEmptySearchModel(
+                    activity!!,
+                    query,
+                    getString(R.string.title_profile)
+            )
+        }
+
+        return EmptySearchProfileModel()
     }
 
     private fun createProfileEmptySearchModel(context: Context, query: String, sectionTitle: String): EmptySearchProfileModel {

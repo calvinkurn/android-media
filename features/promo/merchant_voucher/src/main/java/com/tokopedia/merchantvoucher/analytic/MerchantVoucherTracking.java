@@ -1,6 +1,6 @@
 package com.tokopedia.merchantvoucher.analytic;
 
-import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.track.TrackApp;
 
 import java.util.HashMap;
 
@@ -17,15 +17,12 @@ public class MerchantVoucherTracking {
     public static final String CLICK_USE_VOUCHER = "click use voucher";
     public static final String CLICK_SHARE = "click share";
 
-    protected final AbstractionRouter router;
-
-    public MerchantVoucherTracking(AbstractionRouter abstractionRouter) {
-        this.router = abstractionRouter;
+    public MerchantVoucherTracking() {
     }
 
     protected void sendEvent(String event, String category, String action, String label) {
         HashMap<String, Object> eventMap = createMap(event, category, action, label);
-        router.getAnalyticTracker().sendEventTracking(eventMap);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
     }
 
     protected HashMap<String, Object> createMap(String event, String category, String action, String label) {
