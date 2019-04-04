@@ -41,6 +41,7 @@ import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
@@ -92,6 +93,7 @@ import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewMode
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
+import com.tokopedia.kol.analytics.PostTagAnalytics;
 import com.tokopedia.kol.common.util.PostMenuListener;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
@@ -191,6 +193,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Inject
     FeedAnalytics analytics;
+
+    @Inject
+    PostTagAnalytics postTagAnalytics;
 
     @Inject
     UserSessionInterface userSession;
@@ -1876,8 +1881,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onPostTagItemClick(int positionInFeed, @NotNull String redirectUrl) {
+    public void onPostTagItemClick(int positionInFeed, @NotNull String redirectUrl, @NotNull PostTagItem postTagItem, int itemPosition) {
         onGoToLink(redirectUrl);
+        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel model
+                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
+            postTagAnalytics.trackClickPostTagFeed(
+                    model.getId(),
+                    postTagItem,
+                    itemPosition,
+                    model.getTrackingPostModel()
+            );
+        }
     }
 
     @Override
@@ -2016,6 +2031,19 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         feedPosition,
                         userId
                 );
+
+                if (postViewModel.getPostTag() != null
+                        && postViewModel.getPostTag().getTotalItems() != 0
+                        && postViewModel.getPostTag().getItems().size() != 0) {
+                    for (int j = 0; j< postViewModel.getPostTag().getTotalItems(); j++) {
+                        postTagAnalytics.trackViewPostTagFeed(
+                                postViewModel.getId(),
+                                postViewModel.getPostTag().getItems().get(j),
+                                j,
+                                trackingPostModel);
+                    }
+                }
+
             } else if (visitable instanceof BannerViewModel) {
                 BannerViewModel bannerViewModel = (BannerViewModel) visitable;
 

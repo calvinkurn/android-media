@@ -32,6 +32,7 @@ import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
@@ -49,6 +50,7 @@ import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
+import com.tokopedia.kol.analytics.PostTagAnalytics;
 import com.tokopedia.kol.common.util.PostMenuListener;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
@@ -101,6 +103,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private static final int OPEN_CONTENT_REPORT = 1310;
 
     private Integer postId;
+    private boolean isOwner = false;
     private SwipeToRefresh swipeToRefresh;
     private RecyclerView recyclerView;
     private ImageView likeButton, commentButton, shareButton;
@@ -109,6 +112,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private KolRouter kolRouter;
     private PerformanceMonitoring performanceMonitoring;
 
+    private PostDetailViewModel postDetailViewModel;
     private PostDetailFooterModel postDetailFooterModel;
     private boolean isTraceStopped;
 
@@ -117,6 +121,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Inject
     UserSessionInterface userSession;
+
+    @Inject
+    PostTagAnalytics postTagAnalytics;
 
     KolPostDetailAdapter adapter;
 
@@ -242,6 +249,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     private void setFooter(PostDetailViewModel postDetailViewModel) {
+        this.postDetailViewModel = postDetailViewModel;
         this.postDetailFooterModel = postDetailViewModel.getFooterModel();
         footer.setVisibility(View.VISIBLE);
         TemplateFooter template = null;
@@ -761,8 +769,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onPostTagItemClick(int positionInFeed, @NotNull String redirectUrl) {
+    public void onPostTagItemClick(int positionInFeed, @NotNull String redirectUrl, @NotNull PostTagItem postTagItem, int itemPosition) {
         onGoToLink(redirectUrl);
+        if (postDetailViewModel.getDynamicPostViewModel().getPostList().size() != 0) {
+            DynamicPostViewModel model = (DynamicPostViewModel) postDetailViewModel.getDynamicPostViewModel().getPostList().get(0);
+        }
 
     }
 
