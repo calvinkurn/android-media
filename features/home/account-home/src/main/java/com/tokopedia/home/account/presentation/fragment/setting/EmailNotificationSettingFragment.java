@@ -159,6 +159,7 @@ public class EmailNotificationSettingFragment extends BaseDaggerFragment impleme
         } else if (SettingType.FLAG_ADMIN_MESSAGE.equals(key)) {
             accountAnalytics.eventClickEmailSetting(String.format("%s %s %s", CHAT, TOKOPEDIA, NOTIFICATION));
         }  else if (SettingType.FLAG_NEWSLETTER.equals(key)) {
+            accountAnalytics.eventClickEmailSetting(String.format("%s %s", NEWS_LETTER, NOTIFICATION));
             accountAnalytics.setNewsletterEmailPref(!newValue);
         }
         isChanged = true;
