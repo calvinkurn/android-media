@@ -235,7 +235,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     override fun onItemDeleted(position: Int) {
-        val relatedProductItem = viewModel.relatedProducts[position]
+        val relatedProductItem = viewModel.relatedProducts.getOrNull(position) ?: return
 
         viewModel.relatedProducts.removeAt(position)
         adapter.notifyItemRemoved(position)
@@ -256,8 +256,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     abstract fun fetchContentForm()
 
     abstract fun onRelatedAddProductClick()
-
-    protected open fun getAddRelatedProductText(): String = getString(R.string.af_add_product_tag)
 
     protected open fun initVar(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
