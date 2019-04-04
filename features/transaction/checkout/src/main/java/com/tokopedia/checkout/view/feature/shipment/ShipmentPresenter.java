@@ -923,16 +923,17 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         setCouponStateChanged(true);
                         checkPromoStackingCodeMapper.setFinal(false);
                         ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
-                        if (!responseGetPromoStack.getStatus().equalsIgnoreCase("OK") || TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
-                            String message = responseGetPromoStack.getMessage().get(0);
-                            if (getView() != null) {
+                        if (getView() != null) {
+                            if (!responseGetPromoStack.getStatus().equalsIgnoreCase("OK") || TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
+                                String message = responseGetPromoStack.getMessage().get(0);
                                 getView().renderErrorCheckPromoShipmentData(message);
-                            }
-                        } else {
-                            if (getView() != null) {
-                                if (responseGetPromoStack.getStatus().equalsIgnoreCase("OK") &&
-                                        responseGetPromoStack.getData() != null && responseGetPromoStack.getData().getCodes().size() > 0) {
-                                    getView().renderCheckPromoStackCodeFromCourierSuccess(responseGetPromoStack.getData(), itemPosition, noToast);
+                            } else {
+                                if (responseGetPromoStack.getStatus().equalsIgnoreCase("OK")) {
+                                    if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
+                                        getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings());
+                                    } else {
+                                        getView().renderCheckPromoStackCodeFromCourierSuccess(responseGetPromoStack.getData(), itemPosition, noToast);
+                                    }
                                 } else {
                                     if (!noToast) {
                                         getView().showToastError(responseGetPromoStack.getMessage().get(0));
