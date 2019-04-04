@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 class FlightAirportSuggestionEntity(
         @SerializedName("airports")
         @Expose
-        val airports : List<FlightAirportDetailEntity>? = null,
+        val airports : List<FlightAirportDetailEntity> = ArrayList(),
         @SerializedName("cityName")
         @Expose
         val cityName : List<FlightAirportInfoEntity>,

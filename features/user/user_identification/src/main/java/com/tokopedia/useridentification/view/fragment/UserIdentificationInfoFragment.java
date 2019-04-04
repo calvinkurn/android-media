@@ -81,7 +81,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         if (isSourceSeller) {
             goToFormActivity();
         }
-        analytics = UserIdentificationAnalytics.createInstance(getActivity().getApplicationContext());
+        analytics = UserIdentificationAnalytics.createInstance();
     }
 
     @Override
