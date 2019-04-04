@@ -1,11 +1,10 @@
 package com.tokopedia.logisticanalytics;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.logisticanalytics.ConstantLogisticAnalytics.*;
-
-import javax.inject.Inject;
-
+import com.tokopedia.logisticanalytics.ConstantLogisticAnalytics.EventAction;
+import com.tokopedia.logisticanalytics.ConstantLogisticAnalytics.EventCategory;
+import com.tokopedia.logisticanalytics.ConstantLogisticAnalytics.EventName;
+import com.tokopedia.logisticanalytics.ConstantLogisticAnalytics.Key;
 
 import java.util.Map;
 
@@ -14,8 +13,7 @@ import java.util.Map;
  */
 public class CodAnalytics extends LogisticAnalytics {
 
-    public CodAnalytics(AnalyticTracker analyticTracker) {
-        super(analyticTracker);
+    public CodAnalytics() {
     }
 
     public void eventViewBayarDiTempat() {
@@ -99,7 +97,7 @@ public class CodAnalytics extends LogisticAnalytics {
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_BAYAR_DI_TEMPAT,
-                EventLabel.NOT_SUCCESS_INELIGIBLE
+                ConstantLogisticAnalytics.EventLabel.NOT_SUCCESS_INELIGIBLE
         );
     }
 
@@ -108,7 +106,7 @@ public class CodAnalytics extends LogisticAnalytics {
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_BAYAR_DI_TEMPAT,
-                EventLabel.NOT_SUCCESS_INCOMPLETE
+                ConstantLogisticAnalytics.EventLabel.NOT_SUCCESS_INCOMPLETE
         );
     }
 
@@ -117,7 +115,7 @@ public class CodAnalytics extends LogisticAnalytics {
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_BAYAR_DI_TEMPAT,
-                EventLabel.SUCCESS_ELIGIBLE
+                ConstantLogisticAnalytics.EventLabel.SUCCESS_ELIGIBLE
         );
     }
 

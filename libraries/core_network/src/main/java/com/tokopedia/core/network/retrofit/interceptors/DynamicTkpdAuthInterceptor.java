@@ -37,10 +37,9 @@ public class DynamicTkpdAuthInterceptor extends TkpdAuthInterceptor {
 
         Response response = getResponse(chain, finalRequest);
 
-        String bodyResponse = response.body().string();
-        checkResponse(bodyResponse, response);
+        checkResponse(response);
 
-        return createNewResponse(response, bodyResponse);
+        return response;
     }
 
     @Override

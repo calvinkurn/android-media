@@ -28,7 +28,7 @@ interface NotifCenterContract {
     interface Presenter : CustomerPresenter<View> {
         fun fetchData()
 
-        fun fetchDataWithoutCache()
+        fun fetchSingleData(it: String)
 
         fun updatePage(lastNotifId: String)
 

@@ -28,17 +28,20 @@ constructor(private val cacheManager: CacheManager) {
     }
 
     fun getCache(): Observable<DigitalBrowseMarketplaceData> {
-        val jsonString = cacheManager.get(DIGITAL_BROWSE_SERVICE_CACHE_KEY)
+        var jsonString = cacheManager.get(DIGITAL_BROWSE_SERVICE_CACHE_KEY)
 
-        val type = object : TypeToken<DigitalBrowseMarketplaceData>() {
-
-        }.type
-        val data = CacheUtil.convertStringToModel<DigitalBrowseMarketplaceData>(jsonString, type)
-        return Observable.just(data)
+        if (jsonString != null) {
+            val type = object : TypeToken<DigitalBrowseMarketplaceData>() {
+            }.type
+            val data = CacheUtil.convertStringToModel<DigitalBrowseMarketplaceData>(jsonString, type)
+            return Observable.just(data)
+        } else {
+            return Observable.error(RuntimeException("Cache has expired"))
+        }
     }
 
     companion object {
-        private val DIGITAL_BROWSE_SERVICE_CACHE_TIMEOUT = TimeUnit.DAYS.toSeconds(30)
+        private val DIGITAL_BROWSE_SERVICE_CACHE_TIMEOUT = TimeUnit.MINUTES.toSeconds(10)
         private val DIGITAL_BROWSE_SERVICE_CACHE_KEY = "DIGITAL_BROWSE_SERVICE_CACHE_KEY"
     }
 }

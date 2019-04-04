@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
+import com.tokopedia.affiliate.feature.createpost.view.viewmodel.MediaType
 import com.tokopedia.affiliatecommon.view.adapter.PostImageAdapter
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.kotlin.extensions.view.hide
@@ -86,7 +87,17 @@ class MediaPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun initView() {
-        imageAdapter.setList(viewModel.completeImageList)
+        val imageList = ArrayList(viewModel.completeImageList.map { it.path })
+
+        if (viewModel.completeImageList.firstOrNull()?.type == MediaType.VIDEO) {
+            viewFirstPage.hide()
+            tabLayout.hide()
+            btnPlay.show()
+            imageAdapter.setList(imageList, PostImageAdapter.VIDEO)
+        } else {
+            imageAdapter.setList(imageList)
+        }
+
         mediaViewPager.adapter = imageAdapter
         mediaViewPager.offscreenPageLimit = imageAdapter.count
         tabLayout.setupWithViewPager(mediaViewPager)
@@ -118,7 +129,7 @@ class MediaPreviewFragment : BaseDaggerFragment() {
                 viewModel.urlImageList.removeAt(tabLayout.selectedTabPosition)
                 viewModel.urlImageList.add(0, image)
             }
-            imageAdapter.setList(viewModel.completeImageList)
+            imageAdapter.setList(imageList)
             mediaViewPager.currentItem = 0
 
             updateMainImageText()
@@ -137,14 +148,14 @@ class MediaPreviewFragment : BaseDaggerFragment() {
                     tabLayout.selectedTabPosition - viewModel.fileImageList.size
             )
         }
-        imageAdapter.setList(viewModel.completeImageList)
+        imageAdapter.setList(ArrayList(viewModel.completeImageList.map { it.path?: "" }))
 
         updateDeleteBtn()
         updateResultIntent()
     }
 
     private fun updateDeleteBtn() {
-        deleteMediaBtn.showWithCondition(imageAdapter.imageList.isNotEmpty())
+        deleteMediaBtn.showWithCondition(viewModel.fileImageList.isNotEmpty())
     }
 
     private fun updateResultIntent() {

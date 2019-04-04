@@ -1,15 +1,16 @@
 package com.tokopedia.transactionanalytics;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.*;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventAction;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventCategory;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventName;
 
 /**
  * Created by fajarnuha on 01/03/19.
  */
 public class CornerAnalytics extends TransactionAnalytics {
 
-    public CornerAnalytics(AnalyticTracker analyticTracker) {
-        super(analyticTracker);
+    public CornerAnalytics() {
+
     }
 
     public void sendChooseCornerAddress() {

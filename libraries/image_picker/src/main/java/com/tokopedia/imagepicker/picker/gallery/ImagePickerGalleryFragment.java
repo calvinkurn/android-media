@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -57,6 +59,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     public static final String ARGS_MIN_RESOLUTION = "args_min_resolution";
 
     public static final String SAVED_ALBUM_TITLE_ID = "svd_album_title_id";
+    public static final long MAX_VIDEO_DURATION_MS = 60000L;
 
     public static final int ALBUM_REQUEST_CODE = 932;
 
@@ -299,12 +302,12 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         //check image resolution
         if (item.isVideo() && item.getDuration() > 0) { // it is video
             int minVideoResolution = item.getMinimumVideoResolution();
-            if (minVideoResolution < minImageResolution) {
-                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.video_under_resolution, item.getVideoResolution()));
-                return false;
-            }
             if ((file.length() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
                 NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_video_size_reached));
+                return false;
+            }
+            if (item.getDuration() > MAX_VIDEO_DURATION_MS) {
+                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_video_duration_reached));
                 return false;
             }
         } else {

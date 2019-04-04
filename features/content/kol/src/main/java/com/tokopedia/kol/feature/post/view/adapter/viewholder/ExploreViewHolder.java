@@ -15,6 +15,10 @@ import static com.tokopedia.kol.analytics.KolEventTracking.Action.CLICK_PROMPT;
 import static com.tokopedia.kol.analytics.KolEventTracking.Category.KOL_TOP_PROFILE;
 import static com.tokopedia.kol.analytics.KolEventTracking.Event.EVENT_CLICK_TOP_PROFILE;
 import static com.tokopedia.kol.analytics.KolEventTracking.EventLabel.GO_TO_EXPLORE_FORMAT;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * @author by milhamj on 18/05/18.
@@ -50,12 +54,12 @@ public class ExploreViewHolder extends AbstractViewHolder<ExploreViewModel> {
                                 .replace(CATEGORY_ID, CATEGORY_0)
                 );
 
-                viewListener.getAbstractionRouter().getAnalyticTracker().sendEventTracking(
+                TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                         EVENT_CLICK_TOP_PROFILE,
                         KOL_TOP_PROFILE,
                         CLICK_PROMPT,
                         String.format(GO_TO_EXPLORE_FORMAT, element.getKolName())
-                );
+                ));
             }
         });
     }

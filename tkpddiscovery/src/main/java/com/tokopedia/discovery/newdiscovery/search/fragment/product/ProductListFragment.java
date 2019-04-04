@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,8 +15,12 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.discovery.model.DataValue;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -64,6 +69,7 @@ import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Category;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -609,13 +615,22 @@ public class ProductListFragment extends SearchSectionFragment
             getSearchParameter().setOfficial(isQuickFilterSelected);
         }
         reloadData();
-        UnifyTracking.eventSearchResultQuickFilter(getActivity(),option.getKey(), option.getValue(), isQuickFilterSelected);
+        eventSearchResultQuickFilter(option.getKey(), option.getValue(), isQuickFilterSelected);
+    }
+
+    public void eventSearchResultQuickFilter(String filterName, String filterValue, boolean isSelected) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.FILTER_PRODUCT,
+                AppEventTracking.Action.QUICK_FILTER,
+                filterName + " - " + filterValue + " - " + Boolean.toString(isSelected)
+        ).setUserId(userSession.getUserId()).getEvent());
     }
 
     @Override
     public void setSelectedFilter(HashMap<String, String> selectedFilter) {
         super.setSelectedFilter(selectedFilter);
-        if (selectedFilter == null) {
+        if (selectedFilter == null || getSearchParameter() == null) {
             return;
         }
         if (TextUtils.isEmpty(selectedFilter.get(SearchApiConst.OFFICIAL))) {
