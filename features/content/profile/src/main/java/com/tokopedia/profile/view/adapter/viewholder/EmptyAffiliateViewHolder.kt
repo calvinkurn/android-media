@@ -26,22 +26,7 @@ class EmptyAffiliateViewHolder(val v: View, val listener: OnEmptyItemClickedList
         itemView.card_image.setOnClickListener(onEmptyItemClicked())
         itemView.tv_see_more_product.setOnClickListener(onEmptyItemClicked())
         itemView.tv_title.text = itemView.context.resources.getString(R.string.profile_empty_title)
-        itemView.image.viewTreeObserver.addOnGlobalLayoutListener(
-                object : ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        val viewTreeObserver = itemView.image.viewTreeObserver
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        } else {
-                            @Suppress("DEPRECATION")
-                            viewTreeObserver.removeGlobalOnLayoutListener(this)
-                        }
 
-                        itemView.image.maxHeight = itemView.image.width
-                        itemView.image.requestLayout()
-                    }
-                }
-        )
         itemView.image.loadImage(imagePath)
     }
 
