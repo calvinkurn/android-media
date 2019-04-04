@@ -224,14 +224,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void bindViewIds(View itemView) {
-        // cvInvoiceItem = itemView.findViewById(R.id.cv_invoice_item);
         layoutError = itemView.findViewById(R.id.layout_error);
         tvErrorTitle = itemView.findViewById(R.id.tv_error_title);
         tvErrorDescription = itemView.findViewById(R.id.tv_error_description);
         layoutWarning = itemView.findViewById(R.id.layout_warning);
         tvWarningTitle = itemView.findViewById(R.id.tv_warning_title);
         tvWarningDescription = itemView.findViewById(R.id.tv_warning_description);
-        // tvTextSentBy = itemView.findViewById(R.id.tv_text_sent_by);
         tvShopName = itemView.findViewById(R.id.tv_shop_name);
         llShippingWarningContainer = itemView.findViewById(R.id.ll_shipping_warning_container);
         ivProductImage = itemView.findViewById(R.id.iv_product_image);
@@ -1317,7 +1315,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderAddress(RecipientAddressModel recipientAddressModel) {
         if (recipientAddressModel != null) {
-            // tvAddressName.setVisibility(View.GONE);
             tvAddressStatus.setVisibility(View.GONE);
             if (recipientAddressModel.getAddressStatus() == 2) {
                 tvAddressStatus.setVisibility(View.VISIBLE);

@@ -476,25 +476,9 @@ public class CartListPresenter implements ICartListPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.hideProgressLoading();
-                if (e instanceof UnknownHostException) {
-                    view.showToastMessageRed(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    view.showToastMessageRed(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof CartResponseErrorException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else if (e instanceof CartResponseDataNullException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else if (e instanceof CartHttpErrorException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else if (e instanceof ResponseCartApiErrorException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else {
-                    view.showToastMessageRed(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                }
+                view.showToastMessageRed(
+                        ErrorHandler.getErrorMessage(view.getActivity(), e)
+                );
                 processInitialGetCartData(cartListData == null);
             }
 
@@ -946,25 +930,9 @@ public class CartListPresenter implements ICartListPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.hideProgressLoading();
-                if (e instanceof UnknownHostException) {
-                    view.showToastMessageRed(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    view.showToastMessageRed(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof CartResponseErrorException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else if (e instanceof CartResponseDataNullException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else if (e instanceof CartHttpErrorException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else if (e instanceof ResponseCartApiErrorException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else {
-                    view.showToastMessageRed(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                }
+                view.showToastMessageRed(
+                        ErrorHandler.getErrorMessage(view.getActivity(), e)
+                );
                 processInitialGetCartData(cartListData == null);
             }
 
@@ -1088,29 +1056,9 @@ public class CartListPresenter implements ICartListPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.hideProgressLoading();
-                if (e instanceof UnknownHostException) {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof CartResponseErrorException) {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
-                } else if (e instanceof CartResponseDataNullException) {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
-                } else if (e instanceof CartHttpErrorException) {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
-                } else if (e instanceof ResponseCartApiErrorException) {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
-                } else if (e instanceof CheckPromoCodeException) {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
-                } else {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(
-                            ErrorNetMessage.MESSAGE_ERROR_DEFAULT
-                    );
-                }
+                view.renderErrorCheckPromoCodeFromSuggestedPromo(
+                        ErrorHandler.getErrorMessage(view.getActivity(), e)
+                );
             }
 
             @Override
@@ -1122,52 +1070,6 @@ public class CartListPresenter implements ICartListPresenter {
                 else if (!isAutoApply)
                     view.renderErrorCheckPromoCodeFromSuggestedPromo(promoCodeCartListData.getErrorMessage());
             }
-        };
-    }
-
-    @Deprecated
-    private Subscriber<GraphqlResponse> getSubscriberCheckPromoStackingCodeFromSuggestion() {
-        return new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                view.hideProgressLoading();
-                if (e instanceof UnknownHostException) {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof CartResponseErrorException) {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
-                } else if (e instanceof CartResponseDataNullException) {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
-                } else if (e instanceof CartHttpErrorException) {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
-                } else if (e instanceof ResponseCartApiErrorException) {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
-                } else if (e instanceof CheckPromoCodeException) {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
-                } else {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(
-                            ErrorNetMessage.MESSAGE_ERROR_DEFAULT
-                    );
-                }
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                view.hideProgressLoading();
-                System.out.println("++ graphqlResponse = " + graphqlResponse.toString());
-            }
-
         };
     }
 

@@ -17,14 +17,12 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.text.TkpdHintTextInputLayout
-import com.tokopedia.merchantvoucher.FileUtils
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
@@ -34,8 +32,6 @@ import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherViewUsed
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
-import com.tokopedia.promocheckout.common.domain.model.promostacking.response.ResponseGetPromoStackFirst
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.shop.common.di.ShopCommonModule
@@ -268,9 +264,6 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
             errorContainer.visibility = View.GONE
             loadData()
         }
-
-        /*dismiss()
-        showClashingDummy()*/
     }
 
     override fun onErrorCheckPromoFirstStep(message: String, isFromList: Boolean) {
@@ -309,15 +302,6 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     private fun hideKeyboard() {
         val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE);
         (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.windowToken, 0);
-    }
-
-    // Todo : remove this
-    private fun showClashingDummy() {
-        val mapper = CheckPromoStackingCodeMapper()
-        val gson = Gson()
-        val responseGetPromoStackFirst = gson.fromJson(FileUtils().readRawTextFile(activity, R.raw.dummy_clashing_response), ResponseGetPromoStackFirst::class.java)
-        val uiData = mapper.callDummy(responseGetPromoStackFirst)
-        actionListener.onClashCheckPromo(uiData.data.clashings)
     }
 
 }
