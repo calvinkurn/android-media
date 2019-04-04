@@ -40,6 +40,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection
 import javax.inject.Inject
 
 /**
@@ -64,6 +65,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     private var promo: Promo? = null
     private var shopId: Int = 0
     private var cartString: String = ""
+    private var source: String = ""
 
     var bottomsheetView: View? = null
 
@@ -71,6 +73,8 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     lateinit var presenter: MerchantVoucherListBottomsheetPresenter
     @Inject
     lateinit var cartPageAnalytics: CheckoutAnalyticsCart
+    @Inject
+    lateinit var shipmentPageAnalytics: CheckoutAnalyticsCourierSelection
 
     lateinit var actionListener: ActionListener
 
@@ -84,13 +88,15 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         val ARGUMENT_SHOP_ID = "ARGUMENT_SHOP_ID"
         val ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM = "ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM"
         val ARGUMENT_CART_STRING = "ARGUMENT_CART_STRING"
+        val ARGUMENT_SOURCE = "ARGUMENT_SOURCE"
 
         @JvmStatic
-        fun newInstance(shopId: Int, cartString: String, promo: Promo): MerchantVoucherListBottomSheetFragment {
+        fun newInstance(shopId: Int, cartString: String, promo: Promo, source: String): MerchantVoucherListBottomSheetFragment {
             val bundle = Bundle()
             bundle.putParcelable(ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM, promo)
             bundle.putInt(ARGUMENT_SHOP_ID, shopId)
             bundle.putString(ARGUMENT_CART_STRING, cartString)
+            bundle.putString(ARGUMENT_SOURCE, source)
 
             val fragment = MerchantVoucherListBottomSheetFragment()
             fragment.arguments = bundle
@@ -147,7 +153,11 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
             hideKeyboard()
             if (textInputCoupon.text.toString().isEmpty()) {
                 textInputLayoutCoupon.error = "Kode Voucher Harus Diisi"
-                cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputFailed(textInputLayoutCoupon.error?.toString())
+                if (source.equals("cart", true)) {
+                    cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputFailed(textInputLayoutCoupon.error?.toString())
+                } else {
+                    shipmentPageAnalytics.eventClickPakaiMerchantVoucherManualInputError(textInputLayoutCoupon.error?.toString())
+                }
                 updateHeight()
             } else {
                 presenter.checkPromoFirstStep(textInputCoupon.text.toString(), cartString, promo, false)
@@ -159,6 +169,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         shopId = arguments?.getInt(ARGUMENT_SHOP_ID, 0) ?: 0
         promo = arguments?.getParcelable(ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM)
         cartString = arguments?.getString(ARGUMENT_CART_STRING) ?: ""
+        source = arguments?.getString(ARGUMENT_SOURCE) ?: ""
     }
 
     fun loadData() {
@@ -216,7 +227,12 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
                 val intent = MerchantVoucherDetailActivity.createIntent(it, voucherId,
                         this, shopId.toString())
                 startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_MERCHANT_DETAIL)
-                cartPageAnalytics.eventClickDetailMerchantVoucher(merchantVoucherViewModel.voucherCode)
+
+                if (source.equals("cart", true)) {
+                    cartPageAnalytics.eventClickDetailMerchantVoucher(merchantVoucherViewModel.voucherCode)
+                } else {
+                    shipmentPageAnalytics.eventClickDetailMerchantVoucher(merchantVoucherViewModel.voucherCode)
+                }
             }
         }
     }
@@ -281,19 +297,36 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         }
         if (isFromList) {
             ToasterError.make(layoutMerchantVoucher, messageInfo, ToasterError.LENGTH_SHORT).show()
-            cartPageAnalytics.eventClickPakaiMerchantVoucherFailed(message)
+            if (source.equals("cart", true)) {
+                cartPageAnalytics.eventClickPakaiMerchantVoucherFailed(message)
+            } else {
+                shipmentPageAnalytics.eventClickPakaiMerchantVoucherError(message)
+            }
         } else {
             textInputLayoutCoupon.error = message
             updateHeight()
-            cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputFailed(message)
+            if (source.equals("cart", true)) {
+                cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputFailed(message)
+            } else {
+                shipmentPageAnalytics.eventClickPakaiMerchantVoucherManualInputError(message)
+            }
         }
     }
 
     override fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackUiModel, promoCode: String, isFromList: Boolean) {
         if (isFromList) {
-            cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputSuccess(promoCode)
+            if (source.equals("cart", true)) {
+                cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputSuccess(promoCode)
+            } else {
+                shipmentPageAnalytics.eventClickPakaiMerchantVoucherManualInputSuccess(promoCode)
+            }
+
         } else {
-            cartPageAnalytics.eventClickPakaiMerchantVoucherSuccess(promoCode)
+            if (source.equals("cart", true)) {
+                cartPageAnalytics.eventClickPakaiMerchantVoucherSuccess(promoCode)
+            } else {
+                shipmentPageAnalytics.eventClickPakaiMerchantVoucherSuccess(promoCode)
+            }
         }
         hideKeyboard()
         dismiss()
