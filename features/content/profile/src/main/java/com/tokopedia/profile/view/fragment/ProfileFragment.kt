@@ -119,6 +119,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private var onlyOnePost: Boolean = false
     private var isAffiliate: Boolean = false
     private var isOwner: Boolean = false
+    private var openShare: Boolean = false
     private var resultIntent: Intent? = null
     private var affiliatePostQuota: AffiliatePostQuota? = null
     private var profileHeader: ProfileHeaderViewModel? = null
@@ -342,6 +343,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 }
                 successPost = false
             }
+            openShare -> {
+                shareLink(element.profileHeaderViewModel.link)
+                openShare = false
+            }
         }
         recyclerView.scrollTo(0,0)
     }
@@ -362,8 +367,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     UsernameInputFragment::class.java.simpleName
             )
             usernameInputFragment.onDismissListener = {
-                if (usernameInputFragment.isSuccessRegister && !TextUtils.isEmpty(link)) {
-                    doShare(link)
+                if (usernameInputFragment.isSuccessRegister) {
+                    openShare = true
+                    onSwipeRefresh()
                     profilePreference.setShouldChangeUsername(false)
                 }
             }
