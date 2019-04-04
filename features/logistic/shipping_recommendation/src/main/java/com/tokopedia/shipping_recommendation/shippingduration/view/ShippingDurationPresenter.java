@@ -1,7 +1,6 @@
 package com.tokopedia.shipping_recommendation.shippingduration.view;
 
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -199,7 +198,16 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                 return shippingCourierConverter.convertToCourierItemData(shippingCourierViewModel);
             }
         }
+        return null;
+    }
 
+    @Override
+    public CourierItemData getCourierItemDataById(int spId, List<ShippingCourierViewModel> shippingCourierViewModels) {
+        for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
+            if (shippingCourierViewModel.getProductData().getShipperProductId() == spId) {
+                return shippingCourierConverter.convertToCourierItemData(shippingCourierViewModel);
+            }
+        }
         return null;
     }
 }

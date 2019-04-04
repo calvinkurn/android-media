@@ -49,11 +49,14 @@ public interface ShippingDurationContract {
 
         CourierItemData getCourierItemData(List<ShippingCourierViewModel> shippingCourierViewModels);
 
+        CourierItemData getCourierItemDataById(int spId, List<ShippingCourierViewModel> shippingCourierViewModels);
+
         void setRecipientAddressModel(RecipientAddressModel recipientAddressModel);
 
         RecipientAddressModel getRecipientAddressModel();
 
         CourierItemData convertToCourierModel(LogisticPromoViewModel promoModel);
+
     }
 
 }

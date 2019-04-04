@@ -17,6 +17,9 @@ public class PromoStacking {
     @SerializedName("title")
     @Expose
     private String title;
+    @SerializedName("service_id")
+    @Expose
+    private Integer serviceId;
     @SerializedName("shipper_id")
     @Expose
     private Integer shipperId;
@@ -61,6 +64,14 @@ public class PromoStacking {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Integer getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(Integer serviceId) {
+        this.serviceId = serviceId;
     }
 
     public Integer getShipperId() {

@@ -10,6 +10,7 @@ data class LogisticPromoViewModel(val promoCode: String,
                                   val title: String,
                                   val description: String,
                                   val shipperName: String,
+                                  val serviceId: Int,
                                   val shipperId: Int,
                                   val shipperProductId: Int,
                                   val shipperDesc: String,
@@ -19,6 +20,7 @@ data class LogisticPromoViewModel(val promoCode: String,
             source.readString(),
             source.readString(),
             source.readString(),
+            source.readInt(),
             source.readInt(),
             source.readInt(),
             source.readString(),
@@ -32,6 +34,7 @@ data class LogisticPromoViewModel(val promoCode: String,
         writeString(title)
         writeString(description)
         writeString(shipperName)
+        writeInt(serviceId)
         writeInt(shipperId)
         writeInt(shipperProductId)
         writeString(shipperDesc)

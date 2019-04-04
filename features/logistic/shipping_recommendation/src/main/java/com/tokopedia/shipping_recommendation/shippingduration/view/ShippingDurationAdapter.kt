@@ -42,6 +42,16 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         this.hasCourierPromo = hasCourierPromo
     }
 
+    fun getRatesDataFromLogisticPromo(serId: Int): ShippingDurationViewModel? {
+        mData.firstOrNull { it is ShippingDurationViewModel && it.serviceData.serviceId == serId }
+                ?.let {
+                    if (it is ShippingDurationViewModel) {
+                        return it
+                    }
+                }
+        return null
+    }
+
     fun initiateShowcase() {
         var position = 0
         for (mDatum in mData) {

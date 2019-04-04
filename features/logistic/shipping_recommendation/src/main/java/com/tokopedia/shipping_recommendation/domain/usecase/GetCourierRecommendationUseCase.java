@@ -88,6 +88,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                                 // Check if has info
                                 String blackboxInfo = "";
                                 if (data.getRatesData().getRatesDetailData().getInfo() != null &&
+                                        data.getRatesData().getRatesDetailData().getInfo().getBlackboxInfo() != null &&
                                         !TextUtils.isEmpty(data.getRatesData().getRatesDetailData().getInfo().getBlackboxInfo().getTextInfo())) {
                                     blackboxInfo = data.getRatesData().getRatesDetailData().getInfo().getBlackboxInfo().getTextInfo();
                                 }

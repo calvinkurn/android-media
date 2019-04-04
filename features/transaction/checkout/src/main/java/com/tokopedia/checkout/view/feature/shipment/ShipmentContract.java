@@ -243,10 +243,10 @@ public interface ShipmentContract {
         void processVerifyPayment(String transactionId);
 
         void checkPromoStackShipment(Promo promo);
-
-         void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isOneClickShipment);
-
-         void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast, boolean isOneClickShipment);
+//
+//         void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isOneClickShipment);
+//
+//         void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast, boolean isOneClickShipment);
 
         void processCheckPromoStackingLogisticPromo(int cartPosition);
 

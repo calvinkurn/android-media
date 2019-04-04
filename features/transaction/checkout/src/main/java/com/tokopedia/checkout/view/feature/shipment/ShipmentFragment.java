@@ -1788,11 +1788,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onLogisticPromoChosen(CourierItemData courierData, int cartPosition) {
-        ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartPosition, courierData);
-        // todo: ini harusnya dihandle setelah sukses apply
-        shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
-        shipmentPresenter.processCheckPromoStackingLogisticPromo(cartPosition);
+    public void onLogisticPromoChosen(List<ShippingCourierViewModel> shippingCourierViewModels, CourierItemData courierData, RecipientAddressModel recipientAddressModel, int cartPosition, int selectedServiceId, String selectedServiceName, boolean flagNeedToSetPinpoint) {
+        onShippingDurationChoosen(shippingCourierViewModels, courierData, recipientAddressModel, cartPosition, selectedServiceId, selectedServiceName, flagNeedToSetPinpoint, false);
+//        shipmentPresenter.processCheckPromoStackingLogisticPromo(cartPosition);
     }
 
     @Override

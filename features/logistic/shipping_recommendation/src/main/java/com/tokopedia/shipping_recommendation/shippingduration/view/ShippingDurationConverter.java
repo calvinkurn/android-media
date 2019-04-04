@@ -35,7 +35,7 @@ public class ShippingDurationConverter {
         if (promo == null) return null;
         return new LogisticPromoViewModel(
                 promo.getPromoCode(), promo.getTitle(), promo.getBenefitDesc(),
-                promo.getShipperName(), promo.getShipperId(), promo.getShipperProductId(),
+                promo.getShipperName(), promo.getServiceId(), promo.getShipperId(), promo.getShipperProductId(),
                 promo.getShipperDesc(), promo.getPromoTncHtml());
     }
 
