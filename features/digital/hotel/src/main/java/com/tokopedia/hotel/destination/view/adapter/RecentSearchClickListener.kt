@@ -5,5 +5,9 @@ package com.tokopedia.hotel.destination.view.adapter
  */
 interface RecentSearchClickListener {
 
+    fun onDeleteRecentSearchItem(keyword: String)
 
+    fun onDeleteAllRecentSearch()
+
+    fun onItemClicked(applink: String, webUrl: String, shouldFinishActivity: Boolean)
 }

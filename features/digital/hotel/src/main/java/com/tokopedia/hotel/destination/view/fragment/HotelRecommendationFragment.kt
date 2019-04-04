@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -79,7 +80,7 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
                 .build()
         val staticDimen8dp = context!!.getResources().getDimensionPixelOffset(R.dimen.dp_8)
         val recentSearchRecyclerView = view.findViewById(R.id.recent_search_recycler_view) as RecyclerView
-        recentSearchRecyclerView.addItemDecoration(SpacingItemDecoration(staticDimen8dp, 0))
+        recentSearchRecyclerView.addItemDecoration(SpacingItemDecoration(staticDimen8dp, staticDimen8dp))
         recentSearchRecyclerView.layoutManager = layoutManager
         ViewCompat.setLayoutDirection(recentSearchRecyclerView, ViewCompat.LAYOUT_DIRECTION_LTR)
         val adapter = RecentSearchAdapter(this)
@@ -124,6 +125,18 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
                     requestCode, permissions,
                     grantResults)
         }
+    }
+
+    override fun onDeleteRecentSearchItem(keyword: String) {
+        Toast.makeText(context, "Item Delete $keyword", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDeleteAllRecentSearch() {
+
+    }
+
+    override fun onItemClicked(applink: String, webUrl: String, shouldFinishActivity: Boolean) {
+        Toast.makeText(context, "Item Clicked $applink", Toast.LENGTH_SHORT).show()
     }
 
     companion object {

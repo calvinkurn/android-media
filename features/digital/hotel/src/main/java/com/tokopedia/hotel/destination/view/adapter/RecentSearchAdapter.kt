@@ -24,7 +24,7 @@ class RecentSearchAdapter(val listener: RecentSearchClickListener): RecyclerView
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         var itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_recent_search, parent, false)
-        return ViewHolder(itemView)
+        return ViewHolder(itemView, listener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -36,7 +36,7 @@ class RecentSearchAdapter(val listener: RecentSearchClickListener): RecyclerView
     }
 }
 
-class ViewHolder(val itemview: View): RecyclerView.ViewHolder(itemview) {
+class ViewHolder(val itemview: View, val listener: RecentSearchClickListener): RecyclerView.ViewHolder(itemview) {
 
     var textView: DeletableItemView
 
@@ -46,6 +46,8 @@ class ViewHolder(val itemview: View): RecyclerView.ViewHolder(itemview) {
 
     fun bind(data: RecentSearch) {
         textView.setItemName(data.name)
+        textView.setOnDeleteListener { listener.onDeleteRecentSearchItem(data.name) }
+        textView.setOnTextClickListener { listener.onItemClicked(data.name, data.name, true) }
     }
 }
 
