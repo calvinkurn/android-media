@@ -21,9 +21,9 @@ class PopularSearchViewHolder(val view: View, val popularSearchClickListener: Po
 
    override fun bind(popularSearch: PopularSearch) {
         with(itemView) {
-            this.popular_search_name.text = popularSearch.name
-            this.popular_search_location.text = popularSearch.location
-            this.popular_search_hotel_count.text = getString(R.string.hotel_search_popular_search_hotel_count, popularSearch.hotelCount.toString())
+            popular_search_name.text = popularSearch.name
+            popular_search_location.text = popularSearch.location
+            popular_search_hotel_count.text = getString(R.string.hotel_search_popular_search_hotel_count, popularSearch.hotelCount.toString())
             ImageHandler.loadImageWithoutPlaceholder(this.popular_search_image, popularSearch.image)
         }
     }

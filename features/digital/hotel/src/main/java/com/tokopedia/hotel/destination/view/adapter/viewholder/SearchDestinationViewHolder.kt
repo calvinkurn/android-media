@@ -24,18 +24,21 @@ class SearchDestinationViewHolder(val view: View): AbstractViewHolder<SearchDest
         with(itemView) {
             search_destination_name.text = searchDestination.name
             search_destination_location.text = searchDestination.location
-            search_destination_hotel_count.text = if (searchDestination.hotelCount > 0) searchDestination.hotelCount.toString() else ""
+            search_destination_hotel_count.text = if (searchDestination.hotelCount > 0)
+                getString(R.string.hotel_search_popular_search_hotel_count, searchDestination.hotelCount.toString()) else ""
             search_destination_type.text = searchDestination.tag
             ImageHandler.loadImageWithoutPlaceholder(search_destination_icon, searchDestination.icon)
         }
     }
 
     private fun getSpandableBoldText(strToPut: String, stringToBold: String): CharSequence {
+
         var indexStartBold = -1
         var indexEndBold = -1
         if (TextUtils.isEmpty(stringToBold)) {
             return strToPut
         }
+
         val strToPutLowerCase = strToPut.toLowerCase()
         val strToBoldLowerCase = stringToBold.toLowerCase()
         val spannableStringBuilder = SpannableStringBuilder(strToPut)

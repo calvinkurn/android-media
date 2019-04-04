@@ -59,10 +59,10 @@ class HotelSearchDestinationFragment: BaseListFragment<SearchDestination, Search
 
     override fun loadData(page: Int) {
         var list: MutableList<SearchDestination> = arrayListOf()
-        list.add(SearchDestination(0,"city","Hotel", "", "Hotel Mulia", "", 200))
-        list.add(SearchDestination(0,"city","Hotel", "", "Hotel Mulia", "", 200))
-        list.add(SearchDestination(0,"city","Hotel", "", "Hotel Mulia", "", 200))
-        list.add(SearchDestination(0,"city","Hotel", "", "Hotel Mulia", "", 200))
+        list.add(SearchDestination(0,"city","Hotel", "", "Hotel Mulia", "Indonesia", 200))
+        list.add(SearchDestination(0,"city","Hotel", "", "Hotel Mulia", "Indonesia", 200))
+        list.add(SearchDestination(0,"city","Hotel", "", "Hotel Mulia", "Indonesia", 200))
+        list.add(SearchDestination(0,"city","Hotel", "", "Hotel Mulia", "Indonesia", 200))
         renderList(list, false)
     }
 
