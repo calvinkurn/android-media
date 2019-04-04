@@ -742,16 +742,17 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                              @NotNull String description, @NotNull String url,
                              @NotNull String imageUrl) {
         if (getActivity() != null) {
-
-            kolRouter.shareFeed(
-                    getActivity(),
-                    String.valueOf(id),
-                    url,
-                    title,
-                    imageUrl,
-                    description
-            );
+            doShare(String.format("%s %s", description, url), title);
         }
+    }
+
+    private void doShare(String body, String title) {
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, body);
+        startActivity(
+                Intent.createChooser(sharingIntent, title)
+        );
     }
 
     @Override
