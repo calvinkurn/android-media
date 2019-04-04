@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
@@ -126,6 +127,10 @@ public class DoubleTextView extends LinearLayout {
     }
 
     public void setBottomTextBackgroundColor(int s) {
-        this.bottomTextView.getBackground().mutate().setTint(s);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            this.bottomTextView.getBackground().mutate().setTint(s);
+        } else {
+            this.bottomTextView.setBackgroundColor(s);
+        }
     }
 }

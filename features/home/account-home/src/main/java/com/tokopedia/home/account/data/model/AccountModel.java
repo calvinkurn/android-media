@@ -2,18 +2,17 @@ package com.tokopedia.home.account.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import com.tokopedia.navigation_common.model.DepositModel;
 import com.tokopedia.navigation_common.model.LePreapproveModel;
+import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.navigation_common.model.PendingCashbackModel;
+import com.tokopedia.navigation_common.model.ProfileModel;
 import com.tokopedia.navigation_common.model.ReputationShop;
+import com.tokopedia.navigation_common.model.SaldoModel;
+import com.tokopedia.navigation_common.model.TokopointsModel;
 import com.tokopedia.navigation_common.model.TokopointsSumCoupon;
+import com.tokopedia.navigation_common.model.UserShopInfoModel;
 import com.tokopedia.navigation_common.model.VccUserStatus;
 import com.tokopedia.navigation_common.model.WalletModel;
-import com.tokopedia.navigation_common.model.ProfileModel;
-import com.tokopedia.navigation_common.model.UserShopInfoModel;
-import com.tokopedia.navigation_common.model.TokopointsModel;
-import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.user_identification_common.pojo.KycStatusPojo;
 
 import java.util.ArrayList;
@@ -25,10 +24,7 @@ import java.util.List;
 public class AccountModel {
     @SerializedName("isAuthenticated")
     @Expose
-    private Integer isAuthenticated = 0;
-    @SerializedName("saldo")
-    @Expose
-    private DepositModel deposit = new DepositModel();
+    private Integer isAuthenticated;
     @SerializedName("wallet")
     @Expose
     private WalletModel wallet = new WalletModel();
@@ -63,6 +59,11 @@ public class AccountModel {
     @SerializedName("kycStatus")
     private KycStatusPojo kycStatusPojo = new KycStatusPojo();
 
+    private SaldoModel saldoModel = new SaldoModel();
+
+    @SerializedName("isAffiliate")
+    private boolean isAffiliate = false;
+
     private PendingCashbackModel pendingCashbackModel = new PendingCashbackModel();
 
     public Integer getIsAuthenticated() {
@@ -72,14 +73,6 @@ public class AccountModel {
     public void setIsAuthenticated(Integer isAuthenticated) {
 
         this.isAuthenticated = isAuthenticated;
-    }
-
-    public DepositModel getDeposit() {
-        return deposit;
-    }
-
-    public void setDeposit(DepositModel deposit) {
-        this.deposit = deposit;
     }
 
     public WalletModel getWallet() {
@@ -145,7 +138,7 @@ public class AccountModel {
     public void setLePreapprove(LePreapproveModel lePreapprove) {
         this.lePreapprove = lePreapprove;
     }
-  
+
     public VccUserStatus getVccUserStatus() {
         return vccUserStatus;
     }
@@ -172,5 +165,21 @@ public class AccountModel {
 
     public KycStatusPojo getKycStatusPojo() {
         return kycStatusPojo;
+    }
+
+    public boolean isAffiliate() {
+        return isAffiliate;
+    }
+
+    public void setAffiliate(boolean affiliate) {
+        isAffiliate = affiliate;
+    }
+
+    public SaldoModel getSaldoModel() {
+        return saldoModel;
+    }
+
+    public void setSaldoModel(SaldoModel saldoModel) {
+        this.saldoModel = saldoModel;
     }
 }

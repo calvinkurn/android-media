@@ -27,7 +27,7 @@ class CodConfirmUseCase
     fun getRequest(): GraphqlRequest {
         val query = GraphqlHelper
                 .loadRawString(context.resources, R.raw.cod_confirmation_query)
-        return GraphqlRequest(query, CodResponse::class.java)
+        return GraphqlRequest(query, CodResponse::class.java, false)
     }
 
 }

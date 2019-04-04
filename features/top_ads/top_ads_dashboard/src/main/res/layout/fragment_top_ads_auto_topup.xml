@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingTop="@dimen/dp_16"
+        app:elevation="0dp">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll">
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/min_auto_topup_descr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:lineSpacingExtra="@dimen/sp_5"
+                app:fontSize="micro"
+                app:textViewTheme="lightSecondary"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text = "@string/descr_min_autotopup"/>
+
+            <Switch android:id="@+id/auto_topup_toggle"
+                style="@style/Switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                app:layout_constraintTop_toBottomOf="@+id/min_auto_topup_descr"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/auto_topup_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_10"
+                app:fontSize="small"
+                app:textViewTheme="lightPrimary"
+                app:layout_constraintEnd_toStartOf="@+id/auto_topup_toggle"
+                app:layout_constraintRight_toLeftOf="@+id/auto_topup_toggle"
+                app:layout_constraintTop_toTopOf="@+id/auto_topup_toggle"
+                app:layout_constraintBottom_toBottomOf="@+id/auto_topup_toggle"
+                tools:text = "@string/topads_inactive"/>
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:text="@string/label_status"
+                app:fontSize="small"
+                app:textViewTheme="lightPrimary"
+                app:layout_constraintBottom_toBottomOf="@+id/auto_topup_toggle"
+                app:layout_constraintEnd_toStartOf="@+id/auto_topup_status"
+                app:layout_constraintRight_toLeftOf="@+id/auto_topup_status"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/auto_topup_toggle"
+                app:layout_constraintHorizontal_bias="0.0" />
+
+            <View android:id="@+id/divider"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_half"
+                android:background="@color/grey_300"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/auto_topup_toggle"/>
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:text="@string/title_add_auto_topup"
+                app:fontSize="small"
+                app:textViewTheme="lightPrimary"
+                app:weight="medium"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/subtitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:text="@string/subtitle_add_auto_topup"
+                app:fontSize="micro"
+                app:textViewTheme="lightSecondary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/dp_72"
+        android:paddingBottom="@dimen/dp_2"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <Button android:layout_gravity="bottom"
+        android:id="@+id/button_submit"
+        style="@style/Button.Submit.Green"
+        android:text="@string/label_save"/>
+
+    <ProgressBar android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+</android.support.design.widget.CoordinatorLayout>

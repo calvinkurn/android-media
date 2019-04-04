@@ -61,6 +61,9 @@ public class Attributes {
     @SerializedName("before_total")
     @Expose
     private String beforeTotal;
+    @SerializedName("show_special_price_tag")
+    @Expose
+    private boolean showSpecialPriceTag;
     @SerializedName("fare")
     @Expose
     private Fare fare;
@@ -69,7 +72,7 @@ public class Attributes {
                       int departureTimeInt, String arrivalAirport, String arrivalTime,
                       int arrivalTimeInt, List<Route> routes, int totalTransit, int totalStop,
                       int addDayArrival, String duration, int durationMinute, String total,
-                      int totalNumeric, String beforeTotal, Fare fare) {
+                      int totalNumeric, String beforeTotal, boolean showSpecialPriceTag, Fare fare) {
         this.term = term;
         this.aid = aid;
         this.departureAirport = departureAirport;
@@ -87,6 +90,7 @@ public class Attributes {
         this.total = total;
         this.totalNumeric = totalNumeric;
         this.beforeTotal = beforeTotal;
+        this.showSpecialPriceTag = showSpecialPriceTag;
         this.fare = fare;
     }
 
@@ -153,6 +157,8 @@ public class Attributes {
     public String getBeforeTotal() {
         return beforeTotal;
     }
+
+    public boolean isShowSpecialPriceTag() { return showSpecialPriceTag; }
 
     public Fare getFare() {
         return fare;

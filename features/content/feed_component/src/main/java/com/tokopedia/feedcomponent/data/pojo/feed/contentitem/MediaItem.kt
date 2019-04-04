@@ -2,6 +2,7 @@ package com.tokopedia.feedcomponent.data.pojo.feed.contentitem
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 
 /**
  * @author by yfsx on 04/12/18.
@@ -43,5 +44,9 @@ data class MediaItem(
 
         @SerializedName("position")
         @Expose
-        var position: MutableList<Float> = ArrayList()
+        var position: MutableList<Float> = ArrayList(),
+
+        @SerializedName("tracking")
+        @Expose
+        val tracking: List<Tracking> = ArrayList()
 )

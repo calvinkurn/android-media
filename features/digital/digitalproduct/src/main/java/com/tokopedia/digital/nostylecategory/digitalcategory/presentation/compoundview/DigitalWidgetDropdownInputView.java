@@ -19,7 +19,6 @@ import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.digital.R;
 
-
 import java.util.List;
 
 /**
@@ -93,18 +92,18 @@ public class DigitalWidgetDropdownInputView extends LinearLayout {
             item = findItemById(items, inputFieldModel, defaultId);
             if (item == null) {
                 item = items.get(0);
-                if (inputFieldModel.getName().equals(InputFieldModel.NAME_OPERATOR_ID)) {
+                if (inputFieldModel.getName().equals(InputFieldModel.Companion.getNAME_OPERATOR_ID())) {
                     itemId = ((Operator) items.get(0)).getOperatorId();
                     itemName = ((Operator) items.get(0)).getName();
-                } else if (inputFieldModel.getName().equals(InputFieldModel.NAME_PRODUCT_ID)) {
+                } else if (inputFieldModel.getName().equals(InputFieldModel.Companion.getNAME_PRODUCT_ID())) {
                     itemId = ((Product) items.get(0)).getProductId();
                     itemName = ((Product) items.get(0)).getDesc();
                 }
             } else {
-                if (inputFieldModel.getName().equals(InputFieldModel.NAME_OPERATOR_ID)) {
+                if (inputFieldModel.getName().equals(InputFieldModel.Companion.getNAME_OPERATOR_ID())) {
                     itemId = ((Operator) item).getOperatorId();
                     itemName = ((Operator) item).getName();
-                } else if (inputFieldModel.getName().equals(InputFieldModel.NAME_PRODUCT_ID)) {
+                } else if (inputFieldModel.getName().equals(InputFieldModel.Companion.getNAME_PRODUCT_ID())) {
                     itemId = ((Product) item).getProductId();
                     itemName = ((Product) item).getDesc();
                 }
@@ -117,7 +116,7 @@ public class DigitalWidgetDropdownInputView extends LinearLayout {
     }
 
     private BaseWidgetItem findItemById(List<BaseWidgetItem> items, InputFieldModel inputFieldModel, String defaultId) {
-        if (inputFieldModel.getName().equals(InputFieldModel.NAME_OPERATOR_ID)) {
+        if (inputFieldModel.getName().equals(InputFieldModel.Companion.getNAME_OPERATOR_ID())) {
             for (int i = 0, operatorsSize = items.size(); i < operatorsSize; i++) {
                 Operator operator = ((Operator) items.get(i));
                 if (String.valueOf(operator.getOperatorId())
@@ -125,7 +124,7 @@ public class DigitalWidgetDropdownInputView extends LinearLayout {
                     return operator;
                 }
             }
-        } else if (inputFieldModel.getName().equals(InputFieldModel.NAME_PRODUCT_ID)){
+        } else if (inputFieldModel.getName().equals(InputFieldModel.Companion.getNAME_PRODUCT_ID())){
             for (int i = 0, productSize = items.size(); i < productSize; i++) {
                 Product product = ((Product) items.get(i));
                 if (String.valueOf(product.getProductId())

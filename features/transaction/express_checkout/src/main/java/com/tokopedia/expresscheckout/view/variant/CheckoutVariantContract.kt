@@ -93,9 +93,12 @@ interface CheckoutVariantContract {
 
         fun loadShippingRates(price: Long, quantity: Int, selectedServiceId: Int, selectedSpId: Int)
 
-        fun checkoutExpress(fragmentViewModel: FragmentViewModel)
+        fun checkoutExpress(fragmentViewModel: FragmentViewModel,
+                            trackerAttribution:String?,
+                            trackerListName:String?)
 
-        fun checkoutOneClickShipment(fragmentViewModel: FragmentViewModel)
+        fun checkoutOneClickShipment(fragmentViewModel: FragmentViewModel,
+                                     trackerAttribution: String?, trackerListName: String?)
 
         fun updateAddress(fragmentViewModel: FragmentViewModel, latitude: String, longitude: String)
 

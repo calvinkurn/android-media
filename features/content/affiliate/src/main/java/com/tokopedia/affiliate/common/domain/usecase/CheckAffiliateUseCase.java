@@ -36,7 +36,7 @@ public class CheckAffiliateUseCase extends UseCase<Boolean> {
     public Observable<Boolean> createObservable(RequestParams requestParams) {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_affiliate_check),
-                AffiliateCheckData.class
+                AffiliateCheckData.class, false
         );
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);

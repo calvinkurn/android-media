@@ -8,6 +8,7 @@ buildscript {
 }
 
 dependencies {
+    implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.logisticdata)

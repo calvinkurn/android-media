@@ -34,7 +34,7 @@ class PromoCheckoutModule {
     @PromoCheckoutQualifier
     @Provides
     fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context): CheckPromoStackingCodeUseCase {
-        return CheckPromoStackingCodeUseCase(context)
+        return CheckPromoStackingCodeUseCase(context.resources)
     }
 
     @PromoCheckoutQualifier

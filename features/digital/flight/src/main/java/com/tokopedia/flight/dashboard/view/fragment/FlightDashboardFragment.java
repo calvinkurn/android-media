@@ -2,15 +2,9 @@ package com.tokopedia.flight.dashboard.view.fragment;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.widget.NestedScrollView;
@@ -31,11 +25,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.common.travel.ticker.TravelTickerUtils;
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.design.banner.BannerView;
+import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.airport.service.GetAirportListJobService;
-import com.tokopedia.flight.airport.service.GetAirportListService;
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity;
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
@@ -91,6 +86,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final int REQUEST_CODE_AIRPORT_CLASSES = 4;
     private static final int REQUEST_CODE_SEARCH = 5;
     private static final int REQUEST_CODE_LOGIN = 6;
+
     AppCompatImageView reverseAirportImageView;
     LinearLayout airportDepartureLayout;
     AppCompatTextView airportDepartureTextInputView;
@@ -107,6 +103,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     View returnDateSeparatorView;
     View bannerLayout;
     BannerView bannerView;
+    TickerView tickerView;
     List<BannerDetail> bannerList;
 
     @Inject
@@ -167,6 +164,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         bannerView = view.findViewById(R.id.banner);
         progressBar = view.findViewById(R.id.progress_bar);
         formContainerLayout = view.findViewById(R.id.dashboard_container);
+        tickerView = view.findViewById(R.id.flight_ticker_view);
 
         oneWayTripAppCompatButton.setSelected(true);
         oneWayTripAppCompatButton.setOnClickListener(new View.OnClickListener() {
@@ -296,6 +294,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         presenter.attachView(this);
         presenter.initialize();
         KeyboardHandler.hideSoftKeyboard(getActivity());
+
+        presenter.fetchTickerData();
     }
 
     @Override
@@ -356,28 +356,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void showFormContainer() {
         formContainerLayout.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void startAirportSyncInBackground(long airportVersion) {
-        if (getActivity() != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                JobScheduler jobScheduler =
-                        (JobScheduler) getActivity().getSystemService(Context.JOB_SCHEDULER_SERVICE);
-                if (jobScheduler == null) return;
-
-                PersistableBundle bundle = new PersistableBundle();
-                bundle.putLong(GetAirportListJobService.AIRPORT_VERSION, airportVersion);
-
-                jobScheduler.schedule(new JobInfo.Builder(101,
-                        new ComponentName(getActivity(), GetAirportListJobService.class))
-                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                        .setExtras(bundle)
-                        .build());
-            } else {
-                GetAirportListService.startService(getActivity(), airportVersion);
-            }
-        }
     }
 
     @Override
@@ -599,6 +577,11 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public void hideBannerView() {
         bannerLayout.setVisibility(View.GONE);
         bannerView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderTickerView(TravelTickerViewModel travelTickerViewModel) {
+        TravelTickerUtils.INSTANCE.buildTravelTicker(getContext(), travelTickerViewModel, tickerView);
     }
 
     @Override

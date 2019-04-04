@@ -1,16 +1,16 @@
 package com.tokopedia.gm.statistic.view.adapter.viewholder;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.statistic.constant.GMTransactionTableSortBy;
-import com.tokopedia.seller.common.utils.KMNumbers;
 import com.tokopedia.gm.statistic.view.adapter.model.GMStatisticTransactionTableModel;
+import com.tokopedia.seller.common.utils.KMNumbers;
 
 /**
  * Created by normansyahputa on 7/13/17.
@@ -38,17 +38,10 @@ public class GMStatisticTransactionTableViewHolder extends RecyclerView.ViewHold
                 break;
         }
 
-        final Context applicationContext = itemView.getContext().getApplicationContext();
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProductPass productPass = ProductPass.Builder.aProductPass()
-                        .setProductId(productId)
-                        .build();
-                if (applicationContext != null && applicationContext instanceof PdpRouter) {
-                    ((PdpRouter) applicationContext).goToProductDetail(itemView.getContext(), productPass);
-                }
-
+                RouteManager.route(itemView.getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, String.valueOf(productId));
             }
         });
 

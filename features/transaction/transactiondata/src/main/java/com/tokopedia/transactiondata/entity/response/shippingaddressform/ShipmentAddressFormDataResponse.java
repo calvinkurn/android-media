@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.transactiondata.entity.response.cartlist.AutoApply;
 import com.tokopedia.transactiondata.entity.response.cartlist.AutoapplyStack;
 import com.tokopedia.transactiondata.entity.response.cartlist.AutoapplyV2;
+import com.tokopedia.transactiondata.entity.response.cartlist.EgoldAttributes;
 import com.tokopedia.transactiondata.entity.response.cartlist.PromoSuggestion;
 
 import java.util.ArrayList;
@@ -60,6 +61,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("autoapply_v2")
     @Expose
     private AutoapplyV2 autoapplyV2;
+    @SerializedName("egold_attributes")
+    @Expose
+    private EgoldAttributes egoldAttributes;
     @SerializedName("autoapply_stack")
     @Expose
     private AutoapplyStack autoapplyStack;
@@ -122,5 +126,12 @@ public class ShipmentAddressFormDataResponse {
 
     public AutoApply getAutoApply() { return autoApply; }
 
+    public EgoldAttributes getEgoldAttributes() {
+        return egoldAttributes;
+    }
+
+    public void setEgoldAttributes(EgoldAttributes egoldAttributes) {
+        this.egoldAttributes = egoldAttributes;
+    }
     public AutoapplyStack getAutoapplyStack() { return autoapplyStack; }
 }

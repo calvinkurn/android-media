@@ -18,7 +18,7 @@ public interface NetworkRouter {
 
     void showMaintenancePage();
 
-    void showForceLogoutDialog(Response response);
+    void sendForceLogoutAnalytics(Response response);
 
     void showForceLogoutTokenDialog(String response);
 

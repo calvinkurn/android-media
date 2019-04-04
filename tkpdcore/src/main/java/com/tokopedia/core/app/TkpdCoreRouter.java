@@ -185,11 +185,7 @@ public interface TkpdCoreRouter {
 
     Intent getInboxMessageIntent(Context context);
 
-    void sendTrackingGroupChatLeftNavigation();
-
     String getDesktopLinkGroupChat();
-
-    Intent getWithdrawIntent(Context context);
 
     String getStringRemoteConfig(String key);
 

@@ -10,7 +10,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.core.analytics.AppScreen
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener
@@ -53,21 +55,19 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
 
     var nextPage : Int = 1
 
-    override fun onResume() {
-        super.onResume()
-        onSwipeRefresh()
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        if (userVisibleHint) {
+        if (savedInstanceState == null) {
+            onSwipeRefresh()
+        }
+        if (userVisibleHint && ::searchNavigationListener.isInitialized) {
             searchNavigationListener.hideBottomNavigation()
         }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser && view != null) {
+        if (isVisibleToUser && view != null && ::searchNavigationListener.isInitialized) {
             searchNavigationListener.hideBottomNavigation()
         }
     }
@@ -76,8 +76,8 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
             loadDataFromSavedState(savedInstanceState)
-        } else {
-            loadDataFromArguments()
+        } else if (arguments != null) {
+            loadDataFromSavedState(arguments!!)
         }
     }
 
@@ -86,11 +86,13 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     override fun onSuccessGetProfileListData(profileListViewModel : ProfileListViewModel) {
-        SearchTracking.eventUserImpressionProfileResultInTabProfile(
-                context,
-                profileListViewModel.getListTrackingObject(),
-                query
-        )
+        if (profileListViewModel.getListTrackingObject().isNotEmpty()) {
+            SearchTracking.eventUserImpressionProfileResultInTabProfile(
+                    context,
+                    profileListViewModel.getListTrackingObject(),
+                    query
+            )
+        }
 
         totalProfileCount = profileListViewModel.totalSearchCount
         renderList(profileListViewModel.profileModelList, profileListViewModel.isHasNextPage)
@@ -137,7 +139,7 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     override fun getScreenName(): String {
-        return "name"
+        return SCREEN_SEARCH_PAGE_PROFILE_TAB
     }
 
     override fun initInjector() {
@@ -198,6 +200,7 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
 
     companion object {
         private val EXTRA_QUERY = "EXTRA_QUERY"
+        private const val SCREEN_SEARCH_PAGE_PROFILE_TAB = "Search result - Profile tab"
 
         fun newInstance(query: String,
                         searchhNavigationListener: SearchNavigationListener,
@@ -213,19 +216,30 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     private fun loadDataFromArguments() {
-        query = arguments!!.getString(EXTRA_QUERY)
+        query = arguments!!.getString(EXTRA_QUERY) ?: ""
     }
 
     private fun loadDataFromSavedState(savedInstanceState: Bundle) {
-        query = savedInstanceState.getString(EXTRA_QUERY)
+        query = savedInstanceState.getString(EXTRA_QUERY)?:""
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(EXTRA_QUERY, query)
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
-        return createProfileEmptySearchModel(
-                context!!,
-                query,
-                getString(R.string.title_profile)
-        )
+        SearchTracking.eventSearchNoResult(activity, query, screenName, mapOf())
+
+        activity?.run {
+            return createProfileEmptySearchModel(
+                    activity!!,
+                    query,
+                    getString(R.string.title_profile)
+            )
+        }
+
+        return EmptySearchProfileModel()
     }
 
     private fun createProfileEmptySearchModel(context: Context, query: String, sectionTitle: String): EmptySearchProfileModel {
@@ -253,6 +267,7 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     override fun onEmptyButtonClicked() {
+        SearchTracking.eventUserClickNewSearchOnEmptySearch(context, screenName)
         redirectionListener.showSearchInputView()
     }
 
@@ -276,11 +291,6 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
         RouteManager.route(context, ApplinkConst.LOGIN)
     }
 
-    override fun launchProfilePage(userId : String) {
-        val applink : String = ApplinkConst.PROFILE.replace(PARAM_USER_ID, userId)
-        RouteManager.route(context, applink)
-    }
-
     override fun onHandleProfileClick(profileModel: ProfileViewModel) {
         SearchTracking.eventUserClickProfileResultInTabProfile(
                 context,
@@ -289,6 +299,35 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
                 )
 
         launchProfilePage(profileModel.id)
+    }
+
+    override fun launchProfilePage(userId : String) {
+        val applink : String = ApplinkConst.PROFILE.replace(PARAM_USER_ID, userId)
+
+        if(isActivityAnApplinkRouter()) {
+            handleItemClickedIfActivityAnApplinkRouter(applink, false)
+        }
+    }
+
+    private fun isActivityAnApplinkRouter(): Boolean {
+        return activity != null && activity!!.applicationContext is ApplinkRouter
+    }
+
+    private fun handleItemClickedIfActivityAnApplinkRouter(applink: String, shouldFinishActivity: Boolean) {
+        val router = activity!!.applicationContext as ApplinkRouter
+        if (router.isSupportApplink(applink)) {
+            handleRouterSupportApplink(router, applink, shouldFinishActivity)
+        }
+    }
+
+    private fun handleRouterSupportApplink(router: ApplinkRouter, applink: String, shouldFinishActivity: Boolean) {
+        finishActivityIfRequired(shouldFinishActivity)
+        router.goToApplinkActivity(activity, applink)
+    }
+
+    private fun finishActivityIfRequired(shouldFinishActivity: Boolean) {
+        if (shouldFinishActivity)
+            activity?.finish()
     }
 
     override fun callInitialLoadAutomatically(): Boolean {

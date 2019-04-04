@@ -3,6 +3,7 @@ package com.tokopedia.home.account.analytics.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.navigation_common.model.SaldoModel;
 
 public class UserAttributeData {
 
@@ -15,9 +16,6 @@ public class UserAttributeData {
     @SerializedName("wallet")
     @Expose
     private Wallet wallet = new Wallet();
-    @SerializedName("saldo")
-    @Expose
-    private Saldo saldo = new Saldo();
     @SerializedName("paymentAdminProfile")
     @Expose
     private PaymentAdminProfile paymentAdminProfile = new PaymentAdminProfile();
@@ -27,6 +25,9 @@ public class UserAttributeData {
     @SerializedName("notifications")
     @Expose
     private Notifications notifications = new Notifications();
+
+    private SaldoModel saldo = new SaldoModel();
+
 
     public ShopInfoMoengage getShopInfoMoengage() {
         return shopInfoMoengage;
@@ -52,11 +53,11 @@ public class UserAttributeData {
         this.wallet = wallet;
     }
 
-    public Saldo getSaldo() {
+    public SaldoModel getSaldo() {
         return saldo;
     }
 
-    public void setSaldo(Saldo saldo) {
+    public void setSaldo(SaldoModel saldo) {
         this.saldo = saldo;
     }
 

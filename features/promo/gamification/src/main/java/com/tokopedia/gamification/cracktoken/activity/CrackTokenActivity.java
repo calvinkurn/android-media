@@ -5,21 +5,19 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.View;
-import android.widget.ImageView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.gamification.GamificationRouter;
-import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.gamification.R;
+import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.gamification.cracktoken.fragment.CrackEmptyTokenFragment;
 import com.tokopedia.gamification.cracktoken.fragment.CrackTokenFragment;
-import com.tokopedia.gamification.floating.view.model.TokenData;
+import com.tokopedia.gamification.data.entity.TokenDataEntity;
 
 public class CrackTokenActivity extends BaseSimpleActivity implements CrackTokenFragment.ActionListener {
 
-    private ImageView ivCoverShadow;
+
 
     @SuppressWarnings("unused")
     @DeepLink(ApplinkConstant.GAMIFICATION)
@@ -43,10 +41,6 @@ public class CrackTokenActivity extends BaseSimpleActivity implements CrackToken
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        updateTitle(getString(R.string.toko_points_title));
-
-        ivCoverShadow = findViewById(R.id.iv_cover_shadow);
-
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
 
@@ -56,7 +50,7 @@ public class CrackTokenActivity extends BaseSimpleActivity implements CrackToken
     }
 
     @Override
-    public void directPageToCrackEmpty(TokenData tokenData) {
+    public void directPageToCrackEmpty(TokenDataEntity tokenData) {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.parent_view);
         if (fragment == null || !(fragment instanceof CrackEmptyTokenFragment))
             getSupportFragmentManager().beginTransaction().replace(R.id.parent_view,
@@ -81,19 +75,7 @@ public class CrackTokenActivity extends BaseSimpleActivity implements CrackToken
         }
     }
 
-    @Override
-    public void hideToolbar() {
-        getSupportActionBar().hide();
-        ivCoverShadow.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showToolbar() {
-        getSupportActionBar().show();
-        ivCoverShadow.setVisibility(View.VISIBLE);
-    }
-
-    private void onBackPressedRoot(){
+    private void onBackPressedRoot() {
         if (isTaskRoot()) {
             ((GamificationRouter) getApplication()).goToHome(this);
             finish();

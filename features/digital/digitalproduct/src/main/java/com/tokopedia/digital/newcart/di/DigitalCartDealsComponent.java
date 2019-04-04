@@ -1,7 +1,6 @@
 package com.tokopedia.digital.newcart.di;
 
-import com.tokopedia.digital.cart.di.DigitalCartComponent;
-import com.tokopedia.digital.common.util.DigitalAnalytics;
+import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDealsFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDealsListFragment;
 

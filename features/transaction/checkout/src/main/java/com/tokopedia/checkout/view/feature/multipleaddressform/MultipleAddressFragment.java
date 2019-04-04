@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.feature.multipleaddressform;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -28,11 +29,10 @@ import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActiv
 import com.tokopedia.checkout.view.feature.cartlist.CartItemDecoration;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -68,7 +68,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     private MultipleAddressAdapter multipleAddressAdapter;
     private RecyclerView rvOrderAddressList;
     private LinearLayout llNetworkErrorView;
-    private TkpdProgressDialog progressDialogNormal;
+    private ProgressDialog progressDialogNormal;
     private SwipeToRefresh swipeToRefresh;
 
     public static MultipleAddressFragment newInstance(RecipientAddressModel recipientModel, String cartIds) {
@@ -313,12 +313,14 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     @Override
     public void showLoading() {
-        progressDialogNormal.showDialog();
+        if (progressDialogNormal != null && !progressDialogNormal.isShowing())
+            progressDialogNormal.show();
     }
 
     @Override
     public void hideLoading() {
-        progressDialogNormal.dismiss();
+        if (progressDialogNormal != null && progressDialogNormal.isShowing())
+            progressDialogNormal.dismiss();
     }
 
     @Override
@@ -418,7 +420,10 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     @Override
     protected void initView(View view) {
-        progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        progressDialogNormal = new ProgressDialog(getActivity());
+        progressDialogNormal.setMessage(getString(R.string.title_loading));
+        progressDialogNormal.setCancelable(false);
+
         rvOrderAddressList = view.findViewById(R.id.order_address_list);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);

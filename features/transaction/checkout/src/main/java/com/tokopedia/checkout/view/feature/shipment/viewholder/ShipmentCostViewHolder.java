@@ -34,6 +34,10 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvPromoOrCouponLabel;
     private TextView mTvDonationLabel;
     private TextView mTvDonationPrice;
+    private TextView mTvEmasLabel;
+    private TextView mTvEmasPrice;
+    private TextView mTvTradeInLabel;
+    private TextView mTvTradeInPrice;
     private RelativeLayout mRlTotalPromo;
     private TextView mTvTotalPromoStackAmount;
     private TextView mTvTotalPromoStackLabel;
@@ -59,6 +63,10 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvPromoOrCouponLabel = itemView.findViewById(R.id.tv_promo_or_coupon_label);
         mTvDonationLabel = itemView.findViewById(R.id.tv_donation_label);
         mTvDonationPrice = itemView.findViewById(R.id.tv_donation_price);
+        mTvEmasLabel = itemView.findViewById(R.id.tv_emas_label);
+        mTvEmasPrice = itemView.findViewById(R.id.tv_emas_price);
+        mTvTradeInLabel = itemView.findViewById(R.id.tv_trade_in_label);
+        mTvTradeInPrice = itemView.findViewById(R.id.tv_trade_in);
         mRlTotalPromo = itemView.findViewById(R.id.rl_total_promo);
         mTvTotalPromoStackAmount = itemView.findViewById(R.id.tv_total_promo_amount);
         mTvTotalPromoStackLabel = itemView.findViewById(R.id.tv_total_promo_label);
@@ -81,6 +89,9 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
                 getPriceFormat(mTvPromoOrCouponLabel, mTvPromoDiscount, shipmentCost.getPromoPrice())));
         mTvSellerCostAdditionFee.setText(getPriceFormat(mTvSellerCostAdditionLabel, mTvSellerCostAdditionFee, shipmentCost.getAdditionalFee()));
         mTvDonationPrice.setText(getPriceFormat(mTvDonationLabel, mTvDonationPrice, shipmentCost.getDonation()));
+        mTvEmasPrice.setText(getPriceFormat(mTvEmasLabel, mTvEmasPrice, shipmentCost.getEmasPrice()));
+        mTvTradeInPrice.setText(String.format(mTvTradeInPrice.getContext().getString(R.string.promo_format),
+                getPriceFormat(mTvTradeInLabel, mTvTradeInPrice, shipmentCost.getTradeInPrice())));
 
         if (shipmentCost.getTotalPromoStackAmount() > 0) {
             mRlTotalPromo.setVisibility(View.VISIBLE);

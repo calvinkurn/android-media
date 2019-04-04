@@ -15,6 +15,7 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
     private String tokopoint;
     private int coupons;
     private int progress;
+    private boolean isAffiliate;
 
     public BuyerCardViewModel() {
     }
@@ -72,6 +73,14 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
         this.progress = progress;
     }
 
+    public boolean isAffiliate() {
+        return isAffiliate;
+    }
+
+    public void setAffiliate(boolean affiliate) {
+        isAffiliate = affiliate;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -85,6 +94,7 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
         dest.writeString(this.tokopoint);
         dest.writeInt(this.coupons);
         dest.writeInt(this.progress);
+        dest.writeByte(this.isAffiliate ? (byte) 1 : (byte) 0);
     }
 
     protected BuyerCardViewModel(Parcel in) {
@@ -94,6 +104,7 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
         this.tokopoint = in.readString();
         this.coupons = in.readInt();
         this.progress = in.readInt();
+        this.isAffiliate = in.readByte() != 0;
     }
 
     public static final Creator<BuyerCardViewModel> CREATOR = new Creator<BuyerCardViewModel>() {

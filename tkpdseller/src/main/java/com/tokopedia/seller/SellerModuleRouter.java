@@ -21,10 +21,6 @@ public interface SellerModuleRouter {
 
     ProductComponent getProductComponent();
 
-    void goToProductDetail(Context context, String productUrl);
-
-    Observable<GMFeaturedProductDomainModel> getFeaturedProduct();
-
     void goToGMSubscribe(Activity activity);
 
     GetShopInfoUseCase getShopInfo();
@@ -32,12 +28,6 @@ public interface SellerModuleRouter {
     ShopComponent getShopComponent();
 
     Intent getInboxReputationIntent(Context context);
-
-    void sendEventTracking(String event, String category, String action, String label);
-
-    void sendEventTracking(Map<String, Object> eventTracking);
-
-    void sendMoEngageOpenShopEventTracking(String screenName);
 
     Intent getLoginIntent(Context context);
 
@@ -47,16 +37,11 @@ public interface SellerModuleRouter {
 
     void startSaldoDepositIntent(Context context);
 
-    boolean isSaldoNativeEnabled();
-
     Intent getTopProfileIntent(Context context, String userId);
 
     Intent getGMHomeIntent(Context context);
 
-    void gotoTopAdsDashboard(Context context);
-
     Intent getInboxTalkCallingIntent(Context context);
 
-    Intent getSaldoDepositIntent(Context context);
 }
 

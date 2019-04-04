@@ -96,6 +96,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private SearchViewListener mSearchViewListener;
     private AppCompatActivity activity;
     private boolean finishOnClose = false;
+    private boolean isOfficial = false;
     private SavedState mSavedState;
     private boolean submit = false;
 
@@ -457,14 +458,14 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mOldQueryText = newText.toString();
 
         if (mSuggestionFragment != null) {
-            mSuggestionFragment.search(newText.toString());
+            mSuggestionFragment.search(newText.toString(), isOfficial);
         }
     }
 
     private void onSubmitQuery() {
         CharSequence query = mSearchSrcTextView.getText();
         if (query != null && TextUtils.getTrimmedLength(query) > 0) {
-            if (mOnQueryChangeListener == null || !mOnQueryChangeListener.onQueryTextSubmit(query.toString())) {
+            if (mOnQueryChangeListener == null || !mOnQueryChangeListener.onQueryTextSubmit(query.toString(), isOfficial)) {
                 closeSearch();
                 mSearchSrcTextView.setText(null);
             }
@@ -686,6 +687,11 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         showSearch(true);
     }
 
+    public void showSearch(boolean finishOnClose, boolean animate, boolean isOfficial) {
+        this.isOfficial = isOfficial;
+        showSearch(finishOnClose, animate);
+    }
+
     public void showSearch(boolean finishOnClose, boolean animate) {
         this.finishOnClose = finishOnClose;
         showSearch(animate);
@@ -721,8 +727,9 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
         //Request Focus
         mSearchSrcTextView.setText(lastQuery);
-        mSearchSrcTextView.requestFocus();
-        mSearchSrcTextView.setSelection(mSearchSrcTextView.getText().length());
+        searchTextViewRequestFocus();
+        searchTextViewSetCursorSelectionAtTextEnd();
+
         if (animate) {
             setVisibleWithAnimation();
 
@@ -734,6 +741,14 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         }
 
         mIsSearchOpen = true;
+    }
+
+    public void searchTextViewRequestFocus() {
+        mSearchSrcTextView.requestFocus();
+    }
+
+    public void searchTextViewSetCursorSelectionAtTextEnd() {
+        mSearchSrcTextView.setSelection(mSearchSrcTextView.getText().length());
     }
 
     public void showSearch(boolean animate, int tab) {
@@ -813,6 +828,10 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
     public String getLastQuery() {
         return lastQuery;
+    }
+
+    public boolean getIsOfficial() {
+        return isOfficial;
     }
 
     /**
@@ -955,7 +974,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
          * @return true if the query has been handled by the listener, false to let the
          * SearchView perform the default action.
          */
-        boolean onQueryTextSubmit(String query);
+        boolean onQueryTextSubmit(String query, boolean isOfficial);
 
         /**
          * Called when the query text is changed by the user.

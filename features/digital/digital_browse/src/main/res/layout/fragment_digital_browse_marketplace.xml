@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -10,53 +10,14 @@
         android:background="@color/white"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/container_popular_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_16"
-            android:visibility="gone"
-            tools:visibility="visible">
-
-            <com.tokopedia.design.component.TextViewCompat
-                style="@style/TextView.Title.Bold"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/digital_browse_popular_brand_title" />
-
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/tv_all_popular"
-                style="@style/TextView.Small.Green"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/digital_browse_lihat_semua" />
-
-        </LinearLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_popular_brand"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:paddingLeft="@dimen/dp_12"
-            android:paddingStart="@dimen/dp_12"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"
             android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_16" />
+            android:paddingTop="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16" />
 
     </LinearLayout>
 

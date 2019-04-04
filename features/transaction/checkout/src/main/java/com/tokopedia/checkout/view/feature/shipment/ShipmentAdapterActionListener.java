@@ -67,6 +67,8 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
 
     void onDonationChecked(boolean checked);
 
+    void onEgoldChecked(boolean checked);
+
     void onChangeShippingDuration(ShipmentCartItemModel shipmentCartItemModel,
                                   RecipientAddressModel recipientAddressModel,
                                   List<ShopShipment> shopShipmentList,
@@ -96,4 +98,6 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
     void navigateToProtectionMore(String url);
 
     void onNotifierClicked(String url);
+
+    void onClickChangePhoneNumber(RecipientAddressModel recipientAddressModel);
 }

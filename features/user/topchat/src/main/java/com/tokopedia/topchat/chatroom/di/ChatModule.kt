@@ -4,7 +4,6 @@ import android.content.Context
 import com.google.gson.Gson
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.abstraction.AbstractionRouter
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
@@ -62,12 +61,6 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideAnalyticTracker(@ApplicationContext context: Context): AnalyticTracker {
-        return (context as AbstractionRouter).analyticTracker
-    }
-
-    @ChatScope
-    @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
@@ -83,7 +76,7 @@ class ChatModule {
             @ImageUploaderQualifier uploadImageRepository: UploadImageRepository,
             @ImageUploaderQualifier generateHostRepository: GenerateHostRepository,
             @ImageUploaderQualifier gson: Gson,
-            @ImageUploaderQualifier userSession: com.tokopedia.abstraction.common.data.model.session.UserSession,
+            @ImageUploaderQualifier userSession: UserSessionInterface,
             @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils): UploadImageUseCase<TopChatImageUploadPojo> {
         return UploadImageUseCase(uploadImageRepository, generateHostRepository, gson, userSession, TopChatImageUploadPojo::class.java, imageUploaderUtils)
     }

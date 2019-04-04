@@ -160,9 +160,10 @@ public class InboxListPresenterImpl
     }
 
     @Override
-    public void onClickTicket(int index) {
+    public void onClickTicket(int index, boolean isOfficalStore) {
         Intent detailIntent = new Intent(mView.getActivity(), InboxDetailActivity.class);
         detailIntent.putExtra(InboxDetailActivity.PARAM_TICKET_ID, originalList.get(index).getId());
+        detailIntent.putExtra(InboxDetailActivity.IS_OFFICIAL_STORE, isOfficalStore);
         mView.navigateToActivityRequest(detailIntent, InboxListContract.InboxListView.REQUEST_DETAILS);
         ContactUsTracking.sendGTMInboxTicket("",
                 InboxTicketTracking.Category.EventInboxTicket,

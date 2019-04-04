@@ -28,6 +28,8 @@ public class ShopGroupData implements Parcelable {
     private boolean isGoldMerchant;
     private boolean isOfficialStore;
     private String shopBadge;
+    private boolean isFulfillment;
+    private String fulfillmentName;
     private boolean hasPromoList;
     private String cartString;
     private VoucherOrdersItemData voucherOrdersItemData;
@@ -54,9 +56,14 @@ public class ShopGroupData implements Parcelable {
         isGoldMerchant = in.readByte() != 0;
         isOfficialStore = in.readByte() != 0;
         shopBadge = in.readString();
+        isFulfillment = in.readByte() != 0;
+        fulfillmentName = in.readString();
         hasPromoList = in.readByte() != 0;
         cartString = in.readString();
         voucherOrdersItemData = in.readParcelable(VoucherOrdersItemData.class.getClassLoader());
+        totalPrice = in.readLong();
+        totalCashback = in.readLong();
+        totalItem = in.readInt();
     }
 
     @Override
@@ -74,9 +81,14 @@ public class ShopGroupData implements Parcelable {
         dest.writeByte((byte) (isGoldMerchant ? 1 : 0));
         dest.writeByte((byte) (isOfficialStore ? 1 : 0));
         dest.writeString(shopBadge);
+        dest.writeByte((byte) (isFulfillment ? 1 : 0));
+        dest.writeString(fulfillmentName);
         dest.writeByte((byte) (hasPromoList ? 1 : 0));
         dest.writeString(cartString);
         dest.writeParcelable(voucherOrdersItemData, flags);
+        dest.writeLong(totalPrice);
+        dest.writeLong(totalCashback);
+        dest.writeInt(totalItem);
     }
 
     @Override
@@ -240,6 +252,22 @@ public class ShopGroupData implements Parcelable {
         this.shopBadge = shopBadge;
     }
 
+    public boolean isFulfillment() {
+        return isFulfillment;
+    }
+
+    public void setFulfillment(boolean fulfillment) {
+        isFulfillment = fulfillment;
+    }
+
+    public String getFulfillmentName() {
+        return fulfillmentName;
+    }
+
+    public void setFulfillmentName(String fulfillmentName) {
+        this.fulfillmentName = fulfillmentName;
+    }
+
     public boolean isHasPromoList() { return hasPromoList; }
 
     public void setHasPromoList(boolean hasPromoList) { this.hasPromoList = hasPromoList; }
@@ -253,4 +281,5 @@ public class ShopGroupData implements Parcelable {
     public void setVoucherOrdersItemData(VoucherOrdersItemData voucherOrdersItemData) {
         this.voucherOrdersItemData = voucherOrdersItemData;
     }
+
 }

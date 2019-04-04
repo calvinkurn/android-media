@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingEnd="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_20"
+    android:background="@drawable/bg_bottom_shadow"
+    android:id="@+id/base_attribute"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/base_attribute_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_rounded_grey_250"
+        android:paddingBottom="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_8">
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/label_seen"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_marginRight="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            app:fontSize="micro"
+            app:textViewTheme="lightDisabled"
+            android:text="@string/label_seen"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/label_tx_success"
+            app:layout_constraintBottom_toBottomOf="@+id/label_tx_success"
+            app:layout_constraintRight_toLeftOf="@+id/label_tx_success"
+            app:layout_constraintEnd_toStartOf="@+id/label_tx_success"
+            app:layout_constraintHorizontal_chainStyle="spread"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/label_tx_success"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            app:layout_goneMarginRight="@dimen/dp_0"
+            app:layout_goneMarginEnd="@dimen/dp_0"
+            app:fontSize="micro"
+            app:textViewTheme="lightDisabled"
+            android:text="@string/label_success_transaction"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/label_seen"
+            app:layout_constraintStart_toEndOf="@+id/label_seen"
+            app:layout_constraintRight_toLeftOf="@+id/label_wishlist"
+            app:layout_constraintEnd_toStartOf="@+id/label_wishlist"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/label_wishlist"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/wishlist_label"
+            android:gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:fontSize="micro"
+            app:textViewTheme="lightDisabled"
+            app:layout_constraintTop_toTopOf="@+id/label_tx_success"
+            app:layout_constraintLeft_toRightOf="@+id/label_tx_success"
+            app:layout_constraintStart_toEndOf="@+id/label_tx_success"
+            app:layout_constraintBottom_toBottomOf="@+id/label_tx_success"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/txt_seen"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            app:fontSize="micro"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_tx_success"
+            app:layout_constraintEnd_toEndOf="@+id/label_seen"
+            app:layout_constraintLeft_toLeftOf="@+id/label_seen"
+            app:layout_constraintRight_toRightOf="@+id/label_seen"
+            app:layout_constraintStart_toStartOf="@+id/label_seen"
+            app:layout_constraintTop_toTopOf="@+id/txt_tx_success"
+            app:textViewTheme="lightDisabled"
+            app:weight="medium"
+            tools:text="2,3 rb" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/txt_tx_success"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_2"
+            app:fontSize="micro"
+            app:weight="medium"
+            app:textViewTheme="lightDisabled"
+            tools:text="97.5% (123 produk)"
+            app:layout_constraintTop_toBottomOf="@+id/label_tx_success"
+            app:layout_constraintLeft_toLeftOf="@+id/label_tx_success"
+            app:layout_constraintStart_toStartOf="@+id/label_tx_success"
+            app:layout_constraintRight_toRightOf="@+id/label_tx_success"
+            app:layout_constraintEnd_toEndOf="@+id/label_tx_success"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/txt_wishlist"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:fontSize="micro"
+            app:weight="medium"
+            tools:text="111"
+            app:textViewTheme="lightDisabled"
+            app:layout_constraintTop_toTopOf="@+id/txt_tx_success"
+            app:layout_constraintLeft_toLeftOf="@+id/label_wishlist"
+            app:layout_constraintStart_toStartOf="@+id/label_wishlist"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_tx_success"
+            app:layout_constraintRight_toRightOf="@+id/label_wishlist"
+            app:layout_constraintEnd_toEndOf="@+id/label_wishlist"/>
+
+    </android.support.constraint.ConstraintLayout>
+</FrameLayout>

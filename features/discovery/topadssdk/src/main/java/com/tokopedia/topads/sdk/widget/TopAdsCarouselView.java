@@ -177,7 +177,7 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     }
 
     public void setData(TopAdsModel data) {
-        if (data != null && data.getError() == null && data.getStatus().getErrorCode() == 0) {
+        if (data != null && data.getStatus().getErrorCode() == 0) {
             List<Item> visitables = new ArrayList<>();
             for (int i = 0; i < data.getData().size(); i++) {
                 Data d = data.getData().get(i);

@@ -29,6 +29,10 @@ public class GroupShop implements Parcelable {
     private String cartString;
     private boolean hasPromoList;
 
+    private boolean isFulfillment;
+    private int fulfillmentId;
+    private String fulfillmentName;
+
     public Shop getShop() {
         return shop;
     }
@@ -125,6 +129,30 @@ public class GroupShop implements Parcelable {
         this.useInsurance = useInsurance;
     }
 
+    public boolean isFulfillment() {
+        return isFulfillment;
+    }
+
+    public void setFulfillment(boolean fulfillment) {
+        isFulfillment = fulfillment;
+    }
+
+    public int getFulfillmentId() {
+        return fulfillmentId;
+    }
+
+    public void setFulfillmentId(int fulfillmentId) {
+        this.fulfillmentId = fulfillmentId;
+    }
+
+    public String getFulfillmentName() {
+        return fulfillmentName;
+    }
+
+    public void setFulfillmentName(String fulfillmentName) {
+        this.fulfillmentName = fulfillmentName;
+    }
+
     public String getCartString() { return cartString; }
 
     public void setCartString(String cartString) { this.cartString = cartString; }
@@ -150,11 +178,14 @@ public class GroupShop implements Parcelable {
         dest.writeParcelable(this.shop, flags);
         dest.writeTypedList(this.shopShipments);
         dest.writeTypedList(this.products);
-        dest.writeInt(shippingId);
-        dest.writeInt(spId);
-        dest.writeString(dropshipperName);
-        dest.writeString(dropshipperPhone);
+        dest.writeInt(this.shippingId);
+        dest.writeInt(this.spId);
+        dest.writeString(this.dropshipperName);
+        dest.writeString(this.dropshipperPhone);
         dest.writeByte(this.useInsurance ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isFulfillment ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.fulfillmentId);
+        dest.writeString(this.fulfillmentName);
         dest.writeString(cartString);
         dest.writeByte(this.hasPromoList ? (byte) 1 : (byte) 0);
     }
@@ -172,6 +203,9 @@ public class GroupShop implements Parcelable {
         this.dropshipperName = in.readString();
         this.dropshipperPhone = in.readString();
         this.useInsurance = in.readByte() != 0;
+        this.isFulfillment = in.readByte() != 0;
+        this.fulfillmentId = in.readInt();
+        this.fulfillmentName = in.readString();
         this.cartString = in.readString();
         this.hasPromoList = in.readByte() != 0;
     }

@@ -32,9 +32,12 @@ class FeedRecommendationViewHolder(v: View,
 
         cardAdapter = RecommendationCardAdapter(element.cards, adapterPosition, listener)
         itemView.recommendationRv.adapter = cardAdapter
-
-        itemView.cardTitle.bind(element.title, element.template.cardrecom.title)
-        itemView.cardTitle.listener = cardTitleListener
+        if (element.title.text.isNotEmpty()) {
+            itemView.cardTitle.bind(element.title, element.template.cardrecom.title)
+            itemView.cardTitle.listener = cardTitleListener
+        } else{
+            itemView.cardTitle.visibility = View.GONE
+        }
     }
 
     override fun bind(element: FeedRecommendationViewModel?, payloads: MutableList<Any>) {
@@ -49,7 +52,7 @@ class FeedRecommendationViewHolder(v: View,
         }
     }
 
-    fun onViewRecycled() {
+    override fun onViewRecycled() {
         cardAdapter?.list?.forEachIndexed { index, _ ->
             val holder = itemView.recommendationRv.findViewHolderForAdapterPosition(index)
             (holder as? RecommendationCardAdapter.RecommendationCardViewHolder)?.let {

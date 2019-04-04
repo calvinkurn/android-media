@@ -1,17 +1,18 @@
 package com.tokopedia.flashsale.management.view.presenter
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.flashsale.management.data.FlashSaleConstant
 import com.tokopedia.flashsale.management.data.campaignlabel.DataCampaignLabel
 import com.tokopedia.flashsale.management.data.campaignlist.DataCampaignList
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import javax.inject.Inject
 import javax.inject.Named
 
 
 class CampaignPresenter @Inject
-constructor(private val userSession: UserSession,
+constructor(private val userSession: UserSessionInterface,
             @Named(FlashSaleConstant.NAMED_REQUEST_CAMPAIGN_LABEL)
             private val getCampaignLabelUseCase: GraphqlUseCase<DataCampaignLabel.Response>,
             @Named(FlashSaleConstant.NAMED_REQUEST_CAMPAIGN_LIST)

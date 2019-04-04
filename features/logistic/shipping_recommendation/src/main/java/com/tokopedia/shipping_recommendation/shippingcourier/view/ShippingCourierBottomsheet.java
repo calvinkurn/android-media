@@ -134,7 +134,6 @@ public class ShippingCourierBottomsheet extends BottomSheets
                     getArguments().getParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST);
             if (shippingCourierViewModels != null) {
                 presenter.setData(shippingCourierViewModels);
-                presenter.setSelectedCourier();
                 setupRecyclerView(cartPosition);
             } else {
                 showLoading();

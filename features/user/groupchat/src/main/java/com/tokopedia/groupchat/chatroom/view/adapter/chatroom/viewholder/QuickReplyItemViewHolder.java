@@ -19,11 +19,11 @@ public class QuickReplyItemViewHolder extends AbstractViewHolder<GroupChatQuickR
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_quick_reply;
-    private final ChatroomContract.View viewListener;
+    private final ChatroomContract.QuickReply viewListener;
     private TextView textHolder;
 
 
-    public QuickReplyItemViewHolder(View parent, ChatroomContract.View listener) {
+    public QuickReplyItemViewHolder(View parent, ChatroomContract.QuickReply listener) {
         super(parent);
         textHolder = itemView.findViewById(R.id.text);
         this.viewListener = listener;

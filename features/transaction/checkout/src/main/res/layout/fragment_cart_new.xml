@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/checkout_module_color_background"
     android:orientation="vertical">
+
+    <View
+        android:visibility="invisible"
+        app:layout_collapseMode="pin"
+        android:id="@+id/status_bar_bg"
+        android:background="@color/green_600"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_25"/>
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"
@@ -75,8 +84,6 @@
                             style="@style/TextSmallNormalBlack54"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dp_4"
-                            android:layout_marginRight="@dimen/dp_4"
                             android:lineSpacingExtra="@dimen/sp_5"
                             android:text="@string/label_select_all_product"
                             tools:ignore="RelativeOverlap" />

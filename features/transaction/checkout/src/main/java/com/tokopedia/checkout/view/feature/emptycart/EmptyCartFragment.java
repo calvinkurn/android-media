@@ -3,8 +3,8 @@ package com.tokopedia.checkout.view.feature.emptycart;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -19,10 +19,13 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
@@ -87,7 +90,6 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     private static final String ARG_AUTO_APPLY_PROMO_CODE = "ARG_AUTO_APPLY_PROMO_CODE";
 
     private View toolbar;
-    private AppBarLayout appBarLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
     private NestedScrollView nestedScrollView;
     private TickerPromoStackingCheckoutView tickerPromoStackingCheckoutView;
@@ -555,11 +557,21 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     private void setupToolbar(View view) {
         Toolbar appbar = view.findViewById(R.id.toolbar);
-        appBarLayout = view.findViewById(R.id.app_bar_layout);
+        View statusBarBackground = view.findViewById(R.id.status_bar_bg);
+        statusBarBackground.getLayoutParams().height =
+                DisplayMetricUtils.getStatusBarHeight(getActivity());
         if (isToolbarWithBackButton) {
             toolbar = toolbarRemoveWithBackView();
+            statusBarBackground.setVisibility(View.GONE);
         } else {
             toolbar = toolbarRemoveView();
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                statusBarBackground.setVisibility(View.INVISIBLE);
+            } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                statusBarBackground.setVisibility(View.VISIBLE);
+            } else {
+                statusBarBackground.setVisibility(View.GONE);
+            }
         }
         appbar.addView(toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(appbar);
@@ -593,7 +605,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     public void onProductItemClicked(int position, Product product) {
         cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(
                 String.valueOf(position + 1), presenter.generateEmptyCartAnalyticProductClickDataLayer(product, position + 1));
-        startActivity(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product));
+        startActivity(getProductIntent(product.getId()));
         TopAdsGtmTracker.eventCartEmptyProductClick(getContext(), product, position);
     }
 
@@ -611,9 +623,15 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     public void onItemWishListClicked(Wishlist wishlist, int position) {
         cartPageAnalytics.enhancedEcommerceClickProductWishListOnEmptyCart(
                 String.valueOf(position), presenter.generateEmptyCartAnalyticProductClickDataLayer(wishlist, position));
-        startActivityForResult(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntent(
-                wishlist.getId()
-        ), REQUEST_CODE_ROUTE_WISHLIST);
+        startActivityForResult(getProductIntent(wishlist.getId()), REQUEST_CODE_ROUTE_WISHLIST);
+    }
+
+    private Intent getProductIntent(String productId){
+        if (getContext() != null) {
+            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -630,9 +648,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         cartPageAnalytics.enhancedEcommerceClickProductLastSeenOnEmptyCart(
                 String.valueOf(position), presenter.generateEmptyCartAnalyticProductClickDataLayer(recentView, position));
 
-        startActivityForResult(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntent(
-                recentView.getProductId()
-        ), REQUEST_CODE_ROUTE_WISHLIST);
+        startActivityForResult(getProductIntent(recentView.getProductId()), REQUEST_CODE_ROUTE_WISHLIST);
     }
 
     @Override

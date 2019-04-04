@@ -2,9 +2,9 @@ package com.tokopedia.checkout.view.di.module;
 
 import android.content.Context;
 
+import com.example.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
@@ -30,13 +30,11 @@ import com.tokopedia.checkout.view.di.qualifier.CartQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartTxActApiInterceptorQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartTxActApiRetrofitQualifier;
 import com.tokopedia.checkout.view.di.qualifier.CartTxActOkHttpClientQualifier;
-import com.tokopedia.checkout.view.di.scope.ShipmentAddressListScope;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.apiservice.RatesApi;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 import com.tokopedia.logisticdata.data.repository.RatesRepository;
-import com.tokopedia.payment.fingerprint.domain.GetPostDataOtpUseCase;
 import com.tokopedia.transactiondata.apiservice.CartApi;
 import com.tokopedia.transactiondata.apiservice.CartApiInterceptor;
 import com.tokopedia.transactiondata.apiservice.CartResponseConverter;
@@ -94,26 +92,23 @@ public class DataModule {
     @Provides
     @CartApiInterceptorQualifier
     CartApiInterceptor getCartApiInterceptor(@ApplicationContext Context context,
-                                             UserSession userSession,
                                              AbstractionRouter abstractionRouter) {
-        return new CartApiInterceptor(context, abstractionRouter, userSession, TransactionDataApiUrl.Cart.HMAC_KEY);
+        return new CartApiInterceptor(context, abstractionRouter, TransactionDataApiUrl.Cart.HMAC_KEY);
     }
 
 
     @Provides
     @CartKeroRatesApiInterceptorQualifier
     TkpdAuthInterceptor provideKeroRatesInterceptor(@ApplicationContext Context context,
-                                                    UserSession userSession,
                                                     AbstractionRouter abstractionRouter) {
-        return new TkpdAuthInterceptor(context, abstractionRouter, userSession);
+        return new TkpdAuthInterceptor(context, abstractionRouter);
     }
 
     @Provides
     @CartTxActApiInterceptorQualifier
     TkpdAuthInterceptor provideTxActInterceptor(@ApplicationContext Context context,
-                                                UserSession userSession,
                                                 AbstractionRouter abstractionRouter) {
-        return new TkpdAuthInterceptor(context, abstractionRouter, userSession);
+        return new TkpdAuthInterceptor(context, abstractionRouter);
     }
 
 
@@ -129,6 +124,7 @@ public class DataModule {
                 .readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout, TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
+                .addInterceptor(new AkamaiBotInterceptor())
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(cartApiInterceptor);
         if (GlobalConfig.isAllowDebuggingTools()) {

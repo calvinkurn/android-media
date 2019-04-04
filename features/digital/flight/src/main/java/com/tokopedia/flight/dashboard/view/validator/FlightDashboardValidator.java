@@ -37,16 +37,16 @@ public class FlightDashboardValidator {
             departureAirports.add(currentDashboardViewModel.getDepartureAirport().getAirportCode());
         }
 
-        if (currentDashboardViewModel.getDepartureAirport().getCityAirports() != null && currentDashboardViewModel.getDepartureAirport().getCityAirports().length > 0) {
-            departureAirports.addAll(Arrays.asList(currentDashboardViewModel.getDepartureAirport().getCityAirports()));
+        if (currentDashboardViewModel.getDepartureAirport().getCityAirports() != null && currentDashboardViewModel.getDepartureAirport().getCityAirports().size() > 0) {
+            departureAirports.addAll(currentDashboardViewModel.getDepartureAirport().getCityAirports());
         }
         List<String> arrivalAirports = new ArrayList<>();
         if (currentDashboardViewModel.getArrivalAirport().getAirportCode() != null) {
             arrivalAirports.add(currentDashboardViewModel.getArrivalAirport().getAirportCode());
         }
 
-        if (currentDashboardViewModel.getArrivalAirport().getCityAirports() != null && currentDashboardViewModel.getArrivalAirport().getCityAirports().length > 0) {
-            arrivalAirports.addAll(Arrays.asList(currentDashboardViewModel.getArrivalAirport().getCityAirports()));
+        if (currentDashboardViewModel.getArrivalAirport().getCityAirports() != null && currentDashboardViewModel.getArrivalAirport().getCityAirports().size() > 0) {
+            arrivalAirports.addAll(currentDashboardViewModel.getArrivalAirport().getCityAirports());
         }
         List<String> commons = new ArrayList<>(departureAirports);
         commons.retainAll(arrivalAirports);
@@ -83,7 +83,7 @@ public class FlightDashboardValidator {
 
     public boolean validateAirportsShouldDifferentCity(FlightDashboardViewModel currentDashboardViewModel) {
         return currentDashboardViewModel.getArrivalAirport() != null && currentDashboardViewModel.getDepartureAirport() != null
-                && !currentDashboardViewModel.getArrivalAirport().getCityId()
-                .equalsIgnoreCase(currentDashboardViewModel.getDepartureAirport().getCityId());
+                && !currentDashboardViewModel.getArrivalAirport().getCityName()
+                .equalsIgnoreCase(currentDashboardViewModel.getDepartureAirport().getCityName());
     }
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.otp.common.network;
 
 
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;

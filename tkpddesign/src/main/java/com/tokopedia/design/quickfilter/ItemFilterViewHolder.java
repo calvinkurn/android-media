@@ -16,7 +16,7 @@ public class ItemFilterViewHolder extends BaseItemFilterViewHolder {
 
     protected LinearLayout layoutBorder;
     protected LinearLayout layoutInside;
-    private TextView filterName;
+    protected TextView filterName;
 
     public ItemFilterViewHolder(View itemView, QuickSingleFilterListener listener) {
         super(itemView, listener);

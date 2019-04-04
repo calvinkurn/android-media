@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
+import com.tokopedia.flight.search.domain.usecase.FlightGetComboKeyUseCase
 import com.tokopedia.flight.search.domain.usecase.FlightSearchJourneyByIdUseCase
 import com.tokopedia.flight.search.presentation.model.FlightFareViewModel
 import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel
@@ -21,6 +22,7 @@ import javax.inject.Inject
  * @author by furqan on 14/01/19
  */
 class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJourneyByIdUseCase: FlightSearchJourneyByIdUseCase,
+                                                      private val flightGetComboKeyUseCase: FlightGetComboKeyUseCase,
                                                       private val flightAnalytics: FlightAnalytics) :
         BaseDaggerPresenter<FlightSearchReturnContract.View>(),
         FlightSearchReturnContract.Presenter {
@@ -33,10 +35,37 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
                     .getSearchPassData(), returnJourneyViewModel, adapterPosition)
         }
 
-        flightSearchJourneyByIdUseCase.execute(flightSearchJourneyByIdUseCase.createRequestParams(selectedFlightDeparture),
-                object : Subscriber<FlightJourneyViewModel>() {
-                    override fun onCompleted() {
+        val priceViewModel = view.getFlightPriceViewModel()
 
+        compositeSubscription.add(Observable.zip(
+                flightSearchJourneyByIdUseCase.createObservable(flightSearchJourneyByIdUseCase
+                        .createRequestParams(selectedFlightDeparture)),
+                flightGetComboKeyUseCase.createObservable(flightGetComboKeyUseCase
+                        .createRequestParams(selectedFlightDeparture, returnJourneyViewModel.id))
+        ) { departureJourney, comboKey ->
+            priceViewModel.comboKey = comboKey
+            if (departureJourney != null &&
+                    isValidReturnJourney(departureJourney, returnJourneyViewModel)) {
+                priceViewModel.returnPrice = buildFare(returnJourneyViewModel.fare, true)
+                true
+            } else {
+                false
+            }
+        }
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<Boolean>() {
+                    override fun onNext(t: Boolean?) {
+                        if (t != null && t) {
+                            view.navigateToCart(returnFlightSearchViewModel = returnJourneyViewModel,
+                                    flightPriceViewModel = priceViewModel)
+                        } else {
+                            view.showReturnTimeShouldGreaterThanArrivalDeparture()
+                        }
+                    }
+
+                    override fun onCompleted() {
                     }
 
                     override fun onError(e: Throwable?) {
@@ -46,20 +75,8 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
                         }
                     }
 
-                    override fun onNext(departureJourneyModel: FlightJourneyViewModel?) {
-                        if (departureJourneyModel != null &&
-                                isValidReturnJourney(departureJourneyModel, returnJourneyViewModel)) {
-                            val priceViewModel = view.getFlightPriceViewModel()
-                            priceViewModel.returnPrice = buildFare(returnJourneyViewModel.fare, true)
-                            priceViewModel.comboKey = returnJourneyViewModel.comboId
-
-                            view.navigateToCart(returnFlightSearchViewModel = returnJourneyViewModel,
-                                    flightPriceViewModel = priceViewModel)
-                        } else if (departureJourneyModel != null) {
-                            view.showReturnTimeShouldGreaterThanArrivalDeparture()
-                        }
-                    }
                 })
+        )
     }
 
     override fun onFlightSearchSelected(selectedFlightDeparture: String, selectedFlightReturn: String) {
@@ -73,10 +90,12 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
                         .doOnNext {
                             flightAnalytics.eventSearchProductClickFromDetail(
                                     (view as FlightSearchContract.View).getSearchPassData(), it)
-                        }
-        ) { departureJourney, returnJourney ->
+                        },
+                flightGetComboKeyUseCase.createObservable(flightGetComboKeyUseCase
+                        .createRequestParams(selectedFlightDeparture, selectedFlightReturn))
+        ) { departureJourney, returnJourney, comboKey ->
             priceViewModel.returnPrice = buildFare(returnJourney.fare, true)
-            priceViewModel.comboKey = returnJourney.comboId
+            priceViewModel.comboKey = comboKey
 
             isValidReturnJourney(departureJourney, returnJourney)
         }

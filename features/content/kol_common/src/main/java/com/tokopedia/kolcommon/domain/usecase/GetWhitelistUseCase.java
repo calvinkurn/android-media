@@ -28,6 +28,7 @@ public class GetWhitelistUseCase extends GraphqlUseCase {
     private static final String PARAM_TYPE = "type";
     private static final String PARAM_ID = "ID";
     public static final String WHITELIST_CONTENT_USER = "content-user";
+    public static final String WHITELIST_ENTRY_POINT = "entrypoint";
     public static final String WHITELIST_SHOP = "content-shop";
     public static final String WHITELIST_INTEREST = "interest";
 
@@ -47,7 +48,8 @@ public class GetWhitelistUseCase extends GraphqlUseCase {
         return new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_whitelist),
                 WhitelistQuery.class,
-                variables
+                variables,
+                false
         );
     }
 
@@ -56,7 +58,8 @@ public class GetWhitelistUseCase extends GraphqlUseCase {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_whitelist),
                 WhitelistQuery.class,
-                variables
+                variables,
+                false
         );
         this.clearRequest();
         this.addRequest(graphqlRequest);

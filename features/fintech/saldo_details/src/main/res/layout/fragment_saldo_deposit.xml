@@ -19,13 +19,16 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <fragment
+        android:id="@+id/saldo_history_layout"
+        android:name="com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:scrollbars="vertical"
-        android:visibility="visible"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/dp_1"
+        android:layout_marginLeft="@dimen/dp_1"
+        android:layout_marginEnd="@dimen/dp_1"
+        android:layout_marginRight="@dimen/dp_1"
+        android:layout_marginBottom="@dimen/dp_4"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </android.support.design.widget.CoordinatorLayout>

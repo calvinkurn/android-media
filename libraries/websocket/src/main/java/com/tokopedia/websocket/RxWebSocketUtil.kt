@@ -7,6 +7,7 @@ import okhttp3.WebSocket
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -17,7 +18,7 @@ import rx.schedulers.Schedulers
 class RxWebSocketUtil private constructor(interceptors: List<Interceptor>?,
                                           private val delay: Int,
                                           private val maxRetries: Int,
-                                          private val pingInterval: Int) {
+                                          private val pingInterval: Long) {
 
     private val client: OkHttpClient
 
@@ -28,6 +29,7 @@ class RxWebSocketUtil private constructor(interceptors: List<Interceptor>?,
 
     init {
         val builder: OkHttpClient.Builder = OkHttpClient.Builder()
+        builder.pingInterval(pingInterval, TimeUnit.MILLISECONDS)
         interceptors?.let {
             for (i in 0 until interceptors.size) {
                 builder.addInterceptor(interceptors[i])
@@ -71,14 +73,14 @@ class RxWebSocketUtil private constructor(interceptors: List<Interceptor>?,
     }
 
     companion object {
-        private val DEFAULT_PING = 10000
+        private val DEFAULT_PING = 10000L
         private val DEFAULT_MAX_RETRIES = 3
         private val DEFAULT_DELAY = 5000
         private var instance: RxWebSocketUtil? = null
 
         @JvmOverloads
         fun getInstance(interceptors: List<Interceptor>?, delay: Int =
-                                DEFAULT_DELAY, maxRetries: Int = DEFAULT_MAX_RETRIES, pingInterval: Int = DEFAULT_PING): RxWebSocketUtil? {
+                                DEFAULT_DELAY, maxRetries: Int = DEFAULT_MAX_RETRIES, pingInterval: Long = DEFAULT_PING): RxWebSocketUtil? {
             if (instance == null) {
                 instance = RxWebSocketUtil(interceptors, delay, maxRetries, pingInterval)
             }

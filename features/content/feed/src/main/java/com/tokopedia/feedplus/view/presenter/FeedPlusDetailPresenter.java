@@ -1,10 +1,10 @@
 package com.tokopedia.feedplus.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsDetailUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.subscriber.FeedDetailSubscriber;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -24,14 +24,13 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
     private WishListActionListener wishListActionListener;
 
     private final GetFeedsDetailUseCase getFeedsDetailUseCase;
-    private final UserSession userSession;
+    private final UserSessionInterface userSession;
 
 
     @Inject
     public FeedPlusDetailPresenter(GetFeedsDetailUseCase getFeedsDetailUseCase,
                             AddWishListUseCase addWishlistUseCase,
-                            RemoveWishListUseCase removeWishlistUseCase,
-                            UserSession userSession) {
+                            RemoveWishListUseCase removeWishlistUseCase, UserSessionInterface userSession) {
         this.getFeedsDetailUseCase = getFeedsDetailUseCase;
         this.addWishListUseCase = addWishlistUseCase;
         this.removeWishListUseCase = removeWishlistUseCase;

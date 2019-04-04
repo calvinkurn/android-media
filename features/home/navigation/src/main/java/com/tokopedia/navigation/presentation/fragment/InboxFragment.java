@@ -1,57 +1,63 @@
 package com.tokopedia.navigation.presentation.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.design.component.badge.BadgeView;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
+import com.tokopedia.navigation.analytics.InboxGtmTracker;
 import com.tokopedia.navigation.domain.model.Inbox;
-import com.tokopedia.navigation.presentation.activity.NotificationActivity;
+import com.tokopedia.navigation.domain.model.Recomendation;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
+import com.tokopedia.navigation.presentation.view.InboxAdapterListener;
+import com.tokopedia.navigation.presentation.adapter.InboxAdapterTypeFactory;
+import com.tokopedia.navigation.presentation.adapter.RecomItemDecoration;
+import com.tokopedia.navigation.presentation.adapter.viewholder.RecomendationViewHolder;
 import com.tokopedia.navigation.presentation.base.BaseTestableParentFragment;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.InboxPresenter;
 import com.tokopedia.navigation.presentation.view.InboxView;
-import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.navigation_common.model.NotificationsModel;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Created by meta on 19/06/18.
  */
 public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent, InboxPresenter> implements
-        InboxView, NotificationListener {
+        InboxView, InboxAdapterListener {
 
-    public static final String KEY_TOOLBAR = "key_toolbar";
     public static final int CHAT_MENU = 0;
     public static final int DISCUSSION_MENU = 1;
     public static final int REVIEW_MENU = 2;
     public static final int HELP_MENU = 3;
+    public static final int DEFAULT_SPAN_COUNT = 2;
+    public static final int SINGLE_SPAN_COUNT = 1;
 
     @Inject
     InboxPresenter presenter;
@@ -61,20 +67,27 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private InboxAdapter adapter;
-    private ImageButton menuItemNotification;
-    private TextView toolbarTitle;
-    private BadgeView badgeView;
     private View emptyLayout;
-    private AppBarLayout appBarLayout;
+    private GridLayoutManager layoutManager;
+    protected EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
+    private TrackingQueue trackingQueue;
 
-    private int badgeNumber;
+    public static InboxFragment newInstance() {
+        return new InboxFragment();
+    }
 
-    public static InboxFragment newInstance(boolean isWithToolbar) {
-        InboxFragment fragment = new InboxFragment();
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(KEY_TOOLBAR, isWithToolbar);
-        fragment.setArguments(bundle);
-        return fragment;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        trackingQueue = new TrackingQueue(getContext());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        TopAdsGtmTracker.getInstance().eventInboxProductView(trackingQueue);
+        InboxGtmTracker.getInstance().eventInboxProductView(trackingQueue);
+        trackingQueue.sendAll();
     }
 
     @Override
@@ -87,32 +100,78 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         this.intiInjector();
         presenter.setView(this);
 
-        List<Inbox> dataInbox = getData();
-
-        adapter = new InboxAdapter(getActivity());
+        List<Visitable> dataInbox = getData();
+        InboxAdapterTypeFactory typeFactory = new InboxAdapterTypeFactory(this);
+        adapter = new InboxAdapter(typeFactory, dataInbox);
 
         emptyLayout = view.findViewById(R.id.empty_layout);
         swipeRefreshLayout = view.findViewById(R.id.swipe);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.addItemDecoration(new RecomItemDecoration(getResources()
+                .getDimensionPixelSize(R.dimen.dp_8)));
+        layoutManager = new GridLayoutManager(getContext(), DEFAULT_SPAN_COUNT);
+        endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener();
+        recyclerView.setLayoutManager(layoutManager);
         swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
 
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.getInboxData());
-
-        adapter.addAll(dataInbox);
-        recyclerView.setAdapter(adapter);
-
-        adapter.setOnItemClickListener((view1, position) -> {
-            Inbox inbox = adapter.getItem(position);
-            if (inbox == null)
-                return;
-
-            globalNavAnalytics.eventInboxPage(getString(inbox.getTitle()).toLowerCase());
-            getCallingIntent(position);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                endlessRecyclerViewScrollListener.resetState();
+                adapter.clearAllElements();
+                adapter.addElement(getData());
+                presenter.getInboxData();
+                presenter.getFirstRecomData();
+            }
         });
 
-        onNotifyBadgeNotification(badgeNumber);
+        recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(endlessRecyclerViewScrollListener);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (adapter.getItemViewType(position) == RecomendationViewHolder.Companion.getLAYOUT()) {
+                    return SINGLE_SPAN_COUNT;
+                }
+                return DEFAULT_SPAN_COUNT;
+            }
+        });
+        presenter.getFirstRecomData();
+    }
+
+    @NonNull
+    private EndlessRecyclerViewScrollListener getEndlessRecyclerViewScrollListener() {
+        return new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                presenter.getRecomData(page);
+            }
+        };
+    }
+
+    @Override
+    public void onItemClickListener(Visitable item, int position) {
+        if (item instanceof Inbox) {
+            Inbox inbox = (Inbox) item;
+            globalNavAnalytics.eventInboxPage(getString(inbox.getTitle()).toLowerCase());
+            getCallingIntent(position);
+        } else if (item instanceof Recomendation) {
+            Recomendation r = (Recomendation) item;
+            getActivity().startActivity(getProductIntent(String.valueOf(r.getProductId())));
+            if(!r.isTopAds()){
+                InboxGtmTracker.getInstance().eventInboxProductClick(trackingQueue, r, position);
+            }
+        }
+    }
+
+    private Intent getProductIntent(String productId) {
+        if (getContext() != null) {
+            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
+        }
     }
 
     private void intiInjector() {
@@ -123,8 +182,8 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 .inject(this);
     }
 
-    private List<Inbox> getData() {
-        List<Inbox> inboxList = new ArrayList<>();
+    private List<Visitable> getData() {
+        List<Visitable> inboxList = new ArrayList<>();
         inboxList.add(new Inbox(R.drawable.ic_topchat, R.string.chat, R.string.chat_desc));
         inboxList.add(new Inbox(R.drawable.ic_tanyajawab, R.string.diskusi, R.string.diskusi_desc));
         inboxList.add(new Inbox(R.drawable.ic_ulasan, R.string.ulasan, R.string.ulasan_desc));
@@ -140,13 +199,10 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             case DISCUSSION_MENU:
                 if (getActivity() != null
                         && getActivity().getApplicationContext() != null) {
-                    if (getActivity().getApplicationContext() instanceof AbstractionRouter) {
-                        ((AbstractionRouter) getActivity().getApplicationContext()).getAnalyticTracker().
-                                sendEventTracking("clickInboxChat",
+                    TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("clickInboxChat",
                                         "inbox - talk",
                                         "click on diskusi product",
-                                        "");
-                    }
+                                        ""));
 
                     if (getActivity().getApplication() instanceof GlobalNavRouter) {
                         startActivity(((GlobalNavRouter) getActivity().getApplication())
@@ -184,33 +240,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     @Override
-    public void setupToolbar(View view) {
-        boolean isWithToolbar = false;
-        if (getArguments() != null) {
-            isWithToolbar = getArguments().getBoolean(KEY_TOOLBAR);
-        }
-        appBarLayout = view.findViewById(R.id.app_bar);
-        if (isWithToolbar) {
-            super.setupToolbar(view);
-            toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
-            menuItemNotification = toolbar.findViewById(R.id.action_notification);
-            menuItemNotification.setOnClickListener(v -> {
-                globalNavAnalytics.eventTrackingNotification();
-                startActivity(NotificationActivity.start(getActivity()));
-            });
-            appBarLayout.setVisibility(View.VISIBLE);
-        } else {
-            appBarLayout.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void setTitle(String title) {
-        if (toolbarTitle != null)
-            toolbarTitle.setText(title);
-    }
-
-    @Override
     public void onStartLoading() {
         if (swipeRefreshLayout != null) {
             swipeRefreshLayout.setRefreshing(true);
@@ -240,22 +269,25 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     @Override
-    protected String getScreenName() {
-        return getString(R.string.inbox);
+    public void hideLoadMoreLoading() {
+        adapter.hideLoading();
+        endlessRecyclerViewScrollListener.updateStateAfterGetData();
     }
 
     @Override
-    public void onNotifyBadgeNotification(int number) {
-        this.badgeNumber = number;
-        if (menuItemNotification == null || getActivity() == null)
-            return;
+    public void showLoadMoreLoading() {
+        adapter.showLoading();
+    }
 
-        if (badgeView == null)
-            badgeView = new BadgeView(getActivity());
 
-        badgeView.bindTarget(menuItemNotification);
-        badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
-        badgeView.setBadgeNumber(number);
+    @Override
+    public void onRenderRecomInbox(List<Visitable> list) {
+        adapter.addElement(list);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return getString(R.string.inbox);
     }
 
     @Override

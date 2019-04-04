@@ -6,25 +6,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.view.TextureView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.raizlabs.android.dbflow.sql.language.Select;
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.database.model.CategoryDB;
-import com.tokopedia.core.database.model.CategoryDB_Table;
-import com.tokopedia.core.model.share.ShareData;
-import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.share.fragment.ProductShareFragment;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.linker.model.LinkerData;
-import com.tokopedia.tkpdpdp.ProductInfoActivity;
-import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductInfoView;
 import com.tokopedia.core.analytics.*;
+import com.tokopedia.track.TrackApp;
 
 import java.util.List;
 
@@ -71,14 +66,21 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
             for (int i = 2; i < uriSegments.size(); i++) {
                 iden = iden + "_" + uriSegments.get(i);
             }
-            Intent moveIntent = BrowseProductRouter.getIntermediaryIntent(context,iden);
-
+            Intent moveIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,iden);
             viewListener.navigateToActivity(moveIntent);
         }
     }
 
     public void processToShareProduct(Context context, @NonNull LinkerData shareData) {
-        UnifyTracking.eventShareProduct(context);
+        eventShareProduct();
+    }
+
+    private void eventShareProduct() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.PRODUCT_DETAIL_PAGE,
+                AppEventTracking.Category.PRODUCT_DETAIL,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.SHARE);
     }
 
     private ProductPass generateProductPass(Bundle bundleData, Uri uriData) {

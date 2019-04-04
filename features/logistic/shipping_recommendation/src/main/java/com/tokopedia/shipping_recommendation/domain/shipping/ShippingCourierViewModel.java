@@ -14,10 +14,12 @@ public class ShippingCourierViewModel implements Parcelable {
 
     private ProductData productData;
     private ServiceData serviceData;
+    private String blackboxInfo;
     private String ratesId;
     private int additionalFee;
     private boolean allowDropshipper;
     private boolean selected;
+
 
     public ShippingCourierViewModel() {
     }
@@ -25,6 +27,7 @@ public class ShippingCourierViewModel implements Parcelable {
     protected ShippingCourierViewModel(Parcel in) {
         productData = in.readParcelable(ProductData.class.getClassLoader());
         serviceData = in.readParcelable(ServiceData.class.getClassLoader());
+        blackboxInfo = in.readString();
         ratesId = in.readString();
         additionalFee = in.readInt();
         allowDropshipper = in.readByte() != 0;
@@ -34,6 +37,7 @@ public class ShippingCourierViewModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(productData, flags);
+        dest.writeString(blackboxInfo);
         dest.writeParcelable(serviceData, flags);
         dest.writeString(ratesId);
         dest.writeInt(additionalFee);
@@ -105,4 +109,8 @@ public class ShippingCourierViewModel implements Parcelable {
     public void setServiceData(ServiceData serviceData) {
         this.serviceData = serviceData;
     }
+
+    public String getBlackboxInfo() { return blackboxInfo; }
+
+    public void setBlackboxInfo(String blackboxInfo) { this.blackboxInfo = blackboxInfo; }
 }

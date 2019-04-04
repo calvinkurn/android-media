@@ -46,6 +46,9 @@ public class TicketsItem {
     @SerializedName("need_rating")
     private int needRating;
 
+    @SerializedName("is_official_store")
+    private String isOfficialStore;
+
     private boolean isSelectableMode;
 
     private boolean isSelected;
@@ -176,5 +179,13 @@ public class TicketsItem {
 
     public int getNeedRating() {
         return needRating;
+    }
+
+    public String getIsOfficialStore() {
+        return isOfficialStore;
+    }
+
+    public void setIsOfficialStore(String isOfficialStore) {
+        this.isOfficialStore = isOfficialStore;
     }
 }

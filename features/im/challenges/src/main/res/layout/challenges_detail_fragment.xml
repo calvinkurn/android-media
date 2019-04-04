@@ -163,7 +163,6 @@
                             android:layout_height="28dp"
                             android:layout_marginTop="@dimen/dp_16"
                             android:indeterminate="false"
-                            android:progress="50"
                             android:progressDrawable="@drawable/background_progress_timer"
                             app:layout_constraintLeft_toLeftOf="@+id/count_down"
                             app:layout_constraintRight_toRightOf="@+id/count_down" />
@@ -446,10 +445,9 @@
                     android:id="@+id/cl_how_buzzpoints"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/divider4"
                     android:layout_marginLeft="@dimen/dp_16"
-                    android:orientation="vertical"
-                    android:visibility="gone"
-                    android:layout_below="@+id/divider4">
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/tv_how_buzz_points"
@@ -467,8 +465,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
                         android:layout_marginTop="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:baselineAligned="false"
                         android:orientation="vertical"
                         app:layout_constraintTop_toBottomOf="@+id/tv_how_buzz_points"
                         tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam…" />

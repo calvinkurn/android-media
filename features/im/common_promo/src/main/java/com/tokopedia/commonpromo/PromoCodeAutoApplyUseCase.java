@@ -26,7 +26,7 @@ public class PromoCodeAutoApplyUseCase extends UseCase<GraphqlResponse> {
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(mContext.getResources(),
                 R.raw.tp_gql_tokopoint_apply_coupon),
                 null,
-                requestParams.getParameters());
+                requestParams.getParameters(), false);
         return ObservableFactory.create(Arrays.asList(request), null);
     }
 }

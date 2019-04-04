@@ -9,6 +9,9 @@ data class Body(
         var caption: Caption = Caption(),
         @SerializedName("media")
         @Expose
-        var media: List<Media> = ArrayList()
+        var media: List<Media> = ArrayList(),
+        @SerializedName("postTag")
+        @Expose
+        var postTag: List<PostTag> = ArrayList()
 
 )

@@ -69,7 +69,7 @@ public class ImageSearchActivity extends DiscoveryActivity
 
             setToolbarTitle(getString(R.string.image_search_title));
         } else if (!TextUtils.isEmpty(searchQuery)) {
-            onProductQuerySubmit(searchQuery);
+            onProductQuerySubmit(searchQuery,false);
         } else {
             searchView.showSearch(true, false);
         }
