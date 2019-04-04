@@ -121,14 +121,8 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     private fun showBackButton(show: Boolean) {
         supportActionBar?.setDisplayHomeAsUpEnabled(show)
         when (show) {
-            true -> {
-                toolbarVideoPicker.setContentInsetsRelative(0, 0)
-                toolbarVideoPicker.setContentInsetsAbsolute(0, 0)
-            }
-            false -> {
-                toolbarVideoPicker.setContentInsetsRelative(R.dimen.dp_14, 0)
-                toolbarVideoPicker.setContentInsetsAbsolute(R.dimen.dp_14, 0)
-            }
+            true -> supportActionBar?.title = getString(R.string.vidpick_title)
+            false -> supportActionBar?.title = " ${getString(R.string.vidpick_title)}"
         }
     }
 
