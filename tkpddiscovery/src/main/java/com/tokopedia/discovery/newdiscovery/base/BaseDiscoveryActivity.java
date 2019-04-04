@@ -44,6 +44,8 @@ public class BaseDiscoveryActivity
     private int activeTabPosition;
 
     private Boolean isPause = false;
+    private boolean isStartingSearchActivityWithProductViewModel = false;
+    private ProductViewModel productViewModelForSearchActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,8 +161,19 @@ public class BaseDiscoveryActivity
         }
         TrackingUtils.eventAppsFlyerViewListingSearch(this, afProdIds, productViewModel.getQuery(), prodIdArray);
         TrackingUtils.sendMoEngageSearchAttempt(this, productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
-        finish();
-        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop(), isPausing());
+
+        moveToSearchActivityIfNotPausing(productViewModel);
+    }
+
+    protected void moveToSearchActivityIfNotPausing(ProductViewModel productViewModel) {
+        if (!isPausing()) {
+            finish();
+            SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop(), false);
+        }
+        else {
+            isStartingSearchActivityWithProductViewModel = true;
+            this.productViewModelForSearchActivity = productViewModel;
+        }
     }
 
     @Override
@@ -273,6 +286,14 @@ public class BaseDiscoveryActivity
     protected void onResume() {
         super.onResume();
         isPause = false;
+
+        if(isStartingSearchActivityWithProductViewModel
+            && productViewModelForSearchActivity != null) {
+            isStartingSearchActivityWithProductViewModel = false;
+
+            finish();
+            SearchActivity.moveTo(this, productViewModelForSearchActivity, isForceSwipeToShop(), isPausing());
+        }
     }
 
     public Boolean isPausing() {
