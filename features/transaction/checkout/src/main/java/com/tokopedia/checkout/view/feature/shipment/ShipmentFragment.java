@@ -1562,6 +1562,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         MerchantVoucherListBottomSheetFragment merchantVoucherListBottomSheetFragment = MerchantVoucherListBottomSheetFragment.newInstance(shopId, cartString, promo);
         merchantVoucherListBottomSheetFragment.setActionListener(this);
         merchantVoucherListBottomSheetFragment.show(getFragmentManager(), "");
+        checkoutAnalyticsCourierSelection.eventClickShowMerchantVoucherList();
     }
 
     @Override
@@ -2274,8 +2275,28 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         shipmentAdapter.notifyDataSetChanged();
-        shipmentPresenter.setCouponStateChanged(true);
         shipmentAdapter.checkHasSelectAllCourier(false);
+    }
+
+    @Override
+    public void onSuccessClearPromoStachAfterClash() {
+        // Reset global promo
+        PromoStackingData promoStackingData = shipmentAdapter.getPromoGlobalStackData();
+        promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
+        promoStackingData.setAmount(0);
+        promoStackingData.setPromoCode("");
+        promoStackingData.setDescription("");
+
+        // Reset merchant promo
+        List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentAdapter.getShipmentCartItemModelList();
+        if (shipmentCartItemModelList != null) {
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
+
+            }
+        }
+
+        shipmentAdapter.notifyDataSetChanged();
     }
 
     @Override

@@ -143,6 +143,8 @@ public interface ShipmentContract {
         void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel);
 
         void onSuccessCheckPromoFirstStep(ResponseGetPromoStackUiModel promoData);
+
+        void onSuccessClearPromoStachAfterClash();
     }
 
     interface AnalyticsActionListener {
