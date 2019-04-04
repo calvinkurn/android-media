@@ -157,10 +157,13 @@ public class BaseDiscoveryActivity
 
             }
         }
-        TrackingUtils.eventAppsFlyerViewListingSearch(this,afProdIds,productViewModel.getQuery(),prodIdArray);
+        TrackingUtils.eventAppsFlyerViewListingSearch(this, afProdIds, productViewModel.getQuery(), prodIdArray);
         TrackingUtils.sendMoEngageSearchAttempt(this, productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
-        finish();
-        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop(), isPausing());
+
+        if (!isPausing()) {
+            finish();
+            SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
+        }
     }
 
     @Override
