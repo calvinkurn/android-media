@@ -74,7 +74,7 @@ public class TopAdsGtmTracker {
                     "eventLabel", 1 + "." + (position + 1) + " - topads",
                     "ecommerce", DataLayer.mapOf("currencyCode", "IDR",
                             "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/homepage - product topads - product upload"),
-                                    "product", DataLayer.listOf(DataLayer.mapOf("name", product.getName(),
+                                    "products", DataLayer.listOf(DataLayer.mapOf("name", product.getName(),
                                             "id", product.getId(),
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
@@ -145,7 +145,7 @@ public class TopAdsGtmTracker {
                     "ecommerce", DataLayer.mapOf(
                             "click", DataLayer.mapOf("actionField",
                                     DataLayer.mapOf("list", "/ - p2"+(isLogin?" - ":" - non login - ")+tabName+" - rekomendasi untuk anda - "+recomType+" - product topads"),
-                                    "product", DataLayer.listOf(DataLayer.mapOf(
+                                    "products", DataLayer.listOf(DataLayer.mapOf(
                                             "name", product.getName(),
                                             "id", product.getId(),
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
@@ -299,7 +299,7 @@ public class TopAdsGtmTracker {
                     "ecommerce", DataLayer.mapOf(
                             "click", DataLayer.mapOf("actionField",
                                     DataLayer.mapOf("list", "/inbox - topads - rekomendasi untuk anda"),
-                                    "product", DataLayer.listOf(DataLayer.mapOf(
+                                    "products", DataLayer.listOf(DataLayer.mapOf(
                                             "name", product.getName(),
                                             "id", product.getId(),
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
@@ -347,7 +347,7 @@ public class TopAdsGtmTracker {
                     "ecommerce", DataLayer.mapOf(
                             "click", DataLayer.mapOf(
                                     "actionField", DataLayer.mapOf("list", "/productdetail - topads"),
-                                    "product", DataLayer.listOf(DataLayer.mapOf(
+                                    "products", DataLayer.listOf(DataLayer.mapOf(
                                             "name", product.getName(),
                                             "id", product.getId(),
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
@@ -593,7 +593,7 @@ public class TopAdsGtmTracker {
                     "ecommerce", DataLayer.mapOf(
                             "click", DataLayer.mapOf(
                                     "actionField", DataLayer.mapOf("list", "/intermediary page - topads - promoted"),
-                                    "product", DataLayer.listOf(DataLayer.mapOf(
+                                    "products", DataLayer.listOf(DataLayer.mapOf(
                                             "name", product.getName(),
                                             "id", product.getId(),
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
@@ -642,7 +642,7 @@ public class TopAdsGtmTracker {
                     "ecommerce", DataLayer.mapOf(
                             "click", DataLayer.mapOf(
                                     "actionField", DataLayer.mapOf("list", "/hotlist - topads - promoted"),
-                                    "product", DataLayer.listOf(DataLayer.mapOf(
+                                    "products", DataLayer.listOf(DataLayer.mapOf(
                                             "name", product.getName(),
                                             "id", product.getId(),
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
@@ -690,7 +690,7 @@ public class TopAdsGtmTracker {
                     "ecommerce", DataLayer.mapOf(
                             "click", DataLayer.mapOf(
                                     "actionField", DataLayer.mapOf("list", "/category/" + product.getCategory().getId() + " - topads"),
-                                    "product", DataLayer.listOf(DataLayer.mapOf(
+                                    "products", DataLayer.listOf(DataLayer.mapOf(
                                             "name", product.getName(),
                                             "id", product.getId(),
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
@@ -833,7 +833,7 @@ public class TopAdsGtmTracker {
                             "currencyCode", "IDR",
                             "click", DataLayer.mapOf(
                                     "actionField", DataLayer.mapOf("list", "/wishlist - product topads - product upload"),
-                                    "product", DataLayer.listOf(DataLayer.mapOf("name", product.getName(),
+                                    "products", DataLayer.listOf(DataLayer.mapOf("name", product.getName(),
                                             "id", product.getId(),
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
@@ -857,7 +857,7 @@ public class TopAdsGtmTracker {
                             "currencyCode", "IDR",
                             "click", DataLayer.mapOf(
                                     "actionField", DataLayer.mapOf("list", "/empty wishlist - product topads - product upload"),
-                                    "product", DataLayer.listOf(DataLayer.mapOf("name", product.getName(),
+                                    "products", DataLayer.listOf(DataLayer.mapOf("name", product.getName(),
                                             "id", product.getId(),
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
@@ -905,7 +905,7 @@ public class TopAdsGtmTracker {
                             "currencyCode", "IDR",
                             "click", DataLayer.mapOf(
                                     "actionField", DataLayer.mapOf("list", "/empty cart - topads"),
-                                    "product", DataLayer.listOf(DataLayer.mapOf("name", product.getName(),
+                                    "products", DataLayer.listOf(DataLayer.mapOf("name", product.getName(),
                                             "id", product.getId(),
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
@@ -953,7 +953,7 @@ public class TopAdsGtmTracker {
                             "currencyCode", "IDR",
                             "click", DataLayer.mapOf(
                                     "actionField", DataLayer.mapOf("list", "/cart - topads"),
-                                    "product", DataLayer.listOf(DataLayer.mapOf("name", product.getName(),
+                                    "products", DataLayer.listOf(DataLayer.mapOf("name", product.getName(),
                                             "id", product.getId(),
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
@@ -1001,7 +1001,7 @@ public class TopAdsGtmTracker {
                             "currencyCode", "IDR",
                             "click", DataLayer.mapOf(
                                     "actionField", DataLayer.mapOf("list", "/cart - topads"),
-                                    "product", DataLayer.listOf(DataLayer.mapOf("name", product.getName(),
+                                    "products", DataLayer.listOf(DataLayer.mapOf("name", product.getName(),
                                             "id", product.getId(),
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
@@ -1049,7 +1049,7 @@ public class TopAdsGtmTracker {
                             "currencyCode", "IDR",
                             "click", DataLayer.mapOf(
                                     "actionField", DataLayer.mapOf("list", "/recent view - topads - promoted"),
-                                    "product", DataLayer.listOf(DataLayer.mapOf("name", product.getName(),
+                                    "products", DataLayer.listOf(DataLayer.mapOf("name", product.getName(),
                                             "id", product.getId(),
                                             "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
