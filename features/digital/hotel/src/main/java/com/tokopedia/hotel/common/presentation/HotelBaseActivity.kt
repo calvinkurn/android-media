@@ -60,9 +60,9 @@ abstract class HotelBaseActivity: BaseSimpleActivity() {
 
     private fun showBottomMenus() {
         menus = Menus(this)
-        val menuItem = arrayOf(resources.getString(R.string.hotel_homepage_bottom_menu_transaction_list),
-                resources.getString(R.string.hotel_homepage_bottom_menu_promo),
-                resources.getString(R.string.hotel_homepage_bottom_menu_help))
+        val menuItem = arrayOf(resources.getString(R.string.hotel_bottom_menu_transaction_list),
+                resources.getString(R.string.hotel_bottom_menu_promo),
+                resources.getString(R.string.hotel_bottom_menu_help))
         menus.setItemMenuList(menuItem)
 
         menus.setOnActionClickListener { view -> menus.dismiss() }
@@ -76,7 +76,7 @@ abstract class HotelBaseActivity: BaseSimpleActivity() {
             menus.dismiss()
         }
 
-        menus.setActionText(resources.getString(R.string.hotel_homepage_bottom_menu_action_text))
+        menus.setActionText(resources.getString(R.string.hotel_bottom_menu_action_text))
 
         menus.show()
     }
