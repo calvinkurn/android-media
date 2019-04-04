@@ -15,6 +15,7 @@ import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.di.component.HotelComponent
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.data.model.RecentSearch
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
@@ -45,7 +46,7 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        getComponent(HotelDestinationComponent::class.java).inject(this)
+        getComponent(HotelComponent::class.java).inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

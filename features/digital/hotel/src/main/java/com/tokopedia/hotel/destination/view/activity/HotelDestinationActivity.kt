@@ -26,7 +26,7 @@ import javax.inject.Inject
  * @author by jessica on 25/03/19
  */
 
-class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinationComponent>, SearchInputView.Listener,
+class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelComponent>, SearchInputView.Listener,
         SearchInputView.ResetListener {
 
     @Inject
@@ -43,9 +43,7 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
 
     override fun isShowCloseButton(): Boolean = true
 
-    override fun getComponent(): HotelDestinationComponent = DaggerHotelDestinationComponent.builder()
-                    .hotelComponent(getHotelComponent())
-                    .build()
+    override fun getComponent(): HotelComponent = HotelComponentInstance.getHotelComponent(application)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

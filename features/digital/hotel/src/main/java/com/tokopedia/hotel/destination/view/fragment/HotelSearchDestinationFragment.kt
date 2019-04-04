@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.di.component.HotelComponent
 import com.tokopedia.hotel.destination.data.model.SearchDestination
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
 import com.tokopedia.hotel.destination.view.adapter.SearchDestinationTypeFactory
@@ -52,7 +53,7 @@ class HotelSearchDestinationFragment: BaseListFragment<SearchDestination, Search
 
 
     override fun initInjector() {
-        getComponent(HotelDestinationComponent::class.java).inject(this)
+        getComponent(HotelComponent::class.java).inject(this)
     }
 
     override fun loadData(page: Int) {

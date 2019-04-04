@@ -12,7 +12,7 @@ import kotlinx.coroutines.experimental.CoroutineDispatcher
  */
 
 @HotelDestinationScope
-@Component(modules = [HotelDestinationModule::class, ViewModelModule::class], dependencies = [HotelComponent::class])
+@Component(modules = [HotelDestinationModule::class], dependencies = [HotelComponent::class])
 interface HotelDestinationComponent {
     fun inject(hotelDestinationActivity: HotelDestinationActivity)
     fun inject(hotelRecommendationFragment: HotelRecommendationFragment)
