@@ -401,7 +401,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 FeedTabModel selectedFeedTabModel =
                         feedTabModelList.get(tab.getPosition());
                 HomePageTracking.eventClickOnHomePageRecommendationTab(
-                        trackingQueue,
+                        getActivity(),
                         selectedFeedTabModel
                 );
             }

@@ -511,8 +511,10 @@ public class HomePageTracking {
     }
 
     public static void eventClickOnHomePageRecommendationTab(
-            TrackingQueue trackingQueue,
+            Context context,
             FeedTabModel feedTabModel) {
+
+        ContextAnalytics tracker = getTracker(context);
 
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
@@ -527,7 +529,7 @@ public class HomePageTracking {
                         )
                 )
         );
-        trackingQueue.putEETracking((HashMap<String, Object>) data);
+        tracker.sendEnhanceEcommerceEvent(data);
     }
 
     public static void eventImpressionOnProductRecommendationForLoggedInUser(
@@ -587,9 +589,11 @@ public class HomePageTracking {
     }
 
     public static void eventClickOnHomeProductFeedForLoggedInUser(
-            TrackingQueue trackingQueue,
+            Context context,
             HomeFeedViewModel homeFeedViewModel,
             String tabName) {
+
+        ContextAnalytics tracker = getTracker(context);
 
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PRODUCT_CLICK,
@@ -611,13 +615,15 @@ public class HomePageTracking {
                         )
                 )
         );
-        trackingQueue.putEETracking((HashMap<String, Object>) data);
+        tracker.sendEnhanceEcommerceEvent(data);
     }
 
     public static void eventClickOnHomeProductFeedForNonLoginUser(
-            TrackingQueue trackingQueue,
+            Context context,
             HomeFeedViewModel homeFeedViewModel,
             String tabName) {
+
+        ContextAnalytics tracker = getTracker(context);
 
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PRODUCT_CLICK,
@@ -639,7 +645,7 @@ public class HomePageTracking {
                         )
                 )
         );
-        trackingQueue.putEETracking((HashMap<String, Object>) data);
+        tracker.sendEnhanceEcommerceEvent(data);
     }
 
     public static void eventClickWishlistOnProductRecommendation(Context context, String tabName) {
