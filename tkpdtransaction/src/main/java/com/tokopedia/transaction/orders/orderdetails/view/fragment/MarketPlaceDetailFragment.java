@@ -368,6 +368,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
         doubleTextView.setBottomText(payMethod.getValue());
         doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
+        doubleTextView.setTopTextSize(TEXT_SIZE_MEDIUM);
         doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70));
         doubleTextView.setBottomGravity(Gravity.RIGHT);
         paymentMethod.addView(doubleTextView);
@@ -686,8 +687,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void setPaymentData(PaymentData paymentData) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(paymentData.label());
-        doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.black));
+        doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.black_70_new));
         doubleTextView.setTopTextSize(TEXT_SIZE_LARGE);
+        doubleTextView.setTopTextStyle("bold");
         doubleTextView.setBottomText(paymentData.value());
         if (!paymentData.textColor().equals(""))
             doubleTextView.setBottomTextColor(Color.parseColor(paymentData.textColor()));
