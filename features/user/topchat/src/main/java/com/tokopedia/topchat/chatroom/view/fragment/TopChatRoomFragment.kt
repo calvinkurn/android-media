@@ -648,7 +648,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         startActivityForResult(intent, REQUEST_GO_TO_SHOP)
     }
 
-    override fun followUnfollowShop() {
+    override fun followUnfollowShop(actionFollow: Boolean) {
+        analytics.eventFollowUnfollowShop(actionFollow, shopId.toString())
         presenter.followUnfollowShop(shopId.toString(), onErrorFollowUnfollowShop(), onSuccessFollowUnfollowShop())
     }
 

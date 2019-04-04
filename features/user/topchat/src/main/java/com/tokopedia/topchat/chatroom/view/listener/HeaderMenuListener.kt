@@ -9,7 +9,7 @@ interface HeaderMenuListener{
 
     fun onGoToShop()
 
-    fun followUnfollowShop()
+    fun followUnfollowShop(b: Boolean)
 
     fun onDeleteConversation()
 
