@@ -9,7 +9,6 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.ViewFlipper;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
@@ -17,16 +16,14 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Tabs;
-import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
-import com.tokopedia.tokopoints.view.adapter.CouponFilterPagerAdapter;
-import com.tokopedia.tokopoints.view.contract.CouponActivityContract;
-import com.tokopedia.tokopoints.view.fragment.MyCouponListingFragment;
+import com.tokopedia.tokopoints.view.adapter.StackedCouponFilterPagerAdapter;
+import com.tokopedia.tokopoints.view.contract.StackedCouponActivityContract;
+import com.tokopedia.tokopoints.view.fragment.CouponListingStackedFragment;
 import com.tokopedia.tokopoints.view.model.CouponFilterItem;
-import com.tokopedia.tokopoints.view.presenter.CouponActivityPresenter;
+import com.tokopedia.tokopoints.view.presenter.StackedCouponActivityPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.TabUtil;
@@ -39,16 +36,16 @@ import javax.inject.Inject;
 
 import static com.tokopedia.tokopoints.view.util.CommonConstant.TAB_SETUP_DELAY_MS;
 
-public class MyCouponListingActivity extends BaseSimpleActivity implements CouponActivityContract.View, HasComponent<TokoPointComponent> {
+public class CouponListingStackedActivity extends BaseSimpleActivity implements StackedCouponActivityContract.View, HasComponent<TokoPointComponent> {
     private static final int REQUEST_CODE_LOGIN = 1;
     private TokoPointComponent tokoPointComponent;
     private ViewFlipper mContainerMain;
     private ViewPager mPagerFilter;
     private Tabs mTabsFilter;
-    CouponFilterPagerAdapter mAdapter;
+    private StackedCouponFilterPagerAdapter mAdapter;
 
     @Inject
-    CouponActivityPresenter mPresenter;
+    StackedCouponActivityPresenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,15 +57,8 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
         initViews();
         UserSessionInterface userSession = new UserSession(this);
         if (userSession.isLoggedIn()) {
-            if (getApplicationContext() instanceof TokopointRouter
-                    && ((TokopointRouter) getApplicationContext())
-                    .getBooleanRemoteConfig(CommonConstant.TOKOPOINTS_NEW_COUPON_LISTING, false)) {
-                finish();
-                startActivity(new Intent(this, CouponListingStackedActivity.class));
-            } else {
-                mPresenter.getFilter(getIntent().getStringExtra(CommonConstant.EXTRA_SLUG));
-                showLoading();
-            }
+            mPresenter.getFilter(getIntent().getStringExtra(CommonConstant.EXTRA_SLUG));
+            showLoading();
         } else {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
         }
@@ -76,7 +66,7 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.tp_activity_coupon_list;
+        return R.layout.tp_activity_stacked_coupon_list;
     }
 
     @Override
@@ -90,18 +80,14 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
         return tokoPointComponent;
     }
 
-    @DeepLink({ApplinkConstant.COUPON_LISTING,
-            ApplinkConstant.COUPON_LISTING2,
-            ApplinkConstant.COUPON_LISTING3,
-            ApplinkConstant.COUPON_LISTING4})
     public static Intent getCallingIntent(Context context, @NonNull Bundle extras) {
-        Intent intent = new Intent(context, MyCouponListingActivity.class);
+        Intent intent = new Intent(context, CouponListingStackedActivity.class);
         intent.putExtras(extras);
         return intent;
     }
 
     public static Intent getCallingIntent(Context context) {
-        return new Intent(context, MyCouponListingActivity.class);
+        return new Intent(context, CouponListingStackedActivity.class);
     }
 
     private void initInjector() {
@@ -134,16 +120,11 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
     public void onSuccess(List<CouponFilterItem> data) {
 
         //Setting up sort types tabs
-        mAdapter = new CouponFilterPagerAdapter(getSupportFragmentManager(), data);
+        mAdapter = new StackedCouponFilterPagerAdapter(getSupportFragmentManager(), data);
 
         mPagerFilter.setAdapter(mAdapter);
         mTabsFilter.setupWithViewPager(mPagerFilter);
         mTabsFilter.setVisibility(View.VISIBLE);
-
-        //excluding extra padding from tabs
-        TabUtil.wrapTabIndicatorToTitle(mTabsFilter,
-                (int) getResources().getDimension(R.dimen.tp_margin_medium),
-                (int) getResources().getDimension(R.dimen.tp_margin_regular));
 
         mPagerFilter.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -153,7 +134,7 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
 
             @Override
             public void onPageSelected(int position) {
-                MyCouponListingFragment fragment = (MyCouponListingFragment) mAdapter.getRegisteredFragment(position);
+                CouponListingStackedFragment fragment = (CouponListingStackedFragment) mAdapter.getRegisteredFragment(position);
 
                 if (fragment != null
                         && fragment.isAdded()) {
@@ -209,7 +190,7 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
     }
 
     public void loadFirstTab(int categoryId) {
-        MyCouponListingFragment fragment = (MyCouponListingFragment) mAdapter.getRegisteredFragment(mPagerFilter.getCurrentItem());
+        CouponListingStackedFragment fragment = (CouponListingStackedFragment) mAdapter.getRegisteredFragment(mPagerFilter.getCurrentItem());
         if (fragment != null
                 && fragment.isAdded()) {
             if (fragment.getPresenter() != null && fragment.getPresenter().isViewAttached()) {

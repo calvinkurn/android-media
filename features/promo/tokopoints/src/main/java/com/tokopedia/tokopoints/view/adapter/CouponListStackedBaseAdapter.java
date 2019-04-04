@@ -13,20 +13,22 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.library.baseadapter.BaseAdapter;
-import com.tokopedia.library.baseadapter.BaseItem;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.activity.CouponDetailActivity;
-import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
+import com.tokopedia.tokopoints.view.fragment.CouponInStackBottomSheet;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
+import com.tokopedia.tokopoints.view.presenter.CouponListingStackedPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
@@ -38,10 +40,11 @@ import java.util.Map;
 
 import rx.Subscriber;
 
-public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
+public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity> {
 
     private Context mContext;
     private int mCategoryId = 0;
+    private CouponListingStackedPresenter mPresenter;
 
     public class ViewHolder extends BaseVH {
         TextView label, value, tvMinTxnValue, tvMinTxnLabel;
@@ -50,6 +53,7 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
         /*This section is exclusively for handling timer*/
         public CountDownTimer timer;
         public ProgressBar progressTimer;
+        public View viewCouponNew;
 
         public ViewHolder(View view) {
             super(view);
@@ -61,16 +65,19 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
             tvMinTxnValue = view.findViewById(R.id.tv_min_txn_value);
             tvMinTxnLabel = view.findViewById(R.id.tv_min_txn_label);
             progressTimer = view.findViewById(R.id.progress_timer);
+            viewCouponNew = view.findViewById(R.id.view_coupon_new);
         }
 
         @Override
         public void bindView(CouponValueEntity item, int position) {
             setData(this, item);
+
         }
     }
 
-    public CouponListBaseAdapter(AdapterCallback callback, Context context, int categoryId) {
+    public CouponListStackedBaseAdapter(CouponListingStackedPresenter presenter, AdapterCallback callback, Context context, int categoryId) {
         super(callback);
+        this.mPresenter = presenter;
         this.mContext = context;
         this.mCategoryId = categoryId;
     }
@@ -138,9 +145,9 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
     @Override
     protected BaseVH getItemViewHolder(ViewGroup parent, LayoutInflater inflater, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.tp_item_my_coupon, parent, false);
+                .inflate(R.layout.tp_item_my_coupon_stacked, parent, false);
 
-        return new CouponListBaseAdapter.ViewHolder(itemView);
+        return new CouponListStackedBaseAdapter.ViewHolder(itemView);
     }
 
     @Override
@@ -157,7 +164,7 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
         variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID_COUPON, mCategoryId);
         variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, 0);
 
-        String query = GraphqlHelper.loadRawString(mContext.getResources(), R.raw.tp_gql_coupon_listing);
+        String query = GraphqlHelper.loadRawString(mContext.getResources(), R.raw.tp_gql_coupon_listing_stack);
         GraphqlRequest graphqlRequestMain = new GraphqlRequest(query, TokoPointPromosEntity.class, variablesMain, false);
         graphqlUseCase.addRequest(graphqlRequestMain);
 
@@ -188,7 +195,13 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
     }
 
     private void setData(ViewHolder holder, CouponValueEntity item) {
-        ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getThumbnailUrlMobile());
+        ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getImageUrlMobile());
+
+        if (item.isNewCoupon()) {
+            holder.viewCouponNew.setVisibility(View.VISIBLE);
+        } else {
+            holder.viewCouponNew.setVisibility(View.GONE);
+        }
 
         if (item.getUsage() != null) {
             holder.label.setVisibility(View.VISIBLE);
@@ -209,22 +222,32 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
             holder.ivMinTxn.setVisibility(View.VISIBLE);
             holder.tvMinTxnLabel.setVisibility(View.VISIBLE);
             holder.tvMinTxnLabel.setText(item.getMinimumUsageLabel());
-
         }
 
         if (TextUtils.isEmpty(item.getMinimumUsage())) {
             holder.tvMinTxnValue.setVisibility(View.GONE);
+            holder.tvMinTxnLabel.setPadding(0, holder.imgBanner.getResources().getDimensionPixelOffset(R.dimen.dp_5), 0, 0);
         } else {
+            holder.tvMinTxnLabel.setPadding(0, 0, 0, 0);
             holder.tvMinTxnValue.setVisibility(View.VISIBLE);
             holder.tvMinTxnValue.setText(item.getMinimumUsage());
         }
 
         holder.imgBanner.setOnClickListener(v -> {
-            Bundle bundle = new Bundle();
-            bundle.putString(CommonConstant.EXTRA_COUPON_CODE, item.getCode());
-            holder.imgBanner.getContext().startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
-
-            sendClickEvent(holder.imgBanner.getContext(), item, holder.getAdapterPosition());
+            if (item.isStacked()) {
+                //TODO show stacked bottomsheet
+                Toast.makeText(holder.imgBanner.getContext(), "stacked bottomsheet", Toast.LENGTH_SHORT).show();
+                CouponInStackBottomSheet bottomSheet = new CouponInStackBottomSheet();
+                bottomSheet.setData(item.getStackId());
+                //bottomSheet.show(); TODO need to show the bottomsheet
+                mPresenter.getCouponInStack(item.getStackId());
+            } else {
+                //RouteManager.route(holder.imgBanner.getContext(), item.getRedirectAppLink());
+                Bundle bundle = new Bundle();
+                bundle.putString(CommonConstant.EXTRA_COUPON_CODE, item.getCode());
+                holder.imgBanner.getContext().startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
+                sendClickEvent(holder.imgBanner.getContext(), item, holder.getAdapterPosition());
+            }
         });
 
 

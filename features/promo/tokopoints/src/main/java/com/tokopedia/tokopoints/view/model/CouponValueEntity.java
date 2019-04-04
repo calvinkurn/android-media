@@ -97,6 +97,41 @@ public class CouponValueEntity extends BaseItem {
     @SerializedName("stackID")
     private String stackId;
 
+    @SerializedName("redirectAppLink")
+    private String redirectAppLink;
+
+    public String getRedirectAppLink() {
+        return redirectAppLink;
+    }
+
+    public void setRedirectAppLink(String redirectAppLink) {
+        this.redirectAppLink = redirectAppLink;
+    }
+
+    public boolean isStacked() {
+        return isStacked;
+    }
+
+    public void setStacked(boolean stacked) {
+        isStacked = stacked;
+    }
+
+    public boolean isNewCoupon() {
+        return isNewCoupon;
+    }
+
+    public void setNewCoupon(boolean newCoupon) {
+        isNewCoupon = newCoupon;
+    }
+
+    public String getStackId() {
+        return stackId;
+    }
+
+    public void setStackId(String stackId) {
+        this.stackId = stackId;
+    }
+
     public CouponSwipeDetail getSwipe() {
         return swipe;
     }
