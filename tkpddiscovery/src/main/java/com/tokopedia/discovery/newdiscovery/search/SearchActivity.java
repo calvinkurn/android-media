@@ -444,7 +444,7 @@ public class SearchActivity extends DiscoveryActivity
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
         searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
-        searchSectionItemList.add(new SearchSectionItem(getString(R.string.title_profile), profileListFragment));
+        searchSectionItemList.add(new SearchSectionItem(profileTabTitle, profileListFragment));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
 
@@ -503,7 +503,7 @@ public class SearchActivity extends DiscoveryActivity
 
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
-        searchSectionItemList.add(new SearchSectionItem(getString(R.string.title_profile), profileListFragment));
+        searchSectionItemList.add(new SearchSectionItem(profileTabTitle, profileListFragment));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
 
@@ -795,8 +795,7 @@ public class SearchActivity extends DiscoveryActivity
 
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
-        finish();
-        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop(), isPausing());
+        handleMoveToSearchActivity(productViewModel);
         stopPerformanceMonitoring();
     }
 }
