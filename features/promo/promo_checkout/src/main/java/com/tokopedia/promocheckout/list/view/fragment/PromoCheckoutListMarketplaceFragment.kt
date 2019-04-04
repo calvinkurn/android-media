@@ -134,9 +134,18 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_DETAIL_PROMO) {
-            activity?.setResult(Activity.RESULT_OK, data)
-            activity?.finish()
+        if (requestCode == REQUEST_CODE_DETAIL_PROMO) {
+            if (resultCode == Activity.RESULT_OK) {
+                activity?.setResult(Activity.RESULT_OK, data)
+                activity?.finish()
+            } else {
+                val intent = Intent()
+                val bundle = data?.getExtras()
+                val clashingInfoDetailUiModel: ClashingInfoDetailUiModel? = bundle?.getParcelable(EXTRA_CLASHING_DATA);
+                intent.putExtra(EXTRA_CLASHING_DATA, clashingInfoDetailUiModel)
+                activity?.setResult(RESULT_CLASHING, intent)
+                activity?.finish()
+            }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }

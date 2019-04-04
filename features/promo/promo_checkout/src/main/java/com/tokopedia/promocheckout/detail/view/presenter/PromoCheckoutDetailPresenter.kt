@@ -87,7 +87,11 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
                         }
                     } else {
                         if (!isFromLoadDetail) {
-                            view.onSuccessValidatePromoStacking(responseGetPromoStack.data)
+                            if (promo.skipApply == 0 && responseGetPromoStack.data.clashings.isClashedPromos) {
+                                view.onClashCheckPromo(responseGetPromoStack.data.clashings)
+                            } else {
+                                view.onSuccessValidatePromoStacking(responseGetPromoStack.data)
+                            }
                         } else {
                             view.onErroGetDetail(CheckPromoCodeDetailException(responseGetPromoStack.data.message.text))
                         }
