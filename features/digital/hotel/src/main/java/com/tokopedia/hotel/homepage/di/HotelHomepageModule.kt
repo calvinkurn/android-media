@@ -6,5 +6,4 @@ import dagger.Module
  * @author by furqan on 28/03/19
  */
 @Module
-class HotelHomepageModule() {
-}
+abstract class HotelHomepageModule

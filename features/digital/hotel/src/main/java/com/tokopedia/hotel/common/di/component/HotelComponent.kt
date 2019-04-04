@@ -28,6 +28,4 @@ interface HotelComponent {
 
     fun inject(hotelBaseActivity: HotelBaseActivity)
 
-    fun inject(hotelHomepageFragment: HotelHomepageFragment)
-
 }

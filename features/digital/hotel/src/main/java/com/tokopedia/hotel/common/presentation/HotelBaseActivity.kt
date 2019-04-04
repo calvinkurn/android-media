@@ -15,7 +15,7 @@ import com.tokopedia.hotel.common.di.component.DaggerHotelComponent
 /**
  * @author by furqan on 25/03/19
  */
-abstract class HotelBaseActivity: BaseSimpleActivity(), HasComponent<HotelComponent> {
+abstract class HotelBaseActivity: BaseSimpleActivity() {
     private lateinit var menus: Menus
 
     override fun onCreate(savedInstanceState: Bundle?) {
