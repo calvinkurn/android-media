@@ -14,7 +14,6 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".feature.explore.view.activity.ExploreActivity"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
@@ -39,6 +38,7 @@
         <activity
             android:name=".feature.createpost.view.activity.CreatePostActivity"
             android:label="@string/title_af_create_post"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
