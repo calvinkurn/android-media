@@ -323,6 +323,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openProfile(linkSegment);
                     screenName = "";
                     break;
+                case DeepLinkChecker.CONTENT:
+                    openContent(linkSegment);
+                    screenName = "";
+                    break;
                 default:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -417,6 +421,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     context,
                     ApplinkConst.PROFILE.replace("{user_id}", userId)
             );
+            viewListener.goToPage(intent);
+        }
+    }
+
+    private void openContent(List<String> linkSegment) {
+        if (linkSegment.size() >= 2) {
+            String contentId = linkSegment.get(1);
+            Intent intent = RouteManager.getIntent(context, ApplinkConst.CONTENT_DETAIL, contentId);
             viewListener.goToPage(intent);
         }
     }
