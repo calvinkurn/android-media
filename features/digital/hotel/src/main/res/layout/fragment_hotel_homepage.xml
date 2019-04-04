@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical"
     android:paddingLeft="@dimen/dp_16"
     android:paddingTop="@dimen/dp_16"
@@ -188,17 +189,17 @@
             <com.tokopedia.design.component.TextViewCompat
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:text="@string/hotel_homepage_all_promo"
                 android:textColor="@color/green_500"
-                android:layout_gravity="center_vertical"
                 app:fontSize="micro" />
 
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_hotel_homepage_promo"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/rv_hotel_homepage_promo">
+            android:layout_height="wrap_content">
 
         </android.support.v7.widget.RecyclerView>
 
