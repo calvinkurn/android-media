@@ -20,6 +20,7 @@ constructor(private val analyticTracker: AnalyticTracker) {
 
     private val GENERIC_CATEGORY = "homepage"
     private val EVENT_ACTION_LAYANAN_CLICK = "click on %s"
+    private val EVENT_ACTION_LAYANAN_IMPRESSION = "impression on %s"
 
 
     fun eventClickBackOnBelanjaPage() {
@@ -134,7 +135,7 @@ constructor(private val analyticTracker: AnalyticTracker) {
     fun eventClickIconLayanan(analyticsModel: DigitalBrowseServiceAnalyticsModel) {
         try {
             val promotions = ArrayList<Any>()
-            promotions.add(analyticsModel)
+            promotions.add(analyticsModel.getPromoFieldObject())
 
             analyticTracker.sendEnhancedEcommerce(
                     DataLayer.mapOf(
@@ -169,8 +170,8 @@ constructor(private val analyticTracker: AnalyticTracker) {
                     DataLayer.mapOf(
                             "event", "promoView",
                             "eventCategory", GENERIC_CATEGORY,
-                            "eventAction", "",
-                            "eventLabel", headerName,
+                            "eventAction", String.format(EVENT_ACTION_LAYANAN_IMPRESSION, headerName),
+                            "eventLabel", "",
                             "ecommerce", DataLayer.mapOf(
                             "promoView", DataLayer.mapOf(
                             "promotions", DataLayer.listOf(*promotions.toTypedArray()))
