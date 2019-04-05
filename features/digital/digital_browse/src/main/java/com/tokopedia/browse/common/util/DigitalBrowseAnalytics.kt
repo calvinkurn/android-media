@@ -73,8 +73,7 @@ constructor() {
 
     fun eventClickIconLayanan(analyticsModel: DigitalBrowseServiceAnalyticsModel) {
         try {
-            val promotions = arrayListOf<Any>()
-            promotions.add(analyticsModel.getPromoFieldObject())
+            val promotions = arrayListOf(analyticsModel.getPromoFieldObject())
 
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
                     "event", "promoClick",

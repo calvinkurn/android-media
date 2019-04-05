@@ -324,7 +324,6 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
             val analyticsModel = presenter.getItemPositionInGroup(
                     this.viewModel.titleMap!!,
                     position)
-            analyticsModel.isTitle = item.isTitle
             analyticsModel.iconName = item.name?:""
             dataObjects.add(analyticsModel)
             position++
