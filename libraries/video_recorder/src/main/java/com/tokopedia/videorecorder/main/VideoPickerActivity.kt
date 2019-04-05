@@ -236,13 +236,8 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     override fun onVideoTaken(filePath: String) {
         if (filePath.isNotEmpty()) {
             selectCurrentPage(currentSelectedTab)
+            initViewPager()
             onPreviewVideoVisible()
-
-            //preventing crash
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                initViewPager()
-            }
-
             val uriFile = Uri.parse(filePath)
             isVideoSourcePicker = false
             videoPath = filePath
