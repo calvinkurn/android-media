@@ -71,41 +71,22 @@ constructor() {
                 tabName))
     }
 
-    fun eventImpressionIconLayanan(analyticsModel: DigitalBrowseServiceAnalyticsModel) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.IMPRESSION_HOME_PAGE,
-                GENERIC_CATEGORY,
-                String.format(Action.IMPRESSION_ICON_LAYANAN, analyticsModel.headerName),
-                analyticsModel.iconName + "_" + analyticsModel.headerPosition
-                        + "_" + analyticsModel.iconPosition))
-    }
-
-    fun eventClickIconLayanan(analyticsModel: DigitalBrowseServiceAnalyticsModel) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_HOME_PAGE,
-                GENERIC_CATEGORY,
-                String.format(Action.CLICK_ICON_LAYANAN, analyticsModel.headerName),
-                analyticsModel.iconName + "_" + analyticsModel.headerPosition
-                        + "_" + analyticsModel.iconPosition))
-
     fun eventClickIconLayanan(analyticsModel: DigitalBrowseServiceAnalyticsModel) {
         try {
             val promotions = arrayListOf<Any>()
             promotions.add(analyticsModel.getPromoFieldObject())
 
-            analyticTracker.sendEnhancedEcommerce(
-                    DataLayer.mapOf(
-                            "event", "promoClick",
-                            "eventCategory", GENERIC_CATEGORY,
-                            "eventAction", String.format(EVENT_ACTION_LAYANAN_CLICK,
-                            analyticsModel.headerName),
-                            "eventLabel", "",
-                            "ecommerce", DataLayer.mapOf(
-                            "promoClick", DataLayer.mapOf(
-                            "promotions", promotions)
-                    )
-                    )
-                    )
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                    "event", "promoClick",
+                    "eventCategory", GENERIC_CATEGORY,
+                    "eventAction", String.format(EVENT_ACTION_LAYANAN_CLICK,
+                    analyticsModel.headerName),
+                    "eventLabel", "",
+                    "ecommerce", DataLayer.mapOf(
+                    "promoClick", DataLayer.mapOf(
+                    "promotions", promotions)
+            )
+            ))
         } catch (e: Exception) {
             e.printStackTrace()
         }
