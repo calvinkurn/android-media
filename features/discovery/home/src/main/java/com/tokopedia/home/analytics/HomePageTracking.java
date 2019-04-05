@@ -758,7 +758,7 @@ public class HomePageTracking {
         }
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
-                EVENT_CATEGORY, EVENT_CATEGORY_TICKER_HOMEPAGE,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, "impression on bu widget",
                 EVENT_LABEL, "",
                 ECOMMERCE, DataLayer.mapOf(
@@ -791,8 +791,8 @@ public class HomePageTracking {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null){
             Map<String, Object> data = DataLayer.mapOf(
-                    "event", "promoClick",
-                    "eventCategory", "homepage",
+                    "event", PROMO_CLICK,
+                    "eventCategory", CATEGORY_HOME_PAGE,
                     "eventAction", "click on bu widget",
                     "eventLabel", name,
                     "ecommerce", DataLayer.mapOf(
