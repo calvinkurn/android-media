@@ -85,7 +85,7 @@ public interface ShipmentContract {
 
         void renderCheckPromoCodeFromCourierSuccess(PromoCodeCartListData promoCodeCartListData, int itemPosition, boolean noToast);
 
-        void renderCheckPromoStackCodeFromCourierSuccess(DataUiModel dataUiModel, int itemPosition, boolean noToast);
+        void renderCheckPromoStackCodeFromCourierSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel, int itemPosition, boolean noToast);
 
         void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
 
