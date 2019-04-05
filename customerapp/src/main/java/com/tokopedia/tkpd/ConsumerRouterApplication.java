@@ -2677,6 +2677,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getSellerWebViewIntent(Context context, String webviewUrl) {
+        return null;
+    }
+
+    @Override
     public Observable<VoucherViewModel> checkFlightVoucher(String voucherCode, String cartId, String isCoupon) {
         FlightRepository flightRepository = FlightComponentInstance.getFlightComponent(this).flightRepository();
         FlightCheckVoucherCodeUseCase checkVoucherCodeUseCase = new FlightCheckVoucherCodeUseCase(flightRepository);
