@@ -195,7 +195,6 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     }
 
     private fun cancelVideo() {
-        videoPath = ""
         videoPreview.stopPlayback()
         videoPreview.setVideoURI(null)
 
@@ -205,6 +204,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
             }
         }
 
+        videoPath = ""
         initViewPager()
         onVideoVisible()
     }
@@ -246,10 +246,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
             videoPath = filePath
 
             videoPreview.setVideoURI(uriFile)
-            videoPreview.setOnCompletionListener {
-                videoPreview.stopPlayback()
-                onVideoVisible()
-            }
+
             videoPreview.setOnPreparedListener { mp ->
                 mp.isLooping = true //loop
                 playVideoPreview()
@@ -259,18 +256,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     override fun onPreviewVideoVisible() {
         layoutPreview.bringToFront()
-
-        layoutPreview.layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT)
-
-        containerPicker.layoutParams = ViewGroup.LayoutParams(
-                0,
-                ViewGroup.LayoutParams.MATCH_PARENT)
-
         showBackButton(false)
-        layoutPreview.show()
-        containerPicker.hide()
         btnDone.show()
 
         btnDeleteVideo.text = if (isVideoSourcePicker) {
@@ -282,18 +268,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     override fun onVideoVisible() {
         containerPicker.bringToFront()
-
-        containerPicker.layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT)
-
-        layoutPreview.layoutParams = ViewGroup.LayoutParams(
-                0,
-                ViewGroup.LayoutParams.MATCH_PARENT)
-
         showBackButton(true)
-        containerPicker.show()
-        layoutPreview.hide()
         btnDone.hide()
     }
 
