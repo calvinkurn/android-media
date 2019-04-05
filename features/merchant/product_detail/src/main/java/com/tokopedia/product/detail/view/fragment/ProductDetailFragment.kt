@@ -252,6 +252,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            productInfoViewModel = viewModelProvider.get(ProductInfoViewModel::class.java)
+            productWarehouseViewModel = viewModelProvider.get(ProductWarehouseViewModel::class.java)
+        }
+
         performanceMonitoringP1 = PerformanceMonitoring.start(PDP_P1_TRACE)
         performanceMonitoringP2 = PerformanceMonitoring.start(PDP_P2_TRACE)
         if (!productInfoViewModel.isUserSessionActive())
@@ -273,9 +279,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
             isAffiliate = it.getBoolean(ARG_FROM_AFFILIATE, false)
         }
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            productInfoViewModel = viewModelProvider.get(ProductInfoViewModel::class.java)
-            productWarehouseViewModel = viewModelProvider.get(ProductWarehouseViewModel::class.java)
             remoteConfig = FirebaseRemoteConfigImpl(this)
             if (!remoteConfig.getBoolean(ENABLE_VARIANT))
                 useVariant = false
