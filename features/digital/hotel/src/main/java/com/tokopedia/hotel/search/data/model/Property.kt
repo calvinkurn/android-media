@@ -1,4 +1,4 @@
-package com.tokopedia.hotel.search.data
+package com.tokopedia.hotel.search.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

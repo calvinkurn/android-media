@@ -7,6 +7,10 @@
             android:label="@string/hotel_homepage_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Hotel" />
+        <activity android:name=".search.presentation.activity.HotelSearchResultActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Hotel"/>
     </application>
 
 </manifest>

@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
 import com.tokopedia.hotel.R
-import com.tokopedia.hotel.search.data.Property
+import com.tokopedia.hotel.search.data.model.Property
 import com.tokopedia.hotel.search.presentation.adapter.viewholder.SearchPropertyViewHolder
 
 class PropertyAdapterTypeFactory: BaseAdapterTypeFactory() {

@@ -2,7 +2,7 @@ package com.tokopedia.hotel.search.presentation.fragment
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.hotel.common.di.component.HotelComponent
-import com.tokopedia.hotel.search.data.Property
+import com.tokopedia.hotel.search.data.model.Property
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
 
 class HotelSearchResultFragment: BaseListFragment<Property, PropertyAdapterTypeFactory>() {
