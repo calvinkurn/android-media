@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
@@ -53,7 +55,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Pr
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.similarsearch.SimilarSearchManager;
-import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -70,8 +71,10 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -830,11 +833,23 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void sendTrackingEventMoEngageSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category) {
-        TrackingUtils.sendMoEngageSearchAttempt(getActivity(), query, hasProductList, category);
+        sendMoEngageSearchAttempt(getActivity(), query, hasProductList, category);
     }
 
     @Override
     public void setFirstTimeLoad(boolean isFirstTimeLoad) {
         this.isFirstTimeLoad = isFirstTimeLoad;
+    }
+
+    public void sendMoEngageSearchAttempt(Context context, String keyword, boolean isResultFound, HashMap<String, String> category) {
+        Map<String, Object> value = DataLayer.mapOf(
+                AppEventTracking.MOENGAGE.KEYWORD, keyword,
+                AppEventTracking.MOENGAGE.IS_RESULT_FOUND, isResultFound
+        );
+        if (category != null) {
+            value.put(AppEventTracking.MOENGAGE.CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(category.keySet().toArray())));
+            value.put(AppEventTracking.MOENGAGE.CATEGORY_NAME_MAPPING, new JSONArray((category.values())));
+        }
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.SEARCH_ATTEMPT);
     }
 }
