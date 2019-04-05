@@ -829,10 +829,23 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processCheckPromoStackingLogisticPromo(int cartPosition) {
-        getView().showLoading();
-        Promo promo = getView().generateCheckPromoFirstStepParam();
-        checkPromoStackingCodeUseCase.setParams(promo);
+    public void processCheckPromoStackingLogisticPromo(int cartPosition, String cartString, String code) {
+        Promo generatedPromo = null;
+        if (getView() != null) {
+            getView().showLoading();
+            // Cleaning all codes except logistic promo code
+            generatedPromo = getView().generateCheckPromoFirstStepParam();
+            if (generatedPromo.getOrders() != null) {
+                for (Order order : generatedPromo.getOrders()) {
+                    ArrayList<String> arr = new ArrayList<>();
+                    if (order.getUniqueId() != null && order.getUniqueId().equals(cartString)) {
+                        arr.add(code);
+                    }
+                    order.setCodes(arr);
+                }
+            }
+        }
+        checkPromoStackingCodeUseCase.setParams(generatedPromo);
         checkPromoStackingCodeUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
