@@ -21,10 +21,10 @@ class DigitalBrowseServiceAnalyticsModel (
 
     fun getPromoFieldObject() : Any {
         return DataLayer.mapOf(
-                TRACKING_FIELD_ID, iconPosition,
+                TRACKING_FIELD_ID, iconPosition.toString(),
                 TRACKING_FIELD_NAME, String.format(TRACKING_VALUE_NAME, headerName, headerPosition),
                 TRACKING_FIELD_CREATIVE, iconName,
-                TRACKING_FIELD_POSITION, iconPosition
+                TRACKING_FIELD_POSITION, iconPosition.toString()
         )
     }
 }
