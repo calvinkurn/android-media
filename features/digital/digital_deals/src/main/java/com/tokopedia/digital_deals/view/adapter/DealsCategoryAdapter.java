@@ -802,9 +802,19 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             }
             tvBrandName.setText(value.getBrand().getTitle());
             ImageHandler.loadImage(context, brandImage, value.getThumbnailWeb(), R.color.grey_1100, R.color.grey_1100);
-            mrpPrice.setText(Utils.convertToCurrencyString(value.getMrp()));
-            mrpPrice.setPaintFlags(mrpPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            discount.setText(value.getSavingPercentage());
+            if (value.getMrp() > 0) {
+                mrpPrice.setText(Utils.convertToCurrencyString(value.getMrp()));
+                mrpPrice.setPaintFlags(mrpPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            } else {
+                mrpPrice.setVisibility(View.GONE);
+            }
+            if (!TextUtils.isEmpty(value.getSavingPercentage())) {
+                discount.setText(value.getSavingPercentage());
+                discount.setBackground(context.getResources().getDrawable(R.drawable.background_lightgreen_oval));
+            } else {
+                discount.setVisibility(View.GONE);
+                discount.setBackground(null);
+            }
             salesPrice.setText(Utils.convertToCurrencyString(value.getSalesPrice()));
         }
 

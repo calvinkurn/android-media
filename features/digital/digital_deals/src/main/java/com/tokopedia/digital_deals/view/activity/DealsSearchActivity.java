@@ -2,6 +2,7 @@ package com.tokopedia.digital_deals.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -67,7 +68,9 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private LinearLayout brandLayout;
     private LinearLayout noBrandsFound;
     private ConstraintLayout clLocation;
+    private TextView dealsHeading;
     private TextView brandsHeading;
+    private View divider;
     private LinearLayoutManager layoutManager;
     private SearchInputView searchInputView;
     private RecyclerView rvDeals;
@@ -107,8 +110,10 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         searchInputView = findViewById(R.id.search_input_view);
         noBrandsFound = findViewById(R.id.no_brands);
         mainContent = findViewById(R.id.main_content);
+        dealsHeading = findViewById(R.id.tv_topevents);
         brandsHeading = findViewById(R.id.brand_list);
         back = findViewById(R.id.imageViewBack);
+        divider = findViewById(R.id.divider);
         noContent = findViewById(R.id.no_content);
         brandLayout = findViewById(R.id.brand_layout);
         tvCityName = findViewById(R.id.tv_location);
@@ -117,7 +122,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         tvCityName.setOnClickListener(this);
         searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_deals));
         searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_16));
-        searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(R.dimen.dp_18), getResources().getDimensionPixelSize(R.dimen.dp_18));
+//        searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(R.dimen.dp_18), getResources().getDimensionPixelSize(R.dimen.dp_18));
         searchInputView.setSearchImageView(getResources().getDrawable(R.drawable.ic_search_deal));
         EditText etSearch = searchInputView.findViewById(R.id.edit_text_search);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -133,10 +138,24 @@ public class DealsSearchActivity extends DealsBaseActivity implements
 //                        firstTimeRefresh = false;
 //                    else if (!TextUtils.isEmpty(searchInputView.getSearchText()) && searchInputView.getSearchText().length() > 2)
 //                        dealsCategoryAdapter.removexAndFooter();
-//                    dealsCategoryAdapter.notifyDataSetChanged();
+//                    dealsCategoryAdapter.notifyDataSetChanged();sales
 //                }
 //            }
 //        });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            rvDeals.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+                @Override
+                public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                    if (scrollY != oldScrollY) {
+                        divider.setVisibility(View.GONE);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            toolbar.setElevation(4.0f);
+                        }
+                    }
+                }
+            });
+        }
 
     }
 
@@ -273,18 +292,26 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     @Override
     public void setSuggestedBrands(List<Brand> brandList) {
         if (brandList != null && brandList.size() > 0) {
-            brandLayout.setVisibility(View.VISIBLE);
+           brandLayout.setVisibility(View.VISIBLE);
             brandsHeading.setVisibility(View.VISIBLE);
             noBrandsFound.setVisibility(View.GONE);
+            LinearLayout.LayoutParams params1 = (LinearLayout.LayoutParams) dealsHeading.getLayoutParams();
+            params1.setMargins(getResources().getDimensionPixelOffset(R.dimen.dp_16), getResources().getDimensionPixelOffset(R.dimen.dp_12), 0, 0);
+            dealsHeading.setLayoutParams(params1);
             brandLayout.removeAllViews();
             View view;
             int itemCount = Utils.getScreenWidth()/ (int)(getResources().getDimension(R.dimen.dp_66) + getResources().getDimension(R.dimen.dp_8));//Divide by item width including margin
+            int maxBrands = Math.min(brandList.size(), itemCount);
+
             ImageView imageViewBrandItem;
             TextView brandName;
-            for (int index = 0; index < itemCount; index++) {
+            for (int index = 0; index < maxBrands; index++) {
                 LayoutInflater inflater = getLayoutInflater();
                 view = inflater.inflate(R.layout.item_brand_home, brandLayout, false);
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
+                if (itemCount == maxBrands) {
+                    params.weight = 1;
+                }
                 imageViewBrandItem = view.findViewById(R.id.iv_brand);
                 brandName = view.findViewById(R.id.brandName);
                 brandName.setText(brandList.get(index).getTitle());

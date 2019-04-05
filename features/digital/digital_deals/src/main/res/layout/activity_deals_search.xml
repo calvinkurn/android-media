@@ -19,7 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="@dimen/dp_4"
-            android:minHeight="?attr/actionBarSize"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp">
@@ -48,7 +47,7 @@
                         android:id="@+id/search_input_view"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_40"
-                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginLeft="@dimen/dp_4"
 
                         android:layout_marginTop="@dimen/dp_7"
                         android:layout_marginRight="@dimen/dp_16"
@@ -71,7 +70,7 @@
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginTop="@dimen/dp_11"
                         android:layout_marginBottom="@dimen/dp_11"
-                        android:src="@drawable/ic_location_icon"
+                        app:srcCompat="@drawable/deals_location_icon"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -110,6 +109,12 @@
             </LinearLayout>
 
         </android.support.v7.widget.Toolbar>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_400" />
     </android.support.design.widget.AppBarLayout>
 
     <android.support.design.widget.CoordinatorLayout
@@ -130,12 +135,12 @@
                 android:id="@+id/brand_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_8"
                 android:paddingLeft="@dimen/dp_16"
                 android:text="@string/brands_title_search"
                 android:textColor="@color/clr_ae31353b"
                 android:textSize="@dimen/sp_12"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_scrollFlags="scroll" />
 
             <LinearLayout
@@ -143,6 +148,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginTop="@dimen/dp_2"
+                android:visibility="visible"
                 android:padding="@dimen/dp_16"
                 app:layout_scrollFlags="scroll" />
 
@@ -152,6 +159,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone"
+                tools:visibility="gone"
                 app:layout_scrollFlags="scroll">
 
                 <TextView
@@ -161,6 +169,7 @@
                     android:layout_marginLeft="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_8"
                     android:gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/dp_12"
                     android:text="Yaah, Deals yang kamu cari nggak ketemu"
                     android:textColor="@color/clr_f531353b"
                     android:textSize="@dimen/sp_16" />
@@ -173,6 +182,7 @@
                     android:layout_marginTop="@dimen/dp_6"
                     android:layout_marginRight="@dimen/dp_8"
                     android:gravity="center_horizontal"
+                    android:layout_marginBottom="@dimen/dp_12"
                     android:text="Coba cari lagi pakai kata kunci lain, yuk!"
                     android:textColor="#ae31353b"
                     android:textSize="@dimen/sp_14" />
@@ -183,8 +193,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
                 android:text="@string/products_title_search"
                 android:textSize="@dimen/sp_12"
                 android:textColor="@color/clr_ae31353b"
@@ -241,7 +251,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white"
-            android:paddingTop="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_6"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:listitem="@layout/item_top_suggestions" />
 
