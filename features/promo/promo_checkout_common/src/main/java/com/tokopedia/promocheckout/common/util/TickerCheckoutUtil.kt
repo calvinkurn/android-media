@@ -12,7 +12,8 @@ val EXTRA_CLASHING_DATA = "EXTRA_CLASHING_DATA"
 
 val RESULT_CLASHING = 6374
 
-val MERCHANT = "merchant_voucher"
+val MERCHANT = "merchant"
+val LOGISTIC = "logistic"
 val GLOBAL = "global"
 
 fun String?.mapToStatePromoCheckout() : TickerCheckoutView.State{

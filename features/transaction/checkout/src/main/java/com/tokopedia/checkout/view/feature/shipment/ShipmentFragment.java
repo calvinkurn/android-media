@@ -815,7 +815,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         if (shipmentAdapter.getShipmentCartItemModelList() != null) {
                             for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
                                 if (shipmentCartItemModel.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
-                                    shipmentCartItemModel.setVoucherOrdersItemUiModel(setVouchersItemUiModel(voucherOrdersItemData));
+                                    if (voucherOrdersItemData.getType().equals(TickerCheckoutUtilKt.getMERCHANT())) {
+                                        shipmentCartItemModel.setVoucherOrdersItemUiModel(setVouchersItemUiModel(voucherOrdersItemData));
+                                    } else if (voucherOrdersItemData.getType().equals(TickerCheckoutUtilKt.getLOGISTIC())){
+                                        VoucherLogisticItemUiModel model = new VoucherLogisticItemUiModel(voucherOrdersItemData.getCode(), "");
+                                        shipmentCartItemModel.setVoucherLogisticItemUiModel(model);
+                                    }
                                 }
                             }
                         }

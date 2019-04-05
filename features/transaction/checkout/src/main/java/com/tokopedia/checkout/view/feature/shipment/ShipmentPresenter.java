@@ -860,7 +860,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         getView().showToastError(responseGetPromoStack.getMessage().get(0));
                         getView().resetCourier(cartPosition);
                     } else {
-                        // Update for success scenario here
+                        if (responseGetPromoStack.getStatus().equalsIgnoreCase("OK")) {
+                            if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
+                                getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings());
+                            } else {
+
+                            }
+                        } else {
+                            getView().showToastError(responseGetPromoStack.getMessage().get(0));
+                        }
                     }
                 }
             }
