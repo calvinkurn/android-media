@@ -142,6 +142,18 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         setupTabLayout()
     }
 
+    @SuppressLint("MissingPermission")
+    private fun viewPagerAdapter(): ViewPagerAdapter {
+        val videoPickerGallery = ImagePickerGalleryFragment.newInstance(
+                GalleryType.VIDEO_ONLY,
+                supportMultipleSelection,
+                minImageResolution)
+
+        adapter.addFragment(videoPickerGallery, getString(R.string.vidpick_menu_video_picker))
+        adapter.addFragment(VideoRecorderFragment(), getString(R.string.vidpick_menu_recorder))
+        return adapter
+    }
+
     private fun setupTabLayout() {
         tabPicker.setupWithViewPager(vpVideoPicker)
         tabPicker.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -167,18 +179,6 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         selectCurrentPage(currentSelectedTab)
     }
 
-    @SuppressLint("MissingPermission")
-    private fun viewPagerAdapter(): ViewPagerAdapter {
-        val videoPickerGallery = ImagePickerGalleryFragment.newInstance(
-                GalleryType.VIDEO_ONLY,
-                supportMultipleSelection,
-                minImageResolution)
-
-        adapter.addFragment(videoPickerGallery, getString(R.string.vidpick_menu_video_picker))
-        adapter.addFragment(VideoRecorderFragment(), getString(R.string.vidpick_menu_recorder))
-        return adapter
-    }
-
     override fun onBackPressed() {
         if (videoPath.isNotEmpty()) {
             cancelVideo()
@@ -195,8 +195,6 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     }
 
     private fun cancelVideo() {
-        initViewPager()
-        onVideoVisible()
         videoPath = ""
         videoPreview.stopPlayback()
         videoPreview.setVideoURI(null)
@@ -206,6 +204,9 @@ open class VideoPickerActivity : BaseSimpleActivity(),
                 FileUtils.deleteCacheDir()
             }
         }
+
+        initViewPager()
+        onVideoVisible()
     }
 
     private fun selectCurrentPage(index: Int) {
@@ -237,8 +238,8 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     override fun onVideoTaken(filePath: String) {
         if (filePath.isNotEmpty()) {
             initViewPager()
-            selectCurrentPage(currentSelectedTab)
             onPreviewVideoVisible()
+            selectCurrentPage(currentSelectedTab)
 
             val uriFile = Uri.parse(filePath)
             isVideoSourcePicker = false
@@ -267,8 +268,8 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     }
 
     override fun onVideoVisible() {
-        containerPicker.show()
         containerPicker.bringToFront()
+        containerPicker.show()
         showBackButton(true)
         layoutPreview.hide()
         btnDone.hide()
