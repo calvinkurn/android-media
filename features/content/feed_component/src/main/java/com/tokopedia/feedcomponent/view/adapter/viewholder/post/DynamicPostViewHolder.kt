@@ -10,6 +10,7 @@ import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.ButtonCompat
@@ -25,6 +26,7 @@ import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
@@ -38,14 +40,17 @@ import kotlinx.android.synthetic.main.partial_card_title.view.*
 /**
  * @author by milhamj on 28/11/18.
  */
-class DynamicPostViewHolder(v: View,
+open class DynamicPostViewHolder(v: View,
                             private val listener: DynamicPostListener,
                             private val cardTitleListener: CardTitleView.CardTitleListener,
                             private val imagePostListener: ImagePostViewHolder.ImagePostListener,
                             private val youtubePostListener: YoutubeViewHolder.YoutubePostListener,
                             private val pollOptionListener: PollAdapter.PollOptionListener,
-                            private val gridItemListener: GridPostAdapter.GridItemListener)
+                            private val gridItemListener: GridPostAdapter.GridItemListener,
+                            private val videoViewListener: VideoViewHolder.VideoViewListener)
     : AbstractViewHolder<DynamicPostViewModel>(v) {
+
+    lateinit var captionTv : TextView
 
     companion object {
         @LayoutRes
@@ -60,6 +65,12 @@ class DynamicPostViewHolder(v: View,
         const val CAPTION_END = 90
 
         const val NEWLINE = "(\r\n|\n)"
+
+        const val TYPE_DETAIL = "detail"
+    }
+
+    init {
+        captionTv = itemView.caption
     }
 
     override fun bind(element: DynamicPostViewModel?) {
@@ -187,7 +198,7 @@ class DynamicPostViewHolder(v: View,
                 || template.avatarTitle || template.followCta || template.report
     }
 
-    private fun bindCaption(caption: Caption, template: TemplateBody) {
+    open fun bindCaption(caption: Caption, template: TemplateBody) {
         itemView.caption.shouldShowWithAction(template.caption) {
             if (caption.text.isEmpty()) {
                 itemView.caption.visibility = View.GONE
@@ -221,7 +232,7 @@ class DynamicPostViewHolder(v: View,
             contentList.forEach { it.postId = postId }
             contentList.forEach { it.positionInFeed = adapterPosition }
 
-            val adapter = PostPagerAdapter(imagePostListener, youtubePostListener, pollOptionListener, gridItemListener)
+            val adapter = PostPagerAdapter(imagePostListener, youtubePostListener, pollOptionListener, gridItemListener, videoViewListener)
             adapter.setList(contentList)
             itemView.contentViewPager.adapter = adapter
             itemView.contentViewPager.offscreenPageLimit = adapter.count

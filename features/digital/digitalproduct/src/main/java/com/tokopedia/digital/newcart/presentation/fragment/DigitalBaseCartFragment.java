@@ -69,6 +69,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     private static final String DIGITAL_CHECKOUT_TRACE = "dg_checkout";
     private SaveInstanceCacheManager saveInstanceCacheManager;
 
+    private static final String EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER = "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER";
+
     protected P presenter;
 
     @Override
@@ -81,8 +83,19 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState != null) {
+            checkoutDataParameterBuilder = saveInstanceCacheManager.get(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER,
+                    CheckoutDataParameter.Builder.class, null);
+        }
         setupView(view);
         presenter.attachView(this);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveInstanceCacheManager.onSave(outState);
+        saveInstanceCacheManager.put(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER, checkoutDataParameterBuilder);
     }
 
     protected abstract void setupView(View view);

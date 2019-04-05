@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -27,7 +26,6 @@ import static org.mockito.Mockito.mock;
 @Module
 public class TestGlobalNavModule {
 
-    private AnalyticTracker analyticTracker;
 
     private MainParentPresenter mainParentPresenter;
     private GetDrawerNotificationUseCase getDrawerNotificationUseCase;
@@ -35,11 +33,6 @@ public class TestGlobalNavModule {
     @Provides
     MainParentPresenter provideMainParentPresenter(GetDrawerNotificationUseCase getNotificationUseCase, UserSession userSession) {
         return mainParentPresenter == null ? mainParentPresenter = new MainParentPresenter(getNotificationUseCase, userSession) : mainParentPresenter;
-    }
-
-    @Provides
-    AnalyticTracker provideAnalyticTracker(@ApplicationContext Context context) {
-        return analyticTracker == null ? analyticTracker = mock(AnalyticTracker.class) : analyticTracker;
     }
 
     @Provides
