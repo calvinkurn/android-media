@@ -539,7 +539,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public ShipmentCartItemModel setSelectedCourier(int position, CourierItemData newCourierItemData) {
+    public ShipmentCartItemModel setSelectedCourier(int position, CourierItemData newCourierItemData, boolean setLogisticPromo) {
         ShipmentCartItemModel shipmentCartItemModel = null;
         Object currentShipmentData = shipmentDataList.get(position);
         if (currentShipmentData instanceof ShipmentCartItemModel) {
@@ -562,13 +562,11 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
             // Logistic promo stacking logic
-            if (newCourierItemData.getLogPromoCode() != null) {
+            if (setLogisticPromo) {
                 VoucherLogisticItemUiModel logPromo = new VoucherLogisticItemUiModel();
                 logPromo.setCode(newCourierItemData.getLogPromoCode());
                 logPromo.setMessage(newCourierItemData.getLogPromoMsg());
                 shipmentCartItemModel.setVoucherLogisticItemUiModel(logPromo);
-            } else {
-                shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
             }
             updateShipmentCostModel();
             checkDataForCheckout();
