@@ -33,7 +33,7 @@ class CodBehavior : CoordinatorLayout.Behavior<View>{
 
 
         if (mTempRect == null)
-             mTempRect = Rect()
+            mTempRect = Rect()
 
         if (toolbarHeight == 0) {
             val styledAttributes = dependency.context.theme.obtainStyledAttributes(

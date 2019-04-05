@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.gamification.cracktoken.fragment.CrackEmptyTokenFragment;
 import com.tokopedia.gamification.cracktoken.fragment.CrackTokenFragment;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 
@@ -16,4 +17,6 @@ public interface GamificationComponent {
     void inject(FloatingEggButtonFragment floatingEggButtonFragment);
 
     void inject(CrackTokenFragment crackTokenFragment);
+
+    void inject(CrackEmptyTokenFragment crackEmptyTokenFragment);
 }

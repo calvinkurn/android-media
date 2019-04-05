@@ -1,5 +1,9 @@
 package com.tokopedia.flight.review.view.presenter;
 
+import com.tokopedia.common.travel.ticker.TravelTickerFlightPage;
+import com.tokopedia.common.travel.ticker.TravelTickerInstanceId;
+import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase;
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingPresenter;
@@ -33,6 +37,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEFAULT_IS_COUPON_ONE;
 import static com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEFAULT_IS_COUPON_ZERO;
@@ -48,6 +53,8 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     private final FlightPassengerDeleteAllListUseCase flightPassengerDeleteAllListUseCase;
     private final FlightCancelVoucherUseCase flightCancelVoucherUseCase;
     private FlightAnalytics flightAnalytics;
+    private TravelTickerUseCase travelTickerUseCase;
+    private CompositeSubscription compositeSubscription;
 
     @Inject
     public FlightBookingReviewPresenter(FlightBookingCheckoutUseCase flightBookingCheckoutUseCase,
@@ -56,13 +63,16 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                                         FlightBookingVerifyUseCase flightBookingVerifyUseCase,
                                         FlightPassengerDeleteAllListUseCase flightPassengerDeleteAllListUseCase,
                                         FlightCancelVoucherUseCase flightCancelVoucherUseCase,
-                                        FlightAnalytics flightAnalytics) {
+                                        FlightAnalytics flightAnalytics,
+                                        TravelTickerUseCase travelTickerUseCase) {
         super(flightAddToCartUseCase, flightBookingCartDataMapper);
         this.flightBookingCheckoutUseCase = flightBookingCheckoutUseCase;
         this.flightBookingVerifyUseCase = flightBookingVerifyUseCase;
         this.flightPassengerDeleteAllListUseCase = flightPassengerDeleteAllListUseCase;
         this.flightCancelVoucherUseCase = flightCancelVoucherUseCase;
         this.flightAnalytics = flightAnalytics;
+        this.travelTickerUseCase = travelTickerUseCase;
+        this.compositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -81,6 +91,8 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
         } else {
             getView().hideVoucherContainer();
         }
+
+        fetchTickerData();
     }
 
     @Override
@@ -285,6 +297,44 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     @Override
     public List<FlightInsuranceViewModel> getInsurances() {
         return getView().getCurrentBookingReviewModel().getInsuranceIds();
+    }
+
+    @Override
+    public void fetchTickerData() {
+        travelTickerUseCase.execute(travelTickerUseCase.createRequestParams(
+                TravelTickerInstanceId.Companion.getFLIGHT(), TravelTickerFlightPage.Companion.getSUMMARY()),
+                new Subscriber<TravelTickerViewModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(TravelTickerViewModel travelTickerViewModel) {
+                        if (travelTickerViewModel.getMessage().length() > 0) {
+                            getView().renderTickerView(travelTickerViewModel);
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void detachView() {
+        if (compositeSubscription.hasSubscriptions()) {
+            compositeSubscription.unsubscribe();
+        }
+        flightBookingCheckoutUseCase.unsubscribe();
+        flightBookingVerifyUseCase.unsubscribe();
+        flightCancelVoucherUseCase.unsubscribe();
+        flightPassengerDeleteAllListUseCase.unsubscribe();
+        travelTickerUseCase.unsubscribe();
+
+        super.detachView();
     }
 
     private void deleteListPassenger() {

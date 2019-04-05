@@ -10,13 +10,13 @@ public class WalletAction {
 
     @SerializedName("text")
     @Expose
-    private String text;
+    private String text = "";
     @SerializedName("redirect_url")
     @Expose
-    private String redirectUrl;
+    private String redirectUrl = "";
     @SerializedName("applinks")
     @Expose
-    private String applink;
+    private String applink = "";
 
     public String getText() {
         return text;

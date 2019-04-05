@@ -12,7 +12,8 @@ import com.google.gson.annotations.SerializedName;
 
 @Deprecated
 public class Image implements Parcelable {
-
+    @SerializedName("title")
+    private String title;
     @SerializedName("position")
     @Expose
     private Integer position;
@@ -58,6 +59,13 @@ public class Image implements Parcelable {
         this.url = url;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     @Override
     public int describeContents() {

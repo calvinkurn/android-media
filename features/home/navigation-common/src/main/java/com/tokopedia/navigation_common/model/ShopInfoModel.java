@@ -9,19 +9,19 @@ import com.google.gson.annotations.SerializedName;
 public class ShopInfoModel {
     @SerializedName("shop_name")
     @Expose
-    private String shopName;
+    private String shopName = "";
     @SerializedName("shop_avatar")
     @Expose
-    private String shopAvatar;
+    private String shopAvatar = "";
     @SerializedName("shop_id")
     @Expose
-    private String shopId;
+    private String shopId = "";
     @SerializedName("shop_domain")
     @Expose
-    private String shopDomain;
+    private String shopDomain = "";
     @SerializedName("shop_is_official")
     @Expose
-    private String shopIsOfficial;
+    private String shopIsOfficial = "";
 
     public String getShopName() {
         return shopName;

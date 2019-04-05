@@ -6,19 +6,19 @@ import com.google.gson.annotations.SerializedName;
 public class AppNotificationSettingModel {
     @SerializedName("flag_admin_message")
     @Expose
-    private int flagAdminMessage;
+    private int flagAdminMessage = 0;
     @SerializedName("flag_review")
     @Expose
-    private int flagreview;
+    private int flagreview = 0;
     @SerializedName("flag_newsletter")
     @Expose
-    private int flagNewsletter;
+    private int flagNewsletter = 0;
     @SerializedName("flag_message")
     @Expose
-    private int flagMessage;
+    private int flagMessage = 0;
     @SerializedName("flag_talk_product")
     @Expose
-    private int flagTalkProduct;
+    private int flagTalkProduct = 0;
 
     public int getFlagAdminMessage() {
         return flagAdminMessage;

@@ -24,7 +24,7 @@ public class OrderListInitPresenterImpl implements OrderListInitContract.Present
     public void getInitData() {
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext().getResources(),
-                R.raw.initorderlist), TabData.class);
+                R.raw.initorderlist), TabData.class, false);
         initUseCase.addRequest(graphqlRequest);
 
         initUseCase.execute(new Subscriber<GraphqlResponse>() {

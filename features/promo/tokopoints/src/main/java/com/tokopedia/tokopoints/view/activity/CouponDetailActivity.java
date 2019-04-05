@@ -20,6 +20,7 @@ import com.tokopedia.tokopoints.view.fragment.CouponDetailFragment;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 public class CouponDetailActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent> {
     private static final int REQUEST_CODE_LOGIN = 1;
@@ -33,7 +34,8 @@ public class CouponDetailActivity extends BaseSimpleActivity implements HasCompo
 
     @Override
     protected Fragment getNewFragment() {
-        if (((TokopointRouter) getApplicationContext()).getSession().isLoggedIn()) {
+        UserSessionInterface userSession = new UserSession(this);
+        if (userSession.isLoggedIn()) {
             return CouponDetailFragment.newInstance(getIntent().getExtras());
         } else {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);

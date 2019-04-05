@@ -46,6 +46,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {

@@ -23,8 +23,9 @@ import static com.tokopedia.core.var.TkpdCache.PRODUCT_DETAIL;
 
 /**
  * @author Angga.Prasetiyo on 02/11/2015.
+ * Use WholesaleActivity in Product Detail Module
  */
-
+@Deprecated
 public class WholesaleActivity extends TActivity {
     public static final String KEY_WHOLESALE_DATA = "WHOLESALE_DATA";
 

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.imageuploader.di.ImageUploaderModule;
 import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier;
@@ -12,6 +11,8 @@ import com.tokopedia.imageuploader.domain.GenerateHostRepository;
 import com.tokopedia.imageuploader.domain.UploadImageRepository;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user_identification_common.usecase.GetApprovalStatusUseCase;
 import com.tokopedia.useridentification.domain.usecase.RegisterIdentificationUseCase;
 import com.tokopedia.useridentification.domain.usecase.UploadIdentificationUseCase;
@@ -20,6 +21,8 @@ import com.tokopedia.useridentification.view.listener.UserIdentificationUploadIm
 import com.tokopedia.useridentification.view.presenter.UserIdentificationInfoPresenter;
 import com.tokopedia.useridentification.view.presenter.UserIdentificationUploadImagePresenter;
 import com.tokopedia.useridentification.view.viewmodel.AttachmentImageModel;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -49,15 +52,9 @@ public class UserIdentificationModule {
     public UploadImageUseCase<AttachmentImageModel> provideAttachmentImageModelUploadImageUseCase(@ImageUploaderQualifier UploadImageRepository uploadImageRepository,
                                                                                                   @ImageUploaderQualifier GenerateHostRepository generateHostRepository,
                                                                                                   @ImageUploaderQualifier Gson gson,
-                                                                                                  @ImageUploaderQualifier UserSession userSession,
+                                                                                                  @ImageUploaderQualifier UserSessionInterface userSession,
                                                                                                   @ImageUploaderQualifier ImageUploaderUtils imageUploaderUtils) {
         return new UploadImageUseCase<>(uploadImageRepository, generateHostRepository, gson, userSession, AttachmentImageModel.class, imageUploaderUtils);
-    }
-
-    @UserIdentificationScope
-    @Provides
-    public com.tokopedia.user.session.UserSession provideUserSession(@ApplicationContext Context context) {
-        return new com.tokopedia.user.session.UserSession(context);
     }
 
     @UserIdentificationScope
@@ -78,5 +75,17 @@ public class UserIdentificationModule {
                 registerIdentificationUseCase,
                 userSession,
                 compositeSubscription);
+    }
+
+    @UserIdentificationScope
+    @Provides
+    public UserSession provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
+
+    @UserIdentificationScope
+    @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

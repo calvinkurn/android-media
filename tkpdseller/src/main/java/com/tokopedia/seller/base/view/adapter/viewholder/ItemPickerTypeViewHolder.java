@@ -15,7 +15,7 @@ import com.tokopedia.seller.common.utils.CircleTransform;
 /**
  * @author normansyahputa on 5/26/17.
  */
-
+@Deprecated
 public class ItemPickerTypeViewHolder extends BaseViewHolder<ItemPickerType> {
 
     private ImageView imageView;

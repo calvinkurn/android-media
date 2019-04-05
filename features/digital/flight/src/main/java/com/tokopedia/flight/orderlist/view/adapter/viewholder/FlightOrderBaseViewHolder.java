@@ -76,7 +76,7 @@ public abstract class FlightOrderBaseViewHolder<T extends Visitable> extends Abs
         ivJourneyArrow.setImageResource(R.drawable.ic_arrow_right_flight);
     }
 
-    protected CharSequence getAirportTextForView(String airportId, String cityCode, String cityName) {
+    protected CharSequence getAirportTextForView(String cityName) {
         SpannableStringBuilder text = new SpannableStringBuilder();
         if (!TextUtils.isEmpty(cityName)) {
             text.append(cityName);

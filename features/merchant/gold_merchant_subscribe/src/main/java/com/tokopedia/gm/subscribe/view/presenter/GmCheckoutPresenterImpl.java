@@ -17,7 +17,7 @@ import com.tokopedia.gm.subscribe.view.viewmodel.GmAutoSubscribeViewModel;
 import com.tokopedia.gm.subscribe.view.viewmodel.GmCheckoutCurrentSelectedViewModel;
 import com.tokopedia.gm.subscribe.view.viewmodel.GmCheckoutViewModel;
 import com.tokopedia.gm.subscribe.view.viewmodel.GmVoucherViewModel;
-import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
+import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase;
 
 import javax.inject.Inject;
 
@@ -35,7 +35,7 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
     private final CheckGmSubscribeVoucherUseCase checkGmSubscribeVoucherUseCase;
     private final CheckoutGmSubscribeUseCase checkoutGmSubscribeUseCase;
     private final CheckoutGmSubscribeWithVoucherCheckUseCase checkoutGMSubscribeWithVoucherCheckUseCase;
-    private final DeleteShopInfoUseCase deleteShopInfoUseCase;
+    private final DeleteShopInfoCacheUseCase deleteShopInfoUseCase;
 
     @Inject
     public GmCheckoutPresenterImpl(GetGmCurrentSelectedProductUseCase getCurrentSelectedProduct,
@@ -43,7 +43,7 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
                                    CheckGmSubscribeVoucherUseCase checkGmSubscribeVoucherUseCase,
                                    CheckoutGmSubscribeUseCase checkoutGmSubscribeUseCase,
                                    CheckoutGmSubscribeWithVoucherCheckUseCase checkoutGMSubscribeWithVoucherCheckUseCase,
-                                   DeleteShopInfoUseCase deleteShopInfoUseCase) {
+                                   DeleteShopInfoCacheUseCase deleteShopInfoUseCase) {
         this.getCurrentSelectedProduct = getCurrentSelectedProduct;
         this.getGmAutoSubscribeSelectedProductUseCase = getGmAutoSubscribeSelectedProductUseCase;
         this.checkGmSubscribeVoucherUseCase = checkGmSubscribeVoucherUseCase;

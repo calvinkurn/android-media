@@ -23,7 +23,7 @@ open class GetImageReviewUseCase(private val context: Context?,
     override fun createObservable(requestParams: RequestParams): Observable<ImageReviewListModel> {
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context?.resources,
-                R.raw.gql_image_review), ImageReviewGqlResponse::class.java, requestParams.parameters)
+                R.raw.gql_image_review), ImageReviewGqlResponse::class.java, requestParams.parameters, false)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

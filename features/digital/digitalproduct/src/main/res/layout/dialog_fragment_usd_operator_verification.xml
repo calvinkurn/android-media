@@ -26,7 +26,7 @@
             android:paddingStart="@dimen/dp_3"
             android:text="@string/message_ussd_title"
             android:textColor="@color/digital_item_title"
-            android:textSize="@dimen/font_medium" />
+            android:textSize="@dimen/sp_16" />
 
         <TextView
             android:id="@+id/tv_ussd_desc"
@@ -48,7 +48,7 @@
             android:paddingLeft="@dimen/dp_3"
             android:paddingRight="@null"
             android:paddingStart="@dimen/dp_3"
-            android:text="@string/title_handphone_number"
+            android:text="@string/digital_ussd_phone_number_label"
             android:textColor="@color/digital_voucher_notes"
             android:textSize="@dimen/sp_14" />
     </LinearLayout>
@@ -74,9 +74,9 @@
                 android:inputType="numberDecimal"
                 android:maxLines="1"
                 android:popupBackground="@color/white"
-                android:textColor="@color/green_btn"
+                android:textColor="@color/digital_green_btn"
                 android:textColorHint="@color/grey_400"
-                android:textSize="@dimen/fonts" />
+                android:textSize="@dimen/sp_14" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -105,7 +105,7 @@
                     android:layout_marginEnd="@dimen/dp_10"
                     android:layout_marginRight="@dimen/dp_10"
                     app:srcCompat="@drawable/ic_close_24dp"
-                    android:tint="@color/green_btn" />
+                    android:tint="@color/digital_green_btn" />
 
             </LinearLayout>
         </RelativeLayout>
@@ -121,7 +121,7 @@
         android:paddingRight="@null"
         android:paddingStart="@dimen/dp_3"
         android:textColor="@color/red_600"
-        android:textSize="@dimen/fontvs"
+        android:textSize="@dimen/sp_12"
          />
 
     <LinearLayout
@@ -147,8 +147,8 @@
             android:clickable="true"
             android:visibility="gone"
             android:text="@string/ussd_batal"
-            android:textColor="@color/green_btn"
-            android:textSize="@dimen/font_medium" />
+            android:textColor="@color/digital_green_btn"
+            android:textSize="@dimen/sp_16" />
 
         <TextView
             android:id="@+id/btn_ok"
@@ -159,7 +159,7 @@
             android:paddingRight="@null"
             android:clickable="true"
             android:text="@string/ok"
-            android:textColor="@color/green_btn"
-            android:textSize="@dimen/font_medium" />
+            android:textColor="@color/digital_green_btn"
+            android:textSize="@dimen/sp_16" />
     </LinearLayout>
 </LinearLayout>

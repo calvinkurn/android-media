@@ -6,10 +6,10 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.countdown.CountDownView;
-import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
-import com.tokopedia.home.beranda.listener.HomeFeedListener;
+import com.tokopedia.home.beranda.listener.HomeFeedsListener;
+import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.BannerViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.CategorySectionViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DigitalsViewHolder;
@@ -22,6 +22,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SellViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SprintSaleCarouselViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SixGridChannelViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.ThreeGridChannelViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TickerViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TopAdsDynamicChannelViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TopAdsViewHolder;
@@ -46,15 +47,19 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.RetryModel;
 public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTypeFactory {
 
     private final HomeCategoryListener listener;
+    private HomeFeedsListener homeFeedsListener;
     private final CountDownView.CountDownListener countDownListener;
-    private HomeFeedListener feedListener;
+    private HomeInspirationListener inspirationListener;
     private final FragmentManager fragmentManager;
 
     public HomeAdapterFactory(FragmentManager fragmentManager, HomeCategoryListener listener,
-                              HomeFeedListener feedListener, CountDownView.CountDownListener countDownListener) {
+                              HomeInspirationListener inspirationListener,
+                              HomeFeedsListener homeFeedsListener,
+                              CountDownView.CountDownListener countDownListener) {
         this.fragmentManager = fragmentManager;
         this.listener = listener;
-        this.feedListener = feedListener;
+        this.inspirationListener = inspirationListener;
+        this.homeFeedsListener = homeFeedsListener;
         this.countDownListener = countDownListener;
     }
 
@@ -103,6 +108,10 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
         return InspirationViewHolder.LAYOUT;
     }
 
+    public int type(RetryModel retryModel) {
+        return RetryViewHolder.LAYOUT;
+    }
+
     @Override
     public int type(TopAdsViewModel topAdsViewModel) {
         return TopAdsViewHolder.LAYOUT;
@@ -119,15 +128,13 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             return DynamicChannelHeroViewHolder.LAYOUT;
         } else if (DynamicHomeChannel.Channels.LAYOUT_6_IMAGE.equals(dynamicChannelViewModel.getChannel().getLayout())) {
             return SixGridChannelViewHolder.LAYOUT;
+        } else if (DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE.equals(dynamicChannelViewModel.getChannel().getLayout())) {
+            return ThreeGridChannelViewHolder.LAYOUT;
         } else if (DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL.equals(dynamicChannelViewModel.getChannel().getLayout())) {
             return SprintSaleCarouselViewHolder.LAYOUT;
         } else {
             return EmptyBlankViewHolder.LAYOUT;
         }
-    }
-
-    public int type(RetryModel retryModel) {
-        return RetryViewHolder.LAYOUT;
     }
 
     @Override
@@ -145,22 +152,24 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new SellViewHolder(view, listener);
         else if(type == HeaderViewHolder.LAYOUT)
             viewHolder = new HeaderViewHolder(view, listener);
-        else if (type == RetryViewHolder.LAYOUT)
-            viewHolder = new RetryViewHolder(view, feedListener);
         else if (type == InspirationViewHolder.LAYOUT)
-            viewHolder = new InspirationViewHolder(view, feedListener);
+            viewHolder = new InspirationViewHolder(view, inspirationListener);
         else if (type == DynamicChannelHeroViewHolder.LAYOUT)
             viewHolder = new DynamicChannelHeroViewHolder(view, listener);
         else if (type == DynamicChannelSprintViewHolder.LAYOUT)
             viewHolder = new DynamicChannelSprintViewHolder(view, listener, countDownListener);
+        else if (type == RetryViewHolder.LAYOUT)
+            viewHolder = new RetryViewHolder(view, homeFeedsListener);
         else if (type == TopAdsViewHolder.LAYOUT)
             viewHolder = new TopAdsViewHolder(view);
         else if (type == TopAdsDynamicChannelViewHolder.LAYOUT)
-            viewHolder = new TopAdsDynamicChannelViewHolder(view, feedListener);
+            viewHolder = new TopAdsDynamicChannelViewHolder(view, inspirationListener);
         else if (type == SprintSaleCarouselViewHolder.LAYOUT)
             viewHolder = new SprintSaleCarouselViewHolder(view, listener, countDownListener);
         else if (type == SixGridChannelViewHolder.LAYOUT)
             viewHolder = new SixGridChannelViewHolder(view, listener, countDownListener);
+        else if (type == ThreeGridChannelViewHolder.LAYOUT)
+            viewHolder = new ThreeGridChannelViewHolder(view, listener, countDownListener);
         else if (type == EmptyBlankViewHolder.LAYOUT)
             viewHolder = new EmptyBlankViewHolder(view);
         else if (type == InspirationHeaderViewHolder.LAYOUT)

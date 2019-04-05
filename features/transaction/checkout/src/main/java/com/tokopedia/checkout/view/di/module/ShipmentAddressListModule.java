@@ -3,10 +3,9 @@ package com.tokopedia.checkout.view.di.module;
 import android.content.Context;
 
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
-import com.tokopedia.checkout.domain.usecase.GetAddressWithCornerUseCase;
 import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.checkout.view.di.scope.ShipmentAddressListScope;
-import com.tokopedia.checkout.view.feature.addressoptions.adapter.ShipmentAddressListAdapter;
+import com.tokopedia.checkout.view.feature.addressoptions.addressadapter.ShipmentAddressListAdapter;
 import com.tokopedia.checkout.view.feature.addressoptions.ShipmentAddressListFragment;
 import com.tokopedia.checkout.view.feature.addressoptions.ShipmentAddressListPresenter;
 import com.tokopedia.user.session.UserSession;

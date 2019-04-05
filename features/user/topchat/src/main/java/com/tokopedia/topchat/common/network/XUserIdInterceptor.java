@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Map;
@@ -20,7 +19,7 @@ public class XUserIdInterceptor extends TkpdAuthInterceptor {
 
     public XUserIdInterceptor(@ApplicationContext Context context,
                               NetworkRouter networkRouter,
-                              UserSession userSession) {
+                              UserSessionInterface userSession) {
         super(context, networkRouter, userSession, "web_service_v4");
     }
 

@@ -20,11 +20,11 @@
             android:id="@+id/iv_logo_tokocash"
             android:layout_width="@dimen/dp_36"
             android:layout_height="@dimen/dp_36"
-            android:layout_marginBottom="@dimen/card_view_margin"
             android:layout_marginTop="@dimen/card_view_margin"
+            android:layout_marginBottom="@dimen/card_view_margin"
             android:padding="@dimen/keyline_1_minus_8dp"
-            android:visibility="visible"
-            android:src="@drawable/ic_tokocash" />
+            android:src="@drawable/ic_tokocash"
+            android:visibility="visible" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -37,8 +37,8 @@
                 android:layout_centerInParent="true"
                 android:layout_marginTop="@dimen/card_view_margin"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/dp_8"
                 android:paddingTop="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_8"
                 android:visibility="visible"
                 tools:visibility="gone" />
 
@@ -48,8 +48,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/card_view_margin"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/dp_5"
                 android:paddingTop="@dimen/dp_5"
+                android:paddingBottom="@dimen/dp_5"
                 android:visibility="gone"
                 tools:visibility="visible">
 
@@ -58,7 +58,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:lineSpacingExtra="4sp"
+                    android:lineSpacingExtra="@dimen/sp_4"
                     android:text="TokoCash"
                     android:textColor="@color/font_black_disabled_38"
                     android:textSize="12sp"
@@ -70,7 +70,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:lineSpacingExtra="4sp"
+                    android:lineSpacingExtra="@dimen/sp_4"
                     android:textColor="#42b549"
                     android:textSize="12sp"
                     android:visibility="gone"
@@ -85,22 +85,22 @@
                         android:id="@+id/tv_ovo_point"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/dp_5"
                         android:layout_weight="1"
-                        android:lineSpacingExtra="4sp"
+                        android:lineSpacingExtra="@dimen/sp_4"
+                        android:text="Points"
                         android:textColor="@color/font_black_disabled_38"
                         android:textSize="12sp"
-                        android:layout_marginRight="@dimen/dp_5"
                         android:visibility="visible"
-                        android:text="Points"
                         tools:visibility="visible" />
 
                     <TextView
                         android:id="@+id/tv_balance_tokocash"
-                        android:layout_toRightOf="@+id/tv_ovo_point"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/tv_ovo_point"
                         android:layout_weight="1"
-                        android:lineSpacingExtra="4sp"
+                        android:lineSpacingExtra="@dimen/sp_4"
                         android:textColor="@color/black_70"
                         android:textSize="12sp"
                         android:visibility="gone"
@@ -111,11 +111,11 @@
                         android:id="@+id/info_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_tokocash_info"
                         android:layout_alignTop="@+id/tv_balance_tokocash"
                         android:layout_alignBottom="@+id/tv_balance_tokocash"
                         android:layout_toRightOf="@+id/tv_balance_tokocash"
-                        android:visibility="gone"/>
+                        android:src="@drawable/ic_tokocash_info"
+                        android:visibility="gone" />
 
                 </RelativeLayout>
 
@@ -141,13 +141,13 @@
 
         <ImageView
             android:id="@+id/iv_logo_tokopoint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/card_view_margin"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
             android:layout_marginTop="@dimen/card_view_margin"
+            android:layout_marginBottom="@dimen/card_view_margin"
             android:padding="@dimen/keyline_1_minus_8dp"
-            android:visibility="visible"
-            android:src="@drawable/ic_hachiko_egg"/>
+            tools:src="@drawable/ic_hachiko_egg"
+            android:visibility="visible" />
 
         <LinearLayout
             android:id="@+id/progress_bar_tokopoint_layout"
@@ -168,8 +168,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/dp_8"
                     android:paddingTop="@dimen/dp_8"
+                    android:paddingBottom="@dimen/dp_8"
                     android:visibility="visible" />
 
             </LinearLayout>
@@ -190,18 +190,19 @@
                 android:layout_marginTop="@dimen/card_view_margin"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/dp_5"
                 android:paddingTop="@dimen/dp_5"
+                android:paddingBottom="@dimen/dp_5"
                 android:visibility="visible">
 
                 <TextView
-                    android:id="@+id/tv_title_tokopoint"
+                    android:id="@+id/tv_balance_tokopoint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ellipsize="end"
-                    android:lineSpacingExtra="4sp"
+                    android:lineSpacingExtra="@dimen/sp_4"
                     android:lines="1"
+                    android:gravity="center"
                     android:textColor="@color/font_black_disabled_38"
                     android:textSize="12sp"
                     android:visibility="gone"
@@ -214,55 +215,34 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:lineSpacingExtra="4sp"
+                    android:lineSpacingExtra="@dimen/sp_4"
                     android:lines="1"
                     android:singleLine="true"
                     android:textColor="#42b549"
                     android:textSize="12sp"
                     android:visibility="gone"
                     tools:text="Top Up panjaaaaaaaaaangaanannn"
-                    tools:visibility="gone" />
+                    tools:visibility="visible" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/text_coupon_count"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="horizontal">
+                    android:baselineAligned="false"
+                    android:ellipsize="end"
+                    android:lineSpacingExtra="@dimen/sp_4"
+                    android:lines="1"
+                    android:singleLine="true"
+                    android:textColor="@color/black_70"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    tools:text="900000000000000000 Poin"
+                    tools:visibility="visible" />
 
-                    <TextView
-                        android:id="@+id/tv_balance_tokopoint"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:baselineAligned="false"
-                        android:ellipsize="end"
-                        android:lineSpacingExtra="4sp"
-                        android:lines="1"
-                        android:singleLine="true"
-                        android:textColor="@color/black_70"
-                        android:textSize="12sp"
-                        android:visibility="gone"
-                        tools:text="900000000000000000 Poin"
-                        tools:visibility="visible" />
-
-                </LinearLayout>
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/text_coupon_count"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
-                android:background="@drawable/circle_red"
-                android:gravity="center"
-                android:visibility="gone"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_11" />
 
         </LinearLayout>
 

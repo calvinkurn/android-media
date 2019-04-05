@@ -18,4 +18,5 @@ public interface DeepLinkPresenter extends DeepLinkAnalyticsPresenter {
 
     void mapUrlToApplink(Uri uri);
 
+    void sendAuthenticatedEvent(Uri uriData, String screenName);
 }

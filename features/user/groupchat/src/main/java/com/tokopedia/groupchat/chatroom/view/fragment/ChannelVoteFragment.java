@@ -23,10 +23,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
@@ -41,7 +39,7 @@ import com.tokopedia.groupchat.chatroom.view.listener.ChannelVoteContract;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.presenter.ChannelVotePresenter;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
-import com.tokopedia.groupchat.common.design.CloseableBottomSheetDialog;
+import com.tokopedia.groupchat.common.design.ChannelCloseableBottomSheetDialog;
 import com.tokopedia.groupchat.common.design.GridVoteItemDecoration;
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration;
 import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
@@ -51,6 +49,8 @@ import com.tokopedia.groupchat.vote.view.adapter.typefactory.VoteTypeFactory;
 import com.tokopedia.groupchat.vote.view.adapter.typefactory.VoteTypeFactoryImpl;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.vote.di.VoteModule;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
@@ -84,12 +84,12 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     private ImageView iconVote;
     private View votedView;
     private TextView voteStatus;
-    private CloseableBottomSheetDialog channelInfoDialog;
+    private ChannelCloseableBottomSheetDialog channelInfoDialog;
 
     private VoteInfoViewModel voteInfoViewModel;
     private VoteAdapter voteAdapter;
     private ProgressBarWithTimer progressBarWithTimer;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private Snackbar snackBar;
     private boolean canVote = true;
 
@@ -121,7 +121,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+        userSession = new UserSession(getActivity());
     }
 
     @Nullable
@@ -129,7 +129,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_channel_vote, container, false);
 
-        channelInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
+        channelInfoDialog = ChannelCloseableBottomSheetDialog.createInstance(getActivity());
         channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
@@ -427,9 +427,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_LOGIN) {
-            if (getActivity().getApplication() instanceof AbstractionRouter) {
-                userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
-            }
+            userSession = new UserSession(getActivity());
             if (getActivity() instanceof GroupChatActivity) {
                 ((GroupChatActivity) getActivity()).onSuccessLogin();
                 getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);

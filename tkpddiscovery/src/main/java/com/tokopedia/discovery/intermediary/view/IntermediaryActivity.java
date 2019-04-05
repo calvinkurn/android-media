@@ -20,6 +20,10 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -30,7 +34,11 @@ import com.tokopedia.discovery.util.MoEngageEventTracking;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.List;
 
+/**
+ * For navigate: use ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL
+ */
 public class IntermediaryActivity extends BasePresenterActivity implements MenuItemCompat.OnActionExpandListener, YoutubeViewHolder.YouTubeThumbnailLoadInProcess {
 
     private FragmentManager fragmentManager;
@@ -71,6 +79,24 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            List<String> paths = UriUtil.destructureUri(ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, uri);
+            if (!paths.isEmpty()) {
+                departmentId = paths.get(0);
+            }
+        }
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            if (departmentId.isEmpty()) {
+                departmentId = extras.getString(BrowseProductRouter.DEPARTMENT_ID);
+            }
+            trackerAttribution = extras.getString(EXTRA_TRACKER_ATTRIBUTION, "");
+            fromNavigation = extras.getBoolean(BrowseProductRouter.FROM_NAVIGATION, false);
+            if (extras.getString(BrowseProductRouter.DEPARTMENT_NAME) != null
+                    && extras.getString(BrowseProductRouter.DEPARTMENT_NAME).length() > 0)
+                categoryName = extras.getString(BrowseProductRouter.DEPARTMENT_NAME);
+        }
         super.onCreate(savedInstanceState);
         if (getIntent().getBooleanExtra(EXTRA_ACTIVITY_PAUSED, false)) {
             moveTaskToBack(true);
@@ -155,12 +181,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        departmentId = extras.getString(BrowseProductRouter.DEPARTMENT_ID);
-        trackerAttribution = extras.getString(EXTRA_TRACKER_ATTRIBUTION, "");
-        fromNavigation = extras.getBoolean(BrowseProductRouter.FROM_NAVIGATION, false);
-        if (extras.getString(BrowseProductRouter.DEPARTMENT_NAME) != null
-                && extras.getString(BrowseProductRouter.DEPARTMENT_NAME).length() > 0)
-            categoryName = extras.getString(BrowseProductRouter.DEPARTMENT_NAME);
+        // already handled in oncreate
     }
 
     @Override
@@ -194,7 +215,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
             toolbar.setBackgroundResource(com.tokopedia.core2.R.color.white);
-        }else {
+        } else {
             toolbar.setBackgroundResource(com.tokopedia.core2.R.drawable.bg_white_toolbar_drop_shadow);
         }
         Drawable drawable = ContextCompat.getDrawable(this, com.tokopedia.core2.R.drawable.ic_toolbar_overflow_level_two_black);
@@ -322,6 +343,15 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
             super.onBackPressed();
         }
         thumbnailIntializing = false;
+    }
+
+    @Override
+    public void clickVideo(String title) {
+        CategoryPageTracking.eventEnhance(this, DataLayer.mapOf(
+                "event", "clickIntermediary",
+                "eventCategory", "intermediary page",
+                "eventAction", "click video - " + departmentId,
+                "eventLabel", title));
     }
 
     // Work Around IF your press back and youtube thumbnail doesn't intalized yet }

@@ -420,11 +420,12 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
     //Robin Hood
-    public void eventClickCourierCourierSelectionClickButtonDurasiPengiriman() {
-        sendEventCategoryAction(
+    public void eventClickCourierCourierSelectionClickButtonDurasiPengiriman(String isBlackbox) {
+        sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_BUTTON_DURASI_PENGIRIMAN
+                EventAction.CLICK_BUTTON_DURASI_PENGIRIMAN,
+                isBlackbox
         );
     }
 

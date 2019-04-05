@@ -15,23 +15,23 @@ public class NotificationEntity {
 
     @SerializedName("userShopInfo")
     @Expose
-    private UserShopInfoModel shopInfo;
+    private UserShopInfoModel shopInfo = new UserShopInfoModel();
 
     @SerializedName("notifications")
     @Expose
-    private NotificationsModel notifications;
+    private NotificationsModel notifications = new NotificationsModel();
 
     @SerializedName("notifcenter_unread")
     @Expose
-    private NotifcenterUnread notifcenterUnread;
+    private NotifcenterUnread notifcenterUnread = new NotifcenterUnread();
 
     @SerializedName("feed_last_feeds")
     @Expose
-    private FeedModel feed;
+    private FeedModel feed = new FeedModel();
 
     @SerializedName("homeFlag")
     @Expose
-    private HomeFlagModel homeFlag;
+    private HomeFlagModel homeFlag = new HomeFlagModel();
 
     public NotificationsModel getNotifications() {
         return notifications;

@@ -45,7 +45,7 @@ public class GetSimilarProductUseCase extends UseCase<List<ProductsItem>> {
         GraphqlClient.init(context);
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.similar_product_search), SearchProductList.class, requestParams.getParameters());
+                R.raw.similar_product_search), SearchProductList.class, requestParams.getParameters(), false);
 
         return ObservableFactory.create(Arrays.asList(graphqlRequest), null).map(new Func1<GraphqlResponse, List<ProductsItem>>() {
             @Override

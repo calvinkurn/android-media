@@ -2,14 +2,12 @@ package com.tokopedia.topads.dashboard.domain.interactor;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.domain.TopAdsSearchProductRepository;
 import com.tokopedia.topads.dashboard.domain.model.ProductListDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.Map;
 
@@ -35,11 +33,8 @@ public class TopAdsProductListUseCase extends UseCase<ProductListDomain> {
     private TopAdsSearchProductRepository topAdsSearchProductRepository;
 
     @Inject
-    public TopAdsProductListUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            TopAdsSearchProductRepository topAdsSearchProductRepository) {
-        super(threadExecutor, postExecutionThread);
+    public TopAdsProductListUseCase(TopAdsSearchProductRepository topAdsSearchProductRepository) {
+        super();
         this.topAdsSearchProductRepository = topAdsSearchProductRepository;
     }
 

@@ -113,23 +113,25 @@ public class DynamicFeedShopAdapter
         private void initView(Data data) {
             Shop shop = data.getShop();
             if (data.getShop() != null) {
-                List<ImageProduct> imageProductList = shop.getImageProduct();
-                if (imageProductList.size() > 0) {
-                    loadImageOrDefault(ivImageLeft, imageProductList.get(0).getImageUrl());
+                if (shop.getImageProduct() != null) {
+                    List<ImageProduct> imageProductList = data.getShop().getImageProduct();
+                    if (imageProductList.size() > 0) {
+                        loadImageOrDefault(ivImageLeft, imageProductList.get(0).getImageUrl());
+                    }
+                    if (imageProductList.size() > 1) {
+                        loadImageOrDefault(ivImageMiddle, imageProductList.get(1).getImageUrl());
+                    }
+                    if (imageProductList.size() > 2) {
+                        ivImageRight.setImage(imageProductList.get(2));
+                        ivImageRight.setViewHintListener(new ImpressedImageView.ViewHintListener() {
+                            @Override
+                            public void onViewHint() {
+                                new ImpresionTask().execute(shop.getImageShop().getsUrl());
+                            }
+                        });
+                    }
+                    shop.setLoaded(true);
                 }
-                if (imageProductList.size() > 1) {
-                    loadImageOrDefault(ivImageMiddle, imageProductList.get(1).getImageUrl());
-                }
-                if (imageProductList.size() > 2) {
-                    ivImageRight.setImage(imageProductList.get(2));
-                    ivImageRight.setViewHintListener(new ImpressedImageView.ViewHintListener() {
-                        @Override
-                        public void onViewHint() {
-                            new ImpresionTask().execute(shop.getImageShop().getsUrl());
-                        }
-                    });
-                }
-                shop.setLoaded(true);
                 imageLoader.loadCircle(shop, ivProfile);
                 tvName.setText(fromHtml(shop.getName()));
                 tvDescription.setText(fromHtml(shop.getTagline()));

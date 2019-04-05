@@ -1,0 +1,95 @@
+query ORDERLIST ($orderCategory: OrderCategory, $Page: Int, $PerPage: Int,$Search: String, $StartDate: String, $EndDate: String, $Sort: String, $OrderStatus : Int) {
+  orders(orderCategory: $orderCategory, Page: $Page, PerPage: $PerPage, Search:$Search, StartDate:$StartDate, EndDate:$EndDate, Sort: $Sort, OrderStatus : $OrderStatus) {
+    categoryName
+    beforeOrderId
+    category
+    id
+    createdAt
+    status
+    statusColor
+    statusStr
+    paymentID
+    appLink
+    upstream
+    paymentData {
+      label
+      value
+      textColor
+      backgroundColor
+      imageUrl
+    }
+    invoiceRefNum
+    invoiceRefURL
+    totalInvoices
+    title
+    items {
+      imageUrl
+      name
+    }
+    itemCount
+    conditionalInfo {
+      text
+      color {
+        border
+        background
+        textColor
+      }
+    }
+    dotMenuList {
+      name
+      uri
+    }
+    dotMenu {
+      name
+      uri
+     }
+    paymentData {
+      label
+      value
+      textColor
+      backgroundColor
+      imageUrl
+    }
+    metaData {
+      label
+      value
+      textColor
+      imageUrl
+      backgroundColor
+    }
+    actionButtons {
+      label
+      buttonType
+      uri
+      mappingUri
+      weight
+      key
+      method
+      uriWeb
+      value
+      name
+      control
+      header
+      color {
+        border
+        background
+        textColor
+      }
+      popup {
+        title
+        popuptext
+        actionButtons {
+          label
+          buttonType
+          uri
+          mappingUri
+          weight
+          color {
+            border
+            background
+          }
+        }
+      }
+    }
+  }
+}

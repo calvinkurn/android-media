@@ -25,6 +25,11 @@ object RxWebSocket {
                 accessToken)
     }
 
+    operator fun get(url: String, accessToken: String, delay: Int, pingInterval: Long, maxRetries: Int):
+            Observable<WebSocketInfo>? {
+        return RxWebSocketUtil.getInstance(null, delay, maxRetries, pingInterval)?.getWebSocketInfo(url, accessToken)
+    }
+
     fun send(msg: String, interceptors: List<Interceptor>?) {
         try {
             getInstance(interceptors)?.send(msg)

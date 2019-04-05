@@ -1,13 +1,12 @@
 package com.tokopedia.digital.tokocash;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.common_digital.common.DigitalRouter;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.digital.cart.presentation.activity.CartDigitalActivity;
+import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
+import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
@@ -52,7 +51,7 @@ public class TopupTokoCashPresenter extends BaseDaggerPresenter<TopupTokoCashCon
     @Override
     public void processAddToCartProduct(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct) {
         DigitalCheckoutPassData digitalCheckoutPassData = new DigitalCheckoutPassData.Builder()
-                .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                .action(DigitalCheckoutPassData.Companion.getDEFAULT_ACTION())
                 .categoryId(preCheckoutProduct.getCategoryId())
                 .clientNumber("")
                 .instantCheckout(preCheckoutProduct.isInstantCheckout() ? "1" : "0")
@@ -62,10 +61,10 @@ public class TopupTokoCashPresenter extends BaseDaggerPresenter<TopupTokoCashCon
                 .utmCampaign((preCheckoutProduct.getCategoryName()))
                 .utmContent(getView().getVersionInfoApplication())
                 .idemPotencyKey(generateATokenRechargeCheckout())
-                .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-                .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+                .utmSource(DigitalCheckoutPassData.Companion.getUTM_SOURCE_ANDROID())
+                .utmMedium(DigitalCheckoutPassData.Companion.getUTM_MEDIUM_WIDGET())
                 .voucherCodeCopied(preCheckoutProduct.getVoucherCodeCopied())
-                .source(DigitalCheckoutPassData.PARAM_NATIVE)
+                .source(DigitalCheckoutPassData.Companion.getPARAM_NATIVE())
                 .build();
 
         if (getView().getMainApplication() instanceof DigitalRouter) {
@@ -73,7 +72,7 @@ public class TopupTokoCashPresenter extends BaseDaggerPresenter<TopupTokoCashCon
                     (DigitalRouter) getView().getMainApplication();
             getView().navigateToActivityRequest(
                     digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                    DigitalRouter.REQUEST_CODE_CART_DIGITAL
+                    DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL()
             );
         }
     }

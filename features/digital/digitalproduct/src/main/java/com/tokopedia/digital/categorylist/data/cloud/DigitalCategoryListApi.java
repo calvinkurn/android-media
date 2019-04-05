@@ -1,13 +1,11 @@
 package com.tokopedia.digital.categorylist.data.cloud;
 
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.digital.common.constant.DigitalUrl;
+import com.tokopedia.network.utils.AuthUtil;
 
 import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import rx.Observable;
 
 public interface DigitalCategoryListApi {

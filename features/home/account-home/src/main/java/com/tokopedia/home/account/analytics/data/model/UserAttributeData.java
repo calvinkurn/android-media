@@ -3,30 +3,31 @@ package com.tokopedia.home.account.analytics.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.navigation_common.model.SaldoModel;
 
 public class UserAttributeData {
 
     @SerializedName("shopInfoMoengage")
     @Expose
-    private ShopInfoMoengage shopInfoMoengage;
+    private ShopInfoMoengage shopInfoMoengage = new ShopInfoMoengage();
     @SerializedName("profile")
     @Expose
-    private Profile profile;
+    private Profile profile = new Profile();
     @SerializedName("wallet")
     @Expose
-    private Wallet wallet;
-    @SerializedName("saldo")
-    @Expose
-    private Saldo saldo;
+    private Wallet wallet = new Wallet();
     @SerializedName("paymentAdminProfile")
     @Expose
-    private PaymentAdminProfile paymentAdminProfile;
+    private PaymentAdminProfile paymentAdminProfile = new PaymentAdminProfile();
     @SerializedName("topadsDeposit")
     @Expose
-    private TopadsDeposit topadsDeposit;
+    private TopadsDeposit topadsDeposit = new TopadsDeposit();
     @SerializedName("notifications")
     @Expose
-    private Notifications notifications;
+    private Notifications notifications = new Notifications();
+
+    private SaldoModel saldo = new SaldoModel();
+
 
     public ShopInfoMoengage getShopInfoMoengage() {
         return shopInfoMoengage;
@@ -52,11 +53,11 @@ public class UserAttributeData {
         this.wallet = wallet;
     }
 
-    public Saldo getSaldo() {
+    public SaldoModel getSaldo() {
         return saldo;
     }
 
-    public void setSaldo(Saldo saldo) {
+    public void setSaldo(SaldoModel saldo) {
         this.saldo = saldo;
     }
 

@@ -71,7 +71,7 @@ public class UploadProofPaymentPresenter extends BaseDaggerPresenter<UploadProof
         HashMap<String, Object> variables = new HashMap<String, Object>();
         variables.put(Constant.TRANSACTION_ID, transactionId);
         variables.put(Constant.MERCHANT_CODE, merchantCode);
-        GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources, R.raw.get_proof_payment),DataResponseGetProof.class, variables);
+        GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources, R.raw.get_proof_payment),DataResponseGetProof.class, variables, false);
         getProofUseCase.clearRequest();
         getProofUseCase.addRequest(graphqlRequest);
         getProofUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {

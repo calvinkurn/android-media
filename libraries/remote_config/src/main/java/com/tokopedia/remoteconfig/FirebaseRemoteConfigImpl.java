@@ -29,24 +29,11 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     private SharedPreferences sharedPrefs;
 
     public FirebaseRemoteConfigImpl(Context context) {
-        this.firebaseRemoteConfig = getInstance(context);
+        this.firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
 
         if(GlobalConfig.isAllowDebuggingTools() && context != null) {
             this.sharedPrefs = context.getSharedPreferences(CACHE_NAME, Context.MODE_PRIVATE);
             this.editor = sharedPrefs.edit();
-        }
-    }
-
-    private FirebaseRemoteConfig getInstance(Context context) {
-        try {
-            if (FirebaseApp.getInstance() == null) {
-                FirebaseApp.initializeApp(context);
-            }
-
-            return FirebaseRemoteConfig.getInstance();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
         }
     }
 

@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.intermediary.view.adapter;
 
 import android.annotation.SuppressLint;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +21,7 @@ import java.util.List;
  */
 
 public class IntermediaryCategoryAdapter extends
-        RecyclerView.Adapter<RecyclerView.ViewHolder>  {
+        RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private int categoryWidth;
     private List<ChildCategoryModel> categories;
@@ -43,17 +44,27 @@ public class IntermediaryCategoryAdapter extends
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final  int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         IntermediaryCategoryAdapter.ItemRowHolder itemRowHolder = (IntermediaryCategoryAdapter.ItemRowHolder) holder;
         itemRowHolder.container.getLayoutParams().width = categoryWidth;
         itemRowHolder.categoryTitle.setText(categories.get(position).getCategoryName().toUpperCase());
-        ImageHandler.LoadImage(itemRowHolder.thumbnail,categories.get(position).getCategoryImageUrl());
+        ImageHandler.LoadImage(itemRowHolder.thumbnail, categories.get(position).getCategoryImageUrl());
         itemRowHolder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                categoryListener.onCategoryRevampClick(categories.get(position) );
+                categoryListener.onCategoryRevampClick(categories.get(position), position);
             }
         });
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder holder) {
+        int position = holder.getAdapterPosition();
+        if (!categories.get(position).isTracked()) {
+            categoryListener.sendCategoryImpressionTracking(categories.get(position), position);
+            categories.get(position).setTracked(true);
+        }
+        super.onViewAttachedToWindow(holder);
     }
 
     @Override
@@ -80,7 +91,9 @@ public class IntermediaryCategoryAdapter extends
     }
 
     public interface CategoryListener {
-        void onCategoryRevampClick(ChildCategoryModel child);
+        void onCategoryRevampClick(ChildCategoryModel child, int pos);
+
+        void sendCategoryImpressionTracking(ChildCategoryModel child, int pos);
     }
 
     public void addDataChild(List<ChildCategoryModel> childs) {
@@ -89,7 +102,7 @@ public class IntermediaryCategoryAdapter extends
     }
 
     public void hideExpandable() {
-        categories.subList(9,categories.size()).clear();
+        categories.subList(9, categories.size()).clear();
         notifyDataSetChanged();
     }
 }

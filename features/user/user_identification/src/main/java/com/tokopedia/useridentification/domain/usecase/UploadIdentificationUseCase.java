@@ -45,7 +45,7 @@ public class UploadIdentificationUseCase {
                 .mutation_upload_kyc);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(query,
-                UploadIdentificationPojo.class, params.getParameters());
+                UploadIdentificationPojo.class, params.getParameters(), false);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);

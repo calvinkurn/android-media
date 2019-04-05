@@ -29,7 +29,7 @@ constructor(val resources: Resources,
     fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(resources, R.raw.query_get_invoice_list)
         val graphqlRequest = GraphqlRequest(query,
-                GetInvoiceListPojo::class.java, requestParams)
+                GetInvoiceListPojo::class.java, requestParams, false)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

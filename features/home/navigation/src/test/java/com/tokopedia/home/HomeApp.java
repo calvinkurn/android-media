@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
@@ -20,6 +19,8 @@ import com.tokopedia.home.account.di.AccountHomeInjection;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.robolectric.annotation.internal.Instrument;
 
@@ -234,7 +235,7 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
-    public void showForceLogoutDialog(Response response) {
+    public void sendForceLogoutAnalytics(Response response) {
 
     }
 
@@ -259,7 +260,7 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
-    public UserSession getSession() {
+    public UserSessionInterface getSession() {
         return mock(UserSession.class);
     }
 

@@ -1,9 +1,11 @@
 package com.tokopedia.digital.product.view.fragment;
 
-import android.app.Activity;
-import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -12,14 +14,17 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
-import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.common_digital.product.presentation.model.ClientNumberType;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.adapter.NumberListAdapter;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
@@ -31,7 +36,7 @@ import java.util.List;
  * @author rizkyfadillah on 10/4/2017.
  */
 
-public class DigitalSearchNumberFragment extends BasePresenterFragment
+public class DigitalSearchNumberFragment extends BaseDaggerFragment
         implements NumberListAdapter.OnClientNumberClickListener {
 
     private RecyclerView rvNumberList;
@@ -52,6 +57,11 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment
 
     private OnClientNumberClickListener callback;
 
+    @Override
+    protected void initInjector() {
+
+    }
+
     public interface OnClientNumberClickListener {
         void onClientNumberClicked(OrderClientNumber orderClientNumber);
     }
@@ -70,54 +80,38 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
-
+    protected void onAttachActivity(Context context) {
+        callback = (OnClientNumberClickListener) context;
     }
 
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-        callback = (OnClientNumberClickListener) activity;
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
+    public void setupArguments(Bundle arguments) {
         clientNumber = arguments.getParcelable(ARG_PARAM_EXTRA_CLIENT_NUMBER);
         number = arguments.getString(ARG_PARAM_EXTRA_NUMBER);
         clientNumbers = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST);
     }
-
     @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_search_number_digital;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_search_number_digital, container, false);
+        initView(view);
+        setViewListener();
+        return view;
     }
 
     @Override
-    protected void initView(View view) {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null){
+            setupArguments(getArguments());
+        }
+    }
+
+    private void initView(View view) {
         rvNumberList = view.findViewById(R.id.recyclerview_number_list);
         editTextSearchNumber = view.findViewById(R.id.edittext_search_number);
         btnClearNumber = view.findViewById(R.id.btn_clear_number);
@@ -146,8 +140,8 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment
     }
 
     private void setClientNumberInputType() {
-        if (clientNumber.getType().equalsIgnoreCase(ClientNumber.TYPE_INPUT_TEL)
-                || clientNumber.getType().equalsIgnoreCase(ClientNumber.TYPE_INPUT_NUMERIC)) {
+        if (clientNumber.getType().equalsIgnoreCase(ClientNumberType.TYPE_INPUT_TEL)
+                || clientNumber.getType().equalsIgnoreCase(ClientNumberType.TYPE_INPUT_NUMERIC)) {
             editTextSearchNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
             editTextSearchNumber.setKeyListener(DigitsKeyListener.getInstance("0123456789"));
         } else {
@@ -155,8 +149,7 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment
         }
     }
 
-    @Override
-    protected void setViewListener() {
+    private void setViewListener() {
         editTextSearchNumber.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -235,16 +228,6 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment
             }
         }
         return foundClientNumber;
-    }
-
-    @Override
-    protected void initialVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override

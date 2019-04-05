@@ -11,13 +11,13 @@ public class Sales {
 
     @SerializedName("sales_new_order")
     @Expose
-    private int salesNewOrder;
+    private int salesNewOrder = 0;
     @SerializedName("sales_shipping_confirm")
     @Expose
-    private int salesShippingConfirm;
+    private int salesShippingConfirm = 0;
     @SerializedName("sales_shipping_status")
     @Expose
-    private int salesShippingStatus;
+    private int salesShippingStatus = 0;
 
     public int getSalesNewOrder() {
         return salesNewOrder;

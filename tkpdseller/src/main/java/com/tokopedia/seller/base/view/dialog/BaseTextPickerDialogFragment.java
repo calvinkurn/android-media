@@ -20,7 +20,7 @@ import com.tokopedia.seller.R;
 /**
  * @author sebastianuskh on 4/17/17.
  */
-
+@Deprecated
 public abstract class BaseTextPickerDialogFragment extends DialogFragment {
 
     protected EditText textInput;

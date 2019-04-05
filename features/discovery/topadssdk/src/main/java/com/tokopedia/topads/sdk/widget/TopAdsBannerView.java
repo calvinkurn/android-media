@@ -102,7 +102,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         }
     }
 
-    private void renderViewCpmShop(Context context, final CpmData cpmData, String appLink, String adsClickUrl) {
+    private void renderViewCpmShop(Context context, final CpmData cpmData, String appLink, String adsClickUrl) throws Exception {
         if (activityIsFinishing(context))
             return;
         if (template == NO_TEMPLATE) {
@@ -174,7 +174,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         str.setSpan(new TypefaceSpan("sans-serif"), i, i + subtext.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
-    private void renderViewCpmDigital(Context context, final Cpm cpm) {
+    private void renderViewCpmDigital(Context context, final Cpm cpm) throws Exception {
         if (activityIsFinishing(context))
             return;
         if (template == NO_TEMPLATE) {
@@ -189,16 +189,22 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     }
 
     private void setHeadlineDigitalData(Context context, Cpm cpm) {
-        Glide.with(context).load(cpm.getCpmImage().getFullEcs()).asBitmap().into(new SimpleTarget<Bitmap>() {
-            @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                iconImg.setImageBitmap(resource);
-                new ImpresionTask().execute(cpm.getCpmImage().getFullUrl());
-            }
-        });
-        nameTxt.setText(escapeHTML(cpm.getName()));
-        descriptionTxt.setText(escapeHTML(cpm.getDecription()));
-        ctaTxt.setText(cpm.getCta());
+        try {
+            Glide.with(context).load(cpm.getCpmImage().getFullEcs()).asBitmap().into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    if (iconImg != null && resource != null) {
+                        iconImg.setImageBitmap(resource);
+                        new ImpresionTask().execute(cpm.getCpmImage().getFullUrl());
+                    }
+                }
+            });
+            nameTxt.setText(escapeHTML(cpm.getName() == null ? "" : cpm.getName()));
+            descriptionTxt.setText(escapeHTML(cpm.getDecription() == null ? "" : cpm.getDecription()));
+            ctaTxt.setText(cpm.getCta() == null ? "" : cpm.getCta());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void setConfig(Config config) {
@@ -224,27 +230,31 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
 
     @Override
     public void displayAds(CpmModel cpmModel) {
-        if (cpmModel != null && cpmModel.getData().size() > 0) {
-            final CpmData data = cpmModel.getData().get(0);
-            if (data != null && data.getCpm() != null) {
-                if (data.getCpm().getCpmShop() != null && isResponseValid(data)) {
-                    renderViewCpmShop(getContext(), data, data.getApplinks(), data.getAdClickUrl());
-                } else if (data.getCpm().getTemplateId() == 4) {
-                    renderViewCpmDigital(getContext(), data.getCpm());
-                    setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (topAdsBannerClickListener != null) {
-                                topAdsBannerClickListener.onBannerAdsClicked(0, data.getApplinks(), data);
-                                new ImpresionTask().execute(data.getAdClickUrl());
+        try {
+            if (cpmModel != null && cpmModel.getData().size() > 0) {
+                final CpmData data = cpmModel.getData().get(0);
+                if (data != null && data.getCpm() != null) {
+                    if (data.getCpm().getCpmShop() != null && isResponseValid(data)) {
+                        renderViewCpmShop(getContext(), data, data.getApplinks(), data.getAdClickUrl());
+                    } else if (data.getCpm().getTemplateId() == 4) {
+                        renderViewCpmDigital(getContext(), data.getCpm());
+                        setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                if (topAdsBannerClickListener != null) {
+                                    topAdsBannerClickListener.onBannerAdsClicked(0, data.getApplinks(), data);
+                                    new ImpresionTask().execute(data.getAdClickUrl());
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
             }
-        }
-        if (adsListener != null) {
-            adsListener.onTopAdsLoaded(null);
+            if (adsListener != null) {
+                adsListener.onTopAdsLoaded(null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

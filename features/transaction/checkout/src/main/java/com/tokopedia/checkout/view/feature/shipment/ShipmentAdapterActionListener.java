@@ -65,6 +65,8 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
 
     void onDonationChecked(boolean checked);
 
+    void onEgoldChecked(boolean checked);
+
     void onChangeShippingDuration(ShipmentCartItemModel shipmentCartItemModel,
                                   RecipientAddressModel recipientAddressModel,
                                   List<ShopShipment> shopShipmentList,

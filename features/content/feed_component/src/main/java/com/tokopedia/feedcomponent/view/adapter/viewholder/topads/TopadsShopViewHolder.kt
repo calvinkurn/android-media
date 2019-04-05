@@ -32,11 +32,22 @@ class TopadsShopViewHolder(v: View,
             return
         }
 
-        itemView.topadsShop.bind(element.dataList)
-        itemView.topadsShop.setItemClickListener(this)
+        if (element.dataList.isNotEmpty()) {
+            itemView.viewPaddingBottom.visibility = View.VISIBLE
+            itemView.topadsShop.bind(element.dataList)
+            itemView.topadsShop.setItemClickListener(this)
+        } else {
+            itemView.viewPaddingBottom.visibility = View.GONE
+        }
 
-        itemView.cardTitle.bind(element.title, element.template.cardrecom.title)
-        itemView.cardTitle.listener = cardTitleListener
+        if (element.title.text.isNotEmpty()) {
+            itemView.cardTitle.visibility = View.VISIBLE
+            itemView.cardTitle.bind(element.title, element.template.cardrecom.title)
+            itemView.cardTitle.listener = cardTitleListener
+        } else{
+            itemView.cardTitle.visibility = View.GONE
+        }
+
     }
 
     override fun bind(element: TopadsShopViewModel?, payloads: MutableList<Any>) {

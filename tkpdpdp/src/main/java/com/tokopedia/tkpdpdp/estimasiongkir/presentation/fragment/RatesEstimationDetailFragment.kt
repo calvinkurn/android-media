@@ -2,38 +2,36 @@ package com.tokopedia.tkpdpdp.estimasiongkir.presentation.fragment
 
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
-import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.tkpdpdp.R
 import com.tokopedia.tkpdpdp.estimasiongkir.constant.RatesEstimationConstant
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesEstimationModel
 import com.tokopedia.tkpdpdp.estimasiongkir.di.RatesEstimationComponent
 import com.tokopedia.tkpdpdp.estimasiongkir.listener.RatesEstimationDetailView
-import com.tokopedia.tkpdpdp.estimasiongkir.presentation.presenter.RatesEstimationDetailPresenter
 import com.tokopedia.tkpdpdp.estimasiongkir.presentation.adapter.RatesEstimationServiceAdapter
+import com.tokopedia.tkpdpdp.estimasiongkir.presentation.presenter.RatesEstimationDetailPresenter
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_rates_estimation_detail.*
 import kotlinx.android.synthetic.main.partial_header_rate_estimation.*
-import java.text.DecimalFormat
-
 import javax.inject.Inject
 
 class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetailView {
 
     @Inject
     lateinit var presenter: RatesEstimationDetailPresenter
-    @Inject
-    lateinit var userSession: UserSession
+
+    val userSession: UserSessionInterface by lazy {
+        UserSession(activity)
+    }
 
     private var shopDomain: String = ""
     private var productWeightUnit: String = ""

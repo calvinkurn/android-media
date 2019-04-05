@@ -14,6 +14,7 @@ import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.activity.DigitalYoutubeActivity;
 import com.tokopedia.digital.product.view.model.GuideData;
+import com.tokopedia.youtubeutils.common.YoutubePlayerConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,7 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
         GuideData data = guideDataList.get(position);
 
         holder.tvTitle.setText(data.getTitle());
-        holder.youtubeTV.initialize(context.getApplicationContext().getString(R.string.GOOGLE_API_KEY),
+        holder.youtubeTV.initialize(YoutubePlayerConstant.GOOGLE_API_KEY,
                 youtubeListenerInitialize(data.getSourceLink(), holder.progressBar));
         holder.youtubeTV.setOnClickListener(youtubeListenerOnClick(data.getSourceLink()));
     }

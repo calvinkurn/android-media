@@ -9,19 +9,19 @@ import com.google.gson.annotations.SerializedName;
 public class NotificationBuyerOrderModel {
     @SerializedName("paymentStatus")
     @Expose
-    private String paymentStatus;
+    private String paymentStatus = "";
     @SerializedName("confirmed")
     @Expose
-    private Integer confirmed;
+    private Integer confirmed = 0;
     @SerializedName("processed")
     @Expose
-    private Integer processed;
+    private Integer processed = 0;
     @SerializedName("shipped")
     @Expose
-    private Integer shipped;
+    private Integer shipped = 0;
     @SerializedName("arriveAtDestination")
     @Expose
-    private Integer arriveAtDestination;
+    private Integer arriveAtDestination = 0;
 
     public String getPaymentStatus() {
         return paymentStatus;

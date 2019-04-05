@@ -9,35 +9,35 @@ import com.google.gson.annotations.SerializedName;
 public class NotificationsModel {
     @SerializedName("resolutionAs")
     @Expose
-    private NotificationResolutionModel resolution;
+    private NotificationResolutionModel resolution = new NotificationResolutionModel();
     @SerializedName("buyerOrderStatus")
     @Expose
-    private NotificationBuyerOrderModel buyerOrder;
+    private NotificationBuyerOrderModel buyerOrder = new NotificationBuyerOrderModel();
     @SerializedName("sellerOrderStatus")
     @Expose
-    private NotificationSellerOrderModel sellerOrder;
+    private NotificationSellerOrderModel sellerOrder = new NotificationSellerOrderModel();
     @SerializedName("sellerInfo")
     @Expose
-    private NotificationSellerInfoModel sellerInfo;
+    private NotificationSellerInfoModel sellerInfo = new NotificationSellerInfoModel();
     @SerializedName("userSatisfactionSurvey")
     @Expose
-    private Integer userSatisfaction;
+    private Integer userSatisfaction = 0;
 
     @SerializedName("total_notif")
     @Expose
-    private String totalNotification;
+    private String totalNotification = "";
 
     @SerializedName("total_cart")
     @Expose
-    private String totalCart;
+    private String totalCart = "";
 
     @SerializedName("inbox")
     @Expose
-    private InboxModel inbox;
+    private InboxModel inbox = new InboxModel();
 
     @SerializedName("chat")
     @Expose
-    private ChatModel chat;
+    private ChatModel chat = new ChatModel();
 
     public NotificationResolutionModel getResolution() {
         return resolution;

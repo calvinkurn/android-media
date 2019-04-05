@@ -1053,7 +1053,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_confirmed_payment">Pembayaran yang telah dikonfirmasi</string>
     <string name="title_remaining_tokopedia">Saldo tersedia</string>
     <string name="msg_payment_success">Terima kasih, Anda telah sukses mengkonfirmasi dengan menggunakan metode pembayaran</string>
-    <string name="title_activity_people_tx_details">Detil Transaksi</string>
+    <string name="title_activity_people_tx_details">Detail Transaksi</string>
     <string name="title_activity_people_tx_history">Detil Status</string>
     <string name="title_activity_cart_shipment">Ubah Pengiriman</string>
     <string name="title_payment_confirmation">KONFIRMASI</string>

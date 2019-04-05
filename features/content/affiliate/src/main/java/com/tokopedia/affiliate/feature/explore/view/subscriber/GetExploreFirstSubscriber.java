@@ -55,10 +55,12 @@ public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
         if (GlobalConfig.isAllowDebuggingTools()) {
             e.printStackTrace();
         }
-        if (mainView == null)
+        if (mainView == null) {
             return;
+        }
         mainView.hideLoading();
         mainView.onErrorGetFirstData(ErrorHandler.getErrorMessage(mainView.getContext(), e));
+        mainView.stopTrace();
     }
 
     @Override

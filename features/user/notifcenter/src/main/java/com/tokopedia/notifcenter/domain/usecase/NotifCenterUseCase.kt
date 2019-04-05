@@ -29,7 +29,7 @@ class NotifCenterUseCase @Inject constructor(@ApplicationContext val context: Co
                 .setSessionIncluded(true)
                 .build()
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_notif_center)
-        val graphqlRequest = GraphqlRequest(query, NotifCenterPojo::class.java, variables)
+        val graphqlRequest = GraphqlRequest(query, NotifCenterPojo::class.java, variables, false)
 
         graphqlUseCase.setCacheStrategy(graphqlCacheStrategy)
         graphqlUseCase.clearRequest()
@@ -43,7 +43,7 @@ class NotifCenterUseCase @Inject constructor(@ApplicationContext val context: Co
                 .setSessionIncluded(true)
                 .build()
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_notif_center)
-        val graphqlRequest = GraphqlRequest(query, NotifCenterPojo::class.java, variables)
+        val graphqlRequest = GraphqlRequest(query, NotifCenterPojo::class.java, variables, false)
 
         graphqlUseCase.setCacheStrategy(graphqlCacheStrategy)
         graphqlUseCase.clearRequest()

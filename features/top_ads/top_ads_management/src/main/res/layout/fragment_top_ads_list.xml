@@ -42,7 +42,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <com.tokopedia.core.customwidget.SwipeToRefresh
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
             android:clipToPadding="false"
             android:paddingTop="@dimen/dp_12" />
 
-    </com.tokopedia.core.customwidget.SwipeToRefresh>
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     <LinearLayout
         android:id="@+id/container_action_view"

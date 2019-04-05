@@ -9,10 +9,10 @@ import com.google.gson.annotations.SerializedName;
 public class ReputationShop {
     @SerializedName("badge")
     @Expose
-    public String badge;
+    public String badge = "";
     @SerializedName("badge_hd")
     @Expose
-    public String badgeHd;
+    public String badgeHd = "";
 
     public String getBadge() {
         return badge;

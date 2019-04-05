@@ -187,7 +187,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         }
     }
 
-    private void onSuccessImageTakenFromCamera(File imgFile) {
+    protected void onSuccessImageTakenFromCamera(File imgFile) {
         String imagePath = imgFile.getAbsolutePath();
 
         finalCameraResultFilePath = imagePath;
@@ -234,7 +234,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         }
     }
 
-    private void hideLoading() {
+    protected void hideLoading() {
         if (isAdded()) {
             progressDialog.dismiss();
         }

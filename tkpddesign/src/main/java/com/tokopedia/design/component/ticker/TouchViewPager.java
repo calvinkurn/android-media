@@ -1,10 +1,13 @@
 package com.tokopedia.design.component.ticker;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.tokopedia.design.R;
 
 /**
  * Created by Rizky on 07/08/18.
@@ -14,6 +17,7 @@ public class TouchViewPager extends ViewPager {
     //private View currentView;
     private boolean AllowPageSwitching = true;
     private boolean isSmoothScroll = true;
+    private boolean useDefaultMeasurement = false;
 
     public TouchViewPager(Context context) {
         super(context);
@@ -21,6 +25,13 @@ public class TouchViewPager extends ViewPager {
 
     public TouchViewPager(Context context, AttributeSet attrs){
         super(context, attrs);
+        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.TouchViewPager);
+        try {
+            AllowPageSwitching = styledAttributes.getBoolean(R.styleable.TouchViewPager_can_swipe, true);
+            useDefaultMeasurement = styledAttributes.getBoolean(R.styleable.TouchViewPager_default_measure, false);
+        } finally {
+            styledAttributes.recycle();
+        }
     }
 
     public void SetAllowPageSwitching(boolean permission){
@@ -29,22 +40,26 @@ public class TouchViewPager extends ViewPager {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int height = 0;
-        View childView = null;
+        if (useDefaultMeasurement) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        } else {
+            int height = 0;
+            View childView = null;
 
-        for (int i = 0; i < getChildCount(); ++i){
-            childView = getChildAt(i);
-            childView.measure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-            int h = childView.getMeasuredHeight();
-            if (h > height) height = h;
+            for (int i = 0; i < getChildCount(); ++i) {
+                childView = getChildAt(i);
+                childView.measure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                int h = childView.getMeasuredHeight();
+                if (h > height) height = h;
+            }
+
+            if (height != 0) {
+                heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
+            }
+
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            setMeasuredDimension(getMeasuredWidth(), measureHeight(heightMeasureSpec, childView));
         }
-
-        if (height != 0) {
-            heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
-        }
-
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(getMeasuredWidth(), measureHeight(heightMeasureSpec, childView));
     }
 
     /**

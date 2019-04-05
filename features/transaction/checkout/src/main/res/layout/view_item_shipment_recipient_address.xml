@@ -23,7 +23,7 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
-            android:text="@string/label_shipment_address" />
+            android:text="@string/checkout_module_title_shipping_dest" />
 
         <View
             android:id="@+id/separator"
@@ -107,7 +107,7 @@
                 android:gravity="center"
                 android:paddingBottom="@dimen/dp_16"
                 android:paddingTop="@dimen/dp_16"
-                android:text="@string/label_button_change_address" />
+                android:text="@string/label_button_change_address_new" />
 
         </LinearLayout>
 

@@ -13,7 +13,7 @@ import com.tokopedia.seller.R;
 /**
  * Created by nathan on 6/23/17.
  */
-
+@Deprecated
 public abstract class BaseItemPickerCacheViewHolder<T extends ItemPickerType> extends BaseViewHolder<T> {
 
     protected ImageView imageView;

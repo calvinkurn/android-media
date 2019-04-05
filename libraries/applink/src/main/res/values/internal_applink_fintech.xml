@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_fintech" translatable="false">fintech</string>
+
+    <!--
+        If the link is Ended with {id}, must end with "/"
+        Otherwise, do not put "/"
+    -->
+</resources>

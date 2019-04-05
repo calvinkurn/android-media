@@ -3,7 +3,6 @@ package com.tokopedia.train.common.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.train.common.TrainRouter;
@@ -14,6 +13,8 @@ import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.common.util.TrainFlowUtil;
 import com.tokopedia.train.scheduledetail.domain.GetScheduleDetailUseCase;
 import com.tokopedia.train.search.domain.GetDetailScheduleUseCase;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Component;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -32,8 +33,6 @@ public interface TrainComponent {
 
     TrainDateUtil trainDateUtil();
 
-    UserSession userSession();
-
     TrainRouter trainRouter();
 
     TrainRepository trainRepository();
@@ -47,4 +46,6 @@ public interface TrainComponent {
     void inject(TrainBaseActivity trainBaseActivity);
 
     TrainProvider getTrainProvider();
+
+    UserSessionInterface getUserSessionInterface();
 }

@@ -28,6 +28,7 @@ import com.tokopedia.seller.common.utils.MenuTintUtils;
  * Created by nathan on 7/11/17.
  */
 
+@Deprecated
 abstract class BaseToolbarActivity extends BaseActivity {
 
     private final static int TOOLBAR_ELEVATION = 10;

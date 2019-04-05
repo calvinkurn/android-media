@@ -31,7 +31,6 @@ class ShopTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
     companion object {
         const val EXTRA_SHOP_ID: String = "shopId"
-        const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
         const val APP_LINK_EXTRA_SHOP_ID = "shop_id"
 
         open fun createIntent(context: Context,

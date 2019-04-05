@@ -1,6 +1,6 @@
 package com.tokopedia.topads.keyword.view.presenter;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordAddView;
 
 import java.util.ArrayList;

@@ -3,14 +3,13 @@ package com.tokopedia.flight.common.data.source.cloud.api;
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
-import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.common.constant.FlightUrl;
+import com.tokopedia.flight.country.data.FlightCountryEntity;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
@@ -20,7 +19,6 @@ import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequ
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
-import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
 import com.tokopedia.flight.search.data.api.combined.request.FlightSearchCombinedRequestData;
 import com.tokopedia.flight.search.data.api.combined.response.FlightSearchCombinedResponse;
 import com.tokopedia.flight.search.data.api.single.request.FlightSearchSingleRequestData;
@@ -63,11 +61,7 @@ public interface FlightApi {
 
     @Headers({"Accept-Encoding: gzip"})
     @GET(FlightUrl.FLIGHT_AIRPORT_PATH)
-    Observable<Response<DataResponse<List<FlightAirportCountry>>>> getFlightAirportList(@QueryMap Map<String, String> keyword);
-
-    @Headers({"Accept-Encoding: gzip"})
-    @GET(FlightUrl.FLIGHT_AIRLINE_PATH)
-    Observable<Response<DataResponse<List<AirlineData>>>> getFlightAirlineList();
+    Observable<Response<DataResponse<List<FlightCountryEntity>>>> getFlightAirportList(@QueryMap Map<String, String> keyword);
 
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_CART_PATH)
@@ -87,7 +81,7 @@ public interface FlightApi {
 
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_VERIFY_BOOKING)
-    Observable<Response<DataResponse<DataResponseVerify>>> verifyBooking(@Body JsonObject verifyRequest, @Header("x-tkpd-userid") String userId);
+    Observable<Response<String>> verifyBooking(@Body JsonObject verifyRequest, @Header("x-tkpd-userid") String userId);
 
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_CHECKOUT_BOOKING)
@@ -95,9 +89,6 @@ public interface FlightApi {
 
     @GET
     Observable<Response<DataResponse<List<BannerDetail>>>> getBanners(@Url String url, @QueryMap Map<String, String> params);
-
-    @GET(FlightUrl.FLIGHT_AIRLINE_PATH)
-    Observable<Response<DataResponse<List<AirlineData>>>> getFlightAirline(@Query("id") String airlineId);
 
     @GET(FlightUrl.FLIGHT_EMAIL)
     Observable<Response<SendEmailEntity>> sendEmail(@QueryMap Map<String, Object> param);

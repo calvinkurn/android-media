@@ -4,31 +4,31 @@ import com.google.gson.annotations.SerializedName;
 
 public class VccUserStatus {
     @SerializedName("status")
-    private String status;
+    private String status = "";
 
     @SerializedName("redirection_url")
-    private String redirectionUrl;
+    private String redirectionUrl = "";
 
     @SerializedName("message_header")
-    private String messageHeader;
+    private String messageHeader = "";
 
     @SerializedName("message_body")
-    private String messageBody;
+    private String messageBody = "";
 
     @SerializedName("message_button_name")
-    private String messageButtonName;
+    private String messageButtonName = "";
 
     @SerializedName("message_url")
-    private String messageUrl;
+    private String messageUrl = "";
 
     @SerializedName("icon")
-    private String icon;
+    private String icon = "";
 
     @SerializedName("title")
-    private String title;
+    private String title = "";
 
     @SerializedName("body")
-    private String body;
+    private String body = "";
 
     public String getStatus() {
         return status;

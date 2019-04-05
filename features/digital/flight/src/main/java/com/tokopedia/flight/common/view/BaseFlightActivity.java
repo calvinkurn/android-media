@@ -70,7 +70,7 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
             return true;
         } else if (item.getItemId() == R.id.menu_transaction_list) {
             flightAnalytics.eventClickTransactions(getScreenName());
-            startActivity(FlightOrderListActivity.getCallingIntent(this, false));
+            startActivity(FlightOrderListActivity.getCallingIntent(this));
             return true;
         } else if (item.getItemId() == R.id.menu_help) {
             if (getApplication() instanceof FlightModuleRouter

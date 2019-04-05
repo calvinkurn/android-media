@@ -22,7 +22,7 @@ public class HomeAnalytics {
                     .setDateShopCreated(profileData.getShopInfoMoengage().getInfo() != null ? profileData.getShopInfoMoengage().getInfo().getDateShopCreated() : "")
                     .setShopLocation(profileData.getShopInfoMoengage().getInfo() != null ? profileData.getShopInfoMoengage().getInfo().getShopLocation() : "")
                     .setTokocashAmt(profileData.getWallet() != null ? profileData.getWallet().getRawBalance() + "" : "")
-                    .setSaldoAmt(profileData.getSaldo() != null ? profileData.getSaldo().getDeposit() + "" : "")
+                    .setSaldoAmt(profileData.getSaldo() != null ? profileData.getSaldo().getSaldo().getDepositLong() + "" : "")
                     .setTopAdsAmt(profileData.getTopadsDeposit() != null ? profileData.getTopadsDeposit().getTopadsAmount() + "" : "")
                     .setTopadsUser(profileData.getTopadsDeposit() != null ? profileData.getTopadsDeposit().getIsTopadsUser() : false)
                     .setHasPurchasedMarketplace(profileData.getPaymentAdminProfile().getIsPurchasedMarketplace() != null ? profileData.getPaymentAdminProfile().getIsPurchasedMarketplace() : false)

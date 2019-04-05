@@ -4,22 +4,21 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/dp_2"
-    android:layout_marginRight="@dimen/dp_2"
-    android:layout_marginTop="@dimen/dp_8">
+    android:layout_marginRight="@dimen/dp_2">
 
     <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/interactive_label_quick_reply"
+        android:background="@drawable/rounded_transparent"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
         android:minHeight="@dimen/min_height_template"
         android:minWidth="@dimen/min_width_template"
-        android:paddingLeft="@dimen/dp_12"
-        android:paddingRight="@dimen/dp_12"
-        android:textColor="@color/tkpd_main_green"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        android:textColor="@color/white"
         android:textSize="@dimen/sp_12"
         tools:text="ABCDEFGHJ" />
 

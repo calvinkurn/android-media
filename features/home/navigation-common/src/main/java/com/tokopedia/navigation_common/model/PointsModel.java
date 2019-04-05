@@ -9,16 +9,16 @@ import com.google.gson.annotations.SerializedName;
 public class PointsModel {
     @SerializedName("reward")
     @Expose
-    private Integer reward;
+    private Integer reward = 0;
     @SerializedName("rewardStr")
     @Expose
-    private String rewardStr;
+    private String rewardStr = "";
     @SerializedName("loyalty")
     @Expose
-    private Integer loyalty;
+    private Integer loyalty = 0;
     @SerializedName("loyaltyStr")
     @Expose
-    private String loyaltyStr;
+    private String loyaltyStr = "";
 
     public Integer getReward() {
         return reward;

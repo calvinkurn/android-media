@@ -1,31 +1,19 @@
 package com.tokopedia.navigation.presentation.fragment;
 
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.domain.model.Inbox;
-import com.tokopedia.navigation.presentation.activity.NotificationActivity;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
 import com.tokopedia.navigation.presentation.base.BaseTestableParentFragment;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
@@ -33,7 +21,6 @@ import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.InboxPresenter;
 import com.tokopedia.navigation.presentation.view.InboxView;
-import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 
 import java.util.ArrayList;
@@ -45,9 +32,8 @@ import javax.inject.Inject;
  * Created by meta on 19/06/18.
  */
 public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent, InboxPresenter> implements
-        InboxView, NotificationListener {
+        InboxView {
 
-    public static final String KEY_TOOLBAR = "key_toolbar";
     public static final int CHAT_MENU = 0;
     public static final int DISCUSSION_MENU = 1;
     public static final int REVIEW_MENU = 2;
@@ -61,20 +47,10 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private InboxAdapter adapter;
-    private ImageButton menuItemNotification;
-    private TextView toolbarTitle;
-    private BadgeView badgeView;
     private View emptyLayout;
-    private AppBarLayout appBarLayout;
 
-    private int badgeNumber;
-
-    public static InboxFragment newInstance(boolean isWithToolbar) {
-        InboxFragment fragment = new InboxFragment();
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(KEY_TOOLBAR, isWithToolbar);
-        fragment.setArguments(bundle);
-        return fragment;
+    public static InboxFragment newInstance() {
+        return new InboxFragment();
     }
 
     @Override
@@ -111,8 +87,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             globalNavAnalytics.eventInboxPage(getString(inbox.getTitle()).toLowerCase());
             getCallingIntent(position);
         });
-
-        onNotifyBadgeNotification(badgeNumber);
     }
 
     private void intiInjector() {
@@ -184,33 +158,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     @Override
-    public void setupToolbar(View view) {
-        boolean isWithToolbar = false;
-        if (getArguments() != null) {
-            isWithToolbar = getArguments().getBoolean(KEY_TOOLBAR);
-        }
-        appBarLayout = view.findViewById(R.id.app_bar);
-        if (isWithToolbar) {
-            super.setupToolbar(view);
-            toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
-            menuItemNotification = toolbar.findViewById(R.id.action_notification);
-            menuItemNotification.setOnClickListener(v -> {
-                globalNavAnalytics.eventTrackingNotification();
-                startActivity(NotificationActivity.start(getActivity()));
-            });
-            appBarLayout.setVisibility(View.VISIBLE);
-        } else {
-            appBarLayout.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void setTitle(String title) {
-        if (toolbarTitle != null)
-            toolbarTitle.setText(title);
-    }
-
-    @Override
     public void onStartLoading() {
         if (swipeRefreshLayout != null) {
             swipeRefreshLayout.setRefreshing(true);
@@ -242,20 +189,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     @Override
     protected String getScreenName() {
         return getString(R.string.inbox);
-    }
-
-    @Override
-    public void onNotifyBadgeNotification(int number) {
-        this.badgeNumber = number;
-        if (menuItemNotification == null || getActivity() == null)
-            return;
-
-        if (badgeView == null)
-            badgeView = new BadgeView(getActivity());
-
-        badgeView.bindTarget(menuItemNotification);
-        badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
-        badgeView.setBadgeNumber(number);
     }
 
     @Override

@@ -1,27 +1,25 @@
 package com.tokopedia.abstraction.common.data.model.response;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Header {
 
     @SerializedName("process_time")
     @Expose
-    private double processTime;
+    private double processTime = 0;
     @SerializedName("messages")
     @Expose
-    private List<String> messages;
+    private List<String> messages = new ArrayList<>();
     @SerializedName("reason")
     @Expose
-    private String reason;
+    private String reason = "";
     @SerializedName("error_code")
     @Expose
-    private String errorCode;
+    private String errorCode = "";
 
     public String getErrorCode() {
         return errorCode;

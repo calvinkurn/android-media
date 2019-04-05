@@ -26,21 +26,21 @@ import rx.Observable;
  */
 public interface DigitalRestApi {
 
-    @GET(DigitalUrl.PATH_CATEGORY_LIST)
+    @GET("favorite/list")
     Observable<Response<TkpdDigitalResponse>> getCategoryList();
 
-    @POST(DigitalUrl.PATH_GET_CART)
+    @POST("cart")
     @Headers({"Content-Type: application/json"})
     Observable<Response<DataResponse<ResponseCartData>>> addToCart(
             @Body JsonObject requestBody,
             @Header("Idempotency-Key") String idemPotencyKeyHeader
     );
 
-    @POST(DigitalUrl.PATH_CHECKOUT)
+    @POST("checkout")
     @Headers({"Content-Type: application/json"})
     Observable<Response<DataResponse<ResponseCheckoutData>>> checkout(@Body JsonObject requestBody);
 
-    @POST(DigitalUrl.PATH_USSD)
+    @POST("ussd/balance")
     @Headers({"Content-Type: application/json"})
     Observable<Response<TkpdDigitalResponse>> parsePulsaMessage(@Body JsonObject requestBody);
 

@@ -3,7 +3,6 @@ package com.tokopedia.seller.opportunity.fragment;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,9 +13,7 @@ import android.view.ViewGroup;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
@@ -24,14 +21,15 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.seller.opportunity.data.OpportunityNewPriceData;
+import com.tokopedia.seller.opportunity.di.component.DaggerOpportunityComponent;
 import com.tokopedia.seller.opportunity.di.component.OpportunityComponent;
 import com.tokopedia.seller.opportunity.di.module.OpportunityModule;
 import com.tokopedia.seller.opportunity.listener.OpportunityView;
 import com.tokopedia.seller.opportunity.presentation.ActionViewData;
-import com.tokopedia.seller.opportunity.presenter.OpportunityImpl;
 import com.tokopedia.seller.opportunity.presenter.OpportunityPresenter;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
-import com.tokopedia.seller.opportunity.di.component.DaggerOpportunityComponent;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -43,7 +41,7 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
 
     TkpdProgressDialog progressDialog;
     private View btnTakeOpportunity;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     private OpportunityComponent opportunityComponent;
 
@@ -62,7 +60,7 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.opportunityItemViewModel = listener.getItemViewModel();
-        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+        userSession = new UserSession(getActivity());
 
         opportunityComponent.inject(this);
         presenter.attachView(this);

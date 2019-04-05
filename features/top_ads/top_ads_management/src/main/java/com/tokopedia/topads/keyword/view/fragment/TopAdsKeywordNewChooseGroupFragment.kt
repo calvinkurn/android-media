@@ -10,7 +10,8 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tkpd.library.utils.CommonUtils
+import android.widget.Toast
+import com.tokopedia.core.util.MethodChecker
 import com.tokopedia.topads.R
 import com.tokopedia.topads.common.view.fragment.TopAdsNewBaseStepperFragment
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant
@@ -69,7 +70,7 @@ class TopAdsKeywordNewChooseGroupFragment : TopAdsNewBaseStepperFragment<TopAdsK
 
     override fun gotoNextPage() {
         if (keywordCount >= resources.getInteger(R.integer.top_ads_keyword_max_in_group)){
-            CommonUtils.UniversalToast(activity, getString(R.string.top_ads_keyword_per_group_reach_limit))
+            Toast.makeText(activity, MethodChecker.fromHtml(getString(R.string.top_ads_keyword_per_group_reach_limit)), Toast.LENGTH_LONG).show()
             return
         }
 

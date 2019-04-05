@@ -23,12 +23,6 @@
     <string name="error_no_browser">\"Tidak ada aplikasi untuk membuka link\"</string>
 
     <string name="set_date">Atur Tanggal</string>
-    <string name="yesterday">Kemarin</string>
-    <string name="seven_days_ago">7 hari terakhir</string>
-    <string name="thirty_days_ago">30 hari terakhir</string>
-
-    <string name="label_today">Hari Ini</string>
-    <string name="label_this_month">Bulan Ini</string>
 
     <string name="market_insight_item_non_gm_text">Kata Kunci %s</string>
 

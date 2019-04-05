@@ -16,6 +16,8 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
@@ -37,9 +39,9 @@ import java.util.*
  * @author by nisie on 23/11/18.
  */
 abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
-        , ImageAnnouncementListener, ChatLinkHandlerListener
-        , ImageUploadListener, ProductAttachmentListener, TypingListener
-        , BaseChatContract.View {
+    , ImageAnnouncementListener, ChatLinkHandlerListener
+    , ImageUploadListener, ProductAttachmentListener, TypingListener
+    , BaseChatContract.View {
 
     open lateinit var viewState: BaseChatViewState
 
@@ -56,7 +58,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun getAdapterTypeFactory(): BaseChatTypeFactoryImpl {
         return BaseChatTypeFactoryImpl(this,
-                this, this, this)
+            this, this, this)
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -105,7 +107,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
                             savedInstanceState: Bundle?): String {
         return when {
             savedInstanceState != null
-                    && savedInstanceState.getString(paramName, "").isNotEmpty()
+                && savedInstanceState.getString(paramName, "").isNotEmpty()
             -> savedInstanceState.getString(paramName)
             arguments != null && arguments.getString(paramName, "").isNotEmpty()
             -> arguments.getString(paramName)
@@ -146,9 +148,9 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
                 isContactUsLink(uri) -> {
                     val intent = RouteManager.getIntent(activity, url)
                     intent.putExtra(PARAM_URL, URLGenerator.generateURLSessionLogin(
-                            if (TextUtils.isEmpty(url)) TkpdBaseURL.BASE_CONTACT_US else url,
-                            getUserSession().deviceId,
-                            getUserSession().userId))
+                        if (TextUtils.isEmpty(url)) TkpdBaseURL.BASE_CONTACT_US else url,
+                        getUserSession().deviceId,
+                        getUserSession().userId))
                     intent.putExtra(IS_CHAT_BOT, true)
                     startActivity(intent)
                 }
@@ -157,7 +159,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
                 else -> {
                     val applinkRouter = activity!!.applicationContext as ApplinkRouter
                     applinkRouter.goToApplinkActivity(activity,
-                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
                 }
             }
         }
@@ -166,8 +168,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     private fun isContactUsLink(uri: Uri?): Boolean {
         val CONTACT_US_PATH_SEGMENT = "toped-contact-us"
         return uri != null
-                && uri.pathSegments != null
-                && uri.pathSegments.contains(CONTACT_US_PATH_SEGMENT)
+            && uri.pathSegments != null
+            && uri.pathSegments.contains(CONTACT_US_PATH_SEGMENT)
     }
 
     override fun handleBranchIOLinkClick(url: String) {
@@ -191,17 +193,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
         if (!GlobalConfig.isSellerApp() || opponentRole != ROLE_SHOP) {
             activity?.run {
-
-                var routingAppLink: String = ApplinkConst.PRODUCT_INFO
-                val uriBuilder = Uri.Builder()
-                uriBuilder.appendQueryParameter(ApplinkConst.Query.PDP_ID, element.productId.toString())
-                        .appendQueryParameter(ApplinkConst.Query.PDP_PRICE, element.productPrice)
-                        .appendQueryParameter(ApplinkConst.Query.PDP_NAME, element.productName)
-                        .appendQueryParameter(ApplinkConst.Query.PDP_DATE, element.dateTimeInMilis.toString())
-                        .appendQueryParameter(ApplinkConst.Query.PDP_IMAGE, element.productImage.toString())
-
-                routingAppLink += uriBuilder.toString()
-                RouteManager.route(context, routingAppLink)
+                RouteManager.route(this, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    element.productId.toString())
             }
 
         } else {

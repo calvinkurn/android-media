@@ -8,25 +8,25 @@ public class Inbox {
 
     @SerializedName("talk")
     @Expose
-    private int inboxTalk;
+    private int inboxTalk = 0;
     @SerializedName("ticket")
     @Expose
-    private int inboxTicket;
+    private int inboxTicket = 0;
     @SerializedName("review")
     @Expose
-    private int inboxReview;
+    private int inboxReview = 0;
     @SerializedName("friend")
     @Expose
-    private int inboxFriend;
+    private int inboxFriend = 0;
     @SerializedName("wishlist")
     @Expose
-    private int inboxWishlist;
+    private int inboxWishlist = 0;
     @SerializedName("message")
     @Expose
-    private int inboxMessage;
+    private int inboxMessage = 0;
     @SerializedName("reputation")
     @Expose
-    private int inboxReputation;
+    private int inboxReputation = 0;
 
     public int getInboxTalk() {
         return inboxTalk;

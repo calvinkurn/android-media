@@ -1,9 +1,9 @@
 package com.tokopedia.mitratoppers.preapprove.data.source.cloud;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.mapper.DataResponseMapper;
-import com.tokopedia.mitratoppers.preapprove.data.source.cloud.api.MitraToppersApi;
 import com.tokopedia.mitratoppers.preapprove.data.model.response.preapprove.ResponsePreApprove;
+import com.tokopedia.mitratoppers.preapprove.data.source.cloud.api.MitraToppersApi;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -11,11 +11,11 @@ import rx.Observable;
 
 public class MitraToppersPreApproveDataCloud {
     private final MitraToppersApi api;
-    private final UserSession userSession;
+    private final UserSessionInterface userSession;
 
     @Inject
     public MitraToppersPreApproveDataCloud(MitraToppersApi api,
-                                           UserSession userSession) {
+                                           UserSessionInterface userSession) {
         this.api = api;
         this.userSession = userSession;
     }

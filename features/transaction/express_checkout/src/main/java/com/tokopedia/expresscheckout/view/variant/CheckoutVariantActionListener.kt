@@ -45,5 +45,7 @@ interface CheckoutVariantActionListener {
 
     fun onNeedToUpdateOnboardingStatus()
 
-    fun onGetCompositeSubscriber(): CompositeSubscription
+    fun onVariantGuidelineClick(variantGuideline: String)
+
+    fun onGetCompositeSubscriber(): CompositeSubscription?
 }

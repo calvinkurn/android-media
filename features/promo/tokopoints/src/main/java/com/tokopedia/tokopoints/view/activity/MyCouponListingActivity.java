@@ -30,6 +30,8 @@ import com.tokopedia.tokopoints.view.presenter.CouponActivityPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.TabUtil;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -56,7 +58,8 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
         mPresenter.attachView(this);
         mContainerMain = findViewById(R.id.container);
         initViews();
-        if (((TokopointRouter) getApplicationContext()).getSession().isLoggedIn()) {
+        UserSessionInterface userSession = new UserSession(this);
+        if (userSession.isLoggedIn()) {
             mPresenter.getFilter(getIntent().getStringExtra(CommonConstant.EXTRA_SLUG));
             showLoading();
         } else {

@@ -46,7 +46,7 @@ public class GetWishlistUseCase {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_wishlist),
                 GetWishlistResponse.class,
-                variables);
+                variables, false);
 
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(graphqlResponseSubscriber);
