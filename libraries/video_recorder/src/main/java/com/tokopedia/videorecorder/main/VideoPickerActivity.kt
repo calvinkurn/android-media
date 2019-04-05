@@ -122,7 +122,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         supportActionBar?.setDisplayHomeAsUpEnabled(show)
         when (show) {
             true -> supportActionBar?.title = getString(R.string.vidpick_title)
-            false -> supportActionBar?.title = " ${getString(R.string.vidpick_title)}"
+            false -> supportActionBar?.title = "  ${getString(R.string.vidpick_title)}"
         }
     }
 
@@ -258,9 +258,13 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     }
 
     override fun onPreviewVideoVisible() {
-        layoutPreview.show()
         layoutPreview.bringToFront()
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            layoutPreview.elevation = 90f
+            containerPicker.elevation = 0f
+        }
         showBackButton(false)
+        layoutPreview.show()
         containerPicker.hide()
         btnDone.show()
 
@@ -273,8 +277,12 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     override fun onVideoVisible() {
         containerPicker.bringToFront()
-        containerPicker.show()
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            containerPicker.elevation = 90f
+            layoutPreview.elevation = 0f
+        }
         showBackButton(true)
+        containerPicker.show()
         layoutPreview.hide()
         btnDone.hide()
     }
