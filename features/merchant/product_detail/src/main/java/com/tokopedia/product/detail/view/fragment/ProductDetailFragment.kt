@@ -164,6 +164,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     lateinit var productWarehouseViewModel: ProductWarehouseViewModel
 
     lateinit var performanceMonitoringP1: PerformanceMonitoring
+    lateinit var performanceMonitoringP2: PerformanceMonitoring
     lateinit var performanceMonitoringFull: PerformanceMonitoring
     lateinit var remoteConfig: RemoteConfig
 
@@ -208,7 +209,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
         const val SAVED_VARIANT = "saved_variant"
 
         private const val PDP_P1_TRACE = "mp_pdp_p1"
-        private const val PDP_P2_TRACE = "mp_pdp_p2_p3"
+        private const val PDP_P2_TRACE = "mp_pdp_p2"
+        private const val PDP_P3_TRACE = "mp_pdp_p3"
         private const val ENABLE_VARIANT = "mainapp_discovery_enable_pdp_variant"
 
         private const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
@@ -250,7 +252,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         performanceMonitoringP1 = PerformanceMonitoring.start(PDP_P1_TRACE)
-        performanceMonitoringFull = PerformanceMonitoring.start(PDP_P2_TRACE)
+        performanceMonitoringP2 = PerformanceMonitoring.start(PDP_P2_TRACE)
+        if (!productInfoViewModel.isUserSessionActive())
+            performanceMonitoringFull = PerformanceMonitoring.start(PDP_P3_TRACE)
+
         if (savedInstanceState != null) {
             userInputNotes = savedInstanceState.getString(SAVED_NOTE, "")
             userInputQuantity = savedInstanceState.getInt(SAVED_QUANTITY, 1)
@@ -295,9 +300,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
         })
 
         productInfoViewModel.productInfoP2resp.observe(this, Observer {
-            if(!productInfoViewModel.isUserSessionActive())
+            if(!productInfoViewModel.isUserSessionActive() && ::performanceMonitoringFull.isInitialized)
                 performanceMonitoringFull.stopTrace()
 
+            performanceMonitoringP2.stopTrace()
             it?.run { renderProductInfo2(this) }
         })
 
