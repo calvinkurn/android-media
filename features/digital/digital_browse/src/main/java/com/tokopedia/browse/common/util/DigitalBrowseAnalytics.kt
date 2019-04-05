@@ -134,7 +134,7 @@ constructor(private val analyticTracker: AnalyticTracker) {
 
     fun eventClickIconLayanan(analyticsModel: DigitalBrowseServiceAnalyticsModel) {
         try {
-            val promotions = ArrayList<Any>()
+            val promotions = arrayListOf<Any>()
             promotions.add(analyticsModel.getPromoFieldObject())
 
             analyticTracker.sendEnhancedEcommerce(
@@ -146,10 +146,10 @@ constructor(private val analyticTracker: AnalyticTracker) {
                             "eventLabel", "",
                             "ecommerce", DataLayer.mapOf(
                             "promoClick", DataLayer.mapOf(
-                            "promotions", DataLayer.listOf(*promotions.toTypedArray()))
+                            "promotions", promotions)
                     )
                     )
-            )
+                    )
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -159,7 +159,7 @@ constructor(private val analyticTracker: AnalyticTracker) {
                                    promotionDatas: List<DigitalBrowseServiceAnalyticsModel>,
                                    headerName: String) {
         try {
-            val promotions = ArrayList<Any>()
+            val promotions = arrayListOf<Any>()
 
             for (promotionItem in promotionDatas) {
                 val promotion = promotionItem.getPromoFieldObject()
@@ -174,7 +174,7 @@ constructor(private val analyticTracker: AnalyticTracker) {
                             "eventLabel", "",
                             "ecommerce", DataLayer.mapOf(
                             "promoView", DataLayer.mapOf(
-                            "promotions", DataLayer.listOf(*promotions.toTypedArray()))
+                            "promotions", promotions)
                     )) as HashMap<String, Any>)
         } catch (e: Exception) {
             e.printStackTrace()
