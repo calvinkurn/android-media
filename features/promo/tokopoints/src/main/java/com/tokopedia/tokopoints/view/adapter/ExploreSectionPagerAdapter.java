@@ -204,28 +204,17 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             view.setVisibility(View.GONE);
             return view;
         }
-        countDownView = view.findViewById(R.id.tp_count_down_view);
 
-        // TODO: 5/4/19 remove dummy data
-        CountdownAttr countdownAttr = new CountdownAttr();
-        countdownAttr.setShowTimer(true);
-        countdownAttr.setExpiredCountDown(40000);
 
-        content.setCountdownAttr(countdownAttr);
-
-        if (content.getCountdownAttr() != null &&
-                content.getCountdownAttr().getShowTimer() &&
-                content.getCountdownAttr().getExpiredCountDown() > 0) {
-
-            countDownView.findViewById(R.id.tp_count_down_view).setVisibility(View.VISIBLE);
-
-            countDownView.setupForTokopoints(content.getCountdownAttr().getExpiredCountDown(), () -> {
-                // TODO: 4/4/19 do something
-            });
-
-        } else {
-            countDownView.findViewById(R.id.tp_count_down_view).setVisibility(View.GONE);
-        }
+//        if (content.getCountdownAttr() != null &&
+//                true &&
+//                content.getCountdownAttr().getExpiredCountDown() > 0) {
+//            countDownView = view.findViewById(R.id.tp_count_down_view);
+//            countDownView.findViewById(R.id.tp_count_down_view).setVisibility(View.VISIBLE);
+//            countDownView.setupForTokopoints(100 * 1000, () -> {
+//                mPresenter.getTokoPointDetail();
+//            });
+//        }
 
         if (!content.getCta().isEmpty()) {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);

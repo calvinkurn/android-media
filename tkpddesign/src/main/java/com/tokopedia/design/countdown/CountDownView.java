@@ -132,7 +132,6 @@ public class CountDownView extends FrameLayout {
             @Override
             public void run() {
                 if (expiredTime > 0) {
-                    // TODO: 5/4/19 re-check the countdown logic
                     Date currentDate = new Date();
                     long currentMillisecond = currentDate.getTime();
 

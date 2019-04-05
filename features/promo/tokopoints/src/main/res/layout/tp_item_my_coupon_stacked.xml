@@ -231,6 +231,8 @@
         android:id="@+id/view_coupon_new"
         android:layout_width="@dimen/dp_14"
         android:layout_height="@dimen/dp_14"
+        android:layout_marginTop="@dimen/dp_7"
+        android:layout_marginLeft="@dimen/dp_7"
         android:background="@drawable/bg_category_new"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
