@@ -252,16 +252,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            productInfoViewModel = viewModelProvider.get(ProductInfoViewModel::class.java)
-            productWarehouseViewModel = viewModelProvider.get(ProductWarehouseViewModel::class.java)
-        }
-
-        performanceMonitoringP1 = PerformanceMonitoring.start(PDP_P1_TRACE)
-        performanceMonitoringP2 = PerformanceMonitoring.start(PDP_P2_TRACE)
-        if (!productInfoViewModel.isUserSessionActive())
-            performanceMonitoringFull = PerformanceMonitoring.start(PDP_P3_TRACE)
 
         if (savedInstanceState != null) {
             userInputNotes = savedInstanceState.getString(SAVED_NOTE, "")
@@ -279,6 +269,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
             isAffiliate = it.getBoolean(ARG_FROM_AFFILIATE, false)
         }
         activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            productInfoViewModel = viewModelProvider.get(ProductInfoViewModel::class.java)
+            productWarehouseViewModel = viewModelProvider.get(ProductWarehouseViewModel::class.java)
             remoteConfig = FirebaseRemoteConfigImpl(this)
             if (!remoteConfig.getBoolean(ENABLE_VARIANT))
                 useVariant = false
@@ -346,6 +339,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        performanceMonitoringP1 = PerformanceMonitoring.start(PDP_P1_TRACE)
+        performanceMonitoringP2 = PerformanceMonitoring.start(PDP_P2_TRACE)
+        if (!productInfoViewModel.isUserSessionActive())
+            performanceMonitoringFull = PerformanceMonitoring.start(PDP_P3_TRACE)
+
         initializePartialView(view)
         initView()
         refreshLayout = view.findViewById(R.id.swipeRefresh)
