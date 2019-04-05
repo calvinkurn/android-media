@@ -7,11 +7,14 @@ import android.widget.CompoundButton;
 import com.tokopedia.core.discovery.model.LevelThreeCategory;
 import com.tokopedia.core.discovery.model.LevelTwoCategory;
 import com.tokopedia.core.discovery.model.Option;
+import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.domain.model.Category;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -237,5 +240,39 @@ public class OptionHelper {
 
     public static String constructUniqueId(String key, String value, String name) {
         return key + Option.UID_FIRST_SEPARATOR_SYMBOL + value + Option.UID_SECOND_SEPARATOR_SYMBOL + name;
+    }
+
+    public static List<Option> combinePriceFilterIfExists(List<Option> activeFilterOptionList, String combinedPriceFilterName) {
+        List<Option> returnedActiveFilterOptionList = new ArrayList<>(activeFilterOptionList);
+
+        boolean hasActivePriceFilter = false;
+
+        Iterator<Option> iterator = returnedActiveFilterOptionList.iterator();
+        while(iterator.hasNext()) {
+            Option option = iterator.next();
+
+            if(isPriceOption(option)) {
+                hasActivePriceFilter = true;
+                iterator.remove();
+            }
+        }
+
+        addGenericFilterOptionIfPriceFilterActive(hasActivePriceFilter, returnedActiveFilterOptionList, combinedPriceFilterName);
+
+        return returnedActiveFilterOptionList;
+    }
+
+    private static boolean isPriceOption(Option option) {
+        return option.getKey().equals(SearchApiConst.PMIN) || option.getKey().equals(SearchApiConst.PMAX);
+    }
+
+    private static void addGenericFilterOptionIfPriceFilterActive(boolean hasActivePriceFilter, List<Option> activeFilterOptionList, String combinedPriceFilterName) {
+        if(hasActivePriceFilter) {
+            activeFilterOptionList.add(
+                    generateOptionFromUniqueId(
+                            constructUniqueId(Option.KEY_PRICE_MIN, "", combinedPriceFilterName)
+                    )
+            );
+        }
     }
 }
