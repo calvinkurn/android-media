@@ -1,4 +1,4 @@
-package com.tokopedia.hotel.homepage.presentation.viewmodel
+package com.tokopedia.hotel.homepage.presentation.model.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import kotlinx.coroutines.experimental.CoroutineDispatcher

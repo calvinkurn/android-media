@@ -4,7 +4,7 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.hotel.homepage.presentation.viewmodel.HotelHomepageViewModel
+import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
