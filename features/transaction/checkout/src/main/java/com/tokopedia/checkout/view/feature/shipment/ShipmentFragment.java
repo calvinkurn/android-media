@@ -819,6 +819,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                     } else if (voucherOrdersItemData.getType().equals(TickerCheckoutUtilKt.getLOGISTIC())) {
                                         VoucherLogisticItemUiModel model = new VoucherLogisticItemUiModel();
                                         model.setMessage(voucherOrdersItemData.getCode());
+                                        model.setCouponDesc(voucherOrdersItemData.getTitleDescription());
                                         shipmentCartItemModel.setVoucherLogisticItemUiModel(model);
                                     }
                                 }
