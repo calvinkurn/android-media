@@ -244,8 +244,10 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void onSuccessGetKolPostDetail(List<Visitable> list,
                                           PostDetailViewModel postDetailViewModel) {
         adapter.setList(list);
-        this.dynamicPostViewModel = ((DynamicPostViewModel)postDetailViewModel.getDynamicPostViewModel().getPostList().get(0));
-        trackImpression(dynamicPostViewModel);
+        if (!postDetailViewModel.getDynamicPostViewModel().getPostList().isEmpty()) {
+            this.dynamicPostViewModel = ((DynamicPostViewModel) postDetailViewModel.getDynamicPostViewModel().getPostList().get(0));
+            trackImpression(dynamicPostViewModel);
+        }
         setFooter(postDetailViewModel);
     }
 
