@@ -84,6 +84,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     public static final int VIBRATE_DURATION = 500;
     private static final long COUNTDOWN_INTERVAL_SECOND = 1000;
     private static final int REQUEST_CODE_LOGIN = 112;
+    private static final long SERVER_EXTRA_DELAY = 500;
 
     @Inject
     TapTapTokenPresenter crackTokenPresenter;
@@ -499,7 +500,6 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         if (!isAdded()) {
             return;
         }
-//        Log.d("Seconds remaining", "  "+secondsUntilFinished);
         if (secondsUntilFinished <= 0) {
             setUIFloatingTimer(secondsUntilFinished);
             stopTimer();
@@ -510,7 +510,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
                         crackTokenPresenter.getGetTokenTokopoints(false, true);
                     }
                 }
-            }, 500);
+            }, SERVER_EXTRA_DELAY);
         } else {
             setUIFloatingTimer(secondsUntilFinished);
         }
