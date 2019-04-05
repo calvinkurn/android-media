@@ -197,6 +197,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     private fun cancelVideo() {
         onVideoVisible()
         videoPath = ""
+        initViewPager()
         videoPreview.stopPlayback()
         videoPreview.setVideoURI(null)
 
@@ -235,8 +236,8 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     override fun onVideoTaken(filePath: String) {
         if (filePath.isNotEmpty()) {
-            selectCurrentPage(currentSelectedTab)
             initViewPager()
+            selectCurrentPage(currentSelectedTab)
             onPreviewVideoVisible()
             val uriFile = Uri.parse(filePath)
             isVideoSourcePicker = false
