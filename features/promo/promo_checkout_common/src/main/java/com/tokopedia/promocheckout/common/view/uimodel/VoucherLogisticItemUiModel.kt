@@ -6,7 +6,7 @@ import android.os.Parcelable
 /**
  * Created by fajarnuha on 02/04/19.
  */
-data class VoucherLogisticItemUiModel(var code: String = "", var message: String = "") : Parcelable {
+data class VoucherLogisticItemUiModel(var code: String = "", var couponDesc: String = "", var message: String = "") : Parcelable {
     constructor(source: Parcel) : this(
             source.readString(),
             source.readString()

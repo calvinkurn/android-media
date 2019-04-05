@@ -864,7 +864,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
                                 getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings());
                             } else {
-
+                                getView().onSuccessCheckPromoFirstStep(responseGetPromoStack);
                             }
                         } else {
                             getView().showToastError(responseGetPromoStack.getMessage().get(0));

@@ -29,6 +29,9 @@ data class VoucherOrdersItem(
         @field:SerializedName("invoice_description")
         val invoiceDescription: String = "",
 
+        @field:SerializedName("coupon_description")
+        val couponDescription: String = "",
+
         @field:SerializedName("type")
         val type: String = "",
 
@@ -44,6 +47,7 @@ data class VoucherOrdersItem(
             parcel.readValue(Int::class.java.classLoader) as Int,
             parcel.readString() ?: "",
             parcel.readString() ?: "",
+            parcel.readString() ?: "",
             parcel.readParcelable(Message::class.java.classLoader) ?: Message())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -54,6 +58,7 @@ data class VoucherOrdersItem(
         parcel.writeValue(success)
         parcel.writeValue(discountAmount)
         parcel.writeString(invoiceDescription)
+        parcel.writeString(couponDescription)
         parcel.writeString(type)
         parcel.writeParcelable(message, flags)
     }

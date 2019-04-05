@@ -817,8 +817,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                 if (shipmentCartItemModel.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
                                     if (voucherOrdersItemData.getType().equals(TickerCheckoutUtilKt.getMERCHANT())) {
                                         shipmentCartItemModel.setVoucherOrdersItemUiModel(setVouchersItemUiModel(voucherOrdersItemData));
-                                    } else if (voucherOrdersItemData.getType().equals(TickerCheckoutUtilKt.getLOGISTIC())){
-                                        VoucherLogisticItemUiModel model = new VoucherLogisticItemUiModel(voucherOrdersItemData.getCode(), "");
+                                    } else if (voucherOrdersItemData.getType().equals(TickerCheckoutUtilKt.getLOGISTIC())) {
+                                        VoucherLogisticItemUiModel model = new VoucherLogisticItemUiModel();
+                                        model.setMessage(voucherOrdersItemData.getCode());
                                         shipmentCartItemModel.setVoucherLogisticItemUiModel(model);
                                     }
                                 }
@@ -2284,17 +2285,22 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         // Update merchant voucher state
         List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentAdapter.getShipmentCartItemModelList();
         if (shipmentCartItemModelList != null) {
-            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-                for (VoucherOrdersItemUiModel voucherOrdersItemUiModel : promoData.getData().getVoucherOrders()) {
+            for (VoucherOrdersItemUiModel voucherOrdersItemUiModel : promoData.getData().getVoucherOrders()) {
+                for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                     if (voucherOrdersItemUiModel.getUniqueId().equals(shipmentCartItemModel.getCartString())) {
-                        shipmentCartItemModel.setVoucherOrdersItemUiModel(voucherOrdersItemUiModel);
+                        if (voucherOrdersItemUiModel.getType().equals(TickerCheckoutUtilKt.getMERCHANT())) {
+                            shipmentCartItemModel.setVoucherOrdersItemUiModel(voucherOrdersItemUiModel);
+                        } else if (voucherOrdersItemUiModel.getType().equals(TickerCheckoutUtilKt.getLOGISTIC())) {
+                            VoucherLogisticItemUiModel log = new VoucherLogisticItemUiModel();
+                            log.setMessage(voucherOrdersItemUiModel.getCode());
+                            log.setCouponDesc(voucherOrdersItemUiModel.getCouponDescription());
+                            shipmentCartItemModel.setVoucherLogisticItemUiModel(log);
+                        }
                         break;
                     }
                 }
-
             }
         }
-
         shipmentAdapter.notifyDataSetChanged();
         shipmentAdapter.checkHasSelectAllCourier(false);
     }

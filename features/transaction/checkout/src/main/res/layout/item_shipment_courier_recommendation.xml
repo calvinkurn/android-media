@@ -188,6 +188,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="end"
+                    android:visibility="gone"
                     tools:text="- Rp 25.000" />
 
             </LinearLayout>

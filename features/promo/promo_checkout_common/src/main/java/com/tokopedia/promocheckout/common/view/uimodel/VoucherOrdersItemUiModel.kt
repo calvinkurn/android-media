@@ -12,6 +12,7 @@ data class VoucherOrdersItemUiModel(
 		var cashbackWalletAmount: Int = -1,
 		var discountAmount: Int = -1,
 		var invoiceDescription: String = "",
+		var couponDescription: String = "",
 		var message: MessageUiModel = MessageUiModel()
 ) : Parcelable {
 	constructor(parcel: Parcel) : this(
@@ -22,6 +23,7 @@ data class VoucherOrdersItemUiModel(
 			parcel.readString(),
 			parcel.readInt(),
 			parcel.readInt(),
+			parcel.readString(),
 			parcel.readString(),
 			parcel.readParcelable(MessageUiModel::class.java.classLoader)) {
 	}
@@ -35,6 +37,7 @@ data class VoucherOrdersItemUiModel(
 		parcel.writeInt(cashbackWalletAmount)
 		parcel.writeInt(discountAmount)
 		parcel.writeString(invoiceDescription)
+		parcel.writeString(couponDescription)
 		parcel.writeParcelable(message, flags)
 	}
 

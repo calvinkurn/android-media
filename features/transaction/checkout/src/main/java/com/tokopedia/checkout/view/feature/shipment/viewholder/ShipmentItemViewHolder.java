@@ -213,7 +213,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TickerPromoStackingCheckoutView tickerPromoStackingCheckoutView;
     private View llLogPromo;
     private TextView tvLogPromoLabel;
-    private TextView tvLogPromoPrice;
     private TextView tvLogPromoMsg;
 
     public ShipmentItemViewHolder(View itemView) {
@@ -354,7 +353,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tickerPromoStackingCheckoutView = itemView.findViewById(R.id.voucher_merchant_holder_view);
         llLogPromo = itemView.findViewById(R.id.layout_logistic_promo_stacking);
         tvLogPromoLabel = itemView.findViewById(R.id.tv_logistic_promo_label);
-        tvLogPromoPrice = itemView.findViewById(R.id.tv_logistic_promo_price);
         tvLogPromoMsg = itemView.findViewById(R.id.tv_logistic_promo_msg);
 
         compositeSubscription = new CompositeSubscription();
@@ -809,7 +807,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
             llLogPromo.setVisibility(View.VISIBLE);
             tvLogPromoMsg.setText(shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage());
-            tvLogPromoPrice.setText("-25000");
+            tvLogPromoLabel.setText(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc());
         }
 
         boolean isCourierSelected = shipmentDetailData != null
