@@ -16,6 +16,7 @@ import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.permissionchecker.request
 import com.tokopedia.videorecorder.R
 import com.tokopedia.videorecorder.main.adapter.ViewPagerAdapter
 import com.tokopedia.videorecorder.main.recorder.VideoRecorderFragment
@@ -191,7 +192,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     private fun cancelVideo() {
         onVideoVisible()
-        videoPath.clear()
+        videoPath = ""
         videoPreview.stopPlayback()
         videoPreview.setVideoURI(null)
 
