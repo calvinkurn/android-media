@@ -2,6 +2,8 @@ package com.tokopedia.home.beranda.data.repository;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.beranda.data.source.HomeDataSource;
+import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
+
 import java.util.List;
 
 import rx.Observable;
@@ -20,12 +22,12 @@ public class HomeRepositoryImpl implements HomeRepository {
     }
 
     @Override
-    public Observable<List<Visitable>> getAllHomeData() {
+    public Observable<List<TrackedVisitable>> getAllHomeData() {
         return homeDataSource.getHomeData();
     }
 
     @Override
-    public Observable<List<Visitable>> getHomeDataCache() {
+    public Observable<List<TrackedVisitable>> getHomeDataCache() {
         return homeDataSource.getCache();
     }
 }

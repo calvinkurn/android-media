@@ -71,6 +71,8 @@ public class DynamicHomeChannel {
         @SerializedName("homeAttribution")
         private String homeAttribution;
 
+        private int position;
+
         public String getId() {
             return id;
         }
@@ -127,7 +129,11 @@ public class DynamicHomeChannel {
             this.hero = hero;
         }
 
-        public Map<String, Object> getEnhanceImpressionSprintSaleHomePage(int position) {
+        public void setPosition(int position) {
+            this.position = position;
+        }
+
+        public Map<String, Object> getEnhanceImpressionSprintSaleHomePage() {
             List<Object> list = convertProductEnhanceSprintSaleDataLayer(getGrids());
             return DataLayer.mapOf(
                     "event", "productView",
@@ -391,7 +397,7 @@ public class DynamicHomeChannel {
             );
         }
 
-        public Map<String, Object> getEnhanceImpressionDynamicSprintLegoHomePage(int position) {
+        public Map<String, Object> getEnhanceImpressionDynamicSprintLegoHomePage() {
             List<Object> list = convertPromoEnhanceDynamicSprintLegoDataLayer(getGrids());
             return DataLayer.mapOf(
                     "event", "productView",
