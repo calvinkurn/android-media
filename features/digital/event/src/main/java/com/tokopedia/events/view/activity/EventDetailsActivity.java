@@ -178,7 +178,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
         intentFilter.addAction(EventModuleRouter.ACTION_CLOSE_ACTIVITY);
         LocalBroadcastManager.getInstance(this).registerReceiver(finishReceiver, intentFilter);
 
-        eventsAnalytics = new EventsAnalytics(getApplicationContext());
+        eventsAnalytics = new EventsAnalytics();
 
         AppBarLayout appBarLayout = findViewById(R.id.appbarlayout);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {

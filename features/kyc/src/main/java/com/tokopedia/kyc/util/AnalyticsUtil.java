@@ -2,8 +2,7 @@ package com.tokopedia.kyc.util;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.track.TrackApp;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,21 +47,12 @@ public class AnalyticsUtil {
 
     public static void sendEvent(Context context, String event, String category,
                                  String label, String userId, String action) {
-        if (context == null) {
-            return;
-        }
-
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-
-        if (tracker == null) {
-            return;
-        }
         Map<String, Object> eventMap = new HashMap<>();
         eventMap.put(Keys.USR_ID, userId);
         eventMap.put(Keys.ENT, event);
         eventMap.put(Keys.ENT_ACT, action);
         eventMap.put(Keys.ENT_CAT, category);
         eventMap.put(Keys.ENT_LBL, label);
-        tracker.sendEventTracking(eventMap);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
     }
 }

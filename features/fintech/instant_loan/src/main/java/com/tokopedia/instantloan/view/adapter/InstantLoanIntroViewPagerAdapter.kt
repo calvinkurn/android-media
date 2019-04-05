@@ -34,7 +34,7 @@ class InstantLoanIntroViewPagerAdapter(private val mActivity: InstantLoanActivit
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val view = mLayoutInflater.inflate(mLayouts[position], container, false)
 
-        instantLoanAnalytics = InstantLoanAnalytics(container.context)
+        instantLoanAnalytics = InstantLoanAnalytics()
 
         if (position == mLayouts.size - 2) {
 

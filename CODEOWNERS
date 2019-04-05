@@ -150,3 +150,5 @@
 /kelontongapp                           @tokopedia/core-team
 
 /libraries/graph_view/                  @tokopedia/minion-solo
+/libraries/iris                         @tokopedia/core-team
+/libraries/remote_config                @tokopedia/core-team

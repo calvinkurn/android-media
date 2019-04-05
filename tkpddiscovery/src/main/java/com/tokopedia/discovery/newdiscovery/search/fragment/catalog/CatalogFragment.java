@@ -2,10 +2,13 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.catalog;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -85,7 +88,7 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     private PerformanceMonitoring performanceMonitoring;
     private Config topAdsConfig;
-    private String shareUrl;
+    private String shareUrl = "";
 
     @Inject
     CatalogPresenter presenter;
@@ -122,21 +125,29 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     @Override
     public String getDepartmentId() {
+        if(getSearchParameter() == null) return "";
+
         return getSearchParameter().get(SearchApiConst.SC);
     }
 
     @Override
     public void setDepartmentId(String departmentId) {
+        if(getSearchParameter() == null) return;
+
         getSearchParameter().set(SearchApiConst.SC, departmentId);
     }
 
     @Override
     public String getQueryKey() {
+        if(getSearchParameter() == null) return "";
+
         return getSearchParameter().getSearchQuery();
     }
 
     @Override
     public void setQueryKey(String queryKey) {
+        if(getSearchParameter() == null) return;
+
         getSearchParameter().setSearchQuery(queryKey);
     }
 
@@ -144,8 +155,8 @@ public class CatalogFragment extends SearchSectionFragment implements
         return shareUrl;
     }
 
-    public void setShareUrl(String shareUrl) {
-        this.shareUrl = shareUrl;
+    public void setShareUrl(@Nullable String shareUrl) {
+        this.shareUrl = TextUtils.isEmpty(shareUrl) ? "" : shareUrl;
     }
 
     @Override
@@ -173,14 +184,13 @@ public class CatalogFragment extends SearchSectionFragment implements
     private void loadDataFromBundle(@Nullable Bundle bundle) {
         if (bundle != null) {
             copySearchParameter(bundle.getParcelable(EXTRA_SEARCH_PARAMETER));
-
             setShareUrl(bundle.getString(EXTRA_SHARE_URL));
         }
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         presenter.attachView(this);
@@ -188,7 +198,7 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
         prepareView();
@@ -271,10 +281,12 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     @Override
     public void onBannerAdsClicked(String appLink) {
+        if(getActivity() == null) return;
+
         TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
         if (router.isSupportedDelegateDeepLink(appLink)) {
             router.actionApplink(getActivity(), appLink);
-        } else if (appLink != "") {
+        } else if (!TextUtils.isEmpty(appLink)) {
             Intent intent = new Intent(getContext(), BannerWebView.class);
             intent.putExtra("url", appLink);
             startActivity(intent);
@@ -298,6 +310,7 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     protected void setupAdapter() {
+        if(getActivity() == null) return;
 
         topAdsConfig = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
@@ -369,7 +382,7 @@ public class CatalogFragment extends SearchSectionFragment implements
     private void requestCatalogList() {
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_CATALOG_TRACE);
 
-        if (getDepartmentId() != null && !getDepartmentId().isEmpty()) {
+        if(!TextUtils.isEmpty(getDepartmentId())) {
             presenter.requestCatalogList(getDepartmentId());
         } else {
             presenter.requestCatalogList();
@@ -411,7 +424,7 @@ public class CatalogFragment extends SearchSectionFragment implements
             catalogAdapter.setElement(visitables);
         } else {
             isListEmpty = true;
-            catalogAdapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getFlagFilterHelper(), getString(R.string.catalog_tab_title).toLowerCase());
+            catalogAdapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), null, getString(R.string.catalog_tab_title).toLowerCase());
             topAdsRecyclerAdapter.shouldLoadAds(false);
             SearchTracking.eventSearchNoResult(getActivity(), getQueryKey(), getScreenName(), getSelectedFilter());
         }
@@ -420,7 +433,7 @@ public class CatalogFragment extends SearchSectionFragment implements
     @Override
     protected void refreshAdapterForEmptySearch() {
         if (catalogAdapter != null) {
-            catalogAdapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getFlagFilterHelper(), getString(R.string.catalog_tab_title).toLowerCase());
+            catalogAdapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), null, getString(R.string.catalog_tab_title).toLowerCase());
         }
     }
 
@@ -440,20 +453,10 @@ public class CatalogFragment extends SearchSectionFragment implements
             NetworkErrorHelper.showEmptyState(
                     getActivity(),
                     getView(),
-                    new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            requestCatalogList();
-                        }
-                    });
+                    this::requestCatalogList);
         } else {
             NetworkErrorHelper.createSnackbarWithAction(
-                    getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            onLoadMoreCatalog();
-                        }
-                    }).showRetrySnackbar();
+                    getActivity(), this::onLoadMoreCatalog).showRetrySnackbar();
         }
     }
 
@@ -463,20 +466,10 @@ public class CatalogFragment extends SearchSectionFragment implements
             NetworkErrorHelper.showEmptyState(
                     getActivity(),
                     getView(),
-                    new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            presenter.refreshSort();
-                        }
-                    });
+                    () -> presenter.refreshSort());
         } else {
             NetworkErrorHelper.createSnackbarWithAction(
-                    getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            presenter.refreshSort();
-                        }
-                    });
+                    getActivity(), () -> presenter.refreshSort());
         }
     }
 
@@ -548,6 +541,8 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     @Override
     public void onShopItemClicked(int position, Shop shop) {
+        if(getActivity() == null) return;
+
         Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
         startActivity(intent);
     }

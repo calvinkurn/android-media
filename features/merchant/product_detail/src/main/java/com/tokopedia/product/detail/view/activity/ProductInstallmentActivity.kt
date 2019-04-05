@@ -12,16 +12,16 @@ import android.support.v4.view.ViewPager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.installment.InstallmentBank
 import com.tokopedia.product.detail.data.util.InstallmentTypeDef
-import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.adapter.ProductInstallmentAdapter
 import com.tokopedia.product.detail.view.fragment.ProductInstallmentFragment
+import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.ProductInstallmentViewModel
+import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -95,7 +95,7 @@ class ProductInstallmentActivity: BaseTabActivity(), HasComponent<ProductDetailC
                 viewPager.post { updateFragmentPager(viewPager.currentItem) }
             }
             is Fail -> {
-                ToasterError.make(findViewById(R.id.coordinator), ErrorHandler.getErrorMessage(this, it.throwable))
+                ToasterError.make(findViewById(R.id.coordinator),ProductDetailErrorHandler.getErrorMessage (this, it.throwable))
                         .setAction(R.string.retry_label){
                             viewModel.loadInstallment(intent.getFloatExtra(PRODUCT_PRICE, 0f))
                         }

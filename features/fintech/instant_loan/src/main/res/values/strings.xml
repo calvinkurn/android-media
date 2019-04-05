@@ -2,7 +2,7 @@
     <string name="app_name">features/digital/instant_loan</string>
     <string name="title_instant_loan">Pinjaman Online</string>
     <string name="label_instant_fund">Dana Instan</string>
-    <string name="description_instant_fund">Hanya dibutuhkan waktu 1 menit - 24 jam untuk pencairan dana. Mudah dan tak diperlukan jaminan.</string>
+    <string name="description_instant_fund">Dana Instan sebagai alternatif sumber dana darurat untuk memenuhi kebutuhan mendesak, seperti biaya darurat rumah sakit atau modal usaha.\nProsesnya dijamin aman karena didukung oleh mitra yang resmi terdaftar dan diawasi oleh Otoritas Jasa Keuangan (OJK).</string>
     <string name="label_amount">Jumlah Pinjaman</string>
     <string name="label_duration">Periode Pinjaman</string>
     <string name="label_processing_time">Periode Proses</string>
@@ -67,7 +67,7 @@
     </string-array>
 
     <string-array name="values_interest_rate">
-        <item>14% - 21%</item>
+        <item>66.000 - 201.600 Ribu</item>
         <item>1,09% - 3%</item>
         <item>0,58% - 2,25%</item>
     </string-array>
@@ -79,7 +79,7 @@
     </string-array>
 
     <string-array name="values_description">
-        <item>Hanya dibutuhkan waktu 1 menit - 24 jam untuk pencairan dana. Mudah dan tak diperlukan jaminan</item>
+        <item>Dana Instan sebagai alternatif sumber dana darurat untuk memenuhi kebutuhan mendesak, seperti biaya darurat rumah sakit atau modal usaha.\nProsesnya dijamin aman karena didukung oleh mitra yang resmi terdaftar dan diawasi oleh Otoritas Jasa Keuangan (OJK).</item>
         <item>Tanpa perlu jaminan, aplikasi pinjaman akan diproses dan dana segera cair jika disetujui.</item>
         <item>Dana pinjaman bervariasi sesuai nilai jaminan. Pinjaman diproses cepat dengan bunga ringan.</item>
     </string-array>
