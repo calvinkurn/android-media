@@ -74,7 +74,6 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     private static final String EXTRA_SELECTED_SORT = "EXTRA_SELECTED_SORT";
     private static final String EXTRA_SHOW_BOTTOM_BAR = "EXTRA_SHOW_BOTTOM_BAR";
     private static final String EXTRA_IS_GETTING_DYNNAMIC_FILTER = "EXTRA_IS_GETTING_DYNNAMIC_FILTER";
-    private static final String EXTRA_FLAG_FILTER_HELPER = "EXTRA_FLAG_FILTER_HELPER";
     private static final String DEFAULT_GRID = "default";
     private static final String INSTAGRAM_GRID = "instagram grid";
     private static final String LIST_GRID = "list";
@@ -92,7 +91,6 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     private ArrayList<Sort> sort;
     private ArrayList<Filter> filters;
     private HashMap<String, String> selectedSort;
-    private FilterFlagSelectedModel flagFilterHelper;
     private boolean isGettingDynamicFilter;
     private boolean isUsingBottomSheetFilter;
     protected boolean isListEmpty = false;
@@ -392,14 +390,6 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         filterController.initFilterController(selectedFilter, initializedFilterList);
     }
 
-    public void setFlagFilterHelper(FilterFlagSelectedModel flagFilterHelper) {
-        this.flagFilterHelper = flagFilterHelper;
-    }
-
-    protected FilterFlagSelectedModel getFlagFilterHelper() {
-        return flagFilterHelper;
-    }
-
     public void clearDataFilterSort() {
         if (filters != null) {
             this.filters.clear();
@@ -542,7 +532,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(EXTRA_SPAN_COUNT, getSpanCount());
         outState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
@@ -552,7 +542,6 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         outState.putSerializable(EXTRA_SELECTED_SORT, getSelectedSort());
         outState.putBoolean(EXTRA_SHOW_BOTTOM_BAR, showBottomBar);
         outState.putBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER, isGettingDynamicFilter);
-        outState.putParcelable(EXTRA_FLAG_FILTER_HELPER, getFlagFilterHelper());
     }
 
     public abstract void reloadData();
@@ -591,7 +580,6 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         setSelectedSort((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_SORT));
         showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);
         isGettingDynamicFilter = savedInstanceState.getBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER);
-        setFlagFilterHelper(savedInstanceState.getParcelable(EXTRA_FLAG_FILTER_HELPER));
     }
 
     @Override
