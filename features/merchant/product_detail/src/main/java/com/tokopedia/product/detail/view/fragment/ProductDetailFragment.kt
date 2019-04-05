@@ -20,14 +20,13 @@ import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
-import android.support.v4.widget.NestedScrollView
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
-import android.util.Log
 import android.view.*
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -193,6 +192,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
     var productInfo: ProductInfo? = null
     var shopInfo: ShopInfo? = null
 
+    private var refreshLayout: SwipeToRefresh? = null
+
     companion object {
         const val REQUEST_CODE_TALK_PRODUCT = 1
         const val REQUEST_CODE_EDIT_PRODUCT = 2
@@ -285,7 +286,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         productInfoViewModel.productInfoP1Resp.observe(this, Observer {
-            swipe_refresh_layout.isRefreshing = false
+            refreshLayout?.isRefreshing = false
             performanceMonitoringP1.stopTrace()
             when (it) {
                 is Success -> onSuccessGetProductInfo(it.data)
@@ -344,6 +345,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         initializePartialView(view)
         initView()
+        refreshLayout = view.findViewById(R.id.swipeRefresh)
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener {
@@ -371,8 +373,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
             layoutParams.behavior = FlingBehavior(nested_scroll)
         }
 
-        appbar.addOnOffsetChangedListener { _, verticalOffset -> swipe_refresh_layout.isEnabled = (verticalOffset == 0) }
-        swipe_refresh_layout.setOnRefreshListener { loadProductData(true) }
+        appbar.addOnOffsetChangedListener { _, verticalOffset -> refreshLayout?.isEnabled = (verticalOffset == 0) }
+        refreshLayout?.setOnRefreshListener { loadProductData(true) }
 
         if (isAffiliate){
             actionButtonView.gone()
