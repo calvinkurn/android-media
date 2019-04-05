@@ -29,6 +29,7 @@ class ClearCacheAutoApplyAfterClashSubscriber(val view: ICartListView?,
         view?.hideProgressLoading()
         val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
         if (responseData.successData.success) {
+            view?.onSuccessClearPromoStachAfterClash()
             presenter.processApplyPromoStackAfterClash(newPromoList)
         } else {
             view?.onFailedClearPromoStack(false)

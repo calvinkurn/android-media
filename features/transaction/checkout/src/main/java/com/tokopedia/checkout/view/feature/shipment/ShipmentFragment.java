@@ -1159,6 +1159,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     updateAppliedPromoStack(promoStackingData);
                 }
             }
+        } else if (resultCode == TickerCheckoutUtilKt.getRESULT_CLASHING()) {
+            Bundle bundle = data.getExtras();
+            if (bundle != null) {
+                ClashingInfoDetailUiModel clashingInfoDetailUiModel = bundle.getParcelable(TickerCheckoutUtilKt.getEXTRA_CLASHING_DATA());
+                if (clashingInfoDetailUiModel != null) {
+                    onClashCheckPromo(clashingInfoDetailUiModel);
+                }
+            }
         }
     }
 
@@ -1552,9 +1560,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void showMerchantVoucherListBottomsheet(int shopId, String cartString, Promo promo) {
-        MerchantVoucherListBottomSheetFragment merchantVoucherListBottomSheetFragment = MerchantVoucherListBottomSheetFragment.newInstance(shopId, cartString, promo);
+        MerchantVoucherListBottomSheetFragment merchantVoucherListBottomSheetFragment =
+                MerchantVoucherListBottomSheetFragment.newInstance(shopId, cartString, promo, "shipment");
         merchantVoucherListBottomSheetFragment.setActionListener(this);
         merchantVoucherListBottomSheetFragment.show(getFragmentManager(), "");
+        checkoutAnalyticsCourierSelection.eventClickShowMerchantVoucherList();
     }
 
     @Override
@@ -1569,6 +1579,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCancelVoucherMerchantClicked(String promoMerchantCode, int position, boolean ignoreAPIResponse) {
+        checkoutAnalyticsCourierSelection.eventClickHapusPromoXOnTicker(promoMerchantCode);
         ArrayList<String> promoMerchantCodes = new ArrayList<>();
         promoMerchantCodes.add(promoMerchantCode);
         shipmentPresenter.cancelAutoApplyPromoStack(position, promoMerchantCodes, ignoreAPIResponse);
@@ -2285,8 +2296,28 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         shipmentAdapter.notifyDataSetChanged();
-        shipmentPresenter.setCouponStateChanged(true);
         shipmentAdapter.checkHasSelectAllCourier(false);
+    }
+
+    @Override
+    public void onSuccessClearPromoStachAfterClash() {
+        // Reset global promo
+        PromoStackingData promoStackingData = shipmentAdapter.getPromoGlobalStackData();
+        promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
+        promoStackingData.setAmount(0);
+        promoStackingData.setPromoCode("");
+        promoStackingData.setDescription("");
+
+        // Reset merchant promo
+        List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentAdapter.getShipmentCartItemModelList();
+        if (shipmentCartItemModelList != null) {
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
+
+            }
+        }
+
+        shipmentAdapter.notifyDataSetChanged();
     }
 
     @Override

@@ -29,11 +29,6 @@ open class CheckPromoStackingCodeMapper @Inject constructor() {
                     if (it?.status?.equals(STATUS_ERROR) == false) {
                         data = mapData(it.data)
                     }
-//                    when (it?.status) {
-//                        STATUS_OK -> {
-//                            data = mapData(it.data)
-//                        }
-//                    }
                 }
             }
         } else {
@@ -48,31 +43,6 @@ open class CheckPromoStackingCodeMapper @Inject constructor() {
                         STATUS_OK -> {
                             data = mapData(it.data)
                         }
-                    }
-                }
-            }
-        }
-
-        return ResponseGetPromoStackUiModel(
-                status,
-                listMessage,
-                data
-        )
-    }
-
-    fun callDummy(response: ResponseGetPromoStackFirst): ResponseGetPromoStackUiModel {
-        var status = ""
-        var listMessage = ArrayList<String>()
-        var data = DataUiModel()
-        response.let { responseGetPromoStackFirst ->
-            responseGetPromoStackFirst.getPromoStackFirst.let {
-                status = it.status ?: STATUS_ERROR
-                it.message?.forEach { message ->
-                    listMessage.add(message)
-                }
-                when (it.status) {
-                    STATUS_OK -> {
-                        data = mapData(it.data)
                     }
                 }
             }

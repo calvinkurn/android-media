@@ -1,8 +1,12 @@
 package com.tokopedia.checkout.view.feature.cartlist.subscriber
 
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.checkout.view.feature.cartlist.ICartListPresenter
 import com.tokopedia.checkout.view.feature.cartlist.ICartListView
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
+import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import rx.Subscriber
 
 /**
@@ -11,8 +15,8 @@ import rx.Subscriber
 
 class CheckPromoFirstStepAfterClashSubscriber(val view: ICartListView?,
                                               val presenter: ICartListPresenter,
-                                              val promoListSize: Int,
-                                              val currentPromoIndex: Int) : Subscriber<GraphqlResponse>() {
+                                              val checkPromoCodeStackingCodeMapper: CheckPromoStackingCodeMapper)
+    : Subscriber<GraphqlResponse>() {
 
     override fun onCompleted() {
 
@@ -20,16 +24,22 @@ class CheckPromoFirstStepAfterClashSubscriber(val view: ICartListView?,
 
     override fun onError(e: Throwable) {
         e.printStackTrace()
-        if (currentPromoIndex == promoListSize - 1) {
-            view?.hideProgressLoading()
-            presenter.processInitialGetCartData(false)
-        }
+        view?.hideProgressLoading()
+        view?.showToastMessageRed(ErrorHandler.getErrorMessage(view.activity, e));
     }
 
     override fun onNext(response: GraphqlResponse) {
-        if (currentPromoIndex == promoListSize - 1) {
-            view?.hideProgressLoading()
-            presenter.processInitialGetCartData(false)
+        view?.hideProgressLoading()
+        val responseGetPromoStack = checkPromoCodeStackingCodeMapper.call(response)
+        if (responseGetPromoStack.status != "OK" || responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
+            val message = responseGetPromoStack.data.message.text
+            view?.showToastMessageRed(message)
+        } else {
+            if (responseGetPromoStack.data.clashings.isClashedPromos) {
+                view?.onClashCheckPromo(responseGetPromoStack.data.clashings)
+            } else {
+                view?.onSuccessCheckPromoFirstStep(responseGetPromoStack)
+            }
         }
     }
 

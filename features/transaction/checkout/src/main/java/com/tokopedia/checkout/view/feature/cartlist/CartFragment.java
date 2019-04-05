@@ -641,6 +641,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onVoucherMerchantPromoClicked(Object object) {
         if (object instanceof ShopGroupData) {
+            cartPageAnalytics.eventClickPilihMerchantVoucher();
             dPresenter.processUpdateCartDataPromoMerchant(getSelectedCartDataList(), (ShopGroupData) object);
         }
     }
@@ -704,6 +705,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onCancelVoucherMerchantClicked(String promoMerchantCode, int shopIndex, boolean ignoreAPIResponse) {
+        cartPageAnalytics.eventClickHapusPromoXOnTicker(promoMerchantCode);
         ArrayList<String> promoMerchantCodes = new ArrayList<>();
         promoMerchantCodes.add(promoMerchantCode);
         dPresenter.processCancelAutoApplyPromoStack(shopIndex, promoMerchantCodes, ignoreAPIResponse);
@@ -790,7 +792,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onClickDetailPromoGlobal(PromoStackingData dataGlobal, int position) {
-        trackingPromoCheckoutUtil.cartClickTicker(dataGlobal.getPromoCodeSafe());
         dPresenter.processUpdateCartDataPromoStacking(getSelectedCartDataList(), dataGlobal, GO_TO_DETAIL);
     }
 
@@ -1476,6 +1477,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void showToastMessageRed(String message) {
+        if (TextUtils.isEmpty(message)) {
+            message = "Terjadi kesalahan. Ulangi beberapa saat lagi";
+        }
         View view = getView();
         if (view != null) {
             NetworkErrorHelper.showRedCloseSnackbar(view, message);
@@ -1645,6 +1649,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                     } else {
                         sendAnalyticsOnViewPromoManualApply("coupon");
                     }
+                }
+            }
+        } else if (resultCode == TickerCheckoutUtilKt.getRESULT_CLASHING()) {
+            Bundle bundle = data.getExtras();
+            if (bundle != null) {
+                ClashingInfoDetailUiModel clashingInfoDetailUiModel = bundle.getParcelable(TickerCheckoutUtilKt.getEXTRA_CLASHING_DATA());
+                if (clashingInfoDetailUiModel != null) {
+                    onClashCheckPromo(clashingInfoDetailUiModel);
                 }
             }
         }
@@ -1876,7 +1888,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             }
 
             MerchantVoucherListBottomSheetFragment merchantVoucherListBottomSheetFragment =
-                    MerchantVoucherListBottomSheetFragment.newInstance(shopId, shopGroupData.getCartString(), promo);
+                    MerchantVoucherListBottomSheetFragment.newInstance(shopId, shopGroupData.getCartString(), promo, "cart");
             merchantVoucherListBottomSheetFragment.setActionListener(this);
             merchantVoucherListBottomSheetFragment.show(getFragmentManager(), "");
         }
@@ -1887,6 +1899,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         ClashBottomSheetFragment clashBottomSheetFragment = ClashBottomSheetFragment.newInstance();
         clashBottomSheetFragment.setData(clashingInfoDetailUiModel);
         clashBottomSheetFragment.setActionListener(this);
+        clashBottomSheetFragment.setAnalyticsCart(cartPageAnalytics);
         clashBottomSheetFragment.show(getFragmentManager(), "");
     }
 
@@ -1962,6 +1975,26 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 cartAdapter.notifyItemChanged(shopIndex);
             }
         }
+    }
+
+    @Override
+    public void onSuccessClearPromoStachAfterClash() {
+        // Reset global promo
+        PromoStackingData promoStackingData = cartAdapter.getPromoStackingGlobaldata();
+        promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
+        promoStackingData.setAmount(0);
+        promoStackingData.setPromoCode("");
+        promoStackingData.setDescription("");
+
+        // Reset merchant promo
+        List<CartShopHolderData> cartShopHolderDataList = cartAdapter.getAllCartShopHolderData();
+        for (CartShopHolderData cartShopHolderData : cartShopHolderDataList) {
+            if (cartShopHolderData != null) {
+                cartShopHolderData.getShopGroupData().setVoucherOrdersItemData(null);
+            }
+        }
+
+        cartAdapter.notifyDataSetChanged();
     }
 
     @Override

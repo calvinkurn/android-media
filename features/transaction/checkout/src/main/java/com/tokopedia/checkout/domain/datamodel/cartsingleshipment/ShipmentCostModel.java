@@ -27,6 +27,7 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
     private double tradeInPrice;
     private int totalPromoStackAmount;
     private String totalPromoStackAmountStr;
+    private int TotalDiscWithoutCashback;
 
     public int getTotalItem() {
         return totalItem;
@@ -146,6 +147,14 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
 
     public void setTotalPromoStackAmount(int totalPromoStackAmount) {
         this.totalPromoStackAmount = totalPromoStackAmount;
+    }
+
+    public int getTotalDiscWithoutCashback() {
+        return TotalDiscWithoutCashback;
+    }
+
+    public void setTotalDiscWithoutCashback(int totalDiscWithoutCashback) {
+        TotalDiscWithoutCashback = totalDiscWithoutCashback;
     }
 
     public String getTotalPromoStackAmountStr() {
