@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.tradein.R;
 
 import viewmodel.AccessRequestViewModel;
@@ -67,15 +67,25 @@ public class AccessRequestFragment extends DialogFragment {
 
    public class AccessRequestClickListener implements View.OnClickListener {
 
-        @Override
-        public void onClick(View v) {
-            if (v.getId() == R.id.button_accept) {
-                accessRequestListener.clickAccept();
-                dismiss();
-            }
-            else
-                dismiss();
-        }
-    }
+       @Override
+       public void onClick(View v) {
+           if (v.getId() == R.id.button_accept) {
+               sendGeneralEvent("setuju");
+               accessRequestListener.clickAccept();
+               dismiss();
+           } else {
+               sendGeneralEvent("batal");
+               dismiss();
+           }
+       }
+
+       private void sendGeneralEvent(String label) {
+           TrackApp trackApp = TrackApp.getInstance();
+           trackApp.getGTM().sendGeneralEvent("clickPDP",
+                   "product detail page",
+                   "click - asking permission trade in",
+                   label);
+       }
+   }
 
 }

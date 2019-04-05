@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -25,7 +24,6 @@ import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
@@ -90,7 +88,6 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     private static final String ARG_AUTO_APPLY_TITLE = "ARG_AUTO_APPLY_TITLE";
 
     private View toolbar;
-    private AppBarLayout appBarLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
     private NestedScrollView nestedScrollView;
     private TickerCheckoutView tickerCheckoutView;
@@ -530,17 +527,20 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     private void setupToolbar(View view) {
         Toolbar appbar = view.findViewById(R.id.toolbar);
-        appBarLayout = view.findViewById(R.id.app_bar_layout);
+        View statusBarBackground = view.findViewById(R.id.status_bar_bg);
+        statusBarBackground.getLayoutParams().height =
+                DisplayMetricUtils.getStatusBarHeight(getActivity());
         if (isToolbarWithBackButton) {
             toolbar = toolbarRemoveWithBackView();
+            statusBarBackground.setVisibility(View.GONE);
         } else {
             toolbar = toolbarRemoveView();
-            if (getContext() != null) {
-                view.setPadding(0, DisplayMetricUtils.getStatusBarHeight(getContext()), 0, 0);
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                statusBarBackground.setVisibility(View.INVISIBLE);
+            } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                statusBarBackground.setVisibility(View.VISIBLE);
             } else {
-                // add padding programmatically
-                int padding = (int) (24*getResources().getDisplayMetrics().density + 0.5f);
-                view.setPadding(0,padding,0,0);
+                statusBarBackground.setVisibility(View.GONE);
             }
         }
         appbar.addView(toolbar);

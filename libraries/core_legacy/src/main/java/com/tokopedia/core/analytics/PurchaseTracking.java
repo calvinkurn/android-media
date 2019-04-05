@@ -4,9 +4,10 @@ import android.content.Context;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,17 +39,45 @@ public class PurchaseTracking extends TrackingUtils {
     public static final String USER_ID = "userId";
 
     public static void marketplace(Context context, Purchase purchase) {
-        getGTMEngine(context).clearEnhanceEcommerce();
-        getGTMEngine(context).eventPurchaseMarketplace(purchase);
-        getGTMEngine(context).sendScreen(AppScreen.SCREEN_FINISH_TX);
-        getGTMEngine(context).clearEnhanceEcommerce();
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
+                AppEventTracking.EVENT_CATEGORY, purchase.getEventCategory(),
+                AppEventTracking.EVENT_ACTION, purchase.getShopType(),
+                AppEventTracking.EVENT_LABEL, purchase.getEventLabel(),
+                Purchase.SHOP_ID, purchase.getShopId(),
+                Purchase.PAYMENT_ID, purchase.getPaymentId(),
+                Purchase.PAYMENT_TYPE, purchase.getPaymentType(),
+                Purchase.LOGISTIC_TYPE, purchase.getLogisticType(),
+                Purchase.USER_ID, purchase.getUserId(),
+                Purchase.CURRENT_SITE, purchase.getCurrentSite(),
+                AppEventTracking.ECOMMERCE, DataLayer.mapOf(
+                        Purchase.PURCHASE, purchase.getPurchase()
+                )
+        ));
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(AppScreen.SCREEN_FINISH_TX);
+        TrackApp.getInstance().getGTM().clearEnhanceEcommerce();
     }
 
     public static void digital(Context context, Purchase purchase) {
-        getGTMEngine(context).clearEnhanceEcommerce();
-        getGTMEngine(context).eventPurchaseDigital(purchase);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
+                        AppEventTracking.EVENT_CATEGORY, "digital - thanks",
+                        AppEventTracking.EVENT_ACTION, "view purchase attempt",
+                        AppEventTracking.EVENT_LABEL, purchase.getEventLabel(),
+                        Purchase.SHOP_ID, purchase.getShopId(),
+                        Purchase.PAYMENT_ID, purchase.getPaymentId(),
+                        Purchase.PAYMENT_TYPE, purchase.getPaymentType(),
+                        Purchase.USER_ID, purchase.getUserId(),
+                        Purchase.PAYMENT_STATUS, purchase.getPaymentStatus(),
+                        Purchase.CURRENT_SITE, purchase.getCurrentSite(),
+                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
+                                Purchase.PURCHASE, purchase.getPurchase()
+                        )
+                )
+        );
         appsFlyerPurchaseEvent(context, purchase,"Digital");
-        getGTMEngine(context).sendScreen("/digital/thanks");
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated("/digital/thanks");
     }
 
     private static int parseStringToInt(String input){
@@ -92,7 +121,7 @@ public class PurchaseTracking extends TrackingUtils {
             afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
         }
 
-        getAFEngine(context).sendTrackEvent(AFInAppEventType.PURCHASE, afValue);
-        getAFEngine(context).sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.PURCHASE, afValue);
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
     }
 }

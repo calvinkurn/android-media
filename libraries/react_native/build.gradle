@@ -24,6 +24,8 @@ project.ext {
 
 dependencies {
 
+    implementation project(":libraries:akamai_bot_lib")
+
     implementation rootProject.ext.miscDependencies.reactNative
     implementation rootProject.ext.miscDependencies.codePushReactNative
 
@@ -48,7 +50,9 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.networkDependencies.glide
 
-    implementation project(rootProject.ext.libraries.config) 
+    implementation project(rootProject.ext.libraries.config)
+    
+    implementation project(rootProject.ext.libraries.track)
 }
 
 apply from: '../../publish_local.gradle'

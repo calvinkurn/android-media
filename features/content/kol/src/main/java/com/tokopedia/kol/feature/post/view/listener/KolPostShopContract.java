@@ -21,7 +21,7 @@ public interface KolPostShopContract {
         interface Like {
             Context getContext();
 
-            void onLikeKolSuccess(int rowNumber);
+            void onLikeKolSuccess(int rowNumber, int action);
 
             void onLikeKolError(String message);
         }

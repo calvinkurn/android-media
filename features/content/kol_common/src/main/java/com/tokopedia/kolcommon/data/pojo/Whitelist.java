@@ -2,6 +2,8 @@ package com.tokopedia.kolcommon.data.pojo;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 /**
  * @author by yfsx on 20/06/18.
  */
@@ -30,6 +32,9 @@ public class Whitelist {
 
     @SerializedName("image_url")
     private String imageUrl;
+
+    @SerializedName("authors")
+    private ArrayList<Author> authors;
 
     public boolean isWhitelist() {
         return isWhitelist;
@@ -61,5 +66,9 @@ public class Whitelist {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public ArrayList<Author> getAuthors() {
+        return authors;
     }
 }

@@ -10,8 +10,5 @@ import com.google.gson.annotations.SerializedName
 class DigitalBrowseMarketplaceData(
         @SerializedName("dynamicHomeIcon")
         @Expose
-        var categoryGroups: DigitalBrowseDynamicHomeIcon? = DigitalBrowseDynamicHomeIcon(),
-        @SerializedName("popularBrandDatas")
-        @Expose
-        var popularBrandDatas: List<DigitalBrowsePopularBrand>? = arrayListOf()
+        var categoryGroups: DigitalBrowseDynamicHomeIcon? = DigitalBrowseDynamicHomeIcon()
 )
