@@ -31,30 +31,24 @@ class PostTagEnhancedTracking {
         private const val KEY_POSITION = "position"
 
         fun getEcommerceView(listProduct: List<Product>): Map<String, Any> {
-            val data : Map<String, Any> =  HashMap()
-            data.plus(DataLayer.mapOf(CURRENCY_CODE, CURRENCY_CODE_IDR))
-            data.plus(DataLayer.mapOf(Action.IMPRESSIONS, getProducts(listProduct)))
-            return data
+            return DataLayer.mapOf(CURRENCY_CODE, CURRENCY_CODE_IDR,
+                    Action.IMPRESSIONS, getProducts(listProduct))
         }
 
         fun getEcommerceClick(listProduct: List<Product>, listSource: String): Map<String, Any> {
-            val data : Map<String, Any> =  HashMap()
-            data.plus(DataLayer.mapOf(Action.CLICK, getEcommerceClickValue(listProduct, listSource)))
-            return data
+            return DataLayer.mapOf(Action.CLICK, getEcommerceClickValue(listProduct, listSource))
+
         }
 
         fun getEcommerceClickValue(listProduct: List<Product>,listSource: String): Map<String, Any> {
-            val data : Map<String, Any> =  HashMap()
-            data.plus(DataLayer.mapOf(ACTION_FIELD, getEcommerceActionFieldValue(listProduct, listSource)))
-            data.plus(DataLayer.mapOf(Action.CLICK, getProducts(listProduct)))
-            return data
+            return DataLayer.mapOf(ACTION_FIELD, getEcommerceActionFieldValue(listProduct, listSource),
+                    Action.CLICK, getProducts(listProduct))
+
         }
 
         fun getEcommerceActionFieldValue(listProduct: List<Product>, listSource: String): Map<String, Any> {
-            val data : Map<String, Any> =  HashMap()
-            data.plus(DataLayer.mapOf(ACTION_FIELD, listSource))
-            data.plus(DataLayer.mapOf(PRODUCTS, getProducts(listProduct)))
-            return data
+            return DataLayer.mapOf(ACTION_FIELD, listSource,
+                    PRODUCTS, getProducts(listProduct))
         }
 
         fun getProducts(listProduct: List<Product>): List<Any> {
