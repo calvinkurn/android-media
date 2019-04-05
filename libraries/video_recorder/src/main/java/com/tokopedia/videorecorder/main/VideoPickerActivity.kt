@@ -195,9 +195,9 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     }
 
     private fun cancelVideo() {
+        initViewPager()
         onVideoVisible()
         videoPath = ""
-        initViewPager()
         videoPreview.stopPlayback()
         videoPreview.setVideoURI(null)
 
@@ -239,6 +239,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
             initViewPager()
             selectCurrentPage(currentSelectedTab)
             onPreviewVideoVisible()
+
             val uriFile = Uri.parse(filePath)
             isVideoSourcePicker = false
             videoPath = filePath
@@ -254,7 +255,6 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     override fun onPreviewVideoVisible() {
         layoutPreview.show()
         layoutPreview.bringToFront()
-        layoutPreview.invalidate()
         showBackButton(false)
         containerPicker.hide()
         btnDone.show()
@@ -269,7 +269,6 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     override fun onVideoVisible() {
         containerPicker.show()
         containerPicker.bringToFront()
-        containerPicker.invalidate()
         showBackButton(true)
         layoutPreview.hide()
         btnDone.hide()
