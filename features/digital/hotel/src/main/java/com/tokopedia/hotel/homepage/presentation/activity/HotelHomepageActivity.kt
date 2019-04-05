@@ -20,6 +20,11 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
         toolbar.contentInsetStartWithNavigation = 0
     }
 
+    override fun getComponent(): HotelHomepageComponent =
+            DaggerHotelHomepageComponent.builder()
+                    .hotelComponent(HotelComponentInstance.getHotelComponent(application))
+                    .build()
+
     override fun getScreenName(): String = ""
 
     override fun getNewFragment(): Fragment =

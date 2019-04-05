@@ -2,7 +2,7 @@ package com.tokopedia.hotel.common.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.hotel.HotelModuleRouter
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.hotel.common.di.scope.HotelScope
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -20,17 +20,12 @@ class HotelModule {
 
     @HotelScope
     @Provides
-    fun provideHotelModuleRouter(@ApplicationContext context: Context): HotelModuleRouter {
-        if (context is HotelModuleRouter) {
-            return context
-        }
-        throw RuntimeException("App should implement " + HotelModuleRouter::class.java.simpleName)
-    }
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface =
+            UserSession(context)
 
     @HotelScope
     @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface =
-            UserSession(context)
+    fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
 
     @HotelScope
     @Provides
