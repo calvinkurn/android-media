@@ -10,7 +10,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -58,16 +57,24 @@ import com.tokopedia.gamification.taptap.data.entiity.TokensUser;
 import com.tokopedia.gamification.taptap.database.GamificationDatabaseWrapper;
 import com.tokopedia.gamification.taptap.database.GamificationDbCallback;
 import com.tokopedia.gamification.taptap.presenter.TapTapTokenPresenter;
+import com.tokopedia.gamification.taptap.utils.TapTapAnalyticsTrackerUtil;
 import com.tokopedia.gamification.taptap.utils.TapTapConstants;
 import com.tokopedia.gamification.taptap.utils.TokenMarginUtilTapTap;
 import com.tokopedia.gamification.util.HexValidator;
-import com.tokopedia.gamification.taptap.utils.TapTapAnalyticsTrackerUtil;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 
 public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTokenContract.View, GamificationDbCallback, TapTapSummaryDialogFragment.InteractionListener {
@@ -83,7 +90,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     private View rootView;
 
-    private CountDownTimer countDownTimer;
+    private Subscription countDownTimer;
 
     private TextView textCountdownTimer;
     private WidgetTokenViewTapTap widgetTokenView;
@@ -386,7 +393,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     private void stopTimer() {
         if (countDownTimer != null) {
-            countDownTimer.cancel();
+            countDownTimer.unsubscribe();
             countDownTimer = null;
         }
         textCountdownTimer.setVisibility(View.GONE);
@@ -440,21 +447,38 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         }
     }
 
-
+    private long currentTime;
     private void showCountdownTimer(final long timeRemainingSeconds) {
         if (timeRemainingSeconds > 0) {
             stopTimer();
-            countDownTimer = new CountDownTimer(timeRemainingSeconds * COUNTDOWN_INTERVAL_SECOND,
-                    COUNTDOWN_INTERVAL_SECOND) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-                    TapTapTokenFragment.this.onTick(millisUntilFinished);
-                }
+            currentTime=timeRemainingSeconds;
+            countDownTimer = Observable.interval(0, 1, TimeUnit.SECONDS, Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .takeUntil(new Func1<Object, Boolean>() {
+                        @Override
+                        public Boolean call(Object aLong) {
+                            return currentTime == -1;
+                        }
+                    })
+                    .subscribe(new Subscriber<Object>() {
+                        @Override
+                        public void onCompleted() {
 
-                @Override
-                public void onFinish() {
-                }
-            }.start();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(Object o) {
+                            TapTapTokenFragment.this.onTick(currentTime);
+                            currentTime--;
+
+                        }
+                    });
+
             textCountdownTimer.setVisibility(View.VISIBLE);
         } else {
             textCountdownTimer.setVisibility(View.GONE);
@@ -471,26 +495,24 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     }
 
-    private void onTick(long millisUntilFinished) {
+    private void onTick(long secondsUntilFinished) {
         if (!isAdded()) {
             return;
         }
-        int timeRemainingSeconds = (int) (millisUntilFinished / COUNTDOWN_INTERVAL_SECOND);
-        timeRemainingSeconds--;
-        tokenData.getTimeRemaining().setSeconds(timeRemainingSeconds);
-        if (timeRemainingSeconds <= 0) {
-            setUIFloatingTimer(timeRemainingSeconds);
+//        Log.d("Seconds remaining", "  "+secondsUntilFinished);
+        if (secondsUntilFinished <= 0) {
+            setUIFloatingTimer(secondsUntilFinished);
             stopTimer();
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (crackTokenPresenter != null) {
+                    if (getContext()!=null && crackTokenPresenter != null) {
                         crackTokenPresenter.getGetTokenTokopoints(false, true);
                     }
                 }
-            }, 1500);
+            }, 500);
         } else {
-            setUIFloatingTimer(timeRemainingSeconds);
+            setUIFloatingTimer(secondsUntilFinished);
         }
     }
 
