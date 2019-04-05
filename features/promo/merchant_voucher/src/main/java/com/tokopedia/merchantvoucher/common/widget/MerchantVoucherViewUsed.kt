@@ -58,11 +58,7 @@ class MerchantVoucherViewUsed : CustomVoucherView {
         mDashColor = ContextCompat.getColor(this.context, R.color.colorGray)
         LayoutInflater.from(context).inflate(R.layout.widget_merchant_voucher_view,
                 this, true)
-        //btnUseVoucher.visibility = View.GONE
-        //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below comment for future release
         btnUseVoucher.text = context.getString(R.string.use_voucher)
-        //TOGGLE_MVC_OFF
-        //btnUseVoucher.text = context.getString(R.string.copy_to_clipboard)
 
     }
 
@@ -77,14 +73,7 @@ class MerchantVoucherViewUsed : CustomVoucherView {
         this.merchantVoucherViewModel = merchantVoucherViewModel
         btnUseVoucher.setOnClickListener {
             merchantVoucherViewModel?.run {
-                //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below comment for future release
                 onMerchantVoucherViewListener?.onMerchantUseVoucherClicked(this)
-
-                //TOGGLE_MVC_OFF
-                /*val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText(voucherCode, voucherCode)
-                clipboard.setPrimaryClip(clip)
-                onMerchantVoucherViewListener?.onMerchantUseVoucherClicked(this)*/
             }
         }
 
@@ -122,14 +111,9 @@ class MerchantVoucherViewUsed : CustomVoucherView {
                     tvVoucherStatus.visibility = View.VISIBLE
                 }
                 (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_IN_USE) -> {
-                    //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below comment for future release
                     btnUseVoucher.visibility = View.GONE
                     tvVoucherStatus.text = context.getString(R.string.in_use)
                     tvVoucherStatus.visibility = View.VISIBLE
-
-                    //TOGGLE_MVC_OFF
-                    //btnUseVoucher.visibility = View.VISIBLE
-                    //tvVoucherStatus.visibility = View.GONE
                 }
             }
         }

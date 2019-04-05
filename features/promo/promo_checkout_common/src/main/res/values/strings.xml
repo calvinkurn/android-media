@@ -2,4 +2,5 @@
     <string name="app_name">promo_checkout_common</string>
     <string name="promo_global_title">Pakai Promo Tokopedia</string>
     <string name="promo_merchant_title">Cek promo dari toko</string>
+    <string name="see_promo_new">Lihat</string>
 </resources>

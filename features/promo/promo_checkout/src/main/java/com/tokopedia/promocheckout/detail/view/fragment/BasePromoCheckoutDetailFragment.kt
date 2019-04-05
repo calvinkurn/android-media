@@ -18,7 +18,6 @@ import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.util.mapToVariantPromoStackingCheckout
-import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
@@ -159,7 +158,7 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
         isUse = false
         validateButton()
         val intent = Intent()
-        val promoStackingData = PromoStackingData(PromoData.TYPE_COUPON,state =TickerPromoStackingCheckoutView.State.EMPTY)
+        val promoStackingData = PromoStackingData(PromoStackingData.TYPE_COUPON,state =TickerPromoStackingCheckoutView.State.EMPTY)
         intent.putExtra(EXTRA_PROMO_DATA, promoStackingData)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()

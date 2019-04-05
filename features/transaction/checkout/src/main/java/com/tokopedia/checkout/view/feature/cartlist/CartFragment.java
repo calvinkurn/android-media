@@ -1216,7 +1216,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         boolean isAutoApplyPromoStackCodeApplied = dPresenter.getCartListData() != null &&
                 dPresenter.getCartListData().getAutoApplyStackData() != null &&
                 dPresenter.getCartListData().getAutoApplyStackData().isSuccess();
-        Intent intent = ShipmentActivity.createInstance(getActivity(), cartAdapter.getPromoData(),
+        Intent intent = ShipmentActivity.createInstance(getActivity(), cartAdapter.getPromoStackingGlobaldata(),
                 cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab(),
                 isAutoApplyPromoStackCodeApplied
         );

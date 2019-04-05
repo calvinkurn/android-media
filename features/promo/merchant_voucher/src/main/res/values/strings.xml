@@ -29,4 +29,6 @@
     <string name="label_ketik_promo_code">Ketik Kode Voucher</string>
     <string name="hint_promo_code">Ketik di sini</string>
     <string name="use_promo_label_button">Gunakan</string>
+    <string name="code_voucher_blank_warning">Kode Voucher Harus Diisi</string>
+    <string name="general_warning">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
 </resources>

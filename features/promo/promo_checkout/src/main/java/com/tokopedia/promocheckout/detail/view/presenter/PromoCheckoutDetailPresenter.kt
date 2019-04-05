@@ -64,9 +64,7 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
             order.codes = ArrayList()
         }
         // Set promo global
-        val codes = ArrayList<String>()
-        codes.add(promoCode)
-        promo.codes = codes
+        promo.codes = arrayListOf(promoCode)
 
         if (isFromLoadDetail) {
             promo.skipApply = 1
