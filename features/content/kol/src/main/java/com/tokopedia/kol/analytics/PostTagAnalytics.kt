@@ -35,7 +35,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
         private const val KEY_USER_ID = "userId"
         private const val KEY_USER_ID_MOD = "userIdmodulo"
 
-        private const val REGEX_NUMERIC = "/[^0-9]+\\.?[0-9]*/g"
+        private const val REGEX_NUMERIC = "[^\\d]"
     }
 
     object Screen {
@@ -147,7 +147,8 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
     private fun formatPriceToInt(price: String): Int {
         var result = 0
         try {
-            result = price.replace(REGEX_NUMERIC, "").toInt()
+            var rex = Regex(REGEX_NUMERIC)
+            result = rex.replace(price, "").toInt()
         }catch (e: Exception) {
         }
         return result
