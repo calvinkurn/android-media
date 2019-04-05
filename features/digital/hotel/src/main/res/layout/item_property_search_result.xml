@@ -21,6 +21,7 @@
             android:id="@+id/image"
             android:layout_width="@dimen/dp_88"
             android:layout_height="0dp"
+            android:scaleType="centerCrop"
             tools:src="@color/light_blue_300"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -97,6 +98,7 @@
             android:layout_marginTop="@dimen/dp_4"
             android:singleLine="true"
             android:ellipsize="end"
+            android:gravity="center_vertical"
             app:fontSize="micro"
             app:textViewTheme="lightSecondary"
             android:drawablePadding="@dimen/dp_4"
@@ -104,6 +106,8 @@
             app:layout_constraintLeft_toLeftOf="@+id/title"
             app:layout_constraintStart_toStartOf="@+id/title"
             app:layout_constraintTop_toBottomOf="@+id/type"
+            app:layout_constraintRight_toRightOf="@+id/title"
+            app:layout_constraintEnd_toEndOf="@+id/title"
             tools:text="Kuningan"/>
 
         <com.tokopedia.design.component.TextViewCompat
@@ -113,9 +117,8 @@
             android:layout_marginTop="@dimen/dp_4"
             android:singleLine="true"
             android:ellipsize="end"
-            android:textColor="@color/blue_booking"
             app:fontSize="micro"
-            app:textViewTheme="lightSecondary"
+            android:textColor="@color/blue_booking"
             app:layout_constraintLeft_toLeftOf="@+id/title"
             app:layout_constraintStart_toStartOf="@+id/title"
             app:layout_constraintTop_toBottomOf="@+id/location"

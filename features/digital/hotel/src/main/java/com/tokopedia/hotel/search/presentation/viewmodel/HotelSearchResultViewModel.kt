@@ -19,12 +19,11 @@ import javax.inject.Named
 class HotelSearchResultViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val userSessionInterface: UserSessionInterface,
-        @Named("Main")
-        val dispatcher: CoroutineDispatcher
+        dispatcher: CoroutineDispatcher,
+        @Named("dummy_search_result")
+        private val dummySearchResult: String
 ): BaseViewModel(dispatcher){
-    @Inject
-    @Named("dummy_search_result")
-    lateinit var dummySearchResult: String
+
     private val searchParam: SearchParam = SearchParam()
 
     val liveSearchResult = MutableLiveData<Result<PropertySearch>>()

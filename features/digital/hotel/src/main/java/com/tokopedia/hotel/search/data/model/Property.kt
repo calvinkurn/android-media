@@ -32,7 +32,7 @@ data class Property(
 
         @SerializedName("image")
         @Expose
-        val image: Image = Image(),
+        val image: List<Image> = listOf(),
 
         @SerializedName("star")
         @Expose

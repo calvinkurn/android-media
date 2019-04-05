@@ -4,10 +4,14 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
+import android.view.View
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.hotel.common.di.component.HotelComponent
+import com.tokopedia.design.list.decoration.SpaceItemDecoration
+import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.Property
 import com.tokopedia.hotel.search.data.model.PropertySearch
+import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
 import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -80,6 +84,16 @@ class HotelSearchResultFragment: BaseListFragment<Property, PropertyAdapterTypeF
         })
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        context?.let {
+            val recyclerView = getRecyclerView(view)
+            recyclerView.removeItemDecorationAt(0)
+            recyclerView.addItemDecoration(SpaceItemDecoration(it.resources.getDimensionPixelSize(R.dimen.dp_12),
+                    LinearLayoutManager.VERTICAL))
+        }
+    }
+
     private fun onErrorGetResult(throwable: Throwable) {
         super.showGetListError(throwable)
     }
@@ -95,7 +109,7 @@ class HotelSearchResultFragment: BaseListFragment<Property, PropertyAdapterTypeF
     override fun getScreenName(): String? = null
 
     override fun initInjector() {
-        getComponent(HotelComponent::class.java).inject(this)
+        getComponent(HotelSearchPropertyComponent::class.java).inject(this)
     }
 
     override fun loadData(page: Int) {

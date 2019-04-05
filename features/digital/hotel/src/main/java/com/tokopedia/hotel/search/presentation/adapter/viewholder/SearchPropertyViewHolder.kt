@@ -16,7 +16,7 @@ class SearchPropertyViewHolder(view: View): AbstractViewHolder<Property>(view) {
 
     override fun bind(element: Property) {
         with(itemView){
-            image.loadImage(element.image.urlMax300)
+            image.loadImage(element.image.firstOrNull()?.urlMax300 ?: "")
             title.text = element.name
             type.text = element.type
             location.text = element.address
