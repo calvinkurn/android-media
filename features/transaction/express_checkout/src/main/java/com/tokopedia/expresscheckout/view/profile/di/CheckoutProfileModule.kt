@@ -1,7 +1,5 @@
 package com.tokopedia.expresscheckout.view.profile.di
 
-import com.tokopedia.abstraction.AbstractionRouter
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.expresscheckout.view.profile.CheckoutProfileContract
 import com.tokopedia.expresscheckout.view.profile.CheckoutProfilePresenter
 import com.tokopedia.transactionanalytics.ExpressCheckoutAnalyticsTracker
@@ -19,12 +17,9 @@ class CheckoutProfileModule {
     @Provides
     fun providePresenter(presenter: CheckoutProfilePresenter): CheckoutProfileContract.Presenter = presenter
 
-    @CheckoutProfileScope
-    @Provides
-    fun provideAnalyticsTracker(router: AbstractionRouter): AnalyticTracker = router.analyticTracker
 
     @CheckoutProfileScope
     @Provides
-    fun provideAnalytics(tracker: AnalyticTracker): ExpressCheckoutAnalyticsTracker = ExpressCheckoutAnalyticsTracker(tracker)
+    fun provideAnalytics(): ExpressCheckoutAnalyticsTracker = ExpressCheckoutAnalyticsTracker()
 
 }

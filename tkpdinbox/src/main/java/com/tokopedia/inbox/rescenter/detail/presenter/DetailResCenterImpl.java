@@ -10,6 +10,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -32,6 +34,7 @@ import com.tokopedia.inbox.rescenter.detail.service.DetailResCenterService;
 import com.tokopedia.inbox.rescenter.detail.service.DetailResCenterServiceConstant;
 import com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
+import com.tokopedia.track.TrackApp;
 
 import java.util.List;
 
@@ -304,7 +307,7 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
                     view.refreshPage();
                     break;
                 case DetailResCenterService.ACTION_REPLY_CONVERSATION:
-                    UnifyTracking.eventResolutionSendSuccess(MainApplication.getAppContext());
+                    eventResolutionSendSuccess();
                     view.refreshPage();
                     break;
                 case DetailResCenterService.ACTION_ACCEPT_ADMIN_SOLUTION:
@@ -339,10 +342,26 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
 
             switch (typePostData) {
                 case DetailResCenterService.ACTION_REPLY_CONVERSATION:
-                    UnifyTracking.eventResolutionSendError(MainApplication.getAppContext());
+                    eventResolutionSendError();
                     break;
             }
         }
+    }
+
+    public void eventResolutionSendError() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION,
+                AppEventTracking.Action.ERROR,
+                AppEventTracking.EventLabel.COMMENT);
+    }
+
+    public void eventResolutionSendSuccess() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION,
+                AppEventTracking.Action.SEND,
+                AppEventTracking.EventLabel.COMMENT);
     }
 
     @Override

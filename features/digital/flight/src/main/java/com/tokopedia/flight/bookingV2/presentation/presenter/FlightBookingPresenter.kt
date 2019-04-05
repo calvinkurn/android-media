@@ -101,7 +101,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
     override fun getInsurances(): List<FlightInsuranceViewModel> =
             view.getCurrentBookingParamViewModel().insurances
 
-    override fun getComboKey(): String = view.getPriceViewModel().comboKey
+    override fun getComboKey(): String = view.getPriceViewModel().comboKey ?: ""
 
     override fun getRequestParams(): RequestParams {
         return getRequestParams(calculateTotalPassengerFare())

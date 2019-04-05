@@ -36,8 +36,10 @@ public class DynamicHomeChannel {
         public static final String LAYOUT_LEGO_3_IMAGE = "lego_3_image";
         public static final String LAYOUT_SPRINT_CAROUSEL = "sprint_carousel";
         public static final String LAYOUT_DIGITAL_WIDGET = "digital_widget";
+        public static final String LAYOUT_BU_WIDGET = "bu_widget";
         public static final String LAYOUT_TOPADS = "topads";
         public static final String LAYOUT_SPOTLIGHT = "spotlight";
+        public static final String LAYOUT_HOME_WIDGET = "home_widget";
 
         @Expose
         @SerializedName("id")
@@ -528,7 +530,7 @@ public class DynamicHomeChannel {
                     "event", "promoClick",
                     "eventCategory", "homepage",
                     "eventAction", "lego banner 3 image click",
-                    "eventLabel", getHeader().getName(),
+                    "eventLabel", grid.getAttribution(),
                     "ecommerce", DataLayer.mapOf(
                             "promoClick", DataLayer.mapOf(
                                     "promotions", DataLayer.listOf(
