@@ -10,20 +10,21 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.data.model.SearchDestination
+import com.tokopedia.hotel.destination.view.adapter.SearchDestinationListener
 import kotlinx.android.synthetic.main.item_search_destination_result.view.*
 
 /**
  * @author by jessica on 25/03/19
  */
 
-class SearchDestinationViewHolder(val view: View): AbstractViewHolder<SearchDestination>(view) {
+class SearchDestinationViewHolder(val view: View, val searchDestinationListener: SearchDestinationListener): AbstractViewHolder<SearchDestination>(view) {
 
     val boldColor: ForegroundColorSpan = ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.font_black_primary_70));
 
     override fun bind(searchDestination: SearchDestination) {
         with(itemView) {
-            search_destination_name.text = searchDestination.name
-            search_destination_location.text = searchDestination.location
+            search_destination_name.text = getSpandableBoldText(searchDestination.name, searchDestinationListener.getFilterText())
+            search_destination_location.text = getSpandableBoldText(searchDestination.location, searchDestinationListener.getFilterText())
             search_destination_hotel_count.text = if (searchDestination.hotelCount > 0)
                 getString(R.string.hotel_search_popular_search_hotel_count, searchDestination.hotelCount.toString()) else ""
             search_destination_type.text = searchDestination.tag
@@ -31,37 +32,38 @@ class SearchDestinationViewHolder(val view: View): AbstractViewHolder<SearchDest
         }
     }
 
-    private fun getSpandableBoldText(strToPut: String, stringToBold: String): CharSequence {
+    private fun getSpandableBoldText(strToPut: String, stringToHighlighted: String): CharSequence {
 
-        var indexStartBold = -1
-        var indexEndBold = -1
-        if (TextUtils.isEmpty(stringToBold)) {
+        var indexStartHighlighted = -1
+        var indexEndHighlighted = -1
+        if (TextUtils.isEmpty(stringToHighlighted)) {
             return strToPut
         }
 
         val strToPutLowerCase = strToPut.toLowerCase()
-        val strToBoldLowerCase = stringToBold.toLowerCase()
+        val strToBoldLowerCase = stringToHighlighted.toLowerCase()
         val spannableStringBuilder = SpannableStringBuilder(strToPut)
-        indexStartBold = strToPutLowerCase.indexOf(strToBoldLowerCase)
-        if (indexStartBold != -1) {
-            indexEndBold = indexStartBold + stringToBold.length
+        indexStartHighlighted = strToPutLowerCase.indexOf(strToBoldLowerCase)
+        if (indexStartHighlighted != -1) {
+            indexEndHighlighted = indexStartHighlighted + stringToHighlighted.length
 
-            if (indexEndBold >= strToPut.length) {
-                indexEndBold = strToPut.length - 1
+            if (indexEndHighlighted > strToPut.length) {
+                indexEndHighlighted = strToPut.length - 1
             }
         }
-        if (indexStartBold == -1) {
+
+        if (indexStartHighlighted == -1) {
+            spannableStringBuilder.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                    0, strToPut.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             return spannableStringBuilder
         } else {
             spannableStringBuilder.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                    indexStartBold, indexEndBold, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            spannableStringBuilder.setSpan(boldColor, indexStartBold, indexEndBold,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    0, indexStartHighlighted, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannableStringBuilder.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                    indexEndHighlighted, strToPut.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             return spannableStringBuilder
         }
-
     }
-
 
     companion object {
         val LAYOUT = R.layout.item_search_destination_result

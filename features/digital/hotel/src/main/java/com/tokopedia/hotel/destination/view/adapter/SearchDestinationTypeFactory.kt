@@ -15,12 +15,12 @@ import com.tokopedia.hotel.destination.view.adapter.viewholder.SearchDestination
  * @author by jessica on 25/03/19
  */
 
-class SearchDestinationTypeFactory: BaseAdapterTypeFactory() {
+class SearchDestinationTypeFactory(val searchDestinationListener: SearchDestinationListener): BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         when (type) {
             HotelDestinationShimmeringViewHolder.LAYOUT -> return HotelDestinationShimmeringViewHolder(parent)
-            SearchDestinationViewHolder.LAYOUT -> return SearchDestinationViewHolder(parent)
+            SearchDestinationViewHolder.LAYOUT -> return SearchDestinationViewHolder(parent, searchDestinationListener)
             HotelDestinationEmptyResultViewHolder.LAYOUT -> return HotelDestinationEmptyResultViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }

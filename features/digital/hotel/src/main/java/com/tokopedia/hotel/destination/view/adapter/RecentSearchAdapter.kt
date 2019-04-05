@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.tokopedia.design.item.DeletableItemView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.data.model.RecentSearch
@@ -13,7 +12,7 @@ import com.tokopedia.hotel.destination.data.model.RecentSearch
  * @author by jessica on 01/04/19
  */
 
-class RecentSearchAdapter(val listener: RecentSearchClickListener): RecyclerView.Adapter<RecentSearchAdapter.ViewHolder>() {
+class RecentSearchAdapter(val listener: RecentSearchListener): RecyclerView.Adapter<RecentSearchAdapter.ViewHolder>() {
 
     var recentSearchList: MutableList<RecentSearch> = arrayListOf()
 
@@ -32,14 +31,17 @@ class RecentSearchAdapter(val listener: RecentSearchClickListener): RecyclerView
     }
 
     override fun getItemCount(): Int {
+        if (recentSearchList.isEmpty()) listener.isRecentSearchEmpty()
         return recentSearchList.size
     }
 
     fun deleteAllRecentSearch() {
         listener.onDeleteAllRecentSearch()
+        recentSearchList.clear()
+        notifyDataSetChanged()
     }
 
-    inner class ViewHolder(val itemview: View, val listener: RecentSearchClickListener): RecyclerView.ViewHolder(itemview) {
+    inner class ViewHolder(val itemview: View, val listener: RecentSearchListener): RecyclerView.ViewHolder(itemview) {
 
         var textView: DeletableItemView
 

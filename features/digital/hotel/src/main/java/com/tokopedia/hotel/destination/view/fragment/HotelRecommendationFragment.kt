@@ -13,10 +13,12 @@ import android.widget.TextView
 import android.widget.Toast
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.hotel.R
-import com.tokopedia.hotel.common.di.component.HotelComponent
+import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.data.model.RecentSearch
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
@@ -24,10 +26,11 @@ import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.destination.view.adapter.PopularSearchClickListener
 import com.tokopedia.hotel.destination.view.adapter.PopularSearchTypeFactory
 import com.tokopedia.hotel.destination.view.adapter.RecentSearchAdapter
-import com.tokopedia.hotel.destination.view.adapter.RecentSearchClickListener
+import com.tokopedia.hotel.destination.view.adapter.RecentSearchListener
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
-import kotlinx.android.synthetic.main.fragment_hotel_recommendation.*
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -35,7 +38,7 @@ import javax.inject.Inject
  */
 
 class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearchTypeFactory>(),
-        PopularSearchClickListener, RecentSearchClickListener {
+        PopularSearchClickListener, RecentSearchListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -43,10 +46,13 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     lateinit var currentLocationTextView: TextViewCompat
+    lateinit var currentLocationLayout: View
     lateinit var deleteSearchTextView: TextView
     lateinit var recentSearchLayout: View
 
     lateinit var recentSearchAdapter: RecentSearchAdapter
+
+    lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     override fun getScreenName(): String = ""
 
@@ -63,6 +69,9 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
 
         permissionCheckerHelper = PermissionCheckerHelper()
         destinationViewModel.setPermissionChecker(permissionCheckerHelper)
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context!!)
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -72,8 +81,7 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     }
 
     fun initView(view: View) {
-        currentLocationTextView = view.findViewById(R.id.current_location_tv)
-        initCurrentLocationTextView()
+        initCurrentLocationTextView(view)
         initRecentSearch(view)
     }
 
@@ -92,33 +100,50 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
         recentSearchAdapter = RecentSearchAdapter(this)
         recentSearchRecyclerView.adapter = recentSearchAdapter
 
-
         //init titleBar
         recentSearchLayout = view.findViewById(R.id.recent_search_layout)
         deleteSearchTextView = view.findViewById(R.id.delete_text_view)
         deleteSearchTextView.setOnClickListener {
             recentSearchAdapter.deleteAllRecentSearch()
         }
-
-        //dummy data
-        var list: MutableList<RecentSearch> = arrayListOf()
-        list.add(RecentSearch(0,"", "Jakarta", ""))
-        list.add(RecentSearch(0,"", "Jalan Sudirman", ""))
-        list.add(RecentSearch(0,"", "Central Park Mall", ""))
-        list.add(RecentSearch(0,"", "Bandung", ""))
-        list.add(RecentSearch(0,"", "Kyoto Japan", ""))
-        recentSearchAdapter.setData(list)
     }
 
-    fun initCurrentLocationTextView() {
+    fun initCurrentLocationTextView(view: View) {
+
+        currentLocationTextView = view.findViewById(R.id.current_location_tv)
         currentLocationTextView.setDrawableLeft(R.drawable.ic_system_action_currentlocation_grayscale_24)
-        currentLocationTextView.setOnClickListener {
-            destinationViewModel.getCurrentLocation(activity as HotelDestinationActivity)
+
+        currentLocationLayout = view.findViewById(R.id.current_location_layout)
+        currentLocationLayout.setOnClickListener {
+            destinationViewModel.getCurrentLocation(activity as HotelBaseActivity, fusedLocationProviderClient)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        destinationViewModel.recentSearch.observe(this, android.arch.lifecycle.Observer { when (it) {
+            is Success -> renderRecentSearch(it.data)
+            is Fail -> {}
+        } })
+
+        destinationViewModel.popularSearch.observe(this, android.arch.lifecycle.Observer { when (it) {
+            is Success -> renderList(it.data)
+            is Fail -> {}
+        } })
+
+        destinationViewModel.longLat.observe(this, android.arch.lifecycle.Observer {when (it) {
+            is Success -> Toast.makeText(context,"Lang: ${it.data.first}, Lat: ${it.data.second}", Toast.LENGTH_SHORT).show()
+        }
+        })
+    }
+
+    fun renderRecentSearch(recentSearches: MutableList<RecentSearch>) {
+        recentSearchAdapter.setData(recentSearches)
     }
 
     override fun getAdapterTypeFactory(): PopularSearchTypeFactory = PopularSearchTypeFactory(this)
@@ -128,12 +153,7 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     }
 
     override fun loadData(page: Int) {
-        var list: MutableList<PopularSearch> = arrayListOf()
-        list.add(PopularSearch(0, "city","","Jakarta", "Indonesia",2000))
-        list.add(PopularSearch(0, "city","","Bandung", "Indonesia",1200))
-        list.add(PopularSearch(0, "city","","Yogyakarta", "Indonesia",1300))
-        list.add(PopularSearch(0, "city","","Kuta", "Bali, Indonesia",500))
-        renderList(list, false)
+
     }
 
     override fun popularSearchClicked(popularSearch: PopularSearch) {
@@ -163,6 +183,10 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
         Toast.makeText(context, "Item Clicked $applink", Toast.LENGTH_SHORT).show()
         if (shouldFinishActivity) activity?.finish()
         //pass to homepage activity
+    }
+
+    override fun isRecentSearchEmpty() {
+        recentSearchLayout.visibility = View.GONE
     }
 
     companion object {
