@@ -342,7 +342,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         performanceMonitoringP1 = PerformanceMonitoring.start(PDP_P1_TRACE)
         performanceMonitoringP2 = PerformanceMonitoring.start(PDP_P2_TRACE)
-        if (!productInfoViewModel.isUserSessionActive())
+        if (productInfoViewModel.isUserSessionActive())
             performanceMonitoringFull = PerformanceMonitoring.start(PDP_P3_TRACE)
 
         initializePartialView(view)
