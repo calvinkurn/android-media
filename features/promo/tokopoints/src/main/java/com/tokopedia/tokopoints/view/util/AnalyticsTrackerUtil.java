@@ -107,6 +107,8 @@ public class AnalyticsTrackerUtil {
         String CLICK_LEADERBOARD = "click leaderboard";
         String CLICK_COUNTER_KUPON_SAYA = "click counter kupon saya";
         String CLICK_TICKER = "click ticker";
+        String CLICK_SEE_ALL_EXPLORE_CATALOG = "click lihat semua coupon catalog";
+        String CLICK_SEE_ALL_EXPLORE_BANNER = "click lihat semua on banner";
     }
 
     public static void sendScreenEvent(Activity context, String screenName) {

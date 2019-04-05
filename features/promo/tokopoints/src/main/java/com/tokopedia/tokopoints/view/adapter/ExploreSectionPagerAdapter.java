@@ -20,13 +20,17 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
+import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.model.section.ImageList;
 import com.tokopedia.tokopoints.view.model.section.SectionContent;
 import com.tokopedia.tokopoints.view.presenter.TokoPointsHomePresenterNew;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ExploreSectionPagerAdapter extends PagerAdapter {
     public static final int TAB_EXPLORE = 0;
@@ -206,7 +210,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);
             btnSeeAll.setVisibility(View.VISIBLE);
             btnSeeAll.setText(content.getCta().getText());
-            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
+            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl(),
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_CATALOG, content.getSectionTitle()));
         }
 
         ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
@@ -237,7 +242,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);
             btnSeeAll.setVisibility(View.VISIBLE);
             btnSeeAll.setText(content.getCta().getText());
-            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
+            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl(),
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, ""));
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
@@ -256,7 +262,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             ImageView imgBanner = view.findViewById(R.id.img_banner);
             ImageList data = content.getLayoutBannerAttr().getImageList().get(0);
             ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageURLMobile());
-            imgBanner.setOnClickListener(v -> handledClick(data.getRedirectAppLink(), data.getRedirectURL()));
+            imgBanner.setOnClickListener(v -> handledClick(data.getRedirectAppLink(), data.getRedirectURL(), "", ""));
 
             ((TextView) view.findViewById(R.id.text_title_banner)).setText(data.getInBannerTitle());
             ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
@@ -289,7 +295,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);
             btnSeeAll.setVisibility(View.VISIBLE);
             btnSeeAll.setText(content.getCta().getText());
-            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
+            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl(),
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, ""));
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
@@ -308,7 +315,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             ImageView imgBanner = view.findViewById(R.id.img_banner);
             ImageList data = content.getLayoutBannerAttr().getImageList().get(0);
             ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageURLMobile());
-            imgBanner.setOnClickListener(v -> handledClick(data.getRedirectAppLink(), data.getRedirectURL()));
+            imgBanner.setOnClickListener(v -> handledClick(data.getRedirectAppLink(), data.getRedirectURL(), "", ""));
 
             ((TextView) view.findViewById(R.id.text_title_banner)).setText(data.getInBannerTitle());
             ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
@@ -341,7 +348,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);
             btnSeeAll.setVisibility(View.VISIBLE);
             btnSeeAll.setText(content.getCta().getText());
-            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
+            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl(),
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, ""));
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
@@ -360,7 +368,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             ImageView imgBanner = view.findViewById(R.id.img_banner);
             ImageList data = content.getLayoutBannerAttr().getImageList().get(0);
             ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageURLMobile());
-            imgBanner.setOnClickListener(v -> handledClick(data.getRedirectAppLink(), data.getRedirectURL()));
+            imgBanner.setOnClickListener(v -> handledClick(data.getRedirectAppLink(), data.getRedirectURL(), "", ""));
 
             ((TextView) view.findViewById(R.id.text_title_banner)).setText(data.getInBannerTitle());
             ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
@@ -393,7 +401,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);
             btnSeeAll.setVisibility(View.VISIBLE);
             btnSeeAll.setText(content.getCta().getText());
-            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
+            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl(),
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, ""));
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
@@ -416,7 +425,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
                 final String webLink = data.getRedirectURL();
                 imgCol = view.findViewById(R.id.iv_col_1);
                 ImageHandler.loadImageFitCenter(imgCol.getContext(), imgCol, data.getImageURLMobile());
-                imgCol.setOnClickListener(v -> handledClick(appLink, webLink));
+                imgCol.setOnClickListener(v -> handledClick(appLink, webLink, "", ""));
 
                 ((TextView) view.findViewById(R.id.text_title_banner)).setText(data.getInBannerTitle());
                 ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
@@ -431,7 +440,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
                 final String webLink = data.getRedirectURL();
                 imgCol = view.findViewById(R.id.iv_col_2);
                 ImageHandler.loadImageFitCenter(imgCol.getContext(), imgCol, data.getImageURLMobile());
-                imgCol.setOnClickListener(v -> handledClick(appLink, webLink));
+                imgCol.setOnClickListener(v -> handledClick(appLink, webLink, "", ""));
 
                 ((TextView) view.findViewById(R.id.text_title_banner2)).setText(data.getInBannerTitle());
                 ((TextView) view.findViewById(R.id.text_sub_title_banner2)).setText(data.getInBannerSubTitle());
@@ -446,7 +455,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
                 final String webLink = data.getRedirectURL();
                 imgCol = view.findViewById(R.id.iv_col_3);
                 ImageHandler.loadImageFitCenter(imgCol.getContext(), imgCol, data.getImageURLMobile());
-                imgCol.setOnClickListener(v -> handledClick(appLink, webLink));
+                imgCol.setOnClickListener(v -> handledClick(appLink, webLink, "", ""));
 
                 ((TextView) view.findViewById(R.id.text_title_banner3)).setText(data.getInBannerTitle());
                 ((TextView) view.findViewById(R.id.text_sub_title_banner3)).setText(data.getInBannerSubTitle());
@@ -474,7 +483,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);
             btnSeeAll.setVisibility(View.VISIBLE);
             btnSeeAll.setText(content.getCta().getText());
-            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
+            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(),
+                    content.getCta().getUrl(), AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, ""));
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
@@ -497,7 +507,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
                 final String webLink = data.getRedirectURL();
                 imgCol = view.findViewById(R.id.iv_col_1);
                 ImageHandler.loadImageFitCenter(imgCol.getContext(), imgCol, data.getImageURLMobile());
-                imgCol.setOnClickListener(v -> handledClick(appLink, webLink));
+                imgCol.setOnClickListener(v -> handledClick(appLink, webLink, "", ""));
 
                 ((TextView) view.findViewById(R.id.text_title_banner)).setText(data.getInBannerTitle());
                 ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
@@ -512,7 +522,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
                 final String webLink = data.getRedirectURL();
                 imgCol = view.findViewById(R.id.iv_col_2);
                 ImageHandler.loadImageFitCenter(imgCol.getContext(), imgCol, data.getImageURLMobile());
-                imgCol.setOnClickListener(v -> handledClick(appLink, webLink));
+                imgCol.setOnClickListener(v -> handledClick(appLink, webLink, "", ""));
 
                 ((TextView) view.findViewById(R.id.text_title_banner2)).setText(data.getInBannerTitle());
                 ((TextView) view.findViewById(R.id.text_sub_title_banner2)).setText(data.getInBannerSubTitle());
@@ -539,7 +549,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);
             btnSeeAll.setVisibility(View.VISIBLE);
             btnSeeAll.setText(content.getCta().getText());
-            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
+            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl(),
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, ""));
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
@@ -562,7 +573,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
                 final String webLink = data.getRedirectURL();
                 imgCol = view.findViewById(R.id.iv_col_1);
                 ImageHandler.loadImageFitCenter(imgCol.getContext(), imgCol, data.getImageURLMobile());
-                imgCol.setOnClickListener(v -> handledClick(appLink, webLink));
+                imgCol.setOnClickListener(v -> handledClick(appLink, webLink, "", ""));
 
                 ((TextView) view.findViewById(R.id.text_title_banner)).setText(data.getInBannerTitle());
                 ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
@@ -577,7 +588,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
                 final String appLink = data.getRedirectAppLink();
                 final String webLink = data.getRedirectURL();
                 ImageHandler.loadImageFitCenter(imgCol.getContext(), imgCol, data.getImageURLMobile());
-                imgCol.setOnClickListener(v -> handledClick(appLink, webLink));
+                imgCol.setOnClickListener(v -> handledClick(appLink, webLink, "", ""));
 
                 ((TextView) view.findViewById(R.id.text_title_banner2)).setText(data.getInBannerTitle());
                 ((TextView) view.findViewById(R.id.text_sub_title_banner2)).setText(data.getInBannerSubTitle());
@@ -618,7 +629,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);
             btnSeeAll.setVisibility(View.VISIBLE);
             btnSeeAll.setText(content.getCta().getText());
-            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
+            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl(),
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, ""));
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
@@ -655,7 +667,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);
             btnSeeAll.setVisibility(View.VISIBLE);
             btnSeeAll.setText(content.getCta().getText());
-            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
+            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl(),
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, ""));
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
@@ -702,7 +715,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);
             btnSeeAll.setVisibility(View.VISIBLE);
             btnSeeAll.setText(content.getCta().getText());
-            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
+            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl(),
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, ""));
         }
 
         if (content.getLayoutBannerAttr().getImageList() != null) {
@@ -715,11 +729,21 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         return view;
     }
 
-    void handledClick(String appLink, String webLink) {
+    void handledClick(String appLink, String webLink, String action, String label) {
+        if (mLayoutInflater.getContext() == null) {
+            return;
+        }
+
         if (TextUtils.isEmpty(appLink)) {
             ((TokopointRouter) mLayoutInflater.getContext().getApplicationContext()).openTokoPoint(mLayoutInflater.getContext(), webLink);
         } else {
             RouteManager.route(mLayoutInflater.getContext(), appLink);
         }
+
+        AnalyticsTrackerUtil.sendEvent(mLayoutInflater.getContext(),
+                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_TOKOPOINT,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                action,
+                label);
     }
 }
