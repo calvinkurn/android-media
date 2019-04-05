@@ -290,7 +290,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         btnDone.hide()
     }
 
-    fun sendViewToBack(child: View) {
+    private fun sendViewToBack(child: View) {
         val parent = child.parent as ViewGroup
         parent.removeView(child)
         parent.addView(child, 0)
