@@ -259,10 +259,15 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     override fun onPreviewVideoVisible() {
         layoutPreview.bringToFront()
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            layoutPreview.elevation = 90f
-            containerPicker.elevation = 0f
-        }
+
+        layoutPreview.layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT)
+
+        containerPicker.layoutParams = ViewGroup.LayoutParams(
+                0,
+                ViewGroup.LayoutParams.MATCH_PARENT)
+
         showBackButton(false)
         layoutPreview.show()
         containerPicker.hide()
@@ -277,10 +282,15 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     override fun onVideoVisible() {
         containerPicker.bringToFront()
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            containerPicker.elevation = 90f
-            layoutPreview.elevation = 0f
-        }
+
+        containerPicker.layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT)
+
+        layoutPreview.layoutParams = ViewGroup.LayoutParams(
+                0,
+                ViewGroup.LayoutParams.MATCH_PARENT)
+
         showBackButton(true)
         containerPicker.show()
         layoutPreview.hide()
