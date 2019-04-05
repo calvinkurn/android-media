@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -259,6 +260,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     override fun onPreviewVideoVisible() {
         layoutPreview.bringToFront()
+        sendViewToBack(containerPicker)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             layoutPreview.elevation = 90f
             containerPicker.elevation = 0f
@@ -277,6 +279,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     override fun onVideoVisible() {
         containerPicker.bringToFront()
+        sendViewToBack(layoutPreview)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             containerPicker.elevation = 90f
             layoutPreview.elevation = 0f
@@ -285,6 +288,12 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         containerPicker.show()
         layoutPreview.hide()
         btnDone.hide()
+    }
+
+    fun sendViewToBack(child: View) {
+        val parent = child.parent as ViewGroup
+        parent.removeView(child)
+        parent.addView(child, 0)
     }
 
     /**
