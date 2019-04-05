@@ -32,6 +32,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private String shipmentItemDataType;
     private String promoCode;
     private String logPromoCode;
+    private String logPromoMsg;
     private String checksum;
     private String ut;
     private String blackboxInfo;
@@ -251,6 +252,14 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.logPromoCode = logPromoCode;
     }
 
+    public String getLogPromoMsg() {
+        return logPromoMsg;
+    }
+
+    public void setLogPromoMsg(String logPromoMsg) {
+        this.logPromoMsg = logPromoMsg;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -282,6 +291,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         dest.writeString(this.shipmentItemDataType);
         dest.writeString(this.promoCode);
         dest.writeString(this.logPromoCode);
+        dest.writeString(this.logPromoMsg);
         dest.writeString(this.checksum);
         dest.writeString(this.ut);
         dest.writeString(this.blackboxInfo);
@@ -312,6 +322,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.shipmentItemDataType = in.readString();
         this.promoCode = in.readString();
         this.logPromoCode = in.readString();
+        this.logPromoMsg = in.readString();
         this.checksum = in.readString();
         this.ut = in.readString();
         this.blackboxInfo = in.readString();

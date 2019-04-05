@@ -159,7 +159,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:paddingStart="@dimen/dp_16"
             android:paddingLeft="@dimen/dp_16"
             android:paddingEnd="@dimen/dp_16"
@@ -168,22 +168,37 @@
             android:visibility="gone"
             tools:visibility="visible">
 
-            <TextView
-                android:id="@+id/tv_logistic_promo_label"
-                style="@style/TextSmallNormalBlack54"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/gratis_ongkir_promo_kurir" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_logistic_promo_label"
+                    style="@style/TextSmallNormalBlack54"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/gratis_ongkir_promo_kurir" />
+
+                <TextView
+                    android:id="@+id/tv_logistic_promo_price"
+                    style="@style/TextSmallNormalBlack54"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    tools:text="- Rp 25.000" />
+
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/tv_logistic_promo_price"
+                android:id="@+id/tv_logistic_promo_msg"
                 style="@style/TextSmallNormalBlack54"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/dp_4"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="end"
-                tools:text="- Rp 25.000" />
+                tools:text="Tidak dapat ubah kurir karena promo telah diterapkan" />
         </LinearLayout>
 
     </LinearLayout>

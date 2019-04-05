@@ -2174,21 +2174,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
             order.setProductDetails(productDetails);
 
+            ArrayList<String> merchantPromoCodes = new ArrayList<>();
             VoucherOrdersItemUiModel voucherOrdersItemUiModel = shipmentCartItemModel.getVoucherOrdersItemUiModel();
             if (voucherOrdersItemUiModel != null) {
-                ArrayList<String> merchantPromoCodes = new ArrayList<>();
                 merchantPromoCodes.add(voucherOrdersItemUiModel.getCode());
-                if (merchantPromoCodes.size() > 0) {
-                    order.setCodes(merchantPromoCodes);
-                }
             }
-
             VoucherLogisticItemUiModel voucherLogisticItemUiModel = shipmentCartItemModel.getVoucherLogisticItemUiModel();
             if (voucherLogisticItemUiModel != null) {
-                ArrayList<String> arr = new ArrayList<>();
-                arr.add(voucherLogisticItemUiModel.getCode());
-                order.setCodes(arr);
+                merchantPromoCodes.add(voucherLogisticItemUiModel.getCode());
             }
+            order.setCodes(merchantPromoCodes);
 
             order.setUniqueId(shipmentCartItemModel.getCartString());
             order.setShopId(shipmentCartItemModel.getShopId());

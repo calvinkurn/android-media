@@ -214,6 +214,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private View llLogPromo;
     private TextView tvLogPromoLabel;
     private TextView tvLogPromoPrice;
+    private TextView tvLogPromoMsg;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -354,6 +355,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llLogPromo = itemView.findViewById(R.id.layout_logistic_promo_stacking);
         tvLogPromoLabel = itemView.findViewById(R.id.tv_logistic_promo_label);
         tvLogPromoPrice = itemView.findViewById(R.id.tv_logistic_promo_price);
+        tvLogPromoMsg = itemView.findViewById(R.id.tv_logistic_promo_msg);
 
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
@@ -505,41 +507,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 );
             }
         }
-    }
-
-    private void renderLogisticPromo(ShipmentCartItemModel model, RecipientAddressModel address) {
-        RecipientAddressModel currentAddress;
-        if (address == null) {
-            currentAddress = model.getRecipientAddressModel();
-        } else {
-            currentAddress = address;
-        }
-        ShipmentDetailData detailData = model.getSelectedShipmentDetailData();
-
-        llShipmentContainer.setVisibility(View.GONE);
-        llShipmentBlackboxContainer.setVisibility(View.GONE);
-        llShipmentRecommendationContainer.setVisibility(View.VISIBLE);
-        tvChangeSelectedDuration.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mActionListener.onChangeShippingDuration(model, currentAddress,
-                        model.getShopShipmentList(), getAdapterPosition());
-            }
-        });
-
-        tvTickerInfo.setVisibility(View.GONE);
-        llShipmentInfoTicker.setVisibility(View.GONE);
-        llSelectShipmentRecommendation.setVisibility(View.GONE);
-        llSelectedShipmentRecommendation.setVisibility(View.VISIBLE);
-        llShippingOptionsContainer.setVisibility(View.VISIBLE);
-        tvSelectedCourierRecommendation.setText(detailData.getSelectedCourier().getName());
-        tvChangeSelectedCourierRecommendation.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_disabled));
-        tvSelectedDurationRecommendation.setText(detailData.getSelectedCourier().getServiceName());
-        // logistic promo has no price
-//        tvSelectedPriceRecommendation.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-//                detailData.getSelectedCourier().getShipperPrice(), false));
-        llCourierRecommendationStateLoading.setVisibility(View.GONE);
-
     }
 
     /*private void setMargin(int topMargin) {
@@ -841,6 +808,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         });
         if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
             llLogPromo.setVisibility(View.VISIBLE);
+            tvLogPromoMsg.setText(shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage());
             tvLogPromoPrice.setText("-25000");
         }
 

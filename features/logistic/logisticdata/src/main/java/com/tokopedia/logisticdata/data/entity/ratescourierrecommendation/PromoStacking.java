@@ -41,6 +41,9 @@ public class PromoStacking {
     @SerializedName("promo_tnc_html")
     @Expose
     private String promoTncHtml;
+    @SerializedName("shipper_disable_text")
+    @Expose
+    private String shipperDisableText;
 
     public Integer getIsPromo() {
         return isPromo;
@@ -130,4 +133,11 @@ public class PromoStacking {
         this.promoTncHtml = promoTncHtml;
     }
 
+    public String getShipperDisableText() {
+        return shipperDisableText;
+    }
+
+    public void setShipperDisableText(String shipperDisableText) {
+        this.shipperDisableText = shipperDisableText;
+    }
 }
