@@ -22,10 +22,10 @@
     <string name="card_dialog_title_cancel">Batal</string>
 
     <!-- Empty Card Detail Feed -->
-    <string name="feed_post_detail_empty_title">Duh, Halamannya ga kebuka</string>
+    <string name="feed_post_detail_empty_title">Duh, Halamannya ga ketemu</string>
     <string name="feed_post_detail_empty_subtitle">Ada sedikit kendala nih. Coba beberapa
         saat lagi ya.</string>
-    <string name="feed_post_detail_empty_button">Coba Lagi</string>
+    <string name="feed_post_detail_empty_button">Kembali</string>
 
 
 </resources>

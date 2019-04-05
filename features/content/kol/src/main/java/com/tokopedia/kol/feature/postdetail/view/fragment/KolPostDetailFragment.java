@@ -224,14 +224,23 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         adapter.showEmpty(getContext(), new BaseEmptyViewHolder.Callback() {
             @Override
             public void onEmptyContentItemTextClicked() {
-                presenter.getCommentFirstTime(postId);
+                finishActivity();
             }
 
             @Override
             public void onEmptyButtonClicked() {
-                presenter.getCommentFirstTime(postId);
+                finishActivity();
             }
         });
+    }
+
+    private void finishActivity() {
+        if (getActivity() != null && !getActivity().isTaskRoot()) {
+            getActivity().finish();
+        } else if (getActivity() != null) {
+            getActivity().finish();
+            RouteManager.route(getContext(), ApplinkConst.HOME);
+        }
     }
 
     @Override
