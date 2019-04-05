@@ -109,8 +109,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         supportActionBar?.title = getString(R.string.vidpick_title)
 
         //initial of adapter for viewPager and tabPicker
-        adapter = ViewPagerAdapter(supportFragmentManager)
-        setupViewPager()
+        initViewPager()
 
         //remove recording result
         btnDeleteVideo.setOnClickListener { cancelVideo() }
@@ -125,6 +124,11 @@ open class VideoPickerActivity : BaseSimpleActivity(),
             true -> supportActionBar?.title = getString(R.string.vidpick_title)
             false -> supportActionBar?.title = " ${getString(R.string.vidpick_title)}"
         }
+    }
+
+    private fun initViewPager() {
+        adapter = ViewPagerAdapter(supportFragmentManager)
+        setupViewPager()
     }
 
     private fun setupViewPager() {
@@ -234,6 +238,11 @@ open class VideoPickerActivity : BaseSimpleActivity(),
             selectCurrentPage(currentSelectedTab)
             onPreviewVideoVisible()
 
+            //preventing crash
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                initViewPager()
+            }
+
             val uriFile = Uri.parse(filePath)
             isVideoSourcePicker = false
             videoPath = filePath
@@ -247,10 +256,11 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     }
 
     override fun onPreviewVideoVisible() {
+        layoutPreview.show()
         layoutPreview.bringToFront()
+        layoutPreview.invalidate()
         showBackButton(false)
         containerPicker.hide()
-        layoutPreview.show()
         btnDone.show()
 
         btnDeleteVideo.text = if (isVideoSourcePicker) {
@@ -261,9 +271,10 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     }
 
     override fun onVideoVisible() {
-        containerPicker.bringToFront()
-        showBackButton(true)
         containerPicker.show()
+        containerPicker.bringToFront()
+        containerPicker.invalidate()
+        showBackButton(true)
         layoutPreview.hide()
         btnDone.hide()
     }
