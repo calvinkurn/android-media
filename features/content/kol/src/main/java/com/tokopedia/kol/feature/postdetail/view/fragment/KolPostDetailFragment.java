@@ -103,7 +103,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private static final int OPEN_CONTENT_REPORT = 1310;
 
     private Integer postId;
-    private boolean isOwner = false;
     private SwipeToRefresh swipeToRefresh;
     private RecyclerView recyclerView;
     private ImageView likeButton, commentButton, shareButton;
@@ -112,7 +111,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private KolRouter kolRouter;
     private PerformanceMonitoring performanceMonitoring;
 
-    private PostDetailViewModel postDetailViewModel;
+    private DynamicPostViewModel dynamicPostViewModel;
     private PostDetailFooterModel postDetailFooterModel;
     private boolean isTraceStopped;
 
@@ -245,16 +244,41 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void onSuccessGetKolPostDetail(List<Visitable> list,
                                           PostDetailViewModel postDetailViewModel) {
         adapter.setList(list);
+        this.dynamicPostViewModel = ((DynamicPostViewModel)postDetailViewModel.getDynamicPostViewModel().getPostList().get(0));
+        trackImpression(dynamicPostViewModel);
         setFooter(postDetailViewModel);
     }
 
+    private void trackImpression(DynamicPostViewModel dynamicPostViewModel) {
+        if (dynamicPostViewModel.getPostTag().getTotalItems() != 0 && !dynamicPostViewModel.getPostTag().getItems().isEmpty()) {
+            for (int i = 0; i < dynamicPostViewModel.getPostTag().getTotalItems(); i++) {
+                if (isOwner()) {
+                    postTagAnalytics.trackViewPostTagProfileDetailSelf(
+                            dynamicPostViewModel.getId(),
+                            dynamicPostViewModel.getPostTag().getItems().get(i),
+                            i,
+                            dynamicPostViewModel.getTrackingPostModel());
+                } else {
+                    postTagAnalytics.trackViewPostTagProfileDetailOther(
+                            dynamicPostViewModel.getId(),
+                            dynamicPostViewModel.getPostTag().getItems().get(i),
+                            i,
+                            dynamicPostViewModel.getTrackingPostModel());
+                }
+            }
+        }
+    }
+
+    private boolean isOwner() {
+        return userSession.getUserId().equals(
+                (dynamicPostViewModel.getHeader().getFollowCta().getAuthorID()));
+    }
+
     private void setFooter(PostDetailViewModel postDetailViewModel) {
-        this.postDetailViewModel = postDetailViewModel;
-        this.postDetailFooterModel = postDetailViewModel.getFooterModel();
         footer.setVisibility(View.VISIBLE);
         TemplateFooter template = null;
         if (postDetailViewModel.getDynamicPostViewModel().getPostList().size() != 0) {
-            template = ((DynamicPostViewModel) postDetailViewModel.getDynamicPostViewModel().getPostList().get(0)).getTemplate().getCardpost().getFooter();
+            template = dynamicPostViewModel.getTemplate().getCardpost().getFooter();
         }
         if (template != null) {
             bindLike(postDetailFooterModel, template);
@@ -771,10 +795,23 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onPostTagItemClick(int positionInFeed, @NotNull String redirectUrl, @NotNull PostTagItem postTagItem, int itemPosition) {
         onGoToLink(redirectUrl);
-        if (postDetailViewModel.getDynamicPostViewModel().getPostList().size() != 0) {
-            DynamicPostViewModel model = (DynamicPostViewModel) postDetailViewModel.getDynamicPostViewModel().getPostList().get(0);
+        if (dynamicPostViewModel.getPostTag().getTotalItems() != 0 && !dynamicPostViewModel.getPostTag().getItems().isEmpty()) {
+            for (int i = 0; i < dynamicPostViewModel.getPostTag().getTotalItems(); i++) {
+                if (isOwner()) {
+                    postTagAnalytics.trackClickPostTagProfileDetailSelf(
+                            dynamicPostViewModel.getId(),
+                            dynamicPostViewModel.getPostTag().getItems().get(i),
+                            i,
+                            dynamicPostViewModel.getTrackingPostModel());
+                } else {
+                    postTagAnalytics.trackClickPostTagProfileDetailOther(
+                            dynamicPostViewModel.getId(),
+                            dynamicPostViewModel.getPostTag().getItems().get(i),
+                            i,
+                            dynamicPostViewModel.getTrackingPostModel());
+                }
+            }
         }
-
     }
 
     @Override
@@ -821,7 +858,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onPollOptionClick(int positionInFeed, int contentPosition, int option, @NotNull String pollId, @NotNull String optionId, boolean isVoted, @NotNull String redirectLink) {
+    public void onPollOptionClick(int positionInFeed, int contentPosition, int option,
+                                  @NotNull String pollId, @NotNull String optionId, boolean isVoted,
+                                  @NotNull String redirectLink) {
         if (userSession != null && userSession.isLoggedIn()) {
             if (isVoted) {
                 onGoToLink(redirectLink);
