@@ -127,6 +127,7 @@ public class ShipmentDataRequestConverter {
             if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
                 ArrayList<String> promoCodes = new ArrayList<>();
                 promoCodes.add(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode());
+                promoCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
                 shopProductCheckoutBuilder.promoCodes(promoCodes);
             }
 
