@@ -112,7 +112,7 @@ public class ShopListFragment extends SearchSectionFragment
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         presenter.attachView(this, this);
         return inflater.inflate(R.layout.fragment_shop_list_search, null);
@@ -129,7 +129,7 @@ public class ShopListFragment extends SearchSectionFragment
 
         adapter = new ShopListAdapter(this, new ShopListTypeFactoryImpl(this));
 
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
+        recyclerView = rootView.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(getGridLayoutManager());
         recyclerView.addItemDecoration(
                 new ShopListItemDecoration(
@@ -199,6 +199,8 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     private void loadMoreShop(final int startRow) {
+        if(getSearchParameter() == null) return;
+
         generateLoadMoreParameter(startRow);
 
         isLoadingData = true;
@@ -229,6 +231,8 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     private void handleOnFailedLoadMoreShop(int startRow) {
+        if(adapter == null) return;
+
         adapter.removeLoading();
 
         NetworkErrorHelper.RetryClickedListener retryClickedListener = () -> loadMoreShop(startRow);
@@ -248,6 +252,8 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     private void generateLoadMoreParameter(int startRow) {
+        if(getSearchParameter() == null) return;
+
         getSearchParameter().set(SearchApiConst.UNIQUE_ID, generateUniqueId());
         getSearchParameter().set(SearchApiConst.USER_ID, generateUserId());
         getSearchParameter().set(SearchApiConst.START, String.valueOf(startRow));
@@ -291,14 +297,14 @@ public class ShopListFragment extends SearchSectionFragment
         adapter.removeLoading();
         if (adapter.isListEmpty()) {
             isListEmpty = true;
-            adapter.showEmptyState(getActivity(), getSearchParameter().getSearchQuery(), isFilterActive(), null, getString(R.string.shop_tab_title).toLowerCase());
-            SearchTracking.eventSearchNoResult(getActivity(), getSearchParameter().getSearchQuery(), getScreenName(), getSelectedFilter());
+            adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), null, getString(R.string.shop_tab_title).toLowerCase());
+            SearchTracking.eventSearchNoResult(getActivity(), getQueryKey(), getScreenName(), getSelectedFilter());
         }
     }
 
     @Override
     protected void refreshAdapterForEmptySearch() {
-        if (adapter != null) {
+        if (adapter != null && getSearchParameter() != null) {
             adapter.showEmptyState(getActivity(), getSearchParameter().getSearchQuery(), isFilterActive(), null, getString(R.string.shop_tab_title).toLowerCase());
         }
     }
@@ -322,6 +328,8 @@ public class ShopListFragment extends SearchSectionFragment
 
     @Override
     public void onItemClicked(ShopViewModel.ShopItem shopItem, int adapterPosition) {
+        if(getActivity() == null) return;
+
         Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopItem.getShopId());
         lastSelectedItemPosition = adapterPosition;
         SearchTracking.eventSearchResultShopItemClick(getActivity(), getSearchParameter().getSearchQuery(), shopItem.getShopName(),
@@ -417,6 +425,8 @@ public class ShopListFragment extends SearchSectionFragment
 
     @Override
     public String getQueryKey() {
+        if(getSearchParameter() == null) return "";
+
         return getSearchParameter().getSearchQuery();
     }
 
