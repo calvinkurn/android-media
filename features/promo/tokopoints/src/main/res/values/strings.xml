@@ -24,6 +24,7 @@
     <string name="tp_label_see_point">Points</string>
     <string name="tp_label_exchange_points">Penukaran Points</string>
     <string name="tp_label_my_coupon">Kupon Milik Saya</string>
+    <string name="tp_label_my_coupon_new">Kupon Saya</string>
     <string name="tp_label_my_coupon_space">Kupon Milik Saya \u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020</string>
     <string name="tp_label_see_all">Lihat Semua</string>
     <string name="tp_label_help_with_storepoints">Bantuan TokoPoints</string>

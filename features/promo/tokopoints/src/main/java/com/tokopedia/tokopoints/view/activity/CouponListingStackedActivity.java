@@ -50,7 +50,7 @@ public class CouponListingStackedActivity extends BaseSimpleActivity implements 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        updateTitle(getString(R.string.tp_label_my_coupon));
+        updateTitle(getString(R.string.tp_label_my_coupon_new));
         getComponent().inject(this);
         mPresenter.attachView(this);
         mContainerMain = findViewById(R.id.container);
