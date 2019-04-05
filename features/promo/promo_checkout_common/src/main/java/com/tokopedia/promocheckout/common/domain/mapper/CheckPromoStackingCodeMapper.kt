@@ -95,7 +95,7 @@ open class CheckPromoStackingCodeMapper @Inject constructor() {
                 cashbackWalletAmount = voucherOrdersItem.cashbackWalletAmount,
                 discountAmount = voucherOrdersItem.discountAmount,
                 invoiceDescription = voucherOrdersItem.invoiceDescription,
-                couponDescription = voucherOrdersItem.couponDescription,
+                titleDescription = voucherOrdersItem.titleDescription,
                 message = mapMessage(voucherOrdersItem.message)
         )
     }

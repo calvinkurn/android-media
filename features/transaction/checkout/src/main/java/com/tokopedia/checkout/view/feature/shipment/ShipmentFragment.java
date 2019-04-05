@@ -115,7 +115,6 @@ import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.cod.Data;
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
-import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -2293,7 +2292,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         } else if (voucherOrdersItemUiModel.getType().equals(TickerCheckoutUtilKt.getLOGISTIC())) {
                             VoucherLogisticItemUiModel log = new VoucherLogisticItemUiModel();
                             log.setMessage(voucherOrdersItemUiModel.getCode());
-                            log.setCouponDesc(voucherOrdersItemUiModel.getCouponDescription());
+                            log.setCouponDesc(voucherOrdersItemUiModel.getTitleDescription());
                             shipmentCartItemModel.setVoucherLogisticItemUiModel(log);
                         }
                         break;

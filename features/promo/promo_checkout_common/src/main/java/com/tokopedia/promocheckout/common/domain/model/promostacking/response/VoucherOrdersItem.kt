@@ -29,8 +29,8 @@ data class VoucherOrdersItem(
         @field:SerializedName("invoice_description")
         val invoiceDescription: String = "",
 
-        @field:SerializedName("coupon_description")
-        val couponDescription: String = "",
+        @field:SerializedName("title_description")
+        val titleDescription: String = "",
 
         @field:SerializedName("type")
         val type: String = "",
@@ -58,7 +58,7 @@ data class VoucherOrdersItem(
         parcel.writeValue(success)
         parcel.writeValue(discountAmount)
         parcel.writeString(invoiceDescription)
-        parcel.writeString(couponDescription)
+        parcel.writeString(titleDescription)
         parcel.writeString(type)
         parcel.writeParcelable(message, flags)
     }
