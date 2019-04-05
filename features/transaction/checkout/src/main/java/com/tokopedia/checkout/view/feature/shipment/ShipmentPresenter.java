@@ -1240,6 +1240,31 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
+    public void cancelAutoApplyPromoStackLogistic(String promoCode) {
+        ArrayList<String> promoCodeList = new ArrayList<>();
+        promoCodeList.add(promoCode);
+
+        // Fire and forget
+        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodeList);
+        clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                // Do nothing
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                // Do nothing
+            }
+        });
+    }
+
+    @Override
     public void cancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList,
                                                     boolean isFromMultipleAddress, boolean isOneClickShipment, boolean isTradeIn,
                                                     @Nullable String cornerId, String deviceId) {

@@ -307,6 +307,8 @@ public interface ShipmentContract {
 
         void cancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse);
 
+        void cancelAutoApplyPromoStackLogistic(String promoCode);
+
         void cancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList,
                                                  boolean isFromMultipleAddress, boolean isOneClickShipment, boolean isTradeIn,
                                                  @Nullable String cornerId, String deviceId);
