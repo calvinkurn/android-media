@@ -102,6 +102,10 @@ public class BaseDiscoveryActivity
         return presenter;
     }
 
+    protected void onProductQuerySubmit() {
+
+    }
+
     @Override
     public AppComponent getComponent() {
         return getApplicationComponent();
@@ -302,7 +306,12 @@ public class BaseDiscoveryActivity
 
     private void handleMoveToSearchActivityOnResume() {
         if(isStartingSearchActivityWithProductViewModel) {
-            finishAndMoveToSearchActivity(productViewModelForOnResume);
+            if(productViewModelForOnResume != null) {
+                finishAndMoveToSearchActivity(productViewModelForOnResume);
+            }
+            else {
+                onProductQuerySubmit();
+            }
         }
     }
 

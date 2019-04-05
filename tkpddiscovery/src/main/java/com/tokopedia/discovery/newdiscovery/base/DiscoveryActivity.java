@@ -222,6 +222,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
     }
 
+    @Override
     protected void onProductQuerySubmit() {
         setForceSwipeToShop(false);
         setForceSearch(false);
@@ -314,8 +315,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     public void onSuggestionProductClick(SearchParameter searchParameter) {
-        SearchParameter copySearchParameter = new SearchParameter(searchParameter);
-        this.searchParameter = copySearchParameter;
+        this.searchParameter = new SearchParameter(searchParameter);
         onProductQuerySubmit();
     }
 
@@ -338,6 +338,8 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     private void updateSearchParameterBeforeSearchIfNotEmpty(String searchQuery, String categoryId) {
+        if(searchParameter == null) searchParameter = new SearchParameter();
+
         setSearchParameterQueryIfNotEmpty(searchQuery);
         setSearchParameterUniqueId();
         setSearchParameterUserIdIfLoggedIn();
@@ -451,7 +453,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
         showLoadingView(false);
         showContainer(true);
-        NetworkErrorHelper.showEmptyState(this, container, () -> performRequestProduct());
+        NetworkErrorHelper.showEmptyState(this, container, this::performRequestProduct);
     }
 
     @Override
