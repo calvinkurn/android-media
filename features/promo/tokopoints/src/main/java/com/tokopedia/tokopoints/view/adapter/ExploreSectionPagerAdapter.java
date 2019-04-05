@@ -18,8 +18,10 @@ import android.widget.ViewFlipper;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
+import com.tokopedia.tokopoints.view.model.section.CountdownAttr;
 import com.tokopedia.tokopoints.view.model.section.ImageList;
 import com.tokopedia.tokopoints.view.model.section.SectionContent;
 import com.tokopedia.tokopoints.view.presenter.TokoPointsHomePresenterNew;
@@ -36,6 +38,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
     private SectionContent mCouponSection;
     private TokoPointsHomePresenterNew mPresenter;
     private SwipeToRefresh swipeToRefresh[] = new SwipeToRefresh[2];
+    private CountDownView countDownView;
 
     public ExploreSectionPagerAdapter(Context context, TokoPointsHomePresenterNew presenter, List<SectionContent> sections, SectionContent couponSection) {
         this.mLayoutInflater = LayoutInflater.from(context);
@@ -200,6 +203,28 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
                 content.getLayoutCatalogAttr() == null) {
             view.setVisibility(View.GONE);
             return view;
+        }
+        countDownView = view.findViewById(R.id.tp_count_down_view);
+
+        // TODO: 5/4/19 remove dummy data
+        CountdownAttr countdownAttr = new CountdownAttr();
+        countdownAttr.setShowTimer(true);
+        countdownAttr.setExpiredCountDown(40000);
+
+        content.setCountdownAttr(countdownAttr);
+
+        if (content.getCountdownAttr() != null &&
+                content.getCountdownAttr().getShowTimer() &&
+                content.getCountdownAttr().getExpiredCountDown() > 0) {
+
+            countDownView.findViewById(R.id.tp_count_down_view).setVisibility(View.VISIBLE);
+
+            countDownView.setupForTokopoints(content.getCountdownAttr().getExpiredCountDown(), () -> {
+                // TODO: 4/4/19 do something
+            });
+
+        } else {
+            countDownView.findViewById(R.id.tp_count_down_view).setVisibility(View.GONE);
         }
 
         if (!content.getCta().isEmpty()) {
