@@ -1807,7 +1807,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onLogisticPromoChosen(List<ShippingCourierViewModel> shippingCourierViewModels, CourierItemData courierData, RecipientAddressModel recipientAddressModel, int cartPosition, int selectedServiceId, String selectedServiceName, boolean flagNeedToSetPinpoint) {
         onShippingDurationChoosen(shippingCourierViewModels, courierData, recipientAddressModel, cartPosition, selectedServiceId, selectedServiceName, flagNeedToSetPinpoint, false, true);
-        shipmentPresenter.processCheckPromoStackingLogisticPromo(cartPosition);
+        if (!flagNeedToSetPinpoint) shipmentPresenter.processCheckPromoStackingLogisticPromo(cartPosition);
     }
 
     @Override
