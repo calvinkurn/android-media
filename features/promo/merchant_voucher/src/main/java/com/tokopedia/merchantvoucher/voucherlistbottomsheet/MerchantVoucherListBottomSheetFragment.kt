@@ -62,6 +62,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     private var shopId: Int = 0
     private var cartString: String = ""
     private var source: String = ""
+    private val CART: String = "cart"
 
     var bottomsheetView: View? = null
 
@@ -131,7 +132,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
 
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
                 if (charSequence.isEmpty()) {
-                    textInputLayoutCoupon.error = "Kode Voucher Harus Diisi"
+                    textInputLayoutCoupon.error = getString(R.string.code_voucher_blank_warning)
                     updateHeight()
                 } else {
                     textInputLayoutCoupon.setErrorEnabled(false)
@@ -148,8 +149,8 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         buttonUse.setOnClickListener {
             hideKeyboard()
             if (textInputCoupon.text.toString().isEmpty()) {
-                textInputLayoutCoupon.error = "Kode Voucher Harus Diisi"
-                if (source.equals("cart", true)) {
+                textInputLayoutCoupon.error = getString(R.string.code_voucher_blank_warning)
+                if (source.equals(CART, true)) {
                     cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputFailed(textInputLayoutCoupon.error?.toString())
                 } else {
                     shipmentPageAnalytics.eventClickPakaiMerchantVoucherManualInputError(textInputLayoutCoupon.error?.toString())
@@ -224,7 +225,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
                         this, shopId.toString())
                 startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_MERCHANT_DETAIL)
 
-                if (source.equals("cart", true)) {
+                if (source.equals(CART, true)) {
                     cartPageAnalytics.eventClickDetailMerchantVoucher(merchantVoucherViewModel.voucherCode)
                 } else {
                     shipmentPageAnalytics.eventClickDetailMerchantVoucher(merchantVoucherViewModel.voucherCode)
@@ -274,7 +275,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     override fun onErrorGetMerchantVoucherList(e: Throwable) {
         var message = ErrorHandler.getErrorMessage(context, e)
         if (TextUtils.isEmpty(message)) {
-            message = "Terjadi kesalahan. Ulangi beberapa saat lagi"
+            message = getString(R.string.general_warning)
         }
         NetworkErrorHelper.showEmptyState(activity, errorContainer, message) {
             errorContainer.visibility = View.GONE
@@ -286,11 +287,11 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         hideKeyboard()
         var messageInfo = message
         if (TextUtils.isEmpty(messageInfo)) {
-            messageInfo = "Terjadi kesalahan. Ulangi beberapa saat lagi."
+            messageInfo = getString(R.string.general_warning)
         }
         if (isFromList) {
             ToasterError.make(layoutMerchantVoucher, messageInfo, ToasterError.LENGTH_SHORT).show()
-            if (source.equals("cart", true)) {
+            if (source.equals(CART, true)) {
                 cartPageAnalytics.eventClickPakaiMerchantVoucherFailed(message)
             } else {
                 shipmentPageAnalytics.eventClickPakaiMerchantVoucherError(message)
@@ -298,7 +299,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         } else {
             textInputLayoutCoupon.error = message
             updateHeight()
-            if (source.equals("cart", true)) {
+            if (source.equals(CART, true)) {
                 cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputFailed(message)
             } else {
                 shipmentPageAnalytics.eventClickPakaiMerchantVoucherManualInputError(message)
@@ -308,14 +309,14 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
 
     override fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackUiModel, promoCode: String, isFromList: Boolean) {
         if (isFromList) {
-            if (source.equals("cart", true)) {
+            if (source.equals(CART, true)) {
                 cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputSuccess(promoCode)
             } else {
                 shipmentPageAnalytics.eventClickPakaiMerchantVoucherManualInputSuccess(promoCode)
             }
 
         } else {
-            if (source.equals("cart", true)) {
+            if (source.equals(CART, true)) {
                 cartPageAnalytics.eventClickPakaiMerchantVoucherSuccess(promoCode)
             } else {
                 shipmentPageAnalytics.eventClickPakaiMerchantVoucherSuccess(promoCode)

@@ -115,7 +115,7 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
     }
 
     override fun title(): String {
-        return getString(R.string.clash_bottomsheet_title)
+        return getString(R.string.clash_bottomsheet_title_new)
     }
 
     override fun onVoucherItemSelected(index: Int, isSelected: Boolean) {

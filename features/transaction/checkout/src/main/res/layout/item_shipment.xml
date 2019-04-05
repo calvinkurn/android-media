@@ -18,7 +18,7 @@
 
     <include
         layout="@layout/item_promo_merchant"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <include
         layout="@layout/item_cart_product"

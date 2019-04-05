@@ -13,7 +13,6 @@ import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConver
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;

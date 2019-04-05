@@ -72,8 +72,4 @@
     <string name="intro_seller_saldo_finish_string">Selesai</string>
     <string name="tokopedia_domain" translatable="false">www.tokopedia.com</string>
 
-    <string name="merchant_promo_is_available">Ada promo dari toko ini loh</string>
-    <string name="use_tokopedia_promo">Pakai Promo Tokopedia</string>
-    <string name="see_promo_new">Lihat</string>
-
 </resources>

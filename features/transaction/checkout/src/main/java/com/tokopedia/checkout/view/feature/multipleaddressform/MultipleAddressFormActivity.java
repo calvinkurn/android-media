@@ -12,7 +12,6 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostMo
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
@@ -137,7 +136,7 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
     private void setActivityResult() {
         Intent resultIntent = new Intent();
         if (getIntent().hasExtra(EXTRA_PROMO_DATA)) {
-            resultIntent.putExtra(EXTRA_PROMO_DATA, (PromoData) getIntent().getParcelableExtra(EXTRA_PROMO_DATA));
+            resultIntent.putExtra(EXTRA_PROMO_DATA, (PromoStackingData) getIntent().getParcelableExtra(EXTRA_PROMO_DATA));
         }
         if (getIntent().hasExtra(EXTRA_PROMO_SUGGESTION_DATA)) {
             resultIntent.putExtra(EXTRA_PROMO_SUGGESTION_DATA, (CartPromoSuggestion) getIntent().getParcelableExtra(EXTRA_PROMO_SUGGESTION_DATA));

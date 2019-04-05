@@ -252,7 +252,9 @@
     <string name="label_total_nilai_promo">Total Nilai Promo</string>
 
     <string name="clash_bottomsheet_title">Oops.. Terjadi Konflik Voucher</string>
+    <string name="clash_bottomsheet_title_new">Cuma bisa pakai satu promo</string>
     <string name="clash_bottomsheet_subtitle">Pilih Voucher yang akan digunakan</string>
+    <string name="clash_bottomsheet_subtitle_new">Pilih satu promo ya…</string>
     <string name="clash_bottomsheet_latest_voucher">Voucher Baru Dipilih</string>
     <string name="clash_bottomsheet_latest_potential_promo">Nilai Potensi Promo Rp 75.000</string>
     <string name="clash_bottomsheet_latest_potential_promo_desc">Cashback Tokped Hingga Rp 75.000</string>
@@ -263,6 +265,7 @@
     <string name="clash_bottomsheet_previous_potential_promo_origin2">Dari toko Bandung</string>
     <string name="clash_bottomsheet_previous_potential_promo_desc2">Cashback Tokped Hingga Rp 75.000</string>
     <string name="clash_bottomsheet_info_warning">Voucher yang baru dipilih tidak dapat digunakan bersamaan dengan voucher sebelumnya.</string>
+    <string name="clash_bottomsheet_info_warning_new">Promo yang barusan kamu pilih nggak bisa dipakai bareng promo lain.</string>
     <string name="clash_bottomsheet_submit">Submit</string>
 
     <string name="totalbenefit_bottomsheet_title">Total Nilai Promo</string>
