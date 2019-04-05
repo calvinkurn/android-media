@@ -16,12 +16,24 @@
     app:layout_constraintTop_toBottomOf="@+id/container_dynamic_links"
     tools:visibility="visible">
 
+    <ImageView
+        android:id="@+id/ic_close_ticker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_4"
+        android:padding="@dimen/dp_2"
+        android:tint="@color/tp_ticker_close_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_close_24dp" />
+
     <com.tokopedia.abstraction.base.view.widget.TouchViewPager
         android:id="@+id/view_pager_ticker"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginTop="@dimen/tp_padding_small"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/ic_close_ticker"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -37,16 +49,5 @@
         app:layout_constraintTop_toBottomOf="@+id/view_pager_ticker"
         app:pageColor="@color/tp_ticker_indicator_default_color" />
 
-    <ImageView
-        android:id="@+id/ic_close_ticker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginRight="@dimen/dp_4"
-        android:padding="@dimen/dp_2"
-        android:tint="@color/tp_ticker_close_icon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_close_24dp" />
 
 </android.support.constraint.ConstraintLayout>

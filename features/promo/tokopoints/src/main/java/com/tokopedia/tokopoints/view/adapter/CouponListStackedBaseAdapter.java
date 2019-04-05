@@ -318,40 +318,50 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
             holder.timer.cancel();
         }
 
-        if (item.getUsage().getActiveCountDown() < 1) {
-            if (item.getUsage().getExpiredCountDown() > 0
-                    && item.getUsage().getExpiredCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
-                holder.progressTimer.setMax((int) CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S);
-                holder.progressTimer.setVisibility(View.VISIBLE);
-                holder.timer = new CountDownTimer(item.getUsage().getExpiredCountDown() * 1000, 1000) {
-                    @Override
-                    public void onTick(long l) {
-                        item.getUsage().setExpiredCountDown(l / 1000);
-                        int seconds = (int) (l / 1000) % 60;
-                        int minutes = (int) ((l / (1000 * 60)) % 60);
-                        int hours = (int) ((l / (1000 * 60 * 60)) % 24);
-                        holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
-                        holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.medium_green));
-                        holder.progressTimer.setProgress((int) l / 1000);
-                        holder.value.setPadding(holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
-                                holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall),
-                                holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
-                                holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall));
-                    }
+        if (item.getUsage() != null) {
+            if (item.getUsage().getActiveCountDown() < 1) {
+                if (item.getUsage().getExpiredCountDown() > 0
+                        && item.getUsage().getExpiredCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
+                    holder.progressTimer.setMax((int) CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S);
+                    holder.progressTimer.setVisibility(View.VISIBLE);
+                    holder.timer = new CountDownTimer(item.getUsage().getExpiredCountDown() * 1000, 1000) {
+                        @Override
+                        public void onTick(long l) {
+                            item.getUsage().setExpiredCountDown(l / 1000);
+                            int seconds = (int) (l / 1000) % 60;
+                            int minutes = (int) ((l / (1000 * 60)) % 60);
+                            int hours = (int) ((l / (1000 * 60 * 60)) % 24);
+                            holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
+                            holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.medium_green));
+                            holder.progressTimer.setProgress((int) l / 1000);
+                            holder.value.setPadding(holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
+                                    holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall),
+                                    holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
+                                    holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall));
+                        }
 
-                    @Override
-                    public void onFinish() {
-                        holder.value.setText("00 : 00 : 00");
-                    }
-                }.start();
+                        @Override
+                        public void onFinish() {
+                            holder.value.setText("00 : 00 : 00");
+                        }
+                    }.start();
+                } else {
+                    holder.progressTimer.setVisibility(View.GONE);
+                    holder.value.setPadding(0, 0, 0, 0);
+                    holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
+                }
             } else {
                 holder.progressTimer.setVisibility(View.GONE);
-                holder.value.setPadding(0, 0, 0, 0);
                 holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
             }
-        } else {
-            holder.progressTimer.setVisibility(View.GONE);
-            holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
+
+            if (item.getUsage().getActiveCountDown() > 0) {
+                holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.getContext(), R.color.tp_coupon_disable), android.graphics.PorterDuff.Mode.SRC_IN);
+                holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.getContext(), R.color.tp_coupon_disable), android.graphics.PorterDuff.Mode.SRC_IN);
+            } else {
+                holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.getContext(), R.color.tp_coupon_enable), android.graphics.PorterDuff.Mode.SRC_IN);
+                holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.getContext(), R.color.tp_coupon_enable), android.graphics.PorterDuff.Mode.SRC_IN);
+            }
         }
     }
 

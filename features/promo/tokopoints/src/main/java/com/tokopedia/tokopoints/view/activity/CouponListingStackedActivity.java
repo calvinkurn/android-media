@@ -26,7 +26,6 @@ import com.tokopedia.tokopoints.view.model.CouponFilterItem;
 import com.tokopedia.tokopoints.view.presenter.StackedCouponActivityPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
-import com.tokopedia.tokopoints.view.util.TabUtil;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
