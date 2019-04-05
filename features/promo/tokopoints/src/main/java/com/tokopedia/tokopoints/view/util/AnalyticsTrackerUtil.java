@@ -23,6 +23,7 @@ public class AnalyticsTrackerUtil {
         String EVENT_CLICK_COUPON = "clickCoupon";
         String EVENT_VIEW_COUPON = "viewCoupon";
         String EVENT_VIEW_PROMO = "promoView";
+        String EVENT_CLICK_PROMO = "promoClick";
         String TOKOPOINTS_LABEL = "tokopoints";
         String TOKOPOINTS_ON_BOARDING_LABEL = "tokopoints on boarding";
         String TOKOPOINTS_LUCKY_EGG_CLOSE_LABEL = "close cara mendapatkan lucky egg";
@@ -109,6 +110,17 @@ public class AnalyticsTrackerUtil {
         String CLICK_TICKER = "click ticker";
         String CLICK_SEE_ALL_EXPLORE_CATALOG = "click lihat semua coupon catalog";
         String CLICK_SEE_ALL_EXPLORE_BANNER = "click lihat semua on banner";
+        String VIEW_BANNERS_ON_HOME_TOKOPOINTS = "view banner on home tokopoints";
+        String CLICK_BANNERS_ON_HOME_TOKOPOINTS = "click banner on home tokopoints";
+        String CLICK_COUPON_ON_CATALOG = "view coupon on catalog";
+    }
+
+    public interface EcommerceKeys{
+        String POSITION="position";
+        String NAME="name";
+        String CREATIVE="creative";
+        String PROMOTIONS="promotions";
+
     }
 
     public static void sendScreenEvent(Activity context, String screenName) {
@@ -122,6 +134,17 @@ public class AnalyticsTrackerUtil {
 
     public static void sendECommerceEvent(Context context, String event, String category,
                                           String action, String label, Map<String, Map<String, List<Map<String, String>>>> ecommerce) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(EventKeys.EVENT, event);
+        map.put(EventKeys.EVENT_CATEGORY, category);
+        map.put(EventKeys.EVENT_ACTION, action);
+        map.put(EventKeys.EVENT_LABEL, label);
+        map.put(EventKeys.ECOMMERCE, ecommerce);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
+    }
+
+    public static void sendECommerceEvent(String event, String category,
+                                          String action, String label, Map<String, Object> ecommerce) {
         HashMap<String, Object> map = new HashMap<>();
         map.put(EventKeys.EVENT, event);
         map.put(EventKeys.EVENT_CATEGORY, category);

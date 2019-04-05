@@ -27,10 +27,14 @@ import com.tokopedia.tokopoints.view.presenter.TokoPointsHomePresenterNew;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static android.os.Build.ID;
 
 public class ExploreSectionPagerAdapter extends PagerAdapter {
     public static final int TAB_EXPLORE = 0;
@@ -262,7 +266,11 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             ImageView imgBanner = view.findViewById(R.id.img_banner);
             ImageList data = content.getLayoutBannerAttr().getImageList().get(0);
             ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageURLMobile());
-            imgBanner.setOnClickListener(v -> handledClick(data.getRedirectAppLink(), data.getRedirectURL(), "", ""));
+            imgBanner.setOnClickListener(v -> {
+                handledClick(data.getRedirectAppLink(), data.getRedirectURL(), "", "");
+                if(!TextUtils.isEmpty(content.getSectionTitle()))
+                    sendBannerClick(content.getSectionTitle());
+            });
 
             ((TextView) view.findViewById(R.id.text_title_banner)).setText(data.getInBannerTitle());
             ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
@@ -277,6 +285,9 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
                 ((TextView) view.findViewById(R.id.text_sub_title_bottom)).setText(data.getSubTitle());
             }
         }
+
+        if(!TextUtils.isEmpty(content.getSectionTitle()))
+            sendBannerImpression(content.getSectionTitle());
 
         return view;
     }
@@ -315,7 +326,11 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             ImageView imgBanner = view.findViewById(R.id.img_banner);
             ImageList data = content.getLayoutBannerAttr().getImageList().get(0);
             ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageURLMobile());
-            imgBanner.setOnClickListener(v -> handledClick(data.getRedirectAppLink(), data.getRedirectURL(), "", ""));
+            imgBanner.setOnClickListener(v -> {
+                handledClick(data.getRedirectAppLink(), data.getRedirectURL(), "", "");
+                if(!TextUtils.isEmpty(content.getSectionTitle()))
+                    sendBannerClick(content.getSectionTitle());
+            });
 
             ((TextView) view.findViewById(R.id.text_title_banner)).setText(data.getInBannerTitle());
             ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
@@ -331,6 +346,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             }
         }
 
+        if(!TextUtils.isEmpty(content.getSectionTitle()))
+            sendBannerImpression(content.getSectionTitle());
         return view;
     }
 
@@ -368,7 +385,11 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             ImageView imgBanner = view.findViewById(R.id.img_banner);
             ImageList data = content.getLayoutBannerAttr().getImageList().get(0);
             ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageURLMobile());
-            imgBanner.setOnClickListener(v -> handledClick(data.getRedirectAppLink(), data.getRedirectURL(), "", ""));
+            imgBanner.setOnClickListener(v -> {
+                handledClick(data.getRedirectAppLink(), data.getRedirectURL(), "", "");
+                if(!TextUtils.isEmpty(content.getSectionTitle()))
+                    sendBannerClick(content.getSectionTitle());
+            });
 
             ((TextView) view.findViewById(R.id.text_title_banner)).setText(data.getInBannerTitle());
             ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
@@ -384,8 +405,37 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             }
         }
 
+        if(!TextUtils.isEmpty(content.getSectionTitle()))
+            sendBannerImpression(content.getSectionTitle());
         return view;
     }
+
+    private void sendBannerImpression(String bannerName) {
+        HashMap<String, Object> promotionItem = new HashMap<>();
+        promotionItem.put(AnalyticsTrackerUtil.EcommerceKeys.NAME, "/tokopoints - p{x} - promo lis");
+        promotionItem.put(AnalyticsTrackerUtil.EcommerceKeys.POSITION, -1);
+        promotionItem.put(AnalyticsTrackerUtil.EcommerceKeys.CREATIVE, bannerName);
+        HashMap<String, Object> promotionMap=new HashMap<>();
+        promotionMap.put(AnalyticsTrackerUtil.EcommerceKeys.PROMOTIONS, Collections.singletonList(promotionItem));
+        AnalyticsTrackerUtil.sendECommerceEvent(AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                AnalyticsTrackerUtil.ActionKeys.VIEW_BANNERS_ON_HOME_TOKOPOINTS,
+                bannerName, promotionMap);
+    }
+
+    private void sendBannerClick(String bannerName) {
+        HashMap<String, Object> promotionItem = new HashMap<>();
+        promotionItem.put(AnalyticsTrackerUtil.EcommerceKeys.NAME, "/tokopoints - p{x} - promo lis");
+        promotionItem.put(AnalyticsTrackerUtil.EcommerceKeys.POSITION, -1);
+        promotionItem.put(AnalyticsTrackerUtil.EcommerceKeys.CREATIVE, bannerName);
+        HashMap<String, Object> promotionMap=new HashMap<>();
+        promotionMap.put(AnalyticsTrackerUtil.EcommerceKeys.PROMOTIONS, Collections.singletonList(promotionItem));
+        AnalyticsTrackerUtil.sendECommerceEvent(AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_BANNERS_ON_HOME_TOKOPOINTS,
+                bannerName, promotionMap);
+    }
+
 
     View getCaulmn311(SectionContent content) {
         View view = mLayoutInflater.inflate(R.layout.tp_layout_column_1_on_1, null, false);
