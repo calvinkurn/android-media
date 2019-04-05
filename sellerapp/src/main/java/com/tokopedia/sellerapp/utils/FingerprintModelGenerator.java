@@ -102,6 +102,7 @@ public class FingerprintModelGenerator {
         String deviceLanguage = Utilities.getLanguage();
         String ssid         = Utilities.getSSID(context);
         String carrier      = Utilities.getCarrierName(context);
+        String googleAdId   = getGoogleAdId(context);
 
         FingerPrint fp = new FingerPrint.FingerPrintBuilder()
                 .deviceName(deviceName)
@@ -118,6 +119,7 @@ public class FingerprintModelGenerator {
                 .language(deviceLanguage)
                 .ssid(ssid)
                 .carrier(carrier)
+                .uniqueId(googleAdId)
                 .deviceLat(new LocationCache(context).getLatitudeCache())
                 .deviceLng(new LocationCache(context).getLongitudeCache())
                 .build();
