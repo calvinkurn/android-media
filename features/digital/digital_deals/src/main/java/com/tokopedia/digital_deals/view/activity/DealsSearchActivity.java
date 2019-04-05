@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -68,6 +69,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private LinearLayout brandLayout;
     private LinearLayout noBrandsFound;
     private ConstraintLayout clLocation;
+    private AppBarLayout appBarBrands;
     private TextView dealsHeading;
     private TextView brandsHeading;
     private View divider;
@@ -88,6 +90,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private int adapterPosition = -1;
     private boolean forceRefresh;
     CloseableBottomSheetDialog selectLocationFragment;
+    private AppBarLayout appBarToolbar;
 
     @Override
     public int getLayoutRes() {
@@ -109,6 +112,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         rvDeals = findViewById(R.id.rv_search_results);
         searchInputView = findViewById(R.id.search_input_view);
         noBrandsFound = findViewById(R.id.no_brands);
+        appBarBrands = findViewById(R.id.app_bar_brands);
+        appBarToolbar = findViewById(R.id.app_bar_toolbar);
         mainContent = findViewById(R.id.main_content);
         dealsHeading = findViewById(R.id.tv_topevents);
         brandsHeading = findViewById(R.id.brand_list);
@@ -143,28 +148,33 @@ public class DealsSearchActivity extends DealsBaseActivity implements
 //            }
 //        });
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            rvDeals.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-                @Override
-                public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                    if (scrollY != oldScrollY) {
-                        divider.setVisibility(View.GONE);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            toolbar.setElevation(4.0f);
-                        }
+        appBarBrands.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                Log.d("Naveen","vertical Offset"+ verticalOffset);
+                if (verticalOffset != 0) {
+                    divider.setVisibility(View.GONE);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                        toolbar.setElevation(4.0f);
+                        appBarToolbar.setElevation(getResources().getDimension(R.dimen.dp_4));
+                    }
+                } else {
+                    divider.setVisibility(View.VISIBLE);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                        toolbar.setElevation(0.0f);
+                        appBarToolbar.setElevation(getResources().getDimension(R.dimen.dp_0));
                     }
                 }
-            });
-        }
-
+            }
+        });
     }
 
     @Override
     public void onSearchSubmitted(String text) {
         if (text.length() > 2)
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_SEARCH_VOUCHER_OR_OUTLET, text);
-        back.setImageResource(R.drawable.ic_action_back);
-        mPresenter.searchSubmitted();
+        KeyboardHandler.hideSoftKeyboard(getActivity());
+        mPresenter.searchTextChanged(text);
     }
 
     @Override
@@ -201,17 +211,17 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         if (listCount > 0) {
             Location location = Utils.getSingletonInstance().getLocation(getActivity());
 
-            dealsCategoryAdapter.setTopDealsLayout(false);
-            if (firstTimeRefresh)
-                firstTimeRefresh = false;
-            dealsCategoryAdapter.removeHeaderAndFooter();
-            dealsCategoryAdapter.notifyDataSetChanged();
+//            dealsCategoryAdapter.setTopDealsLayout(false);
+//            if (firstTimeRefresh)
+//                firstTimeRefresh = false;
+//            dealsCategoryAdapter.removeHeaderAndFooter();
+//            dealsCategoryAdapter.notifyDataSetChanged();
             rvDeals.addOnScrollListener(rvOnScrollListener);
 //            SpannableString headerString = getHeaderFormattedText(searchText, listCount);
 //            if (!TextUtils.isEmpty(headerString))
 //                dealsCategoryAdapter.addHeader(headerString);
-            KeyboardHandler.hideSoftKeyboard(getActivity());
-            rvDeals.requestFocus();
+//            KeyboardHandler.hideSoftKeyboard(getActivity());
+//            rvDeals.requestFocus();
 //            clLocation.setVisibility(View.VISIBLE);
             tvCityName.setText(location.getName());
         } else {

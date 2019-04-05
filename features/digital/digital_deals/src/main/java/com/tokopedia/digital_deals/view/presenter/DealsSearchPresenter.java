@@ -126,7 +126,9 @@ public class DealsSearchPresenter
         } else {
             getSearchDealsListRequestUseCase.unsubscribe();
             getSearchNextUseCase.unsubscribe();
-            getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
+            if (mTopDeals != null && mTopDeals.size() > 0) {
+                getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
+            }
         }
     }
 
