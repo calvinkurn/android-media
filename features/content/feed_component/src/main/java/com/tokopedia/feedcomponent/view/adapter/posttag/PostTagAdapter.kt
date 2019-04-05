@@ -87,7 +87,7 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
                 productTagBackground.visibility = View.GONE
             }
             productLayout.setOnClickListener(
-                getItemClickNavigationListener(listener, positionInFeed, item)
+                getItemClickNavigationListener(listener, positionInFeed, item, itemPosition)
             )
 
             if (layoutType.equals(TYPE_LIST)) {
@@ -95,16 +95,16 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
                 productName = itemView.findViewById(R.id.productName)
                 productName.text = item.text
                 productNameSection.setOnClickListener(
-                        getItemClickNavigationListener(listener, positionInFeed, item))
+                        getItemClickNavigationListener(listener, positionInFeed, item, itemPosition))
             }
         }
 
         private fun getItemClickNavigationListener(listener: DynamicPostViewHolder.DynamicPostListener,
                                                    positionInFeed: Int,
-                                                   item: PostTagItem)
+                                                   item: PostTagItem, itemPosition: Int)
                 : View.OnClickListener {
              return View.OnClickListener {
-                 listener.onPostTagItemClick(positionInFeed, item.applink, item, positionInFeed)
+                 listener.onPostTagItemClick(positionInFeed, item.applink, item, itemPosition)
                  listener.onAffiliateTrackClicked(mappingTracking(item.tracking))
              }
         }

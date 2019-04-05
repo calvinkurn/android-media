@@ -37,18 +37,16 @@ class PostTagEnhancedTracking {
 
         fun getEcommerceClick(listProduct: List<Product>, listSource: String): Map<String, Any> {
             return DataLayer.mapOf(Action.CLICK, getEcommerceClickValue(listProduct, listSource))
-
         }
 
         fun getEcommerceClickValue(listProduct: List<Product>,listSource: String): Map<String, Any> {
-            return DataLayer.mapOf(ACTION_FIELD, getEcommerceActionFieldValue(listProduct, listSource),
-                    Action.CLICK, getProducts(listProduct))
-
+            return DataLayer.mapOf(
+                    ACTION_FIELD, getEcommerceActionFieldValue(listSource),
+                    PRODUCTS, getProducts(listProduct))
         }
 
-        fun getEcommerceActionFieldValue(listProduct: List<Product>, listSource: String): Map<String, Any> {
-            return DataLayer.mapOf(ACTION_FIELD, listSource,
-                    PRODUCTS, getProducts(listProduct))
+        fun getEcommerceActionFieldValue(listSource: String): Map<String, Any> {
+            return DataLayer.mapOf(KEY_LIST, listSource)
         }
 
         fun getProducts(listProduct: List<Product>): List<Any> {
