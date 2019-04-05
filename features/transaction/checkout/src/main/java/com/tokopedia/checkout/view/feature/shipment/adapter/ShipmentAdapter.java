@@ -722,7 +722,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         }
         totalPrice = totalItemPrice + shippingFee + insuranceFee + totalPurchaseProtectionPrice + additionalFee -
-                shipmentCostModel.getPromoPrice() - tradeInPrice - (double) shipmentCostModel.getTotalPromoStackAmount();
+                shipmentCostModel.getPromoPrice() - tradeInPrice - (double) shipmentCostModel.getTotalDiscWithoutCashback();
         shipmentCostModel.setTotalWeight(totalWeight);
         shipmentCostModel.setAdditionalFee(additionalFee);
         shipmentCostModel.setTotalItemPrice(totalItemPrice);
@@ -814,9 +814,18 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     if (isApplied) {
                         shipmentCostModel.setTotalPromoStackAmount(dataUiModel.getBenefit().getFinalBenefitAmount());
                         shipmentCostModel.setTotalPromoStackAmountStr(dataUiModel.getBenefit().getFinalBenefitAmountStr());
+
+                        int totalDiscWithoutCashback = 0;
+                        for (SummariesUiModel summariesUiModel : dataUiModel.getBenefit().getSummaries()) {
+                            if (!summariesUiModel.getType().equalsIgnoreCase("cashback")) {
+                                totalDiscWithoutCashback += summariesUiModel.getAmount();
+                            }
+                        }
+                        shipmentCostModel.setTotalDiscWithoutCashback(totalDiscWithoutCashback);
                     } else {
                         shipmentCostModel.setTotalPromoStackAmount(0);
                         shipmentCostModel.setTotalPromoStackAmountStr("-");
+                        shipmentCostModel.setTotalDiscWithoutCashback(0);
                     }
                     for (int i = 0; i < shipmentDataList.size(); i++) {
                         Object itemAdapter = shipmentDataList.get(i);
@@ -908,7 +917,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             Object shipmentData = shipmentDataList.get(i);
             if (shipmentData instanceof PromoStackingData) {
                 ((PromoStackingData) shipmentData).setState(TickerPromoStackingCheckoutView.State.EMPTY);
-                // TODO :  check apakah merchant_voucher atau merchant
                 if (!variant.isEmpty() && variant.equalsIgnoreCase("merchant_voucher")) {
                     ((PromoStackingData) shipmentData).setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
                 } else {

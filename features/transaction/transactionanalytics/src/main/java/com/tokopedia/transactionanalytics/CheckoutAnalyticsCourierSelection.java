@@ -627,7 +627,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventAction.CLICK_PILIH_MERCHANT_VOUCHER);
     }
 
-    public void eventInputMerchantVoucherSuccess(String promoCode) {
+    public void eventClickPakaiMerchantVoucherManualInputSuccess(String promoCode) {
         String label = EventLabel.SUCCESS + " - " + promoCode;
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
@@ -637,7 +637,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
-    public void eventInputMerchantVoucherError(String errorMsg) {
+    public void eventClickPakaiMerchantVoucherManualInputError(String errorMsg) {
         String label = EventLabel.ERROR + " - " + errorMsg;
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
@@ -647,7 +647,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
-    public void eventUseMerchantVoucherSuccess(String promoCode) {
+    public void eventClickPakaiMerchantVoucherSuccess(String promoCode) {
         String label = EventLabel.SUCCESS + " - " + promoCode;
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
@@ -657,7 +657,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
-    public void eventUseMerchantVoucherError(String errorMsg) {
+    public void eventClickPakaiMerchantVoucherError(String errorMsg) {
         String label = EventLabel.ERROR + " - " + errorMsg;
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
@@ -685,7 +685,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
-    public void eventClickCancelMerchantVoucher(String promoCode) {
+    public void eventClickHapusPromoXOnTicker(String promoCode) {
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,

@@ -17,6 +17,7 @@ import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
@@ -140,6 +141,12 @@ public interface ShipmentContract {
         void resetCourier(int position);
 
         Promo generateCheckPromoFirstStepParam();
+
+        void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel);
+
+        void onSuccessCheckPromoFirstStep(ResponseGetPromoStackUiModel promoData);
+
+        void onSuccessClearPromoStachAfterClash();
     }
 
     interface AnalyticsActionListener {
@@ -234,9 +241,6 @@ public interface ShipmentContract {
                                                           ShipmentDonationModel shipmentDonationModel);
 
         void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment, boolean isTradeIn, String deviceId);
-
-        void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment, boolean isTradeIn,
-                                                 @Nullable String cornerId, String deviceId);
 
         void processCheckout(CheckPromoParam checkPromoParam, boolean isOneClickShipment, boolean isTradeIn, String deviceId);
 

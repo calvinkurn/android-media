@@ -17,7 +17,6 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -27,18 +26,17 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
+import com.tokopedia.merchantvoucher.common.di.MerchantVoucherModule
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherViewUsed
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
-import com.tokopedia.merchantvoucher.FileUtils
-import com.tokopedia.merchantvoucher.common.di.MerchantVoucherModule
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
-import com.tokopedia.promocheckout.common.domain.model.promostacking.response.ResponseGetPromoStackFirst
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.shop.common.di.ShopCommonModule
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection
 import javax.inject.Inject
 
 /**
@@ -63,13 +61,19 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     private var promo: Promo? = null
     private var shopId: Int = 0
     private var cartString: String = ""
+    private var source: String = ""
 
     var bottomsheetView: View? = null
 
     @Inject
     lateinit var presenter: MerchantVoucherListBottomsheetPresenter
+    @Inject
+    lateinit var cartPageAnalytics: CheckoutAnalyticsCart
+    @Inject
+    lateinit var shipmentPageAnalytics: CheckoutAnalyticsCourierSelection
 
     lateinit var actionListener: ActionListener
+
 
     interface ActionListener {
         fun onClashCheckPromo(clashingInfoDetailUiModel: ClashingInfoDetailUiModel)
@@ -80,13 +84,15 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         val ARGUMENT_SHOP_ID = "ARGUMENT_SHOP_ID"
         val ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM = "ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM"
         val ARGUMENT_CART_STRING = "ARGUMENT_CART_STRING"
+        val ARGUMENT_SOURCE = "ARGUMENT_SOURCE"
 
         @JvmStatic
-        fun newInstance(shopId: Int, cartString: String, promo: Promo): MerchantVoucherListBottomSheetFragment {
+        fun newInstance(shopId: Int, cartString: String, promo: Promo, source: String): MerchantVoucherListBottomSheetFragment {
             val bundle = Bundle()
             bundle.putParcelable(ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM, promo)
             bundle.putInt(ARGUMENT_SHOP_ID, shopId)
             bundle.putString(ARGUMENT_CART_STRING, cartString)
+            bundle.putString(ARGUMENT_SOURCE, source)
 
             val fragment = MerchantVoucherListBottomSheetFragment()
             fragment.arguments = bundle
@@ -143,6 +149,11 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
             hideKeyboard()
             if (textInputCoupon.text.toString().isEmpty()) {
                 textInputLayoutCoupon.error = "Kode Voucher Harus Diisi"
+                if (source.equals("cart", true)) {
+                    cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputFailed(textInputLayoutCoupon.error?.toString())
+                } else {
+                    shipmentPageAnalytics.eventClickPakaiMerchantVoucherManualInputError(textInputLayoutCoupon.error?.toString())
+                }
                 updateHeight()
             } else {
                 presenter.checkPromoFirstStep(textInputCoupon.text.toString(), cartString, promo, false)
@@ -154,6 +165,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         shopId = arguments?.getInt(ARGUMENT_SHOP_ID, 0) ?: 0
         promo = arguments?.getParcelable(ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM)
         cartString = arguments?.getString(ARGUMENT_CART_STRING) ?: ""
+        source = arguments?.getString(ARGUMENT_SOURCE) ?: ""
     }
 
     fun loadData() {
@@ -211,6 +223,12 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
                 val intent = MerchantVoucherDetailActivity.createIntent(it, voucherId,
                         this, shopId.toString())
                 startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_MERCHANT_DETAIL)
+
+                if (source.equals("cart", true)) {
+                    cartPageAnalytics.eventClickDetailMerchantVoucher(merchantVoucherViewModel.voucherCode)
+                } else {
+                    shipmentPageAnalytics.eventClickDetailMerchantVoucher(merchantVoucherViewModel.voucherCode)
+                }
             }
         }
     }
@@ -262,9 +280,6 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
             errorContainer.visibility = View.GONE
             loadData()
         }
-
-        /*dismiss()
-        showClashingDummy()*/
     }
 
     override fun onErrorCheckPromoFirstStep(message: String, isFromList: Boolean) {
@@ -275,13 +290,37 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         }
         if (isFromList) {
             ToasterError.make(layoutMerchantVoucher, messageInfo, ToasterError.LENGTH_SHORT).show()
+            if (source.equals("cart", true)) {
+                cartPageAnalytics.eventClickPakaiMerchantVoucherFailed(message)
+            } else {
+                shipmentPageAnalytics.eventClickPakaiMerchantVoucherError(message)
+            }
         } else {
             textInputLayoutCoupon.error = message
             updateHeight()
+            if (source.equals("cart", true)) {
+                cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputFailed(message)
+            } else {
+                shipmentPageAnalytics.eventClickPakaiMerchantVoucherManualInputError(message)
+            }
         }
     }
 
-    override fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackUiModel) {
+    override fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackUiModel, promoCode: String, isFromList: Boolean) {
+        if (isFromList) {
+            if (source.equals("cart", true)) {
+                cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputSuccess(promoCode)
+            } else {
+                shipmentPageAnalytics.eventClickPakaiMerchantVoucherManualInputSuccess(promoCode)
+            }
+
+        } else {
+            if (source.equals("cart", true)) {
+                cartPageAnalytics.eventClickPakaiMerchantVoucherSuccess(promoCode)
+            } else {
+                shipmentPageAnalytics.eventClickPakaiMerchantVoucherSuccess(promoCode)
+            }
+        }
         hideKeyboard()
         dismiss()
         actionListener.onSuccessCheckPromoFirstStep(model)
@@ -296,15 +335,6 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     private fun hideKeyboard() {
         val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE);
         (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.windowToken, 0);
-    }
-
-    // Todo : remove this
-    private fun showClashingDummy() {
-        val mapper = CheckPromoStackingCodeMapper()
-        val gson = Gson()
-        val responseGetPromoStackFirst = gson.fromJson(FileUtils().readRawTextFile(activity, R.raw.dummy_clashing_response), ResponseGetPromoStackFirst::class.java)
-        val uiData = mapper.callDummy(responseGetPromoStackFirst)
-        actionListener.onClashCheckPromo(uiData.data.clashings)
     }
 
 }

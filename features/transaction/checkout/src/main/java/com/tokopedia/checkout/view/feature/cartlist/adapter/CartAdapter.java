@@ -570,6 +570,18 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return null;
     }
 
+    public List<CartShopHolderData> getAllCartShopHolderData() {
+        List<CartShopHolderData> cartShopHolderDataList = new ArrayList<>();
+        for (int i = 0; i < cartDataList.size(); i++) {
+            CartShopHolderData cartShopHolderData = getCartShopHolderDataByIndex(i);
+            if (cartShopHolderData != null) {
+                cartShopHolderDataList.add(cartShopHolderData);
+            }
+        }
+
+        return cartShopHolderDataList;
+    }
+
     public void mappingTopAdsModel(TopAdsModel adsModel) {
         cartDataList.add(adsModel);
     }

@@ -1,6 +1,8 @@
 package com.tokopedia.promocheckout.detail.view.fragment
 
+import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -9,7 +11,14 @@ import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
+import com.tokopedia.promocheckout.common.util.EXTRA_CLASHING_DATA
+import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
+import com.tokopedia.promocheckout.common.util.RESULT_CLASHING
+import com.tokopedia.promocheckout.common.view.model.PromoData
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailModule
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailPresenter
 import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
@@ -67,6 +76,15 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
             trackingPromoCheckoutUtil.checkoutClickUsePromoCouponSuccess(data.codes[0])
         }
         super.onSuccessValidatePromoStacking(data)
+    }
+
+    override fun onClashCheckPromo(clasingInfoDetailUiModel: ClashingInfoDetailUiModel) {
+        val intent = Intent()
+        intent.putExtra(EXTRA_CLASHING_DATA, clasingInfoDetailUiModel)
+        activity?.setResult(RESULT_CLASHING, intent)
+        activity?.finish()
+
+        super.onClashCheckPromo(clasingInfoDetailUiModel)
     }
 
     override fun onErrorValidatePromo(e: Throwable) {

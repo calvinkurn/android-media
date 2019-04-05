@@ -94,7 +94,7 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                             if (responseGetPromoStack.data.clashings.isClashedPromos) {
                                 view.onClashCheckPromoFirstStep(responseGetPromoStack.data.clashings)
                             } else {
-                                view.onSuccessCheckPromoFirstStep(responseGetPromoStack)
+                                view.onSuccessCheckPromoFirstStep(responseGetPromoStack, promoMerchantCode, isFromList)
                             }
                         }
                     }
