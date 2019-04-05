@@ -214,6 +214,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private View llLogPromo;
     private TextView tvLogPromoLabel;
     private TextView tvLogPromoPrice;
+    private TextView tvLogPromoMsg;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -356,6 +357,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llLogPromo = itemView.findViewById(R.id.layout_logistic_promo_stacking);
         tvLogPromoLabel = itemView.findViewById(R.id.tv_logistic_promo_label);
         tvLogPromoPrice = itemView.findViewById(R.id.tv_logistic_promo_price);
+        tvLogPromoMsg = itemView.findViewById(R.id.tv_logistic_promo_msg);
 
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
@@ -843,6 +845,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         });
         if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
             llLogPromo.setVisibility(View.VISIBLE);
+            tvLogPromoMsg.setText(shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage());
             tvLogPromoPrice.setText("-25000");
         }
 

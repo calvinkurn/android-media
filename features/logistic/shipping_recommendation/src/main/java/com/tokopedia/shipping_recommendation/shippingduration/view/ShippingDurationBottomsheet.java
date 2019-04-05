@@ -354,6 +354,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
                 ShippingDurationViewModel serviceData = shippingDurationAdapter.getRatesDataFromLogisticPromo(data.getServiceId());
                 CourierItemData courierData = presenter.getCourierItemDataById(data.getShipperProductId(), serviceData.getShippingCourierViewModelList());
                 courierData.setLogPromoCode(data.getPromoCode());
+                courierData.setLogPromoMsg(data.getDisableText());
                 shippingDurationBottomsheetListener.onLogisticPromoChosen(
                         serviceData.getShippingCourierViewModelList(), courierData,
                         presenter.getRecipientAddressModel(), mCartPosition, data.getServiceId(),

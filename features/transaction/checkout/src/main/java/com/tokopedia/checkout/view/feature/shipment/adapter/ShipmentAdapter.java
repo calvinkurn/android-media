@@ -561,9 +561,11 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
                 }
             }
+            // Logistic promo stacking logic
             if (newCourierItemData.getLogPromoCode() != null) {
                 VoucherLogisticItemUiModel logPromo = new VoucherLogisticItemUiModel();
                 logPromo.setCode(newCourierItemData.getLogPromoCode());
+                logPromo.setMessage(newCourierItemData.getLogPromoMsg());
                 shipmentCartItemModel.setVoucherLogisticItemUiModel(logPromo);
             } else {
                 shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
