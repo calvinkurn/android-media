@@ -246,6 +246,10 @@ open class VideoPickerActivity : BaseSimpleActivity(),
             videoPath = filePath
 
             videoPreview.setVideoURI(uriFile)
+            videoPreview.setOnCompletionListener {
+                videoPreview.stopPlayback()
+                onVideoVisible()
+            }
             videoPreview.setOnPreparedListener { mp ->
                 mp.isLooping = true //loop
                 playVideoPreview()
