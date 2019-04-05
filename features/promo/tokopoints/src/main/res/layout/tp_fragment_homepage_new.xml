@@ -131,7 +131,7 @@
 
                                 <include layout="@layout/tp_layout_section_category_parent" />
 
-                                <include layout="@layout/tp_layout_ticker" />
+                                <include layout="@layout/tp_layout_section_ticker_new" />
                             </LinearLayout>
                         </RelativeLayout>
 

@@ -54,6 +54,7 @@ public class AnalyticsTrackerUtil {
         String CLICK_POINT = "click point & tier status";
         String CLICK_CEK = "click cek tokopoints";
         String CLICK_MEMBERSHIP = "click lihat status membership";
+        String CLICK_STATUS_MEMBERSHIP = "click status membership";
         String CLICK_POINT_SAYA = "click points saya";
         String CLICK_LOYALTY_SAYA = "click loyalty saya";
         String VIEW_TICKER = "view ticker";
@@ -82,9 +83,12 @@ public class AnalyticsTrackerUtil {
         String VIEW_MY_COUPON = "view my coupon";
         String CLICK_COUPON = "click coupon";
         String CLICK_PENUKARAN = "click penukaran point";
+        String CLICK_EXPLORE = "click explore";
         String CLICK_KUPON_SAYA = "click kupon saya";
         String CLICK_DYNAMIC_CAT = "click dynamic category";
+        String CLICK_DYNAMIC_ICON = "click dynamic icon";
         String VIEW_DYNAMIC_CAT = "view dynamic category";
+        String VIEW_DYNAMIC_ICON = "view dynamic icon";
         String CLICK_FLOATING_LUCKY = "click floating lucky egg";
         String CLICK_FILTER = "click filter";
         String PILIH_FILTER = "pilih filter";
@@ -100,6 +104,9 @@ public class AnalyticsTrackerUtil {
         String CLICK_OK_ON_FAILED = "click ok on failed";
         String CLICK_GUNAKAN_KUPON = "click gunakan kupon";
         String VIEW_REDEEM_SUCCESS = "view redeem success";
+        String CLICK_LEADERBOARD = "click leaderboard";
+        String CLICK_COUNTER_KUPON_SAYA = "click counter kupon saya";
+        String CLICK_TICKER = "click ticker";
     }
 
     public static void sendScreenEvent(Activity context, String screenName) {
