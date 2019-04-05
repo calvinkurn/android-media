@@ -94,9 +94,9 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                                 trackingModel.activityName,
                                 Action.PRODUCT
                         ),
-                        trackingModel.mediaType,
+                        postId.toString(),
                         getProductList(
-                                postId,
+                                postTag.id.toInt(),
                                 postTag.text,
                                 formatPriceToInt(postTag.price),
                                 "",
@@ -127,9 +127,9 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                                 trackingModel.activityName,
                                 Action.PRODUCT
                         ),
-                        trackingModel.mediaType,
+                        postId.toString(),
                         getProductList(
-                                postId,
+                                postTag.id.toInt(),
                                 postTag.text,
                                 formatPriceToInt(postTag.price),
                                 "",
