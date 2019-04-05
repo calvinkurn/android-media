@@ -1,6 +1,5 @@
 package com.tokopedia.product.manage.item.main.edit.di;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.network.apiservices.goldmerchant.GoldMerchantService;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.product.manage.item.common.domain.GetProductDetailUseCase;
@@ -20,6 +19,7 @@ import com.tokopedia.product.manage.item.main.edit.view.presenter.ProductEditPre
 import com.tokopedia.product.manage.item.variant.domain.FetchProductVariantByCatUseCase;
 import com.tokopedia.product.manage.item.video.data.source.FetchVideoEditProductDataSource;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -37,7 +37,7 @@ public class ProductEditModule{
     @Provides
     ProductEditPresenterImpl provideProductEditPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
                                                              GetShopInfoUseCase getShopInfoUseCase,
-                                                             UserSession userSession,
+                                                             UserSessionInterface userSession,
                                                              FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase,
                                                              GetProductDetailUseCase getProductDetailUseCase){
         return new ProductEditPresenterImpl(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase, getProductDetailUseCase);

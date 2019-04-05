@@ -23,8 +23,6 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.applink.DigitalApplinkModule;
-import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
 import com.tokopedia.gm.applink.GMApplinkModule;
 import com.tokopedia.gm.applink.GMApplinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
@@ -51,8 +49,8 @@ import com.tokopedia.talk.common.applink.InboxTalkApplinkModule;
 import com.tokopedia.talk.common.applink.InboxTalkApplinkModuleLoader;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
-import com.tokopedia.tkpdpdp.applink.PdpApplinkModule;
-import com.tokopedia.tkpdpdp.applink.PdpApplinkModuleLoader;
+import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
+import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.topads.applink.TopAdsApplinkModule;
 import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
 import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModule;
@@ -72,7 +70,6 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
  * @author rizkyfadillah on 26/07/17.
  */
 @DeepLinkHandler({
-        DigitalApplinkModule.class,
         SellerApplinkModule.class,
         TopAdsDashboardApplinkModule.class,
         TopAdsApplinkModule.class,
@@ -89,7 +86,7 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         CustomerCareApplinkModule.class,
         ReputationApplinkModule.class,
         SessionApplinkModule.class,
-        PdpApplinkModule.class,
+        ProductDetailApplinkModule.class,
         SettingBankApplinkModule.class,
         InboxTalkApplinkModule.class,
         LoginRegisterApplinkModule.class,
@@ -105,7 +102,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
 
     public static DeepLinkDelegate getDelegateInstance() {
         return new DeepLinkDelegate(
-                new DigitalApplinkModuleLoader(),
                 new SellerApplinkModuleLoader(),
                 new TopAdsDashboardApplinkModuleLoader(),
                 new TopAdsApplinkModuleLoader(),
@@ -122,7 +118,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new CustomerCareApplinkModuleLoader(),
                 new ReputationApplinkModuleLoader(),
                 new SessionApplinkModuleLoader(),
-                new PdpApplinkModuleLoader(),
+                new ProductDetailApplinkModuleLoader(),
                 new SettingBankApplinkModuleLoader(),
                 new InboxTalkApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),

@@ -10,10 +10,10 @@ public class ProductTrackerData {
 
     @SerializedName("attribution")
     @Expose
-    public String attribution;
+    public String attribution = "";
     @SerializedName("tracker_list_name")
     @Expose
-    public String trackerListName;
+    public String trackerListName = "";
 
     public String getAttribution() {
         return attribution;

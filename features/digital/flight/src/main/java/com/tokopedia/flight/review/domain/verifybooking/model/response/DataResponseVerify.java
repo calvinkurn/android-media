@@ -3,6 +3,7 @@ package com.tokopedia.flight.review.domain.verifybooking.model.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.flight.search.data.api.single.response.Meta;
 
 public class DataResponseVerify {
 
@@ -12,6 +13,9 @@ public class DataResponseVerify {
     @SerializedName("attributes")
     @Expose
     private AttributesData attributesData;
+    @SerializedName("meta")
+    @Expose
+    private Meta meta;
 
     public String getType() {
         return type;
@@ -29,4 +33,11 @@ public class DataResponseVerify {
         this.attributesData = attributesData;
     }
 
+    public Meta getMeta() {
+        return meta;
+    }
+
+    public void setMeta(Meta meta) {
+        this.meta = meta;
+    }
 }

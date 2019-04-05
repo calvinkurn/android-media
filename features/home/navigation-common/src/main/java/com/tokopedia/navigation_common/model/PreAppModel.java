@@ -10,19 +10,19 @@ public class PreAppModel {
 
     @SerializedName("valid")
     @Expose
-    private String valid;
+    private String valid = "";
 
     @SerializedName("partnerName")
     @Expose
-    private String partnerName;
+    private String partnerName = "";
 
     @SerializedName("partnerMaxLoan")
     @Expose
-    private String partnerMaxLoan;
+    private String partnerMaxLoan = "";
 
     @SerializedName("partnerMinRate")
     @Expose
-    private String partnerMinRate;
+    private String partnerMinRate = "";
 
     public String getValid() {
         return valid;

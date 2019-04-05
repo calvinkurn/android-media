@@ -1,10 +1,9 @@
 package com.tokopedia.digital.nostylecategory.digitalcategory.di;
 
-import com.tokopedia.common_digital.common.di.DigitalComponent;
+import com.tokopedia.common_digital.common.di.DigitalCommonComponent;
 import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.fragment.DigitalCategoryNoStyleFragment;
 import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.fragment.DigitalOperatorChooserNoStyleFragment;
 import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.fragment.DigitalProductChooserNoStyleFragment;
-
 
 import dagger.Component;
 
@@ -12,7 +11,7 @@ import dagger.Component;
  * Created by Rizky on 30/08/18.
  */
 @DigitalCategoryNoStyleScope
-@Component(dependencies = DigitalComponent.class, modules = DigitalCategoryNoStyleModule.class)
+@Component(dependencies = DigitalCommonComponent.class, modules = DigitalCategoryNoStyleModule.class)
 public interface DigitalCategoryNoStyleComponent {
 
     void inject(DigitalCategoryNoStyleFragment digitalCategoryNoStyleFragment);

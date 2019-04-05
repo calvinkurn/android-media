@@ -8,13 +8,13 @@ public class Owner {
 
     @SerializedName("__typename")
     @Expose
-    private String typename;
+    private String typename = "";
     @SerializedName("is_gold_merchant")
     @Expose
-    private Boolean isGoldMerchant;
+    private Boolean isGoldMerchant = false;
     @SerializedName("is_seller")
     @Expose
-    private Boolean isSeller;
+    private Boolean isSeller = false;
 
     public String getTypename() {
         return typename;

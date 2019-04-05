@@ -1,6 +1,11 @@
-query{
-  orderLabelCategoryList{
-    labelBhasa
+query ORDERCATEGORY(){
+    orderLabelCategoryList(){
+    label
     orderCategory
-  }
+    labelBhasa
+    status{
+        label
+        value
+    }
+   }
 }

@@ -41,7 +41,7 @@ public class UploadImageUseCase extends UseCase<UploadImageDomain> {
     private static final String PARAM_OS_TYPE = "os_type";
     private static final String PARAM_TIMESTAMP = "device_time";
 
-    private static final String HTTP = "http://";
+    private static final String HTTPS = "https://";
     private static final String UPLOAD_ATTACHMENT = "/upload/attachment";
 
     private ImageUploadRepository imageUploadRepository;
@@ -62,7 +62,7 @@ public class UploadImageUseCase extends UseCase<UploadImageDomain> {
     }
 
     private String generateUrl(RequestParams requestParams) {
-        return HTTP
+        return HTTPS
                 + requestParams.getString(PARAM_GENERATED_HOST, "")
                 + UPLOAD_ATTACHMENT;
     }

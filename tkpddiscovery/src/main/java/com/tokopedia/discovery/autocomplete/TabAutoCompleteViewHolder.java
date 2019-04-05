@@ -192,6 +192,7 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
             model.setApplink(item.getApplink());
             model.setRecom(item.getRecom());
             model.setCategoryId(item.getSc());
+            model.setIsOfficial(item.isOfficial());
             list.add(model);
         }
         return list;
@@ -207,6 +208,7 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
             model.setUrl(item.getUrl());
             model.setKeyword(item.getKeyword());
             model.setSearchTerm(searchTerm);
+            model.setIsOfficial(item.isOfficial());
             list.add(model);
         }
         return list;
@@ -245,6 +247,7 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
             model.setKeyword(item.getKeyword());
             model.setCategoryId(item.getSc());
             model.setSearchTerm(searchTerm);
+            model.setIsOfficial(item.isOfficial());
             childList.add(model);
         }
         categorySearch.setList(childList);
@@ -264,6 +267,7 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
             model.setImageUrl(item.getImageURI());
             model.setKeyword(item.getKeyword());
             model.setSearchTerm(searchTerm);
+            model.setIsOfficial(item.isOfficial());
             list.add(model);
         }
         return list;

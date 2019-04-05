@@ -55,17 +55,36 @@
 
     <!--CREATE POST-->
     <string name="af_add_images">Tambah Foto</string>
-    <string name="af_done">Selesai</string>
+    <string name="af_done">Post Sekarang</string>
     <string name="af_add_more_image_to_product">Buat Produk Pilihanmu Lebih Menarik dengan Foto Ala Kamu!</string>
     <string name="af_see_example">Lihat Contoh</string>
-    <string name="title_af_image_picker">Gambar Produk</string>
-    <string name="title_af_image_editor">Image Editor</string>
-    <string name="title_af_create_post">Tambah Foto</string>
-    <string name="title_af_choose_photo">Pilih Foto</string>
-    <string name="title_af_create_post_example">Contoh Foto</string>
-    <string name="af_use_image_to_show">Gunakan foto yang menampilkan produk pilihanmu.</string>
-    <string name="af_set_main_image">Atur Sebagai Gambar Utama</string>
-    <string name="af_main_image">Gambar Utama</string>
+    <string name="title_af_image_picker">Tambah Foto</string>
+    <string name="title_af_image_editor">Edit</string>
+    <string name="title_af_create_post">Create Post</string>
+    <string name="title_af_preview">Preview</string>
+    <string name="af_add_image">Tambah Foto</string>
+    <string name="af_add_video">Tambah Video</string>
+    <string name="af_set_main_image">Tampilkan Pertama</string>
+    <string name="af_main_image">Tampil Pertama</string>
+    <string name="af_caption_hint">Tulis caption, yuk!\nContoh: “Promo! Cek produk terbaru kami…”</string>
+    <string name="af_caption_hint_affiliate">Kenapa sih kamu suka barang ini?</string>
+    <string name="af_related_product">Barang pada Post</string>
+    <string name="af_add_product_tag">+ Tambah</string>
+    <string name="af_error_create_post">Ada sedikit kendala nih. Coba beberapa saat lagi ya.</string>
+    <string name="af_notif_uploading">Meng-upload post</string>
+    <string name="af_notif_media" formatted="false">%d dari %d Media…</string>
+    <string name="af_notif_submit">Menyiapkan post…</string>
+    <string name="af_notif_success">Selesai! Cek post kamu di sini ya</string>
+    <string name="af_notif_error">Gagal mengunggah post, klik untuk coba lagi</string>
+    <string name="af_update_post">Update Post</string>
+    <string name="af_add_image_warning">Foto sebelumnya akan diganti dengan foto yang dipilih</string>
+    <string name="af_add_video_warning">Foto sebelumnya akan diganti dengan video yang dipilih</string>
+    <string name="af_leave_warning">Yakin nih mau keluar?</string>
+    <string name="af_leave_warning_desc">Post yang telah kamu buat tidak akan disimpan loh.</string>
+    <string name="af_leave_title">Keluar</string>
+    <string name="af_warning_empty_product">Tambah barang yang mau kamu post dulu ya.</string>
+    <string name="af_warning_empty_photo">Tambah foto dulu, dong.</string>
+    <string name="af_delete_warning_desc">Kalau dihapus, post kamu diganti dengan foto barang yang dipilih.</string>
 
     <!--EDUCATION-->
     <string name="af_skip">Lewatkan</string>
@@ -74,5 +93,6 @@
     <string name="af_choose_favorite_product">Pilih produk favoritmu</string>
     <string name="af_curate_product_profile">Kurasi produknya di profilmu</string>
     <string name="af_share_product_buy">Bagikan dan raih Komisi saat produk terbeli</string>
+    <string name="af_title_edit">Edit</string>
 
 </resources>

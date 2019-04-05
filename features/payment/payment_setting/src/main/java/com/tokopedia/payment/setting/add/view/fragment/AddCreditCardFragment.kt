@@ -12,7 +12,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment
-import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.network.util.NetworkClient
@@ -22,14 +21,17 @@ import com.tokopedia.payment.setting.add.di.DaggerAddCreditCardComponent
 import com.tokopedia.payment.setting.add.model.Data
 import com.tokopedia.payment.setting.add.view.presenter.AddCreditCardContract
 import com.tokopedia.payment.setting.add.view.presenter.AddCreditCardPresenter
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import javax.inject.Inject
 
 class AddCreditCardFragment : BaseWebViewFragment(), AddCreditCardContract.View {
 
     @Inject
-    lateinit var userSession : UserSession
-    @Inject
     lateinit var addCreditCardPresenter : AddCreditCardPresenter
+    private val userSession: UserSessionInterface by lazy {
+        UserSession(activity)
+    }
     val progressDialog : ProgressDialog by lazy { ProgressDialog(context) }
     var callbackUrl : String = ""
 

@@ -7,8 +7,10 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
@@ -152,18 +154,29 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         DrawerNotification buyer = new DrawerNotification();
         buyer.setId(PEMBELIAN);
         buyer.setTitle(getString(R.string.pembelian));
-
         List<DrawerNotification.ChildDrawerNotification> childBuyer = new ArrayList<>();
         childBuyer.add(new DrawerNotification.ChildDrawerNotification(MENUNGGU_PEMBAYARAN,
                 getString(R.string.menunggu_pembayaran), ApplinkConst.PMS));
-        childBuyer.add(new DrawerNotification.ChildDrawerNotification(MENUNGGU_KONFIRMASI,
-                getString(R.string.menunggu_konfirmasi), ApplinkConst.PURCHASE_CONFIRMED));
-        childBuyer.add(new DrawerNotification.ChildDrawerNotification(PESANAN_DIPROSES,
-                getString(R.string.pesanan_diproses), ApplinkConst.PURCHASE_PROCESSED));
-        childBuyer.add(new DrawerNotification.ChildDrawerNotification(SEDANG_DIKIRIM,
-                getString(R.string.sedang_dikirim), ApplinkConst.PURCHASE_SHIPPED));
-        childBuyer.add(new DrawerNotification.ChildDrawerNotification(SAMPAI_TUJUAN,
-                getString(R.string.sampai_tujuan), ApplinkConst.PURCHASE_DELIVERED));
+        if (((AccountHomeRouter) getContext().getApplicationContext()).getBooleanRemoteConfig(TkpdCache.RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
+
+            childBuyer.add(new DrawerNotification.ChildDrawerNotification(MENUNGGU_KONFIRMASI,
+                    getString(R.string.menunggu_konfirmasi), ApplinkConst.MARKETPLACE_WAITING_CONFIRMATION));
+            childBuyer.add(new DrawerNotification.ChildDrawerNotification(PESANAN_DIPROSES,
+                    getString(R.string.pesanan_diproses), ApplinkConst.MARKETPLACE_ORDER_PROCESSED));
+            childBuyer.add(new DrawerNotification.ChildDrawerNotification(SEDANG_DIKIRIM,
+                    getString(R.string.sedang_dikirim), ApplinkConst.MARKETPLACE_SENT));
+            childBuyer.add(new DrawerNotification.ChildDrawerNotification(SAMPAI_TUJUAN,
+                    getString(R.string.sampai_tujuan), ApplinkConst.MARKETPLACE_DELIVERED));
+        }else {
+            childBuyer.add(new DrawerNotification.ChildDrawerNotification(MENUNGGU_KONFIRMASI,
+                    getString(R.string.menunggu_konfirmasi), ApplinkConst.PURCHASE_CONFIRMED));
+            childBuyer.add(new DrawerNotification.ChildDrawerNotification(PESANAN_DIPROSES,
+                    getString(R.string.pesanan_diproses), ApplinkConst.PURCHASE_PROCESSED));
+            childBuyer.add(new DrawerNotification.ChildDrawerNotification(SEDANG_DIKIRIM,
+                    getString(R.string.sedang_dikirim), ApplinkConst.PURCHASE_SHIPPED));
+            childBuyer.add(new DrawerNotification.ChildDrawerNotification(SAMPAI_TUJUAN,
+                    getString(R.string.sampai_tujuan), ApplinkConst.PURCHASE_DELIVERED));
+        }
 
         buyer.setChilds(childBuyer);
         notifications.add(buyer);

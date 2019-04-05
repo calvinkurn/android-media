@@ -24,6 +24,9 @@ public class ShippingParam implements Parcelable {
     private int productInsurance;
     private long orderValue;
     private String categoryIds;
+    private boolean isBlackbox;
+    private int addressId;
+    private boolean preorder;
 
     public ShippingParam() {
     }
@@ -45,6 +48,9 @@ public class ShippingParam implements Parcelable {
         productInsurance = in.readInt();
         orderValue = in.readLong();
         categoryIds = in.readString();
+        isBlackbox = in.readByte() != 0;
+        addressId = in.readInt();
+        preorder = in.readByte() != 0;
     }
 
     @Override
@@ -65,6 +71,9 @@ public class ShippingParam implements Parcelable {
         dest.writeInt(productInsurance);
         dest.writeLong(orderValue);
         dest.writeString(categoryIds);
+        dest.writeByte((byte) (isBlackbox ? 1 : 0));
+        dest.writeInt(addressId);
+        dest.writeByte((byte) (preorder ? 1 : 0));
     }
 
     @Override
@@ -211,4 +220,16 @@ public class ShippingParam implements Parcelable {
     public void setCategoryIds(String categoryIds) {
         this.categoryIds = categoryIds;
     }
+
+    public boolean getIsBlackbox() { return isBlackbox; }
+
+    public void setIsBlackbox(boolean blackbox) { isBlackbox = blackbox; }
+
+    public int getAddressId() { return addressId; }
+
+    public void setAddressId(int addressId) { this.addressId = addressId; }
+
+    public boolean getIsPreorder() { return preorder; }
+
+    public void setIsPreorder(boolean preorder) { this.preorder = preorder; }
 }

@@ -183,6 +183,10 @@ public class Order {
         return items;
     }
 
+    public String getItemCount() {
+        return itemCount;
+    }
+
     public int getOrderId() {
         return orderId;
     }

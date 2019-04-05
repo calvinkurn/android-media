@@ -21,7 +21,7 @@ class PromoCheckoutListPresenter(val getListCouponUseCase: GraphqlUseCase) : Bas
         val variables = HashMap<String, Any>()
         variables.put(INPUT_GQL, generateInputList(page, serviceId, categoryId))
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.promo_checkout_list), DataPromoCheckoutList::class.java, variables)
+                R.raw.promo_checkout_list), DataPromoCheckoutList::class.java, variables, false)
         getListCouponUseCase.clearRequest()
         getListCouponUseCase.addRequest(graphqlRequest)
         getListCouponUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
@@ -58,7 +58,7 @@ class PromoCheckoutListPresenter(val getListCouponUseCase: GraphqlUseCase) : Bas
 
     override fun getListLastSeen(resources: Resources) {
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.promo_checkout_list), DataPromoCheckoutList::class.java, null)
+                R.raw.promo_checkout_list), DataPromoCheckoutList::class.java, null, false)
         getListCouponUseCase.clearRequest()
         getListCouponUseCase.addRequest(graphqlRequest)
         getListCouponUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {

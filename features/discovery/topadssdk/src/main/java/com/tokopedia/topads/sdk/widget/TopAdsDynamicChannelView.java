@@ -139,7 +139,6 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
         if(adsItemClickListener!=null){
             adsItemClickListener.onProductItemClicked(position, data.getProduct());
             openTopAdsUseCase.execute(data.getProductClickUrl());
-            TopAdsGtmTracker.eventHomeProductClick(getContext(), data.getProduct(), position);
         }
     }
 

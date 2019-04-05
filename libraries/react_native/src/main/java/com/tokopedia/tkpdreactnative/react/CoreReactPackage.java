@@ -1,15 +1,18 @@
 package com.tokopedia.tkpdreactnative.react;
 
 import com.facebook.react.ReactPackage;
-import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
+import com.tokopedia.tkpdreactnative.react.banner.ReactBannerManager;
+import com.tokopedia.tkpdreactnative.react.banner.ReactBannerManager2;
+import com.tokopedia.tkpdreactnative.react.image.RctImageManager;
+import com.tokopedia.tkpdreactnative.react.image.RctImageRemoteManager;
+import com.tokopedia.tkpdreactnative.react.lineargradient.LinearGradientManager;
 import com.tokopedia.tkpdreactnative.react.youtube.YouTubeManager;
 import com.tokopedia.tkpdreactnative.react.youtube.YouTubeModule;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Arrays;
 
@@ -31,8 +34,15 @@ public class CoreReactPackage implements ReactPackage {
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-        return Arrays.<ViewManager>asList(
-                new YouTubeManager()
+        return Arrays.asList(
+                new YouTubeManager(),
+                new ReactBannerManager(),
+                new ReactBannerManager2(),
+                new LinearGradientManager(),
+                new ButtonViewManager(),
+                new ReactImageManager(),
+                new RctImageManager(),
+                new RctImageRemoteManager()
         );
     }
 }

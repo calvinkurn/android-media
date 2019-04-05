@@ -18,6 +18,9 @@ public class ServiceTextData implements Parcelable {
     @SerializedName("text_etd")
     @Expose
     private String textEtd;
+    @SerializedName("text_service_desc")
+    @Expose
+    private String textServiceDesc;
 
     public ServiceTextData() {
     }
@@ -25,12 +28,14 @@ public class ServiceTextData implements Parcelable {
     protected ServiceTextData(Parcel in) {
         textRangePrice = in.readString();
         textEtd = in.readString();
+        textServiceDesc = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(textRangePrice);
         dest.writeString(textEtd);
+        dest.writeString(textServiceDesc);
     }
 
     @Override
@@ -64,5 +69,13 @@ public class ServiceTextData implements Parcelable {
 
     public void setTextEtd(String textEtd) {
         this.textEtd = textEtd;
+    }
+
+    public String getTextServiceDesc() {
+        return textServiceDesc;
+    }
+
+    public void setTextServiceDesc(String textServiceDesc) {
+        this.textServiceDesc = textServiceDesc;
     }
 }

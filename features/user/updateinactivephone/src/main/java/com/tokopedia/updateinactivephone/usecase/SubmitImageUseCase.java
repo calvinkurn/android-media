@@ -53,7 +53,7 @@ public class SubmitImageUseCase {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_update_phone_email),
                 GqlUpdatePhoneStatusResponse.class,
-                variables);
+                variables, false);
 
         List<GraphqlRequest> graphqlRequestList = new ArrayList<>();
         graphqlRequestList.add(graphqlRequest);

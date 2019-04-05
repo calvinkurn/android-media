@@ -73,6 +73,8 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
+    private static final int TAB_CATALOG = 0;
+    private static final int TAB_COUPON = 1;
     private ViewFlipper mContainerMain;
     private TextView mTextMembershipValue, mTextMembershipValueBottom, mTextPoints, mTextPointsBottom, mTextLoyalty;
     private ImageView mImgEgg, mImgEggBottom;
@@ -191,6 +193,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     @Override
     public void onResume() {
         super.onResume();
+        AnalyticsTrackerUtil.sendScreenEvent(getActivity(), getScreenName());
     }
 
     @Override
@@ -222,7 +225,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     protected String getScreenName() {
-        return null;
+        return AnalyticsTrackerUtil.ScreenKeys.HOME_PAGE_SCREEN_NAME;
     }
 
     @Override
@@ -323,6 +326,14 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onSuccessPromos(@NonNull TokoPointPromosEntity data) {
+        if (data == null
+                || data.getCatalog() == null
+                || data.getCoupon() == null
+                || data.getCoupon().getCoupons() == null
+                || data.getCatalog().getCatalogs() == null) {
+            return;
+        }
+
         initPromoPager(data.getCatalog().getCatalogs(), data.getCoupon().getCoupons(), data.getCoupon().getEmptyMessage());
     }
 
@@ -543,6 +554,12 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         AlertDialog dialog = adb.create();
         dialog.show();
         decorateDialog(dialog);
+
+        AnalyticsTrackerUtil.sendEvent(getContext(),
+                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_COUPON,
+                AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
+                AnalyticsTrackerUtil.ActionKeys.VIEW_REDEEM_SUCCESS,
+                title);
     }
 
     @Override
@@ -690,6 +707,13 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
             }
         });
+
+        if (coupons.isEmpty()) {
+            mPresenter.setPagerSelectedItem(TAB_CATALOG);
+        } else {
+            mPresenter.setPagerSelectedItem(TAB_COUPON);
+        }
+
         mPagerPromos.setCurrentItem(mPresenter.getPagerSelectedItem());
     }
 

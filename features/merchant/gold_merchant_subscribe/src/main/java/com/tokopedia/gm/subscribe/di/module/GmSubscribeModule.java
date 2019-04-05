@@ -20,8 +20,7 @@ import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
 import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
-import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoTomeUseCase;
-import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
+import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -78,14 +77,8 @@ public class GmSubscribeModule {
 
     @GmSubscribeScope
     @Provides
-    DeleteShopInfoTomeUseCase provideDeleteShopInfoTomeUseCase() {
-        return new DeleteShopInfoTomeUseCase();
-    }
-
-    @GmSubscribeScope
-    @Provides
-    DeleteShopInfoUseCase provideDeleteShopInfoUseCase(DeleteShopInfoTomeUseCase deleteShopInfoTomeUseCase) {
-        return new DeleteShopInfoUseCase(deleteShopInfoTomeUseCase);
+    DeleteShopInfoCacheUseCase provideDeleteShopInfoUseCase() {
+        return new DeleteShopInfoCacheUseCase();
     }
 
 }

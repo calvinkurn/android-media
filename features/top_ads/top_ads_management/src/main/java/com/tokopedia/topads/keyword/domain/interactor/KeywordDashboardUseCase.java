@@ -1,11 +1,9 @@
 package com.tokopedia.topads.keyword.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.topads.keyword.domain.TopAdsKeywordRepository;
 import com.tokopedia.topads.keyword.domain.model.KeywordDashboardDomain;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
@@ -19,12 +17,8 @@ public class KeywordDashboardUseCase extends UseCase<KeywordDashboardDomain> {
     private TopAdsKeywordRepository topAdsKeywordRepository;
 
     @Inject
-    public KeywordDashboardUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            TopAdsKeywordRepository topAdsKeywordRepository
-    ) {
-        super(threadExecutor, postExecutionThread);
+    public KeywordDashboardUseCase(TopAdsKeywordRepository topAdsKeywordRepository) {
+        super();
         this.topAdsKeywordRepository = topAdsKeywordRepository;
     }
 

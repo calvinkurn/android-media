@@ -1,5 +1,6 @@
 package com.tokopedia.tracking.view;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,13 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.tracking.R;
 import com.tokopedia.tracking.adapter.EmptyTrackingNotesAdapter;
 import com.tokopedia.tracking.adapter.TrackingHistoryAdapter;
@@ -46,8 +47,8 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     private static final String ADDITIONAL_INFO_URL = "https://m.tokopedia.com/bantuan/217217126-agen-logistik-di-tokopedia";
     private static final String INVALID_REFERENCE_STATUS = "resi tidak valid";
 
-    private TkpdProgressDialog loadingScreen;
-    private TkpdProgressDialog progressDialog;
+    private ProgressBar loadingScreen;
+    private ProgressDialog progressDialog;
 
     private TextView referenceNumber;
     private ImageView courierLogo;
@@ -91,8 +92,12 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loadingScreen = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.MAIN_PROGRESS);
-        progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        loadingScreen = view.findViewById(R.id.main_progress_bar);
+
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.title_loading));
+        progressDialog.setCancelable(false);
+
         rootView = view.findViewById(R.id.root_view);
         referenceNumber = view.findViewById(R.id.reference_number);
         courierLogo = view.findViewById(R.id.courier_logo);
@@ -150,24 +155,24 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
 
     @Override
     public void showMainLoadingPage() {
-        loadingScreen.showDialog();
+        loadingScreen.setVisibility(View.VISIBLE);
         rootView.setVisibility(View.GONE);
     }
 
     @Override
     public void closeMainLoadingPage() {
-        loadingScreen.dismiss();
+        loadingScreen.setVisibility(View.GONE);
         rootView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showLoading() {
-        progressDialog.showDialog();
+        if (progressDialog != null && !progressDialog.isShowing()) progressDialog.show();
     }
 
     @Override
     public void hideLoading() {
-        progressDialog.dismiss();
+        if (progressDialog != null && progressDialog.isShowing()) progressDialog.dismiss();
     }
 
     @Override

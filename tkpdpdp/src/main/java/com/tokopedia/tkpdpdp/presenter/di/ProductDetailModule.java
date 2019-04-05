@@ -9,6 +9,7 @@ import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.gallery.domain.GetImageReviewUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
 import com.tokopedia.tkpdpdp.domain.GetWishlistCountUseCase;
 import com.tokopedia.tkpdpdp.presenter.subscriber.ImageReviewSubscriber;
@@ -57,5 +58,10 @@ public class ProductDetailModule {
     @Provides
     UserSession userSession(@ApplicationContext Context context) {
         return new UserSession(context);
+    }
+
+    @Provides
+    ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(@ApplicationContext Context context){
+        return new ToggleFavouriteShopUseCase(new GraphqlUseCase(), context.getResources());
     }
 }

@@ -1,0 +1,190 @@
+query ORDERDETAIL($orderCategory: OrderCategory, $orderId: String) {
+  orderDetails(orderCategory: $orderCategory,orderId: $orderId) {
+    status {
+      status
+      statusText
+      statusLabel
+      iconUrl
+      textColor
+      backgroundColor
+      fontSize
+    }
+    title {
+      label
+      value
+      textColor
+      backgroundColor
+      imageUrl
+    }
+    driverDetails {
+      name
+      photo
+      phone
+      licenseNumber
+      trackingURL
+    }
+    dropShipper {
+      name
+      phone
+    }
+    invoice {
+      invoiceRefNum
+      invoiceUrl
+    }
+    items {
+      categoryID
+      id
+      imageUrl
+      category
+      title
+      quantity
+      price
+      promotionAmount
+      metaData
+      description
+      productUrl
+      totalPrice
+      weight
+      actionButtons {
+        label
+        buttonType
+        uri
+        mappingUri
+        weight
+        key
+        method
+        uriWeb
+        value
+        name
+        control
+        header
+        color{
+          textColor
+          border
+          background
+        }
+        body {
+          appURL
+          webURL
+          method
+          body
+        }
+      }
+      tapActions {
+        label
+        weight
+        control
+        header
+        buttonType
+        value
+        method
+        key
+        name
+        color {
+          textColor
+          border
+          background
+        }
+        body {
+          appURL
+          method
+          body
+        }
+      }
+    }
+    pricing {
+      label
+      value
+      textColor
+      backgroundColor
+      imageUrl
+    }
+    detail {
+      label
+      value
+    }
+    paymentData {
+      label
+      value
+      textColor
+      backgroundColor
+      imageUrl
+    }
+    actionButtons {
+      label
+      buttonType
+      key
+      value
+      weight
+      control
+      header
+      uri
+      color {
+        textColor
+        border
+        background
+      }
+      body {
+        appURL
+        webURL
+        method
+        body
+      }
+      popup {
+        title
+        body
+        actionButtons {
+           label
+           buttonType
+           uri
+           key
+           method
+           value
+           name
+        }
+      }
+    }
+    shopDetails {
+      id
+      name
+      logo
+      shopURL
+    }
+    conditionalInfo {
+      text
+      color {
+        border
+        background
+      }
+    }
+    contactUs {
+      helpText
+      helpUrl
+    }
+    paymentMethod {
+      label
+      value
+    }
+    payMethod{
+      label
+      value
+    }
+    beforeOrderId
+    resolutionId
+    driverDetails {
+      name
+      phone
+      photo
+      licenseNumber
+      trackingURL
+    }
+    promoCode
+    additionalInfo {
+      label
+      value
+      label
+      textColor
+      backgroundColor
+    }
+  }
+}

@@ -94,15 +94,30 @@ public class CodAnalytics extends LogisticAnalytics {
         );
     }
 
-    public void eventClickBayarDiTempatShipmentFailed(boolean ineligible) {
-        String label;
-        if (ineligible) label = "not success - ineligible";
-        else label = "not success - incomplete";
+    public void eventClickBayarDiTempatShipmentNotSuccessIneligible() {
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_BAYAR_DI_TEMPAT,
-                label
+                EventLabel.NOT_SUCCESS_INELIGIBLE
+        );
+    }
+
+    public void eventClickBayarDiTempatShipmentNotSuccessIncomplete() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_BAYAR_DI_TEMPAT,
+                EventLabel.NOT_SUCCESS_INCOMPLETE
+        );
+    }
+
+    public void eventClickBayarDiTempatShipmentSuccessEligible() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_BAYAR_DI_TEMPAT,
+                EventLabel.SUCCESS_ELIGIBLE
         );
     }
 
@@ -145,5 +160,26 @@ public class CodAnalytics extends LogisticAnalytics {
                 EventAction.CLICK_BAYAR_DI_TEMPAT
         );
     }
+
+    public void eventImpressionEligibleCod() {
+        sendEventCategoryAction(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.IMPRESSION_ELIGIBLE_COD
+        );
+    }
+
+    public void eventEEClickBayarDiTempat(Map<String, Object> data) {
+        sendEnhancedEcommerce(
+                DataLayer.mapOf(
+                        Key.EVENT, EventName.CHECKOUT,
+                        Key.EVENT_CATEGORY, EventCategory.CASH_ON_DELIVERY,
+                        Key.EVENT_ACTION, EventAction.CLICK_BAYAR_DI_TEMPAT,
+                        Key.EVENT_LABEL, "",
+                        Key.E_COMMERCE, data
+                )
+        );
+    }
+
 
 }

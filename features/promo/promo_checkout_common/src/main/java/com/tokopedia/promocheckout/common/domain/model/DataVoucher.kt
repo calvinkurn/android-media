@@ -7,13 +7,13 @@ class DataVoucher {
 
     @SerializedName("code")
     @Expose
-    var code: String? = null
+    var code: String = ""
     @SerializedName("promo_code_id")
     @Expose
     var promoCodeId: Int = 0
     @SerializedName("discount_amount")
     @Expose
-    var discountAmount: String? = null
+    var discountAmount: String = ""
     @SerializedName("cashback_amount")
     @Expose
     var cashbackAmount: Int = 0
@@ -34,24 +34,21 @@ class DataVoucher {
     var extraAmount: Int = 0
     @SerializedName("cashback_voucher_description")
     @Expose
-    var cashbackVoucherDescription: String? = null
-    @SerializedName("lp")
-    @Expose
-    var lp: Any? = null
+    var cashbackVoucherDescription: String = ""
     @SerializedName("gateway_id")
     @Expose
-    var gatewayId: String? = null
+    var gatewayId: String = ""
     @SerializedName("token")
     @Expose
-    var token: String? = null
+    var token: String = ""
     @SerializedName("message")
     @Expose
-    var message: Message? = null
+    var message: Message = Message()
     @SerializedName("is_coupon")
     @Expose
     var isCoupon: Int = 0
     @SerializedName("title_description")
     @Expose
-    var titleDescription: String? = null
+    var titleDescription: String = ""
 
 }

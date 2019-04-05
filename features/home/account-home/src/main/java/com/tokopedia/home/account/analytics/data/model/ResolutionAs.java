@@ -8,10 +8,10 @@ public class ResolutionAs {
 
     @SerializedName("buyer")
     @Expose
-    private int resolutionAsBuyer;
+    private int resolutionAsBuyer = 0;
     @SerializedName("seller")
     @Expose
-    private int resolutionAsSeller;
+    private int resolutionAsSeller = 0;
 
     public int getResolutionAsBuyer() {
         return resolutionAsBuyer;

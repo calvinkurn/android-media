@@ -32,6 +32,7 @@ query ($orderCategory: OrderCategory, $Page: Int, $PerPage: Int, $orderId: Int) 
       color {
         border
         background
+        textColor
       }
     }
     dotMenuList {

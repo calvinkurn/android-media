@@ -11,6 +11,8 @@ import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProduct
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenterImpl;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -36,6 +38,4 @@ public class ProductDraftListCountModule{
         return new ProductDraftListCountPresenterImpl(fetchAllDraftProductCountUseCase,
                 clearAllDraftProductUseCase, updateUploadingDraftProductUseCase);
     }
-
 }
-

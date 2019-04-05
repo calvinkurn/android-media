@@ -1,0 +1,21 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+project.ext {
+    artifactId = 'shop-etalase-picker'
+    groupId = 'com.tokopedia.shopetalasepicker'
+    versionName = "${tkpdShopVersion}"
+    artifactName ="shop_etalase_picker"
+}
+
+dependencies {
+
+}
+
+apply from: '../../../publish_local.gradle'

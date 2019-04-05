@@ -12,6 +12,8 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
@@ -22,18 +24,16 @@ import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 import com.tokopedia.common_digital.common.DigitalRouter;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
-import com.tokopedia.digital.cart.fragment.DigitalPostPaidDialog;
-import com.tokopedia.digital.cart.presentation.compoundview.InputPriceHolderView;
-import com.tokopedia.digital.cart.presentation.model.CheckoutDigitalData;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
+import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache;
+import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartCheckoutHolderView;
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartDetailHolderView;
+import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderView;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
@@ -53,7 +53,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         DigitalCartCheckoutHolderView.ActionListener {
     protected static final String ARG_PASS_DATA = "ARG_PASS_DATA";
     protected static final String ARG_CART_INFO = "ARG_CART_INFO";
-    protected static final String ARG_CHECKOUT_INFO = "ARG_CHECKOUT_INFO";
     private static final int REQUEST_CODE_OTP = 1001;
 
     protected CartDigitalInfoData cartDigitalInfoData;
@@ -65,6 +64,10 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     protected InputPriceHolderView inputPriceHolderView;
     protected LinearLayout inputPriceContainer;
     private boolean isAlreadyShowPostPaidPopUp;
+    private boolean traceStop;
+    private PerformanceMonitoring performanceMonitoring;
+    private static final String DIGITAL_CHECKOUT_TRACE = "dg_checkout";
+    private SaveInstanceCacheManager saveInstanceCacheManager;
 
     protected P presenter;
 
@@ -72,6 +75,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         cartPassData = getArguments().getParcelable(ARG_PASS_DATA);
+        saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
     }
 
     @Override
@@ -281,7 +285,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                     if (getActivity().getApplicationContext() instanceof DigitalModuleRouter) {
                         ((DigitalModuleRouter)getActivity().getApplicationContext()).
                                 showAdvancedAppRatingDialog(getActivity(), dialog -> {
-                                    getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
+                                    getActivity().setResult(DigitalRouter.Companion.getPAYMENT_SUCCESS());
                                     closeView();
                                 });
                     }
@@ -309,7 +313,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
             } else {
                 closeView();
             }
-        } else if (requestCode == InstantCheckoutActivity.REQUEST_CODE) {
+        } else if (requestCode == InstantCheckoutActivity.Companion.getREQUEST_CODE()) {
             closeView();
         }
     }
@@ -362,7 +366,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void closeViewWithMessageAlert(String message) {
         Intent intent = new Intent();
-        intent.putExtra(DigitalRouter.EXTRA_MESSAGE, message);
+        intent.putExtra(DigitalRouter.Companion.getEXTRA_MESSAGE(), message);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
@@ -396,8 +400,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void renderToInstantCheckoutPage(InstantCheckoutData instantCheckoutData) {
         navigateToActivityRequest(
-                InstantCheckoutActivity.newInstance(getActivity(), instantCheckoutData),
-                InstantCheckoutActivity.REQUEST_CODE
+                InstantCheckoutActivity.Companion.newInstance(getActivity(), instantCheckoutData),
+                InstantCheckoutActivity.Companion.getREQUEST_CODE()
         );
         closeView();
     }
@@ -439,6 +443,20 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
             }
         });
         dialog.show();
+    }
+
+    @Override
+    public void startPerfomanceMonitoringTrace() {
+        performanceMonitoring = PerformanceMonitoring.start(DIGITAL_CHECKOUT_TRACE);
+        performanceMonitoring.startTrace(DIGITAL_CHECKOUT_TRACE);
+    }
+
+    @Override
+    public void stopPerfomanceMonitoringTrace() {
+        if (!traceStop) {
+            performanceMonitoring.stopTrace();
+            traceStop = true;
+        }
     }
 
     @Override

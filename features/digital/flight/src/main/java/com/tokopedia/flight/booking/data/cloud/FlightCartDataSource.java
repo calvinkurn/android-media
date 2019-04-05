@@ -3,10 +3,10 @@ package com.tokopedia.flight.booking.data.cloud;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -20,12 +20,12 @@ import rx.functions.Func1;
 
 public class FlightCartDataSource {
     private FlightApi flightApi;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private Gson gsonWithDeserializer;
     private FlightCartJsonDeserializer flightCartJsonDeserializer;
 
     @Inject
-    public FlightCartDataSource(FlightApi flightApi, UserSession userSession, FlightCartJsonDeserializer flightCartJsonDeserializer) {
+    public FlightCartDataSource(FlightApi flightApi, UserSessionInterface userSession, FlightCartJsonDeserializer flightCartJsonDeserializer) {
         this.flightApi = flightApi;
         this.userSession = userSession;
         this.flightCartJsonDeserializer = flightCartJsonDeserializer;

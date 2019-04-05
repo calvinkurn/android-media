@@ -19,7 +19,6 @@ import android.widget.ProgressBar;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
@@ -37,6 +36,8 @@ import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,10 +72,9 @@ public class KolCommentFragment extends BaseDaggerFragment
     KolComment.Presenter presenter;
 
     @Inject
-    UserSession userSession;
-
-    @Inject
     KolCommentTypeFactory typeFactory;
+
+    private UserSessionInterface userSession;
 
     public static KolCommentFragment createInstance(Bundle bundle) {
         KolCommentFragment fragment = new KolCommentFragment();
@@ -99,6 +99,7 @@ public class KolCommentFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userSession = new UserSession(getActivity());
         if (getArguments() != null) {
             if (getArguments().get(KolCommentActivity.ARGS_FROM_APPLINK) != null
                     && getArguments().getBoolean(KolCommentActivity.ARGS_FROM_APPLINK)) {

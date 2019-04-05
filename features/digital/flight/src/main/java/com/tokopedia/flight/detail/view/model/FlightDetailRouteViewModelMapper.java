@@ -72,13 +72,13 @@ public class FlightDetailRouteViewModelMapper {
         return viewModel;
     }
 
-    public List<FlightDetailRouteViewModel> transform(List<Route> routes, List<FlightAirlineViewModel> airlineList) {
+    public List<FlightDetailRouteViewModel> transform(List<Route> routes, int totalTransit) {
         List<FlightDetailRouteViewModel> flightDetailRouteViewModels = new ArrayList<>();
         FlightDetailRouteViewModel flightDetailRouteViewModel;
         if (routes != null) {
             for (Route route : routes) {
                 flightDetailRouteViewModel = transform(route);
-                if (flightDetailRouteViewModel != null) {
+                if (flightDetailRouteViewModel != null && flightDetailRouteViewModels.size() <= totalTransit) {
                     flightDetailRouteViewModels.add(flightDetailRouteViewModel);
                 }
             }
@@ -93,8 +93,14 @@ public class FlightDetailRouteViewModelMapper {
             flightDetailRouteViewModel.setAirlineCode(route.getAirlineId());
             flightDetailRouteViewModel.setArrivalTimestamp(route.getArrivalTime());
             flightDetailRouteViewModel.setArrivalAirportCode(route.getArrivalAirportCode());
+            flightDetailRouteViewModel.setArrivalAirportName(route.getArrivalAirportName());
+            flightDetailRouteViewModel.setArrivalAirportCity(route.getArrivalCityName());
             flightDetailRouteViewModel.setDepartureTimestamp(route.getDepartureTime());
             flightDetailRouteViewModel.setDepartureAirportCode(route.getDepartureAirportCode());
+            flightDetailRouteViewModel.setDepartureAirportName(route.getDepartureAirportName());
+            flightDetailRouteViewModel.setDepartureAirportCity(route.getDepartureCityName());
+            flightDetailRouteViewModel.setAirlineName(route.getAirlineName());
+            flightDetailRouteViewModel.setAirlineLogo(route.getAirlineLogo());
             flightDetailRouteViewModel.setDuration(route.getDuration());
             flightDetailRouteViewModel.setLayover(route.getLayover());
             flightDetailRouteViewModel.setPnr(route.getPnr());

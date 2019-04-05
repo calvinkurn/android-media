@@ -1,8 +1,6 @@
 package com.tokopedia.topads.dashboard.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.domain.TopAdsShopAdsRepository;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailShopDomainModel;
@@ -18,8 +16,8 @@ import rx.Observable;
 public class TopAdsCreateDetailShopUseCase extends TopAdsSaveDetailShopUseCase {
 
     @Inject
-    public TopAdsCreateDetailShopUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, TopAdsShopAdsRepository topAdsShopAdsRepository) {
-        super(threadExecutor, postExecutionThread, topAdsShopAdsRepository);
+    public TopAdsCreateDetailShopUseCase(TopAdsShopAdsRepository topAdsShopAdsRepository) {
+        super(topAdsShopAdsRepository);
     }
 
     @Override

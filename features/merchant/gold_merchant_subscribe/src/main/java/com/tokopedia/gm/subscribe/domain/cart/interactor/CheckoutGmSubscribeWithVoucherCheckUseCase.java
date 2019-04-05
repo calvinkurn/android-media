@@ -1,6 +1,6 @@
 package com.tokopedia.gm.subscribe.domain.cart.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.gm.subscribe.domain.cart.GmSubscribeCartRepository;
@@ -19,8 +19,8 @@ import rx.functions.Func1;
 public class CheckoutGmSubscribeWithVoucherCheckUseCase extends CheckoutGmSubscribeUseCase {
 
     @Inject
-    public CheckoutGmSubscribeWithVoucherCheckUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, GmSubscribeCartRepository gmSubscribeCartRepository) {
-        super(threadExecutor, postExecutionThread, gmSubscribeCartRepository);
+    public CheckoutGmSubscribeWithVoucherCheckUseCase(GmSubscribeCartRepository gmSubscribeCartRepository) {
+        super(gmSubscribeCartRepository);
     }
 
     @Override

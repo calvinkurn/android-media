@@ -32,6 +32,9 @@ public class BuyerCardPresenter implements BuyerCardContract.Presenter {
             view.setName(buyerCard.getUsername());
             view.setTokopoint(buyerCard.getTokopointAmount());
             view.setCoupon(buyerCard.getCouponAmount());
+            if (buyerCard.isAffiliate()) {
+                view.showBymeIcon();
+            }
         }
     }
 }

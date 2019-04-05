@@ -14,14 +14,13 @@ import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.app.GeneralReactNativeFragment;
+import com.tokopedia.tkpdreactnative.react.app.ReactNativeFragment;
 
 /**
  * Created by nakama on 10/07/18.
  */
 
-public class ReactNativeHowToPayFragment extends Fragment  implements DefaultHardwareBackBtnHandler {
-    protected ReactRootView reactRootView;
-    protected ReactInstanceManager reactInstanceManager;
+public class ReactNativeHowToPayFragment extends ReactNativeFragment implements DefaultHardwareBackBtnHandler {
 
     public static Fragment createInstance(Bundle bundle) {
         ReactNativeHowToPayFragment fragment = new ReactNativeHowToPayFragment();
@@ -30,72 +29,12 @@ public class ReactNativeHowToPayFragment extends Fragment  implements DefaultHar
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-
-        if (reactInstanceManager != null) {
-            reactInstanceManager.onHostPause(getActivity());
-        }
+    public String getModuleName() {
+        return ReactConst.MAIN_MODULE;
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-        if (reactInstanceManager != null) {
-            reactInstanceManager.onHostResume(getActivity(), this);
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        if (reactInstanceManager != null) {
-            reactInstanceManager.onHostDestroy(getActivity());
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if(reactRootView != null) {
-            reactRootView.unmountReactApplication();
-        }
-    }
-
-    @Override
-    public void invokeDefaultOnBackPressed() {
-        getActivity().onBackPressed();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (reactRootView == null)
-            reactRootView = new ReactRootView(context);
-        if (reactInstanceManager == null)
-            reactInstanceManager = ((ReactApplication) getActivity().getApplication()).getReactNativeHost().getReactInstanceManager();
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (reactRootView == null)
-            reactRootView = new ReactRootView(activity);
-        if (reactInstanceManager == null)
-            reactInstanceManager = ((ReactApplication) getActivity().getApplication()).getReactNativeHost().getReactInstanceManager();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        reactRootView.startReactApplication(reactInstanceManager, ReactConst.MAIN_MODULE, getArguments());
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        return reactRootView;
+    protected Bundle getInitialBundle() {
+        return getArguments() != null ? getArguments() : new Bundle();
     }
 }

@@ -167,5 +167,8 @@ searchProduct(params: $params) {
          }
          applinks
        }
+       template {
+         is_ad
+       }
      }
 }

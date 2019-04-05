@@ -4,34 +4,34 @@ import com.google.gson.annotations.SerializedName;
 
 public class VccUserBalance {
     @SerializedName("vcc_id")
-    private int vccId;
+    private int vccId = 0;
 
     @SerializedName("vcc_number")
-    private int vccNumber;
+    private int vccNumber = 0;
 
     @SerializedName("available_balance")
-    private int availableBalance;
+    private int availableBalance = 0;
 
     @SerializedName("credit_limit")
-    private int creditLimit;
+    private int creditLimit = 0;
 
     @SerializedName("outstanding_balance")
-    private int outstandingBalance;
+    private int outstandingBalance = 0;
 
     @SerializedName("available_balance_text")
-    private String availableBalanceText;
+    private String availableBalanceText = "";
 
     @SerializedName("credit_limit_text")
-    private String creditLimitText;
+    private String creditLimitText = "";
 
     @SerializedName("currency")
-    private String currency;
+    private String currency = "";
 
     @SerializedName("lender_name")
-    private String lenderName;
+    private String lenderName = "";
 
     @SerializedName("vcc_expire_at")
-    private String vccExpireAt;
+    private String vccExpireAt = "";
 
     public int getVccId() {
         return vccId;

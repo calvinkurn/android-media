@@ -42,7 +42,7 @@ public class ValidateMerchantPinPresenter extends BaseDaggerPresenter<ValidateMe
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.tp_gql_swipe_coupon),
                 CouponSwipeUpdateOuter.class,
-                variables);
+                variables, false);
         mUseCase.clearRequest();
         mUseCase.addRequest(request);
         mUseCase.execute(new Subscriber<GraphqlResponse>() {

@@ -10,7 +10,7 @@ public class HomeFlagModel {
 
     @SerializedName("isOSBottomNav")
     @Expose
-    private boolean isOSBottomNav;
+    private boolean isOSBottomNav = false;
 
     public boolean isOSBottomNav() {
         return isOSBottomNav;

@@ -20,6 +20,7 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
 import com.tokopedia.topads.sdk.domain.model.ImageProduct;
 import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
+
 import android.view.ViewTreeObserver;
 
 /**
@@ -32,21 +33,15 @@ public class ImpressedImageView extends AppCompatImageView {
     public static final float DEF_VALUE = 8.0f;
     private ImpressHolder holder;
     private ViewHintListener hintListener;
-    private float radius = 0.0f;
-    private Path path;
-    private RectF rect;
     private int offset;
-    private TypedArray styledAttributes;
     private ViewTreeObserver.OnScrollChangedListener scrollChangedListener;
 
     public ImpressedImageView(Context context) {
         super(context);
-        init(context, null);
     }
 
     public ImpressedImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context, attrs);
     }
 
     @Override
@@ -65,24 +60,6 @@ public class ImpressedImageView extends AppCompatImageView {
         }
     }
 
-    private void init(Context context, AttributeSet attrs) {
-        path = new Path();
-        styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.ImpressedImageView, 0, 0);
-        try{
-            radius = styledAttributes.getDimension(R.styleable.ImpressedImageView_corner_radius, DEF_VALUE);
-        } finally {
-            styledAttributes.recycle();
-        }
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        rect = new RectF(0, 0, this.getWidth(), this.getHeight());
-        path.addRoundRect(rect, radius, radius, Path.Direction.CW);
-        canvas.clipPath(path);
-        super.onDraw(canvas);
-    }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, widthMeasureSpec);
@@ -96,11 +73,11 @@ public class ImpressedImageView extends AppCompatImageView {
         return scrollChangedListener;
     }
 
-    private void revoke(){
+    private void revoke() {
         getViewTreeObserver().removeOnScrollChangedListener(getScrollChangedListener());
     }
 
-    private void invoke(){
+    private void invoke() {
         getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
@@ -117,9 +94,7 @@ public class ImpressedImageView extends AppCompatImageView {
                         }
                         holder.invoke();
                     }
-                    if (getViewTreeObserver().isAlive()) {
-                        getViewTreeObserver().removeOnScrollChangedListener(getScrollChangedListener());
-                    }
+                    revoke();
                 }
             }
         });
@@ -154,7 +129,7 @@ public class ImpressedImageView extends AppCompatImageView {
     }
 
     private int getOffsetHeight() {
-        if(offset > 0){
+        if (offset > 0) {
             return getScreenHeight() - offset;
         } else {
             return getScreenHeight() - getResources().getDimensionPixelOffset(R.dimen.dp_45);
@@ -169,18 +144,43 @@ public class ImpressedImageView extends AppCompatImageView {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
+    /**
+     * Use this for non topads
+     *
+     * @param holder
+     * @param hintListener
+     */
+    public void setViewHintListener(ImpressHolder holder, ViewHintListener hintListener) {
+        this.holder = holder;
+        this.hintListener = hintListener;
+    }
+
+    @Deprecated
+    /**
+     * Use setViewHintListener(ImageHolder holder, ViewHintListener hintListener)
+     */
     public void setViewHintListener(ViewHintListener hintListener) {
         this.hintListener = hintListener;
     }
 
+    /**
+     * Use this for topads product image
+     *
+     * @param image
+     */
     public void setImage(ProductImage image) {
         this.holder = image;
-        ImageHandler.loadImageThumbs(getContext(), this, image.getM_ecs());
+        Glide.with(getContext()).load(image.getM_ecs()).into(this);
     }
 
+    /**
+     * Use this for topads shop product image
+     *
+     * @param image
+     */
     public void setImage(ImageProduct image) {
         this.holder = image;
-        if(image.getImageUrl().isEmpty()){
+        if (image.getImageUrl().isEmpty()) {
             setBackgroundColor(
                     ContextCompat.getColor(getContext(), R.color
                             .topads_gray_default_bg));
@@ -189,9 +189,14 @@ public class ImpressedImageView extends AppCompatImageView {
         }
     }
 
+    /**
+     * Use this for topads headline shop
+     *
+     * @param image
+     */
     public void setImage(CpmImage image) {
         this.holder = image;
-        if(image.getFullEcs().isEmpty()){
+        if (image.getFullEcs().isEmpty()) {
             setBackgroundColor(
                     ContextCompat.getColor(getContext(), R.color
                             .topads_gray_default_bg));

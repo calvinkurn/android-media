@@ -1,24 +1,19 @@
-query ContentForm($type: String, $productID: String, $adID: String, $ID: String) {
-  feed_content_form(type: $type, productID: $productID, adID: $adID, ID: $ID) {
+query ContentForm($relatedID: [String], $type: String) {
+  feed_content_form(relatedID: $relatedID, type: $type) {
     token
     type
-    components {
-      name
-      caption
-      type
-      required
-      value
-    }
     authors {
       type
       id
       name
       thumbnail
+      badge
     }
-    tags
     media {
       multiple_media
       max_media
+      allow_image
+      allow_video
       media {
         id
         type
@@ -26,23 +21,13 @@ query ContentForm($type: String, $productID: String, $adID: String, $ID: String)
         media_url
       }
     }
-    guides {
+    relatedItems {
+      image
       id
-      header
-      more_text
-      image_url
-      image_description
-      cta
+      price
+      title
     }
-    campaigns {
-      id
-      shop
-      campaign
-    }
+    maxTag
     error
-  }
-  affiliateCheck {
-    isAffiliate
-    status
   }
 }

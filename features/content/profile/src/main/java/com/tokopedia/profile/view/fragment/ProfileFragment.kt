@@ -3,18 +3,31 @@ package com.tokopedia.profile.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.AppBarLayout
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.TextPaint
 import android.text.TextUtils
-import android.view.*
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
@@ -22,7 +35,24 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
+import com.tokopedia.feedcomponent.data.pojo.track.Tracking
+import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
+import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kol.KolComponentInstance
+import com.tokopedia.kol.common.util.PostMenuListener
+import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
@@ -31,6 +61,9 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity.PARAM_POST_ID
+import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
+import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.showNormalToaster
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
@@ -42,8 +75,8 @@ import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
 import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
+import com.tokopedia.profile.view.viewmodel.DynamicFeedProfileViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileEmptyViewModel
-import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -62,16 +95,28 @@ import javax.inject.Inject
  * @author by milhamj on 9/17/18.
  */
 class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
-        ProfileContract.View, KolPostListener.View.ViewHolder, KolPostListener.View.Like {
+        ProfileContract.View, KolPostListener.View.ViewHolder, KolPostListener.View.Like,
+        DynamicPostViewHolder.DynamicPostListener,
+        BannerAdapter.BannerItemListener,
+        TopadsShopViewHolder.TopadsShopListener,
+        RecommendationCardAdapter.RecommendationCardListener,
+        CardTitleView.CardTitleListener,
+        ImagePostViewHolder.ImagePostListener,
+        YoutubeViewHolder.YoutubePostListener,
+        PollAdapter.PollOptionListener,
+        GridPostAdapter.GridItemListener{
 
     private var userId: Int = 0
     private var afterPost: Boolean = false
     private var afterEdit: Boolean = false
+    private var successPost: Boolean = false
     private var onlyOnePost: Boolean = false
     private var isAffiliate: Boolean = false
     private var isOwner: Boolean = false
     private var resultIntent: Intent? = null
     private var affiliatePostQuota: AffiliatePostQuota? = null
+    private var profileHeader:ProfileHeaderViewModel? = null
+    private lateinit var layoutManager: LinearLayoutManager
 
     override lateinit var profileRouter: ProfileModuleRouter
 
@@ -84,10 +129,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     lateinit var profileAnalytics: ProfileAnalytics
 
     companion object {
-        private const val POST_ID = "{post_id}"
         private const val PARAM_TAB_NAME = "{tab_name}"
         private const val PARAM_CATEGORY_ID = "{category_id}"
+        private const val YOUTUBE_URL = "{youtube_url}";
         private const val TAB_INSPIRASI = "inspirasi"
+        private const val SOURCE_PROFILE_HEADER = "SOURCE_PROFILE_HEADER"
+        private const val SOURCE_PROFILE_FOOTER = "SOURCE_PROFILE_FOOTER"
         private const val CATEGORY_0 = "0"
         private const val TEXT_PLAIN = "text/plain"
         private const val KOL_COMMENT_CODE = 13
@@ -95,6 +142,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         private const val ONBOARDING_CODE = 10
         private const val EDIT_POST_CODE = 1310
         private const val LOGIN_CODE = 1383
+        private const val LOGIN_FOLLOW_CODE = 1384
+        private const val OPEN_CONTENT_REPORT = 1130
 
         fun createInstance(bundle: Bundle): ProfileFragment {
             val fragment = ProfileFragment()
@@ -120,21 +169,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         profileAnalytics.sendScreen(activity!!, screenName)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        super.onCreateOptionsMenu(menu, inflater)
-        if (userSession.userId == userId.toString()) {
-            inflater?.inflate(R.menu.menu_profile, menu)
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.action_dashboard) {
-            if (isAffiliate) goToDashboard()
-            else goToAffiliateExplore()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
     override fun onDestroy() {
         presenter.detachView()
@@ -156,8 +190,23 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0))
                 }
             }
+            LOGIN_FOLLOW_CODE -> {
+                if (resultCode == Activity.RESULT_OK)
+                    doFollowAfterLogin()
+            }
             SETTING_PROFILE_CODE, ONBOARDING_CODE, EDIT_POST_CODE, LOGIN_CODE -> {
                 onSwipeRefresh()
+            }
+            OPEN_CONTENT_REPORT -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    data?.let {
+                        if (it.getBooleanExtra(ContentReportActivity.RESULT_SUCCESS, false)) {
+                            onSuccessReportContent()
+                        } else {
+                            onErrorReportContent(it.getStringExtra(ContentReportActivity.RESULT_ERROR_MSG))
+                        }
+                    }
+                }
             }
         }
     }
@@ -172,7 +221,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onSwipeRefresh() {
         footerOwn.visibility = View.GONE
-        footerOther.visibility = View.GONE
+        app_bar_layout.visibility = View.GONE
         super.onSwipeRefresh()
     }
 
@@ -189,7 +238,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
-        return ProfileTypeFactoryImpl(this, this)
+        return ProfileTypeFactoryImpl(
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this)
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -209,7 +269,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun loadData(page: Int) {
         if (isLoadingInitialData) {
-            presenter.getProfileFirstPage(userId)
+            footerOwn.visibility = View.GONE
+            app_bar_layout.visibility = View.GONE
+            presenter.getProfileFirstPage(userId, false)
         } else {
             presenter.getProfilePost(userId)
         }
@@ -226,54 +288,63 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onSuccessGetProfileFirstPage(firstPageViewModel: ProfileFirstPageViewModel) {
-        presenter.cursor = firstPageViewModel.lastCursor
-        onlyOnePost = firstPageViewModel.visitableList.size == 1
-        isAffiliate = firstPageViewModel.profileHeaderViewModel.isAffiliate
-        affiliatePostQuota = firstPageViewModel.affiliatePostQuota
+    override fun onSuccessGetProfileFirstPage(element: DynamicFeedProfileViewModel, isFromLogin: Boolean) {
+        presenter.cursor = element.dynamicFeedDomainModel.cursor
+        onlyOnePost = element.dynamicFeedDomainModel.postList.size == 1
+        isAffiliate = element.profileHeaderViewModel.isAffiliate
+        affiliatePostQuota = element.affiliatePostQuota
 
-        val shouldShowDashboard = userSession.userId == userId.toString()
-                && firstPageViewModel.profileHeaderViewModel.isAffiliate
-        setHasOptionsMenu(shouldShowDashboard)
-
-        if (firstPageViewModel.profileHeaderViewModel.isAffiliate) {
-            setToolbarTitle(firstPageViewModel.profileHeaderViewModel.affiliateName)
+        if (element.profileHeaderViewModel.isAffiliate) {
+            setToolbarTitle(element.profileHeaderViewModel.affiliateName)
             addFooter(
-                    firstPageViewModel.profileHeaderViewModel,
-                    firstPageViewModel.affiliatePostQuota
+                    element.profileHeaderViewModel,
+                    element.affiliatePostQuota
             )
         }
+        setProfileToolbar(element.profileHeaderViewModel, isFromLogin)
 
         val visitables: ArrayList<Visitable<*>> = ArrayList()
-        visitables.add(firstPageViewModel.profileHeaderViewModel)
-        if (!firstPageViewModel.visitableList.isEmpty()) {
-            firstPageViewModel.visitableList
+        if (!element.dynamicFeedDomainModel.postList.isEmpty()) {
+            element.dynamicFeedDomainModel.postList
                     .filterIsInstance<BaseKolViewModel>()
-                    .forEach { it.isKol = firstPageViewModel.profileHeaderViewModel.isKol }
-            visitables.addAll(firstPageViewModel.visitableList)
+                    .forEach { it.isKol = element.profileHeaderViewModel.isKol }
+            visitables.addAll(element.dynamicFeedDomainModel.postList)
         } else {
             visitables.add(getEmptyModel(
-                    firstPageViewModel.profileHeaderViewModel.isShowAffiliateContent,
-                    firstPageViewModel.profileHeaderViewModel.isOwner,
-                    firstPageViewModel.profileHeaderViewModel.isAffiliate)
+                    element.profileHeaderViewModel.isShowAffiliateContent,
+                    element.profileHeaderViewModel.isOwner,
+                    element.profileHeaderViewModel.isAffiliate)
             )
         }
         trackKolPostImpression(visitables)
-        renderList(visitables, !TextUtils.isEmpty(firstPageViewModel.lastCursor))
+        renderList(visitables, !TextUtils.isEmpty(element.dynamicFeedDomainModel.cursor))
 
-        if (afterPost) {
-            when {
-                isAutomaticOpenShareUser() -> shareLink(firstPageViewModel.profileHeaderViewModel.link)
-                onlyOnePost -> showShowCaseDialog(shareProfile)
-                else -> showAfterPostToaster(affiliatePostQuota?.number != 0)
+        when {
+            afterPost -> {
+                showAfterPostToast()
+                afterPost = false
+
             }
-            afterPost = false
+            afterEdit -> {
+                showAfterEditToaster()
+                afterEdit = false
 
-        } else if (afterEdit) {
-            showAfterEditToaster()
-            afterEdit = false
-
+            }
+            successPost -> {
+                when {
+                    isAutomaticOpenShareUser() -> shareLink(element.profileHeaderViewModel.link, SOURCE_PROFILE_FOOTER)
+                    onlyOnePost -> showShowCaseDialog(shareProfile)
+                    else -> showAfterPostToaster(affiliatePostQuota?.number != 0)
+                }
+                successPost = false
+            }
         }
+    }
+
+    override fun hideHeader() {
+        app_bar_layout.setExpanded(false)
+        app_bar_layout.visibility = View.GONE
+        footer.visibility = View.GONE
     }
 
     override fun onSuccessGetProfilePost(visitables: List<Visitable<*>>, lastCursor: String) {
@@ -291,13 +362,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (userSession.isLoggedIn) {
             if (follow) {
                 presenter.followKol(userId)
-                profileAnalytics.eventClickFollow(userId.toString())
+                profileAnalytics.eventClickFollow(isOwner, userId.toString())
             } else {
                 presenter.unfollowKol(userId)
-                profileAnalytics.eventClickUnfollow(userId.toString())
+                profileAnalytics.eventClickUnfollow(isOwner, userId.toString())
             }
         } else {
-            goToLogin()
+            followAfterLogin()
         }
     }
 
@@ -306,19 +377,32 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onLikeKolSuccess(rowNumber: Int) {
-        if (adapter.data[rowNumber] != null && adapter.data[rowNumber] is KolPostViewModel) {
-            val kolPostViewModel = adapter.data[rowNumber] as KolPostViewModel
-            kolPostViewModel.isLiked = !kolPostViewModel.isLiked
-            if (kolPostViewModel.isLiked) {
-                kolPostViewModel.totalLike = kolPostViewModel.totalLike + 1
+        if (adapter.data[rowNumber] != null && adapter.data[rowNumber] is DynamicPostViewModel) {
+            val model = adapter.data[rowNumber] as DynamicPostViewModel
+            val like = model.footer.like
+            like.isChecked = !model.footer.like.isChecked
+            if (like.isChecked) {
+                try {
+                    val likeValue = Integer.valueOf(like.fmt) + 1
+                    like.fmt = likeValue.toString()
+                } catch (ignored: NumberFormatException) {
+                }
+
+                like.value = like.value + 1
             } else {
-                kolPostViewModel.totalLike = kolPostViewModel.totalLike - 1
+                try {
+                    val likeValue = Integer.valueOf(like.fmt) - 1
+                    like.fmt = likeValue.toString()
+                } catch (ignored: NumberFormatException) {
+                }
+
+                like.value = like.value - 1
             }
             adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_LIKE)
 
             if (activity != null &&
                     arguments != null &&
-                    arguments!!.getInt(PARAM_POST_ID, -1) == kolPostViewModel.contentId) {
+                    arguments!!.getInt(PARAM_POST_ID, -1) == model.id) {
 
                 if (resultIntent == null) {
                     resultIntent = Intent()
@@ -326,8 +410,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 }
                 resultIntent!!.putExtra(
                         PARAM_IS_LIKED,
-                        if (kolPostViewModel.isLiked) IS_LIKE_TRUE else IS_LIKE_FALSE)
-                resultIntent!!.putExtra(PARAM_TOTAL_LIKES, kolPostViewModel.totalLike)
+                        if (like.isChecked) IS_LIKE_TRUE else IS_LIKE_FALSE)
+                resultIntent!!.putExtra(PARAM_TOTAL_LIKES, like.value)
                 activity!!.setResult(Activity.RESULT_OK, resultIntent)
             }
         }
@@ -353,9 +437,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun trackContentClick(hasMultipleContent: Boolean, activityId: String,
                                    activityType: String, position: String) {
-        if (isOwner.not()) {
-            profileAnalytics.eventClickCard(hasMultipleContent, activityId, activityType, position)
-        }
     }
 
     override fun trackTooltipClick(hasMultipleContent: Boolean, activityId: String,
@@ -414,62 +495,49 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onEditClicked(hasMultipleContent: Boolean, activityId: String,
                                activityType: String) {
-        startActivityForResult(
-                RouteManager.getIntent(
-                        context,
-                        ApplinkConst.AFFILIATE_EDIT_POST.replace(POST_ID, activityId)
-                ),
-                EDIT_POST_CODE
-        )
-        profileAnalytics.eventClickTambahGambar(hasMultipleContent, activityId, activityType)
     }
 
     override fun onMenuClicked(rowNumber: Int, element: BaseKolViewModel) {
-        val menus = Menus(context!!)
-        val menuList = ArrayList<Menus.ItemMenus>()
-        if (element.isDeletable) {
-            menuList.add(
-                    Menus.ItemMenus(
-                            getString(R.string.profile_delete_post),
-                            R.drawable.ic_af_trash
-                    )
-            )
-        }
-        menus.itemMenuList = menuList
-        menus.setActionText(getString(R.string.close))
-        menus.setOnActionClickListener { menus.dismiss() }
-        menus.setOnItemMenuClickListener { itemMenus, _ ->
-            when (itemMenus.title) {
-                getString(R.string.profile_delete_post) ->
+        context?.let {
+            val menus = createBottomMenu(it, element, object: PostMenuListener{
+                override fun onDeleteClicked() {
                     createDeleteDialog(rowNumber, element.contentId).show()
-            }
-            menus.dismiss()
+                }
+
+                override fun onReportClick() {
+                    goToContentReport(element.contentId)
+                }
+
+                override fun onEditClick() {
+                    
+                }
+            })
+            menus.show()
         }
-        menus.show()
     }
 
     override fun onSuccessFollowKol() {
-        if (adapter.dataSize > 0 && adapter.data.first() is ProfileHeaderViewModel) {
-            val profileHeaderViewModel = adapter.data.first() as ProfileHeaderViewModel
-            profileHeaderViewModel.isFollowed = !profileHeaderViewModel.isFollowed
+        profileHeader?.let {
+            it.isFollowed = !it.isFollowed
 
             try {
-                var followers = profileHeaderViewModel.followers.toInt()
-                followers += if (profileHeaderViewModel.isFollowed) 1 else -1
-                profileHeaderViewModel.followers = followers.toString()
+                var followers = it.followers.toInt()
+                followers += if (it.isFollowed) 1 else -1
+                it.followers = followers.toString()
             } catch (e: NumberFormatException) {
             }
 
-            if (profileHeaderViewModel.isFollowed) {
+            if (it.isFollowed) {
                 ToasterNormal
                         .make(view,
                                 getString(R.string.follow_success_toast),
                                 BaseToaster.LENGTH_LONG)
                         .setAction(getString(R.string.follow_success_check_now),
-                                followSuccessOnClickListener(profileHeaderViewModel))
+                                followSuccessOnClickListener(it))
                         .show()
             }
-            adapter.notifyItemChanged(0, ProfileHeaderViewHolder.PAYLOAD_FOLLOW)
+
+            setProfileToolbar(it, false)
 
             if (activity != null && arguments != null) {
                 if (resultIntent == null) {
@@ -478,7 +546,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 }
                 resultIntent!!.putExtra(
                         ProfileActivity.PARAM_IS_FOLLOWING,
-                        if (profileHeaderViewModel.isFollowed) ProfileActivity.IS_FOLLOWING_TRUE
+                        if (it.isFollowed) ProfileActivity.IS_FOLLOWING_TRUE
                         else ProfileActivity.IS_FOLLOWING_FALSE
                 )
                 activity!!.setResult(Activity.RESULT_OK, resultIntent)
@@ -497,14 +565,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             bindCurationQuota(it)
         }
 
-
         val snackbar = ToasterNormal.make(view,
                 getString(R.string.profile_post_deleted),
                 BaseToaster.LENGTH_LONG
         )
         snackbar.setAction(R.string.af_title_ok) { snackbar.dismiss() }.show()
 
-        if (adapter.data.last() is ProfileHeaderViewModel) {
+        if (adapter.data.isEmpty()) {
             onSwipeRefresh()
         }
     }
@@ -528,6 +595,217 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         loadingLayout.visibility = View.GONE
     }
 
+
+    //newfeed section
+    override fun onAvatarClick(positionInFeed: Int, redirectUrl: String) {
+        onGoToLink(redirectUrl)
+        if (adapter.list.get(positionInFeed) is FeedRecommendationViewModel) {
+
+            if (adapter.list.get(positionInFeed) is DynamicPostViewModel) {
+                val model = adapter.list.get(positionInFeed) as DynamicPostViewModel
+                trackCardPostClick(
+                        positionInFeed,
+                        model.trackingPostModel,
+                        ProfileAnalytics.Element.AVATAR,
+                        redirectUrl
+                )
+            }
+        }
+    }
+
+    override fun onHeaderActionClick(positionInFeed: Int, id: String, type: String, isFollow: Boolean) {
+        if (type == FollowCta.AUTHOR_USER) {
+            var userIdInt = 0
+            try {
+                userIdInt = Integer.valueOf(id)
+            } catch (ignored: NumberFormatException) {
+            }
+            if (isFollow) {
+                onUnfollowKolClicked(positionInFeed, userIdInt)
+            } else {
+                onFollowKolClicked(positionInFeed, userIdInt)
+            }
+            if (adapter.list.get(positionInFeed) is DynamicPostViewModel) {
+                val model = adapter.list.get(positionInFeed) as DynamicPostViewModel
+                trackCardPostClick(
+                        positionInFeed,
+                        model.trackingPostModel,
+                        ProfileAnalytics.Element.FOLLOW,
+                        ""
+                )
+            }
+        }
+    }
+
+    override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean) {
+        context?.let {
+            val menus = createBottomMenu(it, deletable, reportable, false, object: PostMenuListener{
+                override fun onDeleteClicked() {
+                    createDeleteDialog(postId, postId).show()
+                }
+
+                override fun onReportClick() {
+                    goToContentReport(postId)
+                }
+
+                override fun onEditClick() {
+
+                }
+            })
+            menus.show()
+        }
+    }
+
+    override fun onCaptionClick(positionInFeed: Int, redirectUrl: String) {
+        onGoToLink(redirectUrl)
+    }
+
+    override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean) {
+        if (isLiked) {
+            onUnlikeKolClicked(positionInFeed, id,false, "")
+        } else {
+            onLikeKolClicked(positionInFeed, id, false, "")
+        }
+    }
+
+    override fun onCommentClick(positionInFeed: Int, id: Int) {
+        onGoToKolComment(positionInFeed, id, false, "")
+    }
+
+    override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, iamgeUrl: String) {
+        if (activity != null) {
+            profileRouter.shareFeed(
+                    activity!!,
+                    id.toString(),
+                    url,
+                    title,
+                    iamgeUrl,
+                    description
+            )
+        }
+        profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
+    }
+
+    override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {
+        onGoToLink(redirectUrl)
+        if (adapter.list.get(positionInFeed) is DynamicPostViewModel) {
+            val model = adapter.list.get(positionInFeed) as DynamicPostViewModel
+            trackCardPostClick(
+                    positionInFeed,
+                    model.trackingPostModel,
+                    ProfileAnalytics.Element.TAG,
+                    redirectUrl
+            )
+        }
+
+    }
+
+    override fun onBannerItemClick(positionInFeed: Int, adapterPosition: Int, redirectUrl: String) {
+        onGoToLink(redirectUrl)
+    }
+
+    override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: com.tokopedia.topads.sdk.domain.model.Shop) {
+        val intent = profileRouter.getShopPageIntent(activity!!, shop.id)
+        startActivity(intent)
+    }
+
+    override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: com.tokopedia.topads.sdk.domain.model.Data) {
+
+    }
+
+    override fun onRecommendationAvatarClick(positionInFeed: Int, adapterPosition: Int, redirectLink: String) {
+        onGoToLink(redirectLink)
+    }
+
+    override fun onRecommendationActionClick(positionInFeed: Int, adapterPosition: Int, id: String, type: String, isFollow: Boolean) {
+
+    }
+
+    override fun onActionPopup() {
+
+    }
+
+    override fun onActionRedirect(redirectUrl: String) {
+        onGoToLink(redirectUrl)
+    }
+
+    override fun onTitleCtaClick(redirectUrl: String) {
+        onGoToLink(redirectUrl)
+    }
+
+    override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
+        onGoToLink(redirectLink)
+        if (adapter.list.get(positionInFeed) is DynamicPostViewModel) {
+            val model = adapter.list.get(positionInFeed) as DynamicPostViewModel
+            trackCardPostClick(
+                    positionInFeed,
+                    contentPosition,
+                    model.trackingPostModel,
+                    ProfileAnalytics.Element.IMAGE,
+                    redirectLink
+            )
+        }
+    }
+
+    override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>) {
+        for (tracking in trackList) {
+            presenter.trackPostClickUrl(tracking.clickURL)
+        }
+    }
+
+    override fun onYoutubeThumbnailClick(positionInFeed: Int, contentPosition: Int, youtubeId: String) {
+        val redirectUrl = ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId)
+
+        if (context != null) {
+            RouteManager.route(
+                    context!!,
+                    redirectUrl
+            )
+        }
+        if (adapter.list.get(positionInFeed) is DynamicPostViewModel) {
+            val model = adapter.list.get(positionInFeed) as DynamicPostViewModel
+            trackCardPostClick(
+                    positionInFeed,
+                    contentPosition,
+                    model.trackingPostModel,
+                    ProfileAnalytics.Element.VIDEO,
+                    redirectUrl
+            )
+        }
+    }
+
+    override fun onPollOptionClick(positionInFeed: Int, contentPosition: Int, option: Int, pollId: String, optionId: String, isVoted: Boolean, redirectLink: String) {
+        if (isVoted) {
+            onGoToLink(redirectLink)
+        }
+        if (adapter.list.get(positionInFeed) is DynamicPostViewModel) {
+            val model = adapter.list.get(positionInFeed) as DynamicPostViewModel
+            trackCardPostClick(
+                    positionInFeed,
+                    contentPosition,
+                    model.trackingPostModel,
+                    ProfileAnalytics.Element.OPTION + option,
+                    redirectLink
+            )
+        }
+    }
+
+    override fun onGridItemClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
+        onGoToLink(redirectLink)
+        if (adapter.list.get(positionInFeed) is DynamicPostViewModel) {
+            val model = adapter.list.get(positionInFeed) as DynamicPostViewModel
+            trackCardPostClick(
+                    positionInFeed,
+                    contentPosition,
+                    model.trackingPostModel,
+                    ProfileAnalytics.Element.PRODUCT,
+                    redirectLink
+            )
+        }
+    }
+
+    //end of new feed section
+
     private fun initVar(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             userId = savedInstanceState.getInt(ProfileActivity.EXTRA_PARAM_USER_ID, 0)
@@ -548,6 +826,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     arguments!!.getString(ProfileActivity.EXTRA_PARAM_AFTER_EDIT, ""),
                     ProfileActivity.TRUE
             )
+            successPost = TextUtils.equals(
+                    arguments!!.getString(ProfileActivity.EXTRA_PARAM_SUCCESS_POST, ""),
+                    ProfileActivity.TRUE
+            )
         }
 
         if (context!!.applicationContext is ProfileModuleRouter) {
@@ -560,6 +842,51 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         remoteConfig = FirebaseRemoteConfigImpl(context)
 
         isOwner = userId.toString() == userSession.userId
+
+        layoutManager = LinearLayoutManager(activity)
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+           override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+               super.onScrollStateChanged(recyclerView, newState)
+               try {
+                   if (hasFeed()
+                           && newState == RecyclerView.SCROLL_STATE_IDLE
+                           && layoutManager != null) {
+                       var position = 0
+                       val item: Visitable<*>?
+                       if (itemIsFullScreen()) {
+                           position = layoutManager.findLastVisibleItemPosition()
+                       } else if (layoutManager.findFirstCompletelyVisibleItemPosition() != -1) {
+                           position = layoutManager.findFirstCompletelyVisibleItemPosition()
+                       } else if (layoutManager.findLastCompletelyVisibleItemPosition() != -1) {
+                           position = layoutManager.findLastCompletelyVisibleItemPosition()
+                       }
+
+                       item = adapter.list.get(position)
+
+                       if (item is DynamicPostViewModel) {
+                           if (!TextUtils.isEmpty(item.footer.buttonCta.appLink)) {
+                               adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER)
+                           }
+                       }
+                   }
+               } catch (e: IndexOutOfBoundsException) {
+               }
+           }
+
+        })
+
+    }
+
+    fun hasFeed(): Boolean {
+        return (adapter.list != null
+                && !adapter.list.isEmpty()
+                && adapter.list.size > 1
+                && adapter.list.get(0) !is EmptyModel)
+    }
+
+    private fun itemIsFullScreen(): Boolean {
+        return layoutManager.findLastVisibleItemPosition() - layoutManager.findFirstVisibleItemPosition() == 0
     }
 
     private fun setToolbarTitle(title: String) {
@@ -568,17 +895,177 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
+    private fun setProfileToolbar(element: ProfileHeaderViewModel, isFromLogin: Boolean) {
+        this.profileHeader = element
+        app_bar_layout.visibility = View.VISIBLE
+        app_bar_layout.setExpanded(true)
+        iv_image_collapse.loadImageRounded(element.avatar)
+        iv_profile.loadImageCircle(element.avatar)
+        tv_name.text = element.name
+        var affName = context?.resources?.getString(R.string.title_profile)
+        if (!element.affiliateName.equals("")) affName = element.affiliateName
+        tv_name_parallax.text = affName
+        tv_aff_name.text = affName
+        iv_back_parallax.setOnClickListener{
+            activity?.finish()
+        }
+        iv_back.setOnClickListener{
+            activity?.finish()
+        }
+        app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+
+            override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
+                try {
+                    toolbar.let {
+                        if (Math.abs(verticalOffset) >= appBarLayout.totalScrollRange) {
+                            it.visibility = View.VISIBLE
+                        } else {
+                            it.visibility = View.GONE
+                        }
+                    }
+                } catch (e: IllegalStateException) {
+
+                }
+            }
+        })
+
+        val selfProfile = userSession.userId == userId.toString()
+                && element.isAffiliate
+        lateinit var action: View.OnClickListener
+        if (!selfProfile) {
+            iv_action_parallax.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_share_white))
+            iv_action.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_share_white))
+            action = shareLinkClickListener(element.link, SOURCE_PROFILE_HEADER)
+        } else {
+            iv_action_parallax.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_af_graph))
+            iv_action.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_af_graph))
+            action = View.OnClickListener {
+                goToDashboard()
+            }
+        }
+        if (!element.isAffiliate) {
+            iv_action_parallax.visibility = View.GONE
+            iv_action.visibility = View.GONE
+        }
+        iv_action.setOnClickListener(action)
+        iv_action_parallax.setOnClickListener(action)
+
+        if (element.isKol || element.isAffiliate) {
+            kolBadge.visibility = if (element.isKol) View.VISIBLE else View.GONE
+
+            followers.visibility =
+                    if (getFollowersText(element).length > ProfileHeaderViewHolder.TEXT_LENGTH_MIN) View.VISIBLE
+                    else View.GONE
+            followers.text = getFollowersText(element)
+            followers.movementMethod = LinkMovementMethod.getInstance()
+
+            if (GlobalConfig.isCustomerApp()) {
+                if (!element.isOwner) {
+                    editButton.visibility = View.GONE
+                    followBtn.visibility = View.VISIBLE
+                    followBtn.setOnClickListener {
+                        followUnfollowUser(element.userId, !element.isFollowed)
+                    }
+                    updateButtonState(element.isFollowed)
+                    if (isFromLogin) {
+                        followBtn.performClick()
+                    }
+                } else {
+                    editButton.visibility = View.VISIBLE
+                    followBtn.visibility = View.GONE
+                    editButton.setOnClickListener {
+                        onChangeAvatarClicked()
+                    }
+                }
+            }
+        } else {
+            kolBadge.visibility = View.GONE
+            if (element.isOwner) {
+                followers.visibility =
+                        if (getFollowersText(element).length > ProfileHeaderViewHolder.TEXT_LENGTH_MIN) View.VISIBLE
+                        else View.GONE
+                followers.text = getFollowersText(element)
+                followers.movementMethod = LinkMovementMethod.getInstance()
+            } else {
+                followers.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun getFollowersText(element: ProfileHeaderViewModel): SpannableString {
+        val spannableString: SpannableString
+        val following =
+                if (element.following != ProfileHeaderViewModel.ZERO)
+                    String.format(getString(R.string.profile_following_number), element.following)
+                else ""
+        spannableString = if ((element.isKol || element.isAffiliate)
+                && element.followers != ProfileHeaderViewModel.ZERO) {
+
+            val followers = String.format(
+                    getString(R.string.profile_followers_number),
+                    element.followers
+            )
+            val followersAndFollowing =
+                    if (!TextUtils.isEmpty(following)) String.format(
+                            getString(R.string.profile_followers_and_following),
+                            followers,
+                            following
+                    )
+                    else followers
+            SpannableString(followersAndFollowing)
+
+        } else {
+            SpannableString(following)
+        }
+
+        val goToFollowing = object : ClickableSpan() {
+            override fun onClick(p0: View?) {
+                goToFollowing()
+            }
+
+            override fun updateDrawState(ds: TextPaint?) {
+                super.updateDrawState(ds)
+                ds?.setUnderlineText(false)
+                ds?.color = MethodChecker.getColor(activity, R.color.white)
+            }
+        }
+
+        if (spannableString.indexOf(following) != -1) {
+            spannableString.setSpan(
+                    goToFollowing,
+                    spannableString.indexOf(following),
+                    spannableString.indexOf(following) + following.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        return spannableString
+    }
+
+    private fun updateButtonState(isFollowed: Boolean) {
+        if (isFollowed) {
+            followBtn.text = getString(R.string.profile_following)
+        } else {
+            followBtn.text = getString(R.string.profile_follow)
+        }
+    }
+
     private fun trackKolPostImpression(visitableList: List<Visitable<*>>) {
         visitableList.forEachIndexed { position, model ->
             val adapterPosition = adapter.data.size + position
             when (model) {
-                is KolPostViewModel -> {
+                is DynamicPostViewModel -> {
+                    var trackingPostModel = model.trackingPostModel
                     profileAnalytics.eventViewCard(
-                            isOwner,
-                            model.isMultipleContent,
-                            model.contentId.toString(),
-                            model.activityType,
-                            adapterPosition.toString()
+                            trackingPostModel.templateType,
+                            trackingPostModel.activityName,
+                            trackingPostModel.trackingType,
+                            trackingPostModel.mediaType,
+                            trackingPostModel.tagsType,
+                            trackingPostModel.redirectUrl,
+                            trackingPostModel.totalContent,
+                            trackingPostModel.postId,
+                            adapterPosition,
+                            userId,
+                            isOwner
                     )
                 }
             }
@@ -605,8 +1092,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         footer.visibility = View.VISIBLE
         if (headerViewModel.isOwner) {
             footerOwn.visibility = View.VISIBLE
-            footerOther.visibility = View.GONE
-
             bindCurationQuota(affiliatePostQuota)
             addCuration.setOnClickListener {
                 goToAffiliateExplore()
@@ -617,20 +1102,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 true
             }
 
-            shareProfile.setOnClickListener(shareLinkClickListener(headerViewModel.link))
+            shareProfile.setOnClickListener(shareLinkClickListener(headerViewModel.link, SOURCE_PROFILE_FOOTER))
             shareProfile.setOnLongClickListener {
                 showToast(getString(R.string.profile_share_this_profile))
                 true
             }
         } else {
             footerOwn.visibility = View.GONE
-            footerOther.visibility = View.VISIBLE
-
-            shareOther.setOnClickListener(shareLinkClickListener(headerViewModel.link))
-            shareOther.setOnLongClickListener {
-                showToast(getString(R.string.profile_share_this_profile))
-                true
-            }
         }
     }
 
@@ -640,6 +1118,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         } else {
             val addCurationText = "${getString(R.string.profile_add_rec)} (${affiliatePostQuota.number})"
             addCuration.text = addCurationText
+        }
+    }
+
+    private fun showAfterPostToast() {
+        context?.let {
+            Toast.makeText(it, R.string.profile_after_post, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -670,13 +1154,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 .build()
     }
 
-    private fun shareLinkClickListener(link: String): View.OnClickListener {
+    private fun shareLinkClickListener(link: String, source: String): View.OnClickListener {
         return View.OnClickListener {
-            shareLink(link)
+            shareLink(link, source)
         }
     }
 
-    private fun shareLink(link: String) {
+    private fun shareLink(link: String, source: String) {
         val shareBody = String.format(getString(R.string.profile_share_text), link)
         val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
         sharingIntent.type = TEXT_PLAIN
@@ -684,7 +1168,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         startActivity(
                 Intent.createChooser(sharingIntent, getString(R.string.profile_share_title))
         )
-        profileAnalytics.eventClickBagikanProfile(isOwner, userId.toString())
+        when (source) {
+            SOURCE_PROFILE_FOOTER ->
+                profileAnalytics.eventClickBagikanProfile(isOwner, userId.toString())
+            SOURCE_PROFILE_HEADER ->
+                profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
+        }
     }
 
     private fun getEmptyModel(isShowAffiliateContent: Boolean,
@@ -748,6 +1237,20 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 activity!!.setResult(Activity.RESULT_OK, resultIntent)
             }
         }
+
+        if (rowNumber != -1 &&
+                adapter.data[rowNumber] != null &&
+                adapter.data[rowNumber] is DynamicPostViewModel) {
+            val comment = ((adapter.data[rowNumber]) as DynamicPostViewModel).footer.comment
+            try {
+                val commentValue = Integer.valueOf(comment.fmt) + totalNewComment
+                comment.fmt = commentValue.toString()
+            } catch (ignored: NumberFormatException) {
+            }
+
+            comment.value = comment.value + totalNewComment
+            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_COMMENT)
+        }
     }
 
     private fun followSuccessOnClickListener(profileHeaderViewModel: ProfileHeaderViewModel)
@@ -789,11 +1292,22 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun goToDashboard() {
         RouteManager.route(context, ApplinkConst.AFFILIATE_DASHBOARD)
-        profileAnalytics.eventClickStatistic()
+        profileAnalytics.eventClickStatistic(userId.toString())
     }
 
     private fun goToLogin() {
         startActivityForResult(profileRouter.getLoginIntent(context!!), LOGIN_CODE)
+    }
+
+    private fun followAfterLogin() {
+        startActivityForResult(profileRouter.getLoginIntent(context!!), LOGIN_FOLLOW_CODE)
+    }
+
+    private fun doFollowAfterLogin() {
+        swipeToRefresh.isRefreshing = true
+        footerOwn.visibility = View.GONE
+        app_bar_layout.visibility = View.GONE
+        presenter.getProfileFirstPage(userId, true)
     }
 
     private fun showError(message: String) {
@@ -819,5 +1333,74 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 || userId == 17211048 //QA's userId
                 || remoteConfig.getBoolean(RemoteConfigKey.AFFILIATE_PROFILE_SHARE_ALL, false))
                 && remoteConfig.getBoolean(RemoteConfigKey.AFFILIATE_PROFILE_SHARE_RULES, true)
+    }
+
+    private fun goToContentReport(contentId: Int) {
+        if (context != null) {
+            if (userSession.isLoggedIn) {
+                val intent = ContentReportActivity.createIntent(
+                        context!!,
+                        contentId
+                )
+                startActivityForResult(intent, OPEN_CONTENT_REPORT)
+            } else {
+                goToLogin()
+            }
+        }
+    }
+
+    private fun onSuccessReportContent() {
+        ToasterNormal
+                .make(view,
+                        getString(R.string.profile_feed_content_reported),
+                        BaseToaster.LENGTH_LONG)
+                .setAction(R.string.label_close) { v -> }
+                .show()
+    }
+
+    private fun onErrorReportContent(errorMsg: String?) {
+        ToasterError
+                .make(view, errorMsg, BaseToaster.LENGTH_LONG)
+                .setAction(R.string.label_close) { v -> }
+                .show()
+    }
+
+    fun onGoToLink(link: String) {
+        activity?.let{
+            if (!TextUtils.isEmpty(link)) {
+                profileRouter.openRedirectUrl(it, link)
+            }
+        }
+    }
+
+    private fun trackCardPostClick(positionInFeed: Int, trackingPostModel: TrackingPostModel,
+                                   element: String, redirectUrl: String) {
+        trackCardPostClick(positionInFeed, -1, trackingPostModel, element, redirectUrl)
+    }
+
+    private fun trackCardPostClick(positionInFeed: Int, contentPosition: Int,
+                                   trackingPostModel: TrackingPostModel, element: String,
+                                   redirectUrl: String) {
+        var userId = 0
+        try {
+            userId = Integer.valueOf(userSession.userId)
+        } catch (ignored: NumberFormatException) {
+        }
+
+        profileAnalytics.eventClickCard(
+                trackingPostModel.templateType,
+                trackingPostModel.activityName,
+                trackingPostModel.trackingType,
+                trackingPostModel.mediaType,
+                trackingPostModel.tagsType,
+                redirectUrl,
+                element,
+                trackingPostModel.totalContent,
+                trackingPostModel.postId,
+                positionInFeed,
+                if (contentPosition != -1) contentPosition.toString() else "",
+                userId,
+                isOwner
+        )
     }
 }

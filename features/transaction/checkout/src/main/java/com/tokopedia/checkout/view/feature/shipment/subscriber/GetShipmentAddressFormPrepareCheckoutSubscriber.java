@@ -87,7 +87,7 @@ public class GetShipmentAddressFormPrepareCheckoutSubscriber extends Subscriber<
                 if (!cartShipmentAddressFormData.isMultiple() && shipmentPresenter.checkAddressHasChanged(recipientAddressModel, newRecipientAddressModel)) {
                     view.hideLoading();
                     view.showToastError(view.getActivityContext().getString(R.string.error_message_checkout_failed));
-                    shipmentPresenter.initializePresenterData(cartShipmentAddressFormData);
+                        shipmentPresenter.initializePresenterData(cartShipmentAddressFormData);
                     view.renderDataChanged();
                 } else if (shipmentPresenter.checkShipmentItemHasChanged(shipmentPresenter.getShipmentCartItemModelList(), shipmentCartItemModelList)) {
                     view.hideLoading();
@@ -98,12 +98,17 @@ public class GetShipmentAddressFormPrepareCheckoutSubscriber extends Subscriber<
                 } else {
                     view.renderCheckShipmentPrepareCheckoutSuccess();
                 }
+
+                if (cartShipmentAddressFormData.getEgoldAttributes() != null &&
+                        cartShipmentAddressFormData.getEgoldAttributes().isEligible()) {
+                    shipmentPresenter.setEgoldAttributeModel(cartShipmentAddressFormData.getEgoldAttributes());
+                }
             }
         }
     }
 
     private void prepareDataAfterProcessShipmentPrepareCheckout(CartShipmentAddressFormData cartShipmentAddressFormData,
-                                                               boolean isNeedToRemoveErrorProduct) {
+                                                                boolean isNeedToRemoveErrorProduct) {
         List<ShipmentCartItemModel> newShipmentCartItemModelList = view.getShipmentDataConverter().getShipmentItems(
                 cartShipmentAddressFormData
         );

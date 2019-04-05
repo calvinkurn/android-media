@@ -35,8 +35,6 @@ public interface ShippingCourierContract {
 
         CourierItemData getCourierItemData(ShippingCourierViewModel shippingCourierViewModel);
 
-        void setSelectedCourier();
-
         void updateSelectedCourier(ShippingCourierViewModel shippingCourierViewModel);
 
         void setRecipientAddressModel(RecipientAddressModel recipientAddressModel);

@@ -24,7 +24,7 @@ import com.tokopedia.seller.base.view.listener.BasePickerMultipleItem;
 /**
  * Created by nathan on 8/2/17.
  */
-
+@Deprecated
 public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> extends BaseToolbarActivity implements BasePickerMultipleItem<T> {
 
     private static final int ARROW_DEGREE = 180;

@@ -220,7 +220,7 @@ public class LocalCacheHandler {
         return (int) (interval - (curr_time - time));
     }
 
-    public void clearCache(String name) {
+    public void clearCache() {
         editor.clear().apply();
     }
 

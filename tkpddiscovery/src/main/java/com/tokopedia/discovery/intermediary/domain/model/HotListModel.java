@@ -12,6 +12,7 @@ public class HotListModel {
     private String imageUrlBanner = "";
     private String title = "";
     private String url = "";
+    private boolean isTracked;
 
     public String getId() {
         return id;
@@ -59,5 +60,13 @@ public class HotListModel {
 
     public void setImageUrlBanner(String imageUrlBanner) {
         this.imageUrlBanner = imageUrlBanner;
+    }
+
+    public boolean isTracked() {
+        return isTracked;
+    }
+
+    public void setTracked(boolean tracked) {
+        isTracked = tracked;
     }
 }

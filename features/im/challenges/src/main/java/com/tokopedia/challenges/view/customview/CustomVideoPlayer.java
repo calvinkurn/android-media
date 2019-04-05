@@ -1,17 +1,13 @@
 package com.tokopedia.challenges.view.customview;
 
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -22,7 +18,7 @@ import android.widget.VideoView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.R;
-import com.tokopedia.challenges.view.fragments.ChallegeneSubmissionFragment;
+import com.tokopedia.challenges.view.fragments.ChallengeDetailsFragment;
 import com.tokopedia.challenges.view.utils.Utils;
 
 import java.io.File;
@@ -85,7 +81,7 @@ public class CustomVideoPlayer extends RelativeLayout implements CustomMediaCont
         if (TextUtils.isEmpty(videoUrl) || Utils.isImage(videoUrl)) {
             playIcon.setVisibility(GONE);
         }
-        startPlay(0, ChallegeneSubmissionFragment.isVideoPlaying);
+        startPlay(0, ChallengeDetailsFragment.isVideoPlaying);
     }
 
 

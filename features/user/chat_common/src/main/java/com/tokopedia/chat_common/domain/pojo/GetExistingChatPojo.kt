@@ -144,7 +144,7 @@ data class Attachment(
         val attributes: String = "",
         @Expose
         @SerializedName("fallback")
-        val fallback: Fallback?
+        val fallback: Fallback = Fallback()
 )
 
 data class Fallback(

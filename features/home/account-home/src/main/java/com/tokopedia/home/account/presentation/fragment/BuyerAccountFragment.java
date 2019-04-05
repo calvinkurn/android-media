@@ -44,6 +44,7 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
     private SwipeRefreshLayout swipeRefreshLayout;
     private BuyerAccountAdapter adapter;
     private PerformanceMonitoring fpmBuyer;
+//    private RemoteConfig remoteConfig;
 
     @Inject
     BuyerAccount.Presenter presenter;
@@ -93,8 +94,10 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
     }
 
     private void getData() {
+        String saldoQuery = GraphqlHelper.loadRawString(getContext().getResources(), R.raw
+                .new_query_saldo_balance);
         presenter.getBuyerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw
-                .query_buyer_account_home));
+                .query_buyer_account_home), saldoQuery);
     }
 
     @Override
@@ -109,6 +112,7 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
             adapter.setElement(model.getItems());
         }
         fpmBuyer.stopTrace();
+
     }
 
     private void initInjector() {

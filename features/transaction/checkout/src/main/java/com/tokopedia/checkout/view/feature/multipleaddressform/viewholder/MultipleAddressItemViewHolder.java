@@ -54,6 +54,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     private TextView addressTitle;
     private TextView addressReceiverName;
     private TextView address;
+    private TextView addressStatus;
     private View borderLine;
     private TextView phoneNumber;
     private TextView tvChangeRecipientAddress;
@@ -80,6 +81,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         addressTitle = itemView.findViewById(R.id.tv_address_name);
         addressReceiverName = itemView.findViewById(R.id.tv_recipient_name);
         address = itemView.findViewById(R.id.tv_recipient_address);
+        addressStatus = itemView.findViewById(R.id.tv_address_status);
         borderLine = itemView.findViewById(R.id.border_line);
         tvChangeRecipientAddress = itemView.findViewById(R.id.tv_change_recipient_address);
         etNotesForSeller = itemView.findViewById(R.id.et_notes_for_seller);
@@ -304,10 +306,10 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
             }
         });
 
-        addressTitle.setVisibility(View.GONE);
+        // addressTitle.setVisibility(View.GONE);
         String addressName = itemData.getRecipientAddressModel().getAddressName();
         String recipientName = itemData.getRecipientAddressModel().getRecipientName();
-        addressName = " (" + addressName + ")";
+        /*addressName = " (" + addressName + ")";
         recipientName += addressName;
         int startSpan = recipientName.indexOf(addressName);
         int endSpan = recipientName.indexOf(addressName) + addressName.length();
@@ -315,8 +317,14 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         final int color = ContextCompat.getColor(addressReceiverName.getContext(), R.color.black_38);
         formattedPromoMessage.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        addressReceiverName.setTypeface(Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));
-        addressReceiverName.setText(formattedPromoMessage);
+        addressReceiverName.setTypeface(Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));*/
+        if (itemData.getRecipientAddressModel().getAddressStatus() == 2) {
+            addressStatus.setVisibility(View.VISIBLE);
+        } else {
+            addressStatus.setVisibility(View.GONE);
+        }
+        addressTitle.setText(addressName);
+        addressReceiverName.setText(recipientName);
         String fullAddress = itemData.getRecipientAddressModel().getStreet() + ", "
                 + itemData.getRecipientAddressModel().getDestinationDistrictName() + ", "
                 + itemData.getRecipientAddressModel().getCityName() + ", "

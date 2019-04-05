@@ -1,38 +1,40 @@
 {
   tokopointsToken {
-         resultStatus {
-             code
-             message
-             status
-        }
-         offFlag
-         sumToken
-         sumTokenStr
-         tokenUnit
-         floating {
-           tokenId
-           pageUrl
-           applink
-           timeRemainingSeconds
-           isShowTime
-           unixTimestamp
-           tokenAsset {
-             name
-             version
-             floatingImgUrl
-           }
-         }
+    resultStatus {
+        code
+        message
+        status
+    }
+    offFlag
+    sumToken
+    sumTokenStr
+    tokenUnit
+    floating {
+      tokenId
+      pageUrl
+      applink
+      timeRemainingSeconds
+      isShowTime
+      unixTimestamp
+      tokenAsset {
+        name
+        version
+        floatingImgUrl
+      }
+    }
     home {
       emptyState{
-          title
-          buttonText
-          buttonApplink
-          buttonURL
-          backgroundImgUrl
-          imageUrl
-          version
+        title
+        buttonText
+        buttonURL
+        buttonApplink
+        backgroundImgUrl
+        seamlessImgUrl
+        imageUrl
+        version
       }
       countingMessage
+      tokenSourceMessage
       tokensUser {
         tokenUserID
         campaignID
@@ -44,14 +46,18 @@
           name
           version
           backgroundImgUrl
+          seamlessImgUrl
         }
         tokenAsset {
           name
           version
           floatingImgUrl
           smallImgUrl
+          smallImgv2Url
           spriteUrl
           imageUrls
+          imagev2Urls
+          tokenSourceUrl
         }
       }
     }

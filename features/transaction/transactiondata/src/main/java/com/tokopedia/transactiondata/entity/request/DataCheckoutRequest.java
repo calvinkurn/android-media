@@ -1,5 +1,8 @@
 package com.tokopedia.transactiondata.entity.request;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -10,7 +13,7 @@ import java.util.List;
  * @author anggaprasetiyo on 05/03/18.
  */
 
-public class DataCheckoutRequest {
+public class DataCheckoutRequest implements Parcelable {
     @SerializedName("address_id")
     @Expose
     public int addressId;
@@ -26,6 +29,33 @@ public class DataCheckoutRequest {
         shopProducts = builder.shopProducts;
     }
 
+    protected DataCheckoutRequest(Parcel in) {
+        addressId = in.readInt();
+        shopProducts = in.createTypedArrayList(ShopProductCheckoutRequest.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(addressId);
+        dest.writeTypedList(shopProducts);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<DataCheckoutRequest> CREATOR = new Creator<DataCheckoutRequest>() {
+        @Override
+        public DataCheckoutRequest createFromParcel(Parcel in) {
+            return new DataCheckoutRequest(in);
+        }
+
+        @Override
+        public DataCheckoutRequest[] newArray(int size) {
+            return new DataCheckoutRequest[size];
+        }
+    };
 
     public static final class Builder {
         private int addressId;

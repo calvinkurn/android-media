@@ -33,14 +33,14 @@ public class ShippingDurationConverter {
                                                               List<ShopShipment> shopShipmentList,
                                                               int selectedSpId,
                                                               String ratesId,
-                                                              int selectedServiceId) {
+                                                              int selectedServiceId, String blackboxInfo) {
         List<ShippingDurationViewModel> shippingDurationViewModels = new ArrayList<>();
         for (ServiceData serviceData : serviceDataList) {
             ShippingDurationViewModel shippingDurationViewModel = new ShippingDurationViewModel();
             shippingDurationViewModel.setServiceData(serviceData);
             List<ShippingCourierViewModel> shippingCourierViewModels =
                     convertToShippingCourierViewModel(shippingDurationViewModel, serviceData.getProducts(),
-                            shopShipmentList, ratesId, selectedSpId, selectedServiceId);
+                            shopShipmentList, ratesId, selectedSpId, selectedServiceId, blackboxInfo);
             shippingDurationViewModel.setShippingCourierViewModelList(shippingCourierViewModels);
             if (shippingCourierViewModels.size() > 0) {
                 shippingDurationViewModels.add(shippingDurationViewModel);
@@ -65,11 +65,12 @@ public class ShippingDurationConverter {
                                                                              List<ProductData> productDataList,
                                                                              List<ShopShipment> shopShipmentList,
                                                                              String ratesId,
-                                                                             int selectedSpId, int selectedServiceId) {
+                                                                             int selectedSpId, int selectedServiceId,
+                                                                             String blackboxInfo) {
         List<ShippingCourierViewModel> shippingCourierViewModels = new ArrayList<>();
         for (ProductData productData : productDataList) {
             addShippingCourierViewModel(shippingDurationViewModel, shopShipmentList, ratesId, selectedSpId,
-                    selectedServiceId, shippingCourierViewModels, productData);
+                    selectedServiceId, shippingCourierViewModels, productData, blackboxInfo);
         }
 
         return shippingCourierViewModels;
@@ -80,9 +81,10 @@ public class ShippingDurationConverter {
                                              String ratesId,
                                              int selectedSpId, int selectedServiceId,
                                              List<ShippingCourierViewModel> shippingCourierViewModels,
-                                             ProductData productData) {
+                                             ProductData productData, String blackboxInfo) {
         ShippingCourierViewModel shippingCourierViewModel = new ShippingCourierViewModel();
         shippingCourierViewModel.setProductData(productData);
+        shippingCourierViewModel.setBlackboxInfo(blackboxInfo);
         shippingCourierViewModel.setServiceData(shippingDurationViewModel.getServiceData());
         shippingCourierViewModel.setRatesId(ratesId);
         if (selectedSpId != 0) {

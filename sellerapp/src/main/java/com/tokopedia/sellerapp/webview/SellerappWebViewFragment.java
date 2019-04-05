@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment;
 import com.tokopedia.abstraction.common.utils.network.URLGenerator;
+import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.user.session.UserSession;
 
 import static com.tokopedia.sellerapp.webview.SellerappWebViewActivity.PARAM_BUNDLE_URL;
 
@@ -33,14 +35,10 @@ public class SellerappWebViewFragment extends BaseWebViewFragment {
 
     @Override
     protected String getUrl() {
-        if (getActivity() != null &&
-                getActivity().getApplication() instanceof AbstractionRouter) {
+            UserSessionInterface usersession = new UserSession(getActivity());
             return URLGenerator.generateURLSessionLogin(url,
-                    ((AbstractionRouter) getActivity().getApplication()).getSession().getDeviceId(),
-                    ((AbstractionRouter) getActivity().getApplication()).getSession().getUserId());
-        } else {
-            return url;
-        }
+                    usersession.getDeviceId(),
+                    usersession.getUserId());
 
 
     }
@@ -48,21 +46,15 @@ public class SellerappWebViewFragment extends BaseWebViewFragment {
     @Nullable
     @Override
     protected String getUserIdForHeader() {
-        if (getActivity() != null &&
-                getActivity().getApplication() instanceof AbstractionRouter) {
-            return ((AbstractionRouter) getActivity().getApplication()).getSession().getUserId();
-        }
-        return "";
+        UserSessionInterface usersession = new UserSession(getActivity());
+        return usersession.getUserId();
     }
 
     @Nullable
     @Override
     protected String getAccessToken() {
-        if (getActivity() != null &&
-                getActivity().getApplication() instanceof AbstractionRouter) {
-            return ((AbstractionRouter) getActivity().getApplication()).getSession().getAccessToken();
-        }
-        return "";
+        UserSessionInterface usersession = new UserSession(getActivity());
+        return usersession.getAccessToken();
     }
 
     @Override

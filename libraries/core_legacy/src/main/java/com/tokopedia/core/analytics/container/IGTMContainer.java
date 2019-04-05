@@ -30,6 +30,8 @@ public interface IGTMContainer {
      */
     GTMContainer sendScreen(String screenName);
 
+    GTMContainer sendScreen(String screenName, Map<String, String> customDimension);
+
     /**
      * Method for send campaign in deeplink
      *
@@ -54,11 +56,13 @@ public interface IGTMContainer {
 
     GTMContainer sendScreenAuthenticated(String screenName);
 
-    GTMContainer sendScreenAuthenticatedOfficialStore(String screenName, String shopID, String shopType, String pageType, String productId);
+    GTMContainer sendScreenAuthenticated(String screenName, Map<String, String> customDimension);
 
-    GTMContainer sendCustomAuth(String shopID, String shopType, String pageType, String productId);
+    GTMContainer sendScreenAuthenticated(String screenName, String shopID, String shopType, String pageType, String productId);
 
-    GTMContainer eventAuthenticate(Authenticated authenticated);
+    GTMContainer eventAuthenticate();
+
+    GTMContainer eventAuthenticate(Map<String, String> customDimension);
 
     /**
      * Method for track add to cart session user, sent when user successfully add to cart

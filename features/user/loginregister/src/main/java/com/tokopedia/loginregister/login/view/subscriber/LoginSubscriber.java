@@ -31,6 +31,7 @@ public class LoginSubscriber extends LoginCommonSubscriber<LoginEmailDomain> {
 
     @Override
     public void onError(Throwable e) {
+        view.trackErrorLoginEmail();
         view.stopTrace();
         view.enableArrow();
         super.onError(e);

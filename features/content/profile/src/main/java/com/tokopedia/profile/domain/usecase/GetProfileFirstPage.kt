@@ -1,7 +1,6 @@
 package com.tokopedia.profile.domain.usecase
 
 import android.text.TextUtils
-import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kol.feature.post.domain.model.ContentListDomain
@@ -15,6 +14,7 @@ import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
+import com.tokopedia.user.session.UserSessionInterface
 import rx.Observable
 import rx.functions.Func1
 import rx.schedulers.Schedulers
@@ -27,14 +27,14 @@ class GetProfileFirstPage @Inject constructor(
         private val getProfileHeaderUseCase: GetProfileHeaderUseCase,
         private val getContentListUseCase: GetContentListUseCase,
         private val getAffiliateQuotaUseCase: GetAffiliateQuotaUseCase,
-        private val userSession: UserSession)
+        private val userSession: UserSessionInterface)
     : UseCase<ProfileFirstPageViewModel>() {
 
     var userId = 0
 
     override fun createObservable(requestParams: RequestParams?)
             : Observable<ProfileFirstPageViewModel>? {
-        userId = requestParams!!.getInt(GetProfileHeaderUseCase.PARAM_USER_ID, 0)
+        userId = requestParams!!.getInt(GetProfileHeaderUseCase.PARAM_USER_ID_TARGET, 0)
         return Observable.zip(
                 getHeader(userId),
                 getPost(),
@@ -104,9 +104,9 @@ class GetProfileFirstPage @Inject constructor(
     }
 
     companion object {
-        fun createRequestParams(userId: Int): RequestParams {
+        fun createRequestParams(targetUserId: Int): RequestParams {
             val requestParams = RequestParams.create()
-            requestParams.putInt(GetProfileHeaderUseCase.PARAM_USER_ID, userId)
+            requestParams.putInt(GetProfileHeaderUseCase.PARAM_USER_ID_TARGET, targetUserId)
             return requestParams
         }
     }

@@ -53,21 +53,19 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
 
     var nextPage : Int = 1
 
-    override fun onResume() {
-        super.onResume()
-        onSwipeRefresh()
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        if (userVisibleHint) {
+        if (savedInstanceState == null) {
+            onSwipeRefresh()
+        }
+        if (userVisibleHint && ::searchNavigationListener.isInitialized) {
             searchNavigationListener.hideBottomNavigation()
         }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser && view != null) {
+        if (isVisibleToUser && view != null && ::searchNavigationListener.isInitialized) {
             searchNavigationListener.hideBottomNavigation()
         }
     }
@@ -86,11 +84,13 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     override fun onSuccessGetProfileListData(profileListViewModel : ProfileListViewModel) {
-        SearchTracking.eventUserImpressionProfileResultInTabProfile(
-                context,
-                profileListViewModel.getListTrackingObject(),
-                query
-        )
+        if (profileListViewModel.getListTrackingObject().isNotEmpty()) {
+            SearchTracking.eventUserImpressionProfileResultInTabProfile(
+                    context,
+                    profileListViewModel.getListTrackingObject(),
+                    query
+            )
+        }
 
         totalProfileCount = profileListViewModel.totalSearchCount
         renderList(profileListViewModel.profileModelList, profileListViewModel.isHasNextPage)
@@ -213,11 +213,16 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     private fun loadDataFromArguments() {
-        query = arguments!!.getString(EXTRA_QUERY)
+        query = arguments!!.getString(EXTRA_QUERY)?:""
     }
 
     private fun loadDataFromSavedState(savedInstanceState: Bundle) {
-        query = savedInstanceState.getString(EXTRA_QUERY)
+        query = savedInstanceState.getString(EXTRA_QUERY)?:""
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(EXTRA_QUERY, query)
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {

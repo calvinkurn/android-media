@@ -51,12 +51,6 @@ public abstract class TkpdActivity extends BaseTemporaryDrawerActivity implement
     }
 
     @Override
-    protected void onPause() {
-        MainApplication.setCurrentActivity(null);
-        super.onPause();
-    }
-
-    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
     }

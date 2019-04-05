@@ -48,12 +48,10 @@
                 android:focusableInTouchMode="true"
                 android:inputType="numberDecimal"
                 android:maxLines="1"
-                android:nextFocusLeft="@id/pulsa_autocompleteview"
-                android:nextFocusUp="@id/pulsa_autocompleteview"
                 android:popupBackground="@color/white"
                 android:textColor="@color/digital_item_title"
                 android:textColorHint="@color/grey_400"
-                android:textSize="@dimen/fonts"/>
+                android:textSize="@dimen/sp_14"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -71,8 +69,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/digital_height_width_25"
                     android:layout_gravity="end|center_vertical"
-                    android:layout_marginEnd="@dimen/margin_vs"
-                    android:layout_marginRight="@dimen/margin_vs"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
                     android:contentDescription="@string/app_name"
                     android:paddingBottom="@dimen/digital_padding_5"
                     tools:src="@drawable/ic_close_24dp" />
@@ -98,12 +96,12 @@
 
             <Button
                 android:id="@+id/btn_contact_picker"
-                android:layout_width="@dimen/img_thumb_bit_small"
-                android:layout_height="@dimen/img_thumb_bit_small"
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_25"
                 android:layout_marginEnd="4dp"
-                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginRight="4dp"
-                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginStart="@dimen/dp_10"
                 android:background="@drawable/ic_phonebook_widget" />
 
         </LinearLayout>
@@ -116,12 +114,12 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/digital_padding_4"
         android:paddingEnd="@null"
-        android:paddingLeft="@dimen/padding_vvs"
+        android:paddingLeft="@dimen/dp_3"
         android:paddingRight="@null"
-        android:paddingStart="@dimen/padding_vvs"
+        android:paddingStart="@dimen/dp_3"
         android:text="@string/title_empty_stock"
         android:textColor="@color/red_600"
-        android:textSize="@dimen/fontvs"
+        android:textSize="@dimen/sp_12"
         android:visibility="gone"
         tools:visibility="visible" />
 

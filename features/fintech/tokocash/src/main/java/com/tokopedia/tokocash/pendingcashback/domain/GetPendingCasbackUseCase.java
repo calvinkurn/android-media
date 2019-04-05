@@ -61,7 +61,7 @@ public class GetPendingCasbackUseCase extends UseCase<PendingCashback> {
                         variables.put(MSISDN, userSession.getPhoneNumber());
 
                         if (!TextUtils.isEmpty(query)) {
-                            GraphqlRequest request = new GraphqlRequest(query, ResponsePendingCashback.class, variables);
+                            GraphqlRequest request = new GraphqlRequest(query, ResponsePendingCashback.class, variables, false);
                             graphqlUseCase.clearRequest();
                             graphqlUseCase.addRequest(request);
                             return graphqlUseCase.createObservable(null);

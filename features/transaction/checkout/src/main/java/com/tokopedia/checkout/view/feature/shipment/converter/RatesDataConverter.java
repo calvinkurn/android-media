@@ -51,6 +51,9 @@ public class RatesDataConverter {
         }
         shipmentDetailData.setTotalQuantity(totalQuantity);
         shipmentDetailData.setShopId(String.valueOf(shipmentCartItemModel.getShopId()));
+        shipmentDetailData.setIsBlackbox(shipmentCartItemModel.getIsBlackbox());
+        shipmentDetailData.setAddressId(shipmentCartItemModel.getAddressId());
+        shipmentDetailData.setPreorder(shipmentCartItemModel.isProductIsPreorder());
         return shipmentDetailData;
     }
 
@@ -252,6 +255,8 @@ public class RatesDataConverter {
         courierItemData.setShipmentItemDataEtd(shipmentItemData.getDeliveryTimeRange());
         courierItemData.setShipmentItemDataType(shipmentItemData.getType());
         courierItemData.setShipperFormattedPrice(product.getShipperFormattedPrice());
+        courierItemData.setChecksum(product.getCheckSum());
+        courierItemData.setUt(product.getUt());
 
         return courierItemData;
     }

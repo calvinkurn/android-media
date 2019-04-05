@@ -1,9 +1,5 @@
 package com.tokopedia.topads.dashboard.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.topads.dashboard.data.model.request.AdCreateGroupRequest;
 import com.tokopedia.topads.dashboard.data.model.request.CreateGroupRequest;
 import com.tokopedia.topads.dashboard.data.model.response.DataResponseCreateGroup;
@@ -11,6 +7,8 @@ import com.tokopedia.topads.dashboard.domain.TopAdsGroupAdsRepository;
 import com.tokopedia.topads.dashboard.domain.TopAdsShopAdsRepository;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailShopDomainModel;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +32,8 @@ public class TopAdsEditProductGroupToNewGroupUseCase extends UseCase<Boolean> {
     TopAdsShopAdsRepository topAdsShopAdsRepository;
     TopAdsGroupAdsRepository topAdsGroupAdsRepository;
 
-    public TopAdsEditProductGroupToNewGroupUseCase(ThreadExecutor threadExecutor,
-                                                   PostExecutionThread postExecutionThread,
-                                                   TopAdsShopAdsRepository topAdsShopAdsRepository,
-                                                   TopAdsGroupAdsRepository topAdsGroupAdsRepository) {
-        super(threadExecutor, postExecutionThread);
+    public TopAdsEditProductGroupToNewGroupUseCase(TopAdsShopAdsRepository topAdsShopAdsRepository, TopAdsGroupAdsRepository topAdsGroupAdsRepository) {
+        super();
         this.topAdsShopAdsRepository = topAdsShopAdsRepository;
         this.topAdsGroupAdsRepository = topAdsGroupAdsRepository;
     }

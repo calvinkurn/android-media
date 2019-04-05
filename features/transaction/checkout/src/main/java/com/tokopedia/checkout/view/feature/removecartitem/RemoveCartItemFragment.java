@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.feature.removecartitem;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,7 +23,6 @@ import com.tokopedia.checkout.view.feature.removecartitem.viewmodel.CartProductH
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
-import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 
@@ -43,7 +43,7 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
 
     private TextView tvRemoveProduct;
     private RecyclerView rvCartRemoveProduct;
-    private TkpdProgressDialog progressDialogNormal;
+    private ProgressDialog progressDialog;
 
     @Inject
     RemoveCartItemAdapter removeCartItemAdapter;
@@ -133,7 +133,9 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
 
     @Override
     protected void initView(View view) {
-        progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.title_loading));
+        progressDialog.setCancelable(false);
         tvRemoveProduct = view.findViewById(R.id.tv_remove_product);
         rvCartRemoveProduct = view.findViewById(R.id.rv_cart_remove_product);
         ((SimpleItemAnimator) rvCartRemoveProduct.getItemAnimator()).setSupportsChangeAnimations(false);
@@ -163,12 +165,12 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
 
     @Override
     public void showLoading() {
-        if (!progressDialogNormal.isProgress()) progressDialogNormal.showDialog();
+        if (progressDialog != null && !progressDialog.isShowing()) progressDialog.show();
     }
 
     @Override
     public void hideLoading() {
-        if (progressDialogNormal.isProgress()) progressDialogNormal.dismiss();
+        if (progressDialog != null && progressDialog.isShowing()) progressDialog.dismiss();
     }
 
     @Override

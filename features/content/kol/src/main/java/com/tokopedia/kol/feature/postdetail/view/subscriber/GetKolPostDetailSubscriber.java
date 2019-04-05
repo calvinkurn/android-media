@@ -49,6 +49,7 @@ public class GetKolPostDetailSubscriber extends Subscriber<GraphqlResponse> {
         }
         view.dismissLoading();
         view.onErrorGetKolPostDetail(ErrorHandler.getErrorMessage(view.getContext(), e));
+        view.stopTrace();
     }
 
     @Override

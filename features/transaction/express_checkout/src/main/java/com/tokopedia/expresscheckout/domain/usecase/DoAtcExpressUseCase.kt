@@ -32,7 +32,7 @@ open class DoAtcExpressUseCase @Inject constructor(@ApplicationContext val conte
 
     override fun execute(requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.mutation_atc_express), AtcExpressGqlResponse::class.java, variables)
+                R.raw.mutation_atc_express), AtcExpressGqlResponse::class.java, variables, false)
         clearRequest()
         addRequest(graphqlRequest)
 

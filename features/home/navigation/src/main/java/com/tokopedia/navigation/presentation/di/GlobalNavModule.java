@@ -1,26 +1,21 @@
 package com.tokopedia.navigation.presentation.di;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.data.mapper.NotificationMapper;
 import com.tokopedia.navigation.domain.GetBottomNavNotificationUseCase;
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
 import com.tokopedia.navigation.domain.GetNewFeedCheckerUseCase;
 import com.tokopedia.navigation.listener.CartListener;
-import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
-
-import javax.inject.Named;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -32,7 +27,7 @@ import dagger.Provides;
 @Module
 public class GlobalNavModule {
     @Provides
-    MainParentPresenter provideMainParentPresenter(GetBottomNavNotificationUseCase getNotificationUseCase, UserSession userSession){
+    MainParentPresenter provideMainParentPresenter(GetBottomNavNotificationUseCase getNotificationUseCase, UserSessionInterface userSession){
         return new MainParentPresenter(getNotificationUseCase, userSession);
     }
 
@@ -85,7 +80,7 @@ public class GlobalNavModule {
 
     @Provides
     @GlobalNavScope
-    com.tokopedia.user.session.UserSessionInterface provideUserSession(@ApplicationContext Context context) {
-        return new com.tokopedia.user.session.UserSession(context);
+    UserSessionInterface provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

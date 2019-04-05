@@ -5,15 +5,15 @@ import com.google.gson.annotations.SerializedName
 class TopAdsPdpAffiliateResponse {
 
     @SerializedName("topAdsPDPAffiliate")
-    var topAdsPDPAffiliate: TopAdsPdpAffiliate? = null
+    var topAdsPDPAffiliate: TopAdsPdpAffiliate = TopAdsPdpAffiliate()
 
     class TopAdsPdpAffiliate {
         @SerializedName("data")
-        var data: Data? = null
+        var data: Data = Data()
 
         class Data {
             @SerializedName("affiliate")
-            var affiliate: List<PdpAffiliate>? = null
+            var affiliate: List<PdpAffiliate> = ArrayList()
 
             class PdpAffiliate {
                 @SerializedName("AdId")
@@ -25,17 +25,17 @@ class TopAdsPdpAffiliateResponse {
                 @SerializedName("CommissionPercent")
                 var commissionPercent: Int = 0
                 @SerializedName("CommissionPercentDispay")
-                var commissionPercentDispay: String? = ""
+                var commissionPercentDispay: String = ""
                 @SerializedName("CommissionValue")
                 var commissionValue: Int = 0
                 @SerializedName("CommissionValueDisplay")
-                var commissionValueDisplay: String? = ""
+                var commissionValueDisplay: String = ""
                 @SerializedName("UniqueURL")
-                var uniqueURL: String? = ""
+                var uniqueURL: String = ""
                 @SerializedName("AdTitle")
-                var adTitle: String? = ""
+                var adTitle: String = ""
                 @SerializedName("Image")
-                var image: String? = ""
+                var image: String = ""
             }
         }
     }

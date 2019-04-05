@@ -15,6 +15,9 @@ public class MetaData {
 
     private static final String KEY_DISPLAY = "display";
 
+    public MetaData() {
+    }
+
     public MetaData(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_DISPLAY)) {
             setDisplay(object.getString(KEY_DISPLAY));

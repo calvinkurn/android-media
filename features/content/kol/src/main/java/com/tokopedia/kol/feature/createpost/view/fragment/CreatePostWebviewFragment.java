@@ -7,15 +7,14 @@ import android.webkit.WebView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.common.di.DaggerKolComponent;
 import com.tokopedia.kol.common.di.KolComponent;
 import com.tokopedia.kol.feature.createpost.di.CreatePostModule;
 import com.tokopedia.kol.feature.createpost.di.DaggerCreatePostComponent;
-
-import javax.inject.Inject;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * @author by yfsx on 07/06/18.
@@ -25,13 +24,18 @@ public class CreatePostWebviewFragment extends BaseWebViewFragment {
     public static final String FORM_URL = "form_url";
     public static final String SUCCESS_URL_PATH = "/content/new?success=true";
 
-    @Inject
-    UserSession userSession;
+    private UserSessionInterface userSession;
 
     public static CreatePostWebviewFragment newInstance(Bundle bundle) {
         CreatePostWebviewFragment fragment = new CreatePostWebviewFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        userSession = new UserSession(getActivity());
     }
 
     @Override

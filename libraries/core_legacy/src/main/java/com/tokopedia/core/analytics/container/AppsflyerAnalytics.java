@@ -112,7 +112,32 @@ public class AppsflyerAnalytics extends ContextAnalytics {
 
     @Override
     public void sendGeneralEvent(Map<String, Object> value) {
+        // no op, only for GTM
+    }
 
+    @Override
+    public void sendGeneralEvent(String event, String category, String action, String label) {
+        // no op, only for GTM
+    }
+
+    @Override
+    public void sendEnhanceECommerceEvent(Map<String, Object> value) {
+        // no op, only for GTM
+    }
+
+    @Override
+    public void sendScreenAuthenticated(String screenName) {
+        // no op, only for GTM
+    }
+
+    @Override
+    public void sendScreenAuthenticated(String screenName, Map<String, String> customDimension) {
+        // no op, only for GTM
+    }
+
+    @Override
+    public void sendScreenAuthenticated(String screenName, String shopID, String shopType, String pageType, String productId) {
+        // no op, only for GTM
     }
 
     public void initAppsFlyer(String key, String userID, AppsFlyerConversionListener conversionListener) {

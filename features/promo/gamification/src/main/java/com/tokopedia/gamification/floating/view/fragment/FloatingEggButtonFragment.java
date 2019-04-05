@@ -41,11 +41,11 @@ import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
+import com.tokopedia.gamification.data.entity.TokenDataEntity;
+import com.tokopedia.gamification.data.entity.TokenFloatingEntity;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.floating.listener.OnDragTouchListener;
 import com.tokopedia.gamification.floating.view.contract.FloatingEggContract;
-import com.tokopedia.gamification.floating.view.model.TokenData;
-import com.tokopedia.gamification.floating.view.model.TokenFloating;
 import com.tokopedia.gamification.floating.view.presenter.FloatingEggPresenter;
 
 import javax.inject.Inject;
@@ -85,6 +85,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     public FloatingEggPresenter floatingEggPresenter;
     private boolean isHideAnimating;
     private boolean needHideFloatingToken = true;
+    private OnDragListener onDragListener;
 
     public static FloatingEggButtonFragment newInstance() {
         return new FloatingEggButtonFragment();
@@ -345,10 +346,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     }
 
     @Override
-    public void onSuccessGetToken(final TokenData tokenData) {
+    public void onSuccessGetToken(final TokenDataEntity tokenData) {
         final String sumTokenString = tokenData.getSumTokenStr();
 
-        TokenFloating tokenFloating = tokenData.getFloating();
+        TokenFloatingEntity tokenFloating = tokenData.getFloating();
         final String pageUrl = tokenFloating.getPageUrl();
         final String appLink = tokenFloating.getApplink();
 
@@ -379,12 +380,18 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                     new OnDragTouchListener.OnDragActionListener() {
                         @Override
                         public void onDragStart(View view) {
+                            if (onDragListener != null) {
+                                onDragListener.onDragStart();
+                            }
                             vgFloatingEgg.setScaleX(SCALE_ON_DOWN);
                             vgFloatingEgg.setScaleY(SCALE_ON_DOWN);
                         }
 
                         @Override
                         public void onDragEnd(View view) {
+                            if (onDragListener != null) {
+                                onDragListener.onDragEnd();
+                            }
                             animateToLeftOrRightBound();
                         }
                     }));
@@ -562,5 +569,14 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                             idToken
                     );
         }
+    }
+
+    public void setOnDragListener(OnDragListener onDragListener) {
+        this.onDragListener = onDragListener;
+    }
+
+    public interface OnDragListener {
+        void onDragStart();
+        void onDragEnd();
     }
 }

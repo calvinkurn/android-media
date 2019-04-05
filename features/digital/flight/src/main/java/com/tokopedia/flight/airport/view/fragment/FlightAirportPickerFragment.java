@@ -16,8 +16,8 @@ import com.tokopedia.flight.airport.di.DaggerFlightAirportComponent;
 import com.tokopedia.flight.airport.di.FlightAirportModule;
 import com.tokopedia.flight.airport.view.adapter.FlightAirportAdapterTypeFactory;
 import com.tokopedia.flight.airport.view.adapter.FlightAirportClickListener;
+import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerContract;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenterImpl;
-import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerView;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 
@@ -33,7 +33,7 @@ import static com.tokopedia.flight.airport.view.activity.FlightAirportPickerActi
  */
 
 public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitable, FlightAirportAdapterTypeFactory>
-        implements FlightAirportPickerView, FlightAirportClickListener {
+        implements FlightAirportPickerContract.View, FlightAirportClickListener {
 
     public static final String EXTRA_SELECTED_AIRPORT = "extra_selected_aiport";
 
@@ -71,7 +71,7 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitabl
     @Override
     public void loadData(int page) {
         if (isFirstTime) searchInputView.setVisibility(View.GONE);
-        flightAirportPickerPresenter.getAirportList(searchInputView.getSearchText(), isFirstTime);
+        flightAirportPickerPresenter.getPopularCityAirport();
     }
 
     @Override
@@ -95,12 +95,12 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitabl
 
     @Override
     public void onSearchSubmitted(String text) {
-        flightAirportPickerPresenter.getAirportList(searchInputView.getSearchText(), isFirstTime);
+        flightAirportPickerPresenter.getSuggestionAirport(searchInputView.getSearchText());
     }
 
     @Override
     public void onSearchTextChanged(String text) {
-        flightAirportPickerPresenter.getAirportList(text, isFirstTime);
+        flightAirportPickerPresenter.getSuggestionAirport(text);
     }
 
     @Override

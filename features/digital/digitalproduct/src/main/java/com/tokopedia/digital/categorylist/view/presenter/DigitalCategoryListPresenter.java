@@ -2,19 +2,21 @@ package com.tokopedia.digital.categorylist.view.presenter;
 
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
-import com.tokopedia.core.exception.SessionExpiredException;
-import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.digital.categorylist.data.cloud.entity.tokocash.TokoCashData;
+import com.tokopedia.digital.categorylist.data.cloud.exception.SessionExpiredException;
 import com.tokopedia.digital.categorylist.domain.interactor.IDigitalCategoryListInteractor;
 import com.tokopedia.digital.categorylist.view.listener.IDigitalCategoryListView;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
+import com.tokopedia.network.constant.ErrorNetMessage;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Subscriber;
 
@@ -22,22 +24,22 @@ import rx.Subscriber;
  * @author anggaprasetiyo on 7/3/17.
  */
 
-public class DigitalCategoryListPresenter implements IDigitalCategoryListPresenter {
+public class DigitalCategoryListPresenter extends BaseDaggerPresenter<IDigitalCategoryListView> implements IDigitalCategoryListPresenter {
 
     private final IDigitalCategoryListInteractor digitalCategoryListInteractor;
-    private final IDigitalCategoryListView digitalCategoryListView;
+    private DigitalModuleRouter digitalModuleRouter;
 
+    @Inject
     public DigitalCategoryListPresenter(
             IDigitalCategoryListInteractor digitalCategoryListInteractor,
-            IDigitalCategoryListView iDigitalCategoryListView
-    ) {
+            DigitalModuleRouter digitalModuleRouter) {
         this.digitalCategoryListInteractor = digitalCategoryListInteractor;
-        this.digitalCategoryListView = iDigitalCategoryListView;
+        this.digitalModuleRouter = digitalModuleRouter;
     }
 
     @Override
     public void processGetDigitalCategoryList(String deviceVersion) {
-        digitalCategoryListView.disableSwipeRefresh();
+        getView().disableSwipeRefresh();
         digitalCategoryListInteractor.getDigitalCategoryItemDataList(
                 deviceVersion,
                 getSubscriberDigitalCategoryList()
@@ -46,8 +48,7 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
 
     @Override
     public void processGetTokoCashData() {
-        digitalCategoryListInteractor.getTokoCashData(getSubscriberFetchTokoCashData(),
-                digitalCategoryListView.getAppContext());
+        digitalCategoryListInteractor.getTokoCashData(getSubscriberFetchTokoCashData());
     }
 
     @NonNull
@@ -55,25 +56,25 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
         return new Subscriber<List<DigitalCategoryItemData>>() {
             @Override
             public void onCompleted() {
-                digitalCategoryListView.enableSwipeRefresh();
+                getView().enableSwipeRefresh();
             }
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof RuntimeHttpErrorException) {
-                    digitalCategoryListView.renderErrorHttpGetDigitalCategoryList(
+                /*if (e instanceof RuntimeHttpErrorException) {
+                    getView().renderErrorHttpGetDigitalCategoryList(
                             e.getMessage()
                     );
-                } else if (e instanceof UnknownHostException || e instanceof ConnectException) {
-                    digitalCategoryListView.renderErrorNoConnectionGetDigitalCategoryList(
+                } else*/ if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                    getView().renderErrorNoConnectionGetDigitalCategoryList(
                             ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_SHORT
                     );
                 } else if (e instanceof SocketTimeoutException) {
-                    digitalCategoryListView.renderErrorTimeoutConnectionGetDigitalCategoryList(
+                    getView().renderErrorTimeoutConnectionGetDigitalCategoryList(
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT_SHORT
                     );
                 } else {
-                    digitalCategoryListView.renderErrorGetDigitalCategoryList(
+                    getView().renderErrorGetDigitalCategoryList(
                             ErrorNetMessage.MESSAGE_ERROR_DEFAULT_SHORT
                     );
                 }
@@ -81,7 +82,7 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
 
             @Override
             public void onNext(List<DigitalCategoryItemData> digitalCategoryItemDataList) {
-                digitalCategoryListView.renderDigitalCategoryDataList(
+                getView().renderDigitalCategoryDataList(
                         digitalCategoryItemDataList
                 );
             }
@@ -99,14 +100,14 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
             @Override
             public void onError(Throwable e) {
                 if (e instanceof SessionExpiredException
-                        && digitalCategoryListView.isUserLogin()) {
-                    ServerErrorHandler.showForceLogoutDialog();
+                        && getView().isUserLogin()) {
+                    digitalModuleRouter.showForceLogoutDialog();
                 }
             }
 
             @Override
             public void onNext(TokoCashData tokoCashData) {
-                digitalCategoryListView.renderTokoCashData(tokoCashData);
+                getView().renderTokoCashData(tokoCashData);
             }
         };
     }
