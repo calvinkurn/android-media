@@ -511,41 +511,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
     }
 
-    private void renderLogisticPromo(ShipmentCartItemModel model, RecipientAddressModel address) {
-        RecipientAddressModel currentAddress;
-        if (address == null) {
-            currentAddress = model.getRecipientAddressModel();
-        } else {
-            currentAddress = address;
-        }
-        ShipmentDetailData detailData = model.getSelectedShipmentDetailData();
-
-        llShipmentContainer.setVisibility(View.GONE);
-        llShipmentBlackboxContainer.setVisibility(View.GONE);
-        llShipmentRecommendationContainer.setVisibility(View.VISIBLE);
-        tvChangeSelectedDuration.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mActionListener.onChangeShippingDuration(model, currentAddress,
-                        model.getShopShipmentList(), getAdapterPosition());
-            }
-        });
-
-        tvTickerInfo.setVisibility(View.GONE);
-        llShipmentInfoTicker.setVisibility(View.GONE);
-        llSelectShipmentRecommendation.setVisibility(View.GONE);
-        llSelectedShipmentRecommendation.setVisibility(View.VISIBLE);
-        llShippingOptionsContainer.setVisibility(View.VISIBLE);
-        tvSelectedCourierRecommendation.setText(detailData.getSelectedCourier().getName());
-        tvChangeSelectedCourierRecommendation.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_disabled));
-        tvSelectedDurationRecommendation.setText(detailData.getSelectedCourier().getServiceName());
-        // logistic promo has no price
-//        tvSelectedPriceRecommendation.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-//                detailData.getSelectedCourier().getShipperPrice(), false));
-        llCourierRecommendationStateLoading.setVisibility(View.GONE);
-
-    }
-
     /*private void setMargin(int topMargin) {
         ViewGroup.MarginLayoutParams layoutParams =
                 (ViewGroup.MarginLayoutParams) cvInvoiceItem.getLayoutParams();
