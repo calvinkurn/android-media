@@ -122,6 +122,36 @@ public class CountDownView extends FrameLayout {
         startAutoRefreshCounter();
     }
 
+
+    public void setupForTokopoints(final long expiredTime,
+                      final CountDownListener listener) {
+
+        stopAutoRefreshCounter();
+        refreshCounterHandler = new Handler();
+        runnableRefreshCounter = new Runnable() {
+            @Override
+            public void run() {
+                if (expiredTime > 0) {
+                    Date currentDate = new Date();
+                    long currentMillisecond = currentDate.getTime();
+
+                    long diff = currentMillisecond - expiredTime;
+                    TimeDiffModel timeDiff = new TimeDiffModel();
+                    timeDiff.setSecond((int) (diff / 1000 % 60));
+                    timeDiff.setMinute((int) (diff / (60 * 1000) % 60));
+                    timeDiff.setHour((int) (diff / (60 * 60 * 1000) % 24));
+
+                    setTime(timeDiff.getHour(), timeDiff.getMinute(), timeDiff.getSecond());
+
+                    refreshCounterHandler.postDelayed(this, REFRESH_DELAY_MS);
+                } else {
+                    handleExpiredTime(listener);
+                }
+            }
+        };
+        startAutoRefreshCounter();
+    }
+
     private void handleExpiredTime(CountDownListener listener) {
         stopAutoRefreshCounter();
         setTime(0, 0, 0);

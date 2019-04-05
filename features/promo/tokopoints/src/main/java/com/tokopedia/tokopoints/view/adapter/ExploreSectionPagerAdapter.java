@@ -18,23 +18,17 @@ import android.widget.ViewFlipper;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
-import com.tokopedia.tokopoints.view.model.CouponValueEntity;
+import com.tokopedia.tokopoints.view.model.section.CountdownAttr;
 import com.tokopedia.tokopoints.view.model.section.ImageList;
 import com.tokopedia.tokopoints.view.model.section.SectionContent;
 import com.tokopedia.tokopoints.view.presenter.TokoPointsHomePresenterNew;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static android.os.Build.ID;
 
 public class ExploreSectionPagerAdapter extends PagerAdapter {
     public static final int TAB_EXPLORE = 0;
@@ -44,6 +38,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
     private SectionContent mCouponSection;
     private TokoPointsHomePresenterNew mPresenter;
     private SwipeToRefresh swipeToRefresh[] = new SwipeToRefresh[2];
+    private CountDownView countDownView;
 
     public ExploreSectionPagerAdapter(Context context, TokoPointsHomePresenterNew presenter, List<SectionContent> sections, SectionContent couponSection) {
         this.mLayoutInflater = LayoutInflater.from(context);
@@ -209,6 +204,17 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             view.setVisibility(View.GONE);
             return view;
         }
+
+
+//        if (content.getCountdownAttr() != null &&
+//                true &&
+//                content.getCountdownAttr().getExpiredCountDown() > 0) {
+//            countDownView = view.findViewById(R.id.tp_count_down_view);
+//            countDownView.findViewById(R.id.tp_count_down_view).setVisibility(View.VISIBLE);
+//            countDownView.setupForTokopoints(100 * 1000, () -> {
+//                mPresenter.getTokoPointDetail();
+//            });
+//        }
 
         if (!content.getCta().isEmpty()) {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);
