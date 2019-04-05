@@ -124,10 +124,16 @@ public class ShipmentDataRequestConverter {
                     .warehouseId(shipmentCartItemModel.getFulfillmentId())
                     .productData(convertToProductDataCheckout(shipmentCartItemModel.getCartItemModels()));
 
+            ArrayList<String> promoCodes = new ArrayList<>();
             if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
-                ArrayList<String> promoCodes = new ArrayList<>();
                 promoCodes.add(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode());
+            }
+
+            if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
                 promoCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+            }
+
+            if (promoCodes.size() > 0) {
                 shopProductCheckoutBuilder.promoCodes(promoCodes);
             }
 
