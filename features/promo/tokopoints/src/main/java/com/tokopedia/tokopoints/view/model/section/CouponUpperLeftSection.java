@@ -10,7 +10,7 @@ public class CouponUpperLeftSection {
     private String backgroundColor;
 
     @SerializedName("textAttributes")
-    List<TextAttributes> textAttributes;
+    private List<TextAttributes> textAttributes;
 
     public String getBackgroundColor() {
         return backgroundColor;

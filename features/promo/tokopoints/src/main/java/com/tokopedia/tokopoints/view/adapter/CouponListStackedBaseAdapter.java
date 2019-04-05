@@ -3,6 +3,7 @@ package com.tokopedia.tokopoints.view.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import rx.Subscriber;
 
@@ -281,7 +284,7 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
                 || item.getUpperLeftSection().getTextAttributes().isEmpty()
                 || item.getUpperLeftSection().getTextAttributes().get(0) == null
                 || TextUtils.isEmpty(item.getUpperLeftSection().getTextAttributes().get(0).getText())) {
-            holder.tvStackCount.setVisibility(View.GONE);
+            holder.tvStackCount.setVisibility(View.VISIBLE);
         } else {
             holder.tvStackCount.setVisibility(View.VISIBLE);
             holder.tvStackCount.setText(item.getUpperLeftSection().getTextAttributes().get(0).getText());
@@ -299,6 +302,13 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
                     holder.tvStackCount.setTextColor(Color.parseColor(item.getUpperLeftSection().getTextAttributes().get(0).getColor()));
                 } catch (IllegalArgumentException iae) {
                     holder.tvStackCount.setTextColor(ContextCompat.getColor(holder.tvStackCount.getContext(), R.color.medium_green));
+                }
+            }
+
+            if (!TextUtils.isEmpty(item.getUpperLeftSection().getBackgroundColor())) {
+                GradientDrawable shape = getShape(item.getUpperLeftSection().getBackgroundColor(), holder.tvStackCount.getContext());
+                if (shape != null) {
+                    holder.tvStackCount.setBackground(shape);
                 }
             }
         }
@@ -343,5 +353,27 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
             holder.progressTimer.setVisibility(View.GONE);
             holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
         }
+    }
+
+    private GradientDrawable getShape(String hex, Context context) {
+        try {
+            GradientDrawable shape = new GradientDrawable();
+            shape.setShape(GradientDrawable.RECTANGLE);
+            shape.setCornerRadii(new float[]{context.getResources().getDimensionPixelOffset(R.dimen.dp_4),
+                    context.getResources().getDimensionPixelOffset(R.dimen.dp_4),
+                    context.getResources().getDimensionPixelOffset(R.dimen.dp_4),
+                    context.getResources().getDimensionPixelOffset(R.dimen.dp_4),
+                    context.getResources().getDimensionPixelOffset(R.dimen.dp_4),
+                    context.getResources().getDimensionPixelOffset(R.dimen.dp_4),
+                    context.getResources().getDimensionPixelOffset(R.dimen.dp_4),
+                    context.getResources().getDimensionPixelOffset(R.dimen.dp_4)});
+            shape.setColor(Color.parseColor(hex));
+            shape.setStroke(context.getResources().getDimensionPixelOffset(R.dimen.dp_2), Color.parseColor(hex));
+            return shape;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

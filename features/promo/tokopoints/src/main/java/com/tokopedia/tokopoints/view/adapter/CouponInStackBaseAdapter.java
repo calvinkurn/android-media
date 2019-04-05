@@ -3,7 +3,9 @@ package com.tokopedia.tokopoints.view.adapter;
 import android.content.Context;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -51,6 +53,7 @@ public class CouponInStackBaseAdapter extends BaseAdapter<CouponValueEntity> {
         public CountDownTimer timer;
         public ProgressBar progressTimer;
         public View viewCouponNew;
+        public CardView cvShadow1, cvShadow2, cvData;
 
         public ViewHolder(View view) {
             super(view);
@@ -63,6 +66,9 @@ public class CouponInStackBaseAdapter extends BaseAdapter<CouponValueEntity> {
             tvMinTxnLabel = view.findViewById(R.id.tv_min_txn_label);
             progressTimer = view.findViewById(R.id.progress_timer);
             viewCouponNew = view.findViewById(R.id.view_coupon_new);
+            cvShadow1 = view.findViewById(R.id.cv_shadow_1);
+            cvShadow2 = view.findViewById(R.id.cv_shadow_2);
+            cvData = view.findViewById(R.id.cv_data);
         }
 
         @Override
@@ -222,6 +228,28 @@ public class CouponInStackBaseAdapter extends BaseAdapter<CouponValueEntity> {
         } else {
             holder.tvMinTxnValue.setVisibility(View.VISIBLE);
             holder.tvMinTxnValue.setText(item.getMinimumUsage());
+        }
+
+        ConstraintLayout.LayoutParams layoutParamsCv1 = (ConstraintLayout.LayoutParams) holder.cvShadow1.getLayoutParams();
+        ConstraintLayout.LayoutParams layoutParamsCvData = (ConstraintLayout.LayoutParams) holder.cvData.getLayoutParams();
+        if (item.isStacked()) {
+            layoutParamsCv1.setMargins(holder.cvShadow1.getResources().getDimensionPixelOffset(R.dimen.dp_12),
+                    0,
+                    holder.cvShadow1.getResources().getDimensionPixelOffset(R.dimen.dp_12),
+                    holder.cvShadow1.getResources().getDimensionPixelOffset(R.dimen.dp_5));
+            layoutParamsCvData.setMargins(0, 0, 0,
+                    holder.cvShadow1.getResources().getDimensionPixelOffset(R.dimen.dp_10));
+            holder.cvShadow1.setVisibility(View.VISIBLE);
+            holder.cvShadow2.setVisibility(View.VISIBLE);
+            holder.cvShadow1.setLayoutParams(layoutParamsCv1);
+            holder.cvData.setLayoutParams(layoutParamsCvData);
+        } else {
+            holder.cvShadow1.setVisibility(View.GONE);
+            holder.cvShadow2.setVisibility(View.GONE);
+            layoutParamsCv1.setMargins(0, 0, 0, 0);
+            layoutParamsCvData.setMargins(0, 0, 0, 0);
+            holder.cvShadow1.setLayoutParams(layoutParamsCv1);
+            holder.cvData.setLayoutParams(layoutParamsCvData);
         }
 
         holder.imgBanner.setOnClickListener(v -> {
