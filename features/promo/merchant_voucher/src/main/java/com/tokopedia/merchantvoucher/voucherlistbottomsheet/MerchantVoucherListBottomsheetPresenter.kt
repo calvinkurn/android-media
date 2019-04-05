@@ -85,16 +85,21 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                             val message = responseGetPromoStack.data.message.text
                             view.onErrorCheckPromoFirstStep(message, isFromList)
                         } else {
-                            responseGetPromoStack.data.voucherOrders.forEach {
-                                if (!it.success && it.message.state.equals("red")) {
-                                    view.onErrorCheckPromoFirstStep(it.message.text, isFromList)
-                                    return
-                                }
-                            }
-                            if (responseGetPromoStack.data.clashings.isClashedPromos) {
-                                view.onClashCheckPromoFirstStep(responseGetPromoStack.data.clashings)
+                            if (responseGetPromoStack.data.codes.isEmpty() && responseGetPromoStack.data.voucherOrders.isEmpty()) {
+                                view.hideLoadingDialog()
+                                view.onErrorCheckPromoFirstStep("", isFromList)
                             } else {
-                                view.onSuccessCheckPromoFirstStep(responseGetPromoStack, promoMerchantCode, isFromList)
+                                responseGetPromoStack.data.voucherOrders.forEach {
+                                    if (!it.success && it.message.state.equals("red")) {
+                                        view.onErrorCheckPromoFirstStep(it.message.text, isFromList)
+                                        return
+                                    }
+                                }
+                                if (responseGetPromoStack.data.clashings.isClashedPromos) {
+                                    view.onClashCheckPromoFirstStep(responseGetPromoStack.data.clashings)
+                                } else {
+                                    view.onSuccessCheckPromoFirstStep(responseGetPromoStack, promoMerchantCode, isFromList)
+                                }
                             }
                         }
                     }

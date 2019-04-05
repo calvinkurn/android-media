@@ -866,15 +866,19 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 String message = responseGetPromoStack.getMessage().get(0);
                                 getView().renderErrorCheckPromoShipmentData(message);
                             } else {
-                                if (responseGetPromoStack.getStatus().equalsIgnoreCase("OK")) {
-                                    if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
-                                        getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings());
-                                    } else {
-                                        getView().renderCheckPromoStackCodeFromCourierSuccess(responseGetPromoStack.getData(), itemPosition, noToast);
-                                    }
+                                if (responseGetPromoStack.getData().getCodes().size() == 0 && responseGetPromoStack.getData().getVoucherOrders().size() == 0) {
+                                    getView().showToastError("");
                                 } else {
-                                    if (!noToast) {
-                                        getView().showToastError(responseGetPromoStack.getMessage().get(0));
+                                    if (responseGetPromoStack.getStatus().equalsIgnoreCase("OK")) {
+                                        if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
+                                            getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings());
+                                        } else {
+                                            getView().renderCheckPromoStackCodeFromCourierSuccess(responseGetPromoStack.getData(), itemPosition, noToast);
+                                        }
+                                    } else {
+                                        if (!noToast) {
+                                            getView().showToastError(responseGetPromoStack.getMessage().get(0));
+                                        }
                                     }
                                 }
                             }

@@ -25,7 +25,7 @@ class CheckPromoFirstStepAfterClashSubscriber(val view: ICartListView?,
     override fun onError(e: Throwable) {
         e.printStackTrace()
         view?.hideProgressLoading()
-        view?.showToastMessageRed(ErrorHandler.getErrorMessage(view.activity, e));
+        view?.showToastMessageRed(ErrorHandler.getErrorMessage(view.activity, e))
     }
 
     override fun onNext(response: GraphqlResponse) {
@@ -38,7 +38,12 @@ class CheckPromoFirstStepAfterClashSubscriber(val view: ICartListView?,
             if (responseGetPromoStack.data.clashings.isClashedPromos) {
                 view?.onClashCheckPromo(responseGetPromoStack.data.clashings)
             } else {
-                view?.onSuccessCheckPromoFirstStep(responseGetPromoStack)
+                if (responseGetPromoStack.data.codes.isEmpty() && responseGetPromoStack.data.voucherOrders.isEmpty()) {
+                    view?.hideProgressLoading()
+                    view?.showToastMessageRed("")
+                } else {
+                    view?.onSuccessCheckPromoFirstStep(responseGetPromoStack)
+                }
             }
         }
     }
