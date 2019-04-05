@@ -195,6 +195,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     }
 
     private fun cancelVideo() {
+        videoPath = ""
         videoPreview.stopPlayback()
         videoPreview.setVideoURI(null)
 
@@ -204,7 +205,6 @@ open class VideoPickerActivity : BaseSimpleActivity(),
             }
         }
 
-        videoPath = ""
         initViewPager()
         onVideoVisible()
     }
@@ -246,7 +246,10 @@ open class VideoPickerActivity : BaseSimpleActivity(),
             videoPath = filePath
 
             videoPreview.setVideoURI(uriFile)
-
+            videoPreview.setOnCompletionListener {
+                videoPreview.stopPlayback()
+                onVideoVisible()
+            }
             videoPreview.setOnPreparedListener { mp ->
                 mp.isLooping = true //loop
                 playVideoPreview()
@@ -256,7 +259,13 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     override fun onPreviewVideoVisible() {
         layoutPreview.bringToFront()
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            layoutPreview.elevation = 90f
+            containerPicker.elevation = 0f
+        }
         showBackButton(false)
+        layoutPreview.show()
+        containerPicker.hide()
         btnDone.show()
 
         btnDeleteVideo.text = if (isVideoSourcePicker) {
@@ -268,7 +277,13 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     override fun onVideoVisible() {
         containerPicker.bringToFront()
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            containerPicker.elevation = 90f
+            layoutPreview.elevation = 0f
+        }
         showBackButton(true)
+        containerPicker.show()
+        layoutPreview.hide()
         btnDone.hide()
     }
 
