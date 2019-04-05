@@ -20,8 +20,10 @@ import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
+import android.support.v4.widget.NestedScrollView
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
+import android.util.Log
 import android.view.*
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
@@ -38,6 +40,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.design.widget.ObservableNestedScrollView
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
 import com.tokopedia.gallery.ImageReviewGalleryActivity
@@ -84,6 +87,8 @@ import com.tokopedia.product.detail.view.fragment.partialview.*
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
 import com.tokopedia.product.detail.view.util.FlingBehavior
+import com.tokopedia.product.detail.view.viewmodel.Loaded
+import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
 import com.tokopedia.product.detail.view.widget.CountDrawable
@@ -157,7 +162,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
     lateinit var productInfoViewModel: ProductInfoViewModel
     lateinit var productWarehouseViewModel: ProductWarehouseViewModel
 
-    lateinit var performanceMonitoring: PerformanceMonitoring
+    lateinit var performanceMonitoringP1: PerformanceMonitoring
+    lateinit var performanceMonitoringP2: PerformanceMonitoring
+    lateinit var performanceMonitoringFull: PerformanceMonitoring
     lateinit var remoteConfig: RemoteConfig
 
     private var isAppBarCollapsed = false
@@ -202,7 +209,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
         const val SAVED_VARIANT = "saved_variant"
 
         private const val PDP_P1_TRACE = "mp_pdp_p1"
-        private const val PDP_P2_TRACE = "mp_pdp_p2_p3"
+        private const val PDP_P2_TRACE = "mp_pdp_p2"
+        private const val PDP_P3_TRACE = "mp_pdp_p3"
         private const val ENABLE_VARIANT = "mainapp_discovery_enable_pdp_variant"
 
         private const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
@@ -243,7 +251,11 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        performanceMonitoring = PerformanceMonitoring.start(PDP_P1_TRACE)
+        performanceMonitoringP1 = PerformanceMonitoring.start(PDP_P1_TRACE)
+        performanceMonitoringP2 = PerformanceMonitoring.start(PDP_P2_TRACE)
+        if (!productInfoViewModel.isUserSessionActive())
+            performanceMonitoringFull = PerformanceMonitoring.start(PDP_P3_TRACE)
+
         if (savedInstanceState != null) {
             userInputNotes = savedInstanceState.getString(SAVED_NOTE, "")
             userInputQuantity = savedInstanceState.getInt(SAVED_QUANTITY, 1)
@@ -274,7 +286,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         productInfoViewModel.productInfoP1Resp.observe(this, Observer {
             swipe_refresh_layout.isRefreshing = false
-            performanceMonitoring.stopTrace()
+            performanceMonitoringP1.stopTrace()
             when (it) {
                 is Success -> onSuccessGetProductInfo(it.data)
                 is Fail -> onErrorGetProductInfo(it.throwable)
@@ -288,12 +300,38 @@ class ProductDetailFragment : BaseDaggerFragment() {
         })
 
         productInfoViewModel.productInfoP2resp.observe(this, Observer {
+            if(!productInfoViewModel.isUserSessionActive() && ::performanceMonitoringFull.isInitialized)
+                performanceMonitoringFull.stopTrace()
+
+            performanceMonitoringP2.stopTrace()
             it?.run { renderProductInfo2(this) }
         })
 
         productInfoViewModel.productInfoP3resp.observe(this, Observer {
-            performanceMonitoring.stopTrace()
+            performanceMonitoringFull.stopTrace()
             it?.run { renderProductInfo3(this) }
+        })
+
+        productInfoViewModel.loadOtherProduct.observe(this, Observer {
+            when(it){
+                is Loading -> otherProductView.startLoading()
+                is Loaded -> {
+                    otherProductView.renderData((it.data as? Success)?.data ?: listOf())
+                }
+            }
+        })
+
+        productInfoViewModel.loadTopAdsProduct.observe(this, Observer {
+            when(it){
+                is Loading -> {
+                    loading_topads_product.visible()
+                    topads_carousel.gone()
+                }
+                is Loaded -> {
+                    loading_topads_product.gone()
+                    (it.data as? Success)?.data?.let { topads_carousel.setData(it) }
+                }
+            }
         })
 
     }
@@ -340,6 +378,13 @@ class ProductDetailFragment : BaseDaggerFragment() {
             actionButtonView.gone()
             base_btn_affiliate.visible()
             loadingAffiliate.visible()
+        }
+
+        nested_scroll.listener = object : ObservableNestedScrollView.ScrollViewListener {
+            override fun onScrollEnded(scrollView: ObservableNestedScrollView, x: Int, y: Int, oldX: Int, oldY: Int) {
+                scrollView.startLoad()
+                productInfoViewModel.loadMore()
+            }
         }
 
         merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(object : MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
@@ -653,6 +698,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     AppBarState.EXPANDED -> {
                         isAppBarCollapsed = false
                         expandedAppBar()
+                        nested_scroll.completeLoad()
                     }
                     AppBarState.COLLAPSED -> {
                         isAppBarCollapsed = true
@@ -800,6 +846,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun loadProductData(forceRefresh: Boolean = false) {
+        if (forceRefresh){
+            otherProductView.renderData(listOf())
+            topads_carousel.gone()
+        }
         if (productId != null || (productKey != null && shopDomain != null)) {
             productInfoViewModel.getProductInfo(ProductParams(productId, shopDomain, productKey), forceRefresh)
         }
@@ -909,6 +959,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productInfoViewModel.productInfoP2resp.removeObservers(this)
         productInfoViewModel.productInfoP3resp.removeObservers(this)
         productInfoViewModel.productVariantResp.removeObservers(this)
+        productInfoViewModel.loadOtherProduct.removeObservers(this)
+        productInfoViewModel.loadTopAdsProduct.removeObservers(this)
         productInfoViewModel.clear()
         productWarehouseViewModel.clear()
         super.onDestroy()
@@ -955,8 +1007,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     shopInfo?.location ?: "", ::gotoRateEstimation)
         }
         shopInfo?.let { updateWishlist(it, productInfoP3.isWishlisted) }
-
-        productInfoP3.displayAds?.let { topads_carousel.setData(it) }
         productInfoP3.pdpAffiliate?.let { renderAffiliate(it) }
 
         actionButtonView.renderData(productInfoP3.isExpressCheckoutType)
@@ -1157,7 +1207,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGetProductInfo(productInfoP1: ProductInfoP1) {
-        performanceMonitoring = PerformanceMonitoring.start(PDP_P2_TRACE)
         val data = productInfoP1.productInfo
         productId = data.basic.id.toString()
         productInfo = data
