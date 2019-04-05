@@ -85,7 +85,7 @@ public interface ShipmentContract {
 
         void renderCheckPromoCodeFromCourierSuccess(PromoCodeCartListData promoCodeCartListData, int itemPosition, boolean noToast);
 
-        void renderCheckPromoStackCodeFromCourierSuccess(DataUiModel dataUiModel, int itemPosition, boolean noToast);
+        void renderCheckPromoStackCodeFromCourierSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel, int itemPosition, boolean noToast);
 
         void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
 
@@ -306,6 +306,8 @@ public interface ShipmentContract {
         void cancelAutoApplyCoupon(String variant);
 
         void cancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse);
+
+        void cancelAutoApplyPromoStackLogistic(String promoCode);
 
         void cancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList,
                                                  boolean isFromMultipleAddress, boolean isOneClickShipment, boolean isTradeIn,

@@ -758,13 +758,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCheckPromoStackCodeFromCourierSuccess(DataUiModel dataUiModel,
+    public void renderCheckPromoStackCodeFromCourierSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel,
                                                             int itemPosition, boolean noToast) {
         if (!noToast && !shipmentAdapter.isCourierPromoStillExist()) {
-            showToastNormal(dataUiModel.getMessage().getText());
+            showToastNormal(responseGetPromoStackUiModel.getData().getMessage().getText());
         }
-        setAppliedPromoStackingCodeData(dataUiModel);
         setCourierPromoApplied(itemPosition);
+        onSuccessCheckPromoFirstStep(responseGetPromoStackUiModel);
     }
 
     @Override
@@ -1851,7 +1851,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 if (isToogleYearEndPromoOn()) {
                     sendAnalyticsOnViewPreselectedCourierAfterPilihDurasi(recommendedCourier.getShipperProductId());
                 }
-                ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier);
+                ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
+                if (shipmentCartItemModel != null && shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
+                        !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode())) {
+                    shipmentPresenter.cancelAutoApplyPromoStackLogistic(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                    shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
+                }
+                shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier);
                 shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
                 shipmentAdapter.setShippingCourierViewModels(shippingCourierViewModels, recommendedCourier, cartItemPosition);
                 if (!TextUtils.isEmpty(recommendedCourier.getPromoCode())) {
