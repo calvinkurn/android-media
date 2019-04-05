@@ -11,7 +11,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_8">
 
         <LinearLayout
             android:id="@+id/contentContainer"
@@ -86,16 +87,15 @@
                 android:layout_marginTop="@dimen/dp_4"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_4"
                 tools:text="Harga"/>
 
             <LinearLayout
                 android:id="@+id/rating_review_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_4"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_8"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:visibility="gone">
@@ -125,7 +125,6 @@
             android:scaleType="fitXY"
             android:background="@drawable/top_ads_icon_product_card_background"
             android:layout_alignBottom="@id/contentContainer"
-            android:layout_marginBottom="@dimen/dp_8"
             android:visibility="gone"
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/dp_8"/>
