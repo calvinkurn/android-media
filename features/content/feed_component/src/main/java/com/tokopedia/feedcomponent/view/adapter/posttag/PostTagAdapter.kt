@@ -57,7 +57,7 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val item: PostTagItem = itemList.get(position)
-        holder.bind(item, layoutType, listener, positionInFeed)
+        holder.bind(item, layoutType, listener, positionInFeed, position)
     }
 
     class Holder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -71,7 +71,8 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
 
         fun bind(item: PostTagItem, layoutType: String,
                  listener: DynamicPostViewHolder.DynamicPostListener,
-                 positionInFeed: Int) {
+                 positionInFeed: Int,
+                 itemPosition: Int) {
             productLayout = itemView.findViewById(R.id.productLayout)
             productImage = itemView.findViewById(R.id.productImage)
             productPrice = itemView.findViewById(R.id.productPrice)
@@ -86,7 +87,7 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
                 productTagBackground.visibility = View.GONE
             }
             productLayout.setOnClickListener(
-                getItemClickNavigationListener(listener, positionInFeed, item)
+                getItemClickNavigationListener(listener, positionInFeed, item, itemPosition)
             )
 
             if (layoutType.equals(TYPE_LIST)) {
@@ -94,16 +95,16 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
                 productName = itemView.findViewById(R.id.productName)
                 productName.text = item.text
                 productNameSection.setOnClickListener(
-                        getItemClickNavigationListener(listener, positionInFeed, item))
+                        getItemClickNavigationListener(listener, positionInFeed, item, itemPosition))
             }
         }
 
         private fun getItemClickNavigationListener(listener: DynamicPostViewHolder.DynamicPostListener,
                                                    positionInFeed: Int,
-                                                   item: PostTagItem)
+                                                   item: PostTagItem, itemPosition: Int)
                 : View.OnClickListener {
              return View.OnClickListener {
-                 listener.onPostTagItemClick(positionInFeed, item.applink)
+                 listener.onPostTagItemClick(positionInFeed, item.applink, item, itemPosition)
                  listener.onAffiliateTrackClicked(mappingTracking(item.tracking))
              }
         }

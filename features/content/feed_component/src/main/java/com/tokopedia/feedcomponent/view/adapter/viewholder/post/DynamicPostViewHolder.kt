@@ -28,6 +28,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kotlin.extensions.view.*
@@ -390,7 +391,7 @@ open class DynamicPostViewHolder(v: View,
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
 
-        fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String)
+        fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String, postTagItem: PostTagItem, itemPosition: Int)
 
         fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>)
     }

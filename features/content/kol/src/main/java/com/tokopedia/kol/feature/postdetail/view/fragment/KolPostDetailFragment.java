@@ -32,6 +32,7 @@ import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
@@ -49,6 +50,7 @@ import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
+import com.tokopedia.kol.analytics.PostTagAnalytics;
 import com.tokopedia.kol.common.util.PostMenuListener;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
@@ -109,6 +111,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private KolRouter kolRouter;
     private PerformanceMonitoring performanceMonitoring;
 
+    private DynamicPostViewModel dynamicPostViewModel;
     private PostDetailFooterModel postDetailFooterModel;
     private boolean isTraceStopped;
 
@@ -117,6 +120,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Inject
     UserSessionInterface userSession;
+
+    @Inject
+    PostTagAnalytics postTagAnalytics;
 
     KolPostDetailAdapter adapter;
 
@@ -247,15 +253,43 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void onSuccessGetKolPostDetail(List<Visitable> list,
                                           PostDetailViewModel postDetailViewModel) {
         adapter.setList(list);
+        if (!postDetailViewModel.getDynamicPostViewModel().getPostList().isEmpty()) {
+            this.dynamicPostViewModel = ((DynamicPostViewModel) postDetailViewModel.getDynamicPostViewModel().getPostList().get(0));
+            trackImpression(dynamicPostViewModel);
+        }
         setFooter(postDetailViewModel);
     }
 
+    private void trackImpression(DynamicPostViewModel dynamicPostViewModel) {
+        if (dynamicPostViewModel.getPostTag().getTotalItems() != 0 && !dynamicPostViewModel.getPostTag().getItems().isEmpty()) {
+            for (int i = 0; i < dynamicPostViewModel.getPostTag().getTotalItems(); i++) {
+                if (isOwner()) {
+                    postTagAnalytics.trackViewPostTagProfileDetailSelf(
+                            dynamicPostViewModel.getId(),
+                            dynamicPostViewModel.getPostTag().getItems().get(i),
+                            i,
+                            dynamicPostViewModel.getTrackingPostModel());
+                } else {
+                    postTagAnalytics.trackViewPostTagProfileDetailOther(
+                            dynamicPostViewModel.getId(),
+                            dynamicPostViewModel.getPostTag().getItems().get(i),
+                            i,
+                            dynamicPostViewModel.getTrackingPostModel());
+                }
+            }
+        }
+    }
+
+    private boolean isOwner() {
+        return userSession.getUserId().equals(
+                (dynamicPostViewModel.getHeader().getFollowCta().getAuthorID()));
+    }
+
     private void setFooter(PostDetailViewModel postDetailViewModel) {
-        this.postDetailFooterModel = postDetailViewModel.getFooterModel();
         footer.setVisibility(View.VISIBLE);
         TemplateFooter template = null;
         if (postDetailViewModel.getDynamicPostViewModel().getPostList().size() != 0) {
-            template = ((DynamicPostViewModel) postDetailViewModel.getDynamicPostViewModel().getPostList().get(0)).getTemplate().getCardpost().getFooter();
+            template = dynamicPostViewModel.getTemplate().getCardpost().getFooter();
         }
         if (template != null) {
             bindLike(postDetailFooterModel, template);
@@ -770,9 +804,25 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onPostTagItemClick(int positionInFeed, @NotNull String redirectUrl) {
+    public void onPostTagItemClick(int positionInFeed, @NotNull String redirectUrl, @NotNull PostTagItem postTagItem, int itemPosition) {
         onGoToLink(redirectUrl);
-
+        if (dynamicPostViewModel.getPostTag().getTotalItems() != 0 && !dynamicPostViewModel.getPostTag().getItems().isEmpty()) {
+            for (int i = 0; i < dynamicPostViewModel.getPostTag().getTotalItems(); i++) {
+                if (isOwner()) {
+                    postTagAnalytics.trackClickPostTagProfileDetailSelf(
+                            dynamicPostViewModel.getId(),
+                            dynamicPostViewModel.getPostTag().getItems().get(i),
+                            i,
+                            dynamicPostViewModel.getTrackingPostModel());
+                } else {
+                    postTagAnalytics.trackClickPostTagProfileDetailOther(
+                            dynamicPostViewModel.getId(),
+                            dynamicPostViewModel.getPostTag().getItems().get(i),
+                            i,
+                            dynamicPostViewModel.getTrackingPostModel());
+                }
+            }
+        }
     }
 
     @Override
@@ -819,7 +869,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onPollOptionClick(int positionInFeed, int contentPosition, int option, @NotNull String pollId, @NotNull String optionId, boolean isVoted, @NotNull String redirectLink) {
+    public void onPollOptionClick(int positionInFeed, int contentPosition, int option,
+                                  @NotNull String pollId, @NotNull String optionId, boolean isVoted,
+                                  @NotNull String redirectLink) {
         if (userSession != null && userSession.isLoggedIn()) {
             if (isVoted) {
                 onGoToLink(redirectLink);
