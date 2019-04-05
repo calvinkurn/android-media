@@ -933,7 +933,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
                                             getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings());
                                         } else {
-                                            getView().renderCheckPromoStackCodeFromCourierSuccess(responseGetPromoStack.getData(), itemPosition, noToast);
+                                            getView().renderCheckPromoStackCodeFromCourierSuccess(responseGetPromoStack, itemPosition, noToast);
                                         }
                                     } else {
                                         if (!noToast) {
