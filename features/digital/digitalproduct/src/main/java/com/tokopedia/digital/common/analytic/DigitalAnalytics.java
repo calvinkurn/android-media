@@ -406,7 +406,7 @@ public class DigitalAnalytics {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 DigitalEventTracking.Event.CLICK_COUPON,
                 DigitalEventTracking.Category.DIGITAL_CHECKOUT,
-                DigitalEventTracking.Action.CLICK_USE_COUPON, categoryName));
+                DigitalEventTracking.Action.CLICK_USE_COUPON, categoryName.toLowerCase()));
     }
 
     public void eventclickCancelApplyCoupon(String categoryName, String promoCode) {
@@ -414,6 +414,6 @@ public class DigitalAnalytics {
                 DigitalEventTracking.Event.CLICK_COUPON,
                 DigitalEventTracking.Category.DIGITAL_CHECKOUT,
                 DigitalEventTracking.Action.CLICK_CANCEL_APPLY_COUPON,
-                categoryName + " - " + promoCode));
+                categoryName.toLowerCase() + " - " + promoCode.toLowerCase()));
     }
 }

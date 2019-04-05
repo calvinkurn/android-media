@@ -31,14 +31,14 @@ public class LoyaltyTracking {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_LOYALTI_DIGITAL,
                 Category.DIGITAL_CHECKOUT,
-                Action.CLICK_TAB_PROMO_CODE, categoryName));
+                Action.CLICK_TAB_PROMO_CODE, categoryName.toLowerCase()));
     }
 
     public static void eventclickTabMyCoupon(String categoryName) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_LOYALTI_DIGITAL,
                 Category.DIGITAL_CHECKOUT,
-                Action.CLICK_MY_COUPON, categoryName));
+                Action.CLICK_MY_COUPON, categoryName.toLowerCase()));
     }
 
     public static void eventclickBtnFailedUsePromoCode(String categoryName, String errorMessage) {
@@ -46,7 +46,7 @@ public class LoyaltyTracking {
                 EVENT_LOYALTI_DIGITAL,
                 Category.DIGITAL_CHECKOUT,
                 Action.CLICK_BTN_USE_PROMO_CODE,
-                categoryName + " - failed - " + errorMessage));
+                categoryName.toLowerCase() + " - failed - " + errorMessage.toLowerCase()));
     }
 
     public static void eventclickBtnSuccessUsePromoCode(String categoryName, String promoCode) {
@@ -54,7 +54,7 @@ public class LoyaltyTracking {
                 EVENT_LOYALTI_DIGITAL,
                 Category.DIGITAL_CHECKOUT,
                 Action.CLICK_BTN_USE_PROMO_CODE,
-                categoryName + " - success - " + promoCode));
+                categoryName.toLowerCase() + " - success - " + promoCode.toLowerCase()));
     }
 
     public static void eventclickBtnFailedUseCoupon(String categoryName, String errorMessage) {
@@ -62,7 +62,7 @@ public class LoyaltyTracking {
                 EVENT_LOYALTI_DIGITAL,
                 Category.DIGITAL_CHECKOUT,
                 Action.CLICK_COUPON,
-                categoryName + " - failed - " + errorMessage));
+                categoryName.toLowerCase() + " - failed - " + errorMessage.toLowerCase()));
     }
 
     public static void eventclickBtnSuccessUseCoupon(String categoryName, String promoCode) {
@@ -70,7 +70,7 @@ public class LoyaltyTracking {
                 EVENT_LOYALTI_DIGITAL,
                 Category.DIGITAL_CHECKOUT,
                 Action.CLICK_COUPON,
-                categoryName + " - success - " + promoCode));
+                categoryName.toLowerCase() + " - success - " + promoCode.toLowerCase()));
     }
 
     static class Category {
