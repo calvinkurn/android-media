@@ -50,9 +50,9 @@
                         app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                         <RelativeLayout
-                            android:background="@color/white"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:background="@color/white">
 
                             <ImageView
                                 android:id="@+id/img_bg_header"
@@ -132,6 +132,11 @@
                                 <include layout="@layout/tp_layout_section_category_parent" />
 
                                 <include layout="@layout/tp_layout_section_ticker_new" />
+
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/dp_8"
+                                    android:background="@color/tp_ticker_background_color" />
                             </LinearLayout>
                         </RelativeLayout>
 

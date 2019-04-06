@@ -226,8 +226,15 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
                     AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_CATALOG, content.getSectionTitle()));
         }
 
-        ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
-        ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionSubTitle());
+        if (!TextUtils.isEmpty(content.getSectionTitle())) {
+            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+        }
+
+        if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
+            view.findViewById(R.id.text_sub_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionSubTitle());
+        }
 
         if (content.getLayoutCatalogAttr().getCatalogList() != null) {
             RecyclerView rvCarousel = view.findViewById(R.id.rv_carousel);
@@ -276,7 +283,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageURLMobile());
             imgBanner.setOnClickListener(v -> {
                 handledClick(data.getRedirectAppLink(), data.getRedirectURL(), "", "");
-                if(!TextUtils.isEmpty(content.getSectionTitle()))
+                if (!TextUtils.isEmpty(content.getSectionTitle()))
                     sendBannerClick(content.getSectionTitle());
             });
 
@@ -294,7 +301,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             }
         }
 
-        if(!TextUtils.isEmpty(content.getSectionTitle()))
+        if (!TextUtils.isEmpty(content.getSectionTitle()))
             sendBannerImpression(content.getSectionTitle());
 
         return view;
@@ -336,7 +343,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageURLMobile());
             imgBanner.setOnClickListener(v -> {
                 handledClick(data.getRedirectAppLink(), data.getRedirectURL(), "", "");
-                if(!TextUtils.isEmpty(content.getSectionTitle()))
+                if (!TextUtils.isEmpty(content.getSectionTitle()))
                     sendBannerClick(content.getSectionTitle());
             });
 
@@ -354,7 +361,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             }
         }
 
-        if(!TextUtils.isEmpty(content.getSectionTitle()))
+        if (!TextUtils.isEmpty(content.getSectionTitle()))
             sendBannerImpression(content.getSectionTitle());
         return view;
     }
@@ -395,7 +402,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageURLMobile());
             imgBanner.setOnClickListener(v -> {
                 handledClick(data.getRedirectAppLink(), data.getRedirectURL(), "", "");
-                if(!TextUtils.isEmpty(content.getSectionTitle()))
+                if (!TextUtils.isEmpty(content.getSectionTitle()))
                     sendBannerClick(content.getSectionTitle());
             });
 
@@ -413,7 +420,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             }
         }
 
-        if(!TextUtils.isEmpty(content.getSectionTitle()))
+        if (!TextUtils.isEmpty(content.getSectionTitle()))
             sendBannerImpression(content.getSectionTitle());
         return view;
     }
@@ -423,7 +430,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         promotionItem.put(AnalyticsTrackerUtil.EcommerceKeys.NAME, "/tokopoints - p{x} - promo lis");
         promotionItem.put(AnalyticsTrackerUtil.EcommerceKeys.POSITION, -1);
         promotionItem.put(AnalyticsTrackerUtil.EcommerceKeys.CREATIVE, bannerName);
-        HashMap<String, Object> promotionMap=new HashMap<>();
+        HashMap<String, Object> promotionMap = new HashMap<>();
         promotionMap.put(AnalyticsTrackerUtil.EcommerceKeys.PROMOTIONS, Collections.singletonList(promotionItem));
         AnalyticsTrackerUtil.sendECommerceEvent(AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
@@ -436,7 +443,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         promotionItem.put(AnalyticsTrackerUtil.EcommerceKeys.NAME, "/tokopoints - p{x} - promo lis");
         promotionItem.put(AnalyticsTrackerUtil.EcommerceKeys.POSITION, -1);
         promotionItem.put(AnalyticsTrackerUtil.EcommerceKeys.CREATIVE, bannerName);
-        HashMap<String, Object> promotionMap=new HashMap<>();
+        HashMap<String, Object> promotionMap = new HashMap<>();
         promotionMap.put(AnalyticsTrackerUtil.EcommerceKeys.PROMOTIONS, Collections.singletonList(promotionItem));
         AnalyticsTrackerUtil.sendECommerceEvent(AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
