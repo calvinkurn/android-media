@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.product.manage.item.category.view.istener.CategoryPickerFragmentListener;
+import com.tokopedia.seller.ProductEditItemComponentInstance;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
@@ -79,7 +80,7 @@ public class CategoryPickerActivity extends BaseSimpleActivity implements
 
     @Override
     public ProductComponent getComponent() {
-        return ((SellerModuleRouter) getApplication()).getProductComponent();
+        return ProductEditItemComponentInstance.getComponent(getApplication());
     }
 
     @Override
