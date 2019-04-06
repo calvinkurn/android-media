@@ -12,7 +12,6 @@ import android.support.v4.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tkpd.library.utils.CommonUtils
-
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
@@ -30,7 +29,7 @@ import com.tokopedia.product.manage.item.main.add.view.fragment.ProductAddNameCa
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment
 import com.tokopedia.product.manage.item.main.base.view.listener.ProductAddImageView
 import com.tokopedia.product.manage.item.main.base.view.presenter.ProductAddImagePresenter
-import com.tokopedia.product.manage.item.utils.ProductEditModuleRouter
+import com.tokopedia.product.manage.item.utils.ProductEditItemComponentInstance
 import permissions.dispatcher.*
 
 @RuntimePermissions
@@ -47,7 +46,7 @@ open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<P
         supportActionBar?.title =""
     }
   
-    override fun getComponent() = (application as ProductEditModuleRouter).productComponent
+    override fun getComponent() = ProductEditItemComponentInstance.getComponent(application)
 
     override fun getNewFragment(): Fragment = ProductAddNameCategoryFragment.createInstance(imageUrls)
 
@@ -167,9 +166,12 @@ open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<P
                 return false
             }
         } else {
-            startActivity(RouteManager.getIntent(context, ApplinkConst.LOGIN))
-            finish()
-            return false
+            val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+            intent?.run {
+                startActivity(intent)
+                finish()
+                return false
+            }
         }
         return true
     }

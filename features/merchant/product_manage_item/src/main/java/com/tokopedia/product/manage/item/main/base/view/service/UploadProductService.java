@@ -30,7 +30,7 @@ import com.tokopedia.product.manage.item.main.base.view.presenter.AddProductServ
 import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAddActivity;
 import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftEditActivity;
 import com.tokopedia.product.manage.item.utils.ErrorHandlerAddProduct;
-import com.tokopedia.product.manage.item.utils.ProductEditModuleRouter;
+import com.tokopedia.product.manage.item.utils.ProductEditItemComponentInstance;
 import com.tokopedia.track.TrackApp;
 
 import java.util.HashMap;
@@ -63,7 +63,7 @@ public class UploadProductService extends BaseService implements AddProductServi
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         DaggerAddProductServiceComponent
                 .builder()
-                .productComponent(((ProductEditModuleRouter) getApplication()).getProductComponent())
+                .productComponent(ProductEditItemComponentInstance.getComponent(getApplication()))
                 .addProductserviceModule(new AddProductserviceModule())
                 .build().inject(this);
         presenter.attachView(this);
@@ -178,19 +178,23 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     private NotificationCompat.Builder buildBaseNotification(String productName) {
         String title = getString(R.string.product_title_notification_upload_product) + " " + productName;
-        Intent pendingIntent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST);
-        PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, 0);
         int largeIconRes = R.drawable.ic_stat_notify2;
         if (!GlobalConfig.isSellerApp()) {
             largeIconRes = R.drawable.ic_stat_notify;
         }
-        return new NotificationCompat.Builder(this, NotificationChannelId.GENERAL)
+        NotificationCompat.Builder notificationBuilder= new NotificationCompat.Builder(this, NotificationChannelId.GENERAL)
                 .setContentTitle(title)
                 .setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), largeIconRes))
-                .setContentIntent(pIntent)
                 .setGroup(getString(R.string.product_group_notification))
                 .setOnlyAlertOnce(true);
+
+        Intent pendingIntent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST);
+        if (pendingIntent != null) {
+            PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, 0);
+            notificationBuilder.setContentIntent(pIntent);
+        }
+        return notificationBuilder;
     }
 
     private Notification buildFailedNotification(String errorMessage, int notificationId, @ProductStatus int productStatus) {

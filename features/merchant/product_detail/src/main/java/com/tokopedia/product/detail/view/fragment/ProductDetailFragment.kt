@@ -1199,10 +1199,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun gotoEditProduct() {
         val id = productInfo?.parentProductId ?: return
         context?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT, id)
-            intent?.run {
-                startActivityForResult(this, REQUEST_CODE_EDIT_PRODUCT)
-            }
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_ITEM, id)
+            intent?.run { startActivityForResult(this, REQUEST_CODE_EDIT_PRODUCT) }
         }
     }
 
