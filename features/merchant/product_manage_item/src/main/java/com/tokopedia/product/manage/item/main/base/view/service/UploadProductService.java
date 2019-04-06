@@ -12,11 +12,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.crashlytics.android.Crashlytics;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.BaseService;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.util.GlobalConfig;
@@ -180,12 +178,7 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     private NotificationCompat.Builder buildBaseNotification(String productName) {
         String title = getString(R.string.product_title_notification_upload_product) + " " + productName;
-        ProductEditModuleRouter productEditModuleRouter;
-        Intent pendingIntent = null;
-        if(getApplication() instanceof ProductEditModuleRouter){
-            productEditModuleRouter = (ProductEditModuleRouter) getApplication();
-            pendingIntent = productEditModuleRouter.getManageProductIntent(this);
-        }
+        Intent pendingIntent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST);
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, 0);
         int largeIconRes = R.drawable.ic_stat_notify2;
         if (!GlobalConfig.isSellerApp()) {

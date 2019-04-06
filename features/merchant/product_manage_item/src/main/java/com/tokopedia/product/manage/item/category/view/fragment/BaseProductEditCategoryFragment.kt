@@ -10,6 +10,8 @@ import android.text.TextUtils
 import android.view.*
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.catalog.view.activity.ProductEditCatalogPickerActivity
 import com.tokopedia.product.manage.item.catalog.view.model.ProductCatalog
@@ -142,9 +144,11 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
             }
 
         } else {
-            if (appRouter != null && appRouter is ProductEditModuleRouter){
-                startActivityForResult((appRouter as ProductEditModuleRouter)
-                        .getCategoryPickerIntent(activity, productCategory.categoryId)
+            activity?.run {
+                startActivityForResult(
+                        RouteManager.getIntent(this,
+                                ApplinkConstInternalMarketplace.PRODUCT_CATEGORY_PICKER,
+                                productCategory.categoryId.toString())
                         , REQUEST_CODE_GET_CATEGORY)
             }
         }

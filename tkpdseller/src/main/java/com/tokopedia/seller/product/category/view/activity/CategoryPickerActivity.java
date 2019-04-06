@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.category.view.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -65,7 +66,14 @@ public class CategoryPickerActivity extends BaseSimpleActivity implements
 
     @Override
     protected Fragment getNewFragment() {
-        long selectedCategoryId = getIntent().getLongExtra(CATEGORY_ID_INIT_SELECTED, CategoryPickerFragment.INIT_UNSELECTED);
+        long selectedCategoryId;
+        Uri uri = getIntent().getData();
+        if (uri != null){
+            List<String> segments = uri.getPathSegments();
+            selectedCategoryId = Long.parseLong(segments.get(segments.size() - 2));
+        } else {
+            selectedCategoryId = getIntent().getLongExtra(CATEGORY_ID_INIT_SELECTED, CategoryPickerFragment.INIT_UNSELECTED);
+        }
         return CategoryPickerFragment.createInstance(selectedCategoryId);
     }
 
