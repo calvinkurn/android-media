@@ -490,16 +490,20 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             }
 
             val hasWholesale = productPrice?.wholesalePrice?.let { it.size > 0 } == true
-            if (appRouter is ProductEditModuleRouter) {
-                val intent = (appRouter as ProductEditModuleRouter).createIntentProductVariant(activity,
-                        productVariantByCatModelList, productVariantViewModel,
-                        productPrice?.currencyType ?: CurrencyTypeDef.TYPE_IDR,
-                        productPrice?.price ?: 0.0,
-                        getStatusStockViewVariant(productStock ?: ProductStock()),
-                        officialStore, productStock?.sku, isEdittingDraft(),
-                        productSizeChart, hasOriginalVariantLevel1 == true,
-                        hasOriginalVariantLevel2 == true,
-                        hasWholesale)
+            activity?.run {
+                val intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
+                intent.putExtra(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList)
+                intent.putExtra(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel)
+                intent.putExtra(ProductExtraConstant.EXTRA_CURRENCY_TYPE, productPrice?.currencyType ?: CurrencyTypeDef.TYPE_IDR)
+                intent.putExtra(ProductExtraConstant.EXTRA_DEFAULT_PRICE, productPrice?.price ?: 0.0)
+                intent.putExtra(ProductExtraConstant.EXTRA_STOCK_TYPE, getStatusStockViewVariant(productStock ?: ProductStock()))
+                intent.putExtra(EXTRA_IS_OFFICIAL_STORE, officialStore)
+                intent.putExtra(ProductExtraConstant.EXTRA_DEFAULT_SKU, productStock?.sku)
+                intent.putExtra(ProductExtraConstant.EXTRA_NEED_RETAIN_IMAGE, isEdittingDraft())
+                intent.putExtra(ProductExtraConstant.EXTRA_PRODUCT_SIZECHART, productSizeChart)
+                intent.putExtra(ProductExtraConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV1, hasOriginalVariantLevel1)
+                intent.putExtra(ProductExtraConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2, hasOriginalVariantLevel2)
+                intent.putExtra(ProductExtraConstant.EXTRA_HAS_WHOLESALE, hasWholesale)
                 startActivityForResult(intent, REQUEST_CODE_VARIANT)
             }
         }

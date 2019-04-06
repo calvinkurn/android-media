@@ -15,6 +15,8 @@ import com.tkpd.library.utils.CommonUtils
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.core.gcm.Constants
 import com.tokopedia.core.gcm.utils.ApplinkUtils
 import com.tokopedia.core.router.SellerAppRouter
@@ -165,8 +167,7 @@ open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<P
                 return false
             }
         } else {
-            val intentLogin = (application as ProductEditModuleRouter).getLoginIntent(this)
-            startActivity(intentLogin)
+            startActivity(RouteManager.getIntent(context, ApplinkConst.LOGIN))
             finish()
             return false
         }

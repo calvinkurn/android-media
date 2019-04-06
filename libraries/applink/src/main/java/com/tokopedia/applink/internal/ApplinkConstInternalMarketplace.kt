@@ -33,7 +33,9 @@ object ApplinkConstInternalMarketplace {
     val PRODUCT_DETAIL_DOMAIN = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/"
     // ProductEditActivity
     @JvmField
-    val PRODUCT_EDIT = "$INTERNAL_MARKETPLACE/product/{id}/edit"
+    val PRODUCT_EDIT = "$INTERNAL_MARKETPLACE/product-edit-item/{id}/"
+    @JvmField
+    val PRODUCT_EDIT_VARIANT_DASHBOARD = "$INTERNAL_MARKETPLACE/product-edit-variant-dashboard/"
     @JvmField
     val PRODUCT_ETALASE_PICKER = "$INTERNAL_MARKETPLACE/product-etalase-picker/{id}/"
     @JvmField
