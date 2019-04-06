@@ -4,7 +4,7 @@
     xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@color/white">
+    android:background="@color/white">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -92,38 +92,6 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tool:text="Sisa Count 1"
                     tool:visibility="visible" />
-
-                <FrameLayout
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/img_banner"
-                    app:layout_constraintEnd_toEndOf="@+id/img_banner"
-                    app:layout_constraintLeft_toLeftOf="@+id/img_banner"
-                    app:layout_constraintRight_toRightOf="@+id/img_banner"
-                    app:layout_constraintStart_toStartOf="@+id/img_banner"
-                    app:layout_constraintTop_toTopOf="@+id/img_banner">
-
-                    <android.support.v7.widget.CardView
-                        android:id="@+id/cv_1"
-                        android:layout_width="@dimen/dp_24"
-                        android:layout_height="@dimen/dp_24"
-                        android:layout_gravity="center_vertical|left"
-                        android:layout_marginLeft="-12dp"
-                        app:cardBackgroundColor="@color/white"
-                        app:cardCornerRadius="@dimen/dp_12"
-                        app:cardElevation="@dimen/dp_4" />
-
-                    <android.support.v7.widget.CardView
-                        android:id="@+id/cv_2"
-                        android:layout_width="@dimen/dp_24"
-                        android:layout_height="@dimen/dp_24"
-                        android:layout_gravity="center_vertical|right"
-                        android:layout_marginRight="-12dp"
-                        app:cardBackgroundColor="@color/white"
-                        app:cardCornerRadius="@dimen/dp_12"
-                        app:cardElevation="@dimen/dp_4" />
-
-                </FrameLayout>
 
                 <TextView
                     android:id="@+id/text_time_label"
@@ -231,13 +199,39 @@
         android:id="@+id/view_coupon_new"
         android:layout_width="@dimen/dp_14"
         android:layout_height="@dimen/dp_14"
-        android:layout_marginTop="@dimen/dp_7"
         android:layout_marginLeft="@dimen/dp_7"
+        android:layout_marginTop="@dimen/dp_7"
         android:background="@drawable/bg_category_new"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tool:visibility="visible" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_1"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginBottom="58dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/dp_12"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_2"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginBottom="58dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/dp_12"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
