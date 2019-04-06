@@ -309,8 +309,6 @@ import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivation
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
-import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity;
 import com.tokopedia.product.manage.list.view.activity.ProductManageActivity;
 import com.tokopedia.profile.ProfileModuleRouter;
 import com.tokopedia.profile.view.activity.ProfileActivity;
@@ -895,11 +893,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent goToEditProduct(Context context, boolean isEdit, String productId) {
-        return ProductEditActivity.Companion.createInstance(context, productId);
-    }
-
-    @Override
     public void resetAddProductCache(Context context) {
         EtalaseUtils.clearEtalaseCache(context);
         EtalaseUtils.clearDepartementCache(context);
@@ -1477,13 +1470,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         GMFeaturedProductDomainModel gmFeaturedProductDomainModel = new GMFeaturedProductDomainModel();
         gmFeaturedProductDomainModel.setData(new ArrayList<GMFeaturedProductDomainModel.Datum>());
         return Observable.just(gmFeaturedProductDomainModel);
-    }
-
-    public void goToAddProduct(Activity activity) {
-        if (activity != null) {
-            Intent intent = new Intent(activity, ProductAddNameCategoryActivity.class);
-            activity.startActivity(intent);
-        }
     }
 
     @Override
@@ -2206,14 +2192,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToAddProduct(Context context) {
-        if (context != null && context instanceof Activity) {
-            Intent intent = new Intent(context, ProductAddNameCategoryActivity.class);
-            context.startActivity(intent);
-        }
-    }
-
-    @Override
     public void goToWebview(Context context, String url) {
         Intent intent = new Intent(this, BannerWebView.class);
         intent.putExtra(BannerWebView.EXTRA_URL, url);
@@ -2333,11 +2311,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public File writeImage(String filePath, int qualityProcentage) {
         return FileUtils.writeImageToTkpdPath(filePath, qualityProcentage);
-    }
-
-    @Override
-    public void startAddProduct(Activity activity, String shopId) {
-        goToAddProduct(activity);
     }
 
     @Override

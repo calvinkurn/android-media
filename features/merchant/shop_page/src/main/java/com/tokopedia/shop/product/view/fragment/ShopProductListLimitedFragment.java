@@ -19,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -31,9 +30,8 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
@@ -731,7 +729,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         if (shopInfo != null) {
             shopPageTracking.clickZeroProduct(CustomDimensionShopPage.create(shopInfo));
         }
-        ((ShopModuleRouter) getActivity().getApplication()).goToAddProduct(getActivity());
+        RouteManager.route(getActivity(), ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM);
     }
 
     @Override
