@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 
 /**
@@ -14,8 +13,6 @@ import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 public interface SellerModuleRouter {
 
     void goToGMSubscribe(Activity activity);
-
-    GetShopInfoUseCase getShopInfo();
 
     ShopComponent getShopComponent();
 
