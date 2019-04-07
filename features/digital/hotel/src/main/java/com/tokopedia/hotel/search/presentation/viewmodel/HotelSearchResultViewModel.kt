@@ -1,11 +1,11 @@
 package com.tokopedia.hotel.search.presentation.viewmodel
 
-import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.hotel.search.data.model.PropertySearch
+import com.tokopedia.hotel.search.data.model.Sort
 import com.tokopedia.hotel.search.data.model.params.SearchParam
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Result
@@ -48,6 +48,16 @@ class HotelSearchResultViewModel @Inject constructor(
                     PropertySearch.Response::class.java).response)
         }){
             it.printStackTrace()
+        }
+    }
+
+    fun addSort(sort: Sort) {
+        with(searchParam.sort){
+            popularity = sort.name.toLowerCase() == "popularity"
+            price = sort.name.toLowerCase() == "price"
+            ranking = sort.name.toLowerCase() == "ranking"
+            star = sort.name.toLowerCase() == "star"
+            reviewScore = sort.name.toLowerCase() == "reviewScore"
         }
     }
 }

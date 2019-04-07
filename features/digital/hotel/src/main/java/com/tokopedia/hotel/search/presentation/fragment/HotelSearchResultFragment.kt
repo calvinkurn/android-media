@@ -5,17 +5,25 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.design.list.decoration.SpaceItemDecoration
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.Property
 import com.tokopedia.hotel.search.data.model.PropertySearch
+import com.tokopedia.hotel.search.data.model.Sort
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
 import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewModel
+import com.tokopedia.hotel.search.presentation.widget.HotelClosedSortBottomSheets
+import com.tokopedia.hotel.search.presentation.widget.HotelOptionMenuAdapter
+import com.tokopedia.hotel.search.presentation.widget.HotelOptionMenuAdapter.Companion.MODE_CHECKED
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_hotel_search_result.*
 import javax.inject.Inject
 
 class HotelSearchResultFragment: BaseListFragment<Property, PropertyAdapterTypeFactory>() {
@@ -23,6 +31,7 @@ class HotelSearchResultFragment: BaseListFragment<Property, PropertyAdapterTypeF
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var searchResultviewModel: HotelSearchResultViewModel
+    lateinit var sortMenu: HotelClosedSortBottomSheets
 
     companion object {
         private const val ARG_DESTINATION_ID = "arg_destination"
@@ -84,13 +93,23 @@ class HotelSearchResultFragment: BaseListFragment<Property, PropertyAdapterTypeF
         })
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_hotel_search_result, container, false)
+    }
+
+    override fun hasInitialSwipeRefresh(): Boolean = true
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val recyclerView = getRecyclerView(view)
+        recyclerView.removeItemDecorationAt(0)
         context?.let {
-            val recyclerView = getRecyclerView(view)
-            recyclerView.removeItemDecorationAt(0)
             recyclerView.addItemDecoration(SpaceItemDecoration(it.resources.getDimensionPixelSize(R.dimen.dp_12),
                     LinearLayoutManager.VERTICAL))
+        }
+        bottom_action_view.setButton1OnClickListener {
+            if (::sortMenu.isInitialized)
+                sortMenu.show(childFragmentManager, javaClass.simpleName)
         }
     }
 
@@ -99,7 +118,24 @@ class HotelSearchResultFragment: BaseListFragment<Property, PropertyAdapterTypeF
     }
 
     private fun onSuccessGetResult(data: PropertySearch) {
+        bottom_action_view.visible()
         super.renderList(data.properties)
+        generateSortMenu(data.displayInfo.sort)
+    }
+
+    private fun generateSortMenu(sort: List<Sort>) {
+        sortMenu = HotelClosedSortBottomSheets()
+                .setTitle(getString(R.string.hotel_bottomsheet_sort_title))
+                .setMode(MODE_CHECKED)
+                .setMenu(sort)
+
+        sortMenu.onMenuSelect = object : HotelOptionMenuAdapter.OnSortMenuSelected {
+            override fun onSelect(sort: Sort) {
+                searchResultviewModel.addSort(sort)
+                sortMenu.dismiss()
+                loadInitialData()
+            }
+        }
     }
 
     override fun getAdapterTypeFactory(): PropertyAdapterTypeFactory = PropertyAdapterTypeFactory()
