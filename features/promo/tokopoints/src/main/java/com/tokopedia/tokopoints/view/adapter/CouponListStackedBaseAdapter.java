@@ -351,16 +351,18 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
                 holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.getContext(), R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
             }
 
-            holder.imgBanner.setOnClickListener(v -> {
-                if (item.isStacked()) {
-                    mPresenter.getCouponInStack(item.getStackId());
-                } else {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(CommonConstant.EXTRA_COUPON_CODE, item.getCode());
-                    holder.imgBanner.getContext().startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
-                    sendClickEvent(holder.imgBanner.getContext(), item, holder.getAdapterPosition());
-                }
-            });
+            if (holder.itemView != null) {
+                holder.itemView.setOnClickListener(v -> {
+                    if (item.isStacked()) {
+                        mPresenter.getCouponInStack(item.getStackId());
+                    } else {
+                        Bundle bundle = new Bundle();
+                        bundle.putString(CommonConstant.EXTRA_COUPON_CODE, item.getCode());
+                        holder.imgBanner.getContext().startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
+                        sendClickEvent(holder.imgBanner.getContext(), item, holder.getAdapterPosition());
+                    }
+                });
+            }
         }
     }
 
