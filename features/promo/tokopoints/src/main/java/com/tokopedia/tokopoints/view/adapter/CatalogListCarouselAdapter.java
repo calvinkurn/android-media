@@ -200,7 +200,6 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
             sendClickEvent(holder.imgBanner.getContext(), item, position);
         });
 
-
         holder.btnContinue.setVisibility(item.isShowTukarButton() ? View.VISIBLE : View.GONE);
     }
 
@@ -244,7 +243,7 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
             AnalyticsTrackerUtil.sendECommerceEvent(AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_ON_CATALOG,
-                    data.getTitle()+ " - "+ data.getBaseCode(), promotions);
+                    data.getTitle() + " - " + data.getBaseCode(), promotions);
 
             holder.isVisited = true;
         }
@@ -264,6 +263,6 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
         AnalyticsTrackerUtil.sendECommerceEvent(AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                 AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_ON_CATALOG,
-                data.getTitle()+ " - "+ data.getBaseCode(), promotions);
+                data.getTitle() + " - " + data.getBaseCode(), promotions);
     }
 }

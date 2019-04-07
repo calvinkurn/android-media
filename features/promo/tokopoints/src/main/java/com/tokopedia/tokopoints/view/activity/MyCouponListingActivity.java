@@ -64,7 +64,7 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
                     && ((TokopointRouter) getApplicationContext())
                     .getBooleanRemoteConfig(CommonConstant.TOKOPOINTS_NEW_COUPON_LISTING, false)) {
                 finish();
-                startActivity(new Intent(this, CouponListingStackedActivity.class));
+                startActivity(CouponListingStackedActivity.getCallingIntent(this, getIntent().getExtras()));
             } else {
                 mPresenter.getFilter(getIntent().getStringExtra(CommonConstant.EXTRA_SLUG));
                 showLoading();

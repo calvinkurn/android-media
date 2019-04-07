@@ -103,34 +103,5 @@ public class CouponListingStackedPresenter extends BaseDaggerPresenter<CouponLis
     @Override
     public void getCouponInStack(String stackId) {
         getView().showCouponInStackBottomSheet(stackId);
-//        Map<String, Object> variables = new HashMap<>();
-//        variables.put(CommonConstant.GraphqlVariableKeys.STACK_ID, stackId);
-//
-//        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-//                R.raw.tp_gql_coupon_in_stack),
-//                TokoPointPromosEntity.class,
-//                variables, false);
-//        mGetCoupon.clearRequest();
-//        mGetCoupon.addRequest(request);
-//        mGetCoupon.execute(new Subscriber<GraphqlResponse>() {
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                //TODO error ask from Gulfikar
-//            }
-//
-//            @Override
-//            public void onNext(GraphqlResponse graphqlResponse) {
-//                TokoPointPromosEntity catalogListingOuter = graphqlResponse.getData(TokoPointPromosEntity.class);
-//                if (catalogListingOuter != null
-//                        && catalogListingOuter.getCoupon() != null) {
-//                    getView().showCouponInStackBottomSheet(stackId);
-//                }
-//            }
-//        });
     }
 }
