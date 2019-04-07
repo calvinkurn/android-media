@@ -213,6 +213,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
                 content.getCountdownAttr().getExpiredCountDown() > 0) {
             countDownView = view.findViewById(R.id.tp_count_down_view);
             countDownView.findViewById(R.id.tp_count_down_view).setVisibility(View.VISIBLE);
+            countDownView.setUnify(true);
             countDownView.setupTimerFromRemianingMillis(content.getCountdownAttr().getExpiredCountDown() * 1000, () -> {
                 view.setVisibility(View.GONE);
             });
