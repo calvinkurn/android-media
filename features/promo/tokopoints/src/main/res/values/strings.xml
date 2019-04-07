@@ -21,6 +21,7 @@
     <string name="tp_label_see_membership">Lihat Status Membership</string>
     <string name="tp_label_see_loyalty">Loyalty</string>
     <string name="tp_label_membership">Status Membership</string>
+    <string name="tp_label_membership_bottom">Membership</string>
     <string name="tp_label_see_point">Points</string>
     <string name="tp_label_exchange_points">Penukaran Points</string>
     <string name="tp_label_my_coupon">Kupon Milik Saya</string>
