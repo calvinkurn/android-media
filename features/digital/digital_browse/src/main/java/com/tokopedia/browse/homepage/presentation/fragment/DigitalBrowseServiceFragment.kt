@@ -216,7 +216,7 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
         ) {
             containerData.visibility = View.VISIBLE
             serviceAdapter.showLoading()
-            presenter.getDigitalCategoryCloud()
+            presenter.getDigitalCategory()
         }
         stopTrace()
     }
