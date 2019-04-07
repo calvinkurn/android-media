@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.data.util
 import android.net.Uri
 import android.text.TextUtils
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
@@ -14,13 +15,13 @@ import java.util.*
 class ProductDetailTracking() {
 
     fun sendScreen(shopID: String, shopType: String, productId: String) {
-        TrackApp.getInstance()?.gtm?.sendScreenAuthenticated(
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(
             PRODUCT_DETAIL_SCREEN_NAME,
             shopID, shopType, "/product", productId)
     }
 
     fun eventTalkClicked() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK,
@@ -82,7 +83,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickMerchantVoucherUse(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
-        TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(createEventMVCClick(ProductTrackingConstant.MerchantVoucher.EVENT,
+        TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(createEventMVCClick(ProductTrackingConstant.MerchantVoucher.EVENT,
             ProductTrackingConstant.Category.PDP,
             listOf(ProductTrackingConstant.MerchantVoucher.ACTION,
                 ProductTrackingConstant.Action.CLICK).joinToString(" "),
@@ -97,7 +98,7 @@ class ProductDetailTracking() {
             "use voucher",
             merchantVoucherViewModelList)
         map?.run {
-            TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(this)
+            TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(this)
         }
     }
 
@@ -199,7 +200,7 @@ class ProductDetailTracking() {
     }
 
     fun eventTopAdsClicked(product: Product, position: Int) {
-        TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(
+        TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(KEY_EVENT, ProductTrackingConstant.Action.PRODUCT_CLICK,
                 KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
                 KEY_ACTION, ProductTrackingConstant.Action.TOPADS_CLICK,
@@ -219,7 +220,7 @@ class ProductDetailTracking() {
     }
 
     fun eventTopAdsImpression(position: Int, product: Product) {
-        TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(
+        TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(KEY_EVENT, "productView",
                 KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
                 KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION,
@@ -259,11 +260,11 @@ class ProductDetailTracking() {
                 KEY_LABEL to productId)
         }
         params.put(KEY_USER_ID, userId)
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(params)
+        TrackApp.getInstance().gtm.sendGeneralEvent(params)
     }
 
     fun eventSendMessage() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             ProductTrackingConstant.Message.EVENT,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK,
@@ -362,8 +363,15 @@ class ProductDetailTracking() {
         return ""
     }
 
-    fun eventEnhanceEcommerceProductDetail(trackerListName: String?, productInfo: ProductInfo?, shopInfo: ShopInfo?, trackerAttribution: String?) {
-        TrackApp.getInstance()?.gtm?.sendEnhanceECommerceEvent(DataLayer.mapOf(
+    fun eventEnhanceEcommerceProductDetail(trackerListName: String?, productInfo: ProductInfo?, shopInfo: ShopInfo?, trackerAttribution: String?,
+                                           isTradeIn : Boolean, isDiagnosed : Boolean) {
+            val dimension55 = if(isTradeIn && isDiagnosed)
+                "true diagnostic"
+            else if(isTradeIn && !isDiagnosed)
+                "true non diagnostic"
+            else
+                "false"
+        TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(DataLayer.mapOf(
             "event", "viewProduct",
             "eventCategory", "product page",
             "eventAction", "view product page",
@@ -375,11 +383,12 @@ class ProductDetailTracking() {
             DataLayer.mapOf(
                 "name", productInfo?.basic?.name,
                 "id", productInfo?.basic?.id,
-                "price", productInfo?.basic?.price,
+                "price", productInfo?.basic?.price?.toInt(),
                 "brand", "none / other",
                 "category", getEnhanceCategoryFormatted(productInfo?.category?.detail),
                 "variant", "none / other",
-                "dimension38", trackerAttribution ?: "none / other"))).apply {
+                "dimension38", trackerAttribution ?: "none / other",
+                "dimension55",dimension55))).apply {
             if (trackerListName?.isNotEmpty() == true) {
                 put("actionField", DataLayer.mapOf("list", trackerListName))
             }
@@ -478,7 +487,8 @@ class ProductDetailTracking() {
                 put("product_name", productInfo.basic.name)
                 put("product_id", productInfo.basic.id)
                 put("product_url", productInfo.basic.url)
-                put("product_price", productInfo.basic.price)
+                put("product_price", productInfo.basic.price.toInt())
+                put("product_price_fmt", getFormattedPrice(productInfo.basic.price.toInt()))
                 put("is_official_store", isOfficialStore)
                 put("shop_id", productInfo.basic.shopID)
                 put("shop_name", shopName)
@@ -487,6 +497,13 @@ class ProductDetailTracking() {
                 }
             }
         )
+    }
+
+    fun sendGeneralEvent(event: String, category: String, action: String, label: String) {
+        TrackApp.getInstance()?.gtm?.sendGeneralEvent(event,
+                category,
+                action,
+                label)
     }
 
     ////////////////////////////////////////////////////////////////
@@ -519,6 +536,10 @@ class ProductDetailTracking() {
         private const val DEFAULT_VALUE = "none / other"
         private const val VARIANT = "variant"
         private const val CATEGORY = "category"
+    }
+
+    private fun getFormattedPrice(price: Int): String {
+        return CurrencyFormatUtil.getThousandSeparatorString(price.toDouble(), false, 0).formattedString
     }
 
 }

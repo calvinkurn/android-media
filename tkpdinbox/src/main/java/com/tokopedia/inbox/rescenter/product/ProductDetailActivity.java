@@ -17,6 +17,7 @@ import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionDetailModule;
 import com.tokopedia.inbox.rescenter.product.view.presenter.ProductDetailContract;
 import com.tokopedia.inbox.rescenter.product.view.presenter.ProductDetailImpl;
 import com.tokopedia.inbox.util.analytics.InboxAnalytics;
+import com.tokopedia.track.TrackApp;
 
 /**
  * Created by hangnadi on 3/28/17.
@@ -178,7 +179,7 @@ public class ProductDetailActivity extends BasePresenterActivity<ProductDetailCo
         if (getIntent().getExtras() != null) {
             Bundle extras = getIntent().getExtras();
             if (extras.get(EXTRA_PARAM_IS_RESO_DETAIL) != null && extras.getBoolean(EXTRA_PARAM_IS_RESO_DETAIL)) {
-                UnifyTracking.eventTracking(this,InboxAnalytics.eventResoDetailClickChatBox(resolutionID));
+                TrackApp.getInstance().getGTM().sendGeneralEvent(InboxAnalytics.eventResoDetailClickChatBox(resolutionID).getEvent());
             }
         }
         super.onBackPressed();

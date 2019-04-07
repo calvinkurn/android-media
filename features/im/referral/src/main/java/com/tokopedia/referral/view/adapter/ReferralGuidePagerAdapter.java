@@ -9,14 +9,16 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.referral.Constants;
 import com.tokopedia.referral.R;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Created by ashwanityagi on 02/05/18.
@@ -58,7 +60,6 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup view, final int position) {
         View layout = mInflater.inflate(mLayouts[position], view, false);
         if (position == HOW_TO_USE_POSITION) {
-            AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
             TextView btnShare = layout.findViewById(R.id.btn_app_share);
             TextView tvHelpLink = layout.findViewById(R.id.tv_referral_help_link);
 
@@ -68,15 +69,17 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
             btnShare.setOnClickListener(view1 -> {
                 listener.onShareClick();
 
-                tracker.sendEventTracking(Constants.EventLabel.Companion.CLICK_APP_SHARE_REFERRAL,
+                TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                        Constants.EventLabel.Companion.CLICK_APP_SHARE_REFERRAL,
                         Constants.Category.Companion.REFERRAL,
-                        Constants.Action.Companion.CLICK_SHARE_TEMAN, "");
+                        Constants.Action.Companion.CLICK_SHARE_TEMAN, ""));
             });
 
             tvHelpLink.setOnClickListener(view1 -> {
-                tracker.sendEventTracking(Constants.EventLabel.Companion.CLICK_APP_SHARE_REFERRAL,
+                TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                        Constants.EventLabel.Companion.CLICK_APP_SHARE_REFERRAL,
                         Constants.Category.Companion.REFERRAL,
-                        Constants.Action.Companion.CLICK_WHAT_IS_TOKOCASH, "");
+                        Constants.Action.Companion.CLICK_WHAT_IS_TOKOCASH, ""));
                 showOnBoardingTooltip(getHelpButtonContentTitle(), getHelpButtonContentSubtitle() );
             });
 

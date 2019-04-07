@@ -19,12 +19,15 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerLoyaltyViewComponent;
 import com.tokopedia.loyalty.di.component.LoyaltyViewComponent;
 import com.tokopedia.loyalty.di.module.LoyaltyViewModule;
 import com.tokopedia.loyalty.listener.LoyaltyActivityTabSelectedListener;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
+import com.tokopedia.loyalty.view.LoyaltyTracking;
 import com.tokopedia.loyalty.view.adapter.GlobalMainTabSelectedListener;
 import com.tokopedia.loyalty.view.adapter.LoyaltyPagerAdapter;
 import com.tokopedia.loyalty.view.data.LoyaltyPagerItem;
@@ -35,6 +38,7 @@ import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
@@ -46,8 +50,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TAB;
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CART_ID;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY;
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY_NAME;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_SELECTED_TAB;
@@ -90,6 +96,7 @@ public class LoyaltyActivity extends BaseSimpleActivity
     private String platformPageString;
     private String defaultSelectedTabString;
     private String categoryString;
+    private String categoryName;
     private int categoryId;
     private int productId;
     private String cartIdString;
@@ -119,6 +126,10 @@ public class LoyaltyActivity extends BaseSimpleActivity
 
     public int getCategoryId() {
         return categoryId;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
     }
 
     public int getProductId() {
@@ -182,6 +193,9 @@ public class LoyaltyActivity extends BaseSimpleActivity
         );
         this.categoryString = extras.getString(
                 EXTRA_CATEGORY, ""
+        );
+        this.categoryName = extras.getString(
+                EXTRA_CATEGORY_NAME, ""
         );
         this.categoryId = extras.getInt(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORYID
@@ -349,7 +363,6 @@ public class LoyaltyActivity extends BaseSimpleActivity
         } else {
             checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKupon();
         }
-
     }
 
 
@@ -521,6 +534,13 @@ public class LoyaltyActivity extends BaseSimpleActivity
         public void onPageSelected(int position) {
             super.onPageSelected(position);
             hideKeyboard();
+            if (platformString.equalsIgnoreCase(DIGITAL_STRING)) {
+                if (position == 0) {
+                    LoyaltyTracking.eventclickTabPromoCode(getCategoryName());
+                } else {
+                    LoyaltyTracking.eventclickTabMyCoupon(getCategoryName());
+                }
+            }
         }
 
         private void hideKeyboard() {
@@ -530,7 +550,7 @@ public class LoyaltyActivity extends BaseSimpleActivity
     }
 
     @Deprecated
-    public static Intent newInstanceCouponActiveAndSelected(Context context, String platform, String categoryId) {
+    public static Intent newInstanceCouponActiveAndSelected(String categoryName, Context context, String platform, String categoryId) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
@@ -538,17 +558,30 @@ public class LoyaltyActivity extends BaseSimpleActivity
                 COUPON_TAB);
         bundle.putString(EXTRA_PLATFORM, platform);
         bundle.putString(EXTRA_CATEGORY, categoryId);
+        bundle.putString(EXTRA_CATEGORY_NAME, categoryName);
         intent.putExtras(bundle);
         return intent;
     }
 
     @Deprecated
-    public static Intent newInstanceCouponActive(Context context, String platform, String category) {
+    public static Intent newInstanceCouponActive(String categoryName, Context context, String platform, String category) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
         bundle.putString(EXTRA_PLATFORM, platform);
         bundle.putString(EXTRA_CATEGORY, category);
+        bundle.putString(EXTRA_CATEGORY_NAME, categoryName);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent newInstanceCouponNotActive(String categoryName, Context context, String platform, String category) {
+        Intent intent = new Intent(context, LoyaltyActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, false);
+        bundle.putString(EXTRA_PLATFORM, platform);
+        bundle.putString(EXTRA_CATEGORY, category);
+        bundle.putString(EXTRA_CATEGORY_NAME, categoryName);
         intent.putExtras(bundle);
         return intent;
     }
@@ -563,16 +596,6 @@ public class LoyaltyActivity extends BaseSimpleActivity
             bundle.putInt(EXTRA_SELECTED_TAB,
                     COUPON_TAB);
         }
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    public static Intent newInstanceCouponNotActive(Context context, String platform, String category) {
-        Intent intent = new Intent(context, LoyaltyActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(EXTRA_COUPON_ACTIVE, false);
-        bundle.putString(EXTRA_PLATFORM, platform);
-        bundle.putString(EXTRA_CATEGORY, category);
         intent.putExtras(bundle);
         return intent;
     }
@@ -681,7 +704,8 @@ public class LoyaltyActivity extends BaseSimpleActivity
         super.onBackPressed();
         if (platformString.equalsIgnoreCase(MARKETPLACE_STRING))
             checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickBackArrowFromGunakanKodePromoAtauKupon();
-        loyaltyModuleRouter.sendEventCouponPageClosed();
+
+        LoyaltyTracking.sendEventCouponPageClosed();
     }
 
     private class OnTabSelectedForTrackingCheckoutMarketPlace implements

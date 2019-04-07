@@ -16,10 +16,6 @@ class SendTrackQueueJobService : JobService(), CoroutineScope {
         TrackingRepository(this)
     }
 
-    val trackingOptimizerRouter: TrackingOptimizerRouter? by lazy {
-        this.application as? TrackingOptimizerRouter
-    }
-
     val handler: CoroutineExceptionHandler by lazy {
         CoroutineExceptionHandler { _, ex ->
             decreaseCounter()
@@ -32,7 +28,7 @@ class SendTrackQueueJobService : JobService(), CoroutineScope {
     }
 
     override fun onStartJob(jobParameters: JobParameters): Boolean {
-        sendTrack(this, trackingRepository, trackingOptimizerRouter) {
+        sendTrack(this, trackingRepository) {
             jobFinished(jobParameters, false)
         }
         return true

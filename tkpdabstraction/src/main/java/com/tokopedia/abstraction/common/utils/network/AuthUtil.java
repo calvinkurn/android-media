@@ -1,6 +1,7 @@
 package com.tokopedia.abstraction.common.utils.network;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.util.ArrayMap;
 import android.util.Base64;
 
@@ -58,6 +59,7 @@ public class AuthUtil {
     private static final String PARAM_OS_TYPE = "os_type";
     private static final String PARAM_TIMESTAMP = "device_time";
     private static final String PARAM_X_TKPD_USER_ID = "x-tkpd-userid";
+    public static final String HEADER_USER_AGENT="User-Agent";
 
     public static final String WEBVIEW_FLAG_PARAM_FLAG_APP = "flag_app";
     public static final String WEBVIEW_FLAG_PARAM_DEVICE = "device";
@@ -100,6 +102,7 @@ public class AuthUtil {
         String signature = calculateRFC2104HMAC(authString, authKey);
 
         Map<String, String> headerMap = new ArrayMap<>();
+        headerMap.put(HEADER_USER_AGENT, getUserAgent());
         headerMap.put(HEADER_CONTENT_TYPE, contentType != null ? contentType : CONTENT_TYPE);
         headerMap.put(HEADER_X_METHOD, method);
         headerMap.put(HEADER_REQUEST_METHOD, method);
@@ -133,6 +136,7 @@ public class AuthUtil {
         String signature = calculateRFC2104HMAC(authString, authKey);
 
         Map<String, String> headerMap = new ArrayMap<>();
+        headerMap.put(HEADER_USER_AGENT, getUserAgent());
         headerMap.put(HEADER_CONTENT_TYPE, contentType != null ? contentType : CONTENT_TYPE);
         headerMap.put(HEADER_X_METHOD, method);
         headerMap.put(HEADER_REQUEST_METHOD, method);
@@ -168,6 +172,7 @@ public class AuthUtil {
         String signature = calculateRFC2104HMAC(authString, authKey);
 
         Map<String, String> headerMap = new ArrayMap<>();
+        headerMap.put(HEADER_USER_AGENT, getUserAgent());
         headerMap.put(HEADER_CONTENT_TYPE, contentType != null ? contentType : CONTENT_TYPE);
         headerMap.put(HEADER_X_METHOD, method);
         headerMap.put(HEADER_REQUEST_METHOD, method);
@@ -218,6 +223,7 @@ public class AuthUtil {
         String signature = calculateRFC2104HMAC(authString, authKey);
 
         Map<String, String> headerMap = new ArrayMap<>();
+        headerMap.put(HEADER_USER_AGENT, getUserAgent());
         headerMap.put(HEADER_CONTENT_TYPE, contentType);
         headerMap.put(HEADER_X_METHOD, method);
         headerMap.put(HEADER_REQUEST_METHOD, method);
@@ -380,6 +386,12 @@ public class AuthUtil {
     private static String generateDate(String dateFormat) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
         return simpleDateFormat.format(new Date());
+    }
+
+    private static final String userAgentFormat = "TkpdConsumer/%s (%s;)";
+
+    public static String getUserAgent(){
+        return String.format(userAgentFormat, GlobalConfig.VERSION_NAME, "Android "+ Build.VERSION.RELEASE);
     }
 
     public static String md5(String s) {

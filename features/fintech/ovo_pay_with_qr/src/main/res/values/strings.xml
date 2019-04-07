@@ -1,7 +1,7 @@
 <resources>
     <string name="oqr_app_name">Ovo</string>
     <string name="oqr_payment_summary">Pembayaran</string>
-    <string name="oqr_ovo_cash_point_amnt">%s</string>
+    <string name="oqr_ovo_cash_point_amnt">%1$s</string>
     <string name="oqr_balance_exceed_error">Saldo Anda tidak mencukupi</string>
     <string name="oqr_min_input_hint">Minimal pembayaran Rp1.000</string>
     <string name="oqr_error_message">Terjadi kendala teknis. Coba lagi.</string>

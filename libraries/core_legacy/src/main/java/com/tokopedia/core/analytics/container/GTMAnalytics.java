@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -24,6 +25,8 @@ import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
+import com.tokopedia.iris.Iris;
+import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.util.HashMap;
@@ -33,9 +36,6 @@ import java.util.concurrent.TimeUnit;
 
 import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
 
-/**
- * formerly {@link GTMContainer}
- */
 public class GTMAnalytics extends ContextAnalytics {
     private static final String TAG = GTMAnalytics.class.getSimpleName();
     private static final long EXPIRE_CONTAINER_TIME_DEFAULT = 7200000;
@@ -44,11 +44,16 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String KEY_CATEGORY = "eventCategory";
     private static final String KEY_ACTION = "eventAction";
     private static final String KEY_LABEL = "eventLabel";
+    private static final String USER_ID = "userId";
+    private static final String SHOP_ID = "shopId";
+    private static final String SHOP_TYPE = "shopType";
+    private final Iris iris;
 
     // have status that describe pending.
 
     public GTMAnalytics(Context context) {
         super(context);
+        iris = IrisAnalytics.Companion.init(context);
     }
 
     @Override
@@ -67,7 +72,7 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     @Override
-    public void sendEnhanceECommerceEvent(Map<String, Object> value) {
+    public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
         clearEnhanceEcommerce();
         pushGeneral(value);
     }
@@ -131,6 +136,25 @@ public class GTMAnalytics extends ContextAnalytics {
         log(getContext(), eventName, values);
 
         getTagManager().getDataLayer().pushEvent(eventName, values);
+        pushIris(eventName, values);
+    }
+
+    @Override
+    public void sendGTMGeneralEvent(String event, String category, String action, String label,
+                                    String shopId, String shopType, String userId,
+                                    @Nullable Map<String, Object> customDimension) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(KEY_EVENT, event);
+        map.put(KEY_CATEGORY, category);
+        map.put(KEY_ACTION, action);
+        map.put(KEY_LABEL, label);
+        map.put(USER_ID, userId);
+        map.put(SHOP_TYPE, shopType);
+        map.put(SHOP_ID, shopId);
+        if (customDimension!= null) {
+            map.putAll(customDimension);
+        }
+        pushGeneral(map);
     }
 
     private static void log(Context context, String eventName, Map<String, Object> values) {
@@ -273,6 +297,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
         log(getContext(), null, values);
         TagManager.getInstance(getContext()).getDataLayer().push(values);
+        pushIris("", values);
     }
 
     public void pushUserId(String userId) {
@@ -531,6 +556,15 @@ public class GTMAnalytics extends ContextAnalytics {
                         )
                 )
         );
+    }
+
+    private void pushIris(String eventName, Map<String, Object>values) {
+        if (iris != null) {
+            if (!eventName.isEmpty()) {
+                values.put("event", eventName);
+            }
+            iris.saveEvent(values);
+        }
     }
 
     private static class GTMBody {

@@ -55,7 +55,7 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        orderDetailAnalytics = new OrderDetailAnalytics(getContext());
+        orderDetailAnalytics = new OrderDetailAnalytics();
         mData = getArguments() != null ? getArguments().getParcelable(BookingCodeActivity.JOB_CODE_EXTRA) : null;
         mPresenter = new BookingCodePresenter();
         mPresenter.setView(this);
