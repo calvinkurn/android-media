@@ -138,7 +138,6 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
     }
 
     void setUpExploreTab(View view) {
-        //TODO setup other section
         if (view == null || mSections == null) {
             return;
         }
@@ -207,16 +206,20 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             return view;
         }
 
+        CountdownAttr countdownAttr = new CountdownAttr();
+        countdownAttr.setShowTimer(true);
+        countdownAttr.setExpiredCountDown(100);
+        content.setCountdownAttr(countdownAttr);
 
-//        if (content.getCountdownAttr() != null &&
-//                true &&
-//                content.getCountdownAttr().getExpiredCountDown() > 0) {
-//            countDownView = view.findViewById(R.id.tp_count_down_view);
-//            countDownView.findViewById(R.id.tp_count_down_view).setVisibility(View.VISIBLE);
-//            countDownView.setupForTokopoints(100 * 1000, () -> {
-//                mPresenter.getTokoPointDetail();
-//            });
-//        }
+        if (content.getCountdownAttr() != null &&
+                content.getCountdownAttr().isShowTimer() &&
+                content.getCountdownAttr().getExpiredCountDown() > 0) {
+            countDownView = view.findViewById(R.id.tp_count_down_view);
+            countDownView.findViewById(R.id.tp_count_down_view).setVisibility(View.VISIBLE);
+            countDownView.setupTimerFromRemianingMillis(10 * 1000, () -> {
+                view.setVisibility(View.GONE);
+            });
+        }
 
         if (!content.getCta().isEmpty()) {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);

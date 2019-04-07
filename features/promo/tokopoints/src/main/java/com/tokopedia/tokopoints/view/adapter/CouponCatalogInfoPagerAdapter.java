@@ -57,8 +57,6 @@ public class CouponCatalogInfoPagerAdapter extends PagerAdapter {
     }
 
     private String getFormattedHtml(String content) {
-        //return "<html><head><style>li{ font-size: 10pt; color: 8A000000; }</style></head><body>" + content + "</body></html>";
-        return "<ol><li>cashback 1,- HTU</li><li>coba link href <a href=\"tokopedia://tokopoints\"> test href di tnc catalog</a></li><li>coba link tel mobile <a href=\"tel:+621223452323\"> +621223452323 </a></li><li>coba link email mobile <a href=\"mailto:cs@tokopedia.com\">klik di sini</a></li></ol>";
-
+        return "<html><head><style>li{ font-size: 10pt; color: 8A000000; }</style></head><body>" + content + "</body></html>";
     }
 }
