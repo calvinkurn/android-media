@@ -128,6 +128,7 @@ class HotelSearchResultFragment: BaseListFragment<Property, PropertyAdapterTypeF
                 .setTitle(getString(R.string.hotel_bottomsheet_sort_title))
                 .setMode(MODE_CHECKED)
                 .setMenu(sort)
+                .setSelecetedItem(searchResultviewModel.selectedSort)
 
         sortMenu.onMenuSelect = object : HotelOptionMenuAdapter.OnSortMenuSelected {
             override fun onSelect(sort: Sort) {

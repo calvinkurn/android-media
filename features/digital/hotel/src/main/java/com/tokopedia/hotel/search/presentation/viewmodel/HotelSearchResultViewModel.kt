@@ -25,6 +25,7 @@ class HotelSearchResultViewModel @Inject constructor(
 ): BaseViewModel(dispatcher){
 
     private val searchParam: SearchParam = SearchParam()
+    var selectedSort: Sort = Sort()
 
     val liveSearchResult = MutableLiveData<Result<PropertySearch>>()
 
@@ -52,6 +53,7 @@ class HotelSearchResultViewModel @Inject constructor(
     }
 
     fun addSort(sort: Sort) {
+        selectedSort = sort
         with(searchParam.sort){
             popularity = sort.name.toLowerCase() == "popularity"
             price = sort.name.toLowerCase() == "price"

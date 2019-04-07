@@ -19,6 +19,7 @@ class HotelClosedSortBottomSheets: BottomSheets() {
     fun setTitle(titleText: String): HotelClosedSortBottomSheets = this.apply { title = titleText }
     fun setMode(_mode: Int): HotelClosedSortBottomSheets = this.apply { mode = _mode }
     fun setMenu(_menu: List<Sort>): HotelClosedSortBottomSheets = this.apply { menu = _menu }
+    fun setSelecetedItem(_sort: Sort): HotelClosedSortBottomSheets = this.apply { selectedItem = _sort }
 
     override fun getLayoutResourceId(): Int = R.layout.fragment_base_list
 
