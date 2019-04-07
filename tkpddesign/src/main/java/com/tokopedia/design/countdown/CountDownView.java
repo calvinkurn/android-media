@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.AttrRes;
@@ -123,33 +124,23 @@ public class CountDownView extends FrameLayout {
     }
 
 
-    public void setupForTokopoints(final long expiredTime,
-                      final CountDownListener listener) {
-
-        stopAutoRefreshCounter();
-        refreshCounterHandler = new Handler();
-        runnableRefreshCounter = new Runnable() {
+    public void setupTimerFromRemianingMillis(final long expiredTime,
+                                   final CountDownListener listener) {
+        new CountDownTimer(expiredTime, REFRESH_DELAY_MS) {
             @Override
-            public void run() {
-                if (expiredTime > 0) {
-                    Date currentDate = new Date();
-                    long currentMillisecond = currentDate.getTime();
-
-                    long diff = currentMillisecond - expiredTime;
-                    TimeDiffModel timeDiff = new TimeDiffModel();
-                    timeDiff.setSecond((int) (diff / 1000 % 60));
-                    timeDiff.setMinute((int) (diff / (60 * 1000) % 60));
-                    timeDiff.setHour((int) (diff / (60 * 60 * 1000) % 24));
-
-                    setTime(timeDiff.getHour(), timeDiff.getMinute(), timeDiff.getSecond());
-
-                    refreshCounterHandler.postDelayed(this, REFRESH_DELAY_MS);
-                } else {
-                    handleExpiredTime(listener);
-                }
+            public void onTick(long l) {
+                int seconds = (int) (l / 1000) % 60;
+                int minutes = (int) ((l / (1000 * 60)) % 60);
+                int hours = (int) ((l / (1000 * 60 * 60)) % 24);
+                setTime(hours, minutes, seconds);
             }
-        };
-        startAutoRefreshCounter();
+
+            @Override
+            public void onFinish() {
+                setTime(0, 0, 0);
+                handleExpiredTime(listener);
+            }
+        }.start();
     }
 
     private void handleExpiredTime(CountDownListener listener) {

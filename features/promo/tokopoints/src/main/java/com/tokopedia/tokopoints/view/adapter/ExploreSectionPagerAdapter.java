@@ -206,17 +206,12 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             return view;
         }
 
-        CountdownAttr countdownAttr = new CountdownAttr();
-        countdownAttr.setShowTimer(true);
-        countdownAttr.setExpiredCountDown(100);
-        content.setCountdownAttr(countdownAttr);
-
         if (content.getCountdownAttr() != null &&
                 content.getCountdownAttr().isShowTimer() &&
                 content.getCountdownAttr().getExpiredCountDown() > 0) {
             countDownView = view.findViewById(R.id.tp_count_down_view);
             countDownView.findViewById(R.id.tp_count_down_view).setVisibility(View.VISIBLE);
-            countDownView.setupTimerFromRemianingMillis(10 * 1000, () -> {
+            countDownView.setupTimerFromRemianingMillis(content.getCountdownAttr().getExpiredCountDown() * 1000, () -> {
                 view.setVisibility(View.GONE);
             });
         }
