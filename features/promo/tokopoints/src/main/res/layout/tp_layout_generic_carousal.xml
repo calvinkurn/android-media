@@ -47,7 +47,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:text="Lihat Semua"
         android:textColor="@color/medium_green"
-        android:textSize="@dimen/sp_16"
+        android:textSize="@dimen/sp_13"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="wrap"
