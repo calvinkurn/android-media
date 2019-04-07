@@ -252,17 +252,6 @@ public class CouponInStackBaseAdapter extends BaseAdapter<CouponValueEntity> {
             holder.cvData.setLayoutParams(layoutParamsCvData);
         }
 
-        holder.imgBanner.setOnClickListener(v -> {
-            if (item.isNewCoupon()) {
-                //TODO show stacked bottomsheet
-                Toast.makeText(holder.imgBanner.getContext(), "stacked bottomsheet", Toast.LENGTH_SHORT).show();
-            } else {
-                RouteManager.route(holder.imgBanner.getContext(), item.getRedirectAppLink());
-                sendClickEvent(holder.imgBanner.getContext(), item, holder.getAdapterPosition());
-            }
-        });
-
-
         /*This section is exclusively for handling flash-sale timer*/
         if (holder.timer != null) {
             holder.timer.cancel();
@@ -310,6 +299,13 @@ public class CouponInStackBaseAdapter extends BaseAdapter<CouponValueEntity> {
         } else {
             holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.getContext(), R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
             holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.getContext(), R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
+        }
+
+        if (holder.itemView != null) {
+            holder.itemView.setOnClickListener(v -> {
+                RouteManager.route(holder.imgBanner.getContext(), item.getRedirectAppLink());
+                sendClickEvent(holder.imgBanner.getContext(), item, holder.getAdapterPosition());
+            });
         }
     }
 }

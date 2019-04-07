@@ -267,18 +267,6 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
             holder.cvData.setLayoutParams(layoutParamsCvData);
         }
 
-        holder.imgBanner.setOnClickListener(v -> {
-            if (item.isStacked()) {
-                mPresenter.getCouponInStack(item.getStackId());
-            } else {
-                //RouteManager.route(holder.imgBanner.getContext(), item.getRedirectAppLink());
-                Bundle bundle = new Bundle();
-                bundle.putString(CommonConstant.EXTRA_COUPON_CODE, item.getCode());
-                holder.imgBanner.getContext().startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
-                sendClickEvent(holder.imgBanner.getContext(), item, holder.getAdapterPosition());
-            }
-        });
-
         if (item.getUpperLeftSection() == null
                 || item.getUpperLeftSection().getTextAttributes() == null
                 || item.getUpperLeftSection().getTextAttributes().isEmpty()
@@ -362,6 +350,17 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
                 holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.getContext(), R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
                 holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.getContext(), R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
             }
+
+            holder.imgBanner.setOnClickListener(v -> {
+                if (item.isStacked()) {
+                    mPresenter.getCouponInStack(item.getStackId());
+                } else {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(CommonConstant.EXTRA_COUPON_CODE, item.getCode());
+                    holder.imgBanner.getContext().startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
+                    sendClickEvent(holder.imgBanner.getContext(), item, holder.getAdapterPosition());
+                }
+            });
         }
     }
 
