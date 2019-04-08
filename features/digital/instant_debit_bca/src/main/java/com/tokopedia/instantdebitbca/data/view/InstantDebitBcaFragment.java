@@ -69,7 +69,7 @@ public class InstantDebitBcaFragment extends BaseDaggerFragment implements Insta
         super.onViewCreated(view, savedInstanceState);
 
         applinkUrl = getArguments().getString(InstantDebitBcaActivity.CALLBACK_URL);
-        widgetBca = new BCARegistrasiXCOWidget(getActivity(), XCOEnum.ENVIRONMENT.DEV);
+        widgetBca = new BCARegistrasiXCOWidget(getActivity(), XCOEnum.ENVIRONMENT.PROD);
         widgetBca.setListener(this);
         layoutWidget.addView(widgetBca);
         presenter.getAccessTokenBca();
