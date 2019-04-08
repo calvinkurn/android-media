@@ -57,7 +57,7 @@ class RecentSearchAdapter(val listener: RecentSearchListener): RecyclerView.Adap
                 notifyItemRangeChanged(position, itemCount)
                 listener.onDeleteRecentSearchItem(data.name)
             }
-            textView.setOnTextClickListener { listener.onItemClicked(data.name, data.name, true) }
+            textView.setOnTextClickListener { listener.onItemClicked(data) }
         }
     }
 }

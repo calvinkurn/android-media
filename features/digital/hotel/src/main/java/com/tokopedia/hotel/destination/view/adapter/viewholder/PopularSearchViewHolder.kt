@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.item_popular_search.view.*
  * @author by jessica on 25/03/19
  */
 
-class PopularSearchViewHolder(val view: View, val popularSearchClickListener: PopularSearchClickListener): AbstractViewHolder<PopularSearch>(view) {
+class PopularSearchViewHolder(val view: View): AbstractViewHolder<PopularSearch>(view) {
 
    override fun bind(popularSearch: PopularSearch) {
         with(itemView) {

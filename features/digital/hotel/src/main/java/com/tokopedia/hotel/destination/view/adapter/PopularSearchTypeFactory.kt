@@ -11,10 +11,10 @@ import com.tokopedia.hotel.destination.view.adapter.viewholder.PopularSearchView
  * @author by jessica on 25/03/19
  */
 
-class PopularSearchTypeFactory(val popularSearchClickListener: PopularSearchClickListener): BaseAdapterTypeFactory() {
+class PopularSearchTypeFactory: BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
-        return if (type == PopularSearchViewHolder.LAYOUT) PopularSearchViewHolder(parent, popularSearchClickListener) else super.createViewHolder(parent, type)
+        return if (type == PopularSearchViewHolder.LAYOUT) PopularSearchViewHolder(parent) else super.createViewHolder(parent, type)
     }
 
     fun type(popularSearch: PopularSearch): Int {

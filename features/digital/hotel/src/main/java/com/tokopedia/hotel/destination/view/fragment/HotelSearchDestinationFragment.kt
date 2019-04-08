@@ -1,17 +1,23 @@
 package com.tokopedia.hotel.destination.view.fragment
 
+import android.app.Activity
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.data.model.SearchDestination
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
+import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_ID
+import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_NAME
+import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_TYPE
 import com.tokopedia.hotel.destination.view.adapter.SearchDestinationListener
 import com.tokopedia.hotel.destination.view.adapter.SearchDestinationTypeFactory
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
@@ -48,13 +54,17 @@ SearchDestinationListener{
             is Loaded -> {
                 when (it.data) {
                     is Success -> {
-                        loadInitialData()
-                        renderList(it.data.data)
+                        isLoadingInitialData = true
+                        renderList(it.data.data, false)
                     }
-                    is Fail -> {}
+                    is Fail -> {
+                        showGetListError(it.data.throwable)
+                    }
                 }
             }
-            is Shimmering -> {}
+            is Shimmering -> {
+                showLoading()
+            }
         } })
     }
 
@@ -63,26 +73,28 @@ SearchDestinationListener{
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
     override fun getAdapterTypeFactory(): SearchDestinationTypeFactory {
         return SearchDestinationTypeFactory(this)
     }
 
-    override fun onItemClicked(t: SearchDestination?) {
+    override fun onItemClicked(searchDestination: SearchDestination) {
+        val intent = Intent()
+        intent.putExtra(HOTEL_DESTINATION_NAME, searchDestination.name)
+        intent.putExtra(HOTEL_DESTINATION_ID, searchDestination.id)
+        intent.putExtra(HOTEL_DESTINATION_TYPE, searchDestination.type)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
     override fun getScreenName(): String = ""
-
 
     override fun initInjector() {
         getComponent(HotelDestinationComponent::class.java).inject(this)
     }
 
     override fun loadData(page: Int) {
-
+        isLoadingInitialData = true
+        onSearchQueryChange(getFilterText())
     }
 
     override fun getFilterText(): String {
@@ -90,7 +102,13 @@ SearchDestinationListener{
     }
 
     fun onSearchQueryChange(keyword: String) {
-        destinationViewModel.getHotelSearchDestination(keyword)
+        destinationViewModel.getHotelSearchDestination(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_search_destination), keyword)
+    }
+
+    override fun isLoadMoreEnabledByDefault(): Boolean = false
+
+    companion object {
+        fun getInstance(): HotelSearchDestinationFragment = HotelSearchDestinationFragment()
     }
 
 }

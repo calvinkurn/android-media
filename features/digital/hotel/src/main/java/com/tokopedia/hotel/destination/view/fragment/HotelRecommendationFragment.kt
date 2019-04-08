@@ -1,7 +1,9 @@
 package com.tokopedia.hotel.destination.view.fragment
 
+import android.app.Activity
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.view.ViewCompat
@@ -24,6 +26,11 @@ import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.data.model.RecentSearch
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
+import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_CURRENT_LOCATION_LANG
+import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_CURRENT_LOCATION_LAT
+import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_ID
+import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_NAME
+import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_TYPE
 import com.tokopedia.hotel.destination.view.adapter.PopularSearchClickListener
 import com.tokopedia.hotel.destination.view.adapter.PopularSearchTypeFactory
 import com.tokopedia.hotel.destination.view.adapter.RecentSearchAdapter
@@ -38,8 +45,7 @@ import javax.inject.Inject
  * @author by jessica on 25/03/19
  */
 
-class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearchTypeFactory>(),
-        PopularSearchClickListener, RecentSearchListener {
+class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearchTypeFactory>(), RecentSearchListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -70,10 +76,7 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
 
         permissionCheckerHelper = PermissionCheckerHelper()
         destinationViewModel.setPermissionChecker(permissionCheckerHelper)
-
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context!!)
-
-        initData()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -85,10 +88,6 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     fun initView(view: View) {
         initCurrentLocationTextView(view)
         initRecentSearch(view)
-    }
-
-    fun initData() {
-        destinationViewModel.getHotelRecommendation(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_recommendation))
     }
 
     fun initRecentSearch(view: View) {
@@ -125,45 +124,55 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         destinationViewModel.recentSearch.observe(this, android.arch.lifecycle.Observer { when (it) {
             is Success -> renderRecentSearch(it.data)
-            is Fail -> {}
+            is Fail -> { }
         } })
 
         destinationViewModel.popularSearch.observe(this, android.arch.lifecycle.Observer { when (it) {
-            is Success -> renderList(it.data)
-            is Fail -> {}
+            is Success -> {
+                isLoadingInitialData = true
+                renderList(it.data, false)
+            }
+            is Fail -> { }
         } })
 
         destinationViewModel.longLat.observe(this, android.arch.lifecycle.Observer {when (it) {
-            is Success -> Toast.makeText(context,"Lang: ${it.data.first}, Lat: ${it.data.second}", Toast.LENGTH_SHORT).show()
+            is Success -> onClickCurrentLocation(lang = it.data.first, lat = it.data.second)
+            is Fail -> { }
         }
         })
+    }
+
+    fun onClickCurrentLocation(lang: Double, lat: Double) {
+        Toast.makeText(context,"Lang: $lang, Lat: $lat", Toast.LENGTH_SHORT).show()
+        val intent = Intent()
+        intent.putExtra(HOTEL_CURRENT_LOCATION_LANG, lang)
+        intent.putExtra(HOTEL_CURRENT_LOCATION_LAT, lat)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
     fun renderRecentSearch(recentSearches: MutableList<RecentSearch>) {
         recentSearchAdapter.setData(recentSearches)
     }
 
-    override fun getAdapterTypeFactory(): PopularSearchTypeFactory = PopularSearchTypeFactory(this)
+    override fun getAdapterTypeFactory(): PopularSearchTypeFactory = PopularSearchTypeFactory()
 
-    override fun onItemClicked(t: PopularSearch) {
-
+    override fun onItemClicked(popularSearch: PopularSearch) {
+        val intent = Intent()
+        intent.putExtra(HOTEL_DESTINATION_NAME, popularSearch.name)
+        intent.putExtra(HOTEL_DESTINATION_ID, popularSearch.id)
+        intent.putExtra(HOTEL_DESTINATION_TYPE, popularSearch.type)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
     override fun loadData(page: Int) {
-
-    }
-
-    override fun popularSearchClicked(popularSearch: PopularSearch) {
-
+        destinationViewModel.getHotelRecommendation(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_recommendation))
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -185,15 +194,21 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
         //call viewModel delete all
     }
 
-    override fun onItemClicked(applink: String, webUrl: String, shouldFinishActivity: Boolean) {
-        Toast.makeText(context, "Item Clicked $applink", Toast.LENGTH_SHORT).show()
-        if (shouldFinishActivity) activity?.finish()
-        //pass to homepage activity
+    override fun onItemClicked(recentSearch: RecentSearch) {
+        Toast.makeText(context, "Item Clicked ${recentSearch.name}", Toast.LENGTH_SHORT).show()
+        val intent = Intent()
+        intent.putExtra(HOTEL_DESTINATION_NAME, recentSearch.name)
+        intent.putExtra(HOTEL_DESTINATION_ID, recentSearch.id)
+        intent.putExtra(HOTEL_DESTINATION_TYPE, recentSearch.type)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
     override fun isRecentSearchEmpty() {
         recentSearchLayout.visibility = View.GONE
     }
+
+    override fun isLoadMoreEnabledByDefault() = false
 
     companion object {
         fun getInstance(): HotelRecommendationFragment = HotelRecommendationFragment()

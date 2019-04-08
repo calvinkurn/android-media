@@ -40,29 +40,35 @@
             app:weight="medium"
             tools:text="Jakarta"/>
 
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
-            android:orientation="horizontal">
+            android:layout_marginTop="@dimen/dp_4">
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/popular_search_location"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:fontSize="micro"
+                app:textViewTheme="lightDisabled"
+                tools:text="Indonesia"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/popular_search_hotel_count"
+                />
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/popular_search_hotel_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:fontSize="micro"
                 app:textViewTheme="lightDisabled"
-                tools:text="Indonesia"/>
-
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/popular_search_hotel_count"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                app:fontSize="micro"
-                app:textViewTheme="lightDisabled"
                 tools:text="3000+ hotel"
-                android:gravity="end"/>
-        </LinearLayout>
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </android.support.constraint.ConstraintLayout>
     </LinearLayout>
 
 </LinearLayout>

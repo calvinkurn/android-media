@@ -47,6 +47,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.permissionchecker)
     implementation project(rootProject.ext.libraries.locationmanager)
 
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
     implementation rootProject.ext.miscDependencies.multiDex
 
     implementation rootProject.ext.networkDependencies.glide

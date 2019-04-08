@@ -47,7 +47,6 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
         updateTitle(intent.getStringExtra(EXTRA_TOOLBAR_TITLE))
 
         initInjector()
-
         initView()
     }
 
@@ -93,7 +92,6 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
             } else if (text.isNotEmpty() && !isSearching && text.length > 2){
                 isSearching = true
                 showSearchDestinationResult()
-                doSearch(text)
             } else if (isSearching) {
                 //search
                 doSearch(text)
@@ -116,6 +114,12 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
     companion object {
         val EXTRA_TOOLBAR_TITLE = "EXTRA_TOOLBAR_TITLE"
         val SEARCH_DESTINATION_FRAGMENT_TAG = "SEARCH_DESTINATION"
+
+        const val HOTEL_DESTINATION_ID = "destinationID"
+        const val HOTEL_DESTINATION_NAME = "name"
+        const val HOTEL_DESTINATION_TYPE = "type"
+        const val HOTEL_CURRENT_LOCATION_LANG = "lang"
+        const val HOTEL_CURRENT_LOCATION_LAT = "lat"
 
         fun createInstance(activity: Activity, title: String): Intent {
             val intent = Intent(activity, HotelDestinationActivity::class.java)

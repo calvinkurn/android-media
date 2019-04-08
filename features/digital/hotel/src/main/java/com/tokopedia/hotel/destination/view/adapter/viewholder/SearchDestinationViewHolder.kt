@@ -37,7 +37,7 @@ class SearchDestinationViewHolder(val view: View, val searchDestinationListener:
 
         var indexStartHighlighted = -1
         var indexEndHighlighted = -1
-        if (TextUtils.isEmpty(stringToHighlighted)) {
+        if (TextUtils.isEmpty(stringToHighlighted) || TextUtils.isEmpty(strToPut)) {
             return strToPut
         }
 
@@ -58,9 +58,9 @@ class SearchDestinationViewHolder(val view: View, val searchDestinationListener:
                     0, strToPut.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             return spannableStringBuilder
         } else {
-            spannableStringBuilder.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+            if (indexStartHighlighted > 0) spannableStringBuilder.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
                     0, indexStartHighlighted, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            spannableStringBuilder.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+            if (indexEndHighlighted < strToPut.length) spannableStringBuilder.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
                     indexEndHighlighted, strToPut.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             return spannableStringBuilder
         }

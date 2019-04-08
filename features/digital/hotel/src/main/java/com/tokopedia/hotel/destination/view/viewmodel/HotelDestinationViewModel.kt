@@ -9,14 +9,12 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.hotel.R
-import com.tokopedia.hotel.destination.data.model.HotelRecommendation
-import com.tokopedia.hotel.destination.data.model.PopularSearch
-import com.tokopedia.hotel.destination.data.model.RecentSearch
-import com.tokopedia.hotel.destination.data.model.SearchDestination
+import com.tokopedia.hotel.destination.data.model.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.experimental.CoroutineDispatcher
@@ -29,7 +27,7 @@ import javax.inject.Inject
  */
 
 class HotelDestinationViewModel @Inject constructor(
-        private val graphqlRepository: GraphqlRepository,
+        val graphqlRepository: GraphqlRepository,
         val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher){
 
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -41,13 +39,6 @@ class HotelDestinationViewModel @Inject constructor(
 
     init {
 
-        var list: MutableList<SearchDestination> = arrayListOf()
-        list.add(SearchDestination(0,"city","Kota", "", "Jakarta", "Indonesia", 2000))
-        list.add(SearchDestination(0,"city","Region", "", "Jakarta Barat", "Jakarta, Indonesia", 2000))
-        list.add(SearchDestination(0,"city","Hotel", "", "Jakarta Indah Samudra", "Jakarta, Indonesia", 0))
-        list.add(SearchDestination(0,"city","Area", "", "Jl. Jaka Sembung 55", "Jakarta, Indonesia", 2000))
-        searchDestination.value = Loaded(Success(list))
-
         //dummy data
         var listagain: MutableList<RecentSearch> = arrayListOf()
         listagain.add(RecentSearch(0,"", "Jakarta", ""))
@@ -57,12 +48,6 @@ class HotelDestinationViewModel @Inject constructor(
         listagain.add(RecentSearch(0,"", "Kyoto Japan", ""))
         recentSearch.value = Success(listagain)
 
-        var list3: MutableList<PopularSearch> = arrayListOf()
-        list3.add(PopularSearch(0, "city","","Jakarta", "Indonesia","2000"))
-        list3.add(PopularSearch(0, "city","","Bandung", "Indonesia","1200"))
-        list3.add(PopularSearch(0, "city","","Yogyakarta", "Indonesia","1300"))
-        list3.add(PopularSearch(0, "city","","Kuta", "Bali, Indonesia","500"))
-        popularSearch.value = Success(list3)
     }
 
     fun getHotelRecommendation(rawQuery: String) {
@@ -70,23 +55,27 @@ class HotelDestinationViewModel @Inject constructor(
             val data = withContext(Dispatchers.Default){
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_POPULAR_RESPONSE, false)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<HotelRecommendation.Response>()
+            }.getSuccessData<HotelRecommendation>()
 
-            if (data.errors.isEmpty()) {
-                popularSearch.value = Success(data.dataHotelRecommendation.popularSearchList.toMutableList())
-            } else {}
+            popularSearch.value = Success(data.popularSearchList.toMutableList())
         }) {
 
         }
     }
 
-    fun getHotelSearchDestination(keyword: String) {
-        var list: MutableList<SearchDestination> = arrayListOf()
-        list.add(SearchDestination(0,"city","Kota", "", "Jakarta", "Indonesia", 2000))
-        list.add(SearchDestination(0,"city","Region", "", "Jakarta Barat", "Jakarta, Indonesia", 2000))
-        list.add(SearchDestination(0,"city","Hotel", "", "Jakarta Indah Samudra", "Jakarta, Indonesia", 0))
-        list.add(SearchDestination(0,"city","Area", "", "Jl. Jaka Sembung 55", "Jakarta, Indonesia", 2000))
-        searchDestination.value = Loaded(Success(list))
+    fun getHotelSearchDestination(rawQuery: String, keyword: String) {
+        val params = mapOf(PARAM_SEARCH_KEY to keyword)
+        val dataParams = mapOf(PARAM_DATA to params)
+        launchCatchError(block = {
+            searchDestination.value = Shimmering
+            val data = withContext(Dispatchers.Default){
+                val graphqlRequest = GraphqlRequest(rawQuery, TYPE_SEARCH_RESPONSE, dataParams, false)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<HotelSuggestion.Response>()
+            searchDestination.value = Loaded(Success(data.propertySearchSuggestion.searchDestinationList.toMutableList()))
+        }){
+            searchDestination.value = Loaded(Fail(it))
+        }
     }
 
     fun setPermissionChecker(permissionCheckerHelper: PermissionCheckerHelper) {
@@ -112,6 +101,10 @@ class HotelDestinationViewModel @Inject constructor(
     }
 
     companion object {
-        private val TYPE_POPULAR_RESPONSE = HotelRecommendation.Response::class.java
+        private val TYPE_POPULAR_RESPONSE = HotelRecommendation::class.java
+        private val TYPE_SEARCH_RESPONSE = HotelSuggestion.Response::class.java
+
+        const val PARAM_SEARCH_KEY = "searchKey"
+        const val PARAM_DATA = "data"
     }
 }

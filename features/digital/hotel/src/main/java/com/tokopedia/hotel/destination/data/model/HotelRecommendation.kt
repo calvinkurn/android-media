@@ -15,14 +15,4 @@ data class HotelRecommendation (
         @SerializedName("propertyPopular")
         @Expose
         val popularSearchList: List<PopularSearch> = listOf()
-) {
-
-        data class Response (
-            @SerializedName("data")
-            @Expose
-            val dataHotelRecommendation: HotelRecommendation = HotelRecommendation(),
-
-            @Expose
-            @SerializedName("errors")
-            val errors: List<Error> = listOf())
-}
+)
