@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.view.MenuItem
+import android.view.Menu
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.browse.DigitalBrowseComponentInstance
