@@ -789,12 +789,12 @@ public class HomePageTracking {
             @NonNull String promoCode
     ) {
         ContextAnalytics tracker = getTracker(context);
-        if (tracker != null){
+        if (tracker != null) {
             Map<String, Object> data = DataLayer.mapOf(
                     "event", PROMO_CLICK,
                     "eventCategory", CATEGORY_HOME_PAGE,
                     "eventAction", "click on bu widget",
-                    "eventLabel", name,
+                    "eventLabel", alias,
                     "ecommerce", DataLayer.mapOf(
                             "promoClick", DataLayer.mapOf(
                                     "promotions", DataLayer.listOf(
