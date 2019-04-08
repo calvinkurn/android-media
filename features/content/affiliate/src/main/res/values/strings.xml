@@ -15,29 +15,29 @@
     <string name="text_af_click">Klik</string>
     <string name="text_af_buy">Dibeli</string>
     <string name="text_af_default_saldo">Rp. 0</string>
-    <string name="text_empty_start_recommendation_string">Mulai Kurasi, Yuk!</string>
-    <string name="text_empty_start_recommendation_btn">Mulai Kurasi</string>
+    <string name="text_empty_start_recommendation_string">Mulai Post, Yuk!</string>
+    <string name="text_empty_start_recommendation_btn">Mulai Post</string>
     <string name="text_empty_have_recommendation">Kamu masih memiliki 15 jatah kurasi yang bisa diambil.</string>
     <string name="text_empty_have_recommendation_formatted">Kamu masih memiliki %1$s jatah kurasi yang bisa diambil.</string>
 
     <!--EXPLORE-->
-    <string name="text_search_hint">Cari Barang Kurasimu</string>
+    <string name="text_search_hint">Cari Barang Postmu</string>
     <string name="text_empty_search_title">Duh, kami gak nemu yang kamu cari.</string>
     <string name="text_empty_search_desc">Bisa coba pakai kata kunci lain, ya.</string>
     <string name="text_empty_product_title">Barang yang kamu cari belum ada.</string>
     <string name="text_empty_product_desc">Yuk cari di kategori lainnya.</string>
     <string name="text_empty_search_btn">Cari Lagi</string>
     <string name="text_product_not_found">Produk Tidak Ditemukan</string>
-    <string name="text_full_affiliate_title">Jatah Kurasimu Habis</string>
+    <string name="text_full_affiliate_title">Jatah Postmu Habis</string>
     <string name="text_full_affiliate">Kamu hanya bisa membuat kurasi untuk 15 produk. Atur kurasimu untuk menambah yang baru</string>
-    <string name="text_full_affiliate_ok">Atur Kurasi</string>
+    <string name="text_full_affiliate_ok">Atur Post</string>
     <string name="text_full_affiliate_no">Batal</string>
     <string name="text_item_commission">Komisi</string>
     <string name="text_back_to_top">Kembali ke atas</string>
     <string name="text_button_apply">Terapkan</string>
     <string name="text_title_filter">Filter</string>
     <string name="text_button_sort">Sort</string>
-    <string name="title_showcase">Cek dan Bagikan Hasil Kurasimu</string>
+    <string name="title_showcase">Cek dan Bagikan Hasil Postmu</string>
     <string name="desc_showcase">Semua kurasi akan disimpan di profilmu</string>
     <string name="af_product_title">Barang lainnya</string>
     <string name="af_product_desc">Semua ada loh. Lihat yuk!</string>
@@ -87,10 +87,10 @@
 
     <!--EDUCATION-->
     <string name="af_skip">Lewatkan</string>
-    <string name="af_start_curating">Mulai Kurasi Produk</string>
+    <string name="af_start_curating">Mulai Post Produk</string>
     <string name="af_share_and_commission">Bagikan By Me dan Raih Komisinya!</string>
     <string name="af_choose_favorite_product">Pilih produk favoritmu</string>
-    <string name="af_curate_product_profile">Kurasi produknya di profilmu</string>
+    <string name="af_curate_product_profile">Post produknya di profilmu</string>
     <string name="af_share_product_buy">Bagikan dan raih Komisi saat produk terbeli</string>
     <string name="af_title_edit">Edit</string>
 
