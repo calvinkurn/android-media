@@ -10,7 +10,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:minHeight="680dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -50,9 +51,9 @@
                     android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_12"
+                    android:fontFamily="sans-serif-medium"
                     android:textColor="@color/black_70"
                     android:textSize="@dimen/text_size_14"
-                    android:fontFamily="sans-serif-medium"
                     tool:text="Top Up E-Money Lebih Cepat dan Dapat Cashback hingga Rp10.000" />
 
                 <android.support.constraint.ConstraintLayout

@@ -9,7 +9,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.promocheckout.common.view.model.PromoData;
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 
@@ -34,7 +34,7 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     private ShipmentFragment shipmentFragment;
 
     public static Intent createInstance(Context context,
-                                        PromoData promoData,
+                                        PromoStackingData promoData,
                                         CartPromoSuggestion cartPromoSuggestion,
                                         String defaultSelectedTabPromo,
                                         boolean isAutoApplyPromoCodeApplied) {

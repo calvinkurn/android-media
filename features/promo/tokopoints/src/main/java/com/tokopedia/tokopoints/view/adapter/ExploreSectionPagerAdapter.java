@@ -1,11 +1,6 @@
 package com.tokopedia.tokopoints.view.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,20 +15,21 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
+import com.tokopedia.tokopoints.view.model.section.CountdownAttr;
 import com.tokopedia.tokopoints.view.model.section.ImageList;
 import com.tokopedia.tokopoints.view.model.section.SectionContent;
 import com.tokopedia.tokopoints.view.presenter.TokoPointsHomePresenterNew;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class ExploreSectionPagerAdapter extends PagerAdapter {
@@ -44,6 +40,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
     private SectionContent mCouponSection;
     private TokoPointsHomePresenterNew mPresenter;
     private SwipeToRefresh swipeToRefresh[] = new SwipeToRefresh[2];
+    private CountDownView countDownView;
 
     public ExploreSectionPagerAdapter(Context context, TokoPointsHomePresenterNew presenter, List<SectionContent> sections, SectionContent couponSection) {
         this.mLayoutInflater = LayoutInflater.from(context);
@@ -141,7 +138,6 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
     }
 
     void setUpExploreTab(View view) {
-        //TODO setup other section
         if (view == null || mSections == null) {
             return;
         }
@@ -210,15 +206,36 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             return view;
         }
 
+        ImageHandler.loadBackgroundImage(view, content.getBackgroundImgURLMobile());
+
+        if (content.getCountdownAttr() != null &&
+                content.getCountdownAttr().isShowTimer() &&
+                content.getCountdownAttr().getExpiredCountDown() > 0) {
+            countDownView = view.findViewById(R.id.tp_count_down_view);
+            countDownView.findViewById(R.id.tp_count_down_view).setVisibility(View.VISIBLE);
+            countDownView.setUnify(true);
+            countDownView.setupTimerFromRemianingMillis(content.getCountdownAttr().getExpiredCountDown() * 1000, () -> {
+                view.setVisibility(View.GONE);
+            });
+        }
+
         if (!content.getCta().isEmpty()) {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);
             btnSeeAll.setVisibility(View.VISIBLE);
             btnSeeAll.setText(content.getCta().getText());
-            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
+            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl(),
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_CATALOG, content.getSectionTitle()));
         }
 
-        ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
-        ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionSubTitle());
+        if (!TextUtils.isEmpty(content.getSectionTitle())) {
+            view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
+        }
+
+        if (!TextUtils.isEmpty(content.getSectionSubTitle())) {
+            view.findViewById(R.id.text_sub_title).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.text_sub_title)).setText(content.getSectionSubTitle());
+        }
 
         if (content.getLayoutCatalogAttr().getCatalogList() != null) {
             RecyclerView rvCarousel = view.findViewById(R.id.rv_carousel);
@@ -241,11 +258,14 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             return view;
         }
 
+        ImageHandler.loadBackgroundImage(view, content.getBackgroundImgURLMobile());
+
         if (!content.getCta().isEmpty()) {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);
             btnSeeAll.setVisibility(View.VISIBLE);
             btnSeeAll.setText(content.getCta().getText());
-            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
+            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl(),
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, ""));
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
@@ -264,7 +284,11 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             ImageView imgBanner = view.findViewById(R.id.img_banner);
             ImageList data = content.getLayoutBannerAttr().getImageList().get(0);
             ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageURLMobile());
-            imgBanner.setOnClickListener(v -> handledClick(data.getRedirectAppLink(), data.getRedirectURL()));
+            imgBanner.setOnClickListener(v -> {
+                handledClick(data.getRedirectAppLink(), data.getRedirectURL(), "", "");
+                if (!TextUtils.isEmpty(content.getSectionTitle()))
+                    sendBannerClick(content.getSectionTitle());
+            });
 
             ((TextView) view.findViewById(R.id.text_title_banner)).setText(data.getInBannerTitle());
             ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
@@ -279,6 +303,9 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
                 ((TextView) view.findViewById(R.id.text_sub_title_bottom)).setText(data.getSubTitle());
             }
         }
+
+        if (!TextUtils.isEmpty(content.getSectionTitle()))
+            sendBannerImpression(content.getSectionTitle());
 
         return view;
     }
@@ -293,11 +320,14 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             return view;
         }
 
+        ImageHandler.loadBackgroundImage(view, content.getBackgroundImgURLMobile());
+
         if (!content.getCta().isEmpty()) {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);
             btnSeeAll.setVisibility(View.VISIBLE);
             btnSeeAll.setText(content.getCta().getText());
-            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
+            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl(),
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, ""));
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
@@ -316,7 +346,11 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             ImageView imgBanner = view.findViewById(R.id.img_banner);
             ImageList data = content.getLayoutBannerAttr().getImageList().get(0);
             ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageURLMobile());
-            imgBanner.setOnClickListener(v -> handledClick(data.getRedirectAppLink(), data.getRedirectURL()));
+            imgBanner.setOnClickListener(v -> {
+                handledClick(data.getRedirectAppLink(), data.getRedirectURL(), "", "");
+                if (!TextUtils.isEmpty(content.getSectionTitle()))
+                    sendBannerClick(content.getSectionTitle());
+            });
 
             ((TextView) view.findViewById(R.id.text_title_banner)).setText(data.getInBannerTitle());
             ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
@@ -332,6 +366,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             }
         }
 
+        if (!TextUtils.isEmpty(content.getSectionTitle()))
+            sendBannerImpression(content.getSectionTitle());
         return view;
     }
 
@@ -345,11 +381,14 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             return view;
         }
 
+        ImageHandler.loadBackgroundImage(view, content.getBackgroundImgURLMobile());
+
         if (!content.getCta().isEmpty()) {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);
             btnSeeAll.setVisibility(View.VISIBLE);
             btnSeeAll.setText(content.getCta().getText());
-            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
+            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl(),
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, ""));
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
@@ -368,7 +407,11 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             ImageView imgBanner = view.findViewById(R.id.img_banner);
             ImageList data = content.getLayoutBannerAttr().getImageList().get(0);
             ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageURLMobile());
-            imgBanner.setOnClickListener(v -> handledClick(data.getRedirectAppLink(), data.getRedirectURL()));
+            imgBanner.setOnClickListener(v -> {
+                handledClick(data.getRedirectAppLink(), data.getRedirectURL(), "", "");
+                if (!TextUtils.isEmpty(content.getSectionTitle()))
+                    sendBannerClick(content.getSectionTitle());
+            });
 
             ((TextView) view.findViewById(R.id.text_title_banner)).setText(data.getInBannerTitle());
             ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
@@ -384,6 +427,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             }
         }
 
+        if (!TextUtils.isEmpty(content.getSectionTitle()))
+            sendBannerImpression(content.getSectionTitle());
         return view;
     }
 
@@ -397,11 +442,14 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             return view;
         }
 
+        ImageHandler.loadBackgroundImage(view, content.getBackgroundImgURLMobile());
+
         if (!content.getCta().isEmpty()) {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);
             btnSeeAll.setVisibility(View.VISIBLE);
             btnSeeAll.setText(content.getCta().getText());
-            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
+            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl(),
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, ""));
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
@@ -424,10 +472,13 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
                 final String webLink = data.getRedirectURL();
                 imgCol = view.findViewById(R.id.iv_col_1);
                 ImageHandler.loadImageFitCenter(imgCol.getContext(), imgCol, data.getImageURLMobile());
-                imgCol.setOnClickListener(v -> handledClick(appLink, webLink));
+                imgCol.setOnClickListener(v -> handledClick(appLink, webLink, "", ""));
 
                 ((TextView) view.findViewById(R.id.text_title_banner)).setText(data.getInBannerTitle());
                 ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
+
+                setText(view.findViewById(R.id.text_title_bottom_1), data.getTitle());
+                setText(view.findViewById(R.id.text_sub_title_bottom_1), data.getSubTitle());
             }
 
             if (content.getLayoutBannerAttr().getImageList().size() > 1) {
@@ -436,10 +487,13 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
                 final String webLink = data.getRedirectURL();
                 imgCol = view.findViewById(R.id.iv_col_2);
                 ImageHandler.loadImageFitCenter(imgCol.getContext(), imgCol, data.getImageURLMobile());
-                imgCol.setOnClickListener(v -> handledClick(appLink, webLink));
+                imgCol.setOnClickListener(v -> handledClick(appLink, webLink, "", ""));
 
                 ((TextView) view.findViewById(R.id.text_title_banner2)).setText(data.getInBannerTitle());
                 ((TextView) view.findViewById(R.id.text_sub_title_banner2)).setText(data.getInBannerSubTitle());
+
+                setText(view.findViewById(R.id.text_title_bottom_2), data.getTitle());
+                setText(view.findViewById(R.id.text_sub_title_bottom_2), data.getSubTitle());
             }
 
             if (content.getLayoutBannerAttr().getImageList().size() > 2) {
@@ -448,10 +502,13 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
                 final String webLink = data.getRedirectURL();
                 imgCol = view.findViewById(R.id.iv_col_3);
                 ImageHandler.loadImageFitCenter(imgCol.getContext(), imgCol, data.getImageURLMobile());
-                imgCol.setOnClickListener(v -> handledClick(appLink, webLink));
+                imgCol.setOnClickListener(v -> handledClick(appLink, webLink, "", ""));
 
                 ((TextView) view.findViewById(R.id.text_title_banner3)).setText(data.getInBannerTitle());
                 ((TextView) view.findViewById(R.id.text_sub_title_banner3)).setText(data.getInBannerSubTitle());
+
+                setText(view.findViewById(R.id.text_title_bottom_3), data.getTitle());
+                setText(view.findViewById(R.id.text_sub_title_bottom_3), data.getSubTitle());
             }
 
         }
@@ -469,11 +526,14 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             return view;
         }
 
+        ImageHandler.loadBackgroundImage(view, content.getBackgroundImgURLMobile());
+
         if (!content.getCta().isEmpty()) {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);
             btnSeeAll.setVisibility(View.VISIBLE);
             btnSeeAll.setText(content.getCta().getText());
-            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
+            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(),
+                    content.getCta().getUrl(), AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, ""));
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
@@ -496,10 +556,13 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
                 final String webLink = data.getRedirectURL();
                 imgCol = view.findViewById(R.id.iv_col_1);
                 ImageHandler.loadImageFitCenter(imgCol.getContext(), imgCol, data.getImageURLMobile());
-                imgCol.setOnClickListener(v -> handledClick(appLink, webLink));
+                imgCol.setOnClickListener(v -> handledClick(appLink, webLink, "", ""));
 
                 ((TextView) view.findViewById(R.id.text_title_banner)).setText(data.getInBannerTitle());
                 ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
+
+                setText(view.findViewById(R.id.text_title_bottom_1), data.getTitle());
+                setText(view.findViewById(R.id.text_sub_title_bottom_1), data.getSubTitle());
             }
 
             if (content.getLayoutBannerAttr().getImageList().size() > 1) {
@@ -508,10 +571,13 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
                 final String webLink = data.getRedirectURL();
                 imgCol = view.findViewById(R.id.iv_col_2);
                 ImageHandler.loadImageFitCenter(imgCol.getContext(), imgCol, data.getImageURLMobile());
-                imgCol.setOnClickListener(v -> handledClick(appLink, webLink));
+                imgCol.setOnClickListener(v -> handledClick(appLink, webLink, "", ""));
 
                 ((TextView) view.findViewById(R.id.text_title_banner2)).setText(data.getInBannerTitle());
                 ((TextView) view.findViewById(R.id.text_sub_title_banner2)).setText(data.getInBannerSubTitle());
+
+                setText(view.findViewById(R.id.text_title_bottom_2), data.getTitle());
+                setText(view.findViewById(R.id.text_sub_title_bottom_2), data.getSubTitle());
             }
         }
 
@@ -528,11 +594,14 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             return view;
         }
 
+        ImageHandler.loadBackgroundImage(view, content.getBackgroundImgURLMobile());
+
         if (!content.getCta().isEmpty()) {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);
             btnSeeAll.setVisibility(View.VISIBLE);
             btnSeeAll.setText(content.getCta().getText());
-            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
+            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl(),
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, ""));
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
@@ -555,10 +624,13 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
                 final String webLink = data.getRedirectURL();
                 imgCol = view.findViewById(R.id.iv_col_1);
                 ImageHandler.loadImageFitCenter(imgCol.getContext(), imgCol, data.getImageURLMobile());
-                imgCol.setOnClickListener(v -> handledClick(appLink, webLink));
+                imgCol.setOnClickListener(v -> handledClick(appLink, webLink, "", ""));
 
                 ((TextView) view.findViewById(R.id.text_title_banner)).setText(data.getInBannerTitle());
                 ((TextView) view.findViewById(R.id.text_sub_title_banner)).setText(data.getInBannerSubTitle());
+
+                setText(view.findViewById(R.id.text_title_bottom_1), data.getTitle());
+                setText(view.findViewById(R.id.text_sub_title_bottom_1), data.getSubTitle());
             }
 
             if (content.getLayoutBannerAttr().getImageList().size() > 1) {
@@ -567,10 +639,14 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
                 final String appLink = data.getRedirectAppLink();
                 final String webLink = data.getRedirectURL();
                 ImageHandler.loadImageFitCenter(imgCol.getContext(), imgCol, data.getImageURLMobile());
-                imgCol.setOnClickListener(v -> handledClick(appLink, webLink));
+                imgCol.setOnClickListener(v -> handledClick(appLink, webLink, "", ""));
 
                 ((TextView) view.findViewById(R.id.text_title_banner2)).setText(data.getInBannerTitle());
                 ((TextView) view.findViewById(R.id.text_sub_title_banner2)).setText(data.getInBannerSubTitle());
+
+                setText(view.findViewById(R.id.text_title_bottom_2), data.getTitle());
+                setText(view.findViewById(R.id.text_sub_title_bottom_2), data.getSubTitle());
+
             }
         }
 
@@ -587,11 +663,14 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             return view;
         }
 
+        ImageHandler.loadBackgroundImage(view, content.getBackgroundImgURLMobile());
+
         if (!content.getCta().isEmpty()) {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);
             btnSeeAll.setVisibility(View.VISIBLE);
             btnSeeAll.setText(content.getCta().getText());
-            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
+            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl(),
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, ""));
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
@@ -624,11 +703,14 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             return view;
         }
 
+        ImageHandler.loadBackgroundImage(view, content.getBackgroundImgURLMobile());
+
         if (!content.getCta().isEmpty()) {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);
             btnSeeAll.setVisibility(View.VISIBLE);
             btnSeeAll.setText(content.getCta().getText());
-            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
+            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl(),
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, ""));
         }
 
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
@@ -661,6 +743,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             return view;
         }
 
+        ImageHandler.loadBackgroundImage(view, content.getBackgroundImgURLMobile());
+
         if (!TextUtils.isEmpty(content.getSectionTitle())) {
             view.findViewById(R.id.text_title).setVisibility(View.VISIBLE);
             ((TextView) view.findViewById(R.id.text_title)).setText(content.getSectionTitle());
@@ -675,7 +759,8 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             TextView btnSeeAll = view.findViewById(R.id.text_see_all);
             btnSeeAll.setVisibility(View.VISIBLE);
             btnSeeAll.setText(content.getCta().getText());
-            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl()));
+            btnSeeAll.setOnClickListener(v -> handledClick(content.getCta().getAppLink(), content.getCta().getUrl(),
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, ""));
         }
 
         if (content.getLayoutBannerAttr().getImageList() != null) {
@@ -688,11 +773,60 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         return view;
     }
 
-    void handledClick(String appLink, String webLink) {
+    void handledClick(String appLink, String webLink, String action, String label) {
+        if (mLayoutInflater.getContext() == null) {
+            return;
+        }
+
         if (TextUtils.isEmpty(appLink)) {
             ((TokopointRouter) mLayoutInflater.getContext().getApplicationContext()).openTokoPoint(mLayoutInflater.getContext(), webLink);
         } else {
             RouteManager.route(mLayoutInflater.getContext(), appLink);
+        }
+
+        AnalyticsTrackerUtil.sendEvent(mLayoutInflater.getContext(),
+                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_TOKOPOINT,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                action,
+                label);
+    }
+
+    private void sendBannerImpression(String bannerName) {
+        HashMap<String, Object> promotionItem = new HashMap<>();
+        promotionItem.put(AnalyticsTrackerUtil.EcommerceKeys.NAME, "/tokopoints - p{x} - promo lis");
+        promotionItem.put(AnalyticsTrackerUtil.EcommerceKeys.POSITION, -1);
+        promotionItem.put(AnalyticsTrackerUtil.EcommerceKeys.CREATIVE, bannerName);
+        HashMap<String, Object> promotionMap = new HashMap<>();
+        promotionMap.put(AnalyticsTrackerUtil.EcommerceKeys.PROMOTIONS, Collections.singletonList(promotionItem));
+        AnalyticsTrackerUtil.sendECommerceEvent(AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                AnalyticsTrackerUtil.ActionKeys.VIEW_BANNERS_ON_HOME_TOKOPOINTS,
+                bannerName, promotionMap);
+    }
+
+    private void sendBannerClick(String bannerName) {
+        HashMap<String, Object> promotionItem = new HashMap<>();
+        promotionItem.put(AnalyticsTrackerUtil.EcommerceKeys.NAME, "/tokopoints - p{x} - promo lis");
+        promotionItem.put(AnalyticsTrackerUtil.EcommerceKeys.POSITION, -1);
+        promotionItem.put(AnalyticsTrackerUtil.EcommerceKeys.CREATIVE, bannerName);
+        HashMap<String, Object> promotionMap = new HashMap<>();
+        promotionMap.put(AnalyticsTrackerUtil.EcommerceKeys.PROMOTIONS, Collections.singletonList(promotionItem));
+        AnalyticsTrackerUtil.sendECommerceEvent(AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_BANNERS_ON_HOME_TOKOPOINTS,
+                bannerName, promotionMap);
+    }
+
+    private void setText(View view, String text) {
+        if (view == null) {
+            return;
+        }
+
+        if (view instanceof TextView && !TextUtils.isEmpty(text)) {
+            ((TextView) view).setText(text);
+            view.setVisibility(View.VISIBLE);
+        } else {
+            view.setVisibility(View.GONE);
         }
     }
 }

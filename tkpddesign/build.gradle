@@ -42,6 +42,8 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
+    implementation project(rootProject.ext.features.resourcesCommon)
+
     androidTestImplementation rootProject.ext.testDependencies.mockitorCore
     implementation rootProject.ext.networkDependencies.glide
     testImplementation "org.robolectric:robolectric:4.1"
