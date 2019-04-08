@@ -435,6 +435,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             tvSelectPaymentMethod.setPadding(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_8), 0, getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_8), 0);
         }
 
+        shipmentAdapter.addPromoStackingVoucherData(promoStackingData);
+        if (promoStackingData != null) {
+            cartPromoSuggestion.setVisible(false);
+            shipmentAdapter.addPromoSuggestionData(cartPromoSuggestion);
+        } else {
+            shipmentAdapter.addPromoSuggestionData(cartPromoSuggestion);
+        }
+
         if (recipientAddressModel != null) {
             shipmentAdapter.addAddressShipmentData(recipientAddressModel);
         }
@@ -456,14 +464,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
             shipmentAdapter.updateEgold(false);
             shipmentAdapter.addEgoldAttributeData(egoldAttributeModel);
-        }
-
-        shipmentAdapter.addPromoStackingVoucherData(promoStackingData);
-        if (promoStackingData != null) {
-            cartPromoSuggestion.setVisible(false);
-            shipmentAdapter.addPromoSuggestionData(cartPromoSuggestion);
-        } else {
-            shipmentAdapter.addPromoSuggestionData(cartPromoSuggestion);
         }
 
         shipmentAdapter.addShipmentCostData(shipmentCostModel);

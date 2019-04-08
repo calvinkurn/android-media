@@ -85,8 +85,8 @@ ext {
             sharecontent      : ":libraries:sharecontent",
             track             : ":libraries:track",
             graphView         :":libraries:graph_view",
-            iris              : ":libraries:iris",
-//            iris              : ":libraries:iris_no_op",
+//            iris              : ":libraries:iris",
+            iris              : ":libraries:iris_no_op",
             banner            : ":libraries:banner",
             collapsingTabLayout: ":libraries:collapsing_tab_layout",
             cpm              : ":libraries:cpm"
