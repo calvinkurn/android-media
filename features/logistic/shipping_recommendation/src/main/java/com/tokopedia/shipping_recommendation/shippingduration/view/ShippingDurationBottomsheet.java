@@ -340,10 +340,10 @@ public class ShippingDurationBottomsheet extends BottomSheets
     @Override
     public void onLogisticPromoClicked(LogisticPromoViewModel data) {
         Dialog tkpdDialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        tkpdDialog.setTitle("Tokopedia Promo");
+        tkpdDialog.setTitle(getString(R.string.tkpd_promo_brand));
         tkpdDialog.setDesc(MethodChecker.fromHtml(data.getDialogMsg()));
-        tkpdDialog.setBtnOk("Lanjutkan");
-        tkpdDialog.setBtnCancel("Batalkan");
+        tkpdDialog.setBtnOk(getString(R.string.shiprecc_next));
+        tkpdDialog.setBtnCancel(getString(R.string.shiprecc_cancel));
         tkpdDialog.setOnCancelClickListener(view -> tkpdDialog.dismiss());
         tkpdDialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
