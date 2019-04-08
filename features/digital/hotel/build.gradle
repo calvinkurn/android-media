@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
-apply plugin: 'io.hansel.preprocessor.module'
+//apply plugin: 'io.hansel.preprocessor.module'
 
 android {
     configurations {
@@ -22,10 +22,10 @@ project.ext {
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+//        maven { url 'https://hansel.io/maven' }
     }
     dependencies {
-        classpath rootProject.ext.miscDependencies.hansel
+//        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
@@ -42,6 +42,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.permissionchecker)
     implementation project(rootProject.ext.libraries.locationmanager)

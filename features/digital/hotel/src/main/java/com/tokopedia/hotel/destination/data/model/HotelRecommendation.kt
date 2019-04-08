@@ -12,11 +12,12 @@ data class HotelRecommendation (
         @Expose
         val recentSearchList: List<RecentSearch> = listOf(),
 
-        @SerializedName("popular_search")
+        @SerializedName("propertyPopular")
         @Expose
         val popularSearchList: List<PopularSearch> = listOf()
 ) {
-    data class Response (
+
+        data class Response (
             @SerializedName("data")
             @Expose
             val dataHotelRecommendation: HotelRecommendation = HotelRecommendation(),

@@ -16,6 +16,7 @@ import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
@@ -72,6 +73,7 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context!!)
 
+        initData()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -83,6 +85,10 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     fun initView(view: View) {
         initCurrentLocationTextView(view)
         initRecentSearch(view)
+    }
+
+    fun initData() {
+        destinationViewModel.getHotelRecommendation(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_recommendation))
     }
 
     fun initRecentSearch(view: View) {

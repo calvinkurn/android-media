@@ -8,6 +8,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.view.adapter.PopularSearchClickListener
@@ -23,7 +24,7 @@ class PopularSearchViewHolder(val view: View, val popularSearchClickListener: Po
         with(itemView) {
             popular_search_name.text = popularSearch.name
             popular_search_location.text = popularSearch.location
-            popular_search_hotel_count.text = getString(R.string.hotel_search_popular_search_hotel_count, popularSearch.hotelCount.toString())
+            popular_search_hotel_count.text = getString(R.string.hotel_search_popular_search_hotel_count, popularSearch.hotelCount)
             ImageHandler.loadImageWithoutPlaceholder(this.popular_search_image, popularSearch.image)
         }
     }

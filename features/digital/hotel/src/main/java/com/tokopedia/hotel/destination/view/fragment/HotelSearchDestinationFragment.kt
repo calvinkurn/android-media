@@ -15,6 +15,8 @@ import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.destination.view.adapter.SearchDestinationListener
 import com.tokopedia.hotel.destination.view.adapter.SearchDestinationTypeFactory
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
+import com.tokopedia.hotel.destination.view.viewmodel.Loaded
+import com.tokopedia.hotel.destination.view.viewmodel.Shimmering
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.activity_hotel_destination.*
@@ -43,11 +45,16 @@ SearchDestinationListener{
         super.onActivityCreated(savedInstanceState)
 
         destinationViewModel.searchDestination.observe(this, android.arch.lifecycle.Observer { when (it) {
-            is Success -> {
-                loadInitialData()
-                renderList(it.data, false)
+            is Loaded -> {
+                when (it.data) {
+                    is Success -> {
+                        loadInitialData()
+                        renderList(it.data.data)
+                    }
+                    is Fail -> {}
+                }
             }
-            is Fail -> {}
+            is Shimmering -> {}
         } })
     }
 

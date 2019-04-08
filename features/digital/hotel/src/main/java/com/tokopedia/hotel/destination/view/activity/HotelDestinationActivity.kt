@@ -14,6 +14,10 @@ import com.tokopedia.hotel.destination.di.HotelDestinationComponent
 import com.tokopedia.hotel.destination.view.fragment.HotelRecommendationFragment
 import com.tokopedia.hotel.destination.view.fragment.HotelSearchDestinationFragment
 import kotlinx.android.synthetic.main.activity_hotel_destination.*
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.launch
 
 /**
  * @author by jessica on 25/03/19
@@ -81,16 +85,19 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
     }
 
     override fun onSearchTextChanged(text: String) {
-        if (text.isEmpty() && isSearching) {
-            isSearching = false
-            backToHotelRecommendation()
-        } else if (text.isNotEmpty() && !isSearching && text.length > 2){
-            isSearching = true
-            showSearchDestinationResult()
-            doSearch(text)
-        } else if (isSearching) {
-            //search
-            doSearch(text)
+        launch(Dispatchers.Main) {
+            delay(300)
+            if (text.isEmpty() && isSearching) {
+                isSearching = false
+                backToHotelRecommendation()
+            } else if (text.isNotEmpty() && !isSearching && text.length > 2){
+                isSearching = true
+                showSearchDestinationResult()
+                doSearch(text)
+            } else if (isSearching) {
+                //search
+                doSearch(text)
+            }
         }
     }
 

@@ -11,7 +11,7 @@ import com.tokopedia.hotel.destination.view.adapter.PopularSearchTypeFactory
 
 data class PopularSearch(
 
-        @SerializedName("id")
+        @SerializedName("destinationID")
         @Expose
         val id: Int,
 
@@ -27,13 +27,13 @@ data class PopularSearch(
         @Expose
         val name: String,
 
-        @SerializedName("location")
+        @SerializedName("subLocation")
         @Expose
         val location: String,
 
-        @SerializedName("hotel_count")
+        @SerializedName("metaDescription")
         @Expose
-        val hotelCount: Int
+        val hotelCount: String
 ): Visitable<PopularSearchTypeFactory> {
 
     override fun type(typeFactory: PopularSearchTypeFactory) = typeFactory.type(this)

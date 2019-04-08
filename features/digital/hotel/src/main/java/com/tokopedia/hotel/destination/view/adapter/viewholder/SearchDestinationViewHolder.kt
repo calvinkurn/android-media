@@ -8,6 +8,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.data.model.SearchDestination
 import com.tokopedia.hotel.destination.view.adapter.SearchDestinationListener
@@ -26,7 +27,7 @@ class SearchDestinationViewHolder(val view: View, val searchDestinationListener:
             search_destination_name.text = getSpandableBoldText(searchDestination.name, searchDestinationListener.getFilterText())
             search_destination_location.text = getSpandableBoldText(searchDestination.location, searchDestinationListener.getFilterText())
             search_destination_hotel_count.text = if (searchDestination.hotelCount > 0)
-                getString(R.string.hotel_search_popular_search_hotel_count, searchDestination.hotelCount.toString()) else ""
+                getString(R.string.hotel_search_popular_search_hotel_count, CurrencyFormatUtil.convertPriceValue(searchDestination.hotelCount.toDouble(), false)) else ""
             search_destination_type.text = searchDestination.tag
             ImageHandler.loadImageWithoutPlaceholder(search_destination_icon, searchDestination.icon)
         }

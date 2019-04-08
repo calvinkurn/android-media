@@ -7,6 +7,7 @@ import android.view.MenuItem
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.design.component.Menus
+import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.di.component.HotelComponent
@@ -21,12 +22,14 @@ abstract class HotelBaseActivity: BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
 
         initInjector()
+        GraphqlClient.init(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onCreate(savedInstanceState, persistentState)
 
         initInjector()
+        GraphqlClient.init(this)
     }
 
     private fun initInjector() {
