@@ -168,11 +168,6 @@ public class SearchActivity extends DiscoveryActivity
                               ProductViewModel productViewModel,
                               boolean forceSwipeToShop) {
         if (activity != null) {
-            // Set empty DynamicFilterModel as temporary solution for TransactionTooLargeException
-            // Dynamic Filter Model will be loaded inside ProductListFragment for now
-            // For long term solution, ProductViewModel will not be sent from SearchActivity, but should be loaded inside ProductListFragment
-            productViewModel.setDynamicFilterModel(new DynamicFilterModel());
-
             Intent intent = new Intent(activity, SearchActivity.class);
             intent.putExtra(EXTRA_PRODUCT_VIEW_MODEL, productViewModel);
             intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, forceSwipeToShop);
