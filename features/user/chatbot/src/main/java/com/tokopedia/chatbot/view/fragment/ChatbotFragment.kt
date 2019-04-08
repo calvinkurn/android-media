@@ -228,7 +228,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
             val strings: ArrayList<String> = ArrayList()
             strings.add(imageUrl)
-            it.startActivity(ImagePreviewActivity.getCallingIntent(context!!,
+            it.startActivity(ImagePreviewActivity.getCallingIntent(it,
                     strings,
                     null, 0))
         }

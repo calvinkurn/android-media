@@ -365,7 +365,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             strings.add(imageUrl)
             val topChatRouter = (it.applicationContext as TopChatRouter)
 
-            it.startActivity(ImagePreviewActivity.getCallingIntent(context!!,
+            it.startActivity(ImagePreviewActivity.getCallingIntent(it,
                     strings,
                     null, 0))
         }
