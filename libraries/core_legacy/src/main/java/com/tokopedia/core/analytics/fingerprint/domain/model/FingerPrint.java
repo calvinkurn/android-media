@@ -22,7 +22,6 @@ public class FingerPrint {
     private String screen_resolution;
     private String location_latitude;
     private String location_longitude;
-    private String unique_id;
 
     private FingerPrint(FingerPrintBuilder fingerPrintBuilder) {
         device_model = fingerPrintBuilder.deviceModel;
@@ -41,11 +40,6 @@ public class FingerPrint {
         language = fingerPrintBuilder.language;
         ssid = fingerPrintBuilder.ssid;
         carrier = fingerPrintBuilder.carrier;
-        unique_id = fingerPrintBuilder.unique_id;
-    }
-
-    public String getUnique_id() {
-        return unique_id;
     }
 
     public String getDevice_model() {
@@ -193,7 +187,6 @@ public class FingerPrint {
         private String language;
         private String ssid;
         private String carrier;
-        private String unique_id;
 
         public FingerPrintBuilder() {
 
@@ -276,11 +269,6 @@ public class FingerPrint {
 
         public FingerPrintBuilder jailbreak(boolean isJailBreak) {
             this.isJailBreak = isJailBreak;
-            return this;
-        }
-
-        public FingerPrintBuilder uniqueId(String uniqueId) {
-            this.unique_id = uniqueId;
             return this;
         }
 
