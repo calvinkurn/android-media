@@ -41,6 +41,8 @@
                 android:layout_toRightOf="@id/ic_button_coupon"
                 android:gravity="center"
                 android:text="Pakai Promo Tokopedia"
+                android:textSize="@dimen/sp_12"
+                android:fontFamily="sans-serif-medium"
                 android:textColor="@color/tkpd_main_green" />
 
             <ImageView
