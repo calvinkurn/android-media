@@ -238,7 +238,6 @@ public class ShippingDurationBottomsheet extends BottomSheets
                 break;
             }
         }
-
         return hasCourierPromo;
     }
 
@@ -305,31 +304,6 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     @Override
-    public void onAllShippingDurationItemShown() {
-        if (presenter.getShippingDurationViewModels() != null &&
-                presenter.getShippingDurationViewModels().size() > 0) {
-            presenter.getShippingDurationViewModels().get(0).setShowShowCase(true);
-            if (rvDuration.isComputingLayout()) {
-                rvDuration.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        shippingDurationAdapter.notifyItemChanged(0);
-                    }
-                });
-            } else {
-                shippingDurationAdapter.notifyItemChanged(0);
-            }
-        }
-    }
-
-    @Override
-    public void onDurationShipmentRecommendationShowCaseClosed() {
-        if (shippingDurationBottomsheetListener != null) {
-            shippingDurationBottomsheetListener.onShippingDurationButtonShowCaseDoneClicked();
-        }
-    }
-
-    @Override
     public boolean isToogleYearEndPromotionOn() {
         if (getActivity() != null) {
             RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
@@ -341,10 +315,10 @@ public class ShippingDurationBottomsheet extends BottomSheets
     @Override
     public void onLogisticPromoClicked(LogisticPromoViewModel data) {
         Dialog tkpdDialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        tkpdDialog.setTitle("Tokopedia Promo");
+        tkpdDialog.setTitle(getString(R.string.tkpd_promo_brand));
         tkpdDialog.setDesc(MethodChecker.fromHtml(data.getDialogMsg()));
-        tkpdDialog.setBtnOk("Lanjutkan");
-        tkpdDialog.setBtnCancel("Batalkan");
+        tkpdDialog.setBtnOk(getString(R.string.shiprecc_next));
+        tkpdDialog.setBtnCancel(getString(R.string.shiprecc_cancel));
         tkpdDialog.setOnCancelClickListener(view -> tkpdDialog.dismiss());
         tkpdDialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
