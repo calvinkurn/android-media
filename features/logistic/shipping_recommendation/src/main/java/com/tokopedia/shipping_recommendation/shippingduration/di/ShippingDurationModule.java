@@ -38,9 +38,8 @@ public class ShippingDurationModule {
     @Provides
     @ShippingDurationScope
     ShippingDurationContract.Presenter provideShippingDurationPresenter(GetCourierRecommendationUseCase getCourierRecommendationUseCase,
-                                                                        ShippingDurationConverter shippingDurationConverter,
                                                                         ShippingCourierConverter shippingCourierConverter) {
-        return new ShippingDurationPresenter(getCourierRecommendationUseCase, shippingDurationConverter, shippingCourierConverter);
+        return new ShippingDurationPresenter(getCourierRecommendationUseCase, shippingCourierConverter);
     }
 
     @Provides

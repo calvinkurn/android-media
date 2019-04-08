@@ -304,31 +304,6 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     @Override
-    public void onAllShippingDurationItemShown() {
-        if (presenter.getShippingDurationViewModels() != null &&
-                presenter.getShippingDurationViewModels().size() > 0) {
-            presenter.getShippingDurationViewModels().get(0).setShowShowCase(true);
-            if (rvDuration.isComputingLayout()) {
-                rvDuration.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        shippingDurationAdapter.notifyItemChanged(0);
-                    }
-                });
-            } else {
-                shippingDurationAdapter.notifyItemChanged(0);
-            }
-        }
-    }
-
-    @Override
-    public void onDurationShipmentRecommendationShowCaseClosed() {
-        if (shippingDurationBottomsheetListener != null) {
-            shippingDurationBottomsheetListener.onShippingDurationButtonShowCaseDoneClicked();
-        }
-    }
-
-    @Override
     public boolean isToogleYearEndPromotionOn() {
         if (getActivity() != null) {
             RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
