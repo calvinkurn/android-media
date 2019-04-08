@@ -119,16 +119,6 @@ public class ProductListFragment extends SearchSectionFragment
 
     private FilterController quickFilterController = new FilterController();
 
-    @Deprecated
-    public static ProductListFragment newInstance(ProductViewModel productViewModel) {
-        Bundle args = new Bundle();
-        args.putParcelable(ARG_VIEW_MODEL, productViewModel);
-        args.putParcelable(EXTRA_SEARCH_PARAMETER, productViewModel.getSearchParameter());
-        ProductListFragment productListFragment = new ProductListFragment();
-        productListFragment.setArguments(args);
-        return productListFragment;
-    }
-
     public static ProductListFragment newInstance(SearchParameter searchParameter, boolean isForceSearch) {
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
