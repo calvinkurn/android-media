@@ -7,8 +7,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -153,7 +153,7 @@ public class ApplinkNotificationHelper {
     }
 
     private static Boolean isTargetApp(ApplinkNotificationModel applinkNotificationModel) {
-        String packageName = GlobalConfig.getPackageApplicationName();
+        String packageName = GlobalConfig.APPLICATION_ID;
         return (applinkNotificationModel.getTargetApp() == null) ||
                 (applinkNotificationModel.getTargetApp() != null && applinkNotificationModel.getTargetApp().contains(packageName));
     }
