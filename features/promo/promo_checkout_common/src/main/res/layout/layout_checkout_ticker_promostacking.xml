@@ -29,8 +29,6 @@
                 android:layout_centerInParent="true"
                 android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginLeft="@dimen/dp_10"
-                android:layout_marginEnd="@dimen/dp_20"
-                android:layout_marginRight="@dimen/dp_20"
                 android:src="@drawable/ic_kupon_telur" />
 
             <com.tokopedia.design.component.TextViewCompat
@@ -38,6 +36,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/dp_20"
+                android:layout_marginLeft="@dimen/dp_20"
                 android:layout_toRightOf="@id/ic_button_coupon"
                 android:gravity="center"
                 android:text="Pakai Promo Tokopedia"
@@ -64,7 +64,7 @@
                 android:layout_marginRight="@dimen/dp_10"
                 android:text="Cek"
                 android:textColor="@color/black_70"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
         </RelativeLayout>
 
