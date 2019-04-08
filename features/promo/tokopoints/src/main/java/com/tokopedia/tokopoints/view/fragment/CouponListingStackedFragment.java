@@ -18,18 +18,20 @@ import android.widget.ViewFlipper;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
+import com.tokopedia.tokopoints.view.adapter.CouponInStackBaseAdapter;
 import com.tokopedia.tokopoints.view.adapter.CouponListBaseAdapter;
+import com.tokopedia.tokopoints.view.adapter.CouponListStackedBaseAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
-import com.tokopedia.tokopoints.view.contract.MyCouponListingContract;
+import com.tokopedia.tokopoints.view.contract.CouponListingStackedContract;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
-import com.tokopedia.tokopoints.view.presenter.CatalogListItemPresenter;
-import com.tokopedia.tokopoints.view.presenter.MyCouponListingPresenter;
+import com.tokopedia.tokopoints.view.presenter.CouponListingStackedPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
@@ -38,29 +40,29 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-public class MyCouponListingFragment extends BaseDaggerFragment implements MyCouponListingContract.View, View.OnClickListener, AdapterCallback {
+public class CouponListingStackedFragment extends BaseDaggerFragment implements CouponListingStackedContract.View, View.OnClickListener, AdapterCallback {
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
     private static final int CONTAINER_EMPTY = 3;
     private ViewFlipper mContainerMain;
     private RecyclerView mRecyclerView;
-    private CouponListBaseAdapter mAdapter;
+    private CouponListStackedBaseAdapter mAdapter;
     private SpacesItemDecoration mItemDecoration;
 
     @Inject
-    public MyCouponListingPresenter mPresenter;
+    public CouponListingStackedPresenter mPresenter;
     private SwipeToRefresh mSwipeToRefresh;
 
-    public static MyCouponListingFragment newInstance() {
-        return new MyCouponListingFragment();
+    public static CouponListingStackedFragment newInstance() {
+        return new CouponListingStackedFragment();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         initInjector();
-        View view = inflater.inflate(R.layout.tp_fragment_my_coupon_listing, container, false);
+        View view = inflater.inflate(R.layout.tp_fragment_stacked_coupon_listing, container, false);
         initViews(view);
         return view;
     }
@@ -139,9 +141,9 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
         mContainerMain = view.findViewById(R.id.container);
         mRecyclerView = view.findViewById(R.id.recycler_view_coupons);
         mSwipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
-        mItemDecoration = new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_14),
-                getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_16),
-                getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_16));
+        mItemDecoration = new SpacesItemDecoration(0,
+                getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_10),
+                getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_10));
     }
 
     private void initListener() {
@@ -173,7 +175,7 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
 
     @Override
     public void populateCoupons(int categoryId) {
-        mAdapter = new CouponListBaseAdapter(this, getAppContext(), categoryId);
+        mAdapter = new CouponListStackedBaseAdapter(mPresenter, this, getAppContext(), categoryId);
 
         if (mRecyclerView.getItemDecorationCount() > 0) {
             mRecyclerView.removeItemDecoration(mItemDecoration);
@@ -268,12 +270,7 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
 
     @Override
     public void onFinishFirstPageLoad(int count, @Nullable Object rawObject) {
-        getView().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                hideLoader();
-            }
-        }, CommonConstant.UI_SETTLING_DELAY_MS);
+        getView().postDelayed(() -> hideLoader(), CommonConstant.UI_SETTLING_DELAY_MS);
     }
 
     @Override
@@ -293,8 +290,58 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
         mSwipeToRefresh.setRefreshing(false);
     }
 
-    public MyCouponListingPresenter getPresenter() {
+    public CouponListingStackedPresenter getPresenter() {
         return this.mPresenter;
     }
 
+    public void showCouponInStackBottomSheet(String stackId) {
+        CloseableBottomSheetDialog closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
+        View view = getLayoutInflater().inflate(R.layout.tp_bottosheet_coupon_in_stack, null, false);
+        RecyclerView recyclerView = view.findViewById(R.id.rv_coupon_in_stack);
+
+        if (mItemDecoration != null) {
+            recyclerView.addItemDecoration(mItemDecoration);
+        }
+
+        CouponInStackBaseAdapter adapter = new CouponInStackBaseAdapter(new AdapterCallback() {
+            @Override
+            public void onRetryPageLoad(int pageNumber) {
+
+            }
+
+            @Override
+            public void onEmptyList(Object rawObject) {
+
+            }
+
+            @Override
+            public void onStartFirstPageLoad() {
+
+            }
+
+            @Override
+            public void onFinishFirstPageLoad(int itemCount, @Nullable Object rawObject) {
+                closeableBottomSheetDialog.show();
+            }
+
+            @Override
+            public void onStartPageLoad(int pageNumber) {
+
+            }
+
+            @Override
+            public void onFinishPageLoad(int itemCount, int pageNumber, @Nullable Object rawObject) {
+
+            }
+
+            @Override
+            public void onError(int pageNumber) {
+
+            }
+        }, getContext(), stackId);
+
+        recyclerView.setAdapter(adapter);
+        adapter.startDataLoading();
+        closeableBottomSheetDialog.setContentView(view);
+    }
 }
