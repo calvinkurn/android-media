@@ -204,7 +204,7 @@ open class DynamicPostViewHolder(v: View,
                 itemView.caption.visibility = View.GONE
             } else if (caption.text.length > MAX_CHAR || caption.text.contains("\n")) {
                 itemView.caption.visibility = View.VISIBLE
-                val captionEnd = if(caption.text.length > CAPTION_END) CAPTION_END else
+                val captionEnd = if (caption.text.length > CAPTION_END) CAPTION_END else
                     findSubstringFirstLine(caption)
                 val captionText = caption.text.substring(0, captionEnd)
                         .replace(NEWLINE, "<br />")
@@ -228,7 +228,9 @@ open class DynamicPostViewHolder(v: View,
     }
 
     private fun findSubstringFirstLine(caption: Caption): Int {
-        return caption.text.indexOf("\n", 0)
+        val firstIndex = caption.text.indexOf("\n", 0)
+        return if (caption.text.indexOf("\n", firstIndex) != -1) caption.text.indexOf("\n",
+                firstIndex) else caption.text.length
     }
 
     private fun bindContentList(postId: Int,
