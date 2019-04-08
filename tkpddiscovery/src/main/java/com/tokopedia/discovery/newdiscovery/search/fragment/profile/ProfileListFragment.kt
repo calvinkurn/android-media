@@ -26,6 +26,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.Pr
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.ProfileViewModel
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.TotalSearchCountViewModel
 import com.tokopedia.profile.di.DaggerProfileListComponent
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import java.text.DecimalFormat
 import javax.inject.Inject
@@ -46,6 +47,8 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     lateinit var searchNavigationListener: SearchNavigationListener
 
     lateinit var redirectionListener: RedirectionListener
+
+    lateinit var trackingQueue: TrackingQueue
 
     var totalProfileCount : Int = Integer.MAX_VALUE
 
@@ -74,6 +77,9 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activity?.run {
+            trackingQueue = TrackingQueue(activity!!)
+        }
         if (savedInstanceState != null) {
             loadDataFromSavedState(savedInstanceState)
         } else if (arguments != null) {
@@ -85,13 +91,22 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
         return inflater.inflate(R.layout.fragment_profile_list, container, false)
     }
 
+    override fun onPause() {
+        super.onPause()
+        if (::trackingQueue.isInitialized) {
+            trackingQueue.sendAll()
+        }
+    }
+
     override fun onSuccessGetProfileListData(profileListViewModel : ProfileListViewModel) {
         if (profileListViewModel.getListTrackingObject().isNotEmpty()) {
-            SearchTracking.eventUserImpressionProfileResultInTabProfile(
-                    context,
-                    profileListViewModel.getListTrackingObject(),
-                    query
-            )
+            if (::trackingQueue.isInitialized) {
+                SearchTracking.eventUserImpressionProfileResultInTabProfile(
+                        trackingQueue,
+                        profileListViewModel.getListTrackingObject(),
+                        query
+                )
+            }
         }
 
         totalProfileCount = profileListViewModel.totalSearchCount
