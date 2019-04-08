@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.user.session.UserSession;
@@ -44,6 +45,7 @@ public class ApplinkNotificationHelper {
         model.setTkpCode(Integer.parseInt(data.getString("tkp_code", "0")));
         model.setToUserId(data.getString("to_user_id", ""));
         model.setTitle(data.getString("title", ""));
+        model.setTargetApp(data.getString("target_app", ""));
 
         return model;
     }
@@ -52,7 +54,8 @@ public class ApplinkNotificationHelper {
         UserSessionInterface userSession = new UserSession(context);
         String loginId = userSession.getUserId();
         return applinkNotificationModel.getToUserId().equals(loginId) &&
-                checkLocalNotificationAppSettings(context, applinkNotificationModel.getTkpCode());
+                checkLocalNotificationAppSettings(context, applinkNotificationModel.getTkpCode())
+                && isTargetApp(applinkNotificationModel);
     }
 
     public static int getNotificationId(String appLinks) {
@@ -147,6 +150,12 @@ public class ApplinkNotificationHelper {
 
     public static Boolean allowGroup() {
         return Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT;
+    }
+
+    private static Boolean isTargetApp(ApplinkNotificationModel applinkNotificationModel) {
+        String packageName = GlobalConfig.getPackageApplicationName();
+        return (applinkNotificationModel.getTargetApp() == null) ||
+                (applinkNotificationModel.getTargetApp() != null && applinkNotificationModel.getTargetApp().contains(packageName));
     }
 }
 
