@@ -7,6 +7,9 @@
     <string name="hotel_bottom_menu_action_text">Tutup</string>
     <string name="hotel_toolbar_title">Hotel</string>
 
+    <string name="hotel_check_in_calendar_title">Check-in</string>
+    <string name="hotel_check_out_calendar_title">Check-out</string>
+
     <string name="hotel_homepage_destination">Tujuan</string>
     <string name="hotel_homepage_destination_hint">Kota, area, atau hotel</string>
     <string name="hotel_homepage_guest_info">Kamar dan Tamu</string>
@@ -15,4 +18,5 @@
     <string name="hotel_homepage_button_search">Cari</string>
     <string name="hotel_homepage_promo_title">Promo</string>
     <string name="hotel_homepage_all_promo">Lihat Semua</string>
+    <string name="hotel_homepage_guest_detail" formatted="false"> %d kamar, %d dewasa, %d anak</string>
 </resources>

@@ -38,6 +38,8 @@
                 android:id="@+id/tv_hotel_homepage_destination"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="false"
                 android:hint="@string/hotel_homepage_destination_hint" />
 
         </LinearLayout>
@@ -72,6 +74,8 @@
                 android:id="@+id/tv_hotel_homepage_checkin_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="false"
                 tools:text="18 Des 2018" />
 
         </LinearLayout>
@@ -119,6 +123,8 @@
                 android:id="@+id/tv_hotel_homepage_checkout_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="false"
                 tools:text="28 Des 2018" />
 
         </LinearLayout>
@@ -152,6 +158,8 @@
                 android:id="@+id/tv_hotel_homepage_guest_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="false"
                 tools:text="1 kamar, 1 dewasa, 1 anak" />
 
         </LinearLayout>

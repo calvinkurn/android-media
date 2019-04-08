@@ -5,4 +5,7 @@ package com.tokopedia.hotel.homepage.presentation.model
  */
 class HotelHomepageModel(var checkInDateString: String = "",
                          var checkOutDateString: String = "",
-                         var nightCounter: Int = 0)
+                         var nightCounter: Long = 0,
+                         var roomCount: Int = 1,
+                         var adultCount: Int = 1,
+                         var childCount: Int = 0)
