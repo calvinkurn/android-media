@@ -28,7 +28,6 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kotlin.extensions.view.*
@@ -205,7 +204,9 @@ open class DynamicPostViewHolder(v: View,
                 itemView.caption.visibility = View.GONE
             } else if (caption.text.length > MAX_CHAR || caption.text.contains("\n")) {
                 itemView.caption.visibility = View.VISIBLE
-                val captionText = caption.text.substring(0, CAPTION_END)
+                val captionEnd = if(caption.text.length > CAPTION_END) CAPTION_END else
+                    findSubstringFirstLine(caption)
+                val captionText = caption.text.substring(0, captionEnd)
                         .replace(NEWLINE, "<br />")
                         .plus("... ")
                         .plus("<font color='#42b549'><b>")
@@ -224,6 +225,10 @@ open class DynamicPostViewHolder(v: View,
                 itemView.caption.text = caption.text.replace(NEWLINE, " ")
             }
         }
+    }
+
+    private fun findSubstringFirstLine(caption: Caption): Int {
+        return caption.text.indexOf("\n", 0)
     }
 
     private fun bindContentList(postId: Int,
