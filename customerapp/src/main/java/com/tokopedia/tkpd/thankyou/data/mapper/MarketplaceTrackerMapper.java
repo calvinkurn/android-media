@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.thankyou.data.mapper;
 
 
 import com.tokopedia.core.analytics.PurchaseTracking;
-import com.tokopedia.core.analytics.model.BranchIOPayment;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.app.MainApplication;
@@ -19,9 +18,10 @@ import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderDetail;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentMethod;
+import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentType;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +40,7 @@ import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_COUPON;
 public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<PaymentGraphql>>, Boolean> {
 
     public static final String DEFAULT_SHOP_TYPE = "default";
+    public static final String PAYMENT_TYPE_COD = "COD";
     private SessionHandler sessionHandler;
     private List<String> shopTypes;
     private PaymentData paymentData;
@@ -56,17 +57,18 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     public Boolean call(Response<GraphqlResponse<PaymentGraphql>> response) {
         if (isResponseValid(response)) {
             paymentData = response.body().getData().getPayment();
+            String paymentType = generatePaymentType(paymentData.getPaymentType());
 
             if (paymentData.getOrders() != null) {
                 int indexOrdersData = 0;
                 for (OrderData orderData : paymentData.getOrders()) {
-                    PurchaseTracking.marketplace(MainApplication.getAppContext(), getTrackignData(orderData, indexOrdersData, getCouponCode(paymentData), getTax(paymentData)));
+                    PurchaseTracking.marketplace(MainApplication.getAppContext(), getTrackignData(orderData, indexOrdersData, getCouponCode(paymentData), getTax(paymentData), paymentType));
                     LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_COMMERCE_VAL,
                             getTrackignBranchIOData(orderData)));
                     indexOrdersData++;
                 }
 
-                PurchaseTracking.appsFlyerPurchaseEvent(MainApplication.getAppContext(), getAppsFlyerTrackingData(paymentData.getOrders()),"MarketPlace");
+                PurchaseTracking.appsFlyerPurchaseEvent(MainApplication.getAppContext(), getAppsFlyerTrackingData(paymentData.getOrders()), "MarketPlace");
 
             }
             return true;
@@ -75,9 +77,20 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return false;
     }
 
+    private String generatePaymentType(PaymentType paymentType) {
+        if (paymentType != null && paymentType.getTypes() != null && !paymentType.getTypes().isEmpty()) {
+            for (String type : paymentType.getTypes()) {
+                if (type.equalsIgnoreCase(PAYMENT_TYPE_COD)) {
+                    return PAYMENT_TYPE_COD;
+                }
+            }
+        }
+        return DEFAULT_SHOP_TYPE;
+    }
+
     private String getTax(PaymentData paymentData) {
         float tax = paymentData.getFeeAmount();
-        if(paymentData.getPaymentGateway() != null) {
+        if (paymentData.getPaymentGateway() != null) {
             tax += paymentData.getPaymentGateway().getGatewayFee();
         }
         return Float.toString(tax);
@@ -90,7 +103,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         float shipping = 0;
         for (OrderData orderData : orders) {
             orderIds.add(String.valueOf(orderData.getOrderId()));
-            shipping +=orderData.getShippingPrice();
+            shipping += orderData.getShippingPrice();
             price += orderData.getItemPrice();
             for (Product product : getProductList(orderData)) {
                 purchase.addProduct(product.getProduct());
@@ -108,12 +121,13 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return purchase;
     }
 
-    private Purchase getTrackignData(OrderData orderData, Integer position, String couponCode, String tax) {
+    private Purchase getTrackignData(OrderData orderData, Integer position, String couponCode, String tax, String paymentType) {
         Purchase purchase = new Purchase();
         purchase.setEvent(PurchaseTracking.TRANSACTION);
         purchase.setEventCategory(PurchaseTracking.EVENT_CATEGORY);
         purchase.setEventLabel(PurchaseTracking.EVENT_LABEL);
         purchase.setShopType(checkShopTypeForMarketplace(shopTypes.get(position)));
+        purchase.setEventAction(generateEventAction(checkShopTypeForMarketplace(shopTypes.get(position)), paymentType));
         purchase.setShopId(getShopId(orderData));
         purchase.setPaymentId(String.valueOf(paymentData.getPaymentId()));
         purchase.setPaymentType(getPaymentType(paymentData.getPaymentMethod()));
@@ -136,14 +150,21 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return purchase;
     }
 
+    private String generateEventAction(String checkShopTypeForMarketplace, String paymentType) {
+        if (paymentType.equalsIgnoreCase(PAYMENT_TYPE_COD)) {
+            return PurchaseTracking.EVENT_ACTION_COD;
+        }
+        return checkShopTypeForMarketplace;
+    }
 
-    private Map<String, Object> addCouponToProduct(Map<String, Object> product, String coupon){
+
+    private Map<String, Object> addCouponToProduct(Map<String, Object> product, String coupon) {
         product.put(KEY_COUPON, coupon);
         return product;
     }
 
-    private String checkShopTypeForMarketplace(String s){
-        if (s.isEmpty()){
+    private String checkShopTypeForMarketplace(String s) {
+        if (s.isEmpty()) {
             return DEFAULT_SHOP_TYPE;
         }
 
@@ -167,7 +188,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
 
     private String getCouponCode(PaymentData paymentDatas) {
-        if (paymentDatas.getVoucher() != null){
+        if (paymentDatas.getVoucher() != null) {
             return paymentDatas.getVoucher().getVoucherCode();
         }
 
@@ -267,16 +288,16 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
         branchIOPayment.setPaymentId(String.valueOf(paymentData.getPaymentId()));
         branchIOPayment.setOrderId(String.valueOf(orderData.getOrderId()));
-        branchIOPayment.setShipping(String.valueOf((int)orderData.getShippingPrice()));
-        branchIOPayment.setRevenue(String.valueOf((int)paymentData.getPaymentAmount()));
+        branchIOPayment.setShipping(String.valueOf((int) orderData.getShippingPrice()));
+        branchIOPayment.setRevenue(String.valueOf((int) paymentData.getPaymentAmount()));
         branchIOPayment.setProductType(LinkerConstants.PRODUCTTYPE_MARKETPLACE);
         branchIOPayment.setItemPrice(String.valueOf(orderData.getItemPrice()));
         for (OrderDetail orderDetail : orderData.getOrderDetail()) {
             HashMap<String, String> product = new HashMap<>();
             product.put(LinkerConstants.ID, String.valueOf(orderDetail.getProductId()));
             product.put(LinkerConstants.NAME, getProductName(orderDetail));
-            product.put(LinkerConstants.PRICE, String.valueOf((int)orderDetail.getProductPrice()));
-            product.put(LinkerConstants.PRICE_IDR_TO_DOUBLE,String.valueOf(CurrencyFormatHelper.convertRupiahToLong(
+            product.put(LinkerConstants.PRICE, String.valueOf((int) orderDetail.getProductPrice()));
+            product.put(LinkerConstants.PRICE_IDR_TO_DOUBLE, String.valueOf(CurrencyFormatHelper.convertRupiahToLong(
                     String.valueOf(orderDetail.getProductPrice()))));
             product.put(LinkerConstants.QTY, String.valueOf(orderDetail.getQuantity()));
             product.put(LinkerConstants.CATEGORY, String.valueOf(orderDetail.getProduct().getProductCategory().getCategoryName()));

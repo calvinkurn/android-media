@@ -34,6 +34,9 @@ public class PaymentData {
     @SerializedName("payment_gateway")
     @Expose
     private PaymentGateway paymentGateway;
+    @SerializedName("payment_type")
+    @Expose
+    private PaymentType paymentType;
 
     public int getPaymentId() {
         return paymentId;
@@ -97,5 +100,13 @@ public class PaymentData {
 
     public void setPaymentGateway(PaymentGateway paymentGateway) {
         this.paymentGateway = paymentGateway;
+    }
+
+    public PaymentType getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(PaymentType paymentType) {
+        this.paymentType = paymentType;
     }
 }
