@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -16,6 +17,7 @@ import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.permissionchecker.request
 import com.tokopedia.videorecorder.R
 import com.tokopedia.videorecorder.main.adapter.ViewPagerAdapter
 import com.tokopedia.videorecorder.main.recorder.VideoRecorderFragment
@@ -53,7 +55,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     //catch videoPath uri
     private var videoGalleryPaths = arrayListOf<String>()
-    private lateinit var videoPath: String
+    private var videoPath: String = ""
 
     //saved state of tab layout
     private var currentSelectedTab: Int = 0
@@ -69,24 +71,9 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         //init runtime permission
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             permissionCheckerHelper = PermissionCheckerHelper()
-            permissionCheckerHelper.checkPermissions(this,
-                    getPermissions(),
-                    object : PermissionCheckerHelper.PermissionCheckListener {
-                        override fun onPermissionDenied(permissionText: String) {
-                            permissionCheckerHelper.onPermissionDenied(this@VideoPickerActivity, permissionText)
-                            this@VideoPickerActivity.finish()
-                        }
-
-                        override fun onNeverAskAgain(permissionText: String) {
-                            permissionCheckerHelper.onNeverAskAgain(this@VideoPickerActivity, permissionText)
-                            this@VideoPickerActivity.finish()
-                        }
-
-                        override fun onPermissionGranted() {
-                            initView()
-                        }
-                    }
-            )
+            permissionCheckerHelper.request(this, getPermissions()) {
+                initView()
+            }
         } else {
             initView()
         }
@@ -123,8 +110,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         supportActionBar?.title = getString(R.string.vidpick_title)
 
         //initial of adapter for viewPager and tabPicker
-        adapter = ViewPagerAdapter(supportFragmentManager)
-        setupViewPager()
+        initViewPager()
 
         //remove recording result
         btnDeleteVideo.setOnClickListener { cancelVideo() }
@@ -135,6 +121,15 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     private fun showBackButton(show: Boolean) {
         supportActionBar?.setDisplayHomeAsUpEnabled(show)
+        when (show) {
+            true -> supportActionBar?.title = getString(R.string.vidpick_title)
+            false -> supportActionBar?.title = "  ${getString(R.string.vidpick_title)}"
+        }
+    }
+
+    private fun initViewPager() {
+        adapter = ViewPagerAdapter(supportFragmentManager)
+        setupViewPager()
     }
 
     private fun setupViewPager() {
@@ -146,6 +141,18 @@ open class VideoPickerActivity : BaseSimpleActivity(),
             currentSelectedTab = position
         })
         setupTabLayout()
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun viewPagerAdapter(): ViewPagerAdapter {
+        val videoPickerGallery = ImagePickerGalleryFragment.newInstance(
+                GalleryType.VIDEO_ONLY,
+                supportMultipleSelection,
+                minImageResolution)
+
+        adapter.addFragment(videoPickerGallery, getString(R.string.vidpick_menu_video_picker))
+        adapter.addFragment(VideoRecorderFragment(), getString(R.string.vidpick_menu_recorder))
+        return adapter
     }
 
     private fun setupTabLayout() {
@@ -173,21 +180,12 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         selectCurrentPage(currentSelectedTab)
     }
 
-    @SuppressLint("MissingPermission")
-    private fun viewPagerAdapter(): ViewPagerAdapter {
-        val videoPickerGallery = ImagePickerGalleryFragment.newInstance(
-                GalleryType.VIDEO_ONLY,
-                supportMultipleSelection,
-                minImageResolution)
-
-        adapter.addFragment(videoPickerGallery, getString(R.string.vidpick_menu_video_picker))
-        adapter.addFragment(VideoRecorderFragment(), getString(R.string.vidpick_menu_recorder))
-        return adapter
-    }
-
     override fun onBackPressed() {
-        super.onBackPressed()
-        FileUtils.deleteCacheDir()
+        if (videoPath.isNotEmpty()) {
+            cancelVideo()
+        } else {
+            super.onBackPressed()
+        }
     }
 
     private fun playVideoPreview() {
@@ -198,7 +196,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     }
 
     private fun cancelVideo() {
-        onVideoVisible()
+        videoPath = ""
         videoPreview.stopPlayback()
         videoPreview.setVideoURI(null)
 
@@ -207,6 +205,9 @@ open class VideoPickerActivity : BaseSimpleActivity(),
                 FileUtils.deleteCacheDir()
             }
         }
+
+        initViewPager()
+        onVideoVisible()
     }
 
     private fun selectCurrentPage(index: Int) {
@@ -228,23 +229,28 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         finish()
     }
 
-    //video recorder callback
+    /**
+     * Callback from video recorder
+     * @method(onVideoTaken(file))
+     * @method(onPreviewVideoVisible)
+     * @method(onVideoVisible)
+     */
 
     override fun onVideoTaken(filePath: String) {
         if (filePath.isNotEmpty()) {
-
-            adapter = ViewPagerAdapter(supportFragmentManager)
-            setupViewPager()
-            adapter.notifyDataSetChanged()
-            selectCurrentPage(currentSelectedTab)
-
+            initViewPager()
             onPreviewVideoVisible()
+            selectCurrentPage(currentSelectedTab)
 
             val uriFile = Uri.parse(filePath)
             isVideoSourcePicker = false
             videoPath = filePath
 
             videoPreview.setVideoURI(uriFile)
+            videoPreview.setOnCompletionListener {
+                videoPreview.stopPlayback()
+                onVideoVisible()
+            }
             videoPreview.setOnPreparedListener { mp ->
                 mp.isLooping = true //loop
                 playVideoPreview()
@@ -253,9 +259,15 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     }
 
     override fun onPreviewVideoVisible() {
+        layoutPreview.bringToFront()
+        sendViewToBack(containerPicker)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            layoutPreview.elevation = 90f
+            containerPicker.elevation = 0f
+        }
         showBackButton(false)
-        containerPicker.hide()
         layoutPreview.show()
+        containerPicker.hide()
         btnDone.show()
 
         btnDeleteVideo.text = if (isVideoSourcePicker) {
@@ -266,13 +278,31 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     }
 
     override fun onVideoVisible() {
+        containerPicker.bringToFront()
+        sendViewToBack(layoutPreview)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            containerPicker.elevation = 90f
+            layoutPreview.elevation = 0f
+        }
         showBackButton(true)
         containerPicker.show()
         layoutPreview.hide()
         btnDone.hide()
     }
 
-    //video picker callback
+    private fun sendViewToBack(child: View) {
+        val parent = child.parent as ViewGroup
+        parent.removeView(child)
+        parent.addView(child, 0)
+    }
+
+    /**
+     * Callback from video picker
+     * @method(onAlbumItemClicked(item, isChecked))
+     * @method(getImagePath)
+     * @method(isMaxImageReached)
+     * @method(getMaxFileSize)
+     */
 
     override fun onAlbumItemClicked(item: MediaItem?, isChecked: Boolean) {
         //get single image
@@ -281,24 +311,22 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         onVideoTaken(videoPath)
     }
 
-    override fun isMaxImageReached(): Boolean = false
-
     override fun getImagePath(): ArrayList<String> {
         return videoGalleryPaths
     }
 
+    override fun isMaxImageReached(): Boolean = false
+
     override fun getMaxFileSize(): Long = VIDEO_MAX_SIZE
 
-    override fun initShake() {
-        //Don't allow Shake" while picking video
-    }
-
-    override fun registerShake() {
-        //Don't allow Shake" while picking video
-    }
-
-    override fun unregisterShake() {
-        //Don't allow Shake" while picking video
-    }
+    /**
+     * Don't allow Shake" while picking video
+     * @method(initShake)
+     * @method(registerShake)
+     * @method(unregisterShake)
+     */
+    override fun initShake() {}
+    override fun registerShake() {}
+    override fun unregisterShake() {}
 
 }
