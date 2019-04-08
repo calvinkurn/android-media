@@ -103,6 +103,18 @@
             }
         }
     }
+    promo_stacking {
+      is_promo
+      promo_code
+      title
+      shipper_id
+      shipper_product_id
+      shipper_name
+      shipper_desc
+      promo_detail
+      benefit_desc
+      promo_tnc_html
+    }
     info {
       blackbox_info {
          text_info
