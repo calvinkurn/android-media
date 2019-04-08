@@ -153,11 +153,6 @@ public class SearchActivity extends DiscoveryActivity
         return new SearchParameter(deepLinkURI == null ? "" : deepLinkURI);
     }
 
-    private void forceShowKeyBoard() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-    }
-
     public static Intent newInstance(Context context, Bundle bundle) {
         Intent intent = new Intent(context, SearchActivity.class);
         intent.putExtras(bundle);
@@ -343,6 +338,11 @@ public class SearchActivity extends DiscoveryActivity
         else {
             searchView.showSearch(true, false);
         }
+    }
+
+    private void forceShowKeyBoard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
