@@ -153,9 +153,8 @@ public class ApplinkNotificationHelper {
     }
 
     private static Boolean isTargetApp(ApplinkNotificationModel applinkNotificationModel) {
-        String packageName = GlobalConfig.APPLICATION_ID;
         return (applinkNotificationModel.getTargetApp() == null) ||
-                (applinkNotificationModel.getTargetApp() != null && applinkNotificationModel.getTargetApp().contains(packageName));
+                (applinkNotificationModel.getTargetApp() != null && applinkNotificationModel.getTargetApp().contains(GlobalConfig.APPLICATION_ID));
     }
 }
 
