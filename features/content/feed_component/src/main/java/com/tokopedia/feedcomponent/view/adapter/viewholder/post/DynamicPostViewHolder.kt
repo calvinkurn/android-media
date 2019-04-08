@@ -202,11 +202,13 @@ open class DynamicPostViewHolder(v: View,
         itemView.caption.shouldShowWithAction(template.caption) {
             if (caption.text.isEmpty()) {
                 itemView.caption.visibility = View.GONE
-            } else if (caption.text.length > MAX_CHAR || caption.text.contains("\n")) {
+            } else if (caption.text.length > MAX_CHAR ||
+                   hasSecondLine(caption)) {
                 itemView.caption.visibility = View.VISIBLE
                 val captionEnd = if (caption.text.length > CAPTION_END) CAPTION_END else
-                    findSubstringFirstLine(caption)
+                    findSubstringSecondLine(caption)
                 val captionText = caption.text.substring(0, captionEnd)
+                        .replace("\n","<br/>")
                         .replace(NEWLINE, "<br />")
                         .plus("... ")
                         .plus("<font color='#42b549'><b>")
@@ -227,10 +229,15 @@ open class DynamicPostViewHolder(v: View,
         }
     }
 
-    private fun findSubstringFirstLine(caption: Caption): Int {
+    private fun hasSecondLine(caption: Caption): Boolean {
         val firstIndex = caption.text.indexOf("\n", 0)
-        return if (caption.text.indexOf("\n", firstIndex) != -1) caption.text.indexOf("\n",
-                firstIndex) else caption.text.length
+        return caption.text.indexOf("\n", firstIndex + 1) != -1
+    }
+
+    private fun findSubstringSecondLine(caption: Caption): Int {
+        val firstIndex = caption.text.indexOf("\n", 0)
+        return if (hasSecondLine(caption)) caption.text.indexOf("\n",
+                firstIndex + 1) else caption.text.length
     }
 
     private fun bindContentList(postId: Int,
