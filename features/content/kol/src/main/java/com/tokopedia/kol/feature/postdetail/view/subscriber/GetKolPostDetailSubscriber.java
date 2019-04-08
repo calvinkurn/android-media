@@ -54,7 +54,11 @@ public class GetKolPostDetailSubscriber extends Subscriber<PostDetailViewModel> 
         view.dismissLoading();
         List<Visitable> list = new ArrayList<>();
         list.addAll(postDetailViewModel.getDynamicPostViewModel().getPostList());
-        view.onSuccessGetKolPostDetail(list, postDetailViewModel);
+        if(!list.isEmpty()) {
+            view.onSuccessGetKolPostDetail(list, postDetailViewModel);
+        }else{
+            view.onEmptyDetailFeed();
+        }
         view.stopTrace();
 
     }

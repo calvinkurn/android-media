@@ -71,6 +71,7 @@ public class InboxPresenter extends BaseDaggerPresenter {
 
                     @Override
                     public void onError(Throwable e) {
+                        inboxView.hideLoadMoreLoading();
                     }
 
                     @Override
@@ -101,6 +102,7 @@ public class InboxPresenter extends BaseDaggerPresenter {
 
                     @Override
                     public void onError(Throwable e) {
+                        inboxView.hideLoadMoreLoading();
                     }
 
                     @Override

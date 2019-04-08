@@ -42,6 +42,12 @@ public interface KolPostDetailContract {
         void onErrorSendVote(String errorMessage);
 
         void onSuccessSendVote(int positionInFeed, String optionId, VoteStatisticDomainModel voteStatisticDomainModel);
+
+        void onErrorDeletePost(Throwable e);
+
+        void onSuccessDeletePost(int rowNumber);
+
+        void onEmptyDetailFeed();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -60,5 +66,7 @@ public interface KolPostDetailContract {
         void sendVote(int positionInFeed, String pollId, String optionId);
 
         void trackAffiliate(String clickURL);
+
+        void deletePost(int id, int rowNumber);
     }
 }

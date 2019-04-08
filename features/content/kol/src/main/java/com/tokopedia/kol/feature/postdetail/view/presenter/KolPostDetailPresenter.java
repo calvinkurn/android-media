@@ -3,6 +3,7 @@ package com.tokopedia.kol.feature.postdetail.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.affiliatecommon.domain.DeletePostUseCase;
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase;
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
@@ -34,6 +35,7 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
     private final FollowKolPostGqlUseCase followKolPostGqlUseCase;
     private final ToggleFavouriteShopUseCase doFavoriteShopUseCase;
     private final TrackAffiliateClickUseCase trackAffiliateClickUseCase;
+    private final DeletePostUseCase deletePostUseCase;
     private final SendVoteUseCase sendVoteUseCase;
     private final UserSessionInterface userSession;
 
@@ -44,6 +46,7 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
                                   ToggleFavouriteShopUseCase doFavoriteShopUseCase,
                                   SendVoteUseCase sendVoteUseCase,
                                   TrackAffiliateClickUseCase trackAffiliateClickUseCase,
+                                  DeletePostUseCase deletePostUseCase,
                                   UserSessionInterface userSessionInterface) {
         this.getPostDetailUseCase = getPostDetailUseCase;
         this.likeKolPostUseCase = likeKolPostUseCase;
@@ -51,6 +54,7 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
         this.doFavoriteShopUseCase = doFavoriteShopUseCase;
         this.trackAffiliateClickUseCase = trackAffiliateClickUseCase;
         this.sendVoteUseCase = sendVoteUseCase;
+        this.deletePostUseCase = deletePostUseCase;
         this.userSession = userSessionInterface;
     }
 
@@ -68,6 +72,7 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
         doFavoriteShopUseCase.unsubscribe();
         sendVoteUseCase.unsubscribe();
         trackAffiliateClickUseCase.unsubscribe();
+        deletePostUseCase.unsubscribe();
     }
 
     @Override
@@ -222,5 +227,32 @@ public class KolPostDetailPresenter extends BaseDaggerPresenter<KolPostDetailCon
 
                     }
                 });
+    }
+
+    @Override
+    public void deletePost(int id, int rowNumber) {
+        deletePostUseCase.execute(
+                DeletePostUseCase.Companion.createRequestParams(String.valueOf(id)),
+                new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (getView() != null) {
+                            getView().onErrorDeletePost(e);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(Boolean isSuccess) {
+                        if (getView() != null && isSuccess) {
+                            getView().onSuccessDeletePost(rowNumber);
+                        }
+                    }
+                }
+        );
     }
 }
