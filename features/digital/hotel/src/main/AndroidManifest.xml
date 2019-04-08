@@ -9,7 +9,7 @@
 
     <application>
         <activity android:name=".homepage.presentation.activity.HotelHomepageActivity"
-            android:label="@string/hotel_homepage_toolbar_title"
+            android:label="@string/hotel_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Hotel" />
 

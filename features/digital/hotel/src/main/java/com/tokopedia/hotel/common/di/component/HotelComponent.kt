@@ -3,14 +3,10 @@ package com.tokopedia.hotel.common.di.component
 import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.hotel.common.di.module.HotelModule
-import com.tokopedia.hotel.common.di.module.HotelViewModelModule
 import com.tokopedia.hotel.common.di.scope.HotelScope
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
-import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
-import com.tokopedia.hotel.destination.view.fragment.HotelRecommendationFragment
-import com.tokopedia.hotel.destination.view.fragment.HotelSearchDestinationFragment
-import com.tokopedia.hotel.homepage.presentation.fragment.HotelHomepageFragment
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 import kotlinx.coroutines.experimental.CoroutineDispatcher
@@ -19,7 +15,7 @@ import kotlinx.coroutines.experimental.CoroutineDispatcher
  * @author by furqan on 25/03/19
  */
 @HotelScope
-@Component(modules = [HotelModule::class, HotelViewModelModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [HotelModule::class], dependencies = [BaseAppComponent::class])
 interface HotelComponent {
 
     @ApplicationContext
@@ -29,8 +25,8 @@ interface HotelComponent {
 
     fun dispatcher(): CoroutineDispatcher
 
-    fun inject(hotelBaseActivity: HotelBaseActivity)
+    fun graphQlRepository(): GraphqlRepository
 
-    fun inject(hotelHomepageFragment: HotelHomepageFragment)
+    fun inject(hotelBaseActivity: HotelBaseActivity)
 
 }
