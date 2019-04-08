@@ -82,7 +82,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
     }
 
     fun onSearchClicked() {
-        (application as DigitalBrowseRouter).gotoSearchPage(this!!))
+        (application as DigitalBrowseRouter).gotoSearchPage(this!!)
     }
 
     private fun setupToolbar() {
