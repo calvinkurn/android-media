@@ -976,6 +976,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         } else {
             builderGlobal.state(TickerPromoStackingCheckoutView.State.EMPTY);
         }
+        cartAdapter.addPromoStackingVoucherData(builderGlobal.build());
+
+        if (cartListData.getCartPromoSuggestion().isVisible()) {
+            cartAdapter.addPromoSuggestion(cartListData.getCartPromoSuggestion());
+        }
 
         if (cartListData.isError()) {
             cartAdapter.addCartTickerError(
@@ -993,12 +998,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         if (cbSelectAll != null) {
             cbSelectAll.setChecked(cartListData.isAllSelected());
-        }
-
-        cartAdapter.addPromoStackingVoucherData(builderGlobal.build());
-
-        if (cartListData.getCartPromoSuggestion().isVisible()) {
-            cartAdapter.addPromoSuggestion(cartListData.getCartPromoSuggestion());
         }
 
         cartAdapter.checkForShipmentForm();
@@ -1324,7 +1323,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                     cartListData.getAutoApplyStackData().getMessageSuccess(),
                     cartListData.getAutoApplyStackData().getState(),
                     cartListData.getAutoApplyStackData().getTitleDescription(),
-                    cartListData.getAutoApplyData().getCode());
+                    cartListData.getAutoApplyStackData().getCode());
         } else {
             if (getActivity() instanceof EmptyCartListener) {
                 ((EmptyCartListener) getActivity()).onCartEmpty(

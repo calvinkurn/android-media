@@ -60,6 +60,7 @@ import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.shipping_recommendation.domain.ShippingParam;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
@@ -702,7 +703,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         setCouponStateChanged(true);
                         checkPromoStackingCodeMapper.setFinal(true);
                         ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
-                        if (responseGetPromoStack.getStatus().equalsIgnoreCase("ERROR") || TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
+                        if (responseGetPromoStack.getStatus().equalsIgnoreCase("ERROR")) {
                             String message = "";
                             if (responseGetPromoStack.getMessage().size() > 0) {
                                 message = responseGetPromoStack.getMessage().get(0);
@@ -713,6 +714,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             }
                         } else {
                             getView().renderCheckPromoStackingShipmentDataSuccess(responseGetPromoStack);
+                            if (responseGetPromoStack.getData().getMessage().getState().equals("red")) {
+                                getView().showToastError(responseGetPromoStack.getData().getMessage().getText());
+                            } else {
+                                for (VoucherOrdersItemUiModel voucherOrdersItemUiModel : responseGetPromoStack.getData().getVoucherOrders()) {
+                                    if (voucherOrdersItemUiModel.getMessage().getState().equals("red")) {
+                                        getView().showToastError(voucherOrdersItemUiModel.getMessage().getText());
+                                        break;
+                                    }
+                                }
+                            }
                         }
                     }
                 });
@@ -869,7 +880,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
                     if (!responseGetPromoStack.getStatus().equalsIgnoreCase("OK")
                             || TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(
-                            responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED){
+                            responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
                         getView().showToastError(responseGetPromoStack.getMessage().get(0));
                         getView().resetCourier(cartPosition);
                     } else {

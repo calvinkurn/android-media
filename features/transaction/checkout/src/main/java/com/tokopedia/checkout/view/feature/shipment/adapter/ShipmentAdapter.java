@@ -405,12 +405,19 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void updateSelectedAddress(RecipientAddressModel newlySelectedAddress) {
         int addressIndex = 0;
-        shipmentDataList.set(addressIndex, newlySelectedAddress);
-        this.recipientAddressModel = newlySelectedAddress;
-        shipmentCostModel.setTotalPromoStackAmount(0);
-        resetCourier();
-        notifyDataSetChanged();
-        shipmentAdapterActionListener.resetTotalPrice();
+        for (Object item : shipmentDataList) {
+            if (item instanceof RecipientAddressModel) {
+                addressIndex = shipmentDataList.indexOf(item);
+                break;
+            }
+        }
+        if (addressIndex != 0) {
+            shipmentDataList.set(addressIndex, newlySelectedAddress);
+            this.recipientAddressModel = newlySelectedAddress;
+            resetCourier();
+            notifyDataSetChanged();
+            shipmentAdapterActionListener.resetTotalPrice();
+        }
     }
 
     public void updateDonation(boolean checked) {
