@@ -3,6 +3,7 @@ package com.tokopedia.hotel.common.di.component
 import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.hotel.common.di.module.HotelModule
 import com.tokopedia.hotel.common.di.scope.HotelScope
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
@@ -23,6 +24,8 @@ interface HotelComponent {
     fun userSessionInterface(): UserSessionInterface
 
     fun dispatcher(): CoroutineDispatcher
+
+    fun graphQlRepository(): GraphqlRepository
 
     fun inject(hotelBaseActivity: HotelBaseActivity)
 
