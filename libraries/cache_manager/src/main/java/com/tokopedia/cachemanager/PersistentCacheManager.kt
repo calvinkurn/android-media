@@ -2,8 +2,6 @@ package com.tokopedia.cachemanager
 
 import android.annotation.SuppressLint
 import android.content.Context
-import com.tokopedia.cachemanager.db.dao.PersistentCacheDatabaseDao
-import com.tokopedia.cachemanager.db.model.PersistentCacheDbModel
 import com.tokopedia.cachemanager.repository.PersistentCacheRepository
 
 /**
@@ -46,4 +44,7 @@ class PersistentCacheManager(context: Context) : CacheManager(context) {
     override fun createRepository(context: Context) =
         PersistentCacheRepository(context.applicationContext)
 
+    constructor(context: Context, id: String? = null) : this(context) {
+        this.id = id
+    }
 }
