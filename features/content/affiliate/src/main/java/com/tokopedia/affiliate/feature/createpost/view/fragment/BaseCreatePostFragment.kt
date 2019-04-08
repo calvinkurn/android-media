@@ -241,12 +241,12 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         adapter.notifyItemRemoved(position)
 
         if (isTypeAffiliate()) {
-            viewModel.adIdList.removeAll { it == relatedProductItem.id }
+            viewModel.adIdList.removeFirst { it == relatedProductItem.id }
         } else {
-            viewModel.productIdList.removeAll { it == relatedProductItem.id }
+            viewModel.productIdList.removeFirst { it == relatedProductItem.id }
         }
 
-        viewModel.urlImageList.removeAll { it.path == relatedProductItem.image }
+        viewModel.urlImageList.removeFirst { it.path == relatedProductItem.image }
 
         updateThumbnail()
         updateAddTagText()
