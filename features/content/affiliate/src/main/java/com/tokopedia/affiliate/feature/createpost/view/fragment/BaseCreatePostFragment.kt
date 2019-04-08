@@ -20,6 +20,7 @@ import com.tokopedia.affiliate.feature.createpost.TYPE_AFFILIATE
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.Author
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.affiliate.feature.createpost.di.CreatePostModule
+import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostActivity
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostImagePickerActivity
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostVideoPickerActivity
