@@ -283,27 +283,18 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         }
     }
 
-    override fun onErrorCheckPromoFirstStep(message: String, isFromList: Boolean) {
+    override fun onErrorCheckPromoFirstStep(message: String) {
         hideKeyboard()
         var messageInfo = message
         if (TextUtils.isEmpty(messageInfo)) {
             messageInfo = getString(R.string.general_warning)
         }
-        if (isFromList) {
-            ToasterError.make(layoutMerchantVoucher, messageInfo, ToasterError.LENGTH_SHORT).show()
-            if (source.equals(CART, true)) {
-                cartPageAnalytics.eventClickPakaiMerchantVoucherFailed(message)
-            } else {
-                shipmentPageAnalytics.eventClickPakaiMerchantVoucherError(message)
-            }
+        textInputLayoutCoupon.error = messageInfo
+        updateHeight()
+        if (source.equals(CART, true)) {
+            cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputFailed(messageInfo)
         } else {
-            textInputLayoutCoupon.error = message
-            updateHeight()
-            if (source.equals(CART, true)) {
-                cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputFailed(message)
-            } else {
-                shipmentPageAnalytics.eventClickPakaiMerchantVoucherManualInputError(message)
-            }
+            shipmentPageAnalytics.eventClickPakaiMerchantVoucherManualInputError(messageInfo)
         }
     }
 
