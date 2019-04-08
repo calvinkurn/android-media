@@ -16,7 +16,6 @@
         app:cameraGrid="off"
         app:cameraFlash="off"
         app:cameraAudio="on"
-        app:cameraVideoBitRate="8000000"
         app:cameraHdr="off"
         app:cameraFacing="back"
         app:cameraGestureTap="focusWithMarker"/>
@@ -46,7 +45,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/sp_16"
-                android:textStyle="bold"
                 android:layout_margin="6dp"
                 android:textColor="@android:color/white"
                 tools:text="01:00"
@@ -67,10 +65,10 @@
             app:srcCompat="@drawable/ic_auto_flash"
             tools:visibility="visible" />
 
-        <FrameLayout
+        <RelativeLayout
             android:id="@+id/containerRecord"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_90"
+            android:layout_height="@dimen/dp_90"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/dp_16">
@@ -80,6 +78,7 @@
                 android:layout_width="@dimen/dp_56"
                 android:layout_height="@dimen/dp_56"
                 android:clickable="true"
+                android:layout_centerInParent="true"
                 android:layout_gravity="center"
                 android:focusable="true">
 
@@ -100,18 +99,19 @@
             <ProgressBar
                 android:id="@+id/progress"
                 style="@style/ProgressBar.Tokopedia"
-                android:layout_width="@dimen/dp_72"
-                android:layout_height="@dimen/dp_72"
+                android:layout_width="@dimen/dp_80"
+                android:layout_height="@dimen/dp_80"
                 android:progressDrawable="@drawable/circular_progress_bar_green"
                 android:max="100"
                 android:layout_gravity="center"
+                android:layout_centerInParent="true"
                 android:progress="0"
                 android:rotation="-90"
                 tools:progress="55"
                 android:visibility="gone"
                 tools:visibility="visible"/>
 
-        </FrameLayout>
+        </RelativeLayout>
 
         <ImageButton
             android:id="@+id/btnFlip"

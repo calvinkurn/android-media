@@ -1,6 +1,5 @@
 package com.tokopedia.feedcomponent.domain.mapper
 
-import android.os.Build
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.BuildConfig
@@ -8,11 +7,9 @@ import com.tokopedia.feedcomponent.data.pojo.FeedQuery
 import com.tokopedia.feedcomponent.data.pojo.TemplateData
 import com.tokopedia.feedcomponent.data.pojo.feed.Cardpost
 import com.tokopedia.feedcomponent.data.pojo.feed.Feed
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Body
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Media
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTag
 import com.tokopedia.feedcomponent.data.pojo.template.Template
-import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
@@ -267,7 +264,13 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 CONTENT_YOUTUBE -> list.add(mapPostYoutube(media))
                 CONTENT_VOTE -> list.add(mapPostPoll(media))
                 CONTENT_GRID -> list.add(mapPostGrid(media, template))
-                CONTENT_VIDEO -> list.add(mapPostVideo(media))
+                CONTENT_VIDEO -> {
+                    if (media.thumbnail.isNotBlank()
+                            && media.videoList.isNotEmpty()
+                            && media.videoList[0].url.isNotBlank()) {
+                        list.add(mapPostVideo(media))
+                    }
+                }
             }
         }
 

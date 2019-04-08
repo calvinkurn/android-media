@@ -303,7 +303,7 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     private void sendProductImpressionTrackingEvent(List<Visitable> list) {
-        String userId = userSession.isLoggedIn() ? userSession.getUserId() : "";
+        String userId = userSession.isLoggedIn() ? userSession.getUserId() : "0";
         List<Object> dataLayerList = new ArrayList<>();
         for (Visitable object : list) {
             if (object instanceof ProductItem) {
@@ -346,7 +346,7 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     private String generateUserId() {
-        return userSession.isLoggedIn() ? userSession.getUserId() : "";
+        return userSession.isLoggedIn() ? userSession.getUserId() : "0";
     }
 
     private String generateUniqueId() {
@@ -487,7 +487,7 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     private void sendItemClickTrackingEvent(ProductItem item, int pos) {
-        String userId = userSession.isLoggedIn() ? userSession.getUserId() : "";
+        String userId = userSession.isLoggedIn() ? userSession.getUserId() : "0";
         if (item.isTopAds()) {
             sendItemClickTrackingEventForTopAdsItem(item, pos);
         } else {

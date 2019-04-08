@@ -1,7 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -22,12 +21,10 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
@@ -193,21 +190,12 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
         AutoCompleteTracking.eventClickSubmit(this, query);
 
-        if (OfficialStoreQueryHelper.isOfficialStoreSearchQuery(query)) {
-            handleOfficialStoreSearchQuery(query);
-            return true;
-        } else {
-            handleNonOfficialStoreSearchQuery(copySearchParameter);
-            return false;
-        }
+        handleQueryTextSubmitBasedOnCurrentTab(copySearchParameter);
+
+        return false;
     }
 
-    private void handleOfficialStoreSearchQuery(String query) {
-        onHandleOfficialStorePage();
-        sendSearchProductGTM(query);
-    }
-
-    private void handleNonOfficialStoreSearchQuery(SearchParameter searchParameter) throws RuntimeException {
+    private void handleQueryTextSubmitBasedOnCurrentTab(SearchParameter searchParameter) throws RuntimeException {
         this.searchParameter = searchParameter;
 
         String query = searchParameter.getSearchQuery();

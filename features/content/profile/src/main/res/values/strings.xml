@@ -10,7 +10,7 @@
     <string name="profile_edit">Edit Profil</string>
     <string name="profile_following">Following</string>
     <string name="profile_rec_qutoa" formatted="false">Sisa jatah kurasi: %s</string>
-    <string name="profile_add_rec">Tambah Kurasi</string>
+    <string name="profile_add_rec">Tambah Post</string>
     <string name="profile_see_by_me_prouct">Lihat Produk By Me</string>
     <string name="profile_share_profile">Bagikan Profil</string>
     <string name="profile_share_this_profile">Bagikan Profile Ini</string>
@@ -57,10 +57,14 @@
     <string name="af_agree_terms">Dengan melanjutkan, saya setuju dengan</string>
     <string name="af_terms_and_condition">Syarat &amp; Ketentuan By Me</string>
     <string name="af_save">Bagikan Sekarang</string>
-    <string name="af_by_me_domain">tokopedia.me/</string>
+    <string name="af_by_me_domain">tokopedia.by/</string>
     <string name="af_minimal_character">Minimum %d karakter</string>
     <string name="af_recommend_this_product">Lanjutkan Kurasi dengan Produk Ini?</string>
     <string name="af_recommend">Rekomendasikan</string>
     <string name="af_continue">Lanjutkan</string>
     <string name="af_see_other_product">Lihat Produk Lainnya</string>
+
+    <string name="profile_empty_title">Share barang kesukaanmu\n biar dapet komisi</string>
+    <string name="profile_empty_subtitle">Pilih dulu yuk barangnya</string>
+    <string name="profile_empty_button">Lihat Barang Lainnya</string>
 </resources>

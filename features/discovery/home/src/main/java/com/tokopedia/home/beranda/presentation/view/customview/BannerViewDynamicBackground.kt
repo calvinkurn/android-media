@@ -94,7 +94,7 @@ class BannerViewDynamicBackground : BannerView {
 
         //render first image on banner
         ImageHandler.loadImageBlurWithViewTarget(
-                context,
+                context.applicationContext,
                 url,
                 getBitmapImageViewTarget()
         )
@@ -112,7 +112,7 @@ class BannerViewDynamicBackground : BannerView {
 
                     val url = promoImageUrls[position]
                     ImageHandler.loadImageBlurWithViewTarget(
-                            context,
+                            context.applicationContext,
                             url,
                             getBitmapImageViewTarget()
                     )
@@ -125,9 +125,10 @@ class BannerViewDynamicBackground : BannerView {
 
     fun getBitmapImageViewTarget() : SimpleTarget<Bitmap> {
         return object : SimpleTarget<Bitmap>() {
-            override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
-                val blurredBitmap = ImageHandler.blurStrong(context, resource)
-                showImage(blurredBitmap)
+            override fun onResourceReady(blurredBitmap: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
+                blurredBitmap?.run {
+                    showImage(blurredBitmap)
+                }
             }
         }
     }
