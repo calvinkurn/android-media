@@ -423,7 +423,7 @@ public class ProductFragment extends BrowseSectionFragment
     }
 
     private String generateUserId() {
-        return userSession.isLoggedIn() ? userSession.getUserId() : "";
+        return userSession.isLoggedIn() ? userSession.getUserId() : "0";
     }
 
     private String generateUniqueId() {
