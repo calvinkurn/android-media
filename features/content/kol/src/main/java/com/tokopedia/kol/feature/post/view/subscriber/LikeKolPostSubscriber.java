@@ -39,7 +39,7 @@ public class LikeKolPostSubscriber extends Subscriber<Boolean> {
     public void onNext(Boolean isSuccess) {
         if (view != null) {
             if (isSuccess) {
-                view.onLikeKolSuccess(rowNumber, action);
+                view.[onLikeKolSuccess(rowNumber, action);
             } else {
                 view.onLikeKolError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }
