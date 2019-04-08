@@ -73,7 +73,7 @@ class HotelHomepageFragment: BaseDaggerFragment() {
         maxDateCalendar.set(Calendar.MINUTE, DEFAULT_LAST_MIN_SEC_IN_DAY)
         maxDateCalendar.set(Calendar.SECOND, DEFAULT_LAST_MIN_SEC_IN_DAY)
 
-        val selectedDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, hotelHomepageModel.checkInDateString)
+        val selectedDate = TravelDateUtil.stringToDate(TravelDateUtil.DEFAULT_VIEW_FORMAT, hotelHomepageModel.checkInDateString)
 
         renderTravelCalendar(selectedDate, minDate, maxDateCalendar.time, getString(R.string.hotel_check_in_calendar_title), TAG_CALENDAR_CHECK_IN)
     }
@@ -90,7 +90,7 @@ class HotelHomepageFragment: BaseDaggerFragment() {
         maxDateCalendar.set(Calendar.MINUTE, DEFAULT_LAST_MIN_SEC_IN_DAY)
         maxDateCalendar.set(Calendar.SECOND, DEFAULT_LAST_MIN_SEC_IN_DAY)
 
-        val selectedDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, hotelHomepageModel.checkInDateString)
+        val selectedDate = TravelDateUtil.stringToDate(TravelDateUtil.DEFAULT_VIEW_FORMAT, hotelHomepageModel.checkInDateString)
 
         renderTravelCalendar(selectedDate, minDate, maxDateCalendar.time, getString(R.string.hotel_check_out_calendar_title), TAG_CALENDAR_CHECK_OUT)
     }
