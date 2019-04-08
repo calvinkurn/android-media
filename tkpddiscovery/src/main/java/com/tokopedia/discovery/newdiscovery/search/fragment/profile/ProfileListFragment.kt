@@ -60,9 +60,6 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        if (savedInstanceState == null) {
-            onSwipeRefresh()
-        }
         if (userVisibleHint && ::searchNavigationListener.isInitialized) {
             searchNavigationListener.hideBottomNavigation()
         }
@@ -70,6 +67,9 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
+        if(isVisibleToUser) {
+            onSwipeRefresh()
+        }
         if (isVisibleToUser && view != null && ::searchNavigationListener.isInitialized) {
             searchNavigationListener.hideBottomNavigation()
         }
