@@ -238,7 +238,6 @@ public class ShippingDurationBottomsheet extends BottomSheets
                 break;
             }
         }
-
         return hasCourierPromo;
     }
 

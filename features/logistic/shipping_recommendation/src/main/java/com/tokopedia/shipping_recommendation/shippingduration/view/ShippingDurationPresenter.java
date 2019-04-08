@@ -87,9 +87,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         if (getView() != null) {
             getView().showLoading();
             String query = GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.rates_v3_query);
-
             ShippingParam shippingParam = getShippingParam(shipmentDetailData);
-
             int selectedSpId = 0;
             if (shipmentDetailData.getSelectedCourier() != null) {
                 selectedSpId = shipmentDetailData.getSelectedCourier().getShipperProductId();
