@@ -88,10 +88,12 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
                             if (promo.skipApply == 0 && responseGetPromoStack.data.clashings.isClashedPromos) {
                                 view.onClashCheckPromo(responseGetPromoStack.data.clashings)
                             } else {
-                                view.onSuccessValidatePromoStacking(responseGetPromoStack.data)
+                                if (responseGetPromoStack.data.message.state.equals("red")) {
+                                    view.onErrorValidatePromo(MessageErrorException(responseGetPromoStack.data.message.text))
+                                } else {
+                                    view.onSuccessValidatePromoStacking(responseGetPromoStack.data)
+                                }
                             }
-                        } else {
-                            view.onErroGetDetail(CheckPromoCodeDetailException(responseGetPromoStack.data.message.text))
                         }
                     }
                 }
