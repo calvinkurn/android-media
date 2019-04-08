@@ -416,7 +416,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     private void sendImageTrackingDataInChunks(List<Visitable> list) {
         if (list != null && list.size() > 0) {
-            String userId = userSession.isLoggedIn() ? userSession.getUserId() : "";
+            String userId = generateUserId();
             List<Object> dataLayerList = new ArrayList<>();
             for (int j = 0; j < list.size(); ) {
                 int count = 0;
@@ -493,7 +493,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     private String generateUserId() {
-        return userSession.isLoggedIn() ? userSession.getUserId() : "";
+        return userSession.isLoggedIn() ? userSession.getUserId() : "0";
     }
 
     private String generateUniqueId() {
@@ -671,8 +671,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     private void sendItemClickTrackingEvent(ProductItem item) {
-        String userId = userSession.isLoggedIn() ?
-                userSession.getUserId() : "";
+        String userId = generateUserId();
 
         SearchTracking.trackEventClickImageSearchResultProduct(
                 getActivity(), item.getProductAsObjectDataLayerForImageSearch(userId), (item.getPosition() + 1) / 2);
