@@ -50,7 +50,8 @@ abstract class CacheManager(val context: Context) {
         }
     }
 
-    fun getString(customId: String, defaultString: String): String? {
+    @JvmOverloads
+    fun getString(customId: String, defaultString: String = ""): String? {
         try {
             val value: String? = cacheRepository.get(id + customId)
             if (value.isNullOrEmpty()) {
@@ -70,8 +71,8 @@ abstract class CacheManager(val context: Context) {
         }
         try {
             cacheRepository.put(id + customId,
-                    GsonSingleton.instance.toJson(objectToPut),
-                    cacheDuration)
+                GsonSingleton.instance.toJson(objectToPut),
+                cacheDuration)
         } catch (e: Throwable) {
             return
         }
@@ -84,8 +85,8 @@ abstract class CacheManager(val context: Context) {
         }
         try {
             cacheRepository.put(id + customId,
-                    objectToPut,
-                    cacheDuration)
+                objectToPut,
+                cacheDuration)
         } catch (e: Throwable) {
             return
         }
@@ -97,6 +98,10 @@ abstract class CacheManager(val context: Context) {
 
     fun delete() {
         cacheRepository.delete()
+    }
+
+    fun delete(key: String) {
+        cacheRepository.delete(key)
     }
 
     companion object {

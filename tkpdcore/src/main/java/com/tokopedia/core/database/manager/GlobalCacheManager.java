@@ -17,7 +17,9 @@ import java.util.List;
 
 /**
  * Created by ricoharisin on 11/23/15.
+ * Use PersistentCacheManager library instead
  */
+@Deprecated
 public class GlobalCacheManager implements DbFlowOperation<SimpleDatabaseModel>,
         CacheManager {
 
@@ -50,6 +52,7 @@ public class GlobalCacheManager implements DbFlowOperation<SimpleDatabaseModel>,
         return this;
     }
 
+    @Deprecated
     public long getCacheDuration(int duration) {
         return System.currentTimeMillis() / 1000L + (duration * 1000);
     }
@@ -100,6 +103,7 @@ public class GlobalCacheManager implements DbFlowOperation<SimpleDatabaseModel>,
         return cache == null || isExpired(cache.expiredTime);
     }
 
+    @Deprecated
     public void bulkInsert(List<String> key, List<String> value) {
         final DatabaseWrapper database = FlowManager.getDatabase(DbFlowDatabase.NAME).getWritableDatabase();
         database.beginTransaction();
@@ -151,10 +155,19 @@ public class GlobalCacheManager implements DbFlowOperation<SimpleDatabaseModel>,
         return null;
     }
 
+    /**
+     * use PersistentCacheManager to replace GlobalCacheManager
+     * PersistentCacheManager.instance.delete()
+     */
+    @Deprecated
     public void deleteAll() {
         new Delete().from(SimpleDatabaseModel.class).execute();
     }
 
+    /**
+     * use PersistentCacheManager to replace GlobalCacheManager
+     */
+    @Deprecated
     public static boolean isAvailable(String key) {
         SimpleDatabaseModel cache = new Select().from(SimpleDatabaseModel.class)
                 .where(SimpleDatabaseModel_Table.key.is(key)).querySingle();
