@@ -22,6 +22,7 @@ import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseMarketpl
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseServiceFragment
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.browse.common.DigitalBrowseRouter
+import com.tokopedia.browse.R
 import javax.inject.Inject
 
 class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<DigitalBrowseHomeComponent> {
