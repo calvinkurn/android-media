@@ -31,6 +31,8 @@ public class DealsSearchContract {
 
         void setSuggestedBrands(List<Brand> brandList);
 
+        void showSuggestedDeals(List<ProductItem> items, boolean showList);
+
         void removeFooter();
 
         void addFooter();

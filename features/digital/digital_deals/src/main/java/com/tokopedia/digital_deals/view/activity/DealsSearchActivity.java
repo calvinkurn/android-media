@@ -78,6 +78,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private RecyclerView rvDeals;
     private ImageView back;
     private TextView tvCityName;
+    private List<Brand> brands = new ArrayList<>();
     private boolean firstTimeRefresh = true;
 
     @Inject
@@ -157,6 +158,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //                        toolbar.setElevation(4.0f);
                         appBarToolbar.setElevation(getResources().getDimension(R.dimen.dp_4));
+                        KeyboardHandler.hideSoftKeyboard(getActivity());
                     }
                 } else {
                     divider.setVisibility(View.VISIBLE);
@@ -208,28 +210,9 @@ public class DealsSearchActivity extends DealsBaseActivity implements
 
     @Override
     public void renderFromSearchResults() {
-        if (listCount > 0) {
             Location location = Utils.getSingletonInstance().getLocation(getActivity());
-
-//            dealsCategoryAdapter.setTopDealsLayout(false);
-//            if (firstTimeRefresh)
-//                firstTimeRefresh = false;
-//            dealsCategoryAdapter.removeHeaderAndFooter();
-//            dealsCategoryAdapter.notifyDataSetChanged();
             rvDeals.addOnScrollListener(rvOnScrollListener);
-//            SpannableString headerString = getHeaderFormattedText(searchText, listCount);
-//            if (!TextUtils.isEmpty(headerString))
-//                dealsCategoryAdapter.addHeader(headerString);
-//            KeyboardHandler.hideSoftKeyboard(getActivity());
-//            rvDeals.requestFocus();
-//            clLocation.setVisibility(View.VISIBLE);
             tvCityName.setText(location.getName());
-        } else {
-            dealsAnalytics.sendEventDealsDigitalView(DealsAnalytics.EVENT_NO_DEALS,
-                    searchText);
-            rvDeals.setVisibility(View.GONE);
-            noContent.setVisibility(View.VISIBLE);
-        }
     }
 
     private SpannableString getHeaderFormattedText(String searchText, int count) {
@@ -267,6 +250,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         searchText = highlight;
         if (productItems != null && !productItems.isEmpty()) {
+            dealsHeading.setText(getResources().getString(R.string.products_title_search_default));
+            dealsHeading.setVisibility(View.VISIBLE);
             rvDeals.clearOnScrollListeners();
             dealsCategoryAdapter.clearList();
             dealsCategoryAdapter.addAll(productItems, false);
@@ -286,37 +271,25 @@ public class DealsSearchActivity extends DealsBaseActivity implements
 
             noContent.setVisibility(View.GONE);
 
+        } else if (this.brands != null && this.brands.size() > 0 && productItems != null && productItems.size() == 0) {
+            rvDeals.setVisibility(View.GONE);
+            dealsHeading.setVisibility(View.GONE);
         } else {
             dealsAnalytics.sendEventDealsDigitalView(DealsAnalytics.EVENT_NO_DEALS,
                     searchText);
-
-            rvDeals.clearOnScrollListeners();
-            dealsCategoryAdapter.clearList();
-            dealsCategoryAdapter.addAll(TopDealsCacheHandler.init().getTopDeals(), false);
-            dealsCategoryAdapter.setTopDealsLayout(true);
-            if (productItems.size() > 0) {
-                if (count == 0)
-                    listCount = productItems.size();
-                else
-                    listCount = count;
-            }
-            if (!isTrendingDeals) {
-                rvDeals.addOnScrollListener(rvOnScrollListener);
-            }
-            dealsCategoryAdapter.notifyDataSetChanged();
-
-            rvDeals.setVisibility(View.VISIBLE);
-
-            noContent.setVisibility(View.GONE);
+            noBrandsFound.setVisibility(View.VISIBLE);
+            brandsHeading.setVisibility(View.GONE);
+            brandLayout.setVisibility(View.GONE);
+            showSuggestedDeals(TopDealsCacheHandler.init().getTopDeals(), true);
         }
         if (location != null)
             tvCityName.setText(location.getName());
-
     }
 
     @Override
     public void setSuggestedBrands(List<Brand> brandList) {
         if (brandList != null && brandList.size() > 0) {
+            this.brands = brandList;
            brandLayout.setVisibility(View.VISIBLE);
             brandsHeading.setVisibility(View.VISIBLE);
             noBrandsFound.setVisibility(View.GONE);
@@ -334,9 +307,6 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                 LayoutInflater inflater = getLayoutInflater();
                 view = inflater.inflate(R.layout.item_brand_home, brandLayout, false);
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
-//                if (itemCount == maxBrands) {
-//                    params.weight = 1;
-//                }
                 imageViewBrandItem = view.findViewById(R.id.iv_brand);
                 brandName = view.findViewById(R.id.brandName);
                 brandName.setText(brandList.get(index).getTitle());
@@ -353,11 +323,27 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                     }
                 });
             }
-        } else {
-            noBrandsFound.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void showSuggestedDeals(List<ProductItem> items, boolean showList) {
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if (showList) {
+            dealsHeading.setText(String.format(getResources().getString(R.string.products_title_search), location.getName().toUpperCase()));
+            rvDeals.clearOnScrollListeners();
+            dealsCategoryAdapter.clearList();
+            dealsCategoryAdapter.addAll(items, false);
+            dealsCategoryAdapter.setTopDealsLayout(true);
+            rvDeals.addOnScrollListener(rvOnScrollListener);
+            dealsCategoryAdapter.notifyDataSetChanged();
+            rvDeals.setVisibility(View.VISIBLE);
             brandsHeading.setVisibility(View.GONE);
             brandLayout.setVisibility(View.GONE);
+            dealsHeading.setVisibility(View.VISIBLE);
         }
+        if (location != null)
+            tvCityName.setText(location.getName());
     }
 
     @Override

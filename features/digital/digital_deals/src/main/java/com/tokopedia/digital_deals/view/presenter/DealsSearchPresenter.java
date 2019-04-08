@@ -105,7 +105,7 @@ public class DealsSearchPresenter
 //        mTopDeals = getView().getActivity().getIntent().getParcelableArrayListExtra("TOPDEALS");
         mTopDeals = TopDealsCacheHandler.init().getTopDeals();
         if (mTopDeals != null && mTopDeals.size() > 0) {
-            getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
+            getView().showSuggestedDeals(mTopDeals, true);
         }
     }
 
@@ -127,7 +127,7 @@ public class DealsSearchPresenter
             getSearchDealsListRequestUseCase.unsubscribe();
             getSearchNextUseCase.unsubscribe();
             if (mTopDeals != null && mTopDeals.size() > 0) {
-                getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
+                getView().showSuggestedDeals(mTopDeals, true);
             }
         }
     }
