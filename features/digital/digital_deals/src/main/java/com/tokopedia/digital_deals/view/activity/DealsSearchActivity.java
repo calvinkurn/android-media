@@ -285,14 +285,29 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             rvDeals.setVisibility(View.VISIBLE);
 
             noContent.setVisibility(View.GONE);
-//            clLocation.setVisibility(View.GONE);
 
         } else {
             dealsAnalytics.sendEventDealsDigitalView(DealsAnalytics.EVENT_NO_DEALS,
                     searchText);
-            rvDeals.setVisibility(View.GONE);
-            noContent.setVisibility(View.VISIBLE);
-//            clLocation.setVisibility(View.VISIBLE);
+
+            rvDeals.clearOnScrollListeners();
+            dealsCategoryAdapter.clearList();
+            dealsCategoryAdapter.addAll(TopDealsCacheHandler.init().getTopDeals(), false);
+            dealsCategoryAdapter.setTopDealsLayout(true);
+            if (productItems.size() > 0) {
+                if (count == 0)
+                    listCount = productItems.size();
+                else
+                    listCount = count;
+            }
+            if (!isTrendingDeals) {
+                rvDeals.addOnScrollListener(rvOnScrollListener);
+            }
+            dealsCategoryAdapter.notifyDataSetChanged();
+
+            rvDeals.setVisibility(View.VISIBLE);
+
+            noContent.setVisibility(View.GONE);
         }
         if (location != null)
             tvCityName.setText(location.getName());
@@ -319,9 +334,9 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                 LayoutInflater inflater = getLayoutInflater();
                 view = inflater.inflate(R.layout.item_brand_home, brandLayout, false);
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
-                if (itemCount == maxBrands) {
-                    params.weight = 1;
-                }
+//                if (itemCount == maxBrands) {
+//                    params.weight = 1;
+//                }
                 imageViewBrandItem = view.findViewById(R.id.iv_brand);
                 brandName = view.findViewById(R.id.brandName);
                 brandName.setText(brandList.get(index).getTitle());
