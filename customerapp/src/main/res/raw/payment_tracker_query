@@ -79,6 +79,10 @@
       	}
       }
     }
+    payment_type{
+      metadata
+      types
+    }
     payment_amount
     voucher{
       voucher_code
