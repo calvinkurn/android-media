@@ -37,6 +37,7 @@ import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.videoplayer.utils.Video
 import com.tokopedia.videoplayer.view.widget.VideoPlayerView
 import kotlinx.android.synthetic.main.kol_comment_item.*
 import kotlinx.android.synthetic.main.layout_single_video_fragment.*
@@ -98,8 +99,8 @@ class VideoDetailFragment:
 
     override fun onPrepared(mediaPlayer: MediaPlayer?) {
         mediaPlayer?.let {player ->
-            resizeVideo(player.videoWidth, player.videoHeight)
             activity?.let { it ->
+                Video.resize(it, player.videoWidth, player.videoHeight)
                 val mediaController = MediaController(it)
                 videoView.setMediaController(mediaController)
                 mediaController.setAnchorView(videoView)
@@ -274,27 +275,6 @@ class VideoDetailFragment:
                 goToLogin()
             }
         }
-    }
-
-    private fun resizeVideo(mVideoWidth: Int, mVideoHeight: Int) {
-        var videoWidth = mVideoWidth
-        var videoHeight = mVideoHeight
-        val displaymetrics = DisplayMetrics()
-        activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
-
-        val heightRatio = videoHeight.toFloat() / displaymetrics.widthPixels.toFloat()
-        val widthRatio = videoWidth.toFloat() / displaymetrics.heightPixels.toFloat()
-
-        if (videoWidth > videoHeight) {
-            videoWidth = Math.ceil((videoWidth.toFloat() * widthRatio).toDouble()).toInt()
-            videoHeight = Math.ceil((videoHeight.toFloat() * widthRatio).toDouble()).toInt()
-        } else {
-            videoWidth = Math.ceil((videoWidth.toFloat() * heightRatio).toDouble()).toInt()
-            videoHeight = Math.ceil((videoHeight.toFloat() * heightRatio).toDouble()).toInt()
-        }
-
-        videoView.setSize(videoWidth, videoHeight)
-        videoView.holder.setFixedSize(videoWidth, videoHeight)
     }
 
     private fun bindHeader(header: Header) {
