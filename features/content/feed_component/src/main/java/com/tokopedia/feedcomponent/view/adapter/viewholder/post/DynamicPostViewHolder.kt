@@ -203,7 +203,7 @@ open class DynamicPostViewHolder(v: View,
         itemView.caption.shouldShowWithAction(template.caption) {
             if (caption.text.isEmpty()) {
                 itemView.caption.visibility = View.GONE
-            } else if (caption.text.length > MAX_CHAR) {
+            } else if (caption.text.length > MAX_CHAR || caption.text.contains("\n")) {
                 itemView.caption.visibility = View.VISIBLE
                 val captionText = caption.text.substring(0, CAPTION_END)
                         .replace(NEWLINE, "<br />")
