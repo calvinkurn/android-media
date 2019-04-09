@@ -98,7 +98,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     private int mCouponCount;
     private String mValueMembershipDescription;
 
-    StartPurchaseBottomSheet mStartPurchaseBottomSheet;
+    private StartPurchaseBottomSheet mStartPurchaseBottomSheet;
     private View tickerContainer;
     private View dynamicLinksContainer;
     private LinearLayout containerEgg;
@@ -370,6 +370,20 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                     "");
         } else if (source.getId() == R.id.text_failed_action) {
             mPresenter.getTokoPointDetail();
+        } else if (source.getId() == R.id.container_fab_egg_token) {
+            if (mSumToken <= 0) {
+                mStartPurchaseBottomSheet.show(getChildFragmentManager(), StartPurchaseBottomSheet.class.getName());
+            } else {
+                if (getActivity() != null) {
+                    RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
+                }
+            }
+
+            AnalyticsTrackerUtil.sendEvent(getActivity(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_FLOATING_LUCKY,
+                    "");
         }
     }
 
@@ -410,6 +424,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         getView().findViewById(R.id.text_failed_action).setOnClickListener(this);
         getView().findViewById(R.id.view_point).setOnClickListener(this);
         getView().findViewById(R.id.view_loyalty).setOnClickListener(this);
+        getView().findViewById(R.id.container_fab_egg_token).setOnClickListener(this);
     }
 
     @Override
@@ -716,10 +731,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         decorateDialog(dialog);
     }
 
-    public void showStartPurchaseBottomSheet(String title) {
-        mStartPurchaseBottomSheet.show(getChildFragmentManager(), title);
-    }
-
     @Override
     public void gotoSendGiftPage(int id, String title, String pointStr) {
         Bundle bundle = new Bundle();
@@ -850,38 +861,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         }
 
         mStartPurchaseBottomSheet.setData(data);
-
-        getView().findViewById(R.id.img_token).setOnClickListener(view -> {
-            if (mSumToken <= 0) {
-                showStartPurchaseBottomSheet(data.getTitle());
-            } else {
-                if (getActivity() != null) {
-                    RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
-                }
-            }
-
-            AnalyticsTrackerUtil.sendEvent(getActivity(),
-                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_FLOATING_LUCKY,
-                    "");
-        });
-
-        getView().findViewById(R.id.text_token_title).setOnClickListener(view -> {
-            if (mSumToken <= 0) {
-                showStartPurchaseBottomSheet(data.getTitle());
-            } else {
-                if (getActivity() != null) {
-                    RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
-                }
-            }
-
-            AnalyticsTrackerUtil.sendEvent(view.getContext(),
-                    AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_EGG,
-                    "");
-        });
     }
 
     @Override
