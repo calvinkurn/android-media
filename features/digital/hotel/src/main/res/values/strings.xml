@@ -20,4 +20,6 @@
     <string name="hotel_search_popular_search_title">Tujuan populer</string>
     <string name="hotel_search_popular_search_hotel_count">%1$s+ hotel</string>
     <string name="hotel_search_need_permission">Need Permission</string>
+    <string name="hotel_search_empty_view_holder_title">Nggak ada hasil yang cocok</string>
+    <string name="hotel_search_empty_view_holder_subtitle">Coba cari ulang pakai kata kunci lain.</string>
 </resources>

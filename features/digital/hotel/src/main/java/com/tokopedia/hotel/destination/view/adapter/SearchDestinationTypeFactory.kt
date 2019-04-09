@@ -3,7 +3,7 @@ package com.tokopedia.hotel.destination.view.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.hotel.destination.data.model.SearchDestination
@@ -34,8 +34,7 @@ class SearchDestinationTypeFactory(val searchDestinationListener: SearchDestinat
         return HotelDestinationShimmeringViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: EmptyResultViewModel?): Int {
+    override fun type(viewModel: EmptyModel): Int {
         return HotelDestinationEmptyResultViewHolder.LAYOUT
     }
-
 }

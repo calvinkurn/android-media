@@ -13,7 +13,7 @@ data class PopularSearch(
 
         @SerializedName("destinationID")
         @Expose
-        val id: Int,
+        val destinationId: Int,
 
         @SerializedName("type")
         @Expose
@@ -29,11 +29,11 @@ data class PopularSearch(
 
         @SerializedName("subLocation")
         @Expose
-        val location: String,
+        val subLocation: String,
 
         @SerializedName("metaDescription")
         @Expose
-        val hotelCount: String
+        val metaDescription: String
 ): Visitable<PopularSearchTypeFactory> {
 
     override fun type(typeFactory: PopularSearchTypeFactory) = typeFactory.type(this)

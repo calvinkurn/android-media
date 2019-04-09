@@ -14,9 +14,8 @@
         app:fontSize="title"
         app:weight="medium"
         app:textViewTheme="lightPrimary"
-        tools:text="Nggak ada hasil yang cocok"
-        tools:textSize="@dimen/sp_17"
         tools:textStyle="bold"
+        android:text="@string/hotel_search_empty_view_holder_title"
         android:textColor="@color/light_primary"
         android:gravity="center"
         />
@@ -27,7 +26,6 @@
         app:fontSize="micro"
         app:textViewTheme="lightDisabled"
         android:layout_marginTop="@dimen/dp_8"
-        tools:text="Coba cari ulang pakai kata kunci lain."
-        tools:textSize="@dimen/dp_12"
+        android:text="@string/hotel_search_empty_view_holder_subtitle"
         android:gravity="center"/>
 </LinearLayout>

@@ -23,8 +23,8 @@ class PopularSearchViewHolder(val view: View): AbstractViewHolder<PopularSearch>
    override fun bind(popularSearch: PopularSearch) {
         with(itemView) {
             popular_search_name.text = popularSearch.name
-            popular_search_location.text = popularSearch.location
-            popular_search_hotel_count.text = getString(R.string.hotel_search_popular_search_hotel_count, popularSearch.hotelCount)
+            popular_search_location.text = popularSearch.subLocation
+            popular_search_hotel_count.text = popularSearch.metaDescription
             ImageHandler.loadImageWithoutPlaceholder(this.popular_search_image, popularSearch.image)
         }
     }
