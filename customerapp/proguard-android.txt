@@ -213,3 +213,4 @@ public protected *;
 -keep public class android.support.design.internal.BottomNavigationItemView { *; }
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-keep class com.github.anrwatchdog.** { *; }

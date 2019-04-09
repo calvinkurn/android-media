@@ -106,6 +106,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
         flightBookingPresenter.attachView(this)
         if (savedInstanceState == null) {
             flightBookingCartData = FlightBookingCartData()
+            expiredDate = FlightDateUtil.getCurrentDate()
             flightBookingPresenter.initialize()
         } else {
             flightBookingCartData = savedInstanceState.getParcelable(KEY_CART_DATA)
@@ -163,7 +164,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
                     } else {
                         if (data.getBooleanExtra(FlightBookingReviewFragment.EXTRA_NEED_TO_REFRESH, false)) {
                             isCountdownRestarted = true
-                            flightBookingPresenter.onGetCart(false, flightBookingCartData)
+                            flightBookingPresenter.onGetCart(true, flightBookingCartData)
                         }
 
                         if (data.getParcelableExtra<Parcelable>(FlightBookingReviewFragment.EXTRA_COUPON_CHANGED) != null) {

@@ -1,8 +1,8 @@
 package com.tokopedia.videorecorder.utils
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 
 /**
  * Created by isfaaghyth on 04/03/19.
@@ -13,8 +13,9 @@ fun exceptionHandler(func: () -> Unit) {
     try {
         func()
     } catch (e: Exception) {
-        //no-op
-        Log.d("TKPDVideo", e.message)
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            e.printStackTrace()
+        }
     }
 }
 

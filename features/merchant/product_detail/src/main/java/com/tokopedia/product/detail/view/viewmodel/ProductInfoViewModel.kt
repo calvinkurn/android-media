@@ -548,9 +548,10 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 loadTopAdsProduct.value = Loading
                 doLoadTopAdsProduct(product.data.productInfo)
             } else null
-            lazyNeedForceUpdate = false
+
             otherProductDef?.await()?.let { loadOtherProduct.value = it }
             topAdsProductDef?.await()?.let { loadTopAdsProduct.value = it }
+            lazyNeedForceUpdate = false
         }
     }
 
