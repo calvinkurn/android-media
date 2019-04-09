@@ -144,11 +144,13 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
 
     private fun setViewGlobal() {
         ic_button_coupon.setImageResource(R.drawable.ic_kupon_telur)
+        ic_button_coupon.visibility = View.VISIBLE
         title_button_coupon.setText(R.string.promo_global_title)
     }
 
     private fun setViewMerchant() {
         ic_button_coupon.setImageResource(R.drawable.ic_merchant_promo)
+        ic_button_coupon.visibility = View.GONE
         title_button_coupon.setText(R.string.promo_merchant_title)
     }
 
