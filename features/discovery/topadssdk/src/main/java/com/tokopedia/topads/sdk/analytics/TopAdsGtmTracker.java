@@ -582,8 +582,7 @@ public class TopAdsGtmTracker {
                                 "category", product.getCategory().getId(),
                                 "variant", "none/other",
                                 "list", "/hotlist - topads - promoted",
-                                "position", position + 1),
-                                "attribution", ""))
+                                "position", position + 1)))
         );
         tracker.sendEnhanceEcommerceEvent(map);
     }

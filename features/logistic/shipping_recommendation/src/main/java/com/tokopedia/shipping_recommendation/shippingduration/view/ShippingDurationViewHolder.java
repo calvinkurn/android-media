@@ -94,6 +94,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         imgCheck.setVisibility(shippingDurationViewModel.isSelected() ? View.VISIBLE : View.GONE);
         tvCod.setText(shippingDurationViewModel.getCodText());
         tvCod.setVisibility(shippingDurationViewModel.isCodAvailable() ? View.VISIBLE : View.GONE);
+        if (shippingDurationViewModel.isShowShowCase()) setShowCase(shippingDurationAdapterListener);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,19 +107,11 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             }
         });
 
-        if (getAdapterPosition() == adapter.getItemCount() - 1) {
-            shippingDurationAdapterListener.onAllShippingDurationItemShown();
-        }
-
         if (getAdapterPosition() == 0) {
             tvDurationHeaderInfo.setVisibility(View.VISIBLE);
-            if (shippingDurationViewModel.isShowShowCase()) {
-                setShowCase(shippingDurationAdapterListener);
-            }
         } else {
             tvDurationHeaderInfo.setVisibility(View.GONE);
         }
-
     }
 
     private void setShowCase(ShippingDurationAdapterListener shippingDurationAdapterListener) {

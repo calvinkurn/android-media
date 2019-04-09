@@ -61,6 +61,7 @@ import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.home.ReactNativeDiscoveryActivity;
 import com.tokopedia.tkpd.utils.ShopNotFoundException;
+import com.tokopedia.tkpd.utils.ProductNotFoundException;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.io.UnsupportedEncodingException;
@@ -607,6 +608,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     context.startActivity(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
                             linkSegment.get(0), linkSegment.get(1)));
                 } else {
+                    if (!GlobalConfig.DEBUG) {
+                        Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
+                        Crashlytics.logException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));
+                    }
                     Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(context, uriData.toString());
                     context.startActivity(intent);
                 }

@@ -42,6 +42,9 @@ public class ShopProductCheckoutRequest implements Parcelable {
     @SerializedName("warehouse_id")
     @Expose
     public int warehouseId;
+    @SerializedName("promo_codes")
+    @Expose
+    public ArrayList<String> promoCodes;
 
     public ShopProductCheckoutRequest() {
     }
@@ -56,7 +59,9 @@ public class ShopProductCheckoutRequest implements Parcelable {
         productData = builder.productData;
         fcancelPartial = builder.fcancelPartial;
         warehouseId = builder.warehouseId;
+        promoCodes = builder.promoCodes;
     }
+
 
     protected ShopProductCheckoutRequest(Parcel in) {
         shopId = in.readInt();
@@ -67,6 +72,8 @@ public class ShopProductCheckoutRequest implements Parcelable {
         dropshipData = in.readParcelable(DropshipDataCheckoutRequest.class.getClassLoader());
         productData = in.createTypedArrayList(ProductDataCheckoutRequest.CREATOR);
         fcancelPartial = in.readInt();
+        warehouseId = in.readInt();
+        promoCodes = in.createStringArrayList();
     }
 
     @Override
@@ -79,6 +86,8 @@ public class ShopProductCheckoutRequest implements Parcelable {
         dest.writeParcelable(dropshipData, flags);
         dest.writeTypedList(productData);
         dest.writeInt(fcancelPartial);
+        dest.writeInt(warehouseId);
+        dest.writeStringList(promoCodes);
     }
 
     @Override
@@ -112,6 +121,7 @@ public class ShopProductCheckoutRequest implements Parcelable {
         private List<ProductDataCheckoutRequest> productData;
         private int fcancelPartial;
         private int warehouseId;
+        private ArrayList<String> promoCodes;
 
         public Builder() {
         }
@@ -161,6 +171,10 @@ public class ShopProductCheckoutRequest implements Parcelable {
             return this;
         }
 
+        public Builder promoCodes(ArrayList<String> val){
+            promoCodes = val;
+            return this;
+        }
 
         public ShopProductCheckoutRequest build() {
             return new ShopProductCheckoutRequest(this);
