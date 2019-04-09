@@ -21,6 +21,8 @@ interface HotelComponent {
     @ApplicationContext
     fun context(): Context
 
+    fun graphqlRepository(): GraphqlRepository
+
     fun userSessionInterface(): UserSessionInterface
 
     fun dispatcher(): CoroutineDispatcher

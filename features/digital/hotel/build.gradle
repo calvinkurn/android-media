@@ -30,18 +30,21 @@ buildscript {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.commonTravel)
+    implementation project(rootProject.ext.features.resourcesCommon)
+
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.travelCalendar)
-    implementation project(rootProject.ext.features.commonTravel)
-    implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.cacheManager)
 
     implementation rootProject.ext.miscDependencies.multiDex
 
@@ -52,6 +55,10 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     kapt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
@@ -64,6 +71,8 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     // Room components
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
