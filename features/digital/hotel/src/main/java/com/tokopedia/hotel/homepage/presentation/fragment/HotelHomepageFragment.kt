@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
@@ -18,7 +19,7 @@ import java.util.concurrent.TimeUnit
 /**
  * @author by furqan on 28/03/19
  */
-class HotelHomepageFragment : BaseDaggerFragment() {
+class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheets.HotelGuestListener {
 
     private val hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
 
@@ -36,6 +37,18 @@ class HotelHomepageFragment : BaseDaggerFragment() {
     }
 
     override fun getScreenName(): String = ""
+
+    override fun onSaveGuest(room: Int, adult: Int, child: Int) {
+        hotelHomepageModel.roomCount = room
+        hotelHomepageModel.adultCount = adult
+        hotelHomepageModel.childCount = child
+
+        renderView()
+    }
+
+    override fun showGuestErrorTicker(resId: Int) {
+        NetworkErrorHelper.showRedCloseSnackbar(activity, getString(resId))
+    }
 
     private fun initView() {
         val todayWithoutTime = TravelDateUtil.removeTime(TravelDateUtil.getCurrentCalendar().time)
@@ -88,8 +101,8 @@ class HotelHomepageFragment : BaseDaggerFragment() {
         val minDate = TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.stringToDate(
                 TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate), Calendar.DATE, 1)
 
-        val maxDate = TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.getCurrentCalendar().time,
-                Calendar.DATE, MAX_SELECTION_DATE)
+        val maxDate = TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD,
+                hotelHomepageModel.checkInDate), Calendar.DATE, MAX_SELECTION_DATE)
         val maxDateCalendar = TravelDateUtil.getCurrentCalendar()
         maxDateCalendar.time = maxDate
         maxDateCalendar.set(Calendar.HOUR_OF_DAY, DEFAULT_LAST_HOUR_IN_DAY)
@@ -114,9 +127,10 @@ class HotelHomepageFragment : BaseDaggerFragment() {
                 val calendarSelected = Calendar.getInstance()
                 calendarSelected.time = dateSelected
                 if (calendarTag == TAG_CALENDAR_CHECK_IN) {
-                    // TODO add action if check in date selected
+                    onCheckInDateChanged(dateSelected)
+                    configAndRenderCheckOutDate()
                 } else if (calendarTag == TAG_CALENDAR_CHECK_OUT) {
-                    // TODO add action if check out date selected
+                    onCheckOutDateChanged(dateSelected)
                 }
             }
         })
@@ -125,7 +139,31 @@ class HotelHomepageFragment : BaseDaggerFragment() {
 
     private fun onGuestInfoClicked() {
         val hotelRoomAndGuestBottomSheets = HotelRoomAndGuestBottomSheets()
+        hotelRoomAndGuestBottomSheets.listener = this
         hotelRoomAndGuestBottomSheets.show(activity!!.supportFragmentManager, TAG_GUEST_INFO)
+    }
+
+    private fun onCheckInDateChanged(newCheckInDate: Date) {
+        hotelHomepageModel.checkInDate = TravelDateUtil.dateToString(
+                TravelDateUtil.YYYY_MM_DD, newCheckInDate)
+        hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(
+                TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckInDate)
+
+        if (newCheckInDate >= TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate)) {
+            val tomorrow = TravelDateUtil.addTimeToSpesificDate(newCheckInDate,
+                    Calendar.DATE, 1)
+            hotelHomepageModel.checkOutDate = TravelDateUtil.dateToString(
+                    TravelDateUtil.YYYY_MM_DD, tomorrow)
+            hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
+                    TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
+        }
+    }
+
+    private fun onCheckOutDateChanged(newCheckOutDate: Date) {
+        hotelHomepageModel.checkInDate = TravelDateUtil.dateToString(
+                TravelDateUtil.YYYY_MM_DD, newCheckOutDate)
+        hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(
+                TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckOutDate)
     }
 
     companion object {

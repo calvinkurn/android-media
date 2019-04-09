@@ -34,4 +34,6 @@
     <string name="hotel_bottom_sheets_adult_count_title">Dewasa</string>
     <string name="hotel_bottom_sheets_child_count_title">Anak</string>
     <string name="hotel_bottom_sheets_child_count_subtitle">0 - 6 tahun</string>
+    <string name="hotel_button_save">Simpan</string>
+    <string name="hotel_guest_info_room_more_than_adult_error_message">Jumlah kamar tidak boleh melebihi jumlah tamu dewasa.</string>
 </resources>
