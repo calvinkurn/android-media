@@ -9,17 +9,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.list.decoration.SpaceItemDecoration
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.Property
 import com.tokopedia.hotel.search.data.model.PropertySearch
 import com.tokopedia.hotel.search.data.model.Sort
+import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
+import com.tokopedia.hotel.search.presentation.activity.HotelSearchFilterActivity
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
 import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewModel
 import com.tokopedia.hotel.search.presentation.widget.HotelClosedSortBottomSheets
-import com.tokopedia.hotel.search.presentation.widget.HotelOptionMenuAdapter
-import com.tokopedia.hotel.search.presentation.widget.HotelOptionMenuAdapter.Companion.MODE_CHECKED
+import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
+import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter.Companion.MODE_CHECKED
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -32,18 +36,21 @@ class HotelSearchResultFragment: BaseListFragment<Property, PropertyAdapterTypeF
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var searchResultviewModel: HotelSearchResultViewModel
     lateinit var sortMenu: HotelClosedSortBottomSheets
+    private var onFilterClick: View.OnClickListener? = null
 
     companion object {
-        private const val ARG_DESTINATION_ID = "arg_destination"
-        private const val ARG_TYPE = "arg_type"
-        private const val ARG_LAT = "arg_lat"
-        private const val ARG_LONG = "arg_long"
-        private const val ARG_CHECK_IN = "arg_check_in"
-        private const val ARG_CHECK_OUT = "arg_check_out"
-        private const val ARG_TOTAL_ROOM = "arg_total_room"
-        private const val ARG_TOTAL_ADULT = "arg_total_adult"
-        private const val ARG_TOTAL_CHILDERN = "arg_total_children"
-        private const val ARG_DESTINATION_NAME = "arg_destination_name"
+        private const val REQUEST_FILTER = 0x10
+
+        const val ARG_DESTINATION_ID = "arg_destination"
+        const val ARG_TYPE = "arg_type"
+        const val ARG_LAT = "arg_lat"
+        const val ARG_LONG = "arg_long"
+        const val ARG_CHECK_IN = "arg_check_in"
+        const val ARG_CHECK_OUT = "arg_check_out"
+        const val ARG_TOTAL_ROOM = "arg_total_room"
+        const val ARG_TOTAL_ADULT = "arg_total_adult"
+        const val ARG_TOTAL_CHILDREN = "arg_total_children"
+        const val ARG_DESTINATION_NAME = "arg_destination_name"
 
         fun createInstance(destinationName: String = "", destinationID: Int = 0, type: String = "",
                            latitude: Float = 0f, longitude: Float = 0f, checkIn: String = "",
@@ -61,7 +68,7 @@ class HotelSearchResultFragment: BaseListFragment<Property, PropertyAdapterTypeF
                     putString(ARG_CHECK_OUT, checkOut)
                     putInt(ARG_TOTAL_ROOM, totalRoom)
                     putInt(ARG_TOTAL_ADULT, totalAdult)
-                    putInt(ARG_TOTAL_CHILDERN, totalChildren)
+                    putInt(ARG_TOTAL_CHILDREN, totalChildren)
                 }
             }
         }
@@ -121,6 +128,19 @@ class HotelSearchResultFragment: BaseListFragment<Property, PropertyAdapterTypeF
         bottom_action_view.visible()
         super.renderList(data.properties)
         generateSortMenu(data.displayInfo.sort)
+        initializeFilterClick(data.displayInfo.filter)
+    }
+
+    private fun initializeFilterClick(filter: Filter) {
+        onFilterClick = View.OnClickListener {
+            context?.let {
+                val cacheManager = SaveInstanceCacheManager(it, true).apply {
+                    put(CommonParam.ARG_FILTER, filter)
+                }
+                startActivityForResult(HotelSearchFilterActivity.createIntent(it, cacheManager.id), REQUEST_FILTER)
+            }
+        }
+        bottom_action_view.setButton2OnClickListener(onFilterClick)
     }
 
     private fun generateSortMenu(sort: List<Sort>) {

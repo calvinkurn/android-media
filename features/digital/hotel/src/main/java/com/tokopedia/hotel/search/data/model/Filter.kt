@@ -2,6 +2,7 @@ package com.tokopedia.hotel.search.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.hotel.search.presentation.adapter.HotelSearchFilterAdapter
 
 data class Filter(
         @SerializedName("filterPrice")
@@ -39,7 +40,11 @@ data class Filter(
             @SerializedName("displayName")
             @Expose
             val displayName: String = ""
-    )
+    ): HotelSearchFilterAdapter.HotelFilterItem {
+        override fun getItemId(): String = id.toString()
+
+        override fun getItemTitle(): String = displayName
+    }
 
     data class FilterPreference(
             @SerializedName("ID")
@@ -57,5 +62,9 @@ data class Filter(
             @SerializedName("type")
             @Expose
             val type: String = ""
-    )
+    ): HotelSearchFilterAdapter.HotelFilterItem {
+        override fun getItemId(): String = id.toString()
+
+        override fun getItemTitle(): String = displayName
+    }
 }

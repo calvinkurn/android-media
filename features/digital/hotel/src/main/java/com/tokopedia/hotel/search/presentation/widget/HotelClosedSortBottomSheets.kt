@@ -7,7 +7,8 @@ import android.widget.ImageButton
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.Sort
-import com.tokopedia.hotel.search.presentation.widget.HotelOptionMenuAdapter.Companion.MODE_NORMAL
+import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
+import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter.Companion.MODE_NORMAL
 
 class HotelClosedSortBottomSheets: BottomSheets() {
     private var title: String = ""
