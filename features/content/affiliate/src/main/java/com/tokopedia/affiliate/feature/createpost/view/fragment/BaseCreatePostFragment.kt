@@ -241,12 +241,24 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         adapter.notifyItemRemoved(position)
 
         if (isTypeAffiliate()) {
-            viewModel.adIdList.removeFirst { it == relatedProductItem.id }
+            if (viewModel.adIdList.getOrNull(position) == relatedProductItem.id) {
+                viewModel.adIdList.removeAt(position)
+            } else {
+                viewModel.adIdList.removeFirst { it == relatedProductItem.id }
+            }
         } else {
-            viewModel.productIdList.removeFirst { it == relatedProductItem.id }
+            if (viewModel.productIdList.getOrNull(position) == relatedProductItem.id) {
+                viewModel.productIdList.removeAt(position)
+            } else {
+                viewModel.productIdList.removeFirst { it == relatedProductItem.id }
+            }
         }
 
-        viewModel.urlImageList.removeFirst { it.path == relatedProductItem.image }
+        if (viewModel.urlImageList.getOrNull(position)?.path == relatedProductItem.image) {
+            viewModel.urlImageList.removeAt(position)
+        } else {
+            viewModel.urlImageList.removeFirst { it.path == relatedProductItem.image }
+        }
 
         updateThumbnail()
         updateAddTagText()
