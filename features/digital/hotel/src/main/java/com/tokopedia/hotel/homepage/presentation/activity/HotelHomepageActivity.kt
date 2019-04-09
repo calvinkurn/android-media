@@ -10,8 +10,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.common.applink.ApplinkConstant
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
-import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
 import com.tokopedia.hotel.homepage.di.DaggerHotelHomepageComponent
+import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
 import com.tokopedia.hotel.homepage.presentation.fragment.HotelHomepageFragment
 
 class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageComponent> {

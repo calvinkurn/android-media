@@ -8,7 +8,7 @@ import dagger.Component
  * @author by furqan on 28/03/19
  */
 @HotelHomepageScope
-@Component(modules = [HotelHomepageModule::class], dependencies = [HotelComponent::class])
+@Component(modules = [HotelHomepageModule::class, HotelHomepageViewModelModule::class], dependencies = [HotelComponent::class])
 interface HotelHomepageComponent {
 
     fun inject(hotelHomepageFragment: HotelHomepageFragment)
