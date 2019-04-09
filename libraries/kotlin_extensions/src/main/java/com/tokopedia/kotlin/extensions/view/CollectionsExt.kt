@@ -42,7 +42,7 @@ fun <T> Appendable.appendElement(element: T, transform: ((T) -> CharSequence)?) 
     }
 }
 
-inline fun <T> MutableIterable<T>.removeFirst(predicate: (T) -> Boolean): Boolean {
+fun <T> MutableIterable<T>.removeFirst(predicate: (T) -> Boolean): Boolean {
     val iterator: MutableIterator<T> = this.iterator()
     while (iterator.hasNext()) {
         if (predicate(iterator.next())) {
