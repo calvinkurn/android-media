@@ -1,21 +1,18 @@
 package com.tokopedia.hotel.destination.view.activity
 
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.design.component.EditTextCompat
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
-import com.tokopedia.hotel.destination.di.DaggerHotelDestinationComponent
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
 import com.tokopedia.hotel.destination.view.fragment.HotelRecommendationFragment
 import com.tokopedia.hotel.destination.view.fragment.HotelSearchDestinationFragment
 import kotlinx.android.synthetic.main.activity_hotel_destination.*
 import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 
@@ -23,7 +20,7 @@ import kotlinx.coroutines.experimental.launch
  * @author by jessica on 25/03/19
  */
 
-class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinationComponent>, SearchInputView.Listener,
+class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinationComponent>, SearchInputView.Listener,
         SearchInputView.ResetListener {
 
     var isSearching: Boolean = false
@@ -44,7 +41,7 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        updateTitle(intent.getStringExtra(EXTRA_TOOLBAR_TITLE))
+        updateTitle(getString(R.string.hotel_destination_toolbar_title))
 
         initInjector()
         initView()
@@ -96,7 +93,7 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
             if (text.isEmpty() && isSearching) {
                 isSearching = false
                 backToHotelRecommendation()
-            } else if (text.isNotEmpty() && !isSearching && text.length > 2){
+            } else if (text.isNotEmpty() && !isSearching && text.length > 2) {
                 isSearching = true
                 showSearchDestinationResult()
             } else if (isSearching) {
@@ -118,8 +115,8 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
     override fun onBackPressed() {
         finish()
     }
+
     companion object {
-        val EXTRA_TOOLBAR_TITLE = "EXTRA_TOOLBAR_TITLE"
         val SEARCH_DESTINATION_FRAGMENT_TAG = "SEARCH_DESTINATION"
 
         const val HOTEL_DESTINATION_ID = "destinationID"
@@ -128,10 +125,7 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
         const val HOTEL_CURRENT_LOCATION_LANG = "lang"
         const val HOTEL_CURRENT_LOCATION_LAT = "lat"
 
-        fun createInstance(activity: Activity, title: String): Intent {
-            val intent = Intent(activity, HotelDestinationActivity::class.java)
-            intent.putExtra(EXTRA_TOOLBAR_TITLE, title)
-            return intent
-        }
+        fun createInstance(context: Context): Intent =
+                Intent(context, HotelDestinationActivity::class.java)
     }
 }

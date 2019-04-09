@@ -1,5 +1,7 @@
 package com.tokopedia.hotel.homepage.presentation.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
@@ -50,6 +53,22 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
         NetworkErrorHelper.showRedCloseSnackbar(activity, getString(resId))
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_CODE_DESTINATION -> if (resultCode == Activity.RESULT_OK && data != null) {
+                if (data.hasExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG)) {
+                    onDestinationNearBy(data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG, 0.0),
+                            data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LAT, 0.0))
+                } else {
+                    onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME),
+                            data.getIntExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID, 0),
+                            data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_TYPE))
+                }
+            }
+        }
+    }
+
     private fun initView() {
         val todayWithoutTime = TravelDateUtil.removeTime(TravelDateUtil.getCurrentCalendar().time)
         val tomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 1)
@@ -65,6 +84,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
                 TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterTomorrow)
         hotelHomepageModel.nightCounter = (dayAfterTomorrow.time - tomorrow.time) / ONE_DAY
 
+        tv_hotel_homepage_destination.setOnClickListener { onDestinationChangeClicked() }
         tv_hotel_homepage_checkin_date.setOnClickListener { configAndRenderCheckInDate() }
         tv_hotel_homepage_checkout_date.setOnClickListener { configAndRenderCheckOutDate() }
         tv_hotel_homepage_guest_info.setOnClickListener { onGuestInfoClicked() }
@@ -73,11 +93,16 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     }
 
     private fun renderView() {
+        tv_hotel_homepage_destination.setText(hotelHomepageModel.locName)
         tv_hotel_homepage_checkin_date.setText(hotelHomepageModel.checkInDateFmt)
         tv_hotel_homepage_checkout_date.setText(hotelHomepageModel.checkOutDateFmt)
         tv_hotel_homepage_night_count.text = hotelHomepageModel.nightCounter.toString()
         tv_hotel_homepage_guest_info.setText(String.format(getString(R.string.hotel_homepage_guest_detail),
                 hotelHomepageModel.roomCount, hotelHomepageModel.adultCount, hotelHomepageModel.childCount))
+    }
+
+    private fun onDestinationChangeClicked() {
+        startActivityForResult(HotelDestinationActivity.createInstance(activity!!), REQUEST_CODE_DESTINATION)
     }
 
     private fun configAndRenderCheckInDate() {
@@ -157,6 +182,8 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
             hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
                     TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
         }
+
+        renderView()
     }
 
     private fun onCheckOutDateChanged(newCheckOutDate: Date) {
@@ -164,6 +191,22 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
                 TravelDateUtil.YYYY_MM_DD, newCheckOutDate)
         hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(
                 TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckOutDate)
+
+        renderView()
+    }
+
+    private fun onDestinationNearBy(longitude: Double, latitude: Double) {
+        hotelHomepageModel.locName = getString(R.string.hotel_homepage_near_by_destination)
+        hotelHomepageModel.locLat = latitude
+        hotelHomepageModel.locLong = longitude
+        renderView()
+    }
+
+    private fun onDestinationChanged(name: String, destinationId: Int, type: String) {
+        hotelHomepageModel.locName = name
+        hotelHomepageModel.locId = destinationId
+        hotelHomepageModel.locType = type
+        renderView()
     }
 
     companion object {
@@ -171,6 +214,9 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
         val MAX_SELECTION_DATE = 30
         val DEFAULT_LAST_HOUR_IN_DAY = 23
         val DEFAULT_LAST_MIN_SEC_IN_DAY = 59
+
+        val REQUEST_CODE_DESTINATION = 101
+
         val TAG_CALENDAR_CHECK_IN = "calendarHotelCheckIn"
         val TAG_CALENDAR_CHECK_OUT = "calendarHotelCheckOut"
         val TAG_GUEST_INFO = "guestHotelInfo"
