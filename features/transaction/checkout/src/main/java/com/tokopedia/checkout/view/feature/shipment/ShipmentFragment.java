@@ -1251,7 +1251,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentAdapter.getPromoGlobalStackData(),
                 shipmentPresenter.getCartPromoSuggestion(),
                 shipmentPresenter.getRecipientAddressModel(),
-                shipmentPresenter.getShipmentCartItemModelList(),
+                new ArrayList<>(),
                 shipmentPresenter.getShipmentCostModel(),
                 shipmentPresenter.getShipmentDonationModel(),
                 cartIds
