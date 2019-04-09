@@ -4,7 +4,7 @@ package com.tokopedia.config.url
  * @author okasurya on 4/9/19.
  */
 
-val live = Url(
+internal val live = Url(
         WS = "ws".tokopediaCom(),
         API = "api".tokopediaCom(),
         WEB = "www".tokopediaCom(),

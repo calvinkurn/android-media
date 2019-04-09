@@ -8,39 +8,40 @@ import android.support.annotation.GuardedBy
  */
 class TokopediaUrl {
     companion object {
-        private const val KEY_PREFERENCES = "ENV_PREF"
-        private const val KEY_ENV = "ENV"
-        private const val LIVE = "LIVE"
-        private const val STAGING = "STAGING"
         private const val LOCK = "LOCK"
 
         @GuardedBy(LOCK)
-        private var tokopediaTokopediaUrl: Url? = null
+        private var url: Url? = null
 
         fun init(context: Context?) {
             synchronized(LOCK) {
-                if (tokopediaTokopediaUrl == null) {
-                    val sharedPref = context?.getSharedPreferences(KEY_PREFERENCES, Context.MODE_PRIVATE)
-                    tokopediaTokopediaUrl = selectInstance(sharedPref?.getString(KEY_ENV, LIVE))
+                if (url == null) {
+                    val sharedPref = context?.getSharedPreferences(KEY_ENV_PREFERENCES, Context.MODE_PRIVATE)
+                    url = selectInstance(sharedPref?.getString(KEY_ENV, Env.LIVE.value))
                 }
             }
         }
 
         private fun selectInstance(env: String?): Url {
             return when(env) {
-                STAGING -> staging
+                Env.STAGING.value -> staging
                 else ->  live
             }
         }
 
         val instance: Url
             get() = synchronized(LOCK) {
-                if (tokopediaTokopediaUrl == null) {
+                if (url == null) {
                     // if not initialized, force to Live Url
-                    tokopediaTokopediaUrl = live
-                    return tokopediaTokopediaUrl as Url
+                    url = live
+                    return url as Url
                 }
-                return tokopediaTokopediaUrl as Url
+                return url as Url
             }
+
+        fun setEnvironment(context: Context?, env: Env) {
+            val sharedPref = context?.getSharedPreferences(KEY_ENV_PREFERENCES, Context.MODE_PRIVATE)
+            sharedPref?.edit()?.putString(KEY_ENV, env.value)?.commit()
+        }
     }
 }

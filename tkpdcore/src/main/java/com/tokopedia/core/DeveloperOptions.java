@@ -7,8 +7,11 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -20,6 +23,8 @@ import com.tkpd.library.utils.OneOnClick;
 import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.config.url.Env;
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -55,6 +60,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
     private ToggleButton toggleReactDeveloperMode;
     private ToggleButton toggleReactEnableDeveloperOptions;
     private SharedPreferences sharedPreferences;
+    private Spinner spinnerEnvironmentChooser;
 
     private TextView vGoTochuck;
     private CheckBox toggleChuck;
@@ -67,6 +73,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
     private ToggleButton groupChatLogToggle;
 
     private static TkpdCoreRouter tkpdCoreRouter;
+    private ArrayAdapter<Env> envSpinnerAdapter;
 
     @Override
     public String getScreenName() {
@@ -110,6 +117,12 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         ipGroupChat = findViewById(R.id.ip_groupchat);
         saveIpGroupChat = findViewById(R.id.ip_groupchat_save);
         groupChatLogToggle = findViewById(R.id.groupchat_log);
+
+
+        spinnerEnvironmentChooser = findViewById(R.id.spinner_env_chooser);
+        envSpinnerAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, Env.values());
+        envSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerEnvironmentChooser.setAdapter(envSpinnerAdapter);
     }
 
     private void initListener() {
@@ -265,6 +278,13 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         LocalCacheHandler groupChatPreference = new LocalCacheHandler(getApplicationContext(), GROUPCHAT_PREF);
         ipGroupChat.setText(groupChatPreference.getString(IP_GROUPCHAT,""));
         groupChatLogToggle.setChecked(groupChatPreference.getBoolean(LOG_GROUPCHAT, false));
+
+        spinnerEnvironmentChooser.setOnItemClickListener(
+            (parent, view, position, id) -> {
+                TokopediaUrl.Companion.setEnvironment(DeveloperOptions.this, Env.values()[position]);
+                Toast.makeText(this, "Please Restart the App", Toast.LENGTH_SHORT).show();
+            }
+        );
     }
 
     private void actionLogGroupChat(boolean check) {

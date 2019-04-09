@@ -3,7 +3,7 @@ package com.tokopedia.config.url
 /**
  * @author okasurya on 4/9/19.
  */
-val staging = Url(
+internal val staging = Url(
         WS = "ws-staging".tokopediaCom(),
         API = "api-staging".tokopediaCom(),
         WEB = "staging".tokopediaCom(),
