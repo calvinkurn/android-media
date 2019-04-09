@@ -286,6 +286,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     private void setFooter(PostDetailViewModel postDetailViewModel) {
+        this.postDetailFooterModel = postDetailViewModel.getFooterModel();
         footer.setVisibility(View.VISIBLE);
         TemplateFooter template = null;
         if (postDetailViewModel.getDynamicPostViewModel().getPostList().size() != 0) {
