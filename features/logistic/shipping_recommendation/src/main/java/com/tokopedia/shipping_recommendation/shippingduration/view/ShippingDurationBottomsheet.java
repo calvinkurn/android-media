@@ -30,6 +30,7 @@ import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 import com.tokopedia.shipping_recommendation.shippingduration.di.DaggerShippingDurationComponent;
 import com.tokopedia.shipping_recommendation.shippingduration.di.ShippingDurationComponent;
 import com.tokopedia.shipping_recommendation.shippingduration.di.ShippingDurationModule;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +72,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
     ShippingDurationContract.Presenter presenter;
     @Inject
     ShippingDurationAdapter shippingDurationAdapter;
+    @Inject
+    CheckoutAnalyticsCourierSelection mPromoTracker;
     private String mCornerId = "";
 
     public static ShippingDurationBottomsheet newInstance(ShipmentDetailData shipmentDetailData,
@@ -314,12 +317,16 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     public void onLogisticPromoClicked(LogisticPromoViewModel data) {
+        mPromoTracker.eventClickPromoLogisticTicker(data.getPromoCode());
         Dialog tkpdDialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         tkpdDialog.setTitle(getString(R.string.tkpd_promo_brand));
         tkpdDialog.setDesc(MethodChecker.fromHtml(data.getDialogMsg()));
         tkpdDialog.setBtnOk(getString(R.string.shiprecc_next));
         tkpdDialog.setBtnCancel(getString(R.string.shiprecc_cancel));
-        tkpdDialog.setOnCancelClickListener(view -> tkpdDialog.dismiss());
+        tkpdDialog.setOnCancelClickListener(view -> {
+            mPromoTracker.eventClickBatalTerapkanPromo(data.getPromoCode());
+            tkpdDialog.dismiss();
+        });
         tkpdDialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
