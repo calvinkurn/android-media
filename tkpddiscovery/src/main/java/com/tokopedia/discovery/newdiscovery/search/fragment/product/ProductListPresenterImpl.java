@@ -10,7 +10,6 @@ import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
@@ -26,7 +25,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Ba
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.TopAdsViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -71,6 +69,9 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     GraphqlUseCase graphqlUseCase;
     private Context context;
     private boolean isUsingFilterV4;
+
+    private Subscriber<GraphqlResponse> loadDataSubscriber;
+    private Subscriber<GraphqlResponse> loadMoreDataSubscriber;
 
     public ProductListPresenterImpl(Context context) {
         this.context = context;
@@ -186,7 +187,9 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         enrichWithAdditionalParams(requestParams, additionalParams);
         removeDefaultCategoryParam(requestParams);
 
-        Subscriber<GraphqlResponse> subscriber = new DefaultSubscriber<GraphqlResponse>() {
+        unsubscribeLoadMoreDataSubscriberIfStillSubscribe();
+
+        loadMoreDataSubscriber = new DefaultSubscriber<GraphqlResponse>() {
             @Override
             public void onStart() {
                 if (isViewAttached()) {
@@ -206,7 +209,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                         List<Visitable> list = new ArrayList<Visitable>();
                         getView().removeLoading();
                         list.addAll(enrich(productViewModel));
-                        getView().setProductList(list);
+                        getView().addProductList(list);
                         getView().addLoading();
                     }
                     getView().storeTotalData(productViewModel.getTotalData());
@@ -229,7 +232,13 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                 }
             }
         };
-        GqlSearchHelper.requestProductLoadMore(context, requestParams, graphqlUseCase, subscriber);
+        GqlSearchHelper.requestProductLoadMore(context, requestParams, graphqlUseCase, loadMoreDataSubscriber);
+    }
+
+    private void unsubscribeLoadMoreDataSubscriberIfStillSubscribe() {
+        if(loadMoreDataSubscriber != null && !loadMoreDataSubscriber.isUnsubscribed()) {
+            loadMoreDataSubscriber.unsubscribe();
+        }
     }
 
     public static List<Visitable> enrich(ProductViewModel productViewModel) {
@@ -301,7 +310,9 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         enrichWithAdditionalParams(requestParams, additionalParams);
         removeDefaultCategoryParam(requestParams);
 
-        Subscriber<GraphqlResponse> subscriber = new DefaultSubscriber<GraphqlResponse>() {
+        unsubscribeLoadDataSubscriberIfStillSubscribe();
+
+        loadDataSubscriber = new DefaultSubscriber<GraphqlResponse>() {
             @Override
             public void onStart() {
                 if (isViewAttached()) {
@@ -366,7 +377,13 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                 }
             }
         };
-        GqlSearchHelper.requestProductFirstPage(context, requestParams, graphqlUseCase, subscriber);
+        GqlSearchHelper.requestProductFirstPage(context, requestParams, graphqlUseCase, loadDataSubscriber);
+    }
+
+    private void unsubscribeLoadDataSubscriberIfStillSubscribe() {
+        if(loadDataSubscriber != null && !loadDataSubscriber.isUnsubscribed()) {
+            loadDataSubscriber.unsubscribe();
+        }
     }
 
     @Override
