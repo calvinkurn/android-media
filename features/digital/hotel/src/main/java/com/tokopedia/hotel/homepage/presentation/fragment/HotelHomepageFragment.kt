@@ -9,6 +9,7 @@ import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
+import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
 import java.util.*
@@ -53,6 +54,7 @@ class HotelHomepageFragment : BaseDaggerFragment() {
 
         tv_hotel_homepage_checkin_date.setOnClickListener { configAndRenderCheckInDate() }
         tv_hotel_homepage_checkout_date.setOnClickListener { configAndRenderCheckOutDate() }
+        tv_hotel_homepage_guest_info.setOnClickListener { onGuestInfoClicked() }
 
         renderView()
     }
@@ -121,6 +123,11 @@ class HotelHomepageFragment : BaseDaggerFragment() {
         travelCalendarBottomSheet.show(activity!!.supportFragmentManager, calendarTag)
     }
 
+    private fun onGuestInfoClicked() {
+        val hotelRoomAndGuestBottomSheets = HotelRoomAndGuestBottomSheets()
+        hotelRoomAndGuestBottomSheets.show(fragmentManager, TAG_GUEST_INFO)
+    }
+
     companion object {
         val ONE_DAY: Long = TimeUnit.DAYS.toMillis(1)
         val MAX_SELECTION_DATE = 30
@@ -128,6 +135,7 @@ class HotelHomepageFragment : BaseDaggerFragment() {
         val DEFAULT_LAST_MIN_SEC_IN_DAY = 59
         val TAG_CALENDAR_CHECK_IN = "calendarHotelCheckIn"
         val TAG_CALENDAR_CHECK_OUT = "calendarHotelCheckOut"
+        val TAG_GUEST_INFO = "guestHotelInfo"
 
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
     }

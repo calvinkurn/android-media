@@ -29,4 +29,9 @@
     <string name="hotel_homepage_promo_title">Promo</string>
     <string name="hotel_homepage_all_promo">Lihat Semua</string>
     <string name="hotel_homepage_guest_detail" formatted="false"> %d kamar, %d dewasa, %d anak</string>
+    <string name="hotel_bottom_sheets_room_guest_title">Kamar dan Tamu</string>
+    <string name="hotel_bottom_sheets_room_count_title">Kamar</string>
+    <string name="hotel_bottom_sheets_adult_count_title">Dewasa</string>
+    <string name="hotel_bottom_sheets_child_count_title">Anak</string>
+    <string name="hotel_bottom_sheets_child_count_subtitle">0 - 6 tahun</string>
 </resources>
