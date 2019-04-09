@@ -28,6 +28,8 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
 
     var isSearching: Boolean = false
 
+    private var searchTemp = ""
+
     override fun shouldShowOptionMenu(): Boolean = false
 
     override fun getNewFragment(): Fragment = HotelRecommendationFragment.getInstance()
@@ -82,8 +84,14 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
     }
 
     override fun onSearchTextChanged(text: String) {
+
+        if (text == searchTemp) return
+        searchTemp = text
+
         launch(Dispatchers.Main) {
+
             delay(300)
+            if (text != searchTemp) return@launch
             if (text.isEmpty() && isSearching) {
                 isSearching = false
                 backToHotelRecommendation()

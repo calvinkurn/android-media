@@ -33,7 +33,7 @@ class HotelDestinationViewModel @Inject constructor(
 
     val recentSearch = MutableLiveData<Result<MutableList<RecentSearch>>>()
     val popularSearch = MutableLiveData<Result<MutableList<PopularSearch>>>()
-    val searchDestination = MutableLiveData<Result<MutableList<SearchDestination>>>()
+    val searchDestination = MutableLiveData<RecentSearchState<MutableList<SearchDestination>>>()
     val longLat = MutableLiveData<Result<Pair<Double, Double>>>()
 
     init {
@@ -64,13 +64,14 @@ class HotelDestinationViewModel @Inject constructor(
         val params = mapOf(PARAM_SEARCH_KEY to keyword)
         val dataParams = mapOf(PARAM_DATA to params)
         launchCatchError(block = {
+            searchDestination.value = Shimmering
             val data = withContext(Dispatchers.Default){
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_SEARCH_RESPONSE, dataParams, false)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<HotelSuggestion.Response>()
-            searchDestination.value = Success(data.propertySearchSuggestion.searchDestinationList.toMutableList())
+            searchDestination.value = Loaded(Success(data.propertySearchSuggestion.searchDestinationList.toMutableList()))
         }){
-            searchDestination.value = Fail(it)
+            searchDestination.value = Loaded(Fail(it))
         }
     }
 

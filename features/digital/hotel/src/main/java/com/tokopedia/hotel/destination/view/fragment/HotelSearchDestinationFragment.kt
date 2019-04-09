@@ -51,12 +51,20 @@ SearchDestinationListener{
         super.onActivityCreated(savedInstanceState)
 
         destinationViewModel.searchDestination.observe(this, android.arch.lifecycle.Observer { when (it) {
-            is Success -> {
-                isLoadingInitialData = true
-                renderList(it.data, false)
+            is Loaded -> {
+                when (it.data) {
+                    is Success -> {
+                        isLoadingInitialData = true
+                        renderList(it.data.data, false)
+                    }
+                    is Fail -> {
+                        showGetListError(it.data.throwable)
+                    }
+                }
             }
-            is Fail -> {
-                showGetListError(it.throwable)
+            is Shimmering -> {
+                adapter.clearAllNonDataElement()
+                adapter.addElement(loadingModel)
             }
         } })
     }
