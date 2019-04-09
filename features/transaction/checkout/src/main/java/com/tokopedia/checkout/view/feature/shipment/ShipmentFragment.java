@@ -2253,6 +2253,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         }
         shipmentAdapter.clearTotalPromoStackAmount();
+        shipmentAdapter.updateShipmentCostModel();
         shipmentAdapter.updateCheckoutButtonData(null);
         shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
         shipmentAdapter.checkHasSelectAllCourier(false);
