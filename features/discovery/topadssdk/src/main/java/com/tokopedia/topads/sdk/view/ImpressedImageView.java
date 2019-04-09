@@ -119,9 +119,10 @@ public class ImpressedImageView extends AppCompatImageView {
 
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-        float X = location[0];
-        float Y = location[1];
-        if (screen.top <= Y && screen.bottom >= Y && screen.left <= X && screen.right >= X) {
+        int offset = getResources().getDimensionPixelOffset(R.dimen.dp_45);
+        float X = location[0] + offset;
+        float Y = location[1] + offset;
+        if (screen.top <= Y && screen.bottom >= Y && (screen.left) <= X && (screen.right) >= X) {
             return true;
         } else {
             return false;

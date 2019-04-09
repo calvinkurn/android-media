@@ -124,6 +124,19 @@ public class ShipmentDataRequestConverter {
                     .warehouseId(shipmentCartItemModel.getFulfillmentId())
                     .productData(convertToProductDataCheckout(shipmentCartItemModel.getCartItemModels()));
 
+            ArrayList<String> promoCodes = new ArrayList<>();
+            if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
+                promoCodes.add(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode());
+            }
+
+            if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                promoCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+            }
+
+            if (promoCodes.size() > 0) {
+                shopProductCheckoutBuilder.promoCodes(promoCodes);
+            }
+
             if (shipmentDetailData.getUseDropshipper() != null && shipmentDetailData.getUseDropshipper()) {
                 shopProductCheckoutBuilder.isDropship(1)
                         .dropshipData(new DropshipDataCheckoutRequest.Builder()

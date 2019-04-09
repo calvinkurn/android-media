@@ -328,6 +328,7 @@
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
 
+
     </android.support.design.widget.CoordinatorLayout>
 
     <FrameLayout

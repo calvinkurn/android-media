@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_4"
+        android:paddingTop="@dimen/dp_2"
+        android:paddingRight="@dimen/dp_4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cv_shadow_2"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/dp_22"
+            android:layout_marginRight="@dimen/dp_22"
+            app:cardBackgroundColor="#FAFAFA"
+            app:cardCornerRadius="@dimen/dp_4"
+            app:cardElevation="@dimen/dp_2"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cv_shadow_1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_5"
+            app:cardBackgroundColor="#FAFAFA"
+            app:cardCornerRadius="@dimen/dp_4"
+            app:cardElevation="@dimen/dp_4"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintBottom_toBottomOf="@+id/cv_shadow_2" />
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cv_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:orientation="vertical"
+            app:cardCornerRadius="@dimen/dp_4"
+            app:cardElevation="@dimen/dp_6"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintBottom_toBottomOf="@+id/cv_shadow_1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dp_10">
+
+                <ImageView
+                    android:id="@+id/img_banner"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintDimensionRatio="h,3:1"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/text_stack_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/tp_margin_small"
+                    android:layout_marginLeft="@dimen/tp_margin_small"
+                    android:layout_marginTop="@dimen/tp_margin_small"
+                    android:paddingLeft="@dimen/tp_margin_small"
+                    android:paddingTop="@dimen/tp_padding_xxsmall"
+                    android:paddingRight="@dimen/tp_margin_small"
+                    android:paddingBottom="@dimen/tp_padding_xxsmall"
+                    android:textColor="@color/black_38"
+                    android:textSize="@dimen/sp_11"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tool:text="Sisa Count 1"
+                    tool:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/text_time_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/tp_margin_small"
+                    android:layout_marginLeft="@dimen/tp_margin_small"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="@string/tp_label_valid_for"
+                    android:textColor="@color/black_38"
+                    android:textSize="@dimen/tp_text_size_xxsmall"
+                    app:layout_constraintStart_toEndOf="@+id/img_time"
+                    app:layout_constraintTop_toBottomOf="@+id/img_banner" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/img_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/tp_margin_medium"
+                    android:layout_marginLeft="@dimen/tp_margin_medium"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_time_value"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/text_time_label"
+                    app:srcCompat="@drawable/ic_tp_time_new" />
+
+                <ProgressBar
+                    android:id="@+id/progress_timer"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:indeterminate="false"
+                    android:progressDrawable="@drawable/bg_tp_timer_bg"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_time_value"
+                    app:layout_constraintLeft_toLeftOf="@+id/text_time_value"
+                    app:layout_constraintRight_toRightOf="@+id/text_time_value"
+                    app:layout_constraintTop_toTopOf="@+id/text_time_value" />
+
+                <TextView
+                    android:id="@+id/text_time_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/tp_margin_small"
+                    android:layout_marginLeft="@dimen/tp_margin_small"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/tp_text_size_small"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@+id/img_time"
+                    app:layout_constraintTop_toBottomOf="@+id/text_time_label"
+                    tool:text="16 Aug 2019" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/iv_rp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_110"
+                    android:layout_marginLeft="@dimen/dp_110"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_time_value"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/text_time_label"
+                    app:srcCompat="@drawable/ic_tp_rp_new" />
+
+                <TextView
+                    android:id="@+id/tv_min_txn_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textColor="@color/black_38"
+                    android:textSize="@dimen/tp_text_size_xxsmall"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_default="wrap"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/iv_rp"
+                    app:layout_constraintTop_toBottomOf="@+id/img_banner"
+                    tool:text="tanpa minimum transaksi" />
+
+                <TextView
+                    android:id="@+id/tv_min_txn_value"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/tp_text_size_small"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_default="wrap"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tv_min_txn_label"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_min_txn_label"
+                    tool:text="Rp 3000000" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v7.widget.CardView>
+    </android.support.constraint.ConstraintLayout>
+
+    <View
+        android:id="@+id/view_coupon_new"
+        android:layout_width="@dimen/dp_14"
+        android:layout_height="@dimen/dp_14"
+        android:layout_marginLeft="@dimen/dp_7"
+        android:layout_marginTop="@dimen/dp_7"
+        android:background="@drawable/bg_category_new"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tool:visibility="visible" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_1"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginBottom="58dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/dp_12"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_2"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginBottom="58dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/dp_12"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>
