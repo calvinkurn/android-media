@@ -113,7 +113,11 @@
       shipper_desc
       promo_detail
       benefit_desc
+      point_change
+      user_point
       promo_tnc_html
+      shipper_disable_text
+      service_id
     }
     info {
       blackbox_info {
