@@ -125,7 +125,7 @@ class HotelHomepageFragment : BaseDaggerFragment() {
 
     private fun onGuestInfoClicked() {
         val hotelRoomAndGuestBottomSheets = HotelRoomAndGuestBottomSheets()
-        hotelRoomAndGuestBottomSheets.show(fragmentManager, TAG_GUEST_INFO)
+        hotelRoomAndGuestBottomSheets.show(activity!!.supportFragmentManager, TAG_GUEST_INFO)
     }
 
     companion object {
