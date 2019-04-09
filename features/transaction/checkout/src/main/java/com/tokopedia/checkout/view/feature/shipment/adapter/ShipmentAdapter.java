@@ -488,6 +488,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperName(null);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(null);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setUsePartialOrder(false);
+                shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
                 updateShipmentCostModel();
                 updateInsuranceTncVisibility();
             }
