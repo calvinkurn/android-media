@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
 /**
  * @author by furqan on 28/03/19
  */
-class HotelHomepageFragment: BaseDaggerFragment() {
+class HotelHomepageFragment : BaseDaggerFragment() {
 
     private val hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
 
@@ -45,7 +45,7 @@ class HotelHomepageFragment: BaseDaggerFragment() {
                 TravelDateUtil.YYYY_MM_DD, tomorrow)
         hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(
                 TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
-        hotelHomepageModel.checkOutDateString = TravelDateUtil.dateToString(
+        hotelHomepageModel.checkOutDate = TravelDateUtil.dateToString(
                 TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
         hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
                 TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterTomorrow)
@@ -77,14 +77,14 @@ class HotelHomepageFragment: BaseDaggerFragment() {
         maxDateCalendar.set(Calendar.MINUTE, DEFAULT_LAST_MIN_SEC_IN_DAY)
         maxDateCalendar.set(Calendar.SECOND, DEFAULT_LAST_MIN_SEC_IN_DAY)
 
-        val selectedDate = TravelDateUtil.stringToDate(TravelDateUtil.DEFAULT_VIEW_FORMAT, hotelHomepageModel.checkInDateString)
+        val selectedDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate)
 
         renderTravelCalendar(selectedDate, minDate, maxDateCalendar.time, getString(R.string.hotel_check_in_calendar_title), TAG_CALENDAR_CHECK_IN)
     }
 
     private fun configAndRenderCheckOutDate() {
         val minDate = TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.stringToDate(
-                TravelDateUtil.DEFAULT_VIEW_FORMAT, hotelHomepageModel.checkInDateString), Calendar.DATE, 1)
+                TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate), Calendar.DATE, 1)
 
         val maxDate = TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.getCurrentCalendar().time,
                 Calendar.DATE, MAX_SELECTION_DATE)
@@ -94,7 +94,7 @@ class HotelHomepageFragment: BaseDaggerFragment() {
         maxDateCalendar.set(Calendar.MINUTE, DEFAULT_LAST_MIN_SEC_IN_DAY)
         maxDateCalendar.set(Calendar.SECOND, DEFAULT_LAST_MIN_SEC_IN_DAY)
 
-        val selectedDate = TravelDateUtil.stringToDate(TravelDateUtil.DEFAULT_VIEW_FORMAT, hotelHomepageModel.checkInDateString)
+        val selectedDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate)
 
         renderTravelCalendar(selectedDate, minDate, maxDateCalendar.time, getString(R.string.hotel_check_out_calendar_title), TAG_CALENDAR_CHECK_OUT)
     }
