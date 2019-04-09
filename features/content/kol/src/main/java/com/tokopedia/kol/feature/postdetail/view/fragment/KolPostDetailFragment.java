@@ -295,7 +295,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (template != null) {
             bindLike(postDetailFooterModel, template);
             bindComment(postDetailFooterModel, template);
-            bindShare(template);
+            bindShare(postDetailFooterModel, template);
 
         } else {
             footer.setVisibility(View.GONE);
@@ -312,7 +312,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                 ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_gray);
                 likeCount.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
             }
-            setLikeListener(postDetailFooterModel.isLiked());
+            setLikeListener(model.isLiked());
         } else {
             likeButton.setVisibility(View.GONE);
             likeCount.setVisibility(View.GONE);
@@ -322,27 +322,27 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private void bindComment(PostDetailFooterModel model, TemplateFooter template) {
         if (template.getComment()) {
             setTotalComment(model.getTotalComment());
-            commentCount.setOnClickListener(v -> onGoToKolComment(0, postDetailFooterModel.getContentId()));
-            commentButton.setOnClickListener(v -> onGoToKolComment(0, postDetailFooterModel.getContentId()));
+            commentCount.setOnClickListener(v -> onGoToKolComment(0, model.getContentId()));
+            commentButton.setOnClickListener(v -> onGoToKolComment(0, model.getContentId()));
         } else {
             commentButton.setVisibility(View.GONE);
             commentCount.setVisibility(View.GONE);
         }
     }
 
-    private void bindShare(TemplateFooter template) {
+    private void bindShare(PostDetailFooterModel model, TemplateFooter template) {
         if (template.getShare()) {
-            shareButton.setOnClickListener(v -> onShareClick(0, postDetailFooterModel.getContentId(),
-                    postDetailFooterModel.getShareData().getTitle(),
-                    postDetailFooterModel.getShareData().getDescription(),
-                    postDetailFooterModel.getShareData().getUrl(),
-                    postDetailFooterModel.getShareData().getImageUrl()));
+            shareButton.setOnClickListener(v -> onShareClick(0, model.getContentId(),
+                    model.getShareData().getTitle(),
+                    model.getShareData().getDescription(),
+                    model.getShareData().getUrl(),
+                    model.getShareData().getImageUrl()));
 
-            shareText.setOnClickListener(v -> onShareClick(0, postDetailFooterModel.getContentId(),
-                    postDetailFooterModel.getShareData().getTitle(),
-                    postDetailFooterModel.getShareData().getDescription(),
-                    postDetailFooterModel.getShareData().getUrl(),
-                    postDetailFooterModel.getShareData().getImageUrl()));
+            shareText.setOnClickListener(v -> onShareClick(0, model.getContentId(),
+                    model.getShareData().getTitle(),
+                    model.getShareData().getDescription(),
+                    model.getShareData().getUrl(),
+                    model.getShareData().getImageUrl()));
         } else {
             shareButton.setVisibility(View.GONE);
             shareText.setVisibility(View.GONE);

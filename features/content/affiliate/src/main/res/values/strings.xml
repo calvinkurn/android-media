@@ -18,7 +18,9 @@
     <string name="text_empty_start_recommendation_string">Mulai Post, Yuk!</string>
     <string name="text_empty_start_recommendation_btn">Mulai Post</string>
     <string name="text_af_active_1">Raih</string>
-    <string name="text_af_active_2">tiap dibel</string>
+    <string name="text_af_active_2">tiap dibeli</string>
+    <string name="text_empty_start_recommendation_string">Mulai Kurasi, Yuk!</string>
+    <string name="text_empty_start_recommendation_btn">Mulai Kurasi</string>
     <string name="text_empty_have_recommendation">Kamu masih memiliki 15 jatah kurasi yang bisa diambil.</string>
     <string name="text_empty_have_recommendation_formatted">Kamu masih memiliki %1$s jatah kurasi yang bisa diambil.</string>
 
