@@ -80,7 +80,7 @@ class HotelHomepageFragment: BaseDaggerFragment() {
 
     private fun configAndRenderCheckOutDate() {
         val minDate = TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.stringToDate(
-                TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDateString), Calendar.DATE, 1)
+                TravelDateUtil.DEFAULT_VIEW_FORMAT, hotelHomepageModel.checkInDateString), Calendar.DATE, 1)
 
         val maxDate = TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.getCurrentCalendar().time,
                 Calendar.DATE, MAX_SELECTION_DATE)
