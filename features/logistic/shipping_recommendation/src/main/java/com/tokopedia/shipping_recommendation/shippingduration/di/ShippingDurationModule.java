@@ -6,6 +6,7 @@ import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurat
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationContract;
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter;
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationPresenter;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 
 import dagger.Module;
 import dagger.Provides;
@@ -46,6 +47,12 @@ public class ShippingDurationModule {
     @ShippingDurationScope
     GetCourierRecommendationUseCase getCourierRecommendationUseCase(ShippingDurationConverter shippingDurationConverter) {
         return new GetCourierRecommendationUseCase(shippingDurationConverter);
+    }
+
+    @Provides
+    @ShippingDurationScope
+    CheckoutAnalyticsCourierSelection getAnalytics() {
+        return new CheckoutAnalyticsCourierSelection();
     }
 
 }
