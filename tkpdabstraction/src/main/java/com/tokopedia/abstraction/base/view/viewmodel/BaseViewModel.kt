@@ -3,7 +3,7 @@ package com.tokopedia.abstraction.base.view.viewmodel
 import android.arch.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.isActive
 import kotlin.coroutines.CoroutineContext
 
