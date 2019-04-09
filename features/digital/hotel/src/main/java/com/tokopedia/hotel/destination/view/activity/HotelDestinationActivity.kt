@@ -56,7 +56,7 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
     }
 
     fun initEditText() {
-        //set image close button
+        search_input_view.closeImageButton.setImageDrawable(resources.getDrawable(R.drawable.ic_system_action_close_grayscale_16))
         search_input_view.setListener(this)
         search_input_view.setResetListener(this)
     }
