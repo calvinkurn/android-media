@@ -797,15 +797,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         PromoStackingData.Builder builder = new PromoStackingData.Builder();
         if (cartShipmentAddressFormData.getAutoApplyStackData() != null) {
             AutoApplyStackData autoApplyStackData = cartShipmentAddressFormData.getAutoApplyStackData();
-            builder.typePromo(autoApplyStackData.getIsCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON() ?
-                    PromoStackingData.CREATOR.getTYPE_COUPON() : PromoStackingData.CREATOR.getTYPE_VOUCHER())
-                    .description(autoApplyStackData.getMessageSuccess())
-                    .amount(autoApplyStackData.getDiscountAmount())
-                    .promoCode(autoApplyStackData.getCode())
-                    .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(autoApplyStackData.getState()))
-                    .title(autoApplyStackData.getTitleDescription())
-                    .build();
-            sendAnalyticsOnViewPromoAutoApply();
+            if (!TextUtils.isEmpty(autoApplyStackData.getCode())) {
+                builder.typePromo(autoApplyStackData.getIsCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON() ?
+                        PromoStackingData.CREATOR.getTYPE_COUPON() : PromoStackingData.CREATOR.getTYPE_VOUCHER())
+                        .description(autoApplyStackData.getMessageSuccess())
+                        .amount(autoApplyStackData.getDiscountAmount())
+                        .promoCode(autoApplyStackData.getCode())
+                        .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(autoApplyStackData.getState()))
+                        .title(autoApplyStackData.getTitleDescription())
+                        .build();
+                sendAnalyticsOnViewPromoAutoApply();
+            } else {
+                builder.state(TickerPromoStackingCheckoutView.State.EMPTY);
+            }
 
             if (autoApplyStackData.getVoucherOrders() != null) {
                 if (autoApplyStackData.getVoucherOrders().size() > 0) {
@@ -1809,7 +1813,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         onShippingDurationChoosen(shippingCourierViewModels, courierData, recipientAddressModel, cartPosition, selectedServiceId, selectedServiceName, flagNeedToSetPinpoint, false, true);
         String cartString = shipmentAdapter.getShipmentCartItemModelByIndex(cartPosition).getCartString();
         String code = courierData.getLogPromoCode();
-        if (!flagNeedToSetPinpoint) shipmentPresenter.processCheckPromoStackingLogisticPromo(cartPosition, cartString, code);
+        if (!flagNeedToSetPinpoint)
+            shipmentPresenter.processCheckPromoStackingLogisticPromo(cartPosition, cartString, code);
     }
 
     @Override
