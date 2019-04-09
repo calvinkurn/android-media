@@ -33,6 +33,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
@@ -1611,16 +1612,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     private void onResultFromRequestCodeCartShipment(int resultCode, Intent data) {
         if (resultCode == TopPayActivity.PAYMENT_CANCELLED) {
-            NetworkErrorHelper.showSnackbar(
-                    getActivity(),
-                    getString(R.string.alert_payment_canceled_or_failed_transaction_module)
-            );
+            showToastMessageRed(getString(R.string.alert_payment_canceled_or_failed_transaction_module));
             dPresenter.processResetAndRefreshCartData();
         } else if (resultCode == TopPayActivity.PAYMENT_SUCCESS) {
-            showToastMessage(getString(R.string.message_payment_success));
-            navigateToActivity(checkoutModuleRouter.checkoutModuleRouterGetTransactionSummaryIntent());
+            showToastMessageGreen(getString(R.string.message_payment_success));
             checkoutModuleRouter.checkoutModuleRouterResetBadgeCart();
-            getActivity().finish();
+            refreshHandler.setRefreshing(true);
+            dPresenter.processInitialGetCartData(false);
         } else if (resultCode == TopPayActivity.PAYMENT_FAILED) {
             showToastMessage(getString(R.string.default_request_error_unknown));
             sendAnalyticsScreenName(getScreenName());
