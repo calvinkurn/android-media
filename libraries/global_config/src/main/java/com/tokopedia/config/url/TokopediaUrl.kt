@@ -11,13 +11,13 @@ class TokopediaUrl {
         private const val LOCK = "LOCK"
 
         @GuardedBy(LOCK)
-        private var url: Url? = null
+        private var tokopediaUrl: Url? = null
 
         fun init(context: Context?) {
             synchronized(LOCK) {
-                if (url == null) {
+                if (tokopediaUrl == null) {
                     val sharedPref = context?.getSharedPreferences(KEY_ENV_PREFERENCES, Context.MODE_PRIVATE)
-                    url = selectInstance(sharedPref?.getString(KEY_ENV, Env.LIVE.value))
+                    tokopediaUrl = selectInstance(sharedPref?.getString(KEY_ENV, Env.LIVE.value))
                 }
             }
         }
@@ -29,14 +29,14 @@ class TokopediaUrl {
             }
         }
 
-        val instance: Url
+        val url: Url
             get() = synchronized(LOCK) {
-                if (url == null) {
+                if (tokopediaUrl == null) {
                     // if not initialized, force to Live Url
-                    url = live
-                    return url as Url
+                    tokopediaUrl = live
+                    return tokopediaUrl as Url
                 }
-                return url as Url
+                return tokopediaUrl as Url
             }
 
         fun setEnvironment(context: Context?, env: Env) {

@@ -5,6 +5,7 @@ package com.tokopedia.config.url
  */
 
 data class Url(
+        val TYPE: Env,
         val WS: String,
         val API: String,
         val WEB: String,

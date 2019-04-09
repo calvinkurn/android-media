@@ -74,6 +74,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
 
     private static TkpdCoreRouter tkpdCoreRouter;
     private ArrayAdapter<Env> envSpinnerAdapter;
+    private boolean isEnvSpinnerUserAction = true;
 
     @Override
     public String getScreenName() {
@@ -123,6 +124,13 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         envSpinnerAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, Env.values());
         envSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerEnvironmentChooser.setAdapter(envSpinnerAdapter);
+        Env currentEnv = TokopediaUrl.Companion.getUrl().getTYPE();
+        for(int i = 0; i < Env.values().length; i++) {
+            if(currentEnv == Env.values()[i]) {
+                spinnerEnvironmentChooser.setSelection(i);
+                break;
+            }
+        }
     }
 
     private void initListener() {
@@ -279,12 +287,21 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         ipGroupChat.setText(groupChatPreference.getString(IP_GROUPCHAT,""));
         groupChatLogToggle.setChecked(groupChatPreference.getBoolean(LOG_GROUPCHAT, false));
 
-        spinnerEnvironmentChooser.setOnItemClickListener(
-            (parent, view, position, id) -> {
-                TokopediaUrl.Companion.setEnvironment(DeveloperOptions.this, Env.values()[position]);
-                Toast.makeText(this, "Please Restart the App", Toast.LENGTH_SHORT).show();
+        spinnerEnvironmentChooser.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(isEnvSpinnerUserAction) {
+                    TokopediaUrl.Companion.setEnvironment(DeveloperOptions.this, Env.values()[position]);
+                    Toast.makeText(DeveloperOptions.this, "Please Restart the App", Toast.LENGTH_SHORT).show();
+                }
+                isEnvSpinnerUserAction = true;
             }
-        );
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void actionLogGroupChat(boolean check) {

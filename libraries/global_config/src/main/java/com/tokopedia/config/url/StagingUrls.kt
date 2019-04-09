@@ -4,6 +4,7 @@ package com.tokopedia.config.url
  * @author okasurya on 4/9/19.
  */
 internal val staging = Url(
+        TYPE = Env.STAGING,
         WS = "ws-staging".tokopediaCom(),
         API = "api-staging".tokopediaCom(),
         WEB = "staging".tokopediaCom(),

@@ -5,6 +5,7 @@ package com.tokopedia.config.url
  */
 
 internal val live = Url(
+        TYPE = Env.LIVE,
         WS = "ws".tokopediaCom(),
         API = "api".tokopediaCom(),
         WEB = "www".tokopediaCom(),
