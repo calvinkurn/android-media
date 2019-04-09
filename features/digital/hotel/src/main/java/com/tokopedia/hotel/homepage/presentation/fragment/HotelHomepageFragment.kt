@@ -14,6 +14,7 @@ import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
+import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
 import java.util.*
@@ -88,6 +89,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
         tv_hotel_homepage_checkin_date.setOnClickListener { configAndRenderCheckInDate() }
         tv_hotel_homepage_checkout_date.setOnClickListener { configAndRenderCheckOutDate() }
         tv_hotel_homepage_guest_info.setOnClickListener { onGuestInfoClicked() }
+        btn_hotel_homepage_search.setOnClickListener { onSearchButtonClicked() }
 
         renderView()
     }
@@ -209,6 +211,14 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
         renderView()
     }
 
+    private fun onSearchButtonClicked() {
+            startActivityForResult(HotelSearchResultActivity.createIntent(activity!!, hotelHomepageModel.locName,
+                    hotelHomepageModel.locId, hotelHomepageModel.locType, hotelHomepageModel.locLat.toFloat(),
+                    hotelHomepageModel.locLong.toFloat(), hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate,
+                    hotelHomepageModel.roomCount, hotelHomepageModel.adultCount, hotelHomepageModel.childCount),
+                    REQUEST_CODE_SEARCH)
+    }
+
     companion object {
         val ONE_DAY: Long = TimeUnit.DAYS.toMillis(1)
         val MAX_SELECTION_DATE = 30
@@ -216,6 +226,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
         val DEFAULT_LAST_MIN_SEC_IN_DAY = 59
 
         val REQUEST_CODE_DESTINATION = 101
+        val REQUEST_CODE_SEARCH = 102
 
         val TAG_CALENDAR_CHECK_IN = "calendarHotelCheckIn"
         val TAG_CALENDAR_CHECK_OUT = "calendarHotelCheckOut"
