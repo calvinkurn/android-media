@@ -15,7 +15,7 @@
         app:weight="medium"
         app:textViewTheme="lightPrimary"
         tools:textStyle="bold"
-        android:text="@string/hotel_search_empty_view_holder_title"
+        android:text="@string/hotel_destination_empty_view_holder_title"
         android:textColor="@color/light_primary"
         android:gravity="center"
         />
@@ -26,6 +26,6 @@
         app:fontSize="micro"
         app:textViewTheme="lightDisabled"
         android:layout_marginTop="@dimen/dp_8"
-        android:text="@string/hotel_search_empty_view_holder_subtitle"
+        android:text="@string/hotel_destination_empty_view_holder_subtitle"
         android:gravity="center"/>
 </LinearLayout>

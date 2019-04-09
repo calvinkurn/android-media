@@ -27,7 +27,7 @@ class SearchDestinationViewHolder(val view: View, val searchDestinationListener:
             search_destination_name.text = getSpandableBoldText(searchDestination.name, searchDestinationListener.getFilterText())
             search_destination_location.text = getSpandableBoldText(searchDestination.location, searchDestinationListener.getFilterText())
             search_destination_hotel_count.text = if (searchDestination.hotelCount > 0)
-                getString(R.string.hotel_search_popular_search_hotel_count, CurrencyFormatUtil.convertPriceValue(searchDestination.hotelCount.toDouble(), false)) else ""
+                getString(R.string.hotel_destination_popular_search_hotel_count, CurrencyFormatUtil.convertPriceValue(searchDestination.hotelCount.toDouble(), false)) else ""
             search_destination_type.text = searchDestination.tag
             ImageHandler.loadImageWithoutPlaceholder(search_destination_icon, searchDestination.icon)
         }

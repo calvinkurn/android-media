@@ -2,7 +2,6 @@ package com.tokopedia.hotel.destination.view.viewmodel
 
 import android.app.Activity
 import android.arch.lifecycle.MutableLiveData
-import android.util.Log
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -86,7 +85,7 @@ class HotelDestinationViewModel @Inject constructor(
                 activity.applicationContext)
         locationDetectorHelper.getLocation(onGetLocation(), activity,
                 LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                activity.getString(R.string.hotel_search_need_permission))
+                activity.getString(R.string.hotel_destination_need_permission))
     }
 
     private fun onGetLocation(): Function1<DeviceLocation, Unit> {

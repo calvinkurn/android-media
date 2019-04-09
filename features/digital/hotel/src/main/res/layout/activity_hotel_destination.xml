@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         tools:layout_height="70dp"
         app:layout_scrollFlags="scroll|snap|enterAlways"
-        app:siv_search_hint="@string/hotel_search_edittext_hint"
+        app:siv_search_hint="@string/hotel_destination_edittext_hint"
         />
 
     <FrameLayout android:id="@+id/parent_view"

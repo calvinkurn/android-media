@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="@string/hotel_search_nearest_location"
+                android:text="@string/hotel_destination_nearest_location"
                 app:fontSize="small"
                 app:textViewTheme="lightPrimary"
                 android:drawablePadding="@dimen/dp_8"/>
@@ -61,7 +61,7 @@
                     app:fontSize="title"
                     app:weight="medium"
                     app:textViewTheme="lightPrimary"
-                    android:text="@string/hotel_search_recent_search_title"
+                    android:text="@string/hotel_destination_recent_search_title"
                     />
 
                 <com.tokopedia.design.component.TextViewCompat
@@ -73,7 +73,7 @@
                     android:layout_alignParentEnd="true"
                     android:gravity="end"
                     android:textColor="@color/colorPrimary"
-                    android:text="@string/hotel_search_recent_search_delete_all"
+                    android:text="@string/hotel_destination_recent_search_delete_all"
                     />
             </RelativeLayout>
 
@@ -114,7 +114,7 @@
                     app:fontSize="title"
                     app:weight="medium"
                     app:textViewTheme="lightPrimary"
-                    android:text="@string/hotel_search_popular_search_title"
+                    android:text="@string/hotel_destination_popular_search_title"
                     />
             </RelativeLayout>
 

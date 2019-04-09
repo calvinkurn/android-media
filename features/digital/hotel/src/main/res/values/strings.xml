@@ -23,13 +23,14 @@
     <string name="hotel_homepage_bottom_menu_action_text">Tutup</string>
     <string name="hotel_homepage_toolbar_title">Hotel</string>
 
-    <string name="hotel_search_edittext_hint">Cari kota, area, atau hotel</string>
-    <string name="hotel_search_nearest_location">Lihat hotel dekat lokasimu</string>
-    <string name="hotel_search_recent_search_title">Terakhir dicari</string>
-    <string name="hotel_search_recent_search_delete_all">Hapus Semua</string>
-    <string name="hotel_search_popular_search_title">Tujuan populer</string>
-    <string name="hotel_search_popular_search_hotel_count">%1$s+ hotel</string>
-    <string name="hotel_search_need_permission">Need Permission</string>
-    <string name="hotel_search_empty_view_holder_title">Nggak ada hasil yang cocok</string>
-    <string name="hotel_search_empty_view_holder_subtitle">Coba cari ulang pakai kata kunci lain.</string>
+    <string name="hotel_destination_edittext_hint">Cari kota, area, atau hotel</string>
+    <string name="hotel_destination_nearest_location">Lihat hotel dekat lokasimu</string>
+    <string name="hotel_destination_recent_search_title">Terakhir dicari</string>
+    <string name="hotel_destination_recent_search_delete_all">Hapus Semua</string>
+    <string name="hotel_destination_popular_search_title">Tujuan populer</string>
+    <string name="hotel_destination_popular_search_hotel_count">%1$s+ hotel</string>
+    <string name="hotel_destination_need_permission">Need Permission</string>
+    <string name="hotel_destination_empty_view_holder_title">Nggak ada hasil yang cocok</string>
+    <string name="hotel_destination_empty_view_holder_subtitle">Coba cari ulang pakai kata kunci lain.</string>
+
 </resources>
