@@ -1,8 +1,8 @@
 package com.tokopedia.videoplayer.utils
 
 import android.app.Activity
-import android.content.Context
 import android.util.DisplayMetrics
+import com.tokopedia.videoplayer.pojo.VideoSize
 
 /**
  * Created by isfaaghyth on 08/04/19.
@@ -10,7 +10,7 @@ import android.util.DisplayMetrics
  */
 object Video {
 
-    fun resize(activity: Activity, mVideoWidth: Int, mVideoHeight: Int) {
+    fun resize(activity: Activity, mVideoWidth: Int, mVideoHeight: Int): VideoSize {
         var videoWidth = mVideoWidth
         var videoHeight = mVideoHeight
         val displaymetrics = DisplayMetrics()
@@ -27,7 +27,7 @@ object Video {
             videoHeight = Math.ceil((videoHeight.toFloat() * heightRatio).toDouble()).toInt()
         }
 
-        //return mapOf(videoWidth, videoHeight)
+        return VideoSize(videoWidth, videoHeight)
     }
 
 }

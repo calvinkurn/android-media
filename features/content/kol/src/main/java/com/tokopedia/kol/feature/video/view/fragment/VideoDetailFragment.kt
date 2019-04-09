@@ -100,7 +100,12 @@ class VideoDetailFragment:
     override fun onPrepared(mediaPlayer: MediaPlayer?) {
         mediaPlayer?.let {player ->
             activity?.let { it ->
-                Video.resize(it, player.videoWidth, player.videoHeight)
+                //video player resize
+                val videoSize = Video.resize(it, player.videoWidth, player.videoHeight)
+                videoView.setSize(videoSize.videoWidth, videoSize.videoHeight)
+                videoView.holder.setFixedSize(videoSize.videoWidth, videoSize.videoHeight)
+
+                //showing media controller
                 val mediaController = MediaController(it)
                 videoView.setMediaController(mediaController)
                 mediaController.setAnchorView(videoView)
