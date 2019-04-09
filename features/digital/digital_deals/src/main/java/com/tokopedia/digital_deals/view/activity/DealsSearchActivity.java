@@ -323,6 +323,9 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                     }
                 });
             }
+        } else {
+            this.brands.clear();
+            noBrandsFound.setVisibility(View.GONE);
         }
     }
 
@@ -494,7 +497,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             if (selectLocationFragment != null) {
                 selectLocationFragment.dismiss();
             }
-            if (!TextUtils.isEmpty(searchInputView.getSearchText()))
+//            if (!TextUtils.isEmpty(searchInputView.getSearchText()))
                 mPresenter.getDealsListBySearch(searchInputView.getSearchText());
         }
     }
