@@ -9,6 +9,7 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
+import com.tokopedia.hotel.destination.di.DaggerHotelDestinationComponent
 import com.tokopedia.hotel.destination.view.fragment.HotelRecommendationFragment
 import com.tokopedia.hotel.destination.view.fragment.HotelSearchDestinationFragment
 import kotlinx.android.synthetic.main.activity_hotel_destination.*
