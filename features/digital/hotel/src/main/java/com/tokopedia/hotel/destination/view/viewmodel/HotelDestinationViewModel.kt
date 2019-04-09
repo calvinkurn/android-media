@@ -34,20 +34,18 @@ class HotelDestinationViewModel @Inject constructor(
 
     val recentSearch = MutableLiveData<Result<MutableList<RecentSearch>>>()
     val popularSearch = MutableLiveData<Result<MutableList<PopularSearch>>>()
-    val searchDestination = MutableLiveData<RecentSearchState<MutableList<SearchDestination>>>()
+    val searchDestination = MutableLiveData<Result<MutableList<SearchDestination>>>()
     val longLat = MutableLiveData<Result<Pair<Double, Double>>>()
 
     init {
-
         //dummy data
-        var listagain: MutableList<RecentSearch> = arrayListOf()
-        listagain.add(RecentSearch(0,"", "Jakarta", ""))
-        listagain.add(RecentSearch(0,"", "Jalan Sudirman", ""))
-        listagain.add(RecentSearch(0,"", "Central Park Mall", ""))
-        listagain.add(RecentSearch(0,"", "Bandung", ""))
-        listagain.add(RecentSearch(0,"", "Kyoto Japan", ""))
-        recentSearch.value = Success(listagain)
-
+        var list: MutableList<RecentSearch> = arrayListOf()
+        list.add(RecentSearch(0,"", "Jakarta", ""))
+        list.add(RecentSearch(0,"", "Jalan Sudirman", ""))
+        list.add(RecentSearch(0,"", "Central Park Mall", ""))
+        list.add(RecentSearch(0,"", "Bandung", ""))
+        list.add(RecentSearch(0,"", "Kyoto Japan", ""))
+        recentSearch.value = Success(list)
     }
 
     fun getHotelRecommendation(rawQuery: String) {
@@ -59,7 +57,7 @@ class HotelDestinationViewModel @Inject constructor(
 
             popularSearch.value = Success(data.popularSearchList.toMutableList())
         }) {
-
+            popularSearch.value = Fail(it)
         }
     }
 
@@ -67,14 +65,13 @@ class HotelDestinationViewModel @Inject constructor(
         val params = mapOf(PARAM_SEARCH_KEY to keyword)
         val dataParams = mapOf(PARAM_DATA to params)
         launchCatchError(block = {
-            searchDestination.value = Shimmering
             val data = withContext(Dispatchers.Default){
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_SEARCH_RESPONSE, dataParams, false)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<HotelSuggestion.Response>()
-            searchDestination.value = Loaded(Success(data.propertySearchSuggestion.searchDestinationList.toMutableList()))
+            searchDestination.value = Success(data.propertySearchSuggestion.searchDestinationList.toMutableList())
         }){
-            searchDestination.value = Loaded(Fail(it))
+            searchDestination.value = Fail(it)
         }
     }
 
@@ -94,7 +91,6 @@ class HotelDestinationViewModel @Inject constructor(
 
     private fun onGetLocation(): Function1<DeviceLocation, Unit> {
         return { (latitude, longitude) ->
-            Log.d("OUTPUTTT", latitude.toString() + " " + longitude.toString())
             longLat.value = Success(Pair(longitude, latitude))
             null
         }

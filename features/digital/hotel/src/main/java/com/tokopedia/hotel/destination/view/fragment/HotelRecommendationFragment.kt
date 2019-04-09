@@ -137,7 +137,7 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
                 isLoadingInitialData = true
                 renderList(it.data, false)
             }
-            is Fail -> { }
+            is Fail -> showGetListError(it.throwable)
         } })
 
         destinationViewModel.longLat.observe(this, android.arch.lifecycle.Observer {when (it) {
@@ -148,7 +148,6 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     }
 
     fun onClickCurrentLocation(lang: Double, lat: Double) {
-        Toast.makeText(context,"Lang: $lang, Lat: $lat", Toast.LENGTH_SHORT).show()
         val intent = Intent()
         intent.putExtra(HOTEL_CURRENT_LOCATION_LANG, lang)
         intent.putExtra(HOTEL_CURRENT_LOCATION_LAT, lat)
@@ -195,7 +194,6 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     }
 
     override fun onItemClicked(recentSearch: RecentSearch) {
-        Toast.makeText(context, "Item Clicked ${recentSearch.name}", Toast.LENGTH_SHORT).show()
         val intent = Intent()
         intent.putExtra(HOTEL_DESTINATION_NAME, recentSearch.name)
         intent.putExtra(HOTEL_DESTINATION_ID, recentSearch.id)

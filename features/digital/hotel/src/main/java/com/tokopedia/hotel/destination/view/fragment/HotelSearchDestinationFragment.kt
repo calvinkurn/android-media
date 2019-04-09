@@ -51,19 +51,12 @@ SearchDestinationListener{
         super.onActivityCreated(savedInstanceState)
 
         destinationViewModel.searchDestination.observe(this, android.arch.lifecycle.Observer { when (it) {
-            is Loaded -> {
-                when (it.data) {
-                    is Success -> {
-                        isLoadingInitialData = true
-                        renderList(it.data.data, false)
-                    }
-                    is Fail -> {
-                        showGetListError(it.data.throwable)
-                    }
-                }
+            is Success -> {
+                isLoadingInitialData = true
+                renderList(it.data, false)
             }
-            is Shimmering -> {
-                showLoading()
+            is Fail -> {
+                showGetListError(it.throwable)
             }
         } })
     }
@@ -106,9 +99,5 @@ SearchDestinationListener{
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean = false
-
-    companion object {
-        fun getInstance(): HotelSearchDestinationFragment = HotelSearchDestinationFragment()
-    }
 
 }

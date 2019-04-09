@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/white">
 
     <include layout="@layout/partial_base_toolbar" />
 
@@ -22,6 +23,5 @@
     <FrameLayout android:id="@+id/parent_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
 
 </LinearLayout>

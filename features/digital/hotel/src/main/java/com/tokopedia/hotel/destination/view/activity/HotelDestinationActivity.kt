@@ -28,8 +28,6 @@ class HotelDestinationActivity: HotelBaseActivity(), HasComponent<HotelDestinati
 
     var isSearching: Boolean = false
 
-    lateinit var searchInputView: EditTextCompat
-
     override fun shouldShowOptionMenu(): Boolean = false
 
     override fun getNewFragment(): Fragment = HotelRecommendationFragment.getInstance()

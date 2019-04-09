@@ -5,7 +5,5 @@ package com.tokopedia.hotel.destination.view.adapter
  */
 
 interface SearchDestinationListener {
-
     fun getFilterText(): String
-
 }
