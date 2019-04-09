@@ -952,10 +952,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
         PromoStackingData.Builder builderGlobal = new PromoStackingData.Builder();
         if (cartListData.getAutoApplyStackData() != null && cartListData.getAutoApplyStackData().isSuccess()
-                && !TextUtils.isEmpty(cartListData.getAutoApplyStackData().getCode())
-                && !TextUtils.isEmpty(cartListData.getAutoApplyStackData().getMessageSuccess())
-                && !TextUtils.isEmpty(cartListData.getAutoApplyStackData().getState())
-                && !TextUtils.isEmpty(cartListData.getAutoApplyStackData().getTitleDescription())) {
+                && !TextUtils.isEmpty(cartListData.getAutoApplyStackData().getCode())) {
             AutoApplyStackData autoApplyStackData = cartListData.getAutoApplyStackData();
             if (autoApplyStackData != null) {
                 if (autoApplyStackData.getMessageSuccess() != null && autoApplyStackData.getCode() != null
