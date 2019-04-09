@@ -2916,7 +2916,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             }
         });
         IntentFilter intentFilter = new IntentFilter(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE);
-        receiver.setBroadcastListener(() -> tvTradeInPromoView.setVisibility(View.VISIBLE));
+        receiver.setBroadcastListener( isElligible -> tvTradeInPromoView.setVisibility(View.VISIBLE));
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, intentFilter);
         tradeInTextView.getTradeInReceiver().checkTradeIn(tradeInParams, false);
     }

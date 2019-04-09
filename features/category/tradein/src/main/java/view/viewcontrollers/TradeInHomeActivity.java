@@ -79,7 +79,14 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                     try {
                         hideProgressBar();
                         mTvGoToProductDetails.setText(getString(R.string.text_check_functionality));
-                        mTvGoToProductDetails.setOnClickListener(v -> tradeInHomeViewModel.startGUITest());
+                        mTvGoToProductDetails.setOnClickListener(v -> {
+                            tradeInHomeViewModel.startGUITest();
+                            sendGeneralEvent("clickTradeIn",
+                                    "trade in start page",
+                                    "click mulai cek fungsi",
+                                    "");
+
+                        });
                         int maxPrice = jsonObject.getInt("max_price");
                         int minPrice = jsonObject.getInt("min_price");
                         TradeInParams tradeInParams = tradeInHomeViewModel.getTradeInParams();
@@ -116,6 +123,11 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                 mTvGoToProductDetails.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        sendGeneralEvent("clickTradeIn",
+                                "trade in start page",
+                                "click kembali ke detail produk",
+                                "");
+
                         finish();
                     }
                 });
@@ -202,7 +214,13 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
             };
             tvIndicateive.setVisibility(View.GONE);
             mTvGoToProductDetails.setText(R.string.go_to_product_details);
-            mTvGoToProductDetails.setOnClickListener(v -> finish());
+            mTvGoToProductDetails.setOnClickListener( v -> {
+                sendGeneralEvent("clickTradeIn",
+                        "trade in start page",
+                        "click kembali ke detail produk",
+                        "");
+                    finish();
+            });
             int greenColor = getResources().getColor(R.color.green_nob);
             ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
             spannableString.setSpan(foregroundColorSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);

@@ -3,6 +3,7 @@ package com.tokopedia.kol.feature.postdetail.view.adapter.typefactory;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
@@ -29,8 +30,10 @@ import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
+import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.EmptyPostDetailViewHolder;
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.SeeAllCommentsViewHolder;
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.SeeAllCommentsViewModel;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -50,6 +53,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     private final GridPostAdapter.GridItemListener gridItemListener;
     private final VideoViewHolder.VideoViewListener videoViewListener;
     private final KolComment.View.SeeAll seeAll;
+    private final UserSessionInterface userSession;
 
     public KolPostDetailTypeFactoryImpl(KolComment.View.ViewHolder kolCommentListener,
                                         KolComment.View.SeeAll seeAll,
@@ -59,7 +63,8 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
                                         YoutubeViewHolder.YoutubePostListener youtubePostListener,
                                         PollAdapter.PollOptionListener pollOptionListener,
                                         GridPostAdapter.GridItemListener gridItemListener,
-                                        VideoViewHolder.VideoViewListener videoViewListener) {
+                                        VideoViewHolder.VideoViewListener videoViewListener,
+                                        UserSessionInterface userSession) {
         this.kolCommentListener = kolCommentListener;
         this.seeAll = seeAll;
         this.listener = listener;
@@ -69,6 +74,12 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
         this.pollOptionListener = pollOptionListener;
         this.gridItemListener = gridItemListener;
         this.videoViewListener = videoViewListener;
+        this.userSession = userSession;
+    }
+
+    @Override
+    public int type(EmptyModel viewModel) {
+        return EmptyPostDetailViewHolder.LAYOUT;
     }
 
     @Override
@@ -127,13 +138,15 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
         if (viewType == DynamicPostViewHolder.Companion.getLAYOUT()) {
             abstractViewHolder = new KolPostDetailViewHolder(view,
                     listener, cardTitleListener, imagePostListener, youtubePostListener,
-                    pollOptionListener, gridItemListener, videoViewListener
+                    pollOptionListener, gridItemListener, videoViewListener, userSession
             );
         } else if (viewType == KolCommentViewHolder.LAYOUT)
             abstractViewHolder = new KolCommentViewHolder(view, kolCommentListener);
         else if (viewType == SeeAllCommentsViewHolder.LAYOUT)
             abstractViewHolder = new SeeAllCommentsViewHolder(view, seeAll);
-        else
+        else if (viewType == EmptyPostDetailViewHolder.LAYOUT) {
+            abstractViewHolder = new EmptyPostDetailViewHolder(view);
+        } else
             abstractViewHolder = super.createViewHolder(view, viewType);
         return abstractViewHolder;
     }

@@ -38,6 +38,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -784,15 +785,13 @@ public class ImageHandler {
                     .asBitmap()
                     .centerCrop()
                     .into(simpleTarget);
-        }
-
-        if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        } else if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             Glide.with(context)
                     .load(imageUrl)
                     .asBitmap()
                     .dontAnimate()
-                    .transform(blurTransformation(context))
-                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .transform(new CenterCrop(context), blurTransformation(context))
                     .into(simpleTarget);
         }
     }
@@ -811,6 +810,31 @@ public class ImageHandler {
         };
     }
 
+    private static RenderScript rs;
+    private static ScriptIntrinsicBlur theIntrinsic;
+    private static RenderScript getRs(Context context){
+        if (rs == null) {
+            synchronized (RenderScript.class) {
+                if (rs == null) {
+                    rs = RenderScript.create(context);
+                }
+            }
+        }
+        return rs;
+    }
+
+    private static ScriptIntrinsicBlur getIntrinsic(Context context){
+        if (theIntrinsic == null) {
+            synchronized (ScriptIntrinsicBlur.class) {
+                if (theIntrinsic == null) {
+                    theIntrinsic = ScriptIntrinsicBlur.create(getRs(context),
+                            Element.U8_4(getRs(context)));
+                }
+            }
+        }
+        return theIntrinsic;
+    }
+
     public static Bitmap blurStrong(Context context, Bitmap image) {
         final float BITMAP_SCALE = 0.04f;
         final float BLUR_RADIUS = 7.5f;
@@ -821,13 +845,11 @@ public class ImageHandler {
         Bitmap inputBitmap = Bitmap.createScaledBitmap(image, width, height, false);
         Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap);
 
-        RenderScript rs = RenderScript.create(context);
-        ScriptIntrinsicBlur theIntrinsic = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
-        Allocation tmpIn = Allocation.createFromBitmap(rs, inputBitmap);
-        Allocation tmpOut = Allocation.createFromBitmap(rs, outputBitmap);
-        theIntrinsic.setRadius(BLUR_RADIUS);
-        theIntrinsic.setInput(tmpIn);
-        theIntrinsic.forEach(tmpOut);
+        Allocation tmpIn = Allocation.createFromBitmap(getRs(context), inputBitmap);
+        Allocation tmpOut = Allocation.createFromBitmap(getRs(context), outputBitmap);
+        getIntrinsic(context).setRadius(BLUR_RADIUS);
+        getIntrinsic(context).setInput(tmpIn);
+        getIntrinsic(context).forEach(tmpOut);
         tmpOut.copyTo(outputBitmap);
 
         return outputBitmap;

@@ -21,13 +21,23 @@ class PartialOtherProductView private constructor(private val view: View) {
 
     fun renderData(products: List<ProductOther>){
         with(view) {
+            loading_other_product.gone()
             if (products.isEmpty())
                 gone()
             else {
                 other_products.adapter = OtherProductAdapter(products)
+                other_products.visible()
                 visible()
             }
         }
 
+    }
+
+    fun startLoading() {
+        with(view){
+            visible()
+            loading_other_product.visible()
+            other_products.gone()
+        }
     }
 }

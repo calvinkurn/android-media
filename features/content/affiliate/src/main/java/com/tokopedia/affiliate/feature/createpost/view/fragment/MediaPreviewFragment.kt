@@ -87,11 +87,12 @@ class MediaPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun initView() {
-        val imageList = ArrayList(viewModel.completeImageList.map { it.path?: "" })
+        val imageList = ArrayList(viewModel.completeImageList.map { it.path })
 
         if (viewModel.completeImageList.firstOrNull()?.type == MediaType.VIDEO) {
-            btnPlay.visibility = View.VISIBLE
-            tabLayout.visibility = View.GONE
+            viewFirstPage.hide()
+            tabLayout.hide()
+            btnPlay.show()
             imageAdapter.setList(imageList, PostImageAdapter.VIDEO)
         } else {
             imageAdapter.setList(imageList)
@@ -154,7 +155,7 @@ class MediaPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun updateDeleteBtn() {
-        deleteMediaBtn.showWithCondition(imageAdapter.imageList.isNotEmpty())
+        deleteMediaBtn.showWithCondition(viewModel.fileImageList.isNotEmpty())
     }
 
     private fun updateResultIntent() {
