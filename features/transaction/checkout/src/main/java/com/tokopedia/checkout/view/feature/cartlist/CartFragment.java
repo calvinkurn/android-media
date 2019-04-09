@@ -635,8 +635,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onCartPromoUseVoucherGlobalPromoClicked(PromoStackingData cartPromoGlobal, int position) {
-        trackingPromoCheckoutUtil.cartClickUseTickerPromoOrCoupon();
-        dPresenter.processUpdateCartDataPromoStacking(getSelectedCartDataList(), cartPromoGlobal, GO_TO_LIST);
+        List<CartItemData> cartItemData = getSelectedCartDataList();
+        if (cartItemData != null && cartItemData.size() > 0) {
+            trackingPromoCheckoutUtil.cartClickUseTickerPromoOrCoupon();
+            dPresenter.processUpdateCartDataPromoStacking(cartItemData, cartPromoGlobal, GO_TO_LIST);
+        } else {
+            showToastMessageRed(getString(R.string.checkout_module_label_promo_no_item_checked));
+        }
     }
 
     @Override
