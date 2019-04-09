@@ -6,6 +6,7 @@
     <string name="hotel_bottom_menu_help">Bantuan</string>
     <string name="hotel_bottom_menu_action_text">Tutup</string>
     <string name="hotel_toolbar_title">Hotel</string>
+
     <string name="hotel_bottomsheet_sort_title">Urutkan Berdasarkan</string>
     <string name="hotel_filter_reset">Reset</string>
     <string name="hotel_search_filter_star_title">Bintang</string>
@@ -16,12 +17,6 @@
     <string name="hotel_search_filter_accomodation_type_title">Tipe akomodasi</string>
     <string name="hotel_search_filter_preference_title">Preference</string>
     <string name="template_search_subtitle">%1$s - %2$s, %3$d Kamar, %4$d Tamu, %5$d Anak</string>
-
-    <string name="hotel_homepage_bottom_menu_transaction_list">Daftar Transaksi</string>
-    <string name="hotel_homepage_bottom_menu_promo">Promo</string>
-    <string name="hotel_homepage_bottom_menu_help">Bantuan</string>
-    <string name="hotel_homepage_bottom_menu_action_text">Tutup</string>
-    <string name="hotel_homepage_toolbar_title">Hotel</string>
 
     <string name="hotel_destination_edittext_hint">Cari kota, area, atau hotel</string>
     <string name="hotel_destination_nearest_location">Lihat hotel dekat lokasimu</string>
