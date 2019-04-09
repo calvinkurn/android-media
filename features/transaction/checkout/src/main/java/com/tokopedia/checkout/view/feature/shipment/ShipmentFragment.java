@@ -894,7 +894,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     .typePromo(dataUiModel.isCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON()
                             ? PromoStackingData.CREATOR.getTYPE_COUPON() : PromoStackingData.CREATOR.getTYPE_VOUCHER())
                     .promoCode(dataUiModel.getCodes().get(0))
-                    .description(dataUiModel.getInvoiceDescription())
+                    .description(dataUiModel.getMessage().getText())
                     .amount(dataUiModel.getCashbackWalletAmount())
                     .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(dataUiModel.getMessage().getState()))
                     .title(dataUiModel.getTitleDescription())
