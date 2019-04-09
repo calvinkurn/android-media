@@ -795,7 +795,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void setPromoStackingData(CartShipmentAddressFormData cartShipmentAddressFormData) {
         PromoStackingData.Builder builder = new PromoStackingData.Builder();
-        if (cartShipmentAddressFormData.getAutoApplyStackData() != null && cartShipmentAddressFormData.getAutoApplyStackData().isSuccess()) {
+        if (cartShipmentAddressFormData.getAutoApplyStackData() != null) {
             AutoApplyStackData autoApplyStackData = cartShipmentAddressFormData.getAutoApplyStackData();
             builder.typePromo(autoApplyStackData.getIsCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON() ?
                     PromoStackingData.CREATOR.getTYPE_COUPON() : PromoStackingData.CREATOR.getTYPE_VOUCHER())
