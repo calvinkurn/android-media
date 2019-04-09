@@ -41,9 +41,13 @@ class HotelHomepageFragment: BaseDaggerFragment() {
         val tomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 1)
         val dayAfterTomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 2)
 
-        hotelHomepageModel.checkInDateString = TravelDateUtil.dateToString(
+        hotelHomepageModel.checkInDate = TravelDateUtil.dateToString(
+                TravelDateUtil.YYYY_MM_DD, tomorrow)
+        hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(
                 TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
         hotelHomepageModel.checkOutDateString = TravelDateUtil.dateToString(
+                TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
+        hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
                 TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterTomorrow)
         hotelHomepageModel.nightCounter = (dayAfterTomorrow.time - tomorrow.time) / ONE_DAY
 
@@ -54,8 +58,8 @@ class HotelHomepageFragment: BaseDaggerFragment() {
     }
 
     private fun renderView() {
-        tv_hotel_homepage_checkin_date.setText(hotelHomepageModel.checkInDateString)
-        tv_hotel_homepage_checkout_date.setText(hotelHomepageModel.checkOutDateString)
+        tv_hotel_homepage_checkin_date.setText(hotelHomepageModel.checkInDateFmt)
+        tv_hotel_homepage_checkout_date.setText(hotelHomepageModel.checkOutDateFmt)
         tv_hotel_homepage_night_count.text = hotelHomepageModel.nightCounter.toString()
         tv_hotel_homepage_guest_info.setText(String.format(getString(R.string.hotel_homepage_guest_detail),
                 hotelHomepageModel.roomCount, hotelHomepageModel.adultCount, hotelHomepageModel.childCount))
