@@ -2355,4 +2355,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentPresenter.cancelAutoApplyPromoStackAfterClash(oldPromoList, newPromoList,
                 true, isOneClickShipment(), isTradeIn(), getCornerId(), getDeviceId());
     }
+
+    @Override
+    public void clearTotalBenefitPromoStacking() {
+        shipmentAdapter.clearTotalPromoStackAmount();
+        shipmentAdapter.updateShipmentCostModel();
+    }
 }
