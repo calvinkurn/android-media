@@ -76,7 +76,7 @@ class InstantCheckoutActivity : BaseSimpleActivity() {
         return R.layout.activity_digital_instant_checkout
     }
 
-    override fun setupLayout(savedInstanceState: Bundle) {
+    override fun setupLayout(savedInstanceState: Bundle?) {
         super.setupLayout(savedInstanceState)
 
         webView = findViewById(R.id.webview)
@@ -170,7 +170,7 @@ class InstantCheckoutActivity : BaseSimpleActivity() {
             super.onReceivedError(view, request, error)
         }
 
-        override fun onPageStarted(view: WebView, url: String, favicon: Bitmap) {
+        override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
             //    Log.d(TAG, "start url instant instantCheckout = " + url);
             Thread(Runnable {
                 try {
