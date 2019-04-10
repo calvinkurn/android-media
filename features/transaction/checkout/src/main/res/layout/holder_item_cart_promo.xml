@@ -9,12 +9,12 @@
         android:id="@+id/voucher_cart_holder_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_2"
         android:padding="@dimen/dp_12"/>
 
     <View
         android:id="@+id/divider_promo_global"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        android:background="@color/grey_300"
-        android:visibility="gone"/>
+        android:background="@color/checkout_module_color_background"/>
 </LinearLayout>
