@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -103,7 +102,7 @@ SearchDestinationListener{
     }
 
     fun onSearchQueryChange(keyword: String) {
-        destinationViewModel.getHotelSearchDestination(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_search_destination), keyword)
+        destinationViewModel.getHotelSearchDestination(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_destination_search), keyword)
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean = false

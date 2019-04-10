@@ -12,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -31,7 +30,6 @@ import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Co
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_ID
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_NAME
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_TYPE
-import com.tokopedia.hotel.destination.view.adapter.PopularSearchClickListener
 import com.tokopedia.hotel.destination.view.adapter.PopularSearchTypeFactory
 import com.tokopedia.hotel.destination.view.adapter.RecentSearchAdapter
 import com.tokopedia.hotel.destination.view.adapter.RecentSearchListener
@@ -129,7 +127,7 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
 
         destinationViewModel.recentSearch.observe(this, android.arch.lifecycle.Observer { when (it) {
             is Success -> renderRecentSearch(it.data)
-            is Fail -> { }
+            is Fail -> { renderRecentSearch(listOf<RecentSearch>().toMutableList()) }
         } })
 
         destinationViewModel.popularSearch.observe(this, android.arch.lifecycle.Observer { when (it) {
@@ -171,7 +169,9 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     }
 
     override fun loadData(page: Int) {
-        destinationViewModel.getHotelRecommendation(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_recommendation))
+        destinationViewModel.getHotelRecommendation(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_destination_popular),
+                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_destination_recent_search),
+                GraphqlHelper.loadRawString(resources, R.raw.dummy_recent_search))
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
