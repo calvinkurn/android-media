@@ -64,7 +64,6 @@ public class ProductViewModelHelper {
         productViewModel.setAdsModel(gqlResponse.getTopAdsModel());
         productViewModel.setQuery(searchProductResponse.getQuery());
         productViewModel.setShareUrl(searchProductResponse.getShareUrl());
-        productViewModel.setHasCatalog(ListHelper.isContainItems(searchProductResponse.getCatalogs()));
         productViewModel.setSuggestionModel(createSuggestionModel(searchProductResponse));
         productViewModel.setTotalData(searchProductResponse.getCount());
         if (gqlResponse.getDynamicFilterModel() != null) {

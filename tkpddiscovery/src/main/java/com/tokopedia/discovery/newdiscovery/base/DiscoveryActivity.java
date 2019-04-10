@@ -360,7 +360,8 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
         onSearchingStart(searchQuery);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
-        getPresenter().requestProduct(searchParameter, isForceSearch(), isRequestOfficialStoreBanner());
+
+        getPresenter().initiateSearch(searchParameter, isForceSearch());
     }
 
     private void updateSearchParameterBeforeSearchIfNotEmpty(String searchQuery, String categoryId) {
@@ -660,6 +661,10 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
         super.onHandleResponseSearch(productViewModel);
+        stopPerformanceMonitoring();
+    }
+
+    protected void stopPerformanceMonitoring() {
         if (performanceMonitoring != null) {
             performanceMonitoring.stopTrace();
         }
