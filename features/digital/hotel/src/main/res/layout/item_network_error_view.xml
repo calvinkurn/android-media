@@ -1,0 +1,58 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_retry"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@color/white"
+    android:clickable="true"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_10">
+
+    <!-- Untuk onRetry satu halaman -->
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_5"
+        android:gravity="center_horizontal"
+        app:srcCompat="@drawable/ic_empty_page_error_cloud_"
+        tools:ignore="ContentDescription" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/message_retry"
+        android:layout_margin="@dimen/dp_5"
+        android:gravity="center"
+        android:text="@string/msg_network_error_1"
+        app:weight="medium"
+        app:textViewTheme="lightPrimary"
+        app:fontSize="title"
+        />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/sub_message_retry"
+        android:layout_margin="@dimen/dp_5"
+        android:gravity="center"
+        android:text="@string/msg_network_error_2"
+        android:textColor="@color/grey_400"
+        app:weight="regular"
+        app:fontSize="micro" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_retry"
+        android:background="@drawable/bg_button_green"
+        style="@style/Button.Submit.Green"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/title_try_again"/>
+
+</LinearLayout>

@@ -1,0 +1,26 @@
+package com.tokopedia.hotel.destination.data.model
+
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+
+/**
+ * @author by jessica on 25/03/19
+ */
+
+data class RecentSearch(
+    @SerializedName("id")
+    @Expose
+    val id: Int,
+
+    @SerializedName("type")
+    @Expose
+    val type: String,
+
+    @SerializedName("name")
+    @Expose
+    val name: String,
+
+    @SerializedName("uuid")
+    @Expose
+    val uuid: String
+)

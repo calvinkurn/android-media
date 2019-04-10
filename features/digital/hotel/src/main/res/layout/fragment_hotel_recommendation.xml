@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/dp_20">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/bg_line_separator" />
+
+        <FrameLayout
+            android:id="@+id/current_location_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/dp_16">
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/current_location_tv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/hotel_destination_nearest_location"
+                app:fontSize="small"
+                app:textViewTheme="lightPrimary"
+                android:drawablePadding="@dimen/dp_8"/>
+        </FrameLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/bg_line_separator" />
+
+        <LinearLayout android:id="@+id/recent_search_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/dp_24"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingEnd="@dimen/dp_16"
+                android:paddingStart="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_8">
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/title_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fontSize="title"
+                    app:weight="medium"
+                    app:textViewTheme="lightPrimary"
+                    android:text="@string/hotel_destination_recent_search_title"
+                    />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/delete_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fontSize="micro"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:gravity="end"
+                    android:textColor="@color/colorPrimary"
+                    android:text="@string/hotel_destination_recent_search_delete_all"
+                    />
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recent_search_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingStart="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:paddingEnd="@dimen/dp_16"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@drawable/bg_line_separator"
+                android:layout_marginTop="@dimen/dp_20"/>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/popular_search_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingTop="@dimen/dp_24"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingEnd="@dimen/dp_16"
+                android:paddingStart="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_12">
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fontSize="title"
+                    app:weight="medium"
+                    app:textViewTheme="lightPrimary"
+                    android:text="@string/hotel_destination_popular_search_title"
+                    />
+            </RelativeLayout>
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>
