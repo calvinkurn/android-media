@@ -157,7 +157,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
                 TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 1))
 
         val maxDate = TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.getCurrentCalendar().time,
-                Calendar.DATE, MAX_SELECTION_DATE)
+                Calendar.YEAR, 1)
         val maxDateCalendar = TravelDateUtil.getCurrentCalendar()
         maxDateCalendar.time = maxDate
         maxDateCalendar.set(Calendar.HOUR_OF_DAY, DEFAULT_LAST_HOUR_IN_DAY)
