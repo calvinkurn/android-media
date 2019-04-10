@@ -24,12 +24,9 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
-import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListFragment;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
@@ -43,19 +40,23 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmen
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.CatalogFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragment;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRouter;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -67,8 +68,6 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
-import static com.tokopedia.core.router.discovery.BrowseProductRouter.DEPARTMENT_ID;
-import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
 
 /**
  * Created by henrypriyono on 10/6/17.
@@ -76,17 +75,20 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEA
 
 @RuntimePermissions
 public class SearchActivity extends DiscoveryActivity
-        implements SearchContract.View, RedirectionListener, BottomSheetListener, SearchNavigationListener {
+        implements SearchContract.View,
+                    RedirectionListener,
+                    BottomSheetListener,
+                    SearchNavigationListener {
 
     public static final int TAB_THIRD_POSITION = 2;
     public static final int TAB_SECOND_POSITION = 1;
     public static final int TAB_PRODUCT = 0;
+    public static final String EXTRA_IS_AUTOCOMPLETE= "EXTRA_IS_AUTOCOMPLETE";
 
+    private static final String DEEP_LINK_URI = "deep_link_uri";
     private static final String EXTRA_PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
     private static final String EXTRA_FORCE_SWIPE_TO_SHOP = "FORCE_SWIPE_TO_SHOP";
-    private static final String EXTRA_ACTIVITY_PAUSED = "EXTRA_ACTIVITY_PAUSED";
-    private static final String EXTRA_OFFICIAL = "EXTRA_OFFICIAL";
-    private static final String EXTRA_IS_AUTOCOMPLETE= "EXTRA_IS_AUTOCOMPLETE";
+    private static final String EXTRA_SEARCH_PARAMETER_MODEL = "EXTRA_SEARCH_PARAMETER_MODEL";
 
     private ProductListFragment productListFragment;
     private CatalogFragment catalogFragment;
@@ -108,6 +110,7 @@ public class SearchActivity extends DiscoveryActivity
     private boolean forceSwipeToShop;
     private BottomSheetFilterView bottomSheetFilterView;
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
+    private boolean isHandlingIntent;
 
     @Inject
     SearchPresenter searchPresenter;
@@ -124,31 +127,30 @@ public class SearchActivity extends DiscoveryActivity
 
     @DeepLink(ApplinkConst.DISCOVERY_SEARCH)
     public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
-        String departmentId = bundle.getString(SearchApiConst.SC);
-        boolean isOfficial = Boolean.parseBoolean(bundle.getString(SearchApiConst.OFFICIAL));
-        Intent intent = new Intent(context, SearchActivity.class);
-
-        if (!TextUtils.isEmpty(departmentId)) {
-            intent.putExtra(DEPARTMENT_ID, departmentId);
-        }
-
-        intent.putExtra(EXTRA_OFFICIAL, isOfficial);
-
-        intent.putExtra(EXTRAS_SEARCH_TERM, bundle.getString(SearchApiConst.Q, bundle.getString(SearchApiConst.KEYWORD, "")));
-        intent.putExtras(bundle);
-        return intent;
+        return createIntentToSearchActivityFromBundle(context, bundle);
     }
 
     @DeepLink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
     public static Intent getCallingApplinkAutoCompleteSearchIntent(Context context, Bundle bundle) {
-        boolean isOfficial = Boolean.parseBoolean(bundle.getString(SearchApiConst.OFFICIAL));
-        Intent intent = new Intent(context, SearchActivity.class);
+        Intent intent = createIntentToSearchActivityFromBundle(context, bundle);
 
         intent.putExtra(EXTRA_IS_AUTOCOMPLETE, true);
-        intent.putExtra(EXTRA_OFFICIAL, isOfficial);
 
-        intent.putExtras(bundle);
         return intent;
+    }
+
+    private static Intent createIntentToSearchActivityFromBundle(Context context, Bundle bundle) {
+        SearchParameter searchParameter = createSearchParameterFromBundle(bundle);
+
+        Intent intent = new Intent(context, SearchActivity.class);
+        intent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, searchParameter);
+
+        return intent;
+    }
+
+    private static SearchParameter createSearchParameterFromBundle(Bundle bundle) {
+        String deepLinkURI = bundle.getString(DEEP_LINK_URI);
+        return new SearchParameter(deepLinkURI == null ? "" : deepLinkURI);
     }
 
     @Override
@@ -156,7 +158,7 @@ public class SearchActivity extends DiscoveryActivity
         super.onResume();
         unregisterShake();
 
-        if(!hasSearchData()) {
+        if(!isHandlingIntent && !hasSearchData()) {
             showAutoCompleteOnResume();
         }
     }
@@ -190,13 +192,16 @@ public class SearchActivity extends DiscoveryActivity
 
     public static void moveTo(AppCompatActivity activity,
                               ProductViewModel productViewModel,
-                              boolean forceSwipeToShop,
-                              boolean isActivityPaused) {
+                              boolean forceSwipeToShop) {
         if (activity != null) {
+            // Set empty DynamicFilterModel as temporary solution for TransactionTooLargeException
+            // Dynamic Filter Model will be loaded inside ProductListFragment for now
+            // For long term solution, ProductViewModel will not be sent from SearchActivity, but should be loaded inside ProductListFragment
+            productViewModel.setDynamicFilterModel(new DynamicFilterModel());
+
             Intent intent = new Intent(activity, SearchActivity.class);
             intent.putExtra(EXTRA_PRODUCT_VIEW_MODEL, productViewModel);
             intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, forceSwipeToShop);
-            intent.putExtra(EXTRA_ACTIVITY_PAUSED, isActivityPaused);
             activity.startActivity(intent);
         }
     }
@@ -204,52 +209,24 @@ public class SearchActivity extends DiscoveryActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initActivityOnCreate(savedInstanceState);
+
+        handleIntent(getIntent());
+    }
+
+    private void initActivityOnCreate(Bundle savedInstanceState) {
         GraphqlClient.init(this);
         initInjector();
+        initForceSwipeToShop(savedInstanceState);
+        bottomSheetFilterView.initFilterBottomSheet();
+    }
 
+    private void initForceSwipeToShop(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             forceSwipeToShop = isForceSwipeToShop();
         } else {
             forceSwipeToShop = getIntent().getBooleanExtra(EXTRA_FORCE_SWIPE_TO_SHOP, false);
         }
-        bottomSheetFilterView.initFilterBottomSheet(savedInstanceState);
-        handleIntent(getIntent());
-    }
-
-    private void handleIntent(Intent intent) {
-        initPresenter();
-        initResources();
-
-        ProductViewModel productViewModel =
-                intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
-        String searchQuery = getIntent().getStringExtra(EXTRAS_SEARCH_TERM);
-        String categoryId = getIntent().getStringExtra(DEPARTMENT_ID);
-        boolean isOfficial = getIntent().getBooleanExtra(EXTRA_OFFICIAL, false);
-
-        handleIntentActivityPaused();
-
-        handleIntentAutoComplete(isOfficial);
-
-        if (productViewModel != null) {
-            setLastQuerySearchView(productViewModel.getQuery());
-            loadSection(productViewModel, forceSwipeToShop);
-            setToolbarTitle(productViewModel.getQuery());
-            bottomSheetFilterView.setFilterResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
-        } else if (!TextUtils.isEmpty(searchQuery)) {
-            if (!TextUtils.isEmpty(categoryId)) {
-                onSuggestionProductClick(searchQuery, categoryId, isOfficial);
-            } else {
-                onSuggestionProductClick(searchQuery, isOfficial);
-            }
-        } else {
-            searchView.showSearch(true, false, isOfficial);
-        }
-
-        if (intent != null &&
-                intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
-            searchTracking.eventSearchShortcut();
-        }
-        handleImageUri(intent);
     }
 
     @Override
@@ -258,16 +235,69 @@ public class SearchActivity extends DiscoveryActivity
         handleIntent(intent);
     }
 
-    private void handleIntentActivityPaused() {
-        if (getIntent().getBooleanExtra(EXTRA_ACTIVITY_PAUSED, false)) {
-            moveTaskToBack(true);
+    private void handleIntent(Intent intent) {
+        isHandlingIntent = true;
+
+        initPresenter();
+        initResources();
+
+        boolean isAutoComplete = intent.getBooleanExtra(EXTRA_IS_AUTOCOMPLETE, false);
+        SearchParameter searchParameter = getSearchParameterFromIntent(intent);
+
+        if(isAutoComplete) {
+            handleIntentAutoComplete(searchParameter);
+        }
+        else {
+            handleIntentSearch(intent, searchParameter);
+        }
+
+        if (intent != null &&
+                intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
+            searchTracking.eventSearchShortcut();
+        }
+
+        handleImageUri(intent);
+    }
+
+    private SearchParameter getSearchParameterFromIntent(Intent intent) {
+        SearchParameter searchParameter = intent.getParcelableExtra(EXTRA_SEARCH_PARAMETER_MODEL);
+
+        if(searchParameter == null) {
+            searchParameter = new SearchParameter();
+        }
+
+        return searchParameter;
+    }
+
+    private void handleIntentAutoComplete(SearchParameter searchParameter) {
+        searchView.showSearch(true, false, searchParameter);
+        isHandlingIntent = false;
+    }
+
+    private void handleIntentSearch(Intent intent, SearchParameter searchParameter) {
+        ProductViewModel productViewModel = intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
+
+        if (productViewModel != null) {
+            handleIntentWithProductViewModel(productViewModel);
+        } else {
+            handleIntentWithSearchQuery(searchParameter);
         }
     }
 
-    private void handleIntentAutoComplete(boolean isOfficial) {
-        if(getIntent().getBooleanExtra(EXTRA_IS_AUTOCOMPLETE, false)) {
-            searchView.showSearch(true, false, isOfficial);
-        }
+    private void handleIntentWithProductViewModel(ProductViewModel productViewModel) {
+        this.searchParameter = productViewModel.getSearchParameter();
+
+        setLastQuerySearchView(productViewModel.getQuery());
+        loadSection(productViewModel, forceSwipeToShop);
+        setToolbarTitle(productViewModel.getQuery());
+        bottomSheetFilterView.setFilterResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
+
+        isHandlingIntent = false;
+    }
+
+    private void handleIntentWithSearchQuery(SearchParameter searchParameter) {
+        this.searchParameter = searchParameter;
+        onProductQuerySubmit();
     }
 
     private void handleImageUri(Intent intent) {
@@ -419,8 +449,8 @@ public class SearchActivity extends DiscoveryActivity
                                       ProductViewModel productViewModel) {
 
         productListFragment = getProductFragment(productViewModel);
-        catalogFragment = getCatalogFragment(productViewModel.getQuery());
-        shopListFragment = getShopFragment(productViewModel.getQuery());
+        catalogFragment = getCatalogFragment();
+        shopListFragment = getShopFragment();
         profileListFragment = getProfileListFragment(productViewModel.getQuery(), this);
 
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
@@ -462,16 +492,16 @@ public class SearchActivity extends DiscoveryActivity
         });
     }
 
-    private CatalogFragment getCatalogFragment(String query) {
-        return CatalogFragment.createInstanceByQuery(query);
+    private CatalogFragment getCatalogFragment() {
+        return CatalogFragment.newInstance(searchParameter);
     }
 
     private ProductListFragment getProductFragment(ProductViewModel productViewModel) {
         return ProductListFragment.newInstance(productViewModel);
     }
 
-    private ShopListFragment getShopFragment(String query) {
-        return ShopListFragment.newInstance(query);
+    private ShopListFragment getShopFragment() {
+        return ShopListFragment.newInstance(searchParameter);
     }
 
     private ProfileListFragment getProfileListFragment(String query, SearchNavigationListener searchNavigationListener) {
@@ -479,10 +509,10 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void populateThreeTabItem(List<SearchSectionItem> searchSectionItemList,
-                                    ProductViewModel productViewModel) {
+                                      ProductViewModel productViewModel) {
 
         productListFragment = getProductFragment(productViewModel);
-        shopListFragment = getShopFragment(productViewModel.getQuery());
+        shopListFragment = getShopFragment();
         profileListFragment = getProfileListFragment(productViewModel.getQuery(), this);
 
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
@@ -588,9 +618,8 @@ public class SearchActivity extends DiscoveryActivity
     private void initBottomSheetListener() {
         bottomSheetFilterView.setCallback(new BottomSheetFilterView.Callback() {
             @Override
-            public void onApplyFilter(HashMap<String, String> selectedFilter,
-                                      FilterFlagSelectedModel filterFlagSelectedModel) {
-                applyFilter(selectedFilter, filterFlagSelectedModel);
+            public void onApplyFilter(Map<String, String> filterParameter) {
+                applyFilter(filterParameter);
             }
 
             @Override
@@ -640,9 +669,12 @@ public class SearchActivity extends DiscoveryActivity
 
     @Override
     public void performNewProductSearch(String query, boolean forceSearch) {
+        searchParameter = new SearchParameter();
+
         setForceSearch(forceSearch);
         setForceSwipeToShop(false);
         setRequestOfficialStoreBanner(true);
+
         performRequestProduct(query);
     }
 
@@ -658,14 +690,12 @@ public class SearchActivity extends DiscoveryActivity
         super.onDestroy();
     }
 
-    private void applyFilter(HashMap<String, String> selectedFilter,
-                             FilterFlagSelectedModel filterFlagSelectedModel) {
-
+    private void applyFilter(Map<String, String> filterParameter) {
         SearchSectionFragment selectedFragment
                 = (SearchSectionFragment) searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
 
-        selectedFragment.setSelectedFilter(selectedFilter);
-        selectedFragment.setFlagFilterHelper(filterFlagSelectedModel);
+        selectedFragment.applyFilterToSearchParameter(filterParameter);
+        selectedFragment.setSelectedFilter(new HashMap<>(filterParameter));
         selectedFragment.clearDataFilterSort();
         selectedFragment.reloadData();
     }
@@ -684,8 +714,8 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     @Override
-    public void loadFilterItems(ArrayList<Filter> filters, FilterFlagSelectedModel filterFlagSelectedModel) {
-        bottomSheetFilterView.loadFilterItems(filters, filterFlagSelectedModel);
+    public void loadFilterItems(ArrayList<Filter> filters, Map<String, String> searchParameter) {
+        bottomSheetFilterView.loadFilterItems(filters, searchParameter);
     }
 
     @Override
@@ -711,7 +741,6 @@ public class SearchActivity extends DiscoveryActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        bottomSheetFilterView.onSaveInstanceState(outState);
     }
 
     private Context getActivityContext() {

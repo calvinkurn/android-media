@@ -75,7 +75,7 @@ public class CartPromoSuggestionViewHolder extends RecyclerView.ViewHolder {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                actionListener.onCartPromoSuggestionActionClicked(cartPromoSuggestion, position);
+
             }
         };
     }

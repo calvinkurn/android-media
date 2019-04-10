@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
+import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
@@ -33,6 +34,7 @@ public class CartShipmentAddressFormData implements Parcelable {
     private CartPromoSuggestion cartPromoSuggestion;
     private AutoApplyData autoApplyData;
     private EgoldAttributeModel egoldAttributes;
+    private AutoApplyStackData autoApplyStackData;
 
     public boolean isHasError() {
         return hasError;
@@ -146,6 +148,14 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.autoApplyData = autoApplyData;
     }
 
+    public AutoApplyStackData getAutoApplyStackData() {
+        return autoApplyStackData;
+    }
+
+    public void setAutoApplyStackData(AutoApplyStackData autoApplyStackData) {
+        this.autoApplyStackData = autoApplyStackData;
+    }
+
     public CodModel getCod() {
         return cod;
     }
@@ -180,6 +190,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         cartPromoSuggestion = in.readParcelable(CartPromoSuggestion.class.getClassLoader());
         autoApplyData = in.readParcelable(AutoApplyData.class.getClassLoader());
         egoldAttributes = in.readParcelable(EgoldAttributeModel.class.getClassLoader());
+        autoApplyStackData = in.readParcelable(AutoApplyStackData.class.getClassLoader());
     }
 
     @Override
@@ -198,6 +209,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeParcelable(cartPromoSuggestion, flags);
         dest.writeParcelable(autoApplyData, flags);
         dest.writeParcelable(egoldAttributes, flags);
+        dest.writeParcelable(autoApplyStackData, flags);
     }
 
     @Override
