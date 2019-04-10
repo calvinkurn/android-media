@@ -928,8 +928,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                                            selectedServiceId: Int,
                                            selectedServiceName: String,
                                            flagNeedToSetPinpoint: Boolean,
-                                           hasCourierPromo: Boolean,
-                                           hasLogisticPromo: Boolean) {
+                                           hasCourierPromo: Boolean) {
         if (shippingCourierViewModels != null) {
             val summaryViewModel = fragmentViewModel.getSummaryViewModel()
             if (summaryViewModel != null) {
@@ -1059,7 +1058,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             }))
     }
 
-    override fun onLogisticPromoChosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>?, courierData: CourierItemData?, recipientAddressModel: RecipientAddressModel?, cartPosition: Int, selectedServiceId: Int, selectedServiceName: String?, flagNeedToSetPinpoint: Boolean) {
+    override fun onLogisticPromoChosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>, courierData: CourierItemData, recipientAddressModel: RecipientAddressModel, cartPosition: Int, selectedServiceId: Int, selectedServiceName: String, flagNeedToSetPinpoint: Boolean, promoCode: String) {
         // Haven't discussed yet
     }
 
