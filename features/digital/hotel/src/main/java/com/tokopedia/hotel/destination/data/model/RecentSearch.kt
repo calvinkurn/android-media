@@ -10,17 +10,17 @@ import com.google.gson.annotations.SerializedName
 data class RecentSearch(
     @SerializedName("id")
     @Expose
-    val id: Int,
+    val id: Int = 0,
 
     @SerializedName("type")
     @Expose
-    val type: String,
+    val type: String = "",
 
     @SerializedName("name")
     @Expose
-    val name: String,
+    val name: String = "",
 
     @SerializedName("uuid")
     @Expose
-    val uuid: String
+    val uuid: String = ""
 )
