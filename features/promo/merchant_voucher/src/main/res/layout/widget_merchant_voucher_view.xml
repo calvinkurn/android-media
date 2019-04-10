@@ -65,8 +65,7 @@
         android:layout_weight="@integer/merchant_scallop_position_right_weight"
         android:orientation="vertical"
         android:layout_gravity="center"
-        android:gravity="center"
-        android:layout_marginTop="@dimen/dp_4">
+        android:gravity="center">
         <TextView
             android:id="@+id/tvCode"
             style="@style/TextView.Title.OrangeRed.Bold"
