@@ -40,6 +40,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RES
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videorecorder.main.VideoPickerActivity.Companion.VIDEOS_RESULT
+import com.tokopedia.videorecorder.utils.then
 import kotlinx.android.synthetic.main.fragment_af_create_post.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -296,8 +297,15 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 .toMutableList()
                 .apply { removeAll { it.trim() == "" } }
 
-        viewModel.productIdList.addAll(productIds)
-        viewModel.adIdList.addAll(adIds)
+        if (!isDuplicateFound(productIds, adIds)) {
+            viewModel.productIdList.addAll(productIds)
+            viewModel.adIdList.addAll(adIds)
+        } else {
+            view?.showErrorToaster(
+                    getString(R.string.af_duplicate_product),
+                    getString(R.string.af_title_ok)
+            ) { }
+        }
 
         updateAddTagText()
     }
@@ -439,6 +447,21 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         context?.let {
             startActivityForResult(MediaPreviewActivity.createIntent(it, viewModel), REQUEST_PREVIEW)
         }
+    }
+
+    private fun isDuplicateFound(productIds: MutableList<String>,
+                                 adIds: MutableList<String>): Boolean {
+        viewModel.productIdList.forEach { productId ->
+            if (productIds.any { productId == it }) {
+                return true
+            }
+        }
+        viewModel.adIdList.forEach { adId ->
+            if (adIds.any { adId == it }) {
+                return true
+            }
+        }
+        return false
     }
 
     private fun isFormInvalid(): Boolean {
