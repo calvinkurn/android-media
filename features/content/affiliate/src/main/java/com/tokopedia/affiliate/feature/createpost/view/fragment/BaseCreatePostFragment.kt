@@ -3,14 +3,11 @@ package com.tokopedia.affiliate.feature.createpost.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.TaskStackBuilder
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -40,7 +37,6 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RES
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videorecorder.main.VideoPickerActivity.Companion.VIDEOS_RESULT
-import com.tokopedia.videorecorder.utils.then
 import kotlinx.android.synthetic.main.fragment_af_create_post.*
 import java.util.*
 import java.util.concurrent.TimeUnit
