@@ -213,45 +213,74 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         return new DefaultSubscriber<GraphqlResponse>() {
             @Override
             public void onStart() {
-                if (isViewAttached()) {
-                    getView().incrementStart();
-                }
+                loadMoreDataSubscriberOnStartIfViewAttached();
             }
 
             @Override
             public void onNext(GraphqlResponse objects) {
-                SearchProductGqlResponse gqlResponse = objects.getData(SearchProductGqlResponse.class);
-                ProductViewModel productViewModel
-                        = ProductViewModelHelper.convertToProductViewModel(gqlResponse);
-                if (isViewAttached()) {
-                    if (productViewModel.getProductList().isEmpty()) {
-                        getView().removeLoading();
-                    } else {
-                        List<Visitable> list = new ArrayList<>(ProductViewModelHelper.convertToListOfVisitable(productViewModel));
-                        getView().removeLoading();
-                        getView().setProductList(list);
-                        getView().addLoading();
-                    }
-                    getView().storeTotalData(productViewModel.getTotalData());
-                }
+                loadMoreDataSubscriberOnNextIfViewAttached(objects);
             }
 
             @Override
             public void onCompleted() {
-                if (isViewAttached()) {
-                    getView().hideRefreshLayout();
-                }
+                loadMoreDataSubscriberOnCompleteIfViewAttached();
             }
 
             @Override
             public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().removeLoading();
-                    getView().hideRefreshLayout();
-                    getView().showNetworkError(searchParameter.getInteger(SearchApiConst.START));
-                }
+                loadMoreDataSubscriberOnErrorIfViewAttached(searchParameter);
             }
         };
+    }
+
+    private void loadMoreDataSubscriberOnStartIfViewAttached() {
+        if (isViewAttached()) {
+            getView().incrementStart();
+        }
+    }
+
+    private void loadMoreDataSubscriberOnNextIfViewAttached(GraphqlResponse objects) {
+        SearchProductGqlResponse gqlResponse = objects.getData(SearchProductGqlResponse.class);
+
+        if(gqlResponse == null) return;
+
+        ProductViewModel productViewModel
+                = ProductViewModelHelper.convertToProductViewModel(gqlResponse);
+
+        if (isViewAttached()) {
+            if (productViewModel.getProductList().isEmpty()) {
+                getViewToRemoveLoading();
+            } else {
+                getViewToShowMoreData(productViewModel);
+            }
+
+            getView().storeTotalData(productViewModel.getTotalData());
+        }
+    }
+
+    private void getViewToRemoveLoading() {
+        getView().removeLoading();
+    }
+
+    private void getViewToShowMoreData(ProductViewModel productViewModel) {
+        List<Visitable> list = new ArrayList<>(ProductViewModelHelper.convertToListOfVisitable(productViewModel));
+        getView().removeLoading();
+        getView().setProductList(list);
+        getView().addLoading();
+    }
+
+    private void loadMoreDataSubscriberOnCompleteIfViewAttached() {
+        if (isViewAttached()) {
+            getView().hideRefreshLayout();
+        }
+    }
+
+    private void loadMoreDataSubscriberOnErrorIfViewAttached(SearchParameter searchParameter) {
+        if (isViewAttached()) {
+            getView().removeLoading();
+            getView().hideRefreshLayout();
+            getView().showNetworkError(searchParameter.getInteger(SearchApiConst.START));
+        }
     }
 
     @Override

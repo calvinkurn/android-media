@@ -90,21 +90,6 @@ searchProduct(params: $params) {
        is_official
      }
    }
-   catalogs {
-     id
-     name
-     price
-     price_min
-     price_max
-     price_raw
-     price_min_raw
-     price_max_raw
-     count_product
-     description
-     image_url
-     url
-     department_id
-   }
  }
  search_filter_product(query: $query, source: $source, extraParams: $params) {
       data {

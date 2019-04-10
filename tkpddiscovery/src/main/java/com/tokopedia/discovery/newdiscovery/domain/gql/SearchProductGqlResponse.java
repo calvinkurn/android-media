@@ -103,9 +103,6 @@ public class SearchProductGqlResponse {
         @SerializedName("products")
         @Expose
         private List<Product> products = null;
-        @SerializedName("catalogs")
-        @Expose
-        private List<Catalog> catalogs = null;
 
         public String getQuery() {
             return query;
@@ -145,10 +142,6 @@ public class SearchProductGqlResponse {
 
         public List<Product> getProducts() {
             return products;
-        }
-
-        public List<Catalog> getCatalogs() {
-            return catalogs;
         }
 
         public Related getRelated() {
