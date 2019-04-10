@@ -189,9 +189,9 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     }
 
     private fun onCheckOutDateChanged(newCheckOutDate: Date) {
-        hotelHomepageModel.checkInDate = TravelDateUtil.dateToString(
+        hotelHomepageModel.checkOutDate = TravelDateUtil.dateToString(
                 TravelDateUtil.YYYY_MM_DD, newCheckOutDate)
-        hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(
+        hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
                 TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckOutDate)
 
         renderView()
