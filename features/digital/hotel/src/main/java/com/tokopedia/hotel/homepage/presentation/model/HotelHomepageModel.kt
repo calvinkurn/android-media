@@ -14,5 +14,5 @@ class HotelHomepageModel(var checkInDate: String = "",
                          var locLat: Double = 0.0,
                          var locLong: Double = 0.0,
                          var locName: String = "Bali",
-                         var locId: Int = 0,
-                         var locType: String = "")
+                         var locId: Int = 4712,
+                         var locType: String = "region")
