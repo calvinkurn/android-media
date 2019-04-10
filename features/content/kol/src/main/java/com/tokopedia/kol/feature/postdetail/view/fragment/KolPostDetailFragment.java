@@ -16,9 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -68,6 +65,7 @@ import com.tokopedia.kol.feature.postdetail.view.adapter.KolPostDetailAdapter;
 import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactory;
 import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactoryImpl;
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
+import com.tokopedia.kol.feature.postdetail.view.viewmodel.EmptyDetailViewModel;
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel;
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity;
@@ -189,7 +187,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
         swipeToRefresh.setOnRefreshListener(this);
 
-        KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this, this, this, this, this, this
+        KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this,this, this, this, this, this, this
                 , this, this, this, userSession);
         adapter = new KolPostDetailAdapter(typeFactory);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -229,7 +227,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onEmptyDetailFeed() {
-        adapter.addElement(new EmptyModel());
+        adapter.addElement(new EmptyDetailViewModel());
+    }
+
+    @Override
+    public void onEmptyDetailClicked() {
+        getActivity().finish();
     }
 
     private void finishActivity() {

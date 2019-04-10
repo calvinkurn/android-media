@@ -48,6 +48,8 @@ public interface KolPostDetailContract {
         void onSuccessDeletePost(int rowNumber);
 
         void onEmptyDetailFeed();
+
+        void onEmptyDetailClicked();
     }
 
     interface Presenter extends CustomerPresenter<View> {
