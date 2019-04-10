@@ -5,7 +5,6 @@
     android:layout_width="300dp"
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/dp_4"
-    app:cardElevation="@dimen/dp_4"
     app:cardUseCompatPadding="true">
 
     <android.support.constraint.ConstraintLayout
