@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.di.DaggerHotelSearchPropertyComponent
@@ -16,9 +17,11 @@ class HotelSearchResultActivity: BaseSimpleActivity(), HasComponent<HotelSearchP
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val checkIn = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, intent.getStringExtra(HotelSearchResultFragment.ARG_CHECK_IN)))
+        val checkOut = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, intent.getStringExtra(HotelSearchResultFragment.ARG_CHECK_OUT)))
         val subtitle = getString(R.string.template_search_subtitle,
-                intent.getStringExtra(HotelSearchResultFragment.ARG_CHECK_IN),
-                intent.getStringExtra(HotelSearchResultFragment.ARG_CHECK_OUT),
+                checkIn,
+                checkOut,
                 intent.getIntExtra(HotelSearchResultFragment.ARG_TOTAL_ROOM, 1),
                 intent.getIntExtra(HotelSearchResultFragment.ARG_TOTAL_ADULT, 1),
                 intent.getIntExtra(HotelSearchResultFragment.ARG_TOTAL_CHILDREN, 0))
