@@ -1,31 +1,57 @@
 package com.tokopedia.hotel.homepage.presentation.fragment
 
 import android.app.Activity
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
+import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoEntity
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
+import com.tokopedia.hotel.homepage.presentation.adapter.HotelPromoAdapter
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
+import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageViewModel
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * @author by furqan on 28/03/19
  */
 class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheets.HotelGuestListener {
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var homepageViewModel: HotelHomepageViewModel
+
     private val hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
+
+    private lateinit var promoAdapter: HotelPromoAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            homepageViewModel = viewModelProvider.get(HotelHomepageViewModel::class.java)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_hotel_homepage, container, false)
@@ -34,6 +60,25 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
         super.onViewCreated(view, savedInstanceState)
 
         initView()
+        hidePromoContainer()
+//        loadPromoData()
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        homepageViewModel.promoData.observe(this, Observer {
+            when(it) {
+                is Success -> {
+                    if (it.data.size > 0) {
+                        renderHotelPromo(it.data)
+                    } else {
+                        hidePromoContainer()
+                    }
+                }
+                is Fail -> {}
+            }
+        })
     }
 
     override fun initInjector() {
@@ -83,7 +128,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
                 TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
         hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
                 TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterTomorrow)
-        hotelHomepageModel.nightCounter = (dayAfterTomorrow.time - tomorrow.time) / ONE_DAY
+        hotelHomepageModel.nightCounter = countNightDifference()
 
         tv_hotel_homepage_destination.setOnClickListener { onDestinationChangeClicked() }
         tv_hotel_homepage_checkin_date.setOnClickListener { configAndRenderCheckInDate() }
@@ -112,7 +157,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
                 TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 1))
 
         val maxDate = TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.getCurrentCalendar().time,
-                Calendar.DATE, MAX_SELECTION_DATE)
+                Calendar.YEAR, 1)
         val maxDateCalendar = TravelDateUtil.getCurrentCalendar()
         maxDateCalendar.time = maxDate
         maxDateCalendar.set(Calendar.HOUR_OF_DAY, DEFAULT_LAST_HOUR_IN_DAY)
@@ -184,6 +229,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
             hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
                     TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
         }
+        hotelHomepageModel.nightCounter = countNightDifference()
 
         renderView()
     }
@@ -193,6 +239,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
                 TravelDateUtil.YYYY_MM_DD, newCheckOutDate)
         hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
                 TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckOutDate)
+        hotelHomepageModel.nightCounter = countNightDifference()
 
         renderView()
     }
@@ -217,6 +264,35 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
                     hotelHomepageModel.locLong.toFloat(), hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate,
                     hotelHomepageModel.roomCount, hotelHomepageModel.adultCount, hotelHomepageModel.childCount),
                     REQUEST_CODE_SEARCH)
+    }
+
+    private fun countNightDifference(): Long =
+        (TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate).time -
+                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate).time) / ONE_DAY
+
+    private fun loadPromoData() {
+        homepageViewModel.getHotelPromo(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_home_promo))
+    }
+
+    private fun renderHotelPromo(promoDataList: List<HotelPromoEntity>) {
+        showPromoContainer()
+        if (!::promoAdapter.isInitialized) {
+            promoAdapter = HotelPromoAdapter(promoDataList)
+        }
+
+        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        rv_hotel_homepage_promo.layoutManager = layoutManager
+        rv_hotel_homepage_promo.setHasFixedSize(true)
+        rv_hotel_homepage_promo.isNestedScrollingEnabled = false
+        rv_hotel_homepage_promo.adapter = promoAdapter
+    }
+
+    private fun showPromoContainer() {
+        hotel_container_promo.visibility = View.VISIBLE
+    }
+
+    private fun hidePromoContainer() {
+        hotel_container_promo.visibility = View.GONE
     }
 
     companion object {
