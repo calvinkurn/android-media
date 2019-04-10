@@ -10,24 +10,25 @@ import com.google.gson.annotations.SerializedName
 data class HotelSuggestion(
         @SerializedName("data")
         @Expose
-        var searchDestinationList: List<SearchDestination>,
+        var searchDestinationList: List<SearchDestination> = listOf(),
 
         @SerializedName("meta")
         @Expose
-        var hotelSuggestionMeta: HotelSuggestion.Meta
+        var hotelSuggestionMeta: HotelSuggestion.Meta = Meta()
 ) {
     data class Response(
             @SerializedName("propertySearchSuggestion")
             @Expose
-            var propertySearchSuggestion: HotelSuggestion
+            var propertySearchSuggestion: HotelSuggestion = HotelSuggestion()
     )
+
     data class Meta(
             @SerializedName("keyword")
             @Expose
-            var keyword: String,
+            var keyword: String = "",
 
             @SerializedName("total_suggestion")
             @Expose
-            var totalSuggestion: Int
+            var totalSuggestion: Int = 0
     )
 }

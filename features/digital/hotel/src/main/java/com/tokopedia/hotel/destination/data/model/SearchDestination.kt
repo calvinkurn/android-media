@@ -12,31 +12,31 @@ import com.tokopedia.hotel.destination.view.adapter.SearchDestinationTypeFactory
 data class SearchDestination(
         @SerializedName("id")
         @Expose
-        val id: Int,
+        val id: Int = 0,
 
         @SerializedName("type")
         @Expose
-        val type: String,
+        val type: String = "",
 
         @SerializedName("tag")
         @Expose
-        val tag: String,
+        val tag: String = "",
 
         @SerializedName("icon")
         @Expose
-        val icon: String,
+        val icon: String = "",
 
         @SerializedName("name")
         @Expose
-        val name: String,
+        val name: String = "",
 
         @SerializedName("location")
         @Expose
-        val location: String,
+        val location: String = "",
 
         @SerializedName("hotel_count")
         @Expose
-        val hotelCount: Int
+        val hotelCount: Int = 0
 ): Visitable<SearchDestinationTypeFactory> {
     override fun type(typeFactory: SearchDestinationTypeFactory) = typeFactory.type(this)
 
