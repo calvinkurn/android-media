@@ -1,31 +1,57 @@
 package com.tokopedia.hotel.homepage.presentation.fragment
 
 import android.app.Activity
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
+import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoEntity
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
+import com.tokopedia.hotel.homepage.presentation.adapter.HotelPromoAdapter
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
+import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageViewModel
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * @author by furqan on 28/03/19
  */
 class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheets.HotelGuestListener {
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var homepageViewModel: HotelHomepageViewModel
+
     private val hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
+
+    private lateinit var promoAdapter: HotelPromoAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            homepageViewModel = viewModelProvider.get(HotelHomepageViewModel::class.java)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_hotel_homepage, container, false)
@@ -34,6 +60,25 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
         super.onViewCreated(view, savedInstanceState)
 
         initView()
+        loadPromoData()
+        hidePromoContainer()
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        homepageViewModel.promoData.observe(this, Observer {
+            when(it) {
+                is Success -> {
+                    if (it.data.size > 0) {
+                        renderHotelPromo(it.data)
+                    } else {
+                        hidePromoContainer()
+                    }
+                }
+                is Fail -> {}
+            }
+        })
     }
 
     override fun initInjector() {
@@ -224,6 +269,31 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     private fun countNightDifference(): Long =
         (TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate).time -
                 TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate).time) / ONE_DAY
+
+    private fun loadPromoData() {
+        homepageViewModel.getHotelPromo(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_home_promo))
+    }
+
+    private fun renderHotelPromo(promoDataList: List<HotelPromoEntity>) {
+        showPromoContainer()
+        if (!::promoAdapter.isInitialized) {
+            promoAdapter = HotelPromoAdapter(promoDataList)
+        }
+
+        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        rv_hotel_homepage_promo.layoutManager = layoutManager
+        rv_hotel_homepage_promo.setHasFixedSize(true)
+        rv_hotel_homepage_promo.isNestedScrollingEnabled = false
+        rv_hotel_homepage_promo.adapter = promoAdapter
+    }
+
+    private fun showPromoContainer() {
+        hotel_container_promo.visibility = View.VISIBLE
+    }
+
+    private fun hidePromoContainer() {
+        hotel_container_promo.visibility = View.GONE
+    }
 
     companion object {
         val ONE_DAY: Long = TimeUnit.DAYS.toMillis(1)
