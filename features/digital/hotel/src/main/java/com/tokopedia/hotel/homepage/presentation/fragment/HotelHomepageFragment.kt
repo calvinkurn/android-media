@@ -83,7 +83,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
                 TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
         hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
                 TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterTomorrow)
-        hotelHomepageModel.nightCounter = (dayAfterTomorrow.time - tomorrow.time) / ONE_DAY
+        hotelHomepageModel.nightCounter = countNightDifference()
 
         tv_hotel_homepage_destination.setOnClickListener { onDestinationChangeClicked() }
         tv_hotel_homepage_checkin_date.setOnClickListener { configAndRenderCheckInDate() }
@@ -184,6 +184,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
             hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
                     TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
         }
+        hotelHomepageModel.nightCounter = countNightDifference()
 
         renderView()
     }
@@ -193,6 +194,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
                 TravelDateUtil.YYYY_MM_DD, newCheckOutDate)
         hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
                 TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckOutDate)
+        hotelHomepageModel.nightCounter = countNightDifference()
 
         renderView()
     }
@@ -218,6 +220,10 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
                     hotelHomepageModel.roomCount, hotelHomepageModel.adultCount, hotelHomepageModel.childCount),
                     REQUEST_CODE_SEARCH)
     }
+
+    private fun countNightDifference(): Long =
+        (TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate).time -
+                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate).time) / ONE_DAY
 
     companion object {
         val ONE_DAY: Long = TimeUnit.DAYS.toMillis(1)
