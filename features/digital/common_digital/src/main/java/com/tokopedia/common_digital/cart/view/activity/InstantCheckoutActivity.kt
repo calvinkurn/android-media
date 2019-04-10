@@ -92,7 +92,9 @@ class InstantCheckoutActivity : BaseSimpleActivity() {
         webView.webChromeClient = InstantCheckoutWebViewChromeClient()
         webView.setOnKeyListener(webViewOnKeyListener)
 
-        webView.loadUrl(instantCheckoutData!!.redirectUrl)
+        var url = instantCheckoutData!!.thanksUrl
+        if (url!!.isEmpty()) url = instantCheckoutData!!.redirectUrl
+        webView.loadUrl(url)
     }
 
 
@@ -129,7 +131,7 @@ class InstantCheckoutActivity : BaseSimpleActivity() {
                 return true
             } else {
                 if (digitalRouter != null
-                        && digitalRouter!!.isSupportApplink(url)
+                              && digitalRouter!!.isSupportApplink(url)
                         && digitalRouter!!.intentDeepLinkHandlerActivity != null) {
                     val intent = digitalRouter!!.intentDeepLinkHandlerActivity
                     intent.data = Uri.parse(url)
