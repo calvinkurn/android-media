@@ -133,6 +133,15 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
         NetworkErrorHelper.createSnackbarRedWithAction(activity, message, { onClickUse() }).showRetrySnackbar()
     }
 
+    override fun onErrorValidatePromoStacking(e: Throwable) {
+        var message = ErrorHandler.getErrorMessage(activity, e)
+        if (e is CheckPromoCodeException) {
+            message = e.message
+        }
+        NetworkErrorHelper.showRedCloseSnackbar(activity, message)
+        setDisabledButtonUse()
+    }
+
     override fun onClashCheckPromo(clasingInfoDetailUiModel: ClashingInfoDetailUiModel) {
 
     }

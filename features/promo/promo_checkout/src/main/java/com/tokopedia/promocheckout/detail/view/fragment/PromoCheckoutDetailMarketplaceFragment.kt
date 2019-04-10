@@ -96,6 +96,15 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
         super.onErrorValidatePromo(e)
     }
 
+    override fun onErrorValidatePromoStacking(e: Throwable) {
+        if (pageTracking == FROM_CART) {
+            trackingPromoCheckoutUtil.cartClickUsePromoCouponFailed()
+        } else {
+            trackingPromoCheckoutUtil.checkoutClickUsePromoCouponFailed()
+        }
+        super.onErrorValidatePromoStacking(e)
+    }
+
     override fun initInjector() {
         DaggerPromoCheckoutDetailComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)

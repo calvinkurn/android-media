@@ -53,7 +53,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/bg_button_promo" />
+                android:src="@drawable/bg_button_promostacking" />
 
             <TextView
                 android:id="@+id/title_action_coupon"
