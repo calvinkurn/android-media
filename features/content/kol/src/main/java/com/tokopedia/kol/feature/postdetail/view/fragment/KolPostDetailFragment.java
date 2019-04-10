@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -227,17 +229,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onEmptyDetailFeed() {
-        adapter.showEmpty(getContext(), new BaseEmptyViewHolder.Callback() {
-            @Override
-            public void onEmptyContentItemTextClicked() {
-                finishActivity();
-            }
-
-            @Override
-            public void onEmptyButtonClicked() {
-                finishActivity();
-            }
-        });
+        adapter.addElement(new EmptyModel());
     }
 
     private void finishActivity() {
