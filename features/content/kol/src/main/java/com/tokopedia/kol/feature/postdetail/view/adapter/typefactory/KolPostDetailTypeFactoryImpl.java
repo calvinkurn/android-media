@@ -30,6 +30,7 @@ import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
+import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.EmptyDetailViewHolder;
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.EmptyPostDetailViewHolder;
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.SeeAllCommentsViewHolder;
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
@@ -104,7 +105,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
 
     @Override
     public int type(EmptyDetailViewModel emptyDetailViewModel) {
-        return 0;
+        return EmptyDetailViewHolder.Companion.getLAYOUT();
     }
 
     @Override
