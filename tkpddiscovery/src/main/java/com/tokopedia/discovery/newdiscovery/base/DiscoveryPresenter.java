@@ -42,26 +42,6 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
     }
 
     @Override
-    public void requestProduct(SearchParameter searchParameter, boolean forceSearch, boolean requestOfficialStore) {
-        super.requestProduct(searchParameter, forceSearch, requestOfficialStore);
-        RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false, false);
-        enrichWithForceSearchParam(requestParams, forceSearch);
-        enrichWithRelatedSearchParam(requestParams, true);
-
-        GqlSearchHelper.requestProductFirstPage(context, requestParams, graphqlUseCase,
-                new DefaultGqlSearchSubscriber(searchParameter, forceSearch, getBaseDiscoveryView(), false)
-        );
-    }
-
-    private void enrichWithForceSearchParam(RequestParams requestParams, boolean isForceSearch) {
-        requestParams.putBoolean(SearchApiConst.REFINED, isForceSearch);
-    }
-
-    private void enrichWithRelatedSearchParam(RequestParams requestParams, boolean relatedSearchEnabled) {
-        requestParams.putBoolean(SearchApiConst.RELATED, relatedSearchEnabled);
-    }
-
-    @Override
     public void initiateSearch(SearchParameter searchParameter, boolean forceSearch) {
         super.initiateSearch(searchParameter, forceSearch);
 

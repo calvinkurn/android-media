@@ -54,8 +54,6 @@ public interface BaseDiscoveryContract {
 
         void setDiscoveryView(D discoveryView);
 
-        void requestProduct(SearchParameter searchParameter, boolean forceSearch, boolean requestOfficialStoreBanner);
-
         void requestImageSearch(String filePath);
 
         void initiateSearch(SearchParameter searchParameter, boolean forceSearch);
