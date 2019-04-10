@@ -91,9 +91,6 @@ public class SearchProductGqlResponse {
         @SerializedName("additional_params")
         @Expose
         private String additionalParams;
-        @SerializedName("redirection")
-        @Expose
-        private Redirection redirection = new Redirection();
         @SerializedName("suggestion")
         @Expose
         private Suggestion suggestion = new Suggestion();
@@ -130,10 +127,6 @@ public class SearchProductGqlResponse {
 
         public String getAdditionalParams() {
             return additionalParams;
-        }
-
-        public Redirection getRedirection() {
-            return redirection;
         }
 
         public Suggestion getSuggestion() {

@@ -12,11 +12,6 @@ searchProduct(params: $params) {
   count
   count_text
   additional_params
-  redirection {
-     redirect_url
-     redirect_applink
-     department_id
-   }
    suggestion {
      currentKeyword
      suggestion
