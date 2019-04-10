@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,7 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
 
     private List<CatalogsValueEntity> mItems;
     private CatalogPurchaseRedemptionPresenter mPresenter;
-    private boolean mIsLimitEnable;
+    private RecyclerView mRecyclerView;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView quota, description, pointLabel, pointValue,
@@ -61,15 +62,10 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
         }
     }
 
-    public CatalogListCarouselAdapter(CatalogPurchaseRedemptionPresenter presenter, List<CatalogsValueEntity> items) {
+    public CatalogListCarouselAdapter(CatalogPurchaseRedemptionPresenter presenter, List<CatalogsValueEntity> items, RecyclerView recyclerView) {
         this.mPresenter = presenter;
         this.mItems = items;
-    }
-
-    public CatalogListCarouselAdapter(CatalogPurchaseRedemptionPresenter presenter, List<CatalogsValueEntity> items, boolean isLimitEnable) {
-        this.mPresenter = presenter;
-        this.mItems = items;
-        this.mIsLimitEnable = isLimitEnable;
+        this.mRecyclerView = recyclerView;
     }
 
     @Override
@@ -201,15 +197,12 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
         });
 
         holder.btnContinue.setVisibility(item.isShowTukarButton() ? View.VISIBLE : View.GONE);
+        setUpHeight(item);
     }
 
     @Override
     public int getItemCount() {
-        if (mIsLimitEnable) {
-            return mItems.size() > CommonConstant.HOMEPAGE_PAGE_SIZE ? CommonConstant.HOMEPAGE_PAGE_SIZE : mItems.size();
-        } else {
-            return mItems.size();
-        }
+        return mItems == null ? 0 : mItems.size();
     }
 
     public void updateItems(List<CatalogsValueEntity> items) {
@@ -264,5 +257,33 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                 AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_ON_CATALOG,
                 data.getTitle() + " - " + data.getBaseCode(), promotions);
+    }
+
+
+    private void setUpHeight(CatalogsValueEntity data) {
+        if (data == null || mRecyclerView == null) {
+            return;
+        }
+
+        if (data.getPointsSlash() > 0
+                && !TextUtils.isEmpty(data.getExpiredLabel())
+                && !TextUtils.isEmpty(data.getDisableErrorMessage())) {
+            mRecyclerView.getLayoutParams().height = mRecyclerView.getResources().getDimensionPixelOffset(R.dimen.tp_coupon_card_xxlarge);
+        } else if (data.getPointsSlash() > 0
+                && !TextUtils.isEmpty(data.getExpiredLabel())) {
+            mRecyclerView.getLayoutParams().height = mRecyclerView.getResources().getDimensionPixelOffset(R.dimen.tp_coupon_card_xlarge);
+        } else if (!TextUtils.isEmpty(data.getExpiredLabel())
+                && !TextUtils.isEmpty(data.getDisableErrorMessage())) {
+            mRecyclerView.getLayoutParams().height = mRecyclerView.getResources().getDimensionPixelOffset(R.dimen.tp_coupon_card_xlarge);
+        } else if (data.getPointsSlash() > 0
+                && !TextUtils.isEmpty(data.getDisableErrorMessage())) {
+            mRecyclerView.getLayoutParams().height = mRecyclerView.getResources().getDimensionPixelOffset(R.dimen.tp_coupon_card_large);
+        } else if (data.getPointsSlash() > 0) {
+            mRecyclerView.getLayoutParams().height = mRecyclerView.getResources().getDimensionPixelOffset(R.dimen.tp_coupon_card_medium);
+        } else {
+            mRecyclerView.getLayoutParams().height = mRecyclerView.getResources().getDimensionPixelOffset(R.dimen.tp_coupon_card_medium);
+        }
+
+        mRecyclerView.requestLayout();
     }
 }

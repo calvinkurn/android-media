@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
     android:background="@color/white"
     android:paddingTop="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_16">
@@ -72,9 +73,10 @@
         app:layout_constraintTop_toBottomOf="@+id/text_title"
         tools:text="Cari tahu sekarang juga" />
 
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_carousel"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         app:layout_constraintEnd_toEndOf="parent"
@@ -82,6 +84,6 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_sub_title"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
 </android.support.constraint.ConstraintLayout>
