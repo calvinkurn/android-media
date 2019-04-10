@@ -216,7 +216,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
-    public void trackingSuccessVoucher(String voucherName) {
+    public void trackingSuccessVoucher(String title, String voucherName) {
         this.voucherName = voucherName;
     }
 
