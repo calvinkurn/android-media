@@ -410,6 +410,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onRefresh() {
         newFeed.setVisibility(View.GONE);
+        adapter.resetEndlessScrollState();
         presenter.refreshPage();
     }
 
