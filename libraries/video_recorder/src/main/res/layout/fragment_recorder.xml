@@ -18,7 +18,8 @@
         app:cameraAudio="on"
         app:cameraHdr="off"
         app:cameraFacing="back"
-        app:cameraGestureTap="focusWithMarker"/>
+        app:cameraGestureTap="focusWithMarker"
+        app:cameraVideoBitRate="9000000"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

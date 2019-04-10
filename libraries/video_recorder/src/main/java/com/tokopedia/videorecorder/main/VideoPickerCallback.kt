@@ -8,4 +8,5 @@ interface VideoPickerCallback {
     fun onVideoTaken(filePath: String)
     fun onPreviewVideoVisible()
     fun onVideoVisible()
+    fun onVideoRecord(isRecord: Boolean)
 }

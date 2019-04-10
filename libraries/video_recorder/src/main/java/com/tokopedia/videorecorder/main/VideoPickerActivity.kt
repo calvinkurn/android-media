@@ -234,6 +234,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
      * @method(onVideoTaken(file))
      * @method(onPreviewVideoVisible)
      * @method(onVideoVisible)
+     * @method(onVideoRecord)
      */
 
     override fun onVideoTaken(filePath: String) {
@@ -256,6 +257,11 @@ open class VideoPickerActivity : BaseSimpleActivity(),
                 playVideoPreview()
             }
         }
+    }
+
+    override fun onVideoRecord(isRecord: Boolean) {
+        //disable tab layout while recording
+        tabPicker.isClickable = !isRecord
     }
 
     override fun onPreviewVideoVisible() {
