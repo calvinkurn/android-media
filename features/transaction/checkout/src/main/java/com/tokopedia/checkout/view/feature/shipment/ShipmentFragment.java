@@ -894,7 +894,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     .typePromo(dataUiModel.isCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON()
                             ? PromoStackingData.CREATOR.getTYPE_COUPON() : PromoStackingData.CREATOR.getTYPE_VOUCHER())
                     .promoCode(dataUiModel.getCodes().get(0))
-                    .description(dataUiModel.getInvoiceDescription())
+                    .description(dataUiModel.getMessage().getText())
                     .amount(dataUiModel.getCashbackWalletAmount())
                     .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(dataUiModel.getMessage().getState()))
                     .title(dataUiModel.getTitleDescription())
@@ -1154,7 +1154,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (resultCode == TopPayActivity.PAYMENT_CANCELLED || resultCode == TopPayActivity.PAYMENT_FAILED) {
                 shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickShipment(), isTradeIn(), null, getDeviceId());
             } else {
-                getActivity().setResult(resultCode);
+                getActivity().setResult(TopPayActivity.PAYMENT_SUCCESS);
                 getActivity().finish();
             }
         }
@@ -1251,7 +1251,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentAdapter.getPromoGlobalStackData(),
                 shipmentPresenter.getCartPromoSuggestion(),
                 shipmentPresenter.getRecipientAddressModel(),
-                shipmentPresenter.getShipmentCartItemModelList(),
+                new ArrayList<>(),
                 shipmentPresenter.getShipmentCostModel(),
                 shipmentPresenter.getShipmentDonationModel(),
                 cartIds
@@ -2259,6 +2259,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         }
         shipmentAdapter.clearTotalPromoStackAmount();
+        shipmentAdapter.updateShipmentCostModel();
+        shipmentAdapter.updateCheckoutButtonData(null);
         shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
         shipmentAdapter.checkHasSelectAllCourier(false);
         shipmentPresenter.setCouponStateChanged(true);

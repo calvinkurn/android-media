@@ -884,14 +884,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         getView().showToastError(responseGetPromoStack.getMessage().get(0));
                         getView().resetCourier(cartPosition);
                     } else {
-                        if (responseGetPromoStack.getStatus().equalsIgnoreCase("OK")) {
-                            if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
-                                getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings());
-                            } else {
-                                getView().onSuccessCheckPromoFirstStep(responseGetPromoStack);
-                            }
+                        if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
+                            getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings());
                         } else {
-                            getView().showToastError(responseGetPromoStack.getMessage().get(0));
+                            getView().onSuccessCheckPromoFirstStep(responseGetPromoStack);
                         }
                     }
                 }
@@ -965,7 +961,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         TokopediaCornerData cornerData = null;
-        if (getRecipientAddressModel().isCornerAddress()) {
+        if (getRecipientAddressModel() != null && getRecipientAddressModel().isCornerAddress()) {
             cornerData = new TokopediaCornerData(
                     getRecipientAddressModel().getUserCornerId(),
                     Integer.parseInt(getRecipientAddressModel().getCornerId())

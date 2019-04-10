@@ -33,6 +33,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
@@ -634,8 +635,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onCartPromoUseVoucherGlobalPromoClicked(PromoStackingData cartPromoGlobal, int position) {
-        trackingPromoCheckoutUtil.cartClickUseTickerPromoOrCoupon();
-        dPresenter.processUpdateCartDataPromoStacking(getSelectedCartDataList(), cartPromoGlobal, GO_TO_LIST);
+        List<CartItemData> cartItemData = getSelectedCartDataList();
+        if (cartItemData != null && cartItemData.size() > 0) {
+            trackingPromoCheckoutUtil.cartClickUseTickerPromoOrCoupon();
+            dPresenter.processUpdateCartDataPromoStacking(cartItemData, cartPromoGlobal, GO_TO_LIST);
+        } else {
+            showToastMessageRed(getString(R.string.checkout_module_label_promo_no_item_checked));
+        }
     }
 
     @Override
@@ -952,10 +958,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
         PromoStackingData.Builder builderGlobal = new PromoStackingData.Builder();
         if (cartListData.getAutoApplyStackData() != null && cartListData.getAutoApplyStackData().isSuccess()
-                && !TextUtils.isEmpty(cartListData.getAutoApplyStackData().getCode())
-                && !TextUtils.isEmpty(cartListData.getAutoApplyStackData().getMessageSuccess())
-                && !TextUtils.isEmpty(cartListData.getAutoApplyStackData().getState())
-                && !TextUtils.isEmpty(cartListData.getAutoApplyStackData().getTitleDescription())) {
+                && !TextUtils.isEmpty(cartListData.getAutoApplyStackData().getCode())) {
             AutoApplyStackData autoApplyStackData = cartListData.getAutoApplyStackData();
             if (autoApplyStackData != null) {
                 if (autoApplyStackData.getMessageSuccess() != null && autoApplyStackData.getCode() != null
@@ -1614,16 +1617,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     private void onResultFromRequestCodeCartShipment(int resultCode, Intent data) {
         if (resultCode == TopPayActivity.PAYMENT_CANCELLED) {
-            NetworkErrorHelper.showSnackbar(
-                    getActivity(),
-                    getString(R.string.alert_payment_canceled_or_failed_transaction_module)
-            );
+            showToastMessageRed(getString(R.string.alert_payment_canceled_or_failed_transaction_module));
             dPresenter.processResetAndRefreshCartData();
         } else if (resultCode == TopPayActivity.PAYMENT_SUCCESS) {
-            showToastMessage(getString(R.string.message_payment_success));
-            navigateToActivity(checkoutModuleRouter.checkoutModuleRouterGetTransactionSummaryIntent());
+            showToastMessageGreen(getString(R.string.message_payment_success));
             checkoutModuleRouter.checkoutModuleRouterResetBadgeCart();
-            getActivity().finish();
+            refreshHandler.setRefreshing(true);
+            dPresenter.processInitialGetCartData(false);
         } else if (resultCode == TopPayActivity.PAYMENT_FAILED) {
             showToastMessage(getString(R.string.default_request_error_unknown));
             sendAnalyticsScreenName(getScreenName());
