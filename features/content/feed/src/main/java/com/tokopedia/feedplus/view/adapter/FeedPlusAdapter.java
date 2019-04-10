@@ -41,8 +41,6 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private EndlessScrollRecycleListener endlessScrollListener = new EndlessScrollRecycleListener() {
         @Override
         public void onLoadMore(int page, int totalItemsCount) {
-            if (isLoading())
-                return;
             if (loadListener != null && !unsetListener && list.size() > itemTreshold) {
                 showLoading();
                 loadListener.onLoad(totalItemsCount);
@@ -150,6 +148,9 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void showLoading() {
+        if (isLoading()) {
+            removeLoading();
+        }
         add(loadingMoreModel);
     }
 
