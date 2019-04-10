@@ -155,7 +155,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
             abstractViewHolder = new KolCommentViewHolder(view, kolCommentListener);
         else if (viewType == SeeAllCommentsViewHolder.LAYOUT)
             abstractViewHolder = new SeeAllCommentsViewHolder(view, seeAll);
-        else if (viewType == EmptyPostDetailViewHolder.LAYOUT) {
+        else if (viewType == EmptyDetailViewHolder.Companion.getLAYOUT()) {
             abstractViewHolder = new EmptyPostDetailViewHolder(view);
         } else
             abstractViewHolder = super.createViewHolder(view, viewType);
