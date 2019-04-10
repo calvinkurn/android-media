@@ -139,7 +139,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         setHasOptionsMenu(true);
         setUpVariables(view);
         checkLocationStatus();
-
+        categoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.HOME_PAGE, this, IS_SHORT_LAYOUT);
         return view;
     }
 
@@ -303,19 +303,26 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         switch (requestCode) {
-            case DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY:
-                Location location = Utils.getSingletonInstance().getLocation(getActivity());
-                if (location == null) {
-                    if (getActivity() != null)
-                        getActivity().finish();
-                } else {
-                    if (data != null) {
-                        if (isLocationUpdated) {
-                            Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
-                        }
+
+            case DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY:
+                if (resultCode == RESULT_OK) {
+                    Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
+                    if (!tvLocationName.getText().equals(location1.getName())) {
+                        tvLocationName.setText(location1.getName());
                         mPresenter.getDealsList(true);
                     }
-                    tvLocationName.setText(location.getName());
+                }
+                break;
+            case DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY:
+                if (resultCode == RESULT_OK) {
+                    Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
+                    if (!tvLocationName.getText().equals(location1.getName())) {
+                        tvLocationName.setText(location1.getName());
+                        mPresenter.getDealsList(true);
+                    } else {
+                        mPresenter.getDealsList(false);
+                    }
+
                 }
                 break;
             case DealsHomeActivity.REQUEST_CODE_LOGIN:
@@ -442,10 +449,11 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                 }
             });
             noContent.setVisibility(View.GONE);
-            categoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.HOME_PAGE, this, IS_SHORT_LAYOUT);
+            categoryAdapter.clearList();
             categoryAdapter.setDealsHomeLayout(true);
             rvTrendingDeals.setAdapter(categoryAdapter);
-            categoryAdapter.addAll(categoryItem.getItems(), false);
+            categoryAdapter.addAll(categoryItem.getItems(), true);
+            rvTrendingDeals.setVisibility(View.VISIBLE);
             categoryAdapter.notifyDataSetChanged();
         } else {
             mPresenter.sendEventView(DealsAnalytics.EVENT_NO_DEALS_AVAILABLE_ON_YOUR_LOCATION,
@@ -681,9 +689,9 @@ startActivityForResult(intent, requestCode);
                 isLocationUpdated = locationUpdated;
                 selectLocationFragment.setCanceledOnTouchOutside(true);
                 Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
+                mPresenter.getDealsList(true);
+                tvLocationName.setText(location.getName());
             }
-            mPresenter.getDealsList(true);
-            tvLocationName.setText(location.getName());
             if (selectLocationFragment != null) {
                 selectLocationFragment.dismiss();
             }

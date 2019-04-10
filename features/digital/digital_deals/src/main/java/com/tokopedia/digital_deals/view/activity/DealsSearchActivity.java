@@ -128,27 +128,12 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         tvCityName.setOnClickListener(this);
         searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_deals));
         searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_16));
-//        searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(R.dimen.dp_18), getResources().getDimensionPixelSize(R.dimen.dp_18));
         searchInputView.setSearchImageView(getResources().getDrawable(R.drawable.ic_search_deal));
-        EditText etSearch = searchInputView.findViewById(R.id.edit_text_search);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvDeals.setLayoutManager(layoutManager);
         dealsCategoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.SEARCH_PAGE, this, !IS_SHORT_LAYOUT);
         rvDeals.setAdapter(dealsCategoryAdapter);
-//        etSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                if (hasFocus) {
-//                    dealsCategoryAdapter.setTopDealsLayout(true);
-//                    if (firstTimeRefresh)
-//                        firstTimeRefresh = false;
-//                    else if (!TextUtils.isEmpty(searchInputView.getSearchText()) && searchInputView.getSearchText().length() > 2)
-//                        dealsCategoryAdapter.removexAndFooter();
-//                    dealsCategoryAdapter.notifyDataSetChanged();sales
-//                }
-//            }
-//        });
-
+        searchInputView.getSearchTextView().requestFocus();
         appBarBrands.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -156,14 +141,12 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                 if (verticalOffset != 0) {
                     divider.setVisibility(View.GONE);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                        toolbar.setElevation(4.0f);
                         appBarToolbar.setElevation(getResources().getDimension(R.dimen.dp_4));
                         KeyboardHandler.hideSoftKeyboard(getActivity());
                     }
                 } else {
                     divider.setVisibility(View.VISIBLE);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                        toolbar.setElevation(0.0f);
                         appBarToolbar.setElevation(getResources().getDimension(R.dimen.dp_0));
                     }
                 }
@@ -396,24 +379,6 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         switch (requestCode) {
-            case REQUEST_CODE_DEALSLOCATIONACTIVITY:
-
-                if (resultCode == Activity.RESULT_OK) {
-                    Location location = Utils.getSingletonInstance().getLocation(getActivity());
-                    if (location == null) {
-                        finish();
-                    } else {
-                        if (data != null) {
-                            if (DealsHomeFragment.isLocationUpdated)
-                                Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
-                        }
-                        tvCityName.setText(location.getName());
-                        if (!TextUtils.isEmpty(searchInputView.getSearchText()))
-                            mPresenter.getDealsListBySearch(searchInputView.getSearchText());
-
-                    }
-                }
-                break;
             case DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY:
                 if (resultCode == RESULT_OK) {
                     Location location = Utils.getSingletonInstance().getLocation(getActivity());
@@ -497,7 +462,9 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             if (selectLocationFragment != null) {
                 selectLocationFragment.dismiss();
             }
-//            if (!TextUtils.isEmpty(searchInputView.getSearchText()))
+            if (locationUpdated) {
+                Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
+            }
                 mPresenter.getDealsListBySearch(searchInputView.getSearchText());
         }
     }
