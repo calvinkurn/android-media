@@ -852,6 +852,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             getView().showLoading();
             // Cleaning all codes except logistic promo code
             generatedPromo = getView().generateCheckPromoFirstStepParam();
+            generatedPromo.setCodes(new ArrayList<>());
             if (generatedPromo.getOrders() != null) {
                 for (Order order : generatedPromo.getOrders()) {
                     ArrayList<String> arr = new ArrayList<>();
