@@ -60,6 +60,7 @@ public class LoyaltyViewModule {
                                 activity.getPlatformString(),
                                 activity.getPlatformPageString(),
                                 activity.getCategoryString(),
+                                activity.getCategoryName(),
                                 activity.getCartIdString(),
                                 activity.getAdditionalDataString(),
                                 activity.getTrainReservationId(),
@@ -104,6 +105,7 @@ public class LoyaltyViewModule {
                                     activity.getCategoryString(),
                                     activity.getCartIdString(),
                                     activity.getCategoryId(),
+                                    activity.getCategoryName(),
                                     activity.getProductId()))
                             .position(0)
                             .tabTitle("Kupon Saya")
@@ -124,6 +126,7 @@ public class LoyaltyViewModule {
                                 activity.getPlatformString(),
                                 activity.getPlatformPageString(),
                                 activity.getCategoryString(),
+                                activity.getCategoryName(),
                                 activity.getCartIdString(),
                                 activity.getAdditionalDataString(),
                                 activity.getTrainReservationId(),

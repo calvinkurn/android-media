@@ -630,7 +630,7 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     public void setSelectedFilter(HashMap<String, String> selectedFilter) {
         super.setSelectedFilter(selectedFilter);
-        if (selectedFilter == null) {
+        if (selectedFilter == null || getSearchParameter() == null) {
             return;
         }
         if (TextUtils.isEmpty(selectedFilter.get(SearchApiConst.OFFICIAL))) {

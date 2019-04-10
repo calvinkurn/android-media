@@ -42,6 +42,7 @@ import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
@@ -615,6 +616,15 @@ public class MainParentActivity extends BaseActivity implements
 
         showCaseDialog = createShowCase();
 
+        int bottomNavTopPos = bottomNavigation.getTop();
+        int bottomNavBottomPos = bottomNavigation.getBottom();
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            bottomNavBottomPos =
+                    bottomNavBottomPos - DisplayMetricUtils.getStatusBarHeight(this);
+            bottomNavTopPos =
+                    bottomNavTopPos - DisplayMetricUtils.getStatusBarHeight(this);
+        }
         ArrayList<ShowCaseObject> showcases = new ArrayList<>();
         showcases.add(new ShowCaseObject(
                 bottomNavigation,
@@ -622,9 +632,9 @@ public class MainParentActivity extends BaseActivity implements
                 getString(R.string.desc_showcase))
                 .withCustomTarget(new int[]{
                         bottomNavigation.getLeft(),
-                        bottomNavigation.getTop(),
+                        bottomNavTopPos,
                         bottomNavigation.getRight(),
-                        bottomNavigation.getBottom()} ));
+                        bottomNavBottomPos} ));
         showcases.addAll(showCaseObjects);
 
         showCaseDialog.show(this, showCaseTag, showcases);
@@ -759,10 +769,10 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public void onCartEmpty(String autoApplyMessage, String state, String titleDesc) {
+    public void onCartEmpty(String autoApplyMessage, String state, String titleDesc, String promoCode) {
         if (fragmentList != null && fragmentList.get(CART_MENU) != null) {
             if (emptyCartFragment == null) {
-                emptyCartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getEmptyCartFragment(autoApplyMessage, state, titleDesc);
+                emptyCartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getEmptyCartFragment(autoApplyMessage, state, titleDesc, promoCode);
             }
             fragmentList.set(CART_MENU, emptyCartFragment);
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));

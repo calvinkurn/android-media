@@ -346,7 +346,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/saldo_balance_layout"
         android:orientation="vertical"
-        android:padding="@dimen/dp_16">
+        android:padding="@dimen/dp_16"
+        android:visibility="gone">
 
 
         <LinearLayout

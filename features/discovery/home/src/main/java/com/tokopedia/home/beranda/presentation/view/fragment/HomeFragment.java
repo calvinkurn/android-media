@@ -51,6 +51,7 @@ import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.helper.ViewHelper;
 import com.tokopedia.home.beranda.listener.ActivityStateListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeEggListener;
@@ -84,7 +85,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.searchbar.HomeMainToolbar;
 import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ViewHelper;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
@@ -166,6 +166,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     int startToMainToolbarShadowTransition = 0;
 
+    private int startToTransitionOffset = 0;
+    private int searchBarTransitionRange = 0;
+
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -180,6 +183,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         performanceMonitoring = PerformanceMonitoring.start(BERANDA_TRACE);
         userSession = new UserSession(getActivity());
         trackingQueue = new TrackingQueue(getActivity());
+
+        searchBarTransitionRange =
+                getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
+        startToTransitionOffset =
+                (getResources().getDimensionPixelSize(R.dimen.banner_background_height))/2;
     }
 
     @Override
@@ -265,10 +273,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
         }
 
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+        //status bar background compability
+        statusBarBackground.getLayoutParams().height = ViewHelper.getStatusBarHeight(getActivity());
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            statusBarBackground.setVisibility(View.INVISIBLE);
+        } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             statusBarBackground.setVisibility(View.VISIBLE);
         } else {
-            statusBarBackground.setVisibility(View.INVISIBLE);
+            statusBarBackground.setVisibility(View.GONE);
         }
 
         initEggDragListener();
@@ -409,7 +421,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                homeFeedPagerAdapter.getHomeFeedFragmentList().get(tab.getPosition()).scrollToTop();
+                HomeFeedFragment homeFeedFragment = homeFeedPagerAdapter.getRegisteredFragment(tab.getPosition());
+                if (homeFeedFragment != null) {
+                    homeFeedFragment.scrollToTop();
+                }
                 homeFeedsTabLayout.resetCollapseState();
             }
         });
@@ -521,10 +536,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void calculateSearchbarView(int offset) {
         int positiveOffset = offset*-1;
 
-        int searchBarTransitionRange =
-                getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
-        int startToTransitionOffset =
-                (getResources().getDimensionPixelSize(R.dimen.banner_background_height))/2;
         int endTransitionOffset =
                 startToTransitionOffset + searchBarTransitionRange;
         int maxTransitionOffset = endTransitionOffset - startToTransitionOffset;
@@ -1085,13 +1096,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         restartBanner(isVisibleToUser);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        HomePageTracking.sendScreen(getActivity(), getScreenName());
-        sendScreen();
-    }
-
     private void restartBanner(boolean isVisibleToUser) {
         if ((isVisibleToUser && getView() != null) && adapter != null) {
             adapter.notifyDataSetChanged();
@@ -1100,7 +1104,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void trackScreen(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() != null) {
-            HomePageTracking.sendScreen(getActivity(), getScreenName());
             sendScreen();
         }
     }
@@ -1295,16 +1298,20 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (homeMainToolbar == null)
             return null;
         ArrayList<ShowCaseObject> list = new ArrayList<>();
+        int statusBarHeight = ViewHelper.getStatusBarHeight(getActivity());
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            statusBarHeight = 0;
+        }
         list.add(new ShowCaseObject(homeMainToolbar.getBtnNotification(),
                 getString(R.string.sc_notif_title),
                 getString(R.string.sc_notif_desc))
         .withCustomTarget(new int[]{
                 homeMainToolbar.getBtnNotification().getLeft(),
                 homeMainToolbar.getBtnNotification().getTop()
-                + ViewHelper.getStatusBarHeight(getActivity()),
+                + statusBarHeight,
                 homeMainToolbar.getBtnNotification().getRight(),
                 homeMainToolbar.getBtnNotification().getBottom()
-                + ViewHelper.getStatusBarHeight(getActivity())
+                + statusBarHeight
         }));
         list.add(new ShowCaseObject(homeMainToolbar.getBtnWishlist(),
                 getString(R.string.sc_wishlist_title),
@@ -1312,10 +1319,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 .withCustomTarget(new int[]{
                 homeMainToolbar.getBtnWishlist().getLeft(),
                 homeMainToolbar.getBtnWishlist().getTop()
-                        + ViewHelper.getStatusBarHeight(getActivity()),
+                        + statusBarHeight,
                 homeMainToolbar.getBtnWishlist().getRight(),
                 homeMainToolbar.getBtnWishlist().getBottom()
-                        + ViewHelper.getStatusBarHeight(getActivity())
+                        + statusBarHeight
         }));
         return list;
     }

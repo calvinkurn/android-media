@@ -37,7 +37,6 @@ import com.tokopedia.affiliate.common.preference.AffiliatePreference;
 import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel;
 import com.tokopedia.affiliate.common.viewmodel.ExploreTitleViewModel;
 import com.tokopedia.affiliate.common.widget.ExploreSearchView;
-import com.tokopedia.affiliate.feature.education.view.activity.AffiliateEducationActivity;
 import com.tokopedia.affiliate.feature.explore.di.DaggerExploreComponent;
 import com.tokopedia.affiliate.feature.explore.view.activity.ExploreActivity;
 import com.tokopedia.affiliate.feature.explore.view.activity.FilterActivity;
@@ -100,18 +99,18 @@ public class ExploreFragment
     private static final String PRODUCT_ID_PARAM = "{product_id}";
     private static final String AD_ID_PARAM = "{ad_id}";
     private static final String USER_ID_USER_ID = "{user_id}";
-    private static final String PRODUCT_ID_QUERY_PARAM = "?product_id=";
     private static final String PERFORMANCE_AFFILIATE = "mp_affiliate";
+    private static final String DISCOVERY_BY_ME = "by-me";
 
     private static final int ITEM_COUNT = 10;
     private static final int FULL_SPAN_COUNT = 2;
     private static final int SINGLE_SPAN_COUNT = 1;
-    private static final int LOGIN_CODE = 13;
-
 
     private static final int TIME_DEBOUNCE_MILIS = 500;
-    public static final int REQUEST_DETAIL_FILTER = 1234;
-    public static final int REQUEST_DETAIL_SORT = 2345;
+    private static final int REQUEST_DETAIL_FILTER = 1234;
+    private static final int REQUEST_DETAIL_SORT = 2345;
+    private static final int REQUEST_CREATE_POST = 1310;
+    private static final int LOGIN_CODE = 13;
 
     private ExploreAdapter adapter;
     private ExploreParams exploreParams;
@@ -382,6 +381,10 @@ public class ExploreFragment
                 super.getItemOffsets(outRect, view, parent, state);
                 int position = parent.getChildAdapterPosition(view);
 
+                if (position < 0 || position >= adapter.getData().size()) {
+                    return;
+                }
+
                 if (position == 0) {
                     outRect.top = (int) getResources().getDimension(R.dimen.dp_16);
                 }
@@ -389,7 +392,8 @@ public class ExploreFragment
                 Visitable visitable = adapter.getData().get(position);
                 if (visitable instanceof ExploreProductViewModel
                         && view.getLayoutParams() instanceof GridLayoutManager.LayoutParams) {
-                    int spanIndex = ((GridLayoutManager.LayoutParams) view.getLayoutParams()).getSpanIndex();
+                    int spanIndex =
+                            ((GridLayoutManager.LayoutParams) view.getLayoutParams()).getSpanIndex();
                     if (spanIndex == 0) {
                         outRect.left = (int) getResources().getDimension(R.dimen.dp_12);
                     } else {
@@ -482,7 +486,7 @@ public class ExploreFragment
         if (isCanDoAction) {
             isCanDoAction = false;
             if (userSession.isLoggedIn()) {
-                presenter.checkIsAffiliate(model.getProductId(), model.getAdId());
+                presenter.checkAffiliateQuota(model.getProductId(), model.getAdId());
             } else {
                 goToLogin();
             }
@@ -493,9 +497,12 @@ public class ExploreFragment
     public void onProductClicked(ExploreCardViewModel model, int adapterPosition) {
         trackProductClick(model, adapterPosition);
         if (getContext() != null && isCanDoAction) {
-            Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, model.getProductId());
+            Intent intent = RouteManager.getIntent(
+                    getContext(),
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL, model.getProductId()
+            );
             intent.putExtra("is_from_explore_affiliate", true);
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CREATE_POST);
         }
         isCanDoAction = false;
     }
@@ -720,15 +727,7 @@ public class ExploreFragment
 
     @Override
     public void onButtonEmptySearchClicked() {
-        presenter.unsubscribeAutoComplete();
-        bottomActionView.show();
-        exploreParams.resetParams();
-        exploreParams.setLoading(false);
-        searchView.getSearchTextView().setText("");
-        searchView.getSearchTextView().setCursorVisible(false);
-        adapter.clearAllElements();
-        adapter.showLoading();
-        loadFirstData(false);
+        refresh();
     }
 
     @Override
@@ -761,27 +760,6 @@ public class ExploreFragment
                 getString(R.string.text_empty_product_title),
                 getString(R.string.text_empty_product_desc)
         ));
-    }
-
-    @Override
-    public void onSuccessCheckAffiliate(boolean isAffiliate, String productId, String adId) {
-        if (isAffiliate) {
-            presenter.checkAffiliateQuota(productId, adId);
-        } else {
-            if (getContext() != null) {
-                String onboardingApplink = ApplinkConst.AFFILIATE_ONBOARDING
-                        .concat(PRODUCT_ID_QUERY_PARAM)
-                        .concat(productId);
-                Intent intent = RouteManager.getIntent(getContext(), onboardingApplink);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            }
-        }
-    }
-
-    @Override
-    public void onErrorCheckAffiliate(String error, String productId, String adId) {
-        isCanDoAction = true;
     }
 
     @Override
@@ -910,7 +888,15 @@ public class ExploreFragment
 
     @Override
     public void refresh() {
-        onButtonEmptySearchClicked();
+        presenter.unsubscribeAutoComplete();
+        bottomActionView.show();
+        exploreParams.resetParams();
+        exploreParams.setLoading(false);
+        searchView.getSearchTextView().setText("");
+        searchView.getSearchTextView().setCursorVisible(false);
+        adapter.clearAllElements();
+        adapter.showLoading();
+        loadFirstData(false);
     }
 
     @Override
@@ -932,7 +918,8 @@ public class ExploreFragment
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_DETAIL_FILTER) {
-                List<FilterViewModel> currentFilter = new ArrayList<>(data.getParcelableArrayListExtra(FilterActivity.PARAM_FILTER_LIST));
+                List<FilterViewModel> currentFilter =
+                        new ArrayList<>(data.getParcelableArrayListExtra(FilterActivity.PARAM_FILTER_LIST));
                 populateFilter(currentFilter);
                 getFilteredFirstData(getOnlySelectedFilter(currentFilter));
             } else if (requestCode == REQUEST_DETAIL_SORT) {
@@ -941,6 +928,8 @@ public class ExploreFragment
                 getSortedData(selectedSort);
             } else if (requestCode == LOGIN_CODE) {
                 initProfileSection();
+            } else if (requestCode == REQUEST_CREATE_POST) {
+                onRefresh();
             }
         }
     }
@@ -958,7 +947,7 @@ public class ExploreFragment
     }
 
     private void trackImpression(List<Visitable<?>> visitables) {
-        for(int i = 0; i < visitables.size(); i++) {
+        for (int i = 0; i < visitables.size(); i++) {
             Visitable visitable = visitables.get(i);
             int position = adapter.getData().size() + i;
 
@@ -1006,7 +995,12 @@ public class ExploreFragment
 
     private void goToEducation() {
         if (getContext() != null) {
-            startActivity(AffiliateEducationActivity.Companion.createIntent(getContext()));
+            Intent intent = RouteManager.getIntent(
+                    getContext(),
+                    ApplinkConst.DISCOVERY_PAGE.replace("{page_id}", DISCOVERY_BY_ME)
+            );
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(intent);
             affiliatePreference.setFirstTimeEducation(userSession.getUserId());
         }
     }
