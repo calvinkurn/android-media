@@ -83,11 +83,11 @@ public class SearchActivity extends DiscoveryActivity
     public static final int TAB_THIRD_POSITION = 2;
     public static final int TAB_SECOND_POSITION = 1;
     public static final int TAB_PRODUCT = 0;
+    public static final String EXTRA_IS_AUTOCOMPLETE= "EXTRA_IS_AUTOCOMPLETE";
 
     private static final String DEEP_LINK_URI = "deep_link_uri";
     private static final String EXTRA_PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
     private static final String EXTRA_FORCE_SWIPE_TO_SHOP = "FORCE_SWIPE_TO_SHOP";
-    private static final String EXTRA_IS_AUTOCOMPLETE= "EXTRA_IS_AUTOCOMPLETE";
     private static final String EXTRA_SEARCH_PARAMETER_MODEL = "EXTRA_SEARCH_PARAMETER_MODEL";
 
     private ProductListFragment productListFragment;
@@ -243,10 +243,8 @@ public class SearchActivity extends DiscoveryActivity
 
         if (productViewModel != null) {
             handleIntentWithProductViewModel(productViewModel);
-        } else if (!TextUtils.isEmpty(searchParameter.getSearchQuery())) {
-            handleIntentWithSearchQuery(searchParameter);
         } else {
-            handleIntentAutoComplete(searchParameter);
+            handleIntentWithSearchQuery(searchParameter);
         }
     }
 
