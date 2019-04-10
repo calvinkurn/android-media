@@ -809,6 +809,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
         });
 
+        tvChangeSelectedCourierRecommendation.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_grey_round));
         tvChangeSelectedCourierRecommendation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -817,10 +818,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                         currentAddress, shipmentCartItemModel, shopShipmentList, getAdapterPosition());
             }
         });
+
+        // Logistic Promo
         if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
             llLogPromo.setVisibility(View.VISIBLE);
-            tvLogPromoMsg.setText(shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage());
             tvLogPromoLabel.setText(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc());
+            tvChangeSelectedCourierRecommendation.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_disabled));
+            tvChangeSelectedCourierRecommendation.setOnClickListener(null);
         }
 
         boolean isCourierSelected = shipmentDetailData != null
@@ -852,6 +856,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tvSelectedPriceRecommendation.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     shipmentDetailData.getSelectedCourier().getShipperPrice(), false));
             llCourierRecommendationStateLoading.setVisibility(View.GONE);
+            tvLogPromoMsg.setText(shipmentDetailData.getSelectedCourier().getLogPromoMsg());
         } else {
             llSelectedShipmentRecommendation.setVisibility(View.GONE);
             llSelectShipmentRecommendation.setVisibility(View.VISIBLE);
