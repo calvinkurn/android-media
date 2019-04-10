@@ -2,7 +2,9 @@ package com.tokopedia.kol.feature.post.view.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Caption
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Footer
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateBody
+import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
@@ -36,7 +38,8 @@ class KolPostDetailViewHolder(private val kolView: View,
     override fun bind(element: DynamicPostViewModel?) {
         super.bind(element)
         val footer = kolView.findViewById<View>(R.id.footer)
-        footer.visibility = View.GONE
+        val footerCta = footer.findViewById<View>(R.id.footerCta)
+        footerCta.visibility = View.GONE
     }
 
     override fun bindCaption(caption: Caption, template: TemplateBody) {

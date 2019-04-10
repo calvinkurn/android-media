@@ -410,7 +410,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onRefresh() {
         newFeed.setVisibility(View.GONE);
-        adapter.resetEndlessScrollState();
         presenter.refreshPage();
     }
 
@@ -600,6 +599,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
+        adapter.resetEndlessScrollState();
         trackFeedImpression(listFeed);
 
         adapter.setList(listFeed);
