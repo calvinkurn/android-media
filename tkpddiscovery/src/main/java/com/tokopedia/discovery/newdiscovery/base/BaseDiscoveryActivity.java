@@ -151,26 +151,6 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
-
-        JSONArray afProdIds = new JSONArray();
-        HashMap<String, String> category = new HashMap<String, String>();
-        ArrayList<String> prodIdArray = new ArrayList<>();
-
-        if (productViewModel.getProductList().size() > 0) {
-            for (int i = 0; i < productViewModel.getProductList().size(); i++) {
-                if (i < 3) {
-                    prodIdArray.add(productViewModel.getProductList().get(i).getProductID());
-                    afProdIds.put(productViewModel.getProductList().get(i).getProductID());
-                } else {
-                    break;
-                }
-                category.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
-
-            }
-        }
-        TrackingUtils.eventAppsFlyerViewListingSearch(this,afProdIds,productViewModel.getQuery(),prodIdArray);
-        sendMoEngageSearchAttempt(this, productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
-
         handleMoveToSearchActivity(productViewModel);
     }
 

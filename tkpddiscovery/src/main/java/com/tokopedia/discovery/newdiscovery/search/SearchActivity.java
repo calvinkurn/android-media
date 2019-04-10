@@ -153,37 +153,6 @@ public class SearchActivity extends DiscoveryActivity
         return new SearchParameter(deepLinkURI == null ? "" : deepLinkURI);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        unregisterShake();
-
-        if(!isHandlingIntent && !hasSearchData()) {
-            showAutoCompleteOnResume();
-        }
-    }
-
-    private boolean hasSearchData() {
-        return searchSectionPagerAdapter != null
-                && searchSectionPagerAdapter.getCount() > 0;
-    }
-
-    private void showAutoCompleteOnResume() {
-        if(searchView.isSearchOpen()) {
-            searchView.searchTextViewRequestFocus();
-            searchView.searchTextViewSetCursorSelectionAtTextEnd();
-            forceShowKeyBoard();
-        }
-        else {
-            searchView.showSearch(true, false);
-        }
-    }
-
-    private void forceShowKeyBoard() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-    }
-
     public static Intent newInstance(Context context, Bundle bundle) {
         Intent intent = new Intent(context, SearchActivity.class);
         intent.putExtras(bundle);
@@ -194,11 +163,6 @@ public class SearchActivity extends DiscoveryActivity
                               ProductViewModel productViewModel,
                               boolean forceSwipeToShop) {
         if (activity != null) {
-            // Set empty DynamicFilterModel as temporary solution for TransactionTooLargeException
-            // Dynamic Filter Model will be loaded inside ProductListFragment for now
-            // For long term solution, ProductViewModel will not be sent from SearchActivity, but should be loaded inside ProductListFragment
-            productViewModel.setDynamicFilterModel(new DynamicFilterModel());
-
             Intent intent = new Intent(activity, SearchActivity.class);
             intent.putExtra(EXTRA_PRODUCT_VIEW_MODEL, productViewModel);
             intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, forceSwipeToShop);
@@ -287,10 +251,9 @@ public class SearchActivity extends DiscoveryActivity
     private void handleIntentWithProductViewModel(ProductViewModel productViewModel) {
         this.searchParameter = productViewModel.getSearchParameter();
 
-        setLastQuerySearchView(productViewModel.getQuery());
+        setLastQuerySearchView(searchParameter.getSearchQuery());
         loadSection(productViewModel, forceSwipeToShop);
-        setToolbarTitle(productViewModel.getQuery());
-        bottomSheetFilterView.setFilterResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
+        setToolbarTitle(searchParameter.getSearchQuery());
 
         isHandlingIntent = false;
     }
@@ -347,6 +310,37 @@ public class SearchActivity extends DiscoveryActivity
                     fileExtension.toLowerCase());
         }
         return mimeType;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        unregisterShake();
+
+        if(!isHandlingIntent && !hasSearchData()) {
+            showAutoCompleteOnResume();
+        }
+    }
+
+    private boolean hasSearchData() {
+        return searchSectionPagerAdapter != null
+                && searchSectionPagerAdapter.getCount() > 0;
+    }
+
+    private void showAutoCompleteOnResume() {
+        if(searchView.isSearchOpen()) {
+            searchView.searchTextViewRequestFocus();
+            searchView.searchTextViewSetCursorSelectionAtTextEnd();
+            forceShowKeyBoard();
+        }
+        else {
+            searchView.showSearch(true, false);
+        }
+    }
+
+    private void forceShowKeyBoard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -416,9 +410,9 @@ public class SearchActivity extends DiscoveryActivity
         List<SearchSectionItem> searchSectionItemList = new ArrayList<>();
 
         if (productViewModel.isHasCatalog()) {
-            populateFourTabItem(searchSectionItemList, productViewModel);
+            populateFourTabItem(searchSectionItemList);
         } else {
-            populateThreeTabItem(searchSectionItemList, productViewModel);
+            populateThreeTabItem(searchSectionItemList);
         }
         searchSectionPagerAdapter = new SearchSectionPagerAdapter(getSupportFragmentManager());
         searchSectionPagerAdapter.setData(searchSectionItemList);
@@ -445,18 +439,16 @@ public class SearchActivity extends DiscoveryActivity
         return hasCatalogTab ? 2 : 1;
     }
 
-    private void populateFourTabItem(List<SearchSectionItem> searchSectionItemList,
-                                      ProductViewModel productViewModel) {
-
-        productListFragment = getProductFragment(productViewModel);
+    private void populateFourTabItem(List<SearchSectionItem> searchSectionItemList) {
+        productListFragment = getProductFragment();
         catalogFragment = getCatalogFragment();
         shopListFragment = getShopFragment();
-        profileListFragment = getProfileListFragment(productViewModel.getQuery(), this);
+        profileListFragment = getProfileListFragment(searchParameter.getSearchQuery(), this);
 
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
         searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
-        searchSectionItemList.add(new SearchSectionItem(getString(R.string.title_profile), profileListFragment));
+        searchSectionItemList.add(new SearchSectionItem(profileTabTitle, profileListFragment));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
 
@@ -496,8 +488,8 @@ public class SearchActivity extends DiscoveryActivity
         return CatalogFragment.newInstance(searchParameter);
     }
 
-    private ProductListFragment getProductFragment(ProductViewModel productViewModel) {
-        return ProductListFragment.newInstance(productViewModel);
+    private ProductListFragment getProductFragment() {
+        return ProductListFragment.newInstance(searchParameter, isForceSearch());
     }
 
     private ShopListFragment getShopFragment() {
@@ -508,16 +500,14 @@ public class SearchActivity extends DiscoveryActivity
         return ProfileListFragment.Companion.newInstance(query, searchNavigationListener, this);
     }
 
-    private void populateThreeTabItem(List<SearchSectionItem> searchSectionItemList,
-                                      ProductViewModel productViewModel) {
-
-        productListFragment = getProductFragment(productViewModel);
+    private void populateThreeTabItem(List<SearchSectionItem> searchSectionItemList) {
+        productListFragment = getProductFragment();
         shopListFragment = getShopFragment();
-        profileListFragment = getProfileListFragment(productViewModel.getQuery(), this);
+        profileListFragment = getProfileListFragment(searchParameter.getSearchQuery(), this);
 
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
-        searchSectionItemList.add(new SearchSectionItem(getString(R.string.title_profile), profileListFragment));
+        searchSectionItemList.add(new SearchSectionItem(profileTabTitle, profileListFragment));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
 

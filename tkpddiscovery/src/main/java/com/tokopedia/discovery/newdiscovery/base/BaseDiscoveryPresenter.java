@@ -35,7 +35,7 @@ public class BaseDiscoveryPresenter<T extends CustomerView, D extends BaseDiscov
     }
 
     @Override
-    public void requestProduct(SearchParameter searchParameter, boolean forceSearch, boolean requestOfficialStoreBanner) {
+    public void initiateSearch(SearchParameter searchParameter, boolean forceSearch) {
         checkDiscoveryViewAttached();
     }
 
