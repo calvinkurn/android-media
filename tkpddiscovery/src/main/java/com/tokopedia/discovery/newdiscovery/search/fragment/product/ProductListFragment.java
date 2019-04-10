@@ -303,7 +303,7 @@ public class ProductListFragment extends SearchSectionFragment
                 }
             }
         }
-        SearchTracking.eventImpressionSearchResultProduct(getActivity(), dataLayerList, getQueryKey());
+        SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey());
     }
 
     private void loadMoreProduct(final int startRow) {
