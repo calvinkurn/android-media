@@ -57,7 +57,7 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
             gqlValidatetradeIn.clearRequest();
             gqlValidatetradeIn.addRequest(new
                     GraphqlRequest(GraphqlHelper.loadRawString(activityWeakReference.get().getResources(),
-                    R.raw.gql_validate_tradein), ValidateTradePDP.class, variables,false));
+                    R.raw.gql_validate_tradein), ValidateTradePDP.class, variables, false));
             gqlValidatetradeIn.execute(new Subscriber<GraphqlResponse>() {
                 @Override
                 public void onCompleted() {
@@ -77,10 +77,10 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
                         ValidateTradeInResponse tradeInResponse = tradePDP.getResponse();
                         if (tradeInResponse != null) {
                             responseData.setValue(tradeInResponse);
-                            if(tradeInResponse.isEligible()){
-                                LocalBroadcastManager.getInstance(activityWeakReference.get()).sendBroadcast(new Intent(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE));
+                            Intent intent = new Intent(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE);
+                            intent.putExtra(TradeInTextView.EXTRA_ISELLIGIBLE,tradeInResponse.isEligible());
+                            LocalBroadcastManager.getInstance(activityWeakReference.get()).sendBroadcast(intent);
 
-                            }
                             tradeInParams.setIsEligible(tradeInResponse.isEligible() ? 1 : 0);
                             tradeInParams.setUsedPrice(tradeInResponse.getUsedPrice());
                             tradeInParams.setRemainingPrice(tradeInResponse.getRemainingPrice());

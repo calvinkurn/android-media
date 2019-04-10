@@ -138,7 +138,7 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
     private static Intent getApplinkIntent(Context context, String orderId) {
         if (context.getApplicationContext() instanceof ResolutionRouter) {
             return ((ResolutionRouter)context.getApplicationContext()).getApplinkIntent(context,
-                    String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.RESO_CREATE, orderId));
+                    String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_CREATE, orderId));
         }
         return null;
     }

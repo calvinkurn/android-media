@@ -235,7 +235,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     override fun onItemDeleted(position: Int) {
-        val relatedProductItem = viewModel.relatedProducts[position]
+        val relatedProductItem = viewModel.relatedProducts.getOrNull(position) ?: return
 
         viewModel.relatedProducts.removeAt(position)
         adapter.notifyItemRemoved(position)
@@ -256,8 +256,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     abstract fun fetchContentForm()
 
     abstract fun onRelatedAddProductClick()
-
-    protected open fun getAddRelatedProductText(): String = getString(R.string.af_add_product_tag)
 
     protected open fun initVar(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
@@ -484,7 +482,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private fun updateThumbnail() {
         if (viewModel.completeImageList.isNotEmpty()) {
-            thumbnail.loadImageRounded(viewModel.completeImageList.first().path?:"", 25f)
+            thumbnail.loadImageRounded(viewModel.completeImageList.first().path, 25f)
+            btnPlay.showWithCondition(viewModel.completeImageList.first().type == MediaType.VIDEO)
             edit.show()
             carouselIcon.setOnClickListener {
                 goToMediaPreview()

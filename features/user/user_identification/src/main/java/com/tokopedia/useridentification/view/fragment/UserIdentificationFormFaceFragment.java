@@ -55,6 +55,7 @@ public class UserIdentificationFormFaceFragment extends
                 analytics.eventClickNextSelfiePage();
                 Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
                         PARAM_VIEW_MODE_FACE);
+                intent.putExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, projectId);
                 startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
             }
         });

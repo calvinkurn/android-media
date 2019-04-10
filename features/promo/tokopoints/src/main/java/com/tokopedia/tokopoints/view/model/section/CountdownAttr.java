@@ -8,36 +8,37 @@ public class CountdownAttr {
 
     @SerializedName("showTimer")
     @Expose
-    private Boolean showTimer;
+    private boolean showTimer;
+
     @SerializedName("activeCountDown")
     @Expose
-    private Integer activeCountDown;
+    private long activeCountDown;
+
     @SerializedName("expiredCountDown")
     @Expose
-    private Integer expiredCountDown;
+    private long expiredCountDown;
 
-    public Boolean getShowTimer() {
+    public boolean isShowTimer() {
         return showTimer;
     }
 
-    public void setShowTimer(Boolean showTimer) {
+    public void setShowTimer(boolean showTimer) {
         this.showTimer = showTimer;
     }
 
-    public Integer getActiveCountDown() {
+    public long getActiveCountDown() {
         return activeCountDown;
     }
 
-    public void setActiveCountDown(Integer activeCountDown) {
+    public void setActiveCountDown(long activeCountDown) {
         this.activeCountDown = activeCountDown;
     }
 
-    public Integer getExpiredCountDown() {
+    public long getExpiredCountDown() {
         return expiredCountDown;
     }
 
-    public void setExpiredCountDown(Integer expiredCountDown) {
+    public void setExpiredCountDown(long expiredCountDown) {
         this.expiredCountDown = expiredCountDown;
     }
-
 }

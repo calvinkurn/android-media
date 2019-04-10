@@ -4,11 +4,10 @@ import android.os.Bundle;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.discovery.model.DataValue;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentView;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 
 import java.util.List;
 
@@ -65,4 +64,6 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
     void notifyAdapter();
 
     void stopTracePerformanceMonitoring();
+
+    void initQuickFilter(List<Filter> quickFilterList);
 }

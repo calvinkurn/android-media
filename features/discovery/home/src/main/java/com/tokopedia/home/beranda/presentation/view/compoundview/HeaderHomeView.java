@@ -269,10 +269,10 @@ public class HeaderHomeView extends BaseCustomView {
                         GradientDrawable shapeDrawable = (GradientDrawable) drawable;
                         shapeDrawable.setColorFilter(Color.parseColor(sectionContentItem.getTagAttributes().getBackgroundColour()), PorterDuff.Mode.SRC_ATOP);
                         tokopointsTextView.setBackground(shapeDrawable);
-                        int horizontalPadding = getContext().getResources().getDimensionPixelSize(R.dimen.dp_3);
-                        int verticalPadding = getContext().getResources().getDimensionPixelSize(R.dimen.dp_2);
+                        int horizontalPadding = getContext().getResources().getDimensionPixelSize(R.dimen.dp_2);
                         tokopointsTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimension(R.dimen.sp_8));
                         tokopointsTextView.setTypeface(null, Typeface.NORMAL);
+                        tokopointsTextView.setPadding(horizontalPadding, 0, horizontalPadding, 0);
                     }
                     tokopointsTextView.setTextColor(getResources().getColor(R.color.white));
                 } else {

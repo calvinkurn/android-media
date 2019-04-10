@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi;
+import com.tokopedia.affiliatecommon.domain.DeletePostUseCase;
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kol.common.data.source.api.KolApi;
@@ -59,6 +60,7 @@ public class KolProfileModule {
                                   ToggleFavouriteShopUseCase toggleFavouriteShopUseCase,
                                   SendVoteUseCase sendVoteUseCase,
                                   TrackAffiliateClickUseCase trackAffiliateClickUseCase,
+                                  DeletePostUseCase deletePostUseCase,
                                   UserSessionInterface userSession) {
         return new KolPostDetailPresenter(getPostDetailUseCase,
                 likeKolPostUseCase,
@@ -66,6 +68,7 @@ public class KolProfileModule {
                 toggleFavouriteShopUseCase,
                 sendVoteUseCase,
                 trackAffiliateClickUseCase,
+                deletePostUseCase,
                 userSession);
     }
 

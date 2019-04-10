@@ -29,6 +29,7 @@ import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.analytics.UserIdentificationAnalytics;
+import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
 
 import java.io.File;
 
@@ -109,7 +110,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         if (getArguments() != null) {
             viewMode = getArguments().getInt(ARG_VIEW_MODE, 1);
         }
-        analytics = UserIdentificationAnalytics.createInstance();
+        analytics = UserIdentificationAnalytics.createInstance(getActivity().getIntent().getIntExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, 1));
     }
 
     @Nullable

@@ -2,7 +2,7 @@ package com.tokopedia.discovery.newdiscovery.base;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 
 /**
  * Created by hangnadi on 10/3/17.

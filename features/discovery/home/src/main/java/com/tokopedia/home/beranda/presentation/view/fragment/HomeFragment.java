@@ -166,6 +166,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     int startToMainToolbarShadowTransition = 0;
 
+    private int startToTransitionOffset = 0;
+    private int searchBarTransitionRange = 0;
+
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -180,6 +183,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         performanceMonitoring = PerformanceMonitoring.start(BERANDA_TRACE);
         userSession = new UserSession(getActivity());
         trackingQueue = new TrackingQueue(getActivity());
+
+        searchBarTransitionRange =
+                getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
+        startToTransitionOffset =
+                (getResources().getDimensionPixelSize(R.dimen.banner_background_height))/2;
     }
 
     @Override
@@ -413,7 +421,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                homeFeedPagerAdapter.getHomeFeedFragmentList().get(tab.getPosition()).scrollToTop();
+                HomeFeedFragment homeFeedFragment = homeFeedPagerAdapter.getRegisteredFragment(tab.getPosition());
+                if (homeFeedFragment != null) {
+                    homeFeedFragment.scrollToTop();
+                }
                 homeFeedsTabLayout.resetCollapseState();
             }
         });
@@ -525,10 +536,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void calculateSearchbarView(int offset) {
         int positiveOffset = offset*-1;
 
-        int searchBarTransitionRange =
-                getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
-        int startToTransitionOffset =
-                (getResources().getDimensionPixelSize(R.dimen.banner_background_height))/2;
         int endTransitionOffset =
                 startToTransitionOffset + searchBarTransitionRange;
         int maxTransitionOffset = endTransitionOffset - startToTransitionOffset;
