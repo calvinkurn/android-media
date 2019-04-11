@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.data.model.PopularSearch
-import com.tokopedia.hotel.destination.view.adapter.PopularSearchClickListener
 import kotlinx.android.synthetic.main.item_popular_search.view.*
 
 /**
