@@ -14,6 +14,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kol.KolComponentInstance
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.di.DaggerProfileComponent
@@ -53,7 +54,7 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        mainView.setPadding(0, getStatusBarHeight(), 0, 0)
+        mainView.setMargin(0, getStatusBarHeight(), 0, 0)
         presenter.attachView(this)
         initVar()
         super.onViewCreated(view, savedInstanceState)
