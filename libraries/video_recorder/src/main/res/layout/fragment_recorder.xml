@@ -18,8 +18,8 @@
         app:cameraAudio="on"
         app:cameraHdr="off"
         app:cameraFacing="back"
-        app:cameraVideoSizeMaxWidth="720"
-        app:cameraVideoSizeMaxHeight="1280"
+        app:cameraVideoSizeMaxWidth="576"
+        app:cameraVideoSizeMaxHeight="1024"
         app:cameraGestureTap="focusWithMarker"/>
 
     <RelativeLayout
