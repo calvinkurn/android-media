@@ -331,17 +331,25 @@ public class ShippingDurationBottomsheet extends BottomSheets
             @Override
             public void onClick(View view) {
                 ShippingDurationViewModel serviceData = shippingDurationAdapter.getRatesDataFromLogisticPromo(data.getServiceId());
-                if (serviceData != null) {
-                    CourierItemData courierData = presenter.getCourierItemDataById(data.getShipperProductId(), serviceData.getShippingCourierViewModelList());
-                    courierData.setLogPromoCode(data.getPromoCode());
-                    courierData.setLogPromoMsg(data.getDisableText());
-                    shippingDurationBottomsheetListener.onLogisticPromoChosen(
-                            serviceData.getShippingCourierViewModelList(), courierData,
-                            presenter.getRecipientAddressModel(), mCartPosition, data.getServiceId(),
-                            serviceData.getServiceData().getServiceName(), false, data.getPromoCode());
+                if (serviceData == null) {
+                    showErrorPage(getString(R.string.logistic_promo_serviceid_mismatch_message));
                     tkpdDialog.dismiss();
-                    dismiss();
+                    return;
                 }
+                CourierItemData courierData = presenter.getCourierItemDataById(data.getShipperProductId(), serviceData.getShippingCourierViewModelList());
+                if (courierData == null) {
+                    showErrorPage(getString(R.string.logistic_promo_serviceid_mismatch_message));
+                    tkpdDialog.dismiss();
+                    return;
+                }
+                courierData.setLogPromoCode(data.getPromoCode());
+                courierData.setLogPromoMsg(data.getDisableText());
+                shippingDurationBottomsheetListener.onLogisticPromoChosen(
+                        serviceData.getShippingCourierViewModelList(), courierData,
+                        presenter.getRecipientAddressModel(), mCartPosition, data.getServiceId(),
+                        serviceData.getServiceData().getServiceName(), false, data.getPromoCode());
+                tkpdDialog.dismiss();
+                dismiss();
             }
         });
         tkpdDialog.show();
