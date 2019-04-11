@@ -21,6 +21,7 @@ import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.profile.view.adapter.factory.ProfileEmptyTypeFactoryImpl
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
 import com.tokopedia.user.session.UserSession
+import kotlinx.android.synthetic.main.fragment_profile.*
 import javax.inject.Inject
 
 /**
@@ -52,6 +53,8 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        mainView.fitsSystemWindows = false
+        mainView.invalidate()
         presenter.attachView(this)
         initVar()
         super.onViewCreated(view, savedInstanceState)
