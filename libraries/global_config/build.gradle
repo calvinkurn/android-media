@@ -15,4 +15,6 @@ buildscript {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation 'org.assertj:assertj-core:3.8.0'
 }

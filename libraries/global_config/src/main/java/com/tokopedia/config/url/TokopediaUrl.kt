@@ -11,6 +11,7 @@ class TokopediaUrl {
         private const val LOCK = "LOCK"
 
         @GuardedBy(LOCK)
+        @Volatile
         private var tokopediaUrl: Url? = null
 
         fun init(context: Context?) {
@@ -22,7 +23,7 @@ class TokopediaUrl {
             }
         }
 
-        private fun selectInstance(env: String?): Url {
+        internal fun selectInstance(env: String?): Url {
             return when(env) {
                 Env.STAGING.value -> staging
                 else ->  live
