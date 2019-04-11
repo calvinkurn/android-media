@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -187,7 +186,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
         swipeToRefresh.setOnRefreshListener(this);
 
-        KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this, this, this, this, this, this
+        KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this,this, this, this, this, this, this
                 , this, this, this, userSession);
         adapter = new KolPostDetailAdapter(typeFactory);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -227,17 +226,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onEmptyDetailFeed() {
-        adapter.showEmpty(getContext(), new BaseEmptyViewHolder.Callback() {
-            @Override
-            public void onEmptyContentItemTextClicked() {
-                finishActivity();
-            }
+        adapter.showEmpty();
+    }
 
-            @Override
-            public void onEmptyButtonClicked() {
-                finishActivity();
-            }
-        });
+    @Override
+    public void onEmptyDetailClicked() {
+        getActivity().finish();
     }
 
     private void finishActivity() {

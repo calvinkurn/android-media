@@ -155,11 +155,19 @@ open class DynamicPostViewHolder(v: View,
             }
 
             itemView.menu.shouldShowWithAction(template.report) {
-                itemView.menu.setOnClickListener {
-                    listener.onMenuClick(adapterPosition, postId, header.reportable, header.deletable, header.editable)
+                if (canShowMenu(header.reportable, header.deletable, header.editable)) {
+                    itemView.menu.setOnClickListener {
+                        listener.onMenuClick(adapterPosition, postId, header.reportable, header.deletable, header.editable)
+                    }
+                } else{
+                    itemView.menu.hide()
                 }
             }
         }
+    }
+
+    private fun canShowMenu(reportable: Boolean, deletable: Boolean, editable: Boolean): Boolean {
+        return reportable || deletable || editable
     }
 
     private fun onAvatarClick(redirectUrl: String) {
