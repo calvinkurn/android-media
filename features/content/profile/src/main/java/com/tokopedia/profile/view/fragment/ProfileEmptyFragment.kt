@@ -55,6 +55,7 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mainView.fitsSystemWindows = false
+        mainView.setPadding(0, 0, 0, 0)
         mainView.requestLayout()
         swipeToRefresh.clipToPadding = true
         swipeToRefresh.requestLayout()
