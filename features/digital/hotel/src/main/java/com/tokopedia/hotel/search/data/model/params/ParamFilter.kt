@@ -26,7 +26,7 @@ data class ParamFilter(
 
         @SerializedName("reviewScore")
         @Expose
-        var reviewScore: Int = 0,
+        var reviewScore: Int = 1,
 
         @SerializedName("hotelFacilities")
         @Expose
@@ -42,7 +42,7 @@ data class ParamFilter(
 
         @SerializedName("platformType")
         @Expose
-        var platformType: List<Int> = listOf(),
+        var platformType: Int = 0,
 
         @SerializedName("propertyType")
         @Expose
