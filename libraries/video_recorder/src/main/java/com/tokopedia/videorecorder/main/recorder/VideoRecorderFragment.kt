@@ -59,43 +59,9 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
         videoCallback = context as VideoPickerCallback
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            context?.let {
-                permissionHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
-            }
-        }
-    }
-
-    private fun getPermissions(): Array<String> {
-        return arrayOf(
-                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
-                PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
-                PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //init runtime permission
-        activity?.let {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                permissionHelper = PermissionCheckerHelper()
-                permissionHelper.request(it, getPermissions(), {
-                    initView()
-                }, {
-                    showToast(it, getString(R.string.vidpick_permission_denied))
-                    it.finish()
-                })
-            } else {
-                initView()
-            }
-        }
-
-    }
-
-    private fun initView() {
         cameraPrepared()
         //set max progress value
         progress.max = DURATION_MAX
@@ -113,6 +79,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
                 setCameraFlash()
             }
         }
+
     }
 
     private fun cameraPrepared() {

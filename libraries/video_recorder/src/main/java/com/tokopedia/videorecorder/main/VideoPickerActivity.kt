@@ -69,7 +69,17 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initView()
+        //init runtime permission
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            permissionCheckerHelper = PermissionCheckerHelper()
+            permissionCheckerHelper.request(this, getPermissions(), {
+                initView()
+            }, {
+                finish()
+            })
+        } else {
+            initView()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -80,6 +90,20 @@ open class VideoPickerActivity : BaseSimpleActivity(),
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            permissionCheckerHelper.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
+        }
+    }
+
+    private fun getPermissions(): Array<String> {
+        return arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
+                PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
+                PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO)
     }
 
     private fun initView() {
@@ -187,7 +211,6 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         videoPath = ""
         initViewPager()
         onVideoVisible()
-
         onVideoRecorder(StateRecorder.Stop)
     }
 
@@ -215,7 +238,6 @@ open class VideoPickerActivity : BaseSimpleActivity(),
      * @method(onVideoTaken(file))
      * @method(onPreviewVideoVisible)
      * @method(onVideoVisible)
-     * @method(onVideoRecord)
      * @method(onVideoRecorder)
      */
 
@@ -238,13 +260,6 @@ open class VideoPickerActivity : BaseSimpleActivity(),
                 mp.isLooping = true //loop
                 playVideoPreview()
             }
-        }
-    }
-
-    override fun onVideoRecorder(state: StateRecorder) {
-        when (state) {
-            StateRecorder.Start -> tabPicker.tabClickable(false)
-            StateRecorder.Stop -> tabPicker.tabClickable(true)
         }
     }
 
@@ -278,6 +293,13 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         containerPicker.show()
         layoutPreview.hide()
         btnDone.hide()
+    }
+
+    override fun onVideoRecorder(state: StateRecorder) {
+        when (state) {
+            StateRecorder.Start -> tabPicker.tabClickable(false)
+            StateRecorder.Stop -> tabPicker.tabClickable(true)
+        }
     }
 
     private fun sendViewToBack(child: View) {

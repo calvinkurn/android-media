@@ -14,7 +14,6 @@
             android:name=".main.VideoPickerActivity"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait"
-            android:hardwareAccelerated="false"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"/>
 
