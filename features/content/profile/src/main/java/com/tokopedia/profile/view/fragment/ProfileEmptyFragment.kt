@@ -53,16 +53,7 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        mainView.fitsSystemWindows = false
-        app_bar_layout.fitsSystemWindows = false
-        collapsing.fitsSystemWindows = false
-        frameLayout.fitsSystemWindows = false
-        swipeToRefresh.clipToPadding = true
-        swipeToRefresh.invalidate()
-        frameLayout.invalidate()
-        collapsing.invalidate()
-        app_bar_layout.invalidate()
-        mainView.requestLayout()
+        mainView.setPadding(0, getStatusBarHeight(), 0, 0)
         presenter.attachView(this)
         initVar()
         super.onViewCreated(view, savedInstanceState)
@@ -142,5 +133,18 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
             throw IllegalStateException("Application must implement "
                     .plus(ProfileModuleRouter::class.java.simpleName))
         }
+    }
+
+    fun getStatusBarHeight(): Int {
+        var result = 0
+        val resourceId = resources.getIdentifier(
+                "status_bar_height",
+                "dimen",
+                "android"
+        )
+        if (resourceId > 0) {
+            result = resources.getDimensionPixelSize(resourceId)
+        }
+        return result
     }
 }
