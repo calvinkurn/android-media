@@ -62,7 +62,7 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
         frameLayout.invalidate()
         collapsing.invalidate()
         app_bar_layout.invalidate()
-        mainView.invalidate()
+        mainView.requestLayout()
         presenter.attachView(this)
         initVar()
         super.onViewCreated(view, savedInstanceState)
