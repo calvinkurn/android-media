@@ -18,6 +18,7 @@
         app:cameraAudio="on"
         app:cameraHdr="off"
         app:cameraFacing="back"
+        app:cameraVideoBitRate="990000"
         app:cameraVideoSizeMaxWidth="576"
         app:cameraVideoSizeMaxHeight="1024"
         app:cameraGestureTap="focusWithMarker"/>
