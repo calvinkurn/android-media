@@ -54,6 +54,9 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mainView.fitsSystemWindows = false
+        app_bar_layout.fitsSystemWindows = false
+        collapsing.fitsSystemWindows = false
+        frameLayout.fitsSystemWindows = false
         mainView.invalidate()
         presenter.attachView(this)
         initVar()
