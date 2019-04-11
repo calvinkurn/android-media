@@ -1,7 +1,6 @@
 package com.tokopedia.profile.view.fragment
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
@@ -15,7 +14,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kol.KolComponentInstance
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.di.DaggerProfileComponent
@@ -23,7 +21,6 @@ import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.profile.view.adapter.factory.ProfileEmptyTypeFactoryImpl
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.fragment_profile.*
 import javax.inject.Inject
 
 /**
@@ -51,18 +48,10 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+        return inflater.inflate(R.layout.fragment_profile_empty, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        mainView.fitsSystemWindows = false
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            mainView.requestApplyInsets()
-        } else {
-            mainView.requestFitSystemWindows()
-        }
-        swipeToRefresh.clipToPadding = true
-        swipeToRefresh.requestLayout()
         presenter.attachView(this)
         initVar()
         super.onViewCreated(view, savedInstanceState)
