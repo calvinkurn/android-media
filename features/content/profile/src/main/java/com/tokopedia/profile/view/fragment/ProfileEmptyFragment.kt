@@ -138,17 +138,4 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
                     .plus(ProfileModuleRouter::class.java.simpleName))
         }
     }
-
-    fun getStatusBarHeight(): Int {
-        var result = 0
-        val resourceId = resources.getIdentifier(
-                "status_bar_height",
-                "dimen",
-                "android"
-        )
-        if (resourceId > 0) {
-            result = resources.getDimensionPixelSize(resourceId)
-        }
-        return result
-    }
 }
