@@ -17,7 +17,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.crashlytics.android.Crashlytics;
@@ -30,7 +29,6 @@ import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
-import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
@@ -54,7 +52,6 @@ import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.common.IndiSession;
 import com.tokopedia.changepassword.ChangePasswordRouter;
-import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.chatbot.ChatbotRouter;
 import com.tokopedia.checkout.CartConstant;
@@ -86,7 +83,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.screen.IndexScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -102,7 +98,6 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
@@ -198,7 +193,6 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.channel.view.fragment.ChannelFragment;
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
-import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.groupchat.room.view.activity.PlayActivity;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.IHomeRouter;
@@ -284,7 +278,6 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.normalcheckout.router.NormalCheckoutRouter;
-import com.tokopedia.notifcenter.NotifCenterRouter;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.nps.NpsRouter;
@@ -357,7 +350,6 @@ import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
-import com.tokopedia.settingbank.BankRouter;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
@@ -418,7 +410,6 @@ import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokopoints.TokopointRouter;
-import com.tokopedia.tokopoints.view.activity.TokoPointsHomeActivity;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.dashboard.TopAdsDashboardRouter;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
@@ -428,7 +419,6 @@ import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.constant.TrainUrl;
@@ -443,7 +433,6 @@ import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
-import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.others.CreditCardFingerPrintUseCase;
@@ -455,7 +444,6 @@ import com.tokopedia.transaction.wallet.WalletActivity;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.cod.Data;
-import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.usecase.UseCase;
@@ -503,7 +491,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         SellerModuleRouter,
         IDigitalModuleRouter,
         PdpRouter,
-        OtpRouter,
         IPaymentModuleRouter,
         TransactionRouter,
         IReactNativeRouter,
@@ -512,7 +499,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         IWalletRouter,
         LoyaltyRouter,
         ReputationRouter,
-        SessionRouter,
         AbstractionRouter,
         FlightModuleRouter,
         LogisticRouter,
@@ -550,19 +536,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OmsModuleRouter,
         ProductEditModuleRouter,
         TopAdsWebViewRouter,
-        BankRouter,
         ShopSettingRouter,
         ChangePasswordRouter,
         TrainRouter,
         WithdrawRouter,
-        NotifCenterRouter,
         EventModuleRouter,
         ChallengesModuleRouter,
         com.tokopedia.tkpdpdp.ProductDetailRouter,
         MitraToppersRouter,
         PaymentSettingRouter,
         DigitalBrowseRouter,
-        ChangePhoneNumberRouter,
         PhoneVerificationRouter,
         TalkRouter,
         TkpdAppsFlyerRouter,

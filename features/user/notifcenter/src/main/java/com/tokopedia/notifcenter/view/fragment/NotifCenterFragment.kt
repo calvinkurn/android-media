@@ -11,12 +11,11 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Menus
-import com.tokopedia.notifcenter.NotifCenterRouter
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.R.string.notif_no_info_desc
 import com.tokopedia.notifcenter.analytics.NotifCenterAnalytics
-import com.tokopedia.notifcenter.di.DaggerNotifCenterComponent
 import com.tokopedia.notifcenter.view.activity.NotifCenterActivity
 import com.tokopedia.notifcenter.view.adapter.NotifCenterAdapter
 import com.tokopedia.notifcenter.view.adapter.typefactory.NotifCenterTypeFactoryImpl
@@ -37,21 +36,21 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
     lateinit var presenter: NotifCenterPresenter
 
     @Inject
-    lateinit var analytics : NotifCenterAnalytics
+    lateinit var analytics: NotifCenterAnalytics
 
     private lateinit var adapter: NotifCenterAdapter
-    private lateinit var notifCenterRouter: NotifCenterRouter
     private lateinit var menuList: ArrayList<Menus.ItemMenus>
     var canLoadMore = false
 
     companion object {
-        fun createInstance(extras: Bundle?) : NotifCenterFragment {
+        fun createInstance(extras: Bundle?): NotifCenterFragment {
             val fragment = NotifCenterFragment()
             extras?.let {
                 fragment.arguments = it
             }
             return fragment
         }
+
         const val LOAD_MORE_THRESHOLD = 2
     }
 
@@ -154,17 +153,11 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
     override fun openRedirectUrl(url: String, templateKey: String) {
         analytics.trackClickList(templateKey)
         activity?.let {
-            notifCenterRouter.openRedirectUrl(it, url)
+            RouteManager.route(it, url)
         }
     }
 
     private fun initVar() {
-        if (activity?.application is NotifCenterRouter) {
-            notifCenterRouter = activity?.application as NotifCenterRouter
-        } else {
-            throw IllegalStateException("Application must be an instance of "
-                    .plus(NotifCenterRouter::class.java.simpleName))
-        }
         adapter = NotifCenterAdapter(NotifCenterTypeFactoryImpl(this))
     }
 
@@ -252,7 +245,7 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
                 item.timeSummary)
     }
 
-    private fun getMenuList() : ArrayList<Menus.ItemMenus> {
+    private fun getMenuList(): ArrayList<Menus.ItemMenus> {
         if (!::menuList.isInitialized) {
             val filterAllMenu = Menus.ItemMenus(NotifFilterViewModel.FILTER_ALL_TEXT)
             filterAllMenu.iconEnd = R.drawable.ic_check

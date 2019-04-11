@@ -274,4 +274,8 @@ public interface ApplinkConst {
         String PARAM_HAS_TITLEBAR = "titlebar";
         String PARAM_URL = "url";
     }
+
+    interface Profile {
+        String PARAM_USER_ID = "{user_id}";
+    }
 }

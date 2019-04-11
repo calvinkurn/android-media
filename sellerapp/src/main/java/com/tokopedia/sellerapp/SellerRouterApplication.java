@@ -17,7 +17,6 @@ import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
-import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
@@ -173,7 +172,6 @@ import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
-import com.tokopedia.settingbank.BankRouter;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
@@ -245,11 +243,11 @@ import com.tokopedia.cpm.CharacterPerMinuteInterface;
 public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
-        ReputationRouter, LogisticRouter, SessionRouter, ProfileModuleRouter,
+        ReputationRouter, LogisticRouter, ProfileModuleRouter,
         MitraToppersRouter, AbstractionRouter, ShopModuleRouter,
         ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
         NetworkRouter, TopChatRouter, ProductEditModuleRouter, TopAdsWebViewRouter, ContactUsModuleRouter,
-        BankRouter, ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter,
+        ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter,
         KolRouter, PaymentSettingRouter, TalkRouter, ChangePhoneNumberRouter, PhoneVerificationRouter,
         com.tokopedia.tkpdpdp.ProductDetailRouter,
         TopAdsDashboardRouter,
