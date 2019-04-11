@@ -28,7 +28,6 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kotlin.extensions.view.*
@@ -211,9 +210,13 @@ open class DynamicPostViewHolder(v: View,
         itemView.caption.shouldShowWithAction(template.caption) {
             if (caption.text.isEmpty()) {
                 itemView.caption.visibility = View.GONE
-            } else if (caption.text.length > MAX_CHAR) {
+            } else if (caption.text.length > MAX_CHAR ||
+                   hasSecondLine(caption)) {
                 itemView.caption.visibility = View.VISIBLE
-                val captionText = caption.text.substring(0, CAPTION_END)
+                val captionEnd = if (caption.text.length > CAPTION_END) CAPTION_END else
+                    findSubstringSecondLine(caption)
+                val captionText = caption.text.substring(0, captionEnd)
+                        .replace("\n","<br/>")
                         .replace(NEWLINE, "<br />")
                         .plus("... ")
                         .plus("<font color='#42b549'><b>")
@@ -232,6 +235,17 @@ open class DynamicPostViewHolder(v: View,
                 itemView.caption.text = caption.text.replace(NEWLINE, " ")
             }
         }
+    }
+
+    private fun hasSecondLine(caption: Caption): Boolean {
+        val firstIndex = caption.text.indexOf("\n", 0)
+        return caption.text.indexOf("\n", firstIndex + 1) != -1
+    }
+
+    private fun findSubstringSecondLine(caption: Caption): Int {
+        val firstIndex = caption.text.indexOf("\n", 0)
+        return if (hasSecondLine(caption)) caption.text.indexOf("\n",
+                firstIndex + 1) else caption.text.length
     }
 
     private fun bindContentList(postId: Int,

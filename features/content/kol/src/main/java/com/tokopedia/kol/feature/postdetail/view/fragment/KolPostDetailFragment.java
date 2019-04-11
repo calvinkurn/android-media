@@ -281,7 +281,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     private void setFooter(PostDetailViewModel postDetailViewModel) {
-        PostDetailFooterModel postDetailFooterModel = postDetailViewModel.getFooterModel();
+        this.postDetailFooterModel = postDetailViewModel.getFooterModel();
         footer.setVisibility(View.VISIBLE);
         TemplateFooter template = null;
         if (postDetailViewModel.getDynamicPostViewModel().getPostList().size() != 0) {
@@ -405,12 +405,14 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     private void setLikeListener(boolean isLiked) {
-        if (isLiked) {
-            likeCount.setOnClickListener(v -> onUnlikeKolClicked(0));
-            likeButton.setOnClickListener(v -> onUnlikeKolClicked(0));
-        } else {
-            likeCount.setOnClickListener(v -> onLikeKolClicked(0));
-            likeButton.setOnClickListener(v -> onLikeKolClicked(0));
+        if (postDetailFooterModel != null) {
+            if (isLiked) {
+                likeCount.setOnClickListener(v -> onUnlikeKolClicked(0, postDetailFooterModel.getContentId()));
+                likeButton.setOnClickListener(v -> onUnlikeKolClicked(0, postDetailFooterModel.getContentId()));
+            } else {
+                likeCount.setOnClickListener(v -> onLikeKolClicked(0, postDetailFooterModel.getContentId()));
+                likeButton.setOnClickListener(v -> onLikeKolClicked(0, postDetailFooterModel.getContentId()));
+            }
         }
     }
 
@@ -435,17 +437,17 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         }
     }
 
-    public void onLikeKolClicked(int rowNumber) {
+    public void onLikeKolClicked(int rowNumber, int id) {
         if (userSession != null && userSession.isLoggedIn()) {
-            presenter.likeKol(postId, rowNumber, this);
+            presenter.likeKol(id, rowNumber, this);
         } else {
             startActivity(kolRouter.getLoginIntent(getActivity()));
         }
     }
 
-    public void onUnlikeKolClicked(int adapterPosition) {
+    public void onUnlikeKolClicked(int adapterPosition, int id) {
         if (userSession != null && userSession.isLoggedIn()) {
-            presenter.unlikeKol(postId, adapterPosition, this);
+            presenter.unlikeKol(id, adapterPosition, this);
         } else {
             startActivity(kolRouter.getLoginIntent(getActivity()));
         }

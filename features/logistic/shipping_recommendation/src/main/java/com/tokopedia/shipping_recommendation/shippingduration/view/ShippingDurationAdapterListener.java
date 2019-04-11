@@ -15,10 +15,6 @@ public interface ShippingDurationAdapterListener {
     void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModelList,
                                    int cartPosition, ServiceData serviceData, boolean hasCourierPromo);
 
-    void onAllShippingDurationItemShown();
-
-    void onDurationShipmentRecommendationShowCaseClosed();
-
     boolean isToogleYearEndPromotionOn();
 
     void onLogisticPromoClicked(LogisticPromoViewModel data);

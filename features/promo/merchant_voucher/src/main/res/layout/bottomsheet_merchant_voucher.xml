@@ -38,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_promo_code"
                     android:inputType="text"
-                    android:textColor="@color/tkpd_main_orange" />
+                    android:textColor="#ae31353b" />
 
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
