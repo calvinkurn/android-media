@@ -119,7 +119,6 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         saveIpGroupChat = findViewById(R.id.ip_groupchat_save);
         groupChatLogToggle = findViewById(R.id.groupchat_log);
 
-
         setupEnvSpinner();
     }
 
