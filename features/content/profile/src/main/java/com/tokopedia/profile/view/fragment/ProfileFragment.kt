@@ -159,6 +159,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        mainView.fitsSystemWindows = false
+        mainView.invalidate()
         presenter.attachView(this)
         initVar(savedInstanceState)
         super.onViewCreated(view, savedInstanceState)
