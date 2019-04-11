@@ -5,6 +5,8 @@
       message
       reason
     }
+    id
+    name
     sumToken
     sumTokenStr
     cta {

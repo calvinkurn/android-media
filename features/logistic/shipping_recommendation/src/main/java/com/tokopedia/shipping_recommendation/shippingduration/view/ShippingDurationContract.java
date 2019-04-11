@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.shipping_recommendation.domain.ShippingParam;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
+import com.tokopedia.shipping_recommendation.domain.shipping.LogisticPromoViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
@@ -27,7 +28,7 @@ public interface ShippingDurationContract {
 
         void showErrorPage(String message);
 
-        void showData(List<ShippingDurationViewModel> serviceDataList);
+        void showData(List<ShippingDurationViewModel> serviceDataList, LogisticPromoViewModel promoViewModel);
 
         void showNoCourierAvailable(String message);
 
@@ -48,9 +49,14 @@ public interface ShippingDurationContract {
 
         CourierItemData getCourierItemData(List<ShippingCourierViewModel> shippingCourierViewModels);
 
+        CourierItemData getCourierItemDataById(int spId, List<ShippingCourierViewModel> shippingCourierViewModels);
+
         void setRecipientAddressModel(RecipientAddressModel recipientAddressModel);
 
         RecipientAddressModel getRecipientAddressModel();
+
+        CourierItemData convertToCourierModel(LogisticPromoViewModel promoModel);
+
     }
 
 }
