@@ -73,6 +73,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     private String voucherName;
 
     private static final String EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER = "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER";
+    private static final String EXTRA_STATE_DIGITAL_CHECKOUT_PASS_DATA = "EXTRA_STATE_DIGITAL_CHECKOUT_PASS_DATA";
 
     protected P presenter;
 
@@ -90,6 +91,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         if (savedInstanceState != null) {
             checkoutDataParameterBuilder = saveInstanceCacheManager.get(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER,
                     CheckoutDataParameter.Builder.class, null);
+            cartPassData = saveInstanceCacheManager.get(EXTRA_STATE_DIGITAL_CHECKOUT_PASS_DATA,
+                    DigitalCheckoutPassData.class, null);
         }
         setupView(view);
         presenter.attachView(this);
@@ -100,6 +103,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         super.onSaveInstanceState(outState);
         saveInstanceCacheManager.onSave(outState);
         saveInstanceCacheManager.put(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER, checkoutDataParameterBuilder);
+        saveInstanceCacheManager.put(EXTRA_STATE_DIGITAL_CHECKOUT_PASS_DATA, cartPassData);
     }
 
     protected abstract void setupView(View view);
@@ -381,7 +385,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public int getProductId() {
-        return Integer.parseInt(cartPassData.getProductId());
+        String productIdString = cartPassData.getProductId();
+        return productIdString.isEmpty() ? 0 : Integer.parseInt(productIdString);
     }
 
     @Override
