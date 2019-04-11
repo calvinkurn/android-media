@@ -59,6 +59,7 @@ class LogisticVoucherView : CustomVoucherView {
                 this, true)
         ivVoucherLogo.visibility = View.GONE
         tvVoucherStatus.visibility = View.GONE
+        tvCode.visibility = View.GONE
         tvVoucherSubtitle.visibility = View.VISIBLE
         tvVoucherTitle.setSingleLine(false)
     }
