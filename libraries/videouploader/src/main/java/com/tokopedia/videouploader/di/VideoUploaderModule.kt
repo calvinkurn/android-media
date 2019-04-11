@@ -8,21 +8,17 @@ import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.ProgressResponseBody
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videouploader.data.UploadVideoApi
-import com.tokopedia.videouploader.data.UploadVideoUrl
 import com.tokopedia.videouploader.data.VideoUploaderResponseError
 import dagger.Module
 import dagger.Provides
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -166,7 +162,7 @@ class VideoUploaderModule constructor() {
     @Provides
     fun provideWsV4RetrofitWithErrorHandler(@VideoUploaderQualifier okHttpClient: OkHttpClient,
                                             @VideoUploaderQualifier retrofitBuilder: Retrofit.Builder): Retrofit {
-        return retrofitBuilder.baseUrl(UploadVideoUrl.BASE_URL).client(okHttpClient).build()
+        return retrofitBuilder.client(okHttpClient).build()
     }
 
     @VideoUploaderQualifier
