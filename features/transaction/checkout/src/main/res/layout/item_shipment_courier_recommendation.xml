@@ -173,13 +173,14 @@
                 style="@style/TextSmallNormalBlack54"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_6"
+                android:layout_marginBottom="@dimen/dp_4"
                 android:text="@string/gratis_ongkir_promo_kurir" />
 
             <TextView
                 android:id="@+id/tv_logistic_promo_msg"
                 style="@style/TextSmallNormalBlack54"
                 android:layout_width="match_parent"
+                android:lineSpacingExtra="@dimen/dp_4"
                 android:layout_height="wrap_content"
                 tools:text="Tidak dapat ubah kurir karena promo telah diterapkan" />
         </LinearLayout>
