@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.cameraview.*
 import com.tokopedia.videorecorder.R
+import com.tokopedia.videorecorder.main.StateRecorder
 import com.tokopedia.videorecorder.main.VideoPickerCallback
 import com.tokopedia.videorecorder.utils.*
 import kotlinx.android.synthetic.main.fragment_recorder.*
@@ -119,6 +120,9 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
     }
 
     private fun recording() {
+        //init state
+        videoCallback.onVideoRecorder(StateRecorder.Start)
+
         //set default value
         progress.progress = 0
         var countDownMills = DURATION_MAX.toLong()
