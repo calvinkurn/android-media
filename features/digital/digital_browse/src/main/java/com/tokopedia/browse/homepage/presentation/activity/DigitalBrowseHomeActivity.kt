@@ -23,6 +23,8 @@ import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseServiceF
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.browse.common.DigitalBrowseRouter
 import com.tokopedia.browse.R
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import javax.inject.Inject
 
 class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<DigitalBrowseHomeComponent> {
@@ -84,7 +86,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
     }
 
     fun onSearchClicked() {
-        startActivity((application as DigitalBrowseRouter).gotoSearchPage(this!!))
+        startActivity(RouteManager.getIntent(this!!, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_SOURCE, "belanja"))
     }
 
     private fun setupToolbar() {
