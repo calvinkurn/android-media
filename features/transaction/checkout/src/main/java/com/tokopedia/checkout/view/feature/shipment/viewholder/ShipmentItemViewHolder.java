@@ -822,7 +822,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         // Logistic Promo
         if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
             llLogPromo.setVisibility(View.VISIBLE);
-            tvLogPromoLabel.setText(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc());
+            if (!TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc())) {
+                tvLogPromoLabel.setText(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc());
+            } else tvLogPromoLabel.setVisibility(View.GONE);
             tvChangeSelectedCourierRecommendation.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_disabled));
             tvChangeSelectedCourierRecommendation.setOnClickListener(null);
         }
