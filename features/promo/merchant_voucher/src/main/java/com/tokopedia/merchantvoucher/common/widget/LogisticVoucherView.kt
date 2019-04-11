@@ -58,6 +58,7 @@ class LogisticVoucherView : CustomVoucherView {
         LayoutInflater.from(context).inflate(R.layout.widget_merchant_voucher_view,
                 this, true)
         ivVoucherLogo.visibility = View.GONE
+        tvVoucherStatus.visibility = View.GONE
         tvVoucherSubtitle.visibility = View.VISIBLE
         tvVoucherTitle.setSingleLine(false)
     }
