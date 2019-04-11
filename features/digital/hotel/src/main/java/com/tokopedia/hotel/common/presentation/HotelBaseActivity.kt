@@ -5,19 +5,25 @@ import android.os.PersistableBundle
 import android.view.Menu
 import android.view.MenuItem
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.design.component.Menus
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.di.component.HotelComponent
+import com.tokopedia.hotel.common.presentation.widget.HotelMenuBottomSheets
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 /**
  * @author by furqan on 25/03/19
  */
-abstract class HotelBaseActivity: BaseSimpleActivity() {
+abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.HotelMenuListener {
 
     private lateinit var hotelComponent: HotelComponent
-    private lateinit var menus: Menus
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,27 +66,26 @@ abstract class HotelBaseActivity: BaseSimpleActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun showBottomMenus() {
-        menus = Menus(this)
-        val menuItem = arrayOf(resources.getString(R.string.hotel_bottom_menu_transaction_list),
-                resources.getString(R.string.hotel_bottom_menu_promo),
-                resources.getString(R.string.hotel_bottom_menu_help))
-        menus.setItemMenuList(menuItem)
-
-        menus.setOnActionClickListener { view -> menus.dismiss() }
-
-        menus.setOnItemMenuClickListener { itemMenus, pos ->
-            /*            when (pos) {
-                            MENU_ORDER_LIST -> // some action
-                            MENU_PROMO -> // some action
-                            MENU_HELP -> // some action
-                        }*/
-            menus.dismiss()
+    override fun onOrderListClicked() {
+        if (userSessionInterface.isLoggedIn) {
+            // Will be decided later
+        } else {
+            RouteManager.route(this, ApplinkConst.LOGIN)
         }
+    }
 
-        menus.setActionText(resources.getString(R.string.hotel_bottom_menu_action_text))
+    override fun onPromoClicked() {
+        RouteManager.route(this, ApplinkConst.PROMO_LIST)
+    }
 
-        menus.show()
+    override fun onHelpClicked() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun showBottomMenus() {
+        val hotelMenuBottomSheets = HotelMenuBottomSheets()
+        hotelMenuBottomSheets.listener = this
+        hotelMenuBottomSheets.show(supportFragmentManager, TAG_HOTEL_MENU)
     }
 
     protected fun getHotelComponent(): HotelComponent {
@@ -93,8 +98,6 @@ abstract class HotelBaseActivity: BaseSimpleActivity() {
     abstract fun shouldShowOptionMenu(): Boolean
 
     companion object {
-        private val MENU_ORDER_LIST = 0
-        private val MENU_PROMO = 1
-        private val MENU_HELP = 2
+        val TAG_HOTEL_MENU = "hotelMenu"
     }
 }

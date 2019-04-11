@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
@@ -40,7 +39,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var homepageViewModel: HotelHomepageViewModel
 
-    private val hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
+    private var hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
 
     private lateinit var promoAdapter: HotelPromoAdapter
 
@@ -58,6 +57,10 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_MODEL)) {
+            hotelHomepageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_MODEL)!!
+        }
 
         initView()
         hidePromoContainer()
@@ -81,6 +84,11 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
         })
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(EXTRA_HOTEL_MODEL, hotelHomepageModel)
+    }
+
     override fun initInjector() {
         getComponent(HotelHomepageComponent::class.java).inject(this)
     }
@@ -93,10 +101,6 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
         hotelHomepageModel.childCount = child
 
         renderView()
-    }
-
-    override fun showGuestErrorTicker(resId: Int) {
-        NetworkErrorHelper.showRedCloseSnackbar(activity, getString(resId))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -303,6 +307,8 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
 
         val REQUEST_CODE_DESTINATION = 101
         val REQUEST_CODE_SEARCH = 102
+
+        val EXTRA_HOTEL_MODEL = "EXTRA_HOTEL_MODEL"
 
         val TAG_CALENDAR_CHECK_IN = "calendarHotelCheckIn"
         val TAG_CALENDAR_CHECK_OUT = "calendarHotelCheckOut"
