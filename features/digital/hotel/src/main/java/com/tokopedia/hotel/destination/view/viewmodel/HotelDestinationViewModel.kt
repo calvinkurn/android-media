@@ -41,17 +41,6 @@ class HotelDestinationViewModel @Inject constructor(
     val searchDestination = MutableLiveData<RecentSearchState<MutableList<SearchDestination>>>()
     val longLat = MutableLiveData<Result<Pair<Double, Double>>>()
 
-    init {
-        //dummy data
-//        var list: MutableList<RecentSearch> = arrayListOf()
-//        list.add(RecentSearch(0,"", "Jakarta", ""))
-//        list.add(RecentSearch(0,"", "Jalan Sudirman", ""))
-//        list.add(RecentSearch(0,"", "Central Park Mall", ""))
-//        list.add(RecentSearch(0,"", "Bandung", ""))
-//        list.add(RecentSearch(0,"", "Kyoto Japan", ""))
-//        recentSearch.value = Success(list)
-    }
-
     fun getHotelRecommendation(popularRawQuery: String, recentSearchRawQuery: String, dummySearch: String) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default){
