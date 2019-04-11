@@ -61,7 +61,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
 
         initView()
         hidePromoContainer()
-//        loadPromoData()
+        loadPromoData()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
