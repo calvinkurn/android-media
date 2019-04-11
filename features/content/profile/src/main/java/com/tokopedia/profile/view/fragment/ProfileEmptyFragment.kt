@@ -1,6 +1,7 @@
 package com.tokopedia.profile.view.fragment
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
@@ -55,8 +56,11 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mainView.fitsSystemWindows = false
-        mainView.setPadding(0, 0, 0, 0)
-        mainView.requestLayout()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            mainView.requestApplyInsets()
+        } else {
+            mainView.requestFitSystemWindows()
+        }
         swipeToRefresh.clipToPadding = true
         swipeToRefresh.requestLayout()
         presenter.attachView(this)
