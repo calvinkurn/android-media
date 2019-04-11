@@ -81,6 +81,12 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
         setButtonSubmitVisibility()
     }
 
+    override fun configView(parentView: View?) {
+        super.configView(parentView)
+        parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
+        parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener{ onCloseButtonClick() }
+    }
+
     private fun setButtonSubmitVisibility() {
         var isDataSelected = false
         for (model: ClashingVoucherOptionUiModel in adapter.data) {
