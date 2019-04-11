@@ -202,10 +202,6 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         holder.onViewRecycled();
     }
 
-    public void resetEndlessScrollState() {
-        endlessScrollListener.resetState();
-    }
-
     public void setOnLoadListener(OnLoadListener loadListener) {
         this.loadListener = loadListener;
     }
