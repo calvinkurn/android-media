@@ -57,6 +57,11 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
         app_bar_layout.fitsSystemWindows = false
         collapsing.fitsSystemWindows = false
         frameLayout.fitsSystemWindows = false
+        swipeToRefresh.clipToPadding = true
+        swipeToRefresh.invalidate()
+        frameLayout.invalidate()
+        collapsing.invalidate()
+        app_bar_layout.invalidate()
         mainView.invalidate()
         presenter.attachView(this)
         initVar()
