@@ -170,6 +170,7 @@
             android:ellipsize="end"
             app:fontSize="small"
             app:textViewTheme="lightPrimary"
+            app:weight="medium"
             app:layout_goneMarginTop="@dimen/dp_16"
             app:layout_constraintRight_toRightOf="@+id/title"
             app:layout_constraintEnd_toEndOf="@+id/title"
