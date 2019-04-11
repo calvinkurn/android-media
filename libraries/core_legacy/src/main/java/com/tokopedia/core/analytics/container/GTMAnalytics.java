@@ -25,6 +25,8 @@ import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
+import com.tokopedia.iris.Iris;
+import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.util.HashMap;
@@ -45,11 +47,13 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String USER_ID = "userId";
     private static final String SHOP_ID = "shopId";
     private static final String SHOP_TYPE = "shopType";
+    private final Iris iris;
 
     // have status that describe pending.
 
     public GTMAnalytics(Context context) {
         super(context);
+        iris = IrisAnalytics.Companion.init(context);
     }
 
     @Override
@@ -132,6 +136,7 @@ public class GTMAnalytics extends ContextAnalytics {
         log(getContext(), eventName, values);
 
         getTagManager().getDataLayer().pushEvent(eventName, values);
+        pushIris(eventName, values);
     }
 
     @Override
@@ -292,6 +297,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
         log(getContext(), null, values);
         TagManager.getInstance(getContext()).getDataLayer().push(values);
+        pushIris("", values);
     }
 
     public void pushUserId(String userId) {
@@ -550,6 +556,15 @@ public class GTMAnalytics extends ContextAnalytics {
                         )
                 )
         );
+    }
+
+    private void pushIris(String eventName, Map<String, Object>values) {
+        if (iris != null) {
+            if (!eventName.isEmpty()) {
+                values.put("event", eventName);
+            }
+            iris.saveEvent(values);
+        }
     }
 
     private static class GTMBody {

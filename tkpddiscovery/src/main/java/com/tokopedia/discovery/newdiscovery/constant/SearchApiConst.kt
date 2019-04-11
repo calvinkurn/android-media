@@ -16,6 +16,7 @@ class SearchApiConst {
         const val SC = "sc" //  (category id)
         const val DEFAULT_SC = "default_sc" //  (category id)
         const val FLOC = "floc" // (location id)
+        const val FCITY = "fcity"
         const val SHIPPING = "shipping" // (shipping id)
         const val SOURCE = "source" // Source
         const val OB = "ob" // order by value, could be found at wiki

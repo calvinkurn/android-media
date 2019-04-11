@@ -1,10 +1,7 @@
 package com.tokopedia.useridentification.analytics;
 
-import android.content.Context;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 
 /**
@@ -13,9 +10,13 @@ import com.tokopedia.track.interfaces.ContextAnalytics;
 
 public class UserIdentificationAnalytics {
 
+    private final int projectID;
+
     private static class Event {
         private static final String VIEW_KYC = "viewKYC";
         private static final String CLICK_KYC = "clickKYC";
+        private static final String VIEW_TRADEIN = "viewTradeIn";
+        private static final String CLICK_TRADEIN = "clickTradeIn";
     }
 
     private static class Action {
@@ -73,13 +74,15 @@ public class UserIdentificationAnalytics {
 
     private static class Category {
         private static final String KYC_PAGE = "kyc page";
+        private static final String KYC_PAGE_TRADEIN = "kyc trade in page";
     }
 
-    public UserIdentificationAnalytics() {
+    private UserIdentificationAnalytics(int projectID) {
+        this.projectID = projectID;
     }
 
-    public static UserIdentificationAnalytics createInstance() {
-        return new UserIdentificationAnalytics();
+    public static UserIdentificationAnalytics createInstance(int projectID) {
+        return new UserIdentificationAnalytics(projectID);
     }
 
     public void eventViewOnKYCOnBoarding() {
@@ -101,21 +104,29 @@ public class UserIdentificationAnalytics {
     }
 
     public void eventClickOnNextOnBoarding() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_NEXT_ONBOARDING,
-                ""
-        ));
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_NEXT_ONBOARDING,"");
+        } else {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_NEXT_ONBOARDING,
+                    ""
+            ));
+        }
     }
 
     public void eventViewKtpPage() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.VIEW_KYC,
-                Category.KYC_PAGE,
-                Action.VIEW_KTP_PAGE,
-                ""
-        ));
+        if(projectID ==4){
+            sendTradeInViewEvent(Action.VIEW_KTP_PAGE);
+        } else {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    Event.VIEW_KYC,
+                    Category.KYC_PAGE,
+                    Action.VIEW_KTP_PAGE,
+                    ""
+            ));
+        }
     }
 
     public void eventClickBackKtpPage() {
@@ -128,12 +139,16 @@ public class UserIdentificationAnalytics {
     }
 
     public void eventClickNextKtpPage() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_NEXT_KTP_PAGE,
-                ""
-        ));
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_NEXT_KTP_PAGE,"");
+        } else {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_NEXT_KTP_PAGE,
+                    ""
+            ));
+        }
     }
 
     public void eventViewErrorImageTooLargeKtpPage() {
@@ -164,21 +179,29 @@ public class UserIdentificationAnalytics {
     }
 
     public void eventClickShutterCameraKtp() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_SHUTTER_CAMERA_KTP,
-                ""
-        ));
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_SHUTTER_CAMERA_KTP,"");
+        } else {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_SHUTTER_CAMERA_KTP,
+                    ""
+            ));
+        }
     }
 
     public void eventClickFlipCameraKtp() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_FLIP_CAMERA_KTP,
-                ""
-        ));
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_FLIP_CAMERA_KTP,"");
+        } else {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_FLIP_CAMERA_KTP,
+                    ""
+            ));
+        }
     }
 
     public void eventViewImagePreviewKtp() {
@@ -200,30 +223,42 @@ public class UserIdentificationAnalytics {
     }
 
     public void eventClickRecaptureKtp() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_RECAPTURE_KTP,
-                ""
-        ));
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_RECAPTURE_KTP,"");
+        } else {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_RECAPTURE_KTP,
+                    ""
+            ));
+        }
     }
 
     public void eventClickNextImagePreviewKtp() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_NEXT_IMAGE_PREVIEW_KTP,
-                ""
-        ));
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_NEXT_IMAGE_PREVIEW_KTP,"");
+        } else {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_NEXT_IMAGE_PREVIEW_KTP,
+                    ""
+            ));
+        }
     }
 
     public void eventViewSelfiePage() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.VIEW_KYC,
-                Category.KYC_PAGE,
-                Action.VIEW_SELFIE_PAGE,
-                ""
-        ));
+        if(projectID ==4){
+            sendTradeInViewEvent(Action.VIEW_SELFIE_PAGE);
+        } else {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    Event.VIEW_KYC,
+                    Category.KYC_PAGE,
+                    Action.VIEW_SELFIE_PAGE,
+                    ""
+            ));
+        }
     }
 
     public void eventClickBackSelfiePage() {
@@ -236,12 +271,16 @@ public class UserIdentificationAnalytics {
     }
 
     public void eventClickNextSelfiePage() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_NEXT_SELFIE_PAGE,
-                ""
-        ));
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_NEXT_SELFIE_PAGE,"");
+        } else {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_NEXT_SELFIE_PAGE,
+                    ""
+            ));
+        }
     }
 
     public void eventViewErrorImageTooLargeSelfiePage() {
@@ -272,21 +311,29 @@ public class UserIdentificationAnalytics {
     }
 
     public void eventClickShutterCameraSelfie() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_SHUTTER_CAMERA_SELFIE,
-                ""
-        ));
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_SHUTTER_CAMERA_SELFIE,"");
+        } else {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_SHUTTER_CAMERA_SELFIE,
+                    ""
+            ));
+        }
     }
 
     public void eventClickFlipCameraSelfie() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_FLIP_CAMERA_SELFIE,
-                ""
-        ));
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_FLIP_CAMERA_SELFIE,"");
+        } else {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_FLIP_CAMERA_SELFIE,
+                    ""
+            ));
+        }
     }
 
     public void eventViewImagePreviewSelfie() {
@@ -308,30 +355,42 @@ public class UserIdentificationAnalytics {
     }
 
     public void eventClickRecaptureSelfie() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_RECAPTURE_SELFIE,
-                ""
-        ));
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_RECAPTURE_SELFIE,"");
+        } else {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_RECAPTURE_SELFIE,
+                    ""
+            ));
+        }
     }
 
     public void eventClickNextImagePreviewSelfie() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_NEXT_IMAGE_PREVIEW_SELFIE,
-                ""
-        ));
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_NEXT_IMAGE_PREVIEW_SELFIE,"");
+        } else {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_NEXT_IMAGE_PREVIEW_SELFIE,
+                    ""
+            ));
+        }
     }
 
     public void eventViewFinalForm() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.VIEW_KYC,
-                Category.KYC_PAGE,
-                Action.VIEW_FINAL_FORM_PAGE,
-                ""
-        ));
+        if(projectID ==4){
+            sendTradeInViewEvent(Action.VIEW_FINAL_FORM_PAGE);
+        } else {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    Event.VIEW_KYC,
+                    Category.KYC_PAGE,
+                    Action.VIEW_FINAL_FORM_PAGE,
+                    ""
+            ));
+        }
     }
 
     public void eventClickBackFinalForm() {
@@ -344,30 +403,42 @@ public class UserIdentificationAnalytics {
     }
 
     public void eventClickChangeKtpFinalFormPage() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_CHANGE_KTP_FINAL_FORM_PAGE,
-                ""
-        ));
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_CHANGE_KTP_FINAL_FORM_PAGE,"");
+        } else {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_CHANGE_KTP_FINAL_FORM_PAGE,
+                    ""
+            ));
+        }
     }
 
     public void eventClickChangeSelfieFinalFormPage() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_CHANGE_SELFIE_FINAL_FORM_PAGE,
-                ""
-        ));
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_CHANGE_SELFIE_FINAL_FORM_PAGE,"");
+        } else {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    Event.CLICK_KYC,
+                    Category.KYC_PAGE,
+                    Action.CLICK_CHANGE_SELFIE_FINAL_FORM_PAGE,
+                    ""
+            ));
+        }
     }
 
     public void eventClickTermsFinalFormPage() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_TERMS_AND_CONDITION_FINAL_FORM_PAGE,"");
+        } else {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                     Event.CLICK_KYC,
                     Category.KYC_PAGE,
                     Action.CLICK_TERMS_AND_CONDITION_FINAL_FORM_PAGE,
                     ""
-        ));
+            ));
+        }
     }
 
     public void eventClickUploadPhotos() {
@@ -377,6 +448,12 @@ public class UserIdentificationAnalytics {
                 Action.CLICK_UPLOAD_PHOTOS,
                 ""
         ));
+    }
+
+    public void eventClickUploadPhotosTradeIn(String label) {
+        if(projectID ==4){
+            sendTradeInClickEvent(Action.CLICK_UPLOAD_PHOTOS,label);
+        }
     }
 
     public void eventViewPendingPage() {
@@ -458,5 +535,23 @@ public class UserIdentificationAnalytics {
                 Action.CLICK_TERMS_AND_CONDITION_SUCCESS_PAGE,
                 ""
         ));
+    }
+
+
+    private void sendTradeInClickEvent(String Action,String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_TRADEIN,
+                Category.KYC_PAGE_TRADEIN,
+                Action,
+                label
+        ));
+    }
+
+    private void sendTradeInViewEvent(String Action) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.VIEW_TRADEIN,
+                Category.KYC_PAGE_TRADEIN,
+                Action,
+                ""));
     }
 }

@@ -243,7 +243,6 @@ open class PlayViewStateImpl(
         showVideoToggle.setOnClickListener {
             it.hide()
             hideVideoToggle.show()
-            youTubePlayer?.play()
             videoContainer.visibility = View.VISIBLE
             setChatListHasSpaceOnTop(false)
             analytics.eventClickShowVideoToggle(viewModel?.channelId)
@@ -843,6 +842,7 @@ open class PlayViewStateImpl(
                                                         onPlayTime = System.currentTimeMillis() / 1000L
                                                     }
                                                     analytics.eventClickAutoPlayVideo(viewModel?.channelId)
+                                                    hideVideoToggle.hide()
                                                 }
 
                                                 override fun onPaused() {

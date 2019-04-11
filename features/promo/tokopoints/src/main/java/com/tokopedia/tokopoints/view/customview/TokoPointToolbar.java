@@ -12,7 +12,6 @@ import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.Toolbar;
@@ -178,16 +177,7 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
 
     private BitmapDrawable getBitmapDrawableFromVectorDrawable(Context context, int drawableId) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            VectorDrawableCompat vectorDrawableCompat =
-                    VectorDrawableCompat.create(context.getResources(), drawableId, null);
-            Bitmap bitmap = Bitmap.createBitmap(
-                    vectorDrawableCompat.getIntrinsicWidth(),
-                    vectorDrawableCompat.getIntrinsicHeight(),
-                    Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            vectorDrawableCompat.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            vectorDrawableCompat.draw(canvas);
-            return new BitmapDrawable(context.getResources(), bitmap);
+            return (BitmapDrawable) ContextCompat.getDrawable(context, drawableId);
         } else
             return new BitmapDrawable(context.getResources(), getBitmapFromVectorDrawable(context, drawableId));
     }

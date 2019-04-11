@@ -40,12 +40,10 @@ import rx.Subscriber;
 
 public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
 
-    private CatalogPurchaseRedemptionPresenter mPresenter;
     private Context mContext;
     private int mCategoryId = 0;
-    private boolean mIsStackingEnabled;
 
-    public class ViewHolder extends BaseAdapter.BaseVH {
+    public class ViewHolder extends BaseVH {
         TextView label, value, tvMinTxnValue, tvMinTxnLabel;
         ImageView imgBanner, imgLabel, ivMinTxn;
         public boolean isVisited = false;
@@ -66,14 +64,13 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
         }
 
         @Override
-        public void bindView(BaseItem item, int position) {
-            setData(this, (CouponValueEntity) item);
+        public void bindView(CouponValueEntity item, int position) {
+            setData(this, item);
         }
     }
 
-    public CouponListBaseAdapter(CatalogPurchaseRedemptionPresenter presenter, AdapterCallback callback, Context context, int categoryId) {
+    public CouponListBaseAdapter(AdapterCallback callback, Context context, int categoryId) {
         super(callback);
-        this.mPresenter = presenter;
         this.mContext = context;
         this.mCategoryId = categoryId;
     }
@@ -160,14 +157,7 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
         variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID_COUPON, mCategoryId);
         variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, 0);
 
-        String query;
-
-        if (mIsStackingEnabled) {
-            query = GraphqlHelper.loadRawString(mContext.getResources(), R.raw.tp_gql_coupon_listing_stack);
-        } else {
-            query = GraphqlHelper.loadRawString(mContext.getResources(), R.raw.tp_gql_coupon_listing);
-        }
-
+        String query = GraphqlHelper.loadRawString(mContext.getResources(), R.raw.tp_gql_coupon_listing);
         GraphqlRequest graphqlRequestMain = new GraphqlRequest(query, TokoPointPromosEntity.class, variablesMain, false);
         graphqlUseCase.addRequest(graphqlRequestMain);
 

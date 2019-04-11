@@ -7,6 +7,7 @@ import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.BottomSheetDialogFragment
 import android.text.Editable
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,6 +35,7 @@ class UsernameInputFragment : BottomSheetDialogFragment(), UsernameInputContract
 
     var onDismissListener: (() -> Unit)? = null
     var isSuccessRegister = false
+    var affiliateName = ""
 
     private val adapter: SuggestionAdapter by lazy {
         SuggestionAdapter(this)
@@ -147,7 +149,9 @@ class UsernameInputFragment : BottomSheetDialogFragment(), UsernameInputContract
     }
 
     private fun initVar() {
-
+        arguments?.let {
+            affiliateName = it.getString(ARGS_AFFILIATE_NAME, "")
+        }
     }
 
     private fun initInjector() {
@@ -193,16 +197,27 @@ class UsernameInputFragment : BottomSheetDialogFragment(), UsernameInputContract
     }
 
     private fun setFirstSuggestion(suggestions: List<String>?) {
-        if (suggestions == null || suggestions.isEmpty()) {
-            return
+        if (!TextUtils.isEmpty(affiliateName)) {
+            usernameInput.setText(affiliateName)
+        } else if (suggestions != null && suggestions.isEmpty()){
+            usernameInput.setText(suggestions[0])
         }
-        usernameInput.setText(suggestions[0])
     }
 
     companion object {
-
         private const val USERNAME_MAX_LENGTH = 15
         private const val USERNAME_MIN_LENGTH = 3
         private const val SHOW_SUGGESTION_LENGTH = 1
+
+        private const val ARGS_AFFILIATE_NAME = "affiliate_name"
+
+        fun createInstance(affiliateName: String = ""): UsernameInputFragment {
+            val bundle = Bundle()
+            bundle.putString(ARGS_AFFILIATE_NAME, affiliateName)
+
+            val fragment = UsernameInputFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }
