@@ -7,7 +7,7 @@
     <string name="message_address_not_found">Kami tidak dapat menemukan alamat yang Anda cari.</string>
     <string name="label_button_change_search">Ganti Pencarian</string>
     <string name="label_seller">Penjual:</string>
-    <string name="label_note_for_seller">Catatan untuk penjual (Opsional)</string>
+    <string name="label_note_for_seller">Catatan untuk toko (Opsional)</string>
     <string name="label_button_add_note">Tulis Catatan untuk Toko</string>
     <string name="label_delivery_hour">\u0020jam perjalanan</string>
     <string name="label_delivery_day">\u0020hari kerja</string>

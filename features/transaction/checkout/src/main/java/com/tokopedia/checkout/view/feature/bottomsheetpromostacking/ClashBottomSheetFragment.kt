@@ -14,6 +14,7 @@ import android.support.v7.widget.SimpleItemAnimator
 import com.google.gson.Gson
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection
 
 /**
  * Created by fwidjaja on 10/03/19.
@@ -25,10 +26,12 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
     private lateinit var actionListener: ActionListener
     private lateinit var tvClashingInfoTicker: TextView
     private lateinit var uiModel: ClashingInfoDetailUiModel
+    private lateinit var source: String
     private lateinit var rvClashingOption: RecyclerView
     private lateinit var btSubmit: ButtonCompat
     private lateinit var adapter: ClashingAdapter
     private var checkoutAnalyticsCart: CheckoutAnalyticsCart? = null
+    private var checkoutAnalyticsCourierSelection: CheckoutAnalyticsCourierSelection? = null
 
     interface ActionListener {
         fun onSubmitNewPromoAfterClash(oldPromoList: ArrayList<String>, newPromoList: ArrayList<ClashingVoucherOrderUiModel>)
@@ -45,12 +48,20 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
         this.uiModel = uiModel
     }
 
+    fun setSource(source: String) {
+        this.source = source
+    }
+
     fun setActionListener(actionListener: ActionListener) {
         this.actionListener = actionListener
     }
 
     fun setAnalyticsCart(checkoutAnalyticsCart: CheckoutAnalyticsCart) {
         this.checkoutAnalyticsCart = checkoutAnalyticsCart
+    }
+
+    fun setAnalyticsShipment(checkoutAnalyticsCourierSelection: CheckoutAnalyticsCourierSelection) {
+        this.checkoutAnalyticsCourierSelection = checkoutAnalyticsCourierSelection
     }
 
     override fun initView(view: View) {
@@ -94,13 +105,21 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
                                 newPromoList.add(voucherOrder.code)
                             }
                             if (newPromoList.size > 0) {
-                                checkoutAnalyticsCart?.eventClickSubmitPromoKonflik(newPromoList.get(0))
+                                if (source.equals("cart", ignoreCase = true)) {
+                                    checkoutAnalyticsCart?.eventClickSubmitPromoKonflik(newPromoList[0])
+                                } else {
+                                    checkoutAnalyticsCourierSelection?.eventSubmitPromoConflict(newPromoList[0])
+                                }
                             }
                             dismiss()
                             actionListener.onSubmitNewPromoAfterClash(oldPromoList, adapter.data[index].voucherOrders)
                         } else {
                             if (oldPromoList.size > 0) {
-                                checkoutAnalyticsCart?.eventClickSubmitPromoKonflik(Gson().toJson(oldPromoList))
+                                if (source.equals("cart", ignoreCase = true)) {
+                                    checkoutAnalyticsCart?.eventClickSubmitPromoKonflik(Gson().toJson(oldPromoList))
+                                } else {
+                                    checkoutAnalyticsCourierSelection?.eventSubmitPromoConflict(Gson().toJson(oldPromoList))
+                                }
                             }
                             dismiss()
                         }
@@ -141,7 +160,12 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
                 for (voucherModel: ClashingVoucherOrderUiModel in model.voucherOrders) {
                     vouchers.add(voucherModel.code)
                 }
-                checkoutAnalyticsCart?.eventSelectPromoPromoKonflik(Gson().toJson(vouchers))
+
+                if (source.equals("cart", ignoreCase = true)) {
+                    checkoutAnalyticsCart?.eventSelectPromoPromoKonflik(Gson().toJson(vouchers))
+                } else {
+                    checkoutAnalyticsCourierSelection?.eventSelectPromoConflict(Gson().toJson(vouchers))
+                }
                 break
             }
         }

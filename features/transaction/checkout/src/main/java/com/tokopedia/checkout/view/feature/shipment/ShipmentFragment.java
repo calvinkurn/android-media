@@ -1622,10 +1622,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onDropshipperValidationResult(boolean result, Object shipmentData,
                                               int errorPosition, int requestCode) {
         if (shipmentData == null && result) {
-            String voucherCode = "";
-            if (shipmentAdapter != null && shipmentAdapter.getPromoGlobalStackData() != null) {
-                voucherCode = shipmentAdapter.getPromoGlobalStackData().getPromoCodeSafe();
-            }
             CheckPromoParam checkPromoParam = new CheckPromoParam();
             checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
             switch (requestCode) {
@@ -2277,6 +2273,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ClashBottomSheetFragment clashBottomSheetFragment = ClashBottomSheetFragment.newInstance();
         clashBottomSheetFragment.setData(clashingInfoDetailUiModel);
         clashBottomSheetFragment.setActionListener(this);
+        clashBottomSheetFragment.setAnalyticsShipment(checkoutAnalyticsCourierSelection);
+        clashBottomSheetFragment.setSource("shipment");
         clashBottomSheetFragment.show(getFragmentManager(), "");
     }
 
