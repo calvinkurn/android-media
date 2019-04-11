@@ -21,6 +21,7 @@ import com.tokopedia.permissionchecker.request
 import com.tokopedia.videorecorder.R
 import com.tokopedia.videorecorder.main.adapter.ViewPagerAdapter
 import com.tokopedia.videorecorder.main.recorder.VideoRecorderFragment
+import com.tokopedia.videorecorder.main.state.StateRecorder
 import com.tokopedia.videorecorder.utils.*
 import kotlinx.android.synthetic.main.activity_video_picker.*
 import java.io.File
@@ -68,15 +69,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //init runtime permission
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            permissionCheckerHelper = PermissionCheckerHelper()
-            permissionCheckerHelper.request(this, getPermissions()) {
-                initView()
-            }
-        } else {
-            initView()
-        }
+        initView()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -87,20 +80,6 @@ open class VideoPickerActivity : BaseSimpleActivity(),
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            permissionCheckerHelper.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
-        }
-    }
-
-    private fun getPermissions(): Array<String> {
-        return arrayOf(
-                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
-                PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
-                PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO)
     }
 
     private fun initView() {
@@ -237,6 +216,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
      * @method(onPreviewVideoVisible)
      * @method(onVideoVisible)
      * @method(onVideoRecord)
+     * @method(onVideoRecorder)
      */
 
     override fun onVideoTaken(filePath: String) {

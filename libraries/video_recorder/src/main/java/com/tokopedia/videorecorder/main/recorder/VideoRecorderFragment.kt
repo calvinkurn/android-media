@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.cameraview.*
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.permissionchecker.request
 import com.tokopedia.videorecorder.R
-import com.tokopedia.videorecorder.main.StateRecorder
+import com.tokopedia.videorecorder.main.state.StateRecorder
 import com.tokopedia.videorecorder.main.VideoPickerCallback
 import com.tokopedia.videorecorder.utils.*
 import kotlinx.android.synthetic.main.fragment_recorder.*
@@ -29,7 +31,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
     //flash collection
     private var flashList = arrayListOf<Flash>()
 
-    //flash index
+    //cameraView lazy configuration
     private var flashIndex = 0
 
     //callback handler
@@ -37,6 +39,9 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
 
     //for progress loader
     private lateinit var timer: Timer
+
+    //runtime permission handle
+    private lateinit var permissionHelper: PermissionCheckerHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,8 +59,43 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
         videoCallback = context as VideoPickerCallback
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            context?.let {
+                permissionHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
+            }
+        }
+    }
+
+    private fun getPermissions(): Array<String> {
+        return arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
+                PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
+                PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //init runtime permission
+        activity?.let {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                permissionHelper = PermissionCheckerHelper()
+                permissionHelper.request(it, getPermissions(), {
+                    initView()
+                }, {
+                    showToast(it, getString(R.string.vidpick_permission_denied))
+                    it.finish()
+                })
+            } else {
+                initView()
+            }
+        }
+
+    }
+
+    private fun initView() {
         cameraPrepared()
         //set max progress value
         progress.max = DURATION_MAX

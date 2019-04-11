@@ -1,4 +1,4 @@
-package com.tokopedia.videorecorder.main
+package com.tokopedia.videorecorder.main.state
 
 /**
  * Created by isfaaghyth on 10/04/19.
