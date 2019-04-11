@@ -196,7 +196,6 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     }
 
     private fun cancelVideo() {
-        videoPath = ""
         videoPreview.stopPlayback()
         videoPreview.setVideoURI(null)
 
@@ -206,8 +205,11 @@ open class VideoPickerActivity : BaseSimpleActivity(),
             }
         }
 
+        videoPath = ""
         initViewPager()
         onVideoVisible()
+
+        onVideoRecorder(StateRecorder.Stop)
     }
 
     private fun selectCurrentPage(index: Int) {
@@ -234,6 +236,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
      * @method(onVideoTaken(file))
      * @method(onPreviewVideoVisible)
      * @method(onVideoVisible)
+     * @method(onVideoRecord)
      */
 
     override fun onVideoTaken(filePath: String) {
@@ -255,6 +258,13 @@ open class VideoPickerActivity : BaseSimpleActivity(),
                 mp.isLooping = true //loop
                 playVideoPreview()
             }
+        }
+    }
+
+    override fun onVideoRecorder(state: StateRecorder) {
+        when (state) {
+            StateRecorder.Start -> tabPicker.tabClickable(false)
+            StateRecorder.Stop -> tabPicker.tabClickable(true)
         }
     }
 
