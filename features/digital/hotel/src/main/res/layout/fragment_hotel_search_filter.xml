@@ -92,8 +92,6 @@
                 android:paddingEnd="@dimen/dp_0"
                 android:paddingRight="@dimen/dp_0"
                 android:thumbOffset="0dp"
-                android:max="4"
-                android:progress="4"
                 android:scaleX="-1"/>
 
             <LinearLayout android:id="@+id/base_rating_step"
@@ -155,6 +153,7 @@
     </ScrollView>
 
     <com.tokopedia.design.component.FloatingButton
+        android:id="@+id/save_filter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:floatButtonSize="big"

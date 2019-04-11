@@ -5,8 +5,24 @@ query PropertySearch($data:PropertySearchRequest!){
         name
         type
         address
-        priceAmount
-        price
+        roomPrice{
+          price
+          priceAmount
+          totalPrice
+          totalPriceAmount
+          extraCharges{
+            netPrice
+            netPriceAmount
+            extraChargeInfo{
+              name
+              excluded
+              type
+              price
+              priceAmount
+            }
+          }
+        }
+        roomAvailability
         image {
           isLogoPhoto
           urlSquare60
@@ -43,6 +59,13 @@ query PropertySearch($data:PropertySearchRequest!){
             name
             displayName
             type
+          }
+          filterStar{
+            stars
+          }
+          filterReview {
+            minReview
+            maxReview
           }
         }
         sort {

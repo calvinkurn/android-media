@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.hotel.common.getSuccessData
 import com.tokopedia.hotel.search.data.model.PropertySearch
 import com.tokopedia.hotel.search.data.model.Sort
+import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.model.params.SearchParam
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Result
@@ -22,7 +23,6 @@ import javax.inject.Named
 
 class HotelSearchResultViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
-        private val userSessionInterface: UserSessionInterface,
         dispatcher: CoroutineDispatcher,
         @Named("search_query")
         private val searchQuery: String,
@@ -32,6 +32,8 @@ class HotelSearchResultViewModel @Inject constructor(
 
     private val searchParam: SearchParam = SearchParam()
     var selectedSort: Sort = Sort()
+    val selectedFilter: ParamFilter
+        get() = searchParam.filter
 
     val liveSearchResult = MutableLiveData<Result<PropertySearch>>()
 
@@ -77,6 +79,10 @@ class HotelSearchResultViewModel @Inject constructor(
             star = sort.name.toLowerCase() == "star"
             reviewScore = sort.name.toLowerCase() == "reviewScore"
         }
+    }
+
+    fun addFilter(filter: ParamFilter){
+        searchParam.filter = filter
     }
 
     companion object {

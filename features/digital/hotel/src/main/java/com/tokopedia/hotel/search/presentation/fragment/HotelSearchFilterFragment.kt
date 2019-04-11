@@ -1,12 +1,14 @@
 package com.tokopedia.hotel.search.presentation.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.SeekBar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.component.TextViewCompat
@@ -15,14 +17,15 @@ import com.tokopedia.design.list.decoration.SpaceItemDecoration
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.Filter
+import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchFilterAdapter
-import com.tokopedia.hotel.search.presentation.adapter.HotelSearchFilterRatingStepAdapter
 import com.tokopedia.hotel.search.presentation.modelholder.FilterStar
 import kotlinx.android.synthetic.main.fragment_hotel_search_filter.*
 
 class HotelSearchFilterFragment: BaseDaggerFragment() {
     var filter: Filter = Filter()
+    var selectedFilter: ParamFilter = ParamFilter()
     lateinit var minCurrencyTextWatcher: CurrencyTextWatcher
     lateinit var maxCurrencyTextWatcher: CurrencyTextWatcher
     lateinit var manager: SaveInstanceCacheManager
@@ -50,12 +53,36 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
             manager = if (savedInstanceState == null) SaveInstanceCacheManager(this, objectId)
                 else SaveInstanceCacheManager(this, savedInstanceState)
             filter = manager.get(CommonParam.ARG_FILTER, Filter::class.java) ?: Filter()
+            selectedFilter = manager.get(CommonParam.ARG_SELECTED_FILTER, ParamFilter::class.java) ?: ParamFilter()
         }
-        setupStarFilter()
+        setupStarFilter(filter.filterStar)
         setupPriceFilter(filter.price)
         setupAccomodationType(filter.accomodation)
         setupPreference(filter.preferences)
-        setupRating()
+        setupRating(filter.filterReview)
+        save_filter.button.setOnClickListener {
+            selectedFilter.star = starAdapter.selectedItems.mapNotNull { it.toIntOrNull() }
+            selectedFilter.cancellationPolicies = preferenceAdapter.selectedItems.mapNotNull { it.toIntOrNull() }
+            selectedFilter.propertyType = propertyTypeAdapter.selectedItems.mapNotNull { it.toIntOrNull() }
+            activity?.run {
+                setResult(Activity.RESULT_OK, Intent().apply {
+                    val cacheManager = SaveInstanceCacheManager(this@run, true).also {
+                        it.put(CommonParam.ARG_SELECTED_FILTER, selectedFilter)
+                    }
+                    putExtra(CommonParam.ARG_CACHE_FILTER_ID, cacheManager.id)
+                })
+                finish()
+            }
+        }
+        activity?.findViewById<View>(R.id.text_view_menu)?.setOnClickListener {
+            selectedFilter = ParamFilter()
+            starAdapter.clearSelection()
+            propertyTypeAdapter.clearSelection()
+            preferenceAdapter.clearSelection()
+            price_range_input_view.setData(filter.price.minPrice.toInt(), filter.price.maxPrice.toInt(),
+                    filter.price.minPrice.toInt(), filter.price.maxPrice.toInt())
+            rating_seekbar.progress = rating_seekbar.max
+        }
     }
 
     private fun setupPreference(preferences: List<Filter.FilterPreference>) {
@@ -63,7 +90,7 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
         filter_preference.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_8),
                 LinearLayoutManager.HORIZONTAL))
         filter_preference.adapter = preferenceAdapter
-        preferenceAdapter.updateItems(preferences)
+        preferenceAdapter.updateItems(preferences, selectedFilter.cancellationPolicies.map { it.toString() }.toSet())
     }
 
     private fun setupAccomodationType(accomodation: List<Filter.FilterAccomodation>) {
@@ -71,7 +98,7 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
         filter_accomodation_type.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_8),
                 LinearLayoutManager.HORIZONTAL))
         filter_accomodation_type.adapter = propertyTypeAdapter
-        propertyTypeAdapter.updateItems(accomodation)
+        propertyTypeAdapter.updateItems(accomodation, selectedFilter.propertyType.map { it.toString() }.toSet())
     }
 
     private fun setupPriceFilter(price: Filter.FilterPrice) {
@@ -89,12 +116,22 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
         maxCurrencyTextWatcher = CurrencyTextWatcher(maxPriceEditText, CurrencyEnum.RP)
         maxPriceEditText.addTextChangedListener(maxCurrencyTextWatcher)
         price_range_input_view.setPower(1.0)
-        price_range_input_view.setData(price.minPrice.toInt(), price.maxPrice.toInt(), price.minPrice.toInt(), price.maxPrice.toInt())
-        price_range_input_view.setOnValueChangedListener { minValue, maxValue, minBound, maxBound ->  }
+
+        val filteredMinPrice = if (selectedFilter.minPrice < price.minPrice) price.minPrice else selectedFilter.minPrice
+        val filteredMaxPrice = if (selectedFilter.maxPrice == 0f || selectedFilter.maxPrice > price.maxPrice) price.maxPrice else selectedFilter.maxPrice
+
+        price_range_input_view.setData(price.minPrice.toInt(), price.maxPrice.toInt(), filteredMinPrice.toInt(), filteredMaxPrice.toInt())
+        price_range_input_view.setOnValueChangedListener { minValue, maxValue, minBound, maxBound ->
+            selectedFilter.minPrice = minValue.toFloat()
+            selectedFilter.maxPrice = maxValue.toFloat()
+        }
     }
 
-    private fun setupRating() {
-        val ratingStep = listOf(5,6,7,8,9)
+    private fun setupRating(filterReview: Filter.FilterReview) {
+        val ratingStep = (filterReview.minReview.toInt()..filterReview.maxReview.toInt()).toList()
+        selectedFilter.reviewScore = if (ratingStep.first() != 0 && selectedFilter.reviewScore == 0) ratingStep.last() else selectedFilter.reviewScore
+        rating_seekbar.max = ratingStep.size - 1
+        rating_seekbar.progress = ratingStep.size - selectedFilter.reviewScore
         ratingStep.forEachIndexed { index, item ->
             val stepView = LayoutInflater.from(context).inflate(R.layout.item_hotel_filter_rating_step, null)
             stepView.findViewById<TextViewCompat>(R.id.title_step).text = String.format("%.1f", item.toFloat())
@@ -107,15 +144,25 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
                 base_rating_step.addView(separator)
             }
         }
+        rating_seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+                selectedFilter.reviewScore = ratingStep[ratingStep.size - p1 - 1]
+            }
+
+            override fun onStartTrackingTouch(p0: SeekBar?) {}
+
+            override fun onStopTrackingTouch(p0: SeekBar?) {}
+
+        })
     }
 
-    private fun setupStarFilter() {
-        val filterStars = (1..5).toList().map { FilterStar(it.toString(), it.toString()) }
+    private fun setupStarFilter(filterStar: Filter.FilterStar) {
+        val filterStars = filterStar.stars.map { FilterStar(it.toString(), it.toString()) }
         filter_star.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         filter_star.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_8),
                 LinearLayoutManager.HORIZONTAL))
         filter_star.adapter = starAdapter
-        starAdapter.updateItems(filterStars)
+        starAdapter.updateItems(filterStars, selectedFilter.star.map { it.toString() }.toSet())
     }
 
     companion object {

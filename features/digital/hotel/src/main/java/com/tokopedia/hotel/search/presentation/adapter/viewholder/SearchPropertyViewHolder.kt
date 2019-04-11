@@ -21,7 +21,7 @@ class SearchPropertyViewHolder(view: View): AbstractViewHolder<Property>(view) {
             type.text = element.type
             location.text = element.address
             rate.text = getRateFormatted(element.review)
-            price.text = element.priceAmount.getCurrencyFormatted()
+            price.text = element.roomPrice.firstOrNull()?.price ?: ""
         }
     }
 
