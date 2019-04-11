@@ -42,6 +42,7 @@ public class AddToCartRequest {
         setTrackerAttribution(builder.trackerAttribution);
         setTrackerListName(builder.trackerListName);
         setWarehouseId(builder.warehouseId);
+        setIsTradeIn(builder.istradein);
     }
 
     public int getProductId() {

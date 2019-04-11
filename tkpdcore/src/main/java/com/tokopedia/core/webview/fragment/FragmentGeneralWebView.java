@@ -318,6 +318,9 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 case DeepLinkChecker.PROFILE:
                     DeepLinkChecker.openProfile(getActivity(), url);
                     return false;
+                case DeepLinkChecker.CONTENT:
+                    DeepLinkChecker.openContent(getActivity(), url);
+                    return false;
                 default:
                     return false;
             }

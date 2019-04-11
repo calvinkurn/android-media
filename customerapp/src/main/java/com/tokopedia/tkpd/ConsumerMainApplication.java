@@ -370,6 +370,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
         CMNotificationUrls.CM_TOKEN_UPDATE = ConsumerAppBaseUrl.CM_TOKEN_UPDATE;
         tradein_common.Constants.LAKU6_BASEURL = ConsumerAppBaseUrl.LAKU6_BASE_URL;
+        com.tokopedia.inbox.common.ResolutionUrl.HOSTNAME=ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
 
     }
 
