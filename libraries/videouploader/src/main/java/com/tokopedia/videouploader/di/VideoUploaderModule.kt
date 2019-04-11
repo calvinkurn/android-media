@@ -33,6 +33,8 @@ import java.util.concurrent.TimeUnit
 @Module
 class VideoUploaderModule constructor() {
 
+
+    private val BASE_URL = "https://gql.tokopedia.com/"
     private val GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"
     private val NET_READ_TIMEOUT = 100
     private val NET_WRITE_TIMEOUT = 100
@@ -162,7 +164,7 @@ class VideoUploaderModule constructor() {
     @Provides
     fun provideWsV4RetrofitWithErrorHandler(@VideoUploaderQualifier okHttpClient: OkHttpClient,
                                             @VideoUploaderQualifier retrofitBuilder: Retrofit.Builder): Retrofit {
-        return retrofitBuilder.client(okHttpClient).build()
+        return retrofitBuilder.baseUrl(BASE_URL).client(okHttpClient).build()
     }
 
     @VideoUploaderQualifier
