@@ -79,9 +79,11 @@
             android:id="@+id/btnUseVoucher"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Button.Submit.White.Border"
+            style="@style/Button.Submit"
             android:textSize="@dimen/sp_12"
-            tools:text="@string/use_voucher"
+            android:textColor="@color/tkpd_main_green"
+            android:background="@drawable/button_border_green"
+            android:text="@string/use_voucher"
             android:minWidth="@dimen/dp_60"
             android:minHeight="@dimen/dp_8"
             android:padding="@dimen/dp_8"/>
