@@ -9,7 +9,6 @@
         android:id="@+id/voucher_cart_holder_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_5"
         android:padding="@dimen/dp_12"/>
 
     <View

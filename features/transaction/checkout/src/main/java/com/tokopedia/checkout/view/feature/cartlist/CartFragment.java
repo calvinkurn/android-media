@@ -1899,6 +1899,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         clashBottomSheetFragment.setData(clashingInfoDetailUiModel);
         clashBottomSheetFragment.setActionListener(this);
         clashBottomSheetFragment.setAnalyticsCart(cartPageAnalytics);
+        clashBottomSheetFragment.setSource("cart");
         clashBottomSheetFragment.show(getFragmentManager(), "");
     }
 
