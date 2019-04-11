@@ -62,7 +62,7 @@
             android:padding="@dimen/dp_8"
             android:visibility="gone"
             android:layout_alignParentBottom="true"
-            android:src="@drawable/ic_auto_flash"
+            app:srcCompat="@drawable/ic_auto_flash"
             tools:visibility="visible" />
 
         <RelativeLayout
@@ -124,7 +124,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_flip_camera" />
+            app:srcCompat="@drawable/ic_flip_camera" />
 
     </RelativeLayout>
 
