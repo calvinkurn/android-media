@@ -12,12 +12,12 @@ import com.tokopedia.hotel.R
  */
 class HotelRoomAndGuestBottomSheets : BottomSheets() {
 
-    lateinit var listener: HotelGuestListener
+    private lateinit var listener: HotelGuestListener
 
-    lateinit var spvRoomCounter: SelectPassengerView
-    lateinit var spvAdultCounter: SelectPassengerView
-    lateinit var spvChildCounter: SelectPassengerView
-    lateinit var btnSave: ButtonCompat
+    private lateinit var spvRoomCounter: SelectPassengerView
+    private lateinit var spvAdultCounter: SelectPassengerView
+    private lateinit var spvChildCounter: SelectPassengerView
+    private lateinit var btnSave: ButtonCompat
 
     override fun getLayoutResourceId(): Int = R.layout.bottom_sheets_hotel_room_and_guest
 
