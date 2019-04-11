@@ -19,6 +19,7 @@ import android.support.v7.widget.SnapHelper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.react.ReactApplication;
@@ -3049,7 +3050,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendOpenHomeEvent() {
-        Log.d("Url Oka", TokopediaUrl.Companion.getUrl().toString());
+        Toast.makeText(this, TokopediaUrl.Companion.getUrl().getTYPE().getValue(), Toast.LENGTH_SHORT).show();
         Map<String, Object> value = DataLayer.mapOf(
                 AppEventTracking.MOENGAGE.LOGIN_STATUS, legacySessionHandler().isV4Login()
         );

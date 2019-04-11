@@ -120,6 +120,10 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         groupChatLogToggle = findViewById(R.id.groupchat_log);
 
 
+        setupEnvSpinner();
+    }
+
+    private void setupEnvSpinner() {
         spinnerEnvironmentChooser = findViewById(R.id.spinner_env_chooser);
         envSpinnerAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, Env.values());
         envSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -127,6 +131,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         Env currentEnv = TokopediaUrl.Companion.getUrl().getTYPE();
         for(int i = 0; i < Env.values().length; i++) {
             if(currentEnv == Env.values()[i]) {
+                isEnvSpinnerUserAction = false;
                 spinnerEnvironmentChooser.setSelection(i);
                 break;
             }
