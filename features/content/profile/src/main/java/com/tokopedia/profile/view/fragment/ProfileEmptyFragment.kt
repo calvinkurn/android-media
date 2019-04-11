@@ -54,7 +54,10 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        mainView.setMargin(0, getStatusBarHeight(), 0, 0)
+        mainView.fitsSystemWindows = false
+        mainView.requestLayout()
+        swipeToRefresh.clipToPadding = true
+        swipeToRefresh.requestLayout()
         presenter.attachView(this)
         initVar()
         super.onViewCreated(view, savedInstanceState)
