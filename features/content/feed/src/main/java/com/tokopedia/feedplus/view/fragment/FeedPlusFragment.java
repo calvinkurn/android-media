@@ -357,10 +357,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
                         item = adapter.getlist().get(position);
 
-                        if (position != 0 && item != null) {
-                            trackImpression(item);
-                        }
-
                         if (item instanceof DynamicPostViewModel) {
                             if (!TextUtils.isEmpty(((DynamicPostViewModel) item).getFooter().getButtonCta().getAppLink())) {
                                 adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER);
@@ -374,16 +370,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
             }
 
         });
-    }
-
-    private void trackImpression(Visitable item) {
-        if (isInspirationItem(item)) {
-            analytics.trackImpressionFeedRecommendation();
-        }
-    }
-
-    private boolean isInspirationItem(Visitable item) {
-        return item instanceof InspirationViewModel;
     }
 
     private boolean itemIsFullScreen() {
