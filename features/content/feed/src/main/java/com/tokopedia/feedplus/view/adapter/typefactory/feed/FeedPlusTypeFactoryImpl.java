@@ -24,7 +24,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendat
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder;
-import com.tokopedia.feedplus.view.adapter.viewholder.favoritecta.FavoriteCtaViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.inspiration.InspirationViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.ContentProductViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.KolRecommendationViewHolder;
@@ -44,7 +43,6 @@ import com.tokopedia.feedplus.view.analytics.FeedAnalytics;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel;
-import com.tokopedia.feedplus.view.viewmodel.FavoriteCtaViewModel;
 import com.tokopedia.feedplus.view.viewmodel.RetryModel;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
@@ -201,11 +199,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
-    public int type(FavoriteCtaViewModel favoriteCtaViewModel) {
-        return FavoriteCtaViewHolder.LAYOUT;
-    }
-
-    @Override
     public int type(ContentProductViewModel contentProductViewModel) {
         return ContentProductViewHolder.LAYOUT;
     }
@@ -284,8 +277,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new FeedTopadsViewHolder(view,
                     topAdsItemClickListener,
                     topAdsInfoClickListener);
-        else if (type == FavoriteCtaViewHolder.LAYOUT)
-            viewHolder = new FavoriteCtaViewHolder(view, viewListener);
         else if (type == ContentProductViewHolder.LAYOUT)
             viewHolder = new ContentProductViewHolder(view, viewListener);
         else if (type == ProductCommunicationViewHolder.LAYOUT)

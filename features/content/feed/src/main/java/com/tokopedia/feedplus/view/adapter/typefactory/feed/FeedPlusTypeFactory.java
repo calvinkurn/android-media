@@ -4,7 +4,6 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel;
-import com.tokopedia.feedplus.view.viewmodel.FavoriteCtaViewModel;
 import com.tokopedia.feedplus.view.viewmodel.RetryModel;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
@@ -46,8 +45,6 @@ public interface FeedPlusTypeFactory {
     int type(KolRecommendationViewModel kolRecommendationViewModel);
 
     int type(FeedTopAdsViewModel feedTopAdsViewModel);
-
-    int type(FavoriteCtaViewModel favoriteCtaViewModel);
 
     int type(ContentProductViewModel contentProductViewModel);
 
