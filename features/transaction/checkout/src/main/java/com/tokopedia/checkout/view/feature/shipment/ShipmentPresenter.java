@@ -887,14 +887,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     getView().hideLoading();
                     ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
                     if (!responseGetPromoStack.getStatus().equalsIgnoreCase("OK")
-                            || TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(
-                            responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
-                        StringBuilder err = new StringBuilder();
-                        for (String s : responseGetPromoStack.getMessage()) {
-                            err.append("\n").append(s);
+                            || !responseGetPromoStack.getData().getGlobalSuccess()) {
+                        String errMessage = "";
+                        if (!responseGetPromoStack.getData().getVoucherOrders().isEmpty() &&
+                                responseGetPromoStack.getData().getVoucherOrders().get(0).getMessage() != null) {
+                            errMessage = responseGetPromoStack.getData().getVoucherOrders().get(0).getMessage().getText();
                         }
-                        mTrackerShipment.eventClickLanjutkanTerapkanPromoError(err.toString());
-                        getView().showToastError(err.toString());
+                        mTrackerShipment.eventClickLanjutkanTerapkanPromoError(errMessage);
+                        getView().showToastError(errMessage);
                         getView().resetCourier(cartPosition);
                     } else {
                         if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
