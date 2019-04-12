@@ -308,6 +308,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             }
         } else {
             this.brands.clear();
+            brandLayout.removeAllViews();
+            brandsHeading.setVisibility(View.GONE);
             noBrandsFound.setVisibility(View.GONE);
         }
     }

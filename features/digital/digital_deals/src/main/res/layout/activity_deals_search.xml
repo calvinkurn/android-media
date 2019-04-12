@@ -97,6 +97,7 @@
                         android:textColor="@color/clr_f531353b"
                         android:textStyle="bold"
                         android:textSize="@dimen/sp_14"
+                        android:padding="@dimen/dp_4"
                         app:layout_constraintBottom_toBottomOf="@+id/lokasi"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/lokasi"
