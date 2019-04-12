@@ -200,7 +200,6 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
             sendClickEvent(holder.imgBanner.getContext(), item, position);
         });
 
-
         holder.btnContinue.setVisibility(item.isShowTukarButton() ? View.VISIBLE : View.GONE);
     }
 
@@ -231,49 +230,39 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
         }
 
         if (!holder.isVisited) {
-            Map<String, String> item = new HashMap<>();
-            item.put("id", String.valueOf(data.getId()));
-            item.put("name", data.getTitle());
+            Map<String, Object> item = new HashMap<>();
+            item.put("name", "/tokopoints/penukaran point - p(x) - promo list");
             item.put("position", String.valueOf(holder.getAdapterPosition()));
             item.put("creative", data.getTitle());
-            item.put("creative_url", data.getImageUrlMobile());
             item.put("promo_code", data.getBaseCode());
 
-            Map<String, List<Map<String, String>>> promotions = new HashMap<>();
+            Map<String, Object> promotions = new HashMap<>();
             promotions.put("promotions", Arrays.asList(item));
 
-            Map<String, Map<String, List<Map<String, String>>>> promoView = new HashMap<>();
-            promoView.put("promoView", promotions);
 
-            AnalyticsTrackerUtil.sendECommerceEvent(holder.btnContinue.getContext(),
-                    AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
-                    AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
-                    data.getTitle(), promoView);
+            AnalyticsTrackerUtil.sendECommerceEvent(AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_ON_CATALOG,
+                    data.getTitle() + " - " + data.getBaseCode(), promotions);
 
             holder.isVisited = true;
         }
     }
 
     private void sendClickEvent(Context context, CatalogsValueEntity data, int position) {
-        Map<String, String> item = new HashMap<>();
-        item.put("id", String.valueOf(data.getId()));
-        item.put("name", data.getTitle());
+        Map<String, Object> item = new HashMap<>();
+        item.put("name", "/tokopoints/penukaran point - p(x) - promo list");
         item.put("position", String.valueOf(position));
         item.put("creative", data.getTitle());
-        item.put("creative_url", data.getImageUrlMobile());
         item.put("promo_code", data.getBaseCode());
 
-        Map<String, List<Map<String, String>>> promotions = new HashMap<>();
+        Map<String, Object> promotions = new HashMap<>();
         promotions.put("promotions", Arrays.asList(item));
 
-        Map<String, Map<String, List<Map<String, String>>>> promoClick = new HashMap<>();
-        promoClick.put("promoClick", promotions);
 
-        AnalyticsTrackerUtil.sendECommerceEvent(context,
-                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
-                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
-                AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
-                data.getTitle(), promoClick);
+        AnalyticsTrackerUtil.sendECommerceEvent(AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_ON_CATALOG,
+                data.getTitle() + " - " + data.getBaseCode(), promotions);
     }
 }

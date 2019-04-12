@@ -75,11 +75,7 @@ public class InCategoryViewHolder extends AbstractViewHolder<InCategorySearch> {
                         ),
                         tabName
                 );
-                listener.onItemSearchClicked(
-                        element.getKeyword(),
-                        element.getCategoryId(),
-                        getAutoCompleteItemIsOfficial(element)
-                );
+                listener.onItemSearchClicked(element.getApplink());
             }
         });
 

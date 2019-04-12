@@ -119,9 +119,9 @@ public class SectionCarouselAdapter extends RecyclerView.Adapter<SectionCarousel
 
             if (!holder.isVisited) {
                 AnalyticsTrackerUtil.sendEvent(holder.itemView.getContext(),
-                        AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_TOKOPOINT,
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                         AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                        AnalyticsTrackerUtil.ActionKeys.VIEW_DYNAMIC_CAT,
+                        AnalyticsTrackerUtil.ActionKeys.VIEW_DYNAMIC_ICON,
                         data.getTitle());
 
                 holder.isVisited = true;
