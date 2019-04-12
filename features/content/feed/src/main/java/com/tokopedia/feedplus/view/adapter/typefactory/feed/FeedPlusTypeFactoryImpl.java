@@ -24,7 +24,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendat
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder;
-import com.tokopedia.feedplus.view.adapter.viewholder.inspiration.InspirationViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.ContentProductViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.KolRecommendationViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.PollViewHolder;
@@ -42,7 +41,6 @@ import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel;
 import com.tokopedia.feedplus.view.viewmodel.RetryModel;
-import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
@@ -64,8 +62,6 @@ import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
-import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
-import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
@@ -78,8 +74,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         implements FeedPlusTypeFactory, KolPostTypeFactory, DynamicFeedTypeFactory {
 
     private final FeedPlus.View viewListener;
-    private final TopAdsItemClickListener topAdsItemClickListener;
-    private final TopAdsInfoClickListener topAdsInfoClickListener;
     private final FeedPlus.View.Kol kolViewListener;
     private final FeedPlus.View.Polling pollingViewListener;
     private final KolPostListener.View.ViewHolder kolPostListener;
@@ -99,8 +93,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     public FeedPlusTypeFactoryImpl(FeedPlusFragment context, FeedAnalytics analytics,
                                    UserSessionInterface userSession) {
         this.viewListener = context;
-        this.topAdsItemClickListener = context;
-        this.topAdsInfoClickListener = context;
         this.kolViewListener = context;
         this.kolPostListener = context;
         this.pollingViewListener = context;
@@ -136,11 +128,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     @Override
     public int type(OfficialStoreCampaignViewModel officialStoreViewModel) {
         return OfficialStoreCampaignViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(InspirationViewModel inspirationViewModel) {
-        return InspirationViewHolder.LAYOUT;
     }
 
     @Override
@@ -251,8 +238,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new OfficialStoreCampaignViewHolder(view, viewListener);
         else if (type == OfficialStoreBrandsViewHolder.LAYOUT)
             viewHolder = new OfficialStoreBrandsViewHolder(view, viewListener);
-        else if (type == InspirationViewHolder.LAYOUT)
-            viewHolder = new InspirationViewHolder(view, viewListener);
         else if (type == PromotedProductViewHolder.LAYOUT)
             viewHolder = new PromotedProductViewHolder(view, viewListener);
         else if (type == KolRecommendationViewHolder.LAYOUT)

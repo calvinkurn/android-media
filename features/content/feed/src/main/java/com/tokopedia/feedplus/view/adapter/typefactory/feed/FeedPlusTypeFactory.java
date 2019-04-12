@@ -5,7 +5,6 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel;
 import com.tokopedia.feedplus.view.viewmodel.RetryModel;
-import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
@@ -31,8 +30,6 @@ public interface FeedPlusTypeFactory {
     int type(OfficialStoreBrandsViewModel brandsViewModel);
 
     int type(OfficialStoreCampaignViewModel officialStoreViewModel);
-
-    int type(InspirationViewModel inspirationViewModel);
 
     int type(PromotedProductViewModel promotedProductViewModel);
 
