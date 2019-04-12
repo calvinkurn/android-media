@@ -29,7 +29,6 @@ import com.tokopedia.feedplus.view.adapter.viewholder.kol.KolRecommendationViewH
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.PollViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.ProductCommunicationViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.WhitelistViewHolder;
-import com.tokopedia.feedplus.view.adapter.viewholder.productcard.ActivityCardViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolder;
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics;
@@ -42,7 +41,6 @@ import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
-import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.ExploreViewHolder;
@@ -100,11 +98,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         this.videoViewListener = context;
         this.analytics = analytics;
         this.userSession = userSession;
-    }
-
-    @Override
-    public int type(ActivityCardViewModel activityCardViewModel) {
-        return ActivityCardViewHolder.LAYOUT;
     }
 
     @Override
@@ -202,8 +195,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new EmptyFeedViewHolder(view, viewListener);
         else if (type == RetryViewHolder.LAYOUT)
             viewHolder = new RetryViewHolder(view, viewListener);
-        else if (type == ActivityCardViewHolder.LAYOUT)
-            viewHolder = new ActivityCardViewHolder(view, viewListener);
         else if (type == KolRecommendationViewHolder.LAYOUT)
             viewHolder = new KolRecommendationViewHolder(view, kolViewListener, analytics);
         else if (type == ContentProductViewHolder.LAYOUT)
