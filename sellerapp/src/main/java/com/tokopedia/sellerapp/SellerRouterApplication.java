@@ -1237,11 +1237,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public boolean isLoginInactivePhoneLinkEnabled() {
-        return false;
-    }
-
-    @Override
     public Intent getSettingBankIntent(Context context) {
         return SettingBankActivity.Companion.createIntent(context);
     }
