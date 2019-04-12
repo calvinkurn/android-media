@@ -54,7 +54,7 @@ public class BaseDiscoveryActivity
     private boolean isStartingSearchActivityWithProductViewModel = false;
     private ProductViewModel productViewModelForOnResume;
 
-    private GCMHandler gcmHandler;
+    protected GCMHandler gcmHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

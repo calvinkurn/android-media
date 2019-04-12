@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
@@ -29,7 +30,6 @@ import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
-import com.tokopedia.discovery.newdiscovery.search.SearchContract;
 import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
 import com.tokopedia.discovery.newdiscovery.search.SearchPresenter;
 import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter;
@@ -48,8 +48,8 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.search.constant.AppEventTracking;
-import com.tokopedia.search.constant.SearchConstant;
+import com.tokopedia.search.constant.SearchEventTracking;
+import com.tokopedia.search.presentation.SearchContract;
 import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
@@ -65,6 +65,8 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+
+import static com.tokopedia.search.constant.SearchConstant.FROM_APP_SHORTCUTS;
 
 @RuntimePermissions
 public class SearchActivity extends DiscoveryActivity
@@ -106,7 +108,7 @@ public class SearchActivity extends DiscoveryActivity
     private boolean isHandlingIntent;
 
     @Inject
-    SearchPresenter searchPresenter;
+    SearchContract.Presenter searchPresenter;
 
     @Inject
     SearchTracking searchTracking;
@@ -173,7 +175,7 @@ public class SearchActivity extends DiscoveryActivity
 
     private void initActivityOnCreate(Bundle savedInstanceState) {
         GraphqlClient.init(this);
-        initInjector();
+//        initInjector();
         initForceSwipeToShop(savedInstanceState);
         bottomSheetFilterView.initFilterBottomSheet();
     }
@@ -195,7 +197,7 @@ public class SearchActivity extends DiscoveryActivity
     private void handleIntent(Intent intent) {
         isHandlingIntent = true;
 
-        initPresenter();
+//        initPresenter();
         initResources();
 
         boolean isAutoComplete = intent.getBooleanExtra(EXTRA_IS_AUTOCOMPLETE, false);
@@ -209,7 +211,7 @@ public class SearchActivity extends DiscoveryActivity
         }
 
         if (intent != null &&
-                intent.getBooleanExtra(SearchConstant.FROM_APP_SHORTCUTS, false)) {
+                intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
             searchTracking.eventSearchShortcut();
         }
 
@@ -381,25 +383,25 @@ public class SearchActivity extends DiscoveryActivity
 
     public void eventDiscoveryExternalImageSearch(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AppEventTracking.IMAGE_SEARCH_CLICK,
-                AppEventTracking.Category.IMAGE_SEARCH,
-                AppEventTracking.Action.EXTERNAL_IMAGE_SEARCH,
+                SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
+                SearchEventTracking.Category.IMAGE_SEARCH,
+                SearchEventTracking.Action.EXTERNAL_IMAGE_SEARCH,
                 "");
     }
 
-    private void initInjector() {
-        searchComponent =
-                DaggerSearchComponent.builder()
-                        .appComponent(getApplicationComponent())
-                        .build();
-        searchComponent.inject(this);
-    }
-
-    private void initPresenter() {
-        setPresenter(searchPresenter);
-        searchPresenter.attachView(this);
-        searchPresenter.setDiscoveryView(this);
-    }
+//    private void initInjector() {
+//        searchComponent =
+//                DaggerSearchComponent.builder()
+//                        .appComponent(getApplicationComponent())
+//                        .build();
+//        searchComponent.inject(this);
+//    }
+//
+//    private void initPresenter() {
+//        setPresenter(searchPresenter);
+//        searchPresenter.attachView(this);
+//        searchPresenter.setDiscoveryView(this);
+//    }
 
     private void initResources() {
         productTabTitle = getString(com.tokopedia.discovery.R.string.product_tab_title);
@@ -633,20 +635,20 @@ public class SearchActivity extends DiscoveryActivity
 
             @Override
             public void hideKeyboard() {
-                KeyboardHandler.hideSoftKeyboard(com.tokopedia.discovery.newdiscovery.search.SearchActivity.this);
+                KeyboardHandler.hideSoftKeyboard(SearchActivity.this);
             }
 
             @Override
             public void launchFilterCategoryPage(Filter filter, String selectedCategoryRootId, String selectedCategoryId) {
                 SearchTracking.eventSearchResultNavigateToFilterDetail(getActivityContext(), getResources().getString(com.tokopedia.discovery.R.string.title_category));
-                FilterDetailActivityRouter.launchCategoryActivity(com.tokopedia.discovery.newdiscovery.search.SearchActivity.this,
+                FilterDetailActivityRouter.launchCategoryActivity(SearchActivity.this,
                         filter, selectedCategoryRootId, selectedCategoryId, true);
             }
 
             @Override
             public void launchFilterDetailPage(Filter filter) {
                 SearchTracking.eventSearchResultNavigateToFilterDetail(getActivityContext(), filter.getTitle());
-                FilterDetailActivityRouter.launchDetailActivity(com.tokopedia.discovery.newdiscovery.search.SearchActivity.this, filter, true);
+                FilterDetailActivityRouter.launchDetailActivity(SearchActivity.this, filter, true);
             }
         });
     }
