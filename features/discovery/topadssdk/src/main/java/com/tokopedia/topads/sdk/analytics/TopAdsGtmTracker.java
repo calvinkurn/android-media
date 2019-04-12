@@ -103,7 +103,7 @@ public class TopAdsGtmTracker {
                 "brand", "none/other",
                 "variant", "none/other",
                 "category", product.getCategory().getId(),
-                "list", "/searchproduct - topads  productlist",
+                "list", "/searchproduct - topads productlist",
                 "position", position));
     }
 
