@@ -50,7 +50,7 @@ class ProfileViewHolder(val view: View, val clickListener : ItemClickListener) :
 
     private fun setTitle() {
         if (searchQueryStartIndexInKeyword == -1) {
-            view.title_text_view.text = boundedProfileSearch.keyword.toLowerCase()
+            view.title_text_view.text = boundedProfileSearch.keyword
         } else {
             view.title_text_view.text = getHighlightedTitle()
         }
