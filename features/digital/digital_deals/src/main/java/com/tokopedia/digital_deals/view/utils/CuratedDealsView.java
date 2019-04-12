@@ -72,15 +72,17 @@ public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapt
 
         if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {
             dealTitle.setText(categoryItem.getTitle());
-            seeAllCuratedDeals.setVisibility(VISIBLE);
-            seeAllCuratedDeals.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!TextUtils.isEmpty(categoryItem.getCategoryUrl())) {
-                        mPresenter.getAllTrendingDeals(categoryItem.getCategoryUrl(), dealTitle.getText().toString());
+            if (categoryItem.getItems().size() > 9) {
+                seeAllCuratedDeals.setVisibility(VISIBLE);
+                seeAllCuratedDeals.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!TextUtils.isEmpty(categoryItem.getCategoryUrl())) {
+                            mPresenter.getAllTrendingDeals(categoryItem.getCategoryUrl(), dealTitle.getText().toString());
+                        }
                     }
-                }
-            });
+                });
+            }
             curatedDealsRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
             categoryAdapter = new DealsCategoryAdapter(categoryItem.getItems(), DealsCategoryAdapter.HOME_PAGE, this, IS_SHORT_LAYOUT);
             categoryAdapter.setDealsHomeLayout(true);

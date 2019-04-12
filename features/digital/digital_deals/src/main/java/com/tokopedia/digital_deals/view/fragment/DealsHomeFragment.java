@@ -140,6 +140,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         setUpVariables(view);
         checkLocationStatus();
 
+        categoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.HOME_PAGE, this, IS_SHORT_LAYOUT);
         return view;
     }
 
@@ -257,7 +258,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
 
-
     private void setDrawableTint(Drawable img) {
         Drawable wrappedDrawable = DrawableCompat.wrap(img);
         Drawable mutableDrawable = wrappedDrawable.mutate();
@@ -303,19 +303,25 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         switch (requestCode) {
-            case DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY:
-                Location location = Utils.getSingletonInstance().getLocation(getActivity());
-                if (location == null) {
-                    if (getActivity() != null)
-                        getActivity().finish();
-                } else {
-                    if (data != null) {
-                        if (isLocationUpdated) {
-                            Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
-                        }
+            case DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY:
+                if (resultCode == RESULT_OK) {
+                    Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
+                    if (!tvLocationName.getText().equals(location1.getName())) {
+                        tvLocationName.setText(location1.getName());
                         mPresenter.getDealsList(true);
                     }
-                    tvLocationName.setText(location.getName());
+                }
+                break;
+            case DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY:
+                if (resultCode == RESULT_OK) {
+                    Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
+                    if (!tvLocationName.getText().equals(location1.getName())) {
+                        tvLocationName.setText(location1.getName());
+                        mPresenter.getDealsList(true);
+                    } else {
+                        mPresenter.getDealsList(false);
+                    }
+
                 }
                 break;
             case DealsHomeActivity.REQUEST_CODE_LOGIN:
@@ -433,19 +439,22 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void renderTopDeals(CategoryItem categoryItem) {
         if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {
             trendingDeals.setVisibility(View.VISIBLE);
-            tvSeeAllTrendingDeals.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!TextUtils.isEmpty(categoryItem.getCategoryUrl())) {
-                        mPresenter.getAllTrendingDeals(categoryItem.getCategoryUrl(), getContext().getResources().getString(R.string.trending_deals));
+            if (categoryItem.getItems().size() > 9) {
+                tvSeeAllTrendingDeals.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!TextUtils.isEmpty(categoryItem.getCategoryUrl())) {
+                            mPresenter.getAllTrendingDeals(categoryItem.getCategoryUrl(), getContext().getResources().getString(R.string.trending_deals));
+                        }
                     }
-                }
-            });
+                });
+            }
             noContent.setVisibility(View.GONE);
-            categoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.HOME_PAGE, this, IS_SHORT_LAYOUT);
+            categoryAdapter.clearList();
             categoryAdapter.setDealsHomeLayout(true);
             rvTrendingDeals.setAdapter(categoryAdapter);
-            categoryAdapter.addAll(categoryItem.getItems(), false);
+            categoryAdapter.addAll(categoryItem.getItems(), true);
+            rvTrendingDeals.setVisibility(View.VISIBLE);
             categoryAdapter.notifyDataSetChanged();
         } else {
             mPresenter.sendEventView(DealsAnalytics.EVENT_NO_DEALS_AVAILABLE_ON_YOUR_LOCATION,
@@ -487,7 +496,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         if (categoryItems != null && categoryItems.size() > 0) {
             curatedDealsLayout.setVisibility(View.VISIBLE);
             curatedDealsLayout.removeAllViews();
-            noContent.setVisibility(View.GONE);
             boolean isItemsAvailable = false;
             for (CategoryItem categoryItem : categoryItems) {
                 if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {
@@ -495,10 +503,10 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                     DealsCategoryAdapter.INavigateToActivityRequest listener = new DealsCategoryAdapter.INavigateToActivityRequest() {
                         @Override
                         public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
-startActivityForResult(intent, requestCode);
+                            startActivityForResult(intent, requestCode);
                         }
                     };
-                    CuratedDealsView curatedDealsView = new CuratedDealsView(getActivity(), categoryItem, listener, openTrendingDeals,  "", mPresenter);
+                    CuratedDealsView curatedDealsView = new CuratedDealsView(getActivity(), categoryItem, listener, openTrendingDeals, "", mPresenter);
                     curatedDealsLayout.addView(curatedDealsView);
                 }
             }
@@ -681,9 +689,9 @@ startActivityForResult(intent, requestCode);
                 isLocationUpdated = locationUpdated;
                 selectLocationFragment.setCanceledOnTouchOutside(true);
                 Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
+                mPresenter.getDealsList(true);
+                tvLocationName.setText(location.getName());
             }
-            mPresenter.getDealsList(true);
-            tvLocationName.setText(location.getName());
             if (selectLocationFragment != null) {
                 selectLocationFragment.dismiss();
             }
@@ -693,7 +701,9 @@ startActivityForResult(intent, requestCode);
     @Override
     public void startLocationFragment(List<Location> locationList, boolean isForFirstime) {
         Utils.getSingletonInstance().updateLocation(getContext(), locationList.get(0));
-        mPresenter.getDealsList(false);
+        if (isForFirstime) {
+            mPresenter.getDealsList(false);
+        }
         selectLocationFragment.setCustomContentView(new SelectLocationBottomSheet(getContext(), isForFirstime, locationList, this, tvLocationName.getText().toString(), this), "", false);
         selectLocationFragment.show();
         if (isForFirstime) {
