@@ -439,7 +439,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void renderTopDeals(CategoryItem categoryItem) {
         if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {
             trendingDeals.setVisibility(View.VISIBLE);
-            if (categoryItem.getItems().size() > 9) {
+            if (categoryItem.getItems().size() >= 9) {
+                tvSeeAllTrendingDeals.setVisibility(View.VISIBLE);
                 tvSeeAllTrendingDeals.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

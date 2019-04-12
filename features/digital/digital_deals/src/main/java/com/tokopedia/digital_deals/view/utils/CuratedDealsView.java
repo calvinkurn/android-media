@@ -72,7 +72,7 @@ public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapt
 
         if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {
             dealTitle.setText(categoryItem.getTitle());
-            if (categoryItem.getItems().size() > 9) {
+            if (categoryItem.getItems().size() >= 9) {
                 seeAllCuratedDeals.setVisibility(VISIBLE);
                 seeAllCuratedDeals.setOnClickListener(new View.OnClickListener() {
                     @Override
