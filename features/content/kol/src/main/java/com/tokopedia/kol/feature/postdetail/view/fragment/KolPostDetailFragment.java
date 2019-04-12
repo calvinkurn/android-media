@@ -100,6 +100,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private static final int OPEN_KOL_COMMENT = 101;
     private static final int OPEN_KOL_PROFILE = 13;
     private static final int OPEN_CONTENT_REPORT = 1310;
+    private static final int OPEN_VIDEO_DETAIL = 1311;
 
     private Integer postId;
     private SwipeToRefresh swipeToRefresh;
@@ -622,6 +623,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                         );
                     }
                 }
+            case OPEN_VIDEO_DETAIL: {
+                if (resultCode == Activity.RESULT_OK) {
+                    onRefresh();
+                }
+            }
                 break;
             default:
                 break;
@@ -886,6 +892,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String postId) {
-        startActivity(VideoDetailActivity.Companion.getInstance(getActivity(), postId));
+        startActivityForResult(VideoDetailActivity.Companion.getInstance(getActivity(), postId), OPEN_VIDEO_DETAIL);
     }
 }

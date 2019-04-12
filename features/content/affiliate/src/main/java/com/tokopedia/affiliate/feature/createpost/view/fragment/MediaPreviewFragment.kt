@@ -57,6 +57,9 @@ class MediaPreviewFragment : BaseDaggerFragment() {
         dialog
     }
 
+    private val imageList: ArrayList<String>
+        get() = ArrayList(viewModel.completeImageList.map { it.path })
+
     companion object {
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = MediaPreviewFragment()
@@ -87,8 +90,6 @@ class MediaPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun initView() {
-        val imageList = ArrayList(viewModel.completeImageList.map { it.path })
-
         if (viewModel.completeImageList.firstOrNull()?.type == MediaType.VIDEO) {
             viewFirstPage.hide()
             tabLayout.hide()

@@ -324,6 +324,12 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         actionListener.onClashCheckPromo(model)
     }
 
+    override fun configView(parentView: View?) {
+        super.configView(parentView)
+        parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
+        parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener{ onCloseButtonClick() }
+    }
+
     private fun hideKeyboard() {
         val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE);
         (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.windowToken, 0);

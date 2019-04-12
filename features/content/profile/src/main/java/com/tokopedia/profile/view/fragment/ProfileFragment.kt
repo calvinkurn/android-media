@@ -420,7 +420,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onLikeKolSuccess(rowNumber: Int, action: Int) {
-        if (adapter.data[rowNumber] != null && adapter.data[rowNumber] is DynamicPostViewModel) {
+        if (adapter.data.size > rowNumber
+                && adapter.data[rowNumber] != null
+                && adapter.data[rowNumber] is DynamicPostViewModel) {
             val model = adapter.data[rowNumber] as DynamicPostViewModel
             val like = model.footer.like
             like.isChecked = !model.footer.like.isChecked
@@ -1299,7 +1301,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
-        if (rowNumber != -1 &&
+        if (adapter.data.size > rowNumber &&
                 adapter.data[rowNumber] != null &&
                 adapter.data[rowNumber] is KolPostViewModel) {
             val kolPostViewModel = adapter.data[rowNumber] as KolPostViewModel
@@ -1319,7 +1321,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
         }
 
-        if (rowNumber != -1 &&
+        if (adapter.data.size > rowNumber &&
                 adapter.data[rowNumber] != null &&
                 adapter.data[rowNumber] is DynamicPostViewModel) {
             val comment = ((adapter.data[rowNumber]) as DynamicPostViewModel).footer.comment
