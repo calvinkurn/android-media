@@ -19,6 +19,11 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
+import com.tokopedia.design.quickfilter.QuickSingleFilterView;
+import com.tokopedia.design.quickfilter.custom.CustomViewRoundedQuickFilterItem;
+import com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView;
+import com.tokopedia.design.quickfilter.custom.multiple.view.QuickMultipleFilterView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.ChildCategoryLifestyleAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.RevampCategoryAdapter;
@@ -43,7 +48,7 @@ import java.util.Locale;
  * Created by nakama on 1/4/18.
  */
 
-public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<CategoryHeaderModel> {
+public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<CategoryHeaderModel> implements QuickSingleFilterView.ActionListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_category_header_lifestyle;
@@ -58,6 +63,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
     private final RevampCategoryAdapter.CategoryListener categoryListener;
     private final TextView titleHeader;
     private final TextView totalProduct;
+    private CustomViewRounderCornerFilterView quickMultipleFilterView;
     private final TopAdsBannerView topAdsBannerView;
     private final SubCategoryLifestyleItemDecoration itemDecoration;
     private boolean isInit;
@@ -69,12 +75,14 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
         this.imageHeader = (ImageView) itemView.findViewById(R.id.image_header);
         this.titleHeader = (TextView) itemView.findViewById(R.id.title_header);
         this.totalProduct = (TextView) itemView.findViewById(R.id.total_product);
+        this.quickMultipleFilterView = (CustomViewRounderCornerFilterView) itemView.findViewById(R.id.quickFilterView);
         this.imageHeaderContainer = (RelativeLayout) itemView.findViewById(R.id.image_header_container);
         this.layoutChildCategory = itemView.findViewById(R.id.view_child_category);
         this.listChildCategory = itemView.findViewById(R.id.recyclerview_child_category);
         this.topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.topAdsBannerView);
         this.itemDecoration = new SubCategoryLifestyleItemDecoration(itemView.getResources().getDimensionPixelSize(R.dimen.dp_8));
         this.categoryListener = listener;
+        this.quickMultipleFilterView.setListener(this);
     }
 
     private void initTopAds(String depId, String categoryName) {
@@ -120,6 +128,22 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
         renderBannerCategory(model);
         renderChildCategory(model);
         renderTotalProduct(model);
+        CustomViewRoundedQuickFilterItem quickFilterItem1 = new CustomViewRoundedQuickFilterItem();
+        quickFilterItem1.setName("Official Store");
+        quickFilterItem1.setType("1");
+        CustomViewRoundedQuickFilterItem quickFilterItem2 = new CustomViewRoundedQuickFilterItem();
+        quickFilterItem2.setName("Instant Courier");
+        quickFilterItem2.setType("2");
+        CustomViewRoundedQuickFilterItem quickFilterItem3 = new CustomViewRoundedQuickFilterItem();
+        quickFilterItem3.setName("Power Badge");
+        quickFilterItem3.setType("3");
+
+        List<QuickFilterItem> filterItems = new ArrayList<>();
+        filterItems.add(quickFilterItem1);
+        filterItems.add(quickFilterItem2);
+        filterItems.add(quickFilterItem3);
+
+        renderQuickFilterView(filterItems);
     }
 
     private void trackImpression(CategoryHeaderModel model) {
@@ -239,11 +263,19 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
         }
     }
 
+    protected void renderQuickFilterView(List<QuickFilterItem> quickFilterItems) {
+        quickMultipleFilterView.renderFilter(quickFilterItems);
+    }
+
     protected void renderSingleBanner(String headerImage, String categoryName) {
         ImageHandler.LoadImage(imageHeader, headerImage);
         titleHeader.setText(categoryName);
         titleHeader.setShadowLayer(24, 0, 0, R.color.checkbox_text);
 
         imageHeaderContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void selectFilter(String typeFilter) {
     }
 }
