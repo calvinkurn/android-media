@@ -8,6 +8,7 @@ query GetDashboard() {
       totalSold
       totalClick
       commission
+      productCommission
     }
     pagination{
       nextCursor

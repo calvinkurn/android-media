@@ -253,7 +253,9 @@ class VideoDetailFragment:
     }
 
     private fun initViewListener() {
-        ivClose.setOnClickListener { activity!!.finish() }
+        ivClose.setOnClickListener {
+            activity!!.setResult(Activity.RESULT_OK)
+            activity!!.finish() }
 
         likeIcon.setOnClickListener(onLikeSectionClicked())
         likeText.setOnClickListener(onLikeSectionClicked())
@@ -413,5 +415,7 @@ class VideoDetailFragment:
                 .setAction(R.string.title_try_again, listener)
                 .show()
     }
+
+
 
 }

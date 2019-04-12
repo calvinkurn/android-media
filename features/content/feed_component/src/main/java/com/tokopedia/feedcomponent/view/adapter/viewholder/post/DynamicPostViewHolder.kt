@@ -155,11 +155,19 @@ open class DynamicPostViewHolder(v: View,
             }
 
             itemView.menu.shouldShowWithAction(template.report) {
-                itemView.menu.setOnClickListener {
-                    listener.onMenuClick(adapterPosition, postId, header.reportable, header.deletable, header.editable)
+                if (canShowMenu(header.reportable, header.deletable, header.editable)) {
+                    itemView.menu.setOnClickListener {
+                        listener.onMenuClick(adapterPosition, postId, header.reportable, header.deletable, header.editable)
+                    }
+                } else{
+                    itemView.menu.hide()
                 }
             }
         }
+    }
+
+    private fun canShowMenu(reportable: Boolean, deletable: Boolean, editable: Boolean): Boolean {
+        return reportable || deletable || editable
     }
 
     private fun onAvatarClick(redirectUrl: String) {
@@ -202,9 +210,13 @@ open class DynamicPostViewHolder(v: View,
         itemView.caption.shouldShowWithAction(template.caption) {
             if (caption.text.isEmpty()) {
                 itemView.caption.visibility = View.GONE
-            } else if (caption.text.length > MAX_CHAR) {
+            } else if (caption.text.length > MAX_CHAR ||
+                   hasSecondLine(caption)) {
                 itemView.caption.visibility = View.VISIBLE
-                val captionText = caption.text.substring(0, CAPTION_END)
+                val captionEnd = if (caption.text.length > CAPTION_END) CAPTION_END else
+                    findSubstringSecondLine(caption)
+                val captionText = caption.text.substring(0, captionEnd)
+                        .replace("\n","<br/>")
                         .replace(NEWLINE, "<br />")
                         .plus("... ")
                         .plus("<font color='#42b549'><b>")
@@ -223,6 +235,17 @@ open class DynamicPostViewHolder(v: View,
                 itemView.caption.text = caption.text.replace(NEWLINE, " ")
             }
         }
+    }
+
+    private fun hasSecondLine(caption: Caption): Boolean {
+        val firstIndex = caption.text.indexOf("\n", 0)
+        return caption.text.indexOf("\n", firstIndex + 1) != -1
+    }
+
+    private fun findSubstringSecondLine(caption: Caption): Int {
+        val firstIndex = caption.text.indexOf("\n", 0)
+        return if (hasSecondLine(caption)) caption.text.indexOf("\n",
+                firstIndex + 1) else caption.text.length
     }
 
     private fun bindContentList(postId: Int,
@@ -390,7 +413,7 @@ open class DynamicPostViewHolder(v: View,
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
 
-        fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String)
+        fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String, postTagItem: PostTagItem, itemPosition: Int)
 
         fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>)
     }

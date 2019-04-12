@@ -1,6 +1,5 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,12 +14,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.discovery.model.DataValue;
-import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -329,10 +325,16 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void setProductList(List<Visitable> list) {
+    public void addProductList(List<Visitable> list) {
         sendProductImpressionTrackingEvent(list);
 
         adapter.appendItems(list);
+    }
+
+    public void setProductList(List<Visitable> list) {
+        adapter.clear();
+
+        addProductList(list);
     }
 
     private void sendProductImpressionTrackingEvent(List<Visitable> list) {
@@ -630,7 +632,7 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     public void setSelectedFilter(HashMap<String, String> selectedFilter) {
         super.setSelectedFilter(selectedFilter);
-        if (selectedFilter == null) {
+        if (selectedFilter == null || getSearchParameter() == null) {
             return;
         }
         if (TextUtils.isEmpty(selectedFilter.get(SearchApiConst.OFFICIAL))) {

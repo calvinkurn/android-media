@@ -35,6 +35,8 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
 
     void setHeaderTopAds(boolean hasHeader);
 
+    void addProductList(List<Visitable> list);
+
     void setProductList(List<Visitable> list);
 
     void disableWishlistButton(String productId);
@@ -42,6 +44,7 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
     void enableWishlistButton(String productId);
 
     void showNetworkError(int startRow);
+
     String getQueryKey();
 
     void setEmptyProduct();

@@ -284,23 +284,6 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             items.add(infoCard);
         }
 
-        if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_ENABLE_ACCOUNT_AFFILIATE, true)) {
-            InfoCardViewModel infoCard = new InfoCardViewModel();
-
-            if (AccountByMeHelper.isFirstTimeByme(context)) {
-                infoCard.setIconRes(R.drawable.ic_byme_card_notif);
-            } else {
-                infoCard.setIconRes(R.drawable.ic_byme_card);
-            }
-
-            infoCard.setMainText(context.getString(R.string.title_menu_affiliate));
-            infoCard.setSecondaryText(context.getString(R.string.label_menu_affiliate));
-            infoCard.setApplink(ApplinkConst.AFFILIATE_EXPLORE);
-            infoCard.setTitleTrack(PEMBELI);
-            infoCard.setSectionTrack(BY_ME);
-            items.add(infoCard);
-        }
-
         menuTitle = new MenuTitleViewModel();
         menuTitle.setTitle(context.getString(R.string.title_menu_help));
         items.add(menuTitle);

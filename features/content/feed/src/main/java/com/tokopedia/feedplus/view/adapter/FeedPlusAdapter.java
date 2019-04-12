@@ -150,6 +150,8 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void showLoading() {
+        int removePosition = this.list.indexOf(loadingMoreModel);
+        if (removePosition != -1) remove(loadingMoreModel);
         add(loadingMoreModel);
     }
 

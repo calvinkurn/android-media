@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_80"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/dp_80"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -37,6 +38,18 @@
                 android:layout_gravity="center_vertical"
                 tools:text="Cashback20Rb"/>
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvVoucherSubtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
+            android:textColor="@color/clr_ae31353b"
+            android:visibility="gone"
+            android:textStyle="bold"
+            style="@style/TextView.Micro10"
+            tools:text="Next Day (Rp 25.000)" />
+
         <TextView
             android:id="@+id/tvVoucherDesc"
             android:layout_width="match_parent"

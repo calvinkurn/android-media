@@ -197,13 +197,10 @@ class UsernameInputFragment : BottomSheetDialogFragment(), UsernameInputContract
     }
 
     private fun setFirstSuggestion(suggestions: List<String>?) {
-        if (suggestions == null || suggestions.isEmpty()) {
-            return
-        }
-        if (TextUtils.isEmpty(affiliateName)) {
-            usernameInput.setText(suggestions[0])
-        } else {
+        if (!TextUtils.isEmpty(affiliateName)) {
             usernameInput.setText(affiliateName)
+        } else if (suggestions != null && suggestions.isEmpty()){
+            usernameInput.setText(suggestions[0])
         }
     }
 

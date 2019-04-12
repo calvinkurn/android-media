@@ -34,6 +34,7 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
@@ -48,6 +49,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kol.KolComponentInstance
+import com.tokopedia.kol.analytics.PostTagAnalytics
 import com.tokopedia.kol.common.util.PostMenuListener
 import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
@@ -119,6 +121,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private var onlyOnePost: Boolean = false
     private var isAffiliate: Boolean = false
     private var isOwner: Boolean = false
+    private var openShare: Boolean = false
     private var resultIntent: Intent? = null
     private var affiliatePostQuota: AffiliatePostQuota? = null
     private var profileHeader: ProfileHeaderViewModel? = null
@@ -133,6 +136,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     @Inject
     lateinit var profileAnalytics: ProfileAnalytics
+
+    @Inject
+    lateinit var postTagAnalytics: PostTagAnalytics
 
     @Inject
     lateinit var profilePreference: ProfilePreference
@@ -342,6 +348,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 }
                 successPost = false
             }
+            openShare -> {
+                shareLink(element.profileHeaderViewModel.link)
+                openShare = false
+            }
         }
         recyclerView.scrollTo(0,0)
     }
@@ -362,8 +372,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     UsernameInputFragment::class.java.simpleName
             )
             usernameInputFragment.onDismissListener = {
-                if (usernameInputFragment.isSuccessRegister && !TextUtils.isEmpty(link)) {
-                    doShare(link)
+                if (usernameInputFragment.isSuccessRegister) {
+                    openShare = true
+                    onSwipeRefresh()
                     profilePreference.setShouldChangeUsername(false)
                 }
             }
@@ -409,7 +420,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onLikeKolSuccess(rowNumber: Int, action: Int) {
-        if (adapter.data[rowNumber] != null && adapter.data[rowNumber] is DynamicPostViewModel) {
+        if (adapter.data.size > rowNumber
+                && adapter.data[rowNumber] != null
+                && adapter.data[rowNumber] is DynamicPostViewModel) {
             val model = adapter.data[rowNumber] as DynamicPostViewModel
             val like = model.footer.like
             like.isChecked = !model.footer.like.isChecked
@@ -704,14 +717,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String,
                               url: String, iamgeUrl: String) {
         activity?.let {
-            profileRouter.shareFeed(
-                    it,
-                    id.toString(),
-                    url,
-                    title,
-                    iamgeUrl,
-                    description
-            )
+            doShare(url, String.format("%s %s", description, "%s"), title)
         }
         profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
     }
@@ -730,8 +736,26 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     }
 
-    override fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String) {
+    override fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String, postTagItem: PostTagItem, itemPosition: Int) {
         onGoToLink(redirectUrl)
+        if (adapter.list[positionInFeed] is DynamicPostViewModel) {
+            val model = adapter.list[positionInFeed] as DynamicPostViewModel
+            if (isOwner) {
+                postTagAnalytics.trackClickPostTagProfileSelf(
+                        model.id,
+                        postTagItem,
+                        itemPosition,
+                        model.trackingPostModel
+                )
+            } else {
+                postTagAnalytics.trackClickPostTagProfileOther(
+                        model.id,
+                        postTagItem,
+                        itemPosition,
+                        model.trackingPostModel
+                )
+            }
+        }
     }
 
     override fun onBannerItemClick(positionInFeed: Int, adapterPosition: Int, redirectUrl: String) {
@@ -1117,6 +1141,24 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             userId,
                             isOwner
                     )
+                    if (model.postTag.totalItems != 0 && !model.postTag.items.isEmpty()) {
+                        for (i in 0 until model.postTag.totalItems) {
+                            if (isOwner) {
+                                postTagAnalytics.trackViewPostTagProfileSelf(
+                                        model.id,
+                                        model.postTag.items.get(i),
+                                        i,
+                                        trackingPostModel)
+                            } else {
+                                postTagAnalytics.trackViewPostTagProfileOther(
+                                        model.id,
+                                        model.postTag.items.get(i),
+                                        i,
+                                        trackingPostModel
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -1218,12 +1260,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private fun shouldChangeUsername(): Boolean = isOwner && profilePreference.shouldChangeUsername()
 
     private fun doShare(link: String) {
-        val shareBody = String.format(getString(R.string.profile_share_text), link)
+        doShare(link, getString(R.string.profile_share_text), getString(R.string.profile_share_title))
+    }
+
+    private fun doShare(link: String, formatString : String, shareTitle : String) {
+        val shareBody = String.format(formatString, link)
         val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
         sharingIntent.type = TEXT_PLAIN
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody)
         startActivity(
-                Intent.createChooser(sharingIntent, getString(R.string.profile_share_title))
+                Intent.createChooser(sharingIntent, shareTitle)
         )
     }
 
@@ -1255,7 +1301,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
-        if (rowNumber != -1 &&
+        if (adapter.data.size > rowNumber &&
                 adapter.data[rowNumber] != null &&
                 adapter.data[rowNumber] is KolPostViewModel) {
             val kolPostViewModel = adapter.data[rowNumber] as KolPostViewModel
@@ -1275,7 +1321,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
         }
 
-        if (rowNumber != -1 &&
+        if (adapter.data.size > rowNumber &&
                 adapter.data[rowNumber] != null &&
                 adapter.data[rowNumber] is DynamicPostViewModel) {
             val comment = ((adapter.data[rowNumber]) as DynamicPostViewModel).footer.comment
