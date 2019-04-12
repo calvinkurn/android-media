@@ -128,7 +128,7 @@ class NormalCheckoutTracking {
                             "cart_id" to (cartId ?: NONE_OTHER),
                             "dimension38" to (trackerAttribution ?: NONE_OTHER)
                         ),
-                        "actionField" to mutableMapOf("list" to trackerListName)
+                        "actionField" to mutableMapOf("list" to (trackerListName ?: ""))
                     )
                 )
             ))
