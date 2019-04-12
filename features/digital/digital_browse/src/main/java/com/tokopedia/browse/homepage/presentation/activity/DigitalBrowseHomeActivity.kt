@@ -120,7 +120,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
         val TYPE_LAYANAN = 2
 
         val TITLE_BELANJA = "Belanja di Tokopedia"
-        val TITLE_LAYANAN = "Lainnya"
+        val TITLE_LAYANAN = "Semua Kategori"
 
         val LAYANAN_SCREEN = "/digital"
         val DEFAULT_SCREEN = "/kategori-belanja"
