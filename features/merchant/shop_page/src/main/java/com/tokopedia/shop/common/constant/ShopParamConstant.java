@@ -20,6 +20,7 @@ public class ShopParamConstant {
     public static final String EXTRA_ETALASE_BADGE = "EXTRA_ETALASE_BADGE";
     public static final String EXTRA_USE_ACE = "EXTRA_USE_ACE";
 
+
     public static final String KEY_SHOP_ID = "shop_id";
     public static final String KEY_ETALASE_ID = "etalase_id";
     public static final String KEY_KEYWORD = "search";

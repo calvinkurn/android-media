@@ -29,6 +29,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
@@ -77,6 +80,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     private lateinit var titles: Array<String>;
 
     private var tabPosition = 0
+    lateinit var remoteConfig: RemoteConfig
 
     private val errorTextView by lazy {
         findViewById<TextView>(R.id.message_retry)
@@ -153,6 +157,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     override fun onCreate(savedInstanceState: Bundle?) {
         GraphqlClient.init(this)
         initInjector()
+        remoteConfig = FirebaseRemoteConfigImpl(this)
         performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
         shopPageTracking = ShopPageTrackingBuyer(
                 TrackingQueue(this))
@@ -324,7 +329,16 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                     val fragment = shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_HOME)
                     if (fragment == null)
                         return
-                    val etalaseId = (fragment as ShopProductListLimitedFragment).selectedEtalaseId
+
+                    val etalaseId:String?
+                    val check= remoteConfig.getBoolean(RemoteConfigKey.SHOP_ETALASE_TOGGLE,true)
+
+                    if(check){
+                        etalaseId = null
+                    }else{
+                        etalaseId = (fragment as ShopProductListLimitedFragment).selectedEtalaseId
+                    }
+
                     startActivity(ShopProductListActivity.createIntent(this@ShopPageActivity, info.shopId,
                             text, etalaseId, shopAttribution))
                     //reset the search, since the result will go to another activity.

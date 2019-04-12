@@ -61,7 +61,6 @@ public class ShopProductListActivity extends BaseSimpleActivity
         return intent;
     }
 
-
     public static Intent createIntent(Context context, String shopId) {
         Intent intent = new Intent(context, ShopProductListActivity.class);
         intent.putExtra(ShopParamConstant.EXTRA_SHOP_ID, shopId);

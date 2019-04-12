@@ -333,6 +333,12 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     }
 
     public void updateDataByChangingKeyword(String keyword) {
+        //yehez
+        if(!keyword.isEmpty()){
+            selectedEtalaseId=null;
+            etalaseChipAdapter.setSelectedEtalaseId(selectedEtalaseId);
+            etalaseChipAdapter.notifyDataSetChanged();
+        }
         if (!this.keyword.equalsIgnoreCase(keyword)) {
             this.keyword = keyword;
             loadInitialData();
