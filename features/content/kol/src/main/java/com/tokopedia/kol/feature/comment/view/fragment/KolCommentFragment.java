@@ -21,6 +21,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
@@ -169,7 +171,7 @@ public class KolCommentFragment extends BaseDaggerFragment
                         kolComment.getText().toString()
                 );
             } else {
-                startActivity(kolRouter.getLoginIntent(getActivity()));
+                RouteManager.route(getActivity(), ApplinkConst.LOGIN);
             }
 
         });

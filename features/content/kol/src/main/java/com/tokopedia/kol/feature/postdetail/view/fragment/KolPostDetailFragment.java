@@ -425,7 +425,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.followKol(id, rowNumber);
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
@@ -433,7 +433,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.unfollowKol(id, rowNumber);
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
@@ -441,7 +441,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.likeKol(id, rowNumber, this);
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
@@ -449,7 +449,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.unlikeKol(id, adapterPosition, this);
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
@@ -459,7 +459,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             Intent intent = KolCommentActivity.getCallingIntent(getContext(), id, rowNumber);
             startActivityForResult(intent, OPEN_KOL_COMMENT);
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
@@ -710,7 +710,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             }
 
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
@@ -729,7 +729,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                             if (userSession != null && userSession.isLoggedIn()) {
                                 goToContentReport(postId);
                             } else {
-                                startActivity(kolRouter.getLoginIntent(getActivity()));
+                                RouteManager.route(getActivity(), ApplinkConst.LOGIN);
                             }
                         }
 
@@ -880,8 +880,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                 presenter.sendVote(0, pollId, optionId);
             }
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
-        }
+
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);        }
 
     }
 

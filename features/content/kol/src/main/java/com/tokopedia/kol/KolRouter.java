@@ -18,10 +18,6 @@ public interface KolRouter {
 
     Interceptor getChuckInterceptor();
 
-    Intent getTopProfileIntent(Context context, String userId);
-
-    Intent getLoginIntent(Context context);
-
     void shareFeed(Activity activity, String valueOf, String url, String title, String imageUrl,
                    String description);
 }

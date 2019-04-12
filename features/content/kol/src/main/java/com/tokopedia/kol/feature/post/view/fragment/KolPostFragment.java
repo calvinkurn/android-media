@@ -17,6 +17,8 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.Menus;
@@ -316,7 +318,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.followKol(id, rowNumber, this);
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
@@ -325,7 +327,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.unfollowKol(id, rowNumber, this);
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
@@ -335,7 +337,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.likeKol(id, rowNumber, this);
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
@@ -345,7 +347,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.unlikeKol(id, rowNumber, this);
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
