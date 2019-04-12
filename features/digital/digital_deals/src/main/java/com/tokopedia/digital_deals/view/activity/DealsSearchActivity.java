@@ -263,7 +263,9 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             noBrandsFound.setVisibility(View.VISIBLE);
             brandsHeading.setVisibility(View.GONE);
             brandLayout.setVisibility(View.GONE);
-            showSuggestedDeals(TopDealsCacheHandler.init().getTopDeals(), true);
+            rvDeals.setVisibility(View.GONE);
+            dealsHeading.setVisibility(View.GONE);
+//            showSuggestedDeals(TopDealsCacheHandler.init().getTopDeals(), true);
         }
         if (location != null)
             tvCityName.setText(location.getName());
