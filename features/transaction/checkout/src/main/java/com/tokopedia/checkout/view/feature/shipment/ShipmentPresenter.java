@@ -944,7 +944,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
                         if (getView() != null) {
                             if (!responseGetPromoStack.getStatus().equalsIgnoreCase("OK") || TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
-                                String message = responseGetPromoStack.getMessage().get(0);
+                                String message = responseGetPromoStack.getData().getMessage().getText();
                                 getView().renderErrorCheckPromoShipmentData(message);
                             } else {
                                 if (responseGetPromoStack.getData().getCodes().size() == 0 && responseGetPromoStack.getData().getVoucherOrders().size() == 0) {
