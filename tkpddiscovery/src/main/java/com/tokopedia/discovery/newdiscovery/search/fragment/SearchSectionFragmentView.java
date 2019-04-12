@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment;
 
-import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 
 import java.util.HashMap;
