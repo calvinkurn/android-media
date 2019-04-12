@@ -102,8 +102,14 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
                 for (index in adapter.data.indices) {
                     if (index == 0) {
                         val oldPromoList = ArrayList<String>()
+                        var oldPromoListStr = ""
                         adapter.data[index + 1].voucherOrders.forEach { voucherOrder ->
                             oldPromoList.add(voucherOrder.code)
+                            if (oldPromoListStr.isEmpty()) {
+                                oldPromoListStr = voucherOrder.code
+                            } else {
+                                oldPromoListStr = oldPromoListStr + "," + voucherOrder.code
+                            }
                         }
                         if (adapter.data[index].isSelected) {
                             val newPromoList = ArrayList<String>()
@@ -122,9 +128,11 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
                         } else {
                             if (oldPromoList.size > 0) {
                                 if (source.equals("cart", ignoreCase = true)) {
-                                    checkoutAnalyticsCart?.eventClickSubmitPromoKonflik(Gson().toJson(oldPromoList))
+                                    // checkoutAnalyticsCart?.eventClickSubmitPromoKonflik(Gson().toJson(oldPromoList))
+                                    checkoutAnalyticsCart?.eventClickSubmitPromoKonflik(oldPromoListStr)
                                 } else {
-                                    checkoutAnalyticsCourierSelection?.eventSubmitPromoConflict(Gson().toJson(oldPromoList))
+                                    // checkoutAnalyticsCourierSelection?.eventSubmitPromoConflict(Gson().toJson(oldPromoList))
+                                    checkoutAnalyticsCourierSelection?.eventSubmitPromoConflict(oldPromoListStr)
                                 }
                             }
                             dismiss()
@@ -167,10 +175,21 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
                     vouchers.add(voucherModel.code)
                 }
 
+                var listVouchers = ""
+                for (voucherModel: ClashingVoucherOrderUiModel in model.voucherOrders) {
+                    if (listVouchers.isEmpty()) {
+                        listVouchers = voucherModel.code
+                    } else {
+                        listVouchers = listVouchers + "," + voucherModel.code
+                    }
+                }
+
                 if (source.equals("cart", ignoreCase = true)) {
-                    checkoutAnalyticsCart?.eventSelectPromoPromoKonflik(Gson().toJson(vouchers))
+                    // checkoutAnalyticsCart?.eventSelectPromoPromoKonflik(Gson().toJson(vouchers))
+                    checkoutAnalyticsCart?.eventSelectPromoPromoKonflik(listVouchers)
                 } else {
-                    checkoutAnalyticsCourierSelection?.eventSelectPromoConflict(Gson().toJson(vouchers))
+                    // checkoutAnalyticsCourierSelection?.eventSelectPromoConflict(Gson().toJson(vouchers))
+                    checkoutAnalyticsCourierSelection?.eventSelectPromoConflict(listVouchers)
                 }
                 break
             }
