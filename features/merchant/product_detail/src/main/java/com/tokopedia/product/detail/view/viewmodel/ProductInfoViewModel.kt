@@ -388,7 +388,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
             if (response.getError(RatesEstimationModel.Response::class.java)?.isNotEmpty() != true) {
                 val ratesEstModel = response.getData<RatesEstimationModel.Response>(RatesEstimationModel.Response::class.java)?.data?.data
-                ratesEstModel?.texts?.shopCity = ratesEstModel?.address?.cityName ?: ""
+                ratesEstModel?.texts?.shopCity = ratesEstModel?.shop?.cityName ?: ""
                 productInfoP3.rateEstSummarizeText = ratesEstModel?.texts
             }
 
