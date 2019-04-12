@@ -17,7 +17,7 @@ class HotelPromoViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         with(itemView) {
             ImageHandler.loadImageWithoutPlaceholder(this.iv_hotel_promo, element.attributes.imageUrl)
 
-            this.setOnClickListener { RouteManager.route(itemView.context, element.attributes.linkUrl) }
+            this.setOnClickListener { RouteManager.route(context, element.attributes.linkUrl) }
         }
     }
 

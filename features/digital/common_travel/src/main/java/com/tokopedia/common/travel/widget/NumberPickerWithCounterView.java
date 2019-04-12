@@ -66,7 +66,7 @@ public class NumberPickerWithCounterView extends BaseCustomView {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.widget_number_picker_with_counter_view, this);
+        View view = inflate(getContext(), R.layout.widget_travel_number_picker_with_counter_view, this);
 
         numberInputView = (AppCompatTextView) view.findViewById(R.id.decimal_input_view);
         plusImageButton = (AppCompatImageButton) view.findViewById(R.id.image_button_plus);
