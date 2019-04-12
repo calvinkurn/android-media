@@ -14,12 +14,12 @@
 
     <string name="path_gold_merchant_subscribe_dashboard" translatable="false">/gold-merchant-subscribe-dashboard</string>
 
-    <string name="path_product_add_item" translatable="false">/product-add-item/</string>
+    <string name="path_product_add_item" translatable="false">/product-add-item</string>
     <string name="path_product_category_picker" translatable="false">/product-category-picker/.*\\/</string>
     <string name="path_product_detail" translatable="false">/product-detail/.*\\/</string>
     <string name="path_product_detail_domain" translatable="false">/product-detail/.*\\/.*\\/</string>
     <string name="path_product_edit_item" translatable="false">/product-edit-item/.*\\/</string>
-    <string name="path_product_edit_variant_dashboard" translatable="false">/product-edit-variant-dashboard/</string>
+    <string name="path_product_edit_variant_dashboard" translatable="false">/product-edit-variant-dashboard</string>
     <string name="path_product_etalase_picker" translatable="false">/product-etalase-picker/.*\\/</string>
     <string name="path_product_manage_list" translatable="false">/product-manage-list</string>
     <string name="path_product_review" translatable="false">/product/.*\\/review</string>

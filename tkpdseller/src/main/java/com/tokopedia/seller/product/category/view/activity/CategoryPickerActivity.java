@@ -71,7 +71,7 @@ public class CategoryPickerActivity extends BaseSimpleActivity implements
         Uri uri = getIntent().getData();
         if (uri != null){
             List<String> segments = uri.getPathSegments();
-            selectedCategoryId = Long.parseLong(segments.get(segments.size() - 2));
+            selectedCategoryId = Long.parseLong(segments.get(segments.size() - 1));
         } else {
             selectedCategoryId = getIntent().getLongExtra(CATEGORY_ID_INIT_SELECTED, CategoryPickerFragment.INIT_UNSELECTED);
         }

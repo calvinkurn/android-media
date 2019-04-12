@@ -67,7 +67,7 @@ public class EtalasePickerActivity extends BaseSimpleActivity implements HasComp
         Uri uri = getIntent().getData();
         if (uri != null){
             List<String> segments = uri.getPathSegments();
-            etalaseId = Long.parseLong(segments.get(segments.size() - 2));
+            etalaseId = Long.parseLong(segments.get(segments.size() - 1));
         } else {
             etalaseId = getIntent().getLongExtra(SELECTED_ETALASE_ID, UNSELECTED_ETALASE_ID);
         }

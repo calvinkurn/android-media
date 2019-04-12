@@ -182,8 +182,8 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     private fun startProductEtalaseActivity() {
-        activity?.run {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_ETALASE_PICKER,
+        activity?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_ETALASE_PICKER,
                     (currentProductAddViewModel?.etalaseId ?: -1).toString())
             intent?.run {
                 startActivityForResult(this, REQUEST_CODE_GET_ETALASE)
@@ -489,8 +489,8 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             }
 
             val hasWholesale = productPrice?.wholesalePrice?.let { it.size > 0 } == true
-            activity?.run {
-                val intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
+            activity?.let {
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
                 intent?.run {
                     putExtra(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList)
                     putExtra(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel)

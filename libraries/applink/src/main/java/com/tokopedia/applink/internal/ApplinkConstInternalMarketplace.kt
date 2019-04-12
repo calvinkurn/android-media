@@ -26,7 +26,7 @@ object ApplinkConstInternalMarketplace {
 
     // ProductDetailActivity
     @JvmField
-    val PRODUCT_ADD_ITEM = "$INTERNAL_MARKETPLACE/product-add-item/"
+    val PRODUCT_ADD_ITEM = "$INTERNAL_MARKETPLACE/product-add-item"
     @JvmField
     val PRODUCT_CATEGORY_PICKER = "$INTERNAL_MARKETPLACE/product-category-picker/{id}/"
     @JvmField
@@ -37,7 +37,7 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val PRODUCT_EDIT_ITEM = "$INTERNAL_MARKETPLACE/product-edit-item/{id}/"
     @JvmField
-    val PRODUCT_EDIT_VARIANT_DASHBOARD = "$INTERNAL_MARKETPLACE/product-edit-variant-dashboard/"
+    val PRODUCT_EDIT_VARIANT_DASHBOARD = "$INTERNAL_MARKETPLACE/product-edit-variant-dashboard"
     @JvmField
     val PRODUCT_ETALASE_PICKER = "$INTERNAL_MARKETPLACE/product-etalase-picker/{id}/"
     @JvmField

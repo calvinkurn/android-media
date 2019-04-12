@@ -145,8 +145,8 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
             }
 
         } else {
-            activity?.run {
-                val intent = RouteManager.getIntent(this,
+            activity?.let {
+                val intent = RouteManager.getIntent(it,
                         ApplinkConstInternalMarketplace.PRODUCT_CATEGORY_PICKER,
                         productCategory.categoryId.toString())
                 intent?.run { startActivityForResult(this, REQUEST_CODE_GET_CATEGORY) }

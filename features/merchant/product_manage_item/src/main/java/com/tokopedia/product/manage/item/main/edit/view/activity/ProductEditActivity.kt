@@ -20,7 +20,7 @@ class ProductEditActivity : ProductAddActivity(), HasComponent<ProductComponent>
         val uri = intent.data
         val productId = if (uri != null){
             val pathSegments = uri.pathSegments
-            pathSegments[pathSegments.size - 2]
+            pathSegments[pathSegments.size - 1]
         } else
             intent.getStringExtra(EDIT_PRODUCT_ID)
         return ProductEditFragment.createInstance(productId)

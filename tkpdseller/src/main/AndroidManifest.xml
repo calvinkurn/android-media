@@ -54,7 +54,7 @@
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_marketplace"
-                    android:path="@string/path_product_category_picker"/>
+                    android:pathPattern="@string/path_product_category_picker"/>
             </intent-filter>
         </activity>
         <activity
@@ -73,7 +73,7 @@
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_marketplace"
-                    android:path="@string/path_product_etalase_picker"/>
+                    android:pathPattern="@string/path_product_etalase_picker"/>
             </intent-filter>
         </activity>
         <activity
