@@ -66,14 +66,14 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
 
     }
 
-    fun renderRateEstimation(summarize: SummaryText, shopLocation: String, onRateEstimationClicked: (() -> Unit)? = null) {
+    fun renderRateEstimation(summarize: SummaryText, onRateEstimationClicked: (() -> Unit)? = null) {
         if (summarize.destination.isBlank()) return
 
         with(view) {
             txt_rate_estimation_start.text = summarize.minPrice
             txt_rate_estimation_start.visible()
             icon_shop_location.visible()
-            txt_shop_location.text = context.getString(R.string.from_x, shopLocation).boldPartial("dari".length)
+            txt_shop_location.text = context.getString(R.string.from_x, summarize.shopCity).boldPartial("dari".length)
             txt_shop_location.visible()
             icon_courier_est.visible()
             txt_courier_dest.text = context.getString(R.string.to_x, summarize.destination).boldPartial("ke".length)
