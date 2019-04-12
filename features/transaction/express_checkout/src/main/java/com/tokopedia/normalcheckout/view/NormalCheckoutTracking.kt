@@ -113,7 +113,7 @@ class NormalCheckoutTracking {
                         "products" to arrayListOf(mutableMapOf(
                             "name" to selectedProductInfo.basic.name,
                             "id" to selectedProductInfo.basic.id,
-                            "price" to selectedProductInfo.basic.price,
+                            "price" to selectedProductInfo.basic.price.toDouble(),
                             "brand" to selectedProductInfo.brand.name,
                             "category" to selectedProductInfo.category.detail.joinToString("/"),
                             "variant" to productVariantString,
