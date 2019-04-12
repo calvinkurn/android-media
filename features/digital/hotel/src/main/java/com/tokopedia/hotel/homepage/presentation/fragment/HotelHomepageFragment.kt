@@ -12,6 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
@@ -139,6 +141,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
         tv_hotel_homepage_checkout_date.setOnClickListener { configAndRenderCheckOutDate() }
         tv_hotel_homepage_guest_info.setOnClickListener { onGuestInfoClicked() }
         btn_hotel_homepage_search.setOnClickListener { onSearchButtonClicked() }
+        tv_hotel_homepage_all_promo.setOnClickListener { RouteManager.route(context, ApplinkConst.PROMO_LIST) }
 
         renderView()
     }
@@ -271,8 +274,8 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     }
 
     private fun countNightDifference(): Long =
-        (TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate).time -
-                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate).time) / ONE_DAY
+            ((TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate).time -
+                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate).time)) / ONE_DAY
 
     private fun loadPromoData() {
         homepageViewModel.getHotelPromo(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_home_promo))

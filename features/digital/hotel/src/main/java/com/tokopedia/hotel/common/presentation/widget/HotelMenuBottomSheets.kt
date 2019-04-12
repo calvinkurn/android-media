@@ -8,7 +8,7 @@ import com.tokopedia.hotel.R
 /**
  * @author by furqan on 11/04/19
  */
-class HotelMenuBottomSheets: BottomSheets() {
+class HotelMenuBottomSheets : BottomSheets() {
 
     lateinit var listener: HotelMenuListener
 
@@ -26,14 +26,17 @@ class HotelMenuBottomSheets: BottomSheets() {
 
             menuOrderList.setOnClickListener {
                 if (::listener.isInitialized) listener.onOrderListClicked()
+                dismiss()
             }
 
             menuPromo.setOnClickListener {
                 if (::listener.isInitialized) listener.onPromoClicked()
+                dismiss()
             }
 
             menuHelp.setOnClickListener {
                 if (::listener.isInitialized) listener.onHelpClicked()
+                dismiss()
             }
         }
     }
