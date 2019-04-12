@@ -340,18 +340,13 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     }
 
     public void updateDataByChangingKeyword(String keyword) {
-        //yehez
-
-        if(remoteConfig.getBoolean(RemoteConfigKey.SHOP_ETALASE_TOGGLE)){
-            if(!keyword.isEmpty()){
-                selectedEtalaseId=null;
+        if (remoteConfig.getBoolean(RemoteConfigKey.SHOP_ETALASE_TOGGLE)) {
+            if (!keyword.isEmpty()) {
+                selectedEtalaseId = null;
 
                 etalaseChipAdapter.setSelectedEtalaseId(selectedEtalaseId);
                 etalaseChipAdapter.notifyDataSetChanged();
             }
-        }else{
-            selectedEtalaseName="Semua Etalase";
-            onShopProductListFragmentListener.updateUIByEtalaseName(selectedEtalaseName);
         }
 
         if (!this.keyword.equalsIgnoreCase(keyword)) {
@@ -367,9 +362,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         }
         selectedEtalaseId = shopEtalaseViewModel.getEtalaseId();
         selectedEtalaseName = shopEtalaseViewModel.getEtalaseName();
-        if(remoteConfig.getBoolean(RemoteConfigKey.SHOP_ETALASE_TOGGLE)){
-            onShopProductListFragmentListener.updateUIByEtalaseName(selectedEtalaseName);
-        }
+        updateHintRemoteConfig(selectedEtalaseName);
         etalaseChipAdapter.setSelectedEtalaseId(selectedEtalaseId);
         etalaseChipAdapter.notifyDataSetChanged();
         shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName, shopEtalaseViewModel.getEtalaseBadge());
@@ -735,6 +728,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                         selectedEtalaseName = etalaseModel.getEtalaseName();
                         isUseAce = etalaseModel.isUseAce();
                         etalaseBadge = etalaseModel.getEtalaseBadge();
+                        updateHint(selectedEtalaseName);
                         break;
                     }
                 }
@@ -746,6 +740,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                         if (cleanedSelectedEtalaseId.equalsIgnoreCase(cleanedEtalaseName)) {
                             selectedEtalaseId = etalaseModel.getEtalaseId();
                             selectedEtalaseName = etalaseModel.getEtalaseName();
+                            updateHint(selectedEtalaseName);
                             isUseAce = etalaseModel.isUseAce();
                             etalaseBadge = etalaseModel.getEtalaseBadge();
                             break;
@@ -763,6 +758,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                 ShopEtalaseViewModel firstModel = shopEtalaseViewModelList.get(0);
                 selectedEtalaseId = firstModel.getEtalaseId();
                 selectedEtalaseName = firstModel.getEtalaseName();
+                updateHint(selectedEtalaseName);
                 isUseAce = firstModel.isUseAce();
                 etalaseBadge = firstModel.getEtalaseBadge();
             }
@@ -883,4 +879,14 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         outState.putBoolean(SAVED_SHOP_IS_GOLD_MERCHANT, isGoldMerchant);
     }
 
+    private void updateHintRemoteConfig(String selectedEtalaseName){
+        if (!remoteConfig.getBoolean(RemoteConfigKey.SHOP_ETALASE_TOGGLE)) {
+            updateHint(selectedEtalaseName);
+        }
+    }
+
+    private void updateHint(String selectedEtalaseName){
+        onShopProductListFragmentListener.updateUIByEtalaseName(selectedEtalaseName);
+
+    }
 }
