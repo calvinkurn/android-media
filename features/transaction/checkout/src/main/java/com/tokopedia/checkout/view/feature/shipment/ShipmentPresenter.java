@@ -890,7 +890,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             || !responseGetPromoStack.getData().getGlobalSuccess()) {
                         String errMessage = "";
                         if (!responseGetPromoStack.getData().getVoucherOrders().isEmpty() &&
-                                responseGetPromoStack.getData().getVoucherOrders().get(0).getMessage() != null) {
+                                TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(
+                                        responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
                             errMessage = responseGetPromoStack.getData().getVoucherOrders().get(0).getMessage().getText();
                         }
                         mTrackerShipment.eventClickLanjutkanTerapkanPromoError(errMessage);
