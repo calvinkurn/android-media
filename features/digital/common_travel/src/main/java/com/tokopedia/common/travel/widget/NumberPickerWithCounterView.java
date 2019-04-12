@@ -71,6 +71,10 @@ public class NumberPickerWithCounterView extends BaseCustomView {
         numberInputView = (AppCompatTextView) view.findViewById(R.id.decimal_input_view);
         plusImageButton = (AppCompatImageButton) view.findViewById(R.id.image_button_plus);
         minusImageButton = (AppCompatImageButton) view.findViewById(R.id.image_button_minus);
+
+        plusImageButton.setImageDrawable(getResources().getDrawable(R.drawable.bg_animated_action_counter_plus_24));
+        minusImageButton.setImageDrawable(getResources().getDrawable(R.drawable.bg_animated_action_counter_minus_24));
+
         numberInputView.setEnabled(false);
     }
 
