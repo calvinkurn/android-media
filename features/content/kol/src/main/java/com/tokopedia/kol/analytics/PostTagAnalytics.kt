@@ -3,6 +3,7 @@ package com.tokopedia.kol.analytics
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -96,7 +97,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                         ),
                         postId.toString(),
                         getProductList(
-                                postTag.id.toInt(),
+                                postTag.id.toIntOrZero(),
                                 postTag.text,
                                 formatPriceToInt(postTag.price),
                                 "",
@@ -105,7 +106,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                                 listSource,
                                 postTagPosition
                         ),
-                        userSessionInterface.userId.toInt()
+                        userSessionInterface.userId.toIntOrZero()
                 )
         )
     }
@@ -129,7 +130,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                         ),
                         postId.toString(),
                         getProductList(
-                                postTag.id.toInt(),
+                                postTag.id.toIntOrZero(),
                                 postTag.text,
                                 formatPriceToInt(postTag.price),
                                 "",
@@ -138,7 +139,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                                 listSource,
                                 postTagPosition
                         ),
-                        userSessionInterface.userId.toInt(),
+                        userSessionInterface.userId.toIntOrZero(),
                         listSource
                 )
         )
