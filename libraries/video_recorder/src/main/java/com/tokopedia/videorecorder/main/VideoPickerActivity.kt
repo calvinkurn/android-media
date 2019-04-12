@@ -21,6 +21,7 @@ import com.tokopedia.permissionchecker.request
 import com.tokopedia.videorecorder.R
 import com.tokopedia.videorecorder.main.adapter.ViewPagerAdapter
 import com.tokopedia.videorecorder.main.recorder.VideoRecorderFragment
+import com.tokopedia.videorecorder.main.state.StateRecorder
 import com.tokopedia.videorecorder.utils.*
 import kotlinx.android.synthetic.main.activity_video_picker.*
 import java.io.File
@@ -71,9 +72,11 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         //init runtime permission
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             permissionCheckerHelper = PermissionCheckerHelper()
-            permissionCheckerHelper.request(this, getPermissions()) {
+            permissionCheckerHelper.request(this, getPermissions(), {
                 initView()
-            }
+            }, {
+                finish()
+            })
         } else {
             initView()
         }
@@ -208,7 +211,6 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         videoPath = ""
         initViewPager()
         onVideoVisible()
-
         onVideoRecorder(StateRecorder.Stop)
     }
 
@@ -236,7 +238,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
      * @method(onVideoTaken(file))
      * @method(onPreviewVideoVisible)
      * @method(onVideoVisible)
-     * @method(onVideoRecord)
+     * @method(onVideoRecorder)
      */
 
     override fun onVideoTaken(filePath: String) {
@@ -258,13 +260,6 @@ open class VideoPickerActivity : BaseSimpleActivity(),
                 mp.isLooping = true //loop
                 playVideoPreview()
             }
-        }
-    }
-
-    override fun onVideoRecorder(state: StateRecorder) {
-        when (state) {
-            StateRecorder.Start -> tabPicker.tabClickable(false)
-            StateRecorder.Stop -> tabPicker.tabClickable(true)
         }
     }
 
@@ -298,6 +293,13 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         containerPicker.show()
         layoutPreview.hide()
         btnDone.hide()
+    }
+
+    override fun onVideoRecorder(state: StateRecorder) {
+        when (state) {
+            StateRecorder.Start -> tabPicker.tabClickable(false)
+            StateRecorder.Stop -> tabPicker.tabClickable(true)
+        }
     }
 
     private fun sendViewToBack(child: View) {

@@ -10,4 +10,5 @@
     <string name="vidpick_btn_delete">Hapus Rekaman</string>
     <string name="vidpick_progress_loader">Loading…</string>
     <string name="vidpick_permission">Aplikasi ini membutuhkan izin untuk menambah video. Anda bisa memberikan izin melalui pengaturan.</string>
+    <string name="vidpick_permission_denied">Maaf, anda harus mengizinkan akses.</string>
 </resources>

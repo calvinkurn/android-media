@@ -33,6 +33,7 @@ import java.util.concurrent.TimeUnit
 @Module
 class VideoUploaderModule constructor() {
 
+
     private val BASE_URL = "https://gql.tokopedia.com/"
     private val GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"
     private val NET_READ_TIMEOUT = 100
