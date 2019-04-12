@@ -31,7 +31,9 @@ data class SummaryText(
         @SerializedName("text_destination")
         @Expose
         val destination: String = ""
-)
+){
+        @Transient var shopCity: String = ""
+}
 
 data class Texts(
         @SerializedName("text_range_price")
