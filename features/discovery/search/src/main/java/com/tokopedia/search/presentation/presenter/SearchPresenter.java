@@ -1,18 +1,17 @@
 package com.tokopedia.search.presentation.presenter;
 
-import com.tokopedia.search.presentation.SearchContract;
+import android.content.Context;
 
-final class SearchPresenter implements SearchContract.Presenter {
+import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
+import com.tokopedia.discovery.newdiscovery.base.DiscoveryPresenter;
+import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
+import com.tokopedia.discovery.newdiscovery.search.SearchContract;
+import com.tokopedia.search.presentation.view.activity.SearchActivity;
 
-    SearchContract.View view;
+final class SearchPresenter extends DiscoveryPresenter<SearchContract.View, SearchActivity>
+        implements SearchContract.Presenter {
 
-    @Override
-    public void attachView(SearchContract.View view) {
-        this.view = view;
-    }
-
-    @Override
-    public void detachView() {
-        this.view = null;
+    public SearchPresenter(Context context, GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
+        super(context, getProductUseCase, getImageSearchUseCase);
     }
 }

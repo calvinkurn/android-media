@@ -23,15 +23,12 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
-import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
-import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
+import com.tokopedia.discovery.newdiscovery.search.SearchContract;
 import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
-import com.tokopedia.discovery.newdiscovery.search.SearchPresenter;
 import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.CatalogFragment;
@@ -42,14 +39,15 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragmen
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRouter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.search.R;
 import com.tokopedia.search.constant.SearchEventTracking;
-import com.tokopedia.search.presentation.SearchContract;
+import com.tokopedia.search.di.component.SearchComponent;
+import com.tokopedia.search.domain.entity.Filter;
 import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
@@ -137,7 +135,7 @@ public class SearchActivity extends DiscoveryActivity
     private static Intent createIntentToSearchActivityFromBundle(Context context, Bundle bundle) {
         SearchParameter searchParameter = createSearchParameterFromBundle(bundle);
 
-        Intent intent = new Intent(context, com.tokopedia.discovery.newdiscovery.search.SearchActivity.class);
+        Intent intent = new Intent(context, SearchActivity.class);
         intent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, searchParameter);
 
         return intent;
@@ -149,7 +147,7 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     public static Intent newInstance(Context context, Bundle bundle) {
-        Intent intent = new Intent(context, com.tokopedia.discovery.newdiscovery.search.SearchActivity.class);
+        Intent intent = new Intent(context, SearchActivity.class);
         intent.putExtras(bundle);
         return intent;
     }
@@ -158,7 +156,7 @@ public class SearchActivity extends DiscoveryActivity
                               ProductViewModel productViewModel,
                               boolean forceSwipeToShop) {
         if (activity != null) {
-            Intent intent = new Intent(activity, com.tokopedia.discovery.newdiscovery.search.SearchActivity.class);
+            Intent intent = new Intent(activity, SearchActivity.class);
             intent.putExtra(EXTRA_PRODUCT_VIEW_MODEL, productViewModel);
             intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, forceSwipeToShop);
             activity.startActivity(intent);
@@ -175,7 +173,7 @@ public class SearchActivity extends DiscoveryActivity
 
     private void initActivityOnCreate(Bundle savedInstanceState) {
         GraphqlClient.init(this);
-//        initInjector();
+        initInjector();
         initForceSwipeToShop(savedInstanceState);
         bottomSheetFilterView.initFilterBottomSheet();
     }
@@ -197,7 +195,7 @@ public class SearchActivity extends DiscoveryActivity
     private void handleIntent(Intent intent) {
         isHandlingIntent = true;
 
-//        initPresenter();
+        initPresenter();
         initResources();
 
         boolean isAutoComplete = intent.getBooleanExtra(EXTRA_IS_AUTOCOMPLETE, false);
@@ -216,6 +214,19 @@ public class SearchActivity extends DiscoveryActivity
         }
 
         handleImageUri(intent);
+    }
+
+    private void initPresenter() {
+        setPresenter(searchPresenter);
+        searchPresenter.attachView(this);
+        searchPresenter.setDiscoveryView(this);
+    }
+
+    private void initResources() {
+        productTabTitle = getString(R.string.product_tab_title);
+        catalogTabTitle = getString(R.string.catalog_tab_title);
+        shopTabTitle = getString(R.string.shop_tab_title);
+        profileTabTitle = getString(R.string.title_profile);
     }
 
     private SearchParameter getSearchParameterFromIntent(Intent intent) {
@@ -389,25 +400,12 @@ public class SearchActivity extends DiscoveryActivity
                 "");
     }
 
-//    private void initInjector() {
-//        searchComponent =
-//                DaggerSearchComponent.builder()
-//                        .appComponent(getApplicationComponent())
-//                        .build();
-//        searchComponent.inject(this);
-//    }
-//
-//    private void initPresenter() {
-//        setPresenter(searchPresenter);
-//        searchPresenter.attachView(this);
-//        searchPresenter.setDiscoveryView(this);
-//    }
-
-    private void initResources() {
-        productTabTitle = getString(com.tokopedia.discovery.R.string.product_tab_title);
-        catalogTabTitle = getString(com.tokopedia.discovery.R.string.catalog_tab_title);
-        shopTabTitle = getString(com.tokopedia.discovery.R.string.shop_tab_title);
-        profileTabTitle = getString(com.tokopedia.discovery.R.string.title_profile);
+    private void initInjector() {
+        searchComponent =
+                DaggerSearchComponent.builder()
+                        .appComponent(getApplicationComponent())
+                        .build();
+        searchComponent.inject(this);
     }
 
     private void loadSection(ProductViewModel productViewModel, boolean forceSwipeToShop) {
@@ -544,19 +542,19 @@ public class SearchActivity extends DiscoveryActivity
 
     @Override
     protected int getLayoutRes() {
-        return com.tokopedia.discovery.R.layout.activity_search;
+        return R.layout.activity_search;
     }
 
     @Override
     protected void initView() {
         super.initView();
-        tabLayout = (TabLayout) findViewById(com.tokopedia.discovery.R.id.tabs);
-        viewPager = (ViewPager) findViewById(com.tokopedia.discovery.R.id.pager);
-        bottomSheetFilterView = (BottomSheetFilterView) findViewById(com.tokopedia.discovery.R.id.bottomSheetFilter);
-        buttonFilter = findViewById(com.tokopedia.discovery.R.id.button_filter);
-        buttonSort = findViewById(com.tokopedia.discovery.R.id.button_sort);
-        searchNavDivider = findViewById(com.tokopedia.discovery.R.id.search_nav_divider);
-        searchNavContainer = findViewById(com.tokopedia.discovery.R.id.search_nav_container);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        bottomSheetFilterView = (BottomSheetFilterView) findViewById(R.id.bottomSheetFilter);
+        buttonFilter = findViewById(R.id.button_filter);
+        buttonSort = findViewById(R.id.button_sort);
+        searchNavDivider = findViewById(R.id.search_nav_divider);
+        searchNavContainer = findViewById(R.id.search_nav_container);
     }
 
     @Override
@@ -586,20 +584,15 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void initSearchNavigationListener() {
-        buttonFilter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (searchNavigationClickListener != null) {
-                    searchNavigationClickListener.onFilterClick();
-                }
+        buttonFilter.setOnClickListener(view -> {
+            if (searchNavigationClickListener != null) {
+                searchNavigationClickListener.onFilterClick();
             }
         });
-        buttonSort.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (searchNavigationClickListener != null) {
-                    searchNavigationClickListener.onSortClick();
-                }
+
+        buttonSort.setOnClickListener(view -> {
+            if (searchNavigationClickListener != null) {
+                searchNavigationClickListener.onSortClick();
             }
         });
     }
@@ -639,16 +632,8 @@ public class SearchActivity extends DiscoveryActivity
             }
 
             @Override
-            public void launchFilterCategoryPage(Filter filter, String selectedCategoryRootId, String selectedCategoryId) {
-                SearchTracking.eventSearchResultNavigateToFilterDetail(getActivityContext(), getResources().getString(com.tokopedia.discovery.R.string.title_category));
-                FilterDetailActivityRouter.launchCategoryActivity(SearchActivity.this,
-                        filter, selectedCategoryRootId, selectedCategoryId, true);
-            }
-
-            @Override
-            public void launchFilterDetailPage(Filter filter) {
-                SearchTracking.eventSearchResultNavigateToFilterDetail(getActivityContext(), filter.getTitle());
-                FilterDetailActivityRouter.launchDetailActivity(SearchActivity.this, filter, true);
+            public AppCompatActivity getActivity() {
+                return SearchActivity.this;
             }
         });
     }
@@ -657,7 +642,7 @@ public class SearchActivity extends DiscoveryActivity
         SearchSectionFragment selectedFragment
                 = (SearchSectionFragment) searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
 
-        if (selectedFragment != null && selectedFragment instanceof ProductListFragment) {
+        if (selectedFragment instanceof ProductListFragment) {
             selectedFragment.onBottomSheetHide();
         }
     }
@@ -765,14 +750,14 @@ public class SearchActivity extends DiscoveryActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(com.tokopedia.discovery.R.menu.menu_change_grid, menu);
-        menuChangeGrid = menu.findItem(com.tokopedia.discovery.R.id.action_change_grid);
+        getMenuInflater().inflate(R.menu.menu_change_grid, menu);
+        menuChangeGrid = menu.findItem(R.id.action_change_grid);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == com.tokopedia.discovery.R.id.action_change_grid) {
+        if (item.getItemId() == R.id.action_change_grid) {
             if (searchNavigationClickListener != null) {
                 searchNavigationClickListener.onChangeGridClick();
             }

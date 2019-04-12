@@ -7,6 +7,7 @@ import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +31,7 @@ import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.BottomSheetD
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterDbHelper;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRouter;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.discovery.newdynamicfilter.view.BottomSheetDynamicFilterView;
@@ -121,7 +123,10 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
             launchFilterCategoryPage(filter);
         } else {
             enrichWithInputState(filter);
-            callback.launchFilterDetailPage(filter);
+
+
+            SearchTracking.eventSearchResultNavigateToFilterDetail(callback.getActivity(), filter.getTitle());
+            FilterDetailActivityRouter.launchDetailActivity(callback.getActivity(), filter, true);
         }
     }
 
@@ -130,7 +135,9 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         Category selectedCategory = FilterHelper.getSelectedCategoryDetails(filter, categoryId);
         String selectedCategoryRootId = selectedCategory != null ? selectedCategory.getCategoryRootId() : "";
 
-        callback.launchFilterCategoryPage(filter, selectedCategoryRootId, categoryId);
+        SearchTracking.eventSearchResultNavigateToFilterDetail(callback.getActivity(), getResources().getString(R.string.title_category));
+        FilterDetailActivityRouter.launchCategoryActivity(callback.getActivity(),
+                filter, selectedCategoryRootId, categoryId, true);
     }
 
     private void enrichWithInputState(Filter filter) {
@@ -425,8 +432,6 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         void onHide();
         boolean isSearchShown();
         void hideKeyboard();
-
-        void launchFilterCategoryPage(Filter filter, String selectedCategoryRootId, String selectedCategoryId);
-        void launchFilterDetailPage(Filter filter);
+        AppCompatActivity getActivity();
     }
 }
