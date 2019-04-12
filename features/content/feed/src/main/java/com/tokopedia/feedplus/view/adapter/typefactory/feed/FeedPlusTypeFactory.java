@@ -14,10 +14,8 @@ import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;
-import com.tokopedia.feedplus.view.viewmodel.product.AddFeedModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromotedProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromotedShopViewModel;
-import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 /**
@@ -38,13 +36,9 @@ public interface FeedPlusTypeFactory {
 
     int type(PromotedProductViewModel promotedProductViewModel);
 
-    int type(AddFeedModel addFeedModel);
-
     int type(KolPostViewModel kolPostViewModel);
 
     int type(KolRecommendationViewModel kolRecommendationViewModel);
-
-    int type(FeedTopAdsViewModel feedTopAdsViewModel);
 
     int type(ContentProductViewModel contentProductViewModel);
 

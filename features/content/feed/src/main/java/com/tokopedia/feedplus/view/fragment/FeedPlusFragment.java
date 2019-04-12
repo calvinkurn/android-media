@@ -74,7 +74,6 @@ import com.tokopedia.feedplus.view.adapter.EntryPointAdapter;
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl;
-import com.tokopedia.feedplus.view.adapter.viewholder.productcard.AddFeedViewHolder;
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics;
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel;
@@ -90,7 +89,6 @@ import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
-import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.analytics.PostTagAnalytics;
@@ -244,9 +242,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             int size = adapter.getlist().size();
             int lastIndex = size - 1;
             if (!(adapter.getlist().get(0) instanceof EmptyModel)
-                    && !(adapter.getlist().get(lastIndex) instanceof RetryModel)
-                    && !(adapter.getlist().get(lastIndex) instanceof AddFeedViewHolder)
-            )
+                    && !(adapter.getlist().get(lastIndex) instanceof RetryModel))
                 presenter.fetchNextPage();
         });
         layoutManager = new NpaLinearLayoutManager(getActivity(),
@@ -364,7 +360,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
                         item = adapter.getlist().get(position);
 
-                        if (position != 0 && item != null && !isTopads(item)) {
+                        if (position != 0 && item != null) {
                             trackImpression(item);
                         }
 
@@ -391,10 +387,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private boolean isInspirationItem(Visitable item) {
         return item instanceof InspirationViewModel;
-    }
-
-    private boolean isTopads(Visitable item) {
-        return item instanceof FeedTopAdsViewModel;
     }
 
     private boolean itemIsFullScreen() {
@@ -569,23 +561,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void updateFavorite(int adapterPosition) {
-        if (adapter.getlist().get(adapterPosition) instanceof FeedTopAdsViewModel
-                && ((FeedTopAdsViewModel) adapter.getlist().get(adapterPosition)).getList().size()
-                > 0) {
 
-            Data data = ((FeedTopAdsViewModel) adapter.getlist().get(adapterPosition))
-                    .getList()
-                    .get(0);
-            boolean currentStatus = data.isFavorit();
-            data.setFavorit(!currentStatus);
-            adapter.notifyItemChanged(adapterPosition);
-        }
-
-        if (adapter.getlist().get(adapterPosition) instanceof TopadsShopViewModel) {
-            Data data = ((FeedTopAdsViewModel) adapter.getlist().get(adapterPosition))
-                    .getList()
-                    .get(0);
-        }
     }
 
     @Override
