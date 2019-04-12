@@ -168,6 +168,13 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     @Override
+    protected void configView(View parentView) {
+        super.configView(parentView);
+        parentView.findViewById(R.id.layout_title).setOnClickListener(null);
+        parentView.findViewById(R.id.btn_close).setOnClickListener(view -> onCloseButtonClick());
+    }
+
+    @Override
     protected void onCloseButtonClick() {
         if (shippingDurationBottomsheetListener != null) {
             shippingDurationBottomsheetListener.onShippingDurationButtonCloseClicked();
