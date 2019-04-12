@@ -68,7 +68,6 @@ public class ShopProduct {
     @SerializedName("rating")
     @Expose
     private double rating;
-
     @SerializedName("sold_out_status")
     @Expose
     private boolean soldOutStatus;

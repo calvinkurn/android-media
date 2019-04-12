@@ -197,6 +197,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
         userSession = new UserSession(getActivity());
         attribution = getArguments().getString(ShopParamConstant.EXTRA_ATTRIBUTION, "");
         setHasOptionsMenu(true);
@@ -233,7 +234,6 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop_product_list_new, container, false);
-        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
         bottomActionView = view.findViewById(R.id.bottom_action_view);
         vgEtalaseList = view.findViewById(R.id.vg_etalase_list);
         setUpEtalaseView(view);

@@ -148,7 +148,6 @@ public class ShopProductListActivity extends BaseSimpleActivity
     }
 
 
-    //yehez
     @Override
     public void updateUIByEtalaseName(String etalaseName) {
         searchInputView.setSearchHint(getString(R.string.shop_product_search_hint_3,
