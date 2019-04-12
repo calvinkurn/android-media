@@ -115,7 +115,7 @@ class NormalCheckoutTracking {
                             "id" to selectedProductInfo.basic.id,
                             "price" to selectedProductInfo.basic.price.toDouble(),
                             "brand" to selectedProductInfo.brand.name,
-                            "category" to selectedProductInfo.category.detail.joinToString("/"),
+                            "category" to selectedProductInfo.category.detail.map { it.name }.joinToString("/"),
                             "variant" to productVariantString,
                             "quantity" to qty,
                             "shop_id" to (shopId ?: NONE_OTHER),
