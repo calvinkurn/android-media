@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
-import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
@@ -158,19 +157,6 @@ public interface FeedPlus {
         boolean hasFeed();
 
         void updateFavoriteFromEmpty(String shopId);
-
-        void onBrandClicked(int page, int rowNumber, OfficialStoreViewModel officialStoreViewModel);
-
-        void onSeeAllOfficialStoresFromCampaign(int page, int rowNumber, String redirectUrl);
-
-        void onGoToCampaign(int page, int rowNumber, String redirectUrl, String title);
-
-        void onSeeAllOfficialStoresFromBrands(int page, int rowNumber);
-
-        void onGoToProductDetailFromCampaign(int page, int rowNumber, String productId,
-                                             String imageSourceSingle, String name, String price);
-
-        void onGoToShopDetailFromCampaign(int page, int rowNumber, String shopUrl);
 
         void onContentProductLinkClicked(String url);
 

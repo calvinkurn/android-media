@@ -10,8 +10,6 @@ import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
-import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
-import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
@@ -22,10 +20,6 @@ import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 public interface FeedPlusTypeFactory {
 
     int type(ActivityCardViewModel viewModel);
-
-    int type(OfficialStoreBrandsViewModel brandsViewModel);
-
-    int type(OfficialStoreCampaignViewModel officialStoreViewModel);
 
     int type(KolPostViewModel kolPostViewModel);
 

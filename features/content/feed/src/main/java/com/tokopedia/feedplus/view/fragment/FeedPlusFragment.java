@@ -67,7 +67,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
-import com.tokopedia.feedplus.data.api.FeedUrl;
 import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity;
 import com.tokopedia.feedplus.view.activity.TransparentVideoActivity;
 import com.tokopedia.feedplus.view.adapter.EntryPointAdapter;
@@ -87,7 +86,6 @@ import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
-import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.analytics.PostTagAnalytics;
@@ -912,69 +910,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 && !(adapter.getlist().get(0) instanceof EmptyModel);
     }
 
-    @Override
-    public void onBrandClicked(int page, int rowNumber, OfficialStoreViewModel
-            officialStoreViewModel) {
-        analytics.eventFeedClickShop(
-                getScreenName(),
-                String.valueOf(officialStoreViewModel.getShopId()),
-                getFeedAnalyticsHeader(page, rowNumber)
-                        + FeedTrackingEventLabel.Click.OFFICIAL_STORE_BRAND
-                        + officialStoreViewModel.getShopName()
-        );
-
-        Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), String.valueOf
-                (officialStoreViewModel.getShopId()));
-        startActivity(intent);
-    }
-
     private String getFeedAnalyticsHeader(int page, int rowNumber) {
         return page + "." + rowNumber + " ";
-    }
-
-    @Override
-    public void onSeeAllOfficialStoresFromCampaign(int page, int rowNumber, String redirectUrl) {
-        analytics.eventFeedClick(
-                getFeedAnalyticsHeader(page, rowNumber) +
-                        FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN_SEE_ALL);
-        feedModuleRouter.actionAppLink(getActivity(), redirectUrl);
-    }
-
-    @Override
-    public void onGoToCampaign(int page, int rowNumber, String redirectUrl, String title) {
-        analytics.eventFeedClick(
-                getFeedAnalyticsHeader(page, rowNumber)
-                        + FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN + title);
-        feedModuleRouter.actionAppLink(getActivity(), redirectUrl);
-
-    }
-
-    @Override
-    public void onSeeAllOfficialStoresFromBrands(int page, int rowNumber) {
-        analytics.eventOfficialStoreBrandSeeAll(
-                getFeedAnalyticsHeader(page, rowNumber));
-        openWebViewBrandsURL(FeedUrl.URL_WEBVIEW_OS);
-    }
-
-    @Override
-    public void onGoToProductDetailFromCampaign(int page, int rowNumber, String productId, String
-            imageSourceSingle, String name, String price) {
-        analytics.eventFeedClickProduct(
-                getScreenName(),
-                productId,
-                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.Click
-                        .OFFICIAL_STORE_CAMPAIGN_PDP);
-        goToProductDetail(productId, imageSourceSingle, name, price);
-
-    }
-
-    @Override
-    public void onGoToShopDetailFromCampaign(int page, int rowNumber, String shopUrl) {
-        analytics.eventFeedClick(
-                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.Click
-                        .OFFICIAL_STORE_CAMPAIGN_SHOP);
-        feedModuleRouter.actionAppLink(getActivity(), shopUrl);
-
     }
 
     private void openWebViewBrandsURL(String url) {
