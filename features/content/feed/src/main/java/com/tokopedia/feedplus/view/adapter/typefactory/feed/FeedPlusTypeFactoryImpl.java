@@ -34,8 +34,6 @@ import com.tokopedia.feedplus.view.adapter.viewholder.officialstore.OfficialStor
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.ActivityCardViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolder;
-import com.tokopedia.feedplus.view.adapter.viewholder.promo.PromotedProductViewHolder;
-import com.tokopedia.feedplus.view.adapter.viewholder.promo.PromotedShopViewHolder;
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
@@ -49,8 +47,6 @@ import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;
-import com.tokopedia.feedplus.view.viewmodel.promo.PromotedProductViewModel;
-import com.tokopedia.feedplus.view.viewmodel.promo.PromotedShopViewModel;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.ExploreViewHolder;
@@ -116,11 +112,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
-    public int type(PromotedShopViewModel viewModel) {
-        return PromotedShopViewHolder.LAYOUT;
-    }
-
-    @Override
     public int type(OfficialStoreBrandsViewModel brandsViewModel) {
         return OfficialStoreBrandsViewHolder.LAYOUT;
     }
@@ -128,11 +119,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     @Override
     public int type(OfficialStoreCampaignViewModel officialStoreViewModel) {
         return OfficialStoreCampaignViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(PromotedProductViewModel promotedProductViewModel) {
-        return PromotedProductViewHolder.LAYOUT;
     }
 
     @Override
@@ -232,14 +218,10 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new RetryViewHolder(view, viewListener);
         else if (type == ActivityCardViewHolder.LAYOUT)
             viewHolder = new ActivityCardViewHolder(view, viewListener);
-        else if (type == PromotedShopViewHolder.LAYOUT)
-            viewHolder = new PromotedShopViewHolder(view, viewListener);
         else if (type == OfficialStoreCampaignViewHolder.LAYOUT)
             viewHolder = new OfficialStoreCampaignViewHolder(view, viewListener);
         else if (type == OfficialStoreBrandsViewHolder.LAYOUT)
             viewHolder = new OfficialStoreBrandsViewHolder(view, viewListener);
-        else if (type == PromotedProductViewHolder.LAYOUT)
-            viewHolder = new PromotedProductViewHolder(view, viewListener);
         else if (type == KolRecommendationViewHolder.LAYOUT)
             viewHolder = new KolRecommendationViewHolder(view, kolViewListener, analytics);
         else if (type == ContentProductViewHolder.LAYOUT)
