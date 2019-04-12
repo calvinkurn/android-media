@@ -33,6 +33,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.design.button.BottomActionView;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer;
@@ -122,6 +125,8 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     private String selectedEtalaseId;
     private String selectedEtalaseName;
 
+    private RemoteConfig remoteConfig;
+
     private OnShopProductListFragmentListener onShopProductListFragmentListener;
     private boolean needReloadData;
     private View vgEtalaseList;
@@ -130,6 +135,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     public interface OnShopProductListFragmentListener {
         void updateUIByShopName(String shopName);
+        void updateUIByEtalaseName(String etalaseName);
     }
 
     public static ShopProductListFragment createInstance(String shopId,
@@ -227,6 +233,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop_product_list_new, container, false);
+        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
         bottomActionView = view.findViewById(R.id.bottom_action_view);
         vgEtalaseList = view.findViewById(R.id.vg_etalase_list);
         setUpEtalaseView(view);
@@ -334,11 +341,19 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     public void updateDataByChangingKeyword(String keyword) {
         //yehez
-        if(!keyword.isEmpty()){
-            selectedEtalaseId=null;
-            etalaseChipAdapter.setSelectedEtalaseId(selectedEtalaseId);
-            etalaseChipAdapter.notifyDataSetChanged();
+
+        if(remoteConfig.getBoolean(RemoteConfigKey.SHOP_ETALASE_TOGGLE)){
+            if(!keyword.isEmpty()){
+                selectedEtalaseId=null;
+
+                etalaseChipAdapter.setSelectedEtalaseId(selectedEtalaseId);
+                etalaseChipAdapter.notifyDataSetChanged();
+            }
+        }else{
+            selectedEtalaseName="Semua Etalase";
+            onShopProductListFragmentListener.updateUIByEtalaseName(selectedEtalaseName);
         }
+
         if (!this.keyword.equalsIgnoreCase(keyword)) {
             this.keyword = keyword;
             loadInitialData();
@@ -352,6 +367,9 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         }
         selectedEtalaseId = shopEtalaseViewModel.getEtalaseId();
         selectedEtalaseName = shopEtalaseViewModel.getEtalaseName();
+        if(remoteConfig.getBoolean(RemoteConfigKey.SHOP_ETALASE_TOGGLE)){
+            onShopProductListFragmentListener.updateUIByEtalaseName(selectedEtalaseName);
+        }
         etalaseChipAdapter.setSelectedEtalaseId(selectedEtalaseId);
         etalaseChipAdapter.notifyDataSetChanged();
         shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName, shopEtalaseViewModel.getEtalaseBadge());

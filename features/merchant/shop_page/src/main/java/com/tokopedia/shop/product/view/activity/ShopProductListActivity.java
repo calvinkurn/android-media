@@ -95,7 +95,6 @@ public class ShopProductListActivity extends BaseSimpleActivity
         etalaseId = getIntent().getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
         sort = getIntent().getStringExtra(ShopParamConstant.EXTRA_SORT_ID);
         attribution = getIntent().getStringExtra(ShopParamConstant.EXTRA_ATTRIBUTION);
-
         if (savedInstanceState == null) {
             keyword = getIntent().getStringExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD);
         } else {
@@ -114,6 +113,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
                 if (fragment!= null) {
                     fragment.updateDataByChangingKeyword(text);
                 }
+
                 KeyboardHandler.hideSoftKeyboard(ShopProductListActivity.this);
             }
 
@@ -145,6 +145,14 @@ public class ShopProductListActivity extends BaseSimpleActivity
     public void updateUIByShopName(String shopName) {
         searchInputView.setSearchHint(getString(R.string.shop_product_search_hint_2,
                 MethodChecker.fromHtml(shopName)));
+    }
+
+
+    //yehez
+    @Override
+    public void updateUIByEtalaseName(String etalaseName) {
+        searchInputView.setSearchHint(getString(R.string.shop_product_search_hint_3,
+                MethodChecker.fromHtml(etalaseName)));
     }
 
     @Override

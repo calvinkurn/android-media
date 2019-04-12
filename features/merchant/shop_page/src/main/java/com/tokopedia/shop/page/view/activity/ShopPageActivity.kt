@@ -331,9 +331,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                         return
 
                     val etalaseId:String?
-                    val check= remoteConfig.getBoolean(RemoteConfigKey.SHOP_ETALASE_TOGGLE,true)
 
-                    if(check){
+                    if(remoteConfig.getBoolean(RemoteConfigKey.SHOP_ETALASE_TOGGLE)){
                         etalaseId = null
                     }else{
                         etalaseId = (fragment as ShopProductListLimitedFragment).selectedEtalaseId
@@ -343,6 +342,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                             text, etalaseId, shopAttribution))
                     //reset the search, since the result will go to another activity.
                     searchInputView.searchTextView.text = null
+
                 }
 
                 override fun onSearchTextChanged(text: String?) {}

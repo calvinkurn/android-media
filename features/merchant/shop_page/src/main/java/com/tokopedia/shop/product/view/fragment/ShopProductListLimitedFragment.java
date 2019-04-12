@@ -146,7 +146,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     private ShopInfo shopInfo;
     private ShopModuleRouter shopModuleRouter;
     private BottomActionView bottomActionView;
-    private Boolean fromLimitedPage = true;
 
     private String sortName = Integer.toString(Integer.MIN_VALUE);
     private RecyclerView recyclerView;
