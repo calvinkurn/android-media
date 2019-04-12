@@ -132,7 +132,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="0.5dp"
-                            android:background="@color/grey_300" />
+                            android:background="@color/grey_shadow" />
 
                         <LinearLayout
                             android:id="@+id/layout_1"
