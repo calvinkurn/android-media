@@ -2249,11 +2249,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getKolCommentActivity(Context context, int postId, int rowNumber) {
-        return KolCommentActivity.getCallingIntent(context, postId, rowNumber);
-    }
-
-    @Override
     public Intent getGroupChatIntent(Context context, String channelUrl) {
         return PlayActivity.getCallingIntent(context, channelUrl);
     }
@@ -2349,34 +2344,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String getNotificationPreferenceConstant() {
         return Constants.Settings.NOTIFICATION_GROUP_CHAT;
-    }
-
-    @Override
-    public void generateBranchLink(String channelId, String title, String contentMessage,
-                                   String imgUrl, String shareUrl,
-                                   Activity activity, final ShareListener listener) {
-        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
-                .setId(channelId)
-                .setName(title)
-                .setTextContent(title)
-                .setDescription(contentMessage)
-                .setImgUri(imgUrl)
-                .setUri(shareUrl)
-                .setType(LinkerData.GROUPCHAT_TYPE)
-                .build();
-
-        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
-                DataMapper.getLinkerShareData(shareData), new ShareCallback() {
-                    @Override
-                    public void urlCreated(LinkerShareResult linkerShareData) {
-                        listener.onGenerateLink(linkerShareData.getShareContents(), linkerShareData.getShareUri());
-                    }
-
-                    @Override
-                    public void onError(LinkerError linkerError) {
-
-                    }
-                }));
     }
 
     @Override
