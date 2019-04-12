@@ -110,7 +110,7 @@ class NormalCheckoutTracking {
                 "ecommerce" to mutableMapOf<String, Any>(
                     "currencyCode" to "IDR",
                     "add" to mutableMapOf<String, Any>(
-                        "products" to mutableMapOf(
+                        "products" to arrayListOf(mutableMapOf(
                             "name" to selectedProductInfo.basic.name,
                             "id" to selectedProductInfo.basic.id,
                             "price" to selectedProductInfo.basic.price,
@@ -127,7 +127,7 @@ class NormalCheckoutTracking {
                             "category_id" to selectedProductInfo.category.id,
                             "cart_id" to (cartId ?: NONE_OTHER),
                             "dimension38" to (trackerAttribution ?: NONE_OTHER)
-                        ),
+                        )),
                         "actionField" to mutableMapOf("list" to (trackerListName ?: ""))
                     )
                 )
