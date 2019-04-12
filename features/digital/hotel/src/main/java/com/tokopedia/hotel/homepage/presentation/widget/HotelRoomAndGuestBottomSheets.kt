@@ -38,7 +38,7 @@ class HotelRoomAndGuestBottomSheets : BottomSheets() {
         }
         spvAdultCounter.setOnPassengerCountChangeListener {
             if (spvRoomCounter.value > spvAdultCounter.value) {
-                spvAdultCounter.value = it
+                spvRoomCounter.value = it
             }
             true
         }
