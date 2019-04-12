@@ -8,4 +8,6 @@
     <color name="clash_warning_border">#FFE38F</color>
     <color name="clash_warning_background">#FFFAE6</color>
     <color name="checkout_module_color_background">#f3f4f5</color>
+    <color name="grey_shadow">#20e0e0e0</color>
 </resources>
+
