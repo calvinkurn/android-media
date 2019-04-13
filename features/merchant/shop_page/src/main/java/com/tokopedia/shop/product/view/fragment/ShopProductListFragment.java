@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.button.BottomActionView;
@@ -593,7 +594,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     @Override
     public void onEmptyButtonClicked() {
-        RouteManager.route(getActivity(), ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM);
+        RouteManager.route(getActivity(), ApplinkConst.PRODUCT_ADD);
     }
 
     @Override

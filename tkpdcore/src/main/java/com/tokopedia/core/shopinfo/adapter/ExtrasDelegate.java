@@ -82,7 +82,7 @@ public class ExtrasDelegate {
                     @Override
                     public void onClick(View v) {
                         if(parent.getContext() != null && parent.getContext() instanceof Activity){
-                            RouteManager.route((Activity) parent.getContext(), ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM);
+                            RouteManager.route((Activity) parent.getContext(), ApplinkConst.PRODUCT_ADD);
                         }
                     }
                 });
@@ -95,7 +95,7 @@ public class ExtrasDelegate {
                 public void onClick(View v) {
                     if(context != null && context instanceof TkpdCoreRouter){
                         if(parent.getContext() != null && parent.getContext() instanceof Activity){
-                            RouteManager.route((Activity) parent.getContext(), ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM);
+                            RouteManager.route((Activity) parent.getContext(), ApplinkConst.PRODUCT_ADD);
                         }
                     }
                 }

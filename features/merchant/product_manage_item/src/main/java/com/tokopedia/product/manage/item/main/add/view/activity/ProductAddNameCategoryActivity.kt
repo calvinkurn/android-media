@@ -9,18 +9,12 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.Fragment
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tkpd.library.utils.CommonUtils
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.core.gcm.Constants
-import com.tokopedia.core.gcm.utils.ApplinkUtils
-import com.tokopedia.core.router.SellerAppRouter
-import com.tokopedia.core.router.home.HomeRouter
-import com.tokopedia.core.util.GlobalConfig
 import com.tokopedia.core.util.RequestPermissionUtil
 import com.tokopedia.core.util.SessionHandler
 import com.tokopedia.product.manage.item.R
@@ -234,41 +228,6 @@ open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<P
             val intent = Intent(context, ProductAddNameCategoryActivity::class.java)
             intent.putStringArrayListExtra(BaseProductAddEditFragment.EXTRA_IMAGES, productImages)
             return intent
-        }
-    }
-
-    object DeeplinkIntent{
-        @DeepLink(Constants.Applinks.PRODUCT_ADD)
-        @JvmStatic
-        fun getCallingApplinkAddProductMainAppIntent(context: Context, extras: Bundle): Intent {
-            var intent: Intent? = null
-            if (SessionHandler.isUserHasShop(context)) {
-                intent = Intent(context, ProductAddNameCategoryActivity::class.java)
-            } else {
-                if (GlobalConfig.isSellerApp()) {
-                    intent = SellerAppRouter.getSellerHomeActivity(context)
-                } else {
-                    intent = HomeRouter.getHomeActivityInterfaceRouter(context)
-                }
-            }
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            return intent!!
-                    .setData(uri.build())
-                    .putExtras(extras)
-        }
-
-        @DeepLink(Constants.Applinks.SellerApp.PRODUCT_ADD)
-        @JvmStatic
-        fun getCallingApplinkIntent(context: Context, extras: Bundle): Intent {
-            if (GlobalConfig.isSellerApp()) {
-                val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-                val intent = Intent(context, ProductAddNameCategoryActivity::class.java)
-                return intent
-                        .setData(uri.build())
-                        .putExtras(extras)
-            } else {
-                return ApplinkUtils.getSellerAppApplinkIntent(context, extras)
-            }
         }
     }
 }
