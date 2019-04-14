@@ -21,11 +21,13 @@ import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.subscriber.GetFeedTabsSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.PendingCashbackHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokocashHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokopointHomeSubscriber;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
@@ -158,6 +160,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 .unsubscribeOn(Schedulers.io())
                 .doOnNext(visitables ->
                         compositeSubscription.add(getDataFromNetwork().subscribe(createHomeDataSubscriber())))
+//                .delay(5000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .onErrorResumeNext(getDataFromNetwork())
                 .subscribe(createHomeDataSubscriber());
@@ -527,5 +530,11 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     public void getFeedTabData() {
         getFeedTabUseCase.execute(new GetFeedTabsSubscriber(getView()));
+    }
+
+    private Visitable mappingHomeFeedModel(List<FeedTabModel> feedTabModelList) {
+        HomeRecommendationFeedViewModel feedViewModel = new HomeRecommendationFeedViewModel();
+        feedViewModel.setFeedTabModel(feedTabModelList);
+        return feedViewModel;
     }
 }
