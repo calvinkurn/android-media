@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.UriMatcher;
 import android.net.Uri;
 
-import com.tokopedia.applink.internal.ApplinkConstInternal;
+import com.tokopedia.applink.constant.DeeplinkConstant;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -72,7 +72,7 @@ public class ProductDetailRouteManager {
 
     static boolean isProductApplink(String applink) {
         Uri uri = Uri.parse(applink);
-        return (ApplinkConstInternal.INTERNAL_SCHEME.equals(uri.getScheme()) &&
+        return (DeeplinkConstant.SCHEME_INTERNAL.equals(uri.getScheme()) &&
                 sURIMatcher.match(uri) > 0);
     }
 }

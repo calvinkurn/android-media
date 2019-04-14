@@ -30,6 +30,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.button.BottomActionView;
@@ -729,7 +730,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         if (shopInfo != null) {
             shopPageTracking.clickZeroProduct(CustomDimensionShopPage.create(shopInfo));
         }
-        RouteManager.route(getActivity(), ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM);
+        RouteManager.route(getActivity(), ApplinkConst.PRODUCT_ADD);
     }
 
     @Override

@@ -502,7 +502,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         shopInfo?.run {
             shopPageTracking.clickAddProduct(CustomDimensionShopPage.create(shopInfo))
         }
-        RouteManager.route(this, ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM)
+        RouteManager.route(this, ApplinkConst.PRODUCT_ADD)
     }
 
     override fun openShop() {
