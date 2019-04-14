@@ -13,13 +13,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:scheme="tokopedia"
-                    android:host="product"
-                    android:path="/add"/>
-                <data
-                    android:scheme="sellerapp"
-                    android:host="product"
-                    android:path="/add"/>
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_marketplace"
+                    android:path="@string/path_product_add_item"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
