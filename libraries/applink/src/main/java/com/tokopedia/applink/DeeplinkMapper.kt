@@ -1,31 +1,58 @@
 package com.tokopedia.applink
 
-import com.tokopedia.applink.internal.ApplinkConstInternal
+import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 
 object DeeplinkMapper {
 
-    fun getDeeplinkTokopedia(externalLink: String): String {
+    /**
+     * Get registered deeplink navigation
+     */
+    fun getRegisteredNavigation(deeplink: String): String {
+        if (deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true)) {
+            return getRegisteredNavigationFromHttp(deeplink)
+        } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA, true)) {
+            return getRegisteredNavigationFromTokopedia(deeplink)
+        } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true)) {
+            return getRegisteredNavigationFromSellerapp(deeplink)
+        } else {
+            return ""
+        }
+    }
+
+    /**
+     * Mapping http link to registered deplink in manifest (to deeplink tokopedia or tokopedia-android-internal)
+     * Due to no differentiation structure link for shop, product with other link (www.tokopedia.com/{shop_domain}/{product_name})
+     * the app need translate
+     * This function should be called after checking domain shop from server side
+     * eg: https://www.tokopedia.com/pulsa/ to tokopedia://pulsa
+     */
+    private fun getRegisteredNavigationFromHttp(deeplink: String): String {
+        when (deeplink) {
+
+        }
         return ""
     }
 
     /**
-     * Get / mapping internal deeplink from deeplink tokopedia
-     * Ideal case deeplink tokopedia will be pit directly in manifest, without this mapping
-     *
-     * eg: tokopedia://product/{product_id} -> tokopedia-android-internal://product-detail/{product_id}
+     * Mapping tokopedia link to registered deplink in manifest if necessary
+     * eg: tokopedia://product/add to tokopedia-android-internal://marketplace/product-add-item
      */
-    fun getDeeplinkTokopediaInternal(deeplinkTokopedia: String): String {
-        // It's already internal scheme, cannot mapping with this function, return nothing
-        if (deeplinkTokopedia.startsWith(ApplinkConstInternal.INTERNAL_SCHEME)) {
-            return ""
-        }
-        when (deeplinkTokopedia) {
-            ApplinkConst.PRODUCT_INFO -> return ApplinkConstInternalMarketplace.PRODUCT_DETAIL
+    private fun getRegisteredNavigationFromTokopedia(deeplink: String): String {
+        when (deeplink) {
             ApplinkConst.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
+        }
+        return ""
+    }
+
+    /**
+     * Mapping sellerapp link to registered deplink in manifest if necessary
+     * eg: sellerapp://product/add to tokopedia-android-internal://marketplace/product-add-item
+     */
+    private fun getRegisteredNavigationFromSellerapp(deeplink: String): String {
+        when (deeplink) {
             ApplinkConst.SellerApp.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
         }
         return ""
     }
 }
-

@@ -1,6 +1,6 @@
 package com.tokopedia.applink.internal
 
-import com.tokopedia.applink.internal.ApplinkConstInternal.INTERNAL_SCHEME
+import com.tokopedia.applink.constant.DeeplinkConstant
 
 /**
  * This class is used to store deeplink "tokopedia-android-internal://marketplace".
@@ -12,7 +12,7 @@ object ApplinkConstInternalMarketplace {
     val HOST_MARKETPLACE = "marketplace"
 
     @JvmField
-    val INTERNAL_MARKETPLACE = "${INTERNAL_SCHEME}://${HOST_MARKETPLACE}"
+    val INTERNAL_MARKETPLACE = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_MARKETPLACE}"
 
 
     // IntermediaryActivity

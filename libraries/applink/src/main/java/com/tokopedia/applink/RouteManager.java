@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.tokopedia.applink.internal.ApplinkConstInternal;
+import com.tokopedia.applink.constant.DeeplinkConstant;
 
 import static com.tokopedia.applink.ProductDetailRouteManager.getProductIntent;
 
@@ -43,7 +43,7 @@ public class RouteManager {
     }
 
     public static Intent getIntent(Context context, String applinkPattern, String... parameter) {
-        String internalDeeplink = DeeplinkMapper.INSTANCE.getDeeplinkTokopediaInternal(applinkPattern);
+        String internalDeeplink = DeeplinkMapper.INSTANCE.getRegisteredNavigation(applinkPattern);
         if (!TextUtils.isEmpty(internalDeeplink)) {
             // Found internal deeplink, redirect
             return buildInternalUri(context, internalDeeplink);
@@ -56,7 +56,7 @@ public class RouteManager {
 
         // Solution to redirect based on internal-scheme, or deeplink registered in manifest
         Intent intent;
-        if (applink.startsWith(ApplinkConstInternal.INTERNAL_SCHEME) &&
+        if (applink.startsWith(DeeplinkConstant.SCHEME_INTERNAL) &&
                 ProductDetailRouteManager.isProductApplink(applink)){
             intent = getProductIntent(context, applink);
         } else {
@@ -66,7 +66,7 @@ public class RouteManager {
     }
 
     public static boolean isSupportApplink(Context context, String applink) {
-        if (applink.startsWith(ApplinkConstInternal.INTERNAL_SCHEME)) {
+        if (applink.startsWith(DeeplinkConstant.SCHEME_INTERNAL)) {
             Intent intent;
             if (ProductDetailRouteManager.isProductApplink(applink)){
                 intent = getProductIntent(context, applink);
