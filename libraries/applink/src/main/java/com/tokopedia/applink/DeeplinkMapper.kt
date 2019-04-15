@@ -44,7 +44,7 @@ object DeeplinkMapper {
         when (deeplink) {
             ApplinkConst.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
         }
-        return deeplink
+        return ""
     }
 
     /**
@@ -56,6 +56,6 @@ object DeeplinkMapper {
         when (deeplink) {
             ApplinkConst.SellerApp.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
         }
-        return deeplink
+        return ""
     }
 }
