@@ -2,6 +2,7 @@ package com.tokopedia.kol.common.di;
 
 import android.content.Context;
 
+import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
@@ -102,10 +103,7 @@ public class KolModule {
     @Provides
     @KolChuckQualifier
     public Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
-        if (context instanceof KolRouter) {
-            return ((KolRouter) context).getChuckInterceptor();
-        }
-        throw new RuntimeException("App should implement " + KolRouter.class.getSimpleName());
+        return new ChuckInterceptor(context);
     }
 
 }

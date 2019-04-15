@@ -12,11 +12,7 @@ import okhttp3.Interceptor;
  */
 
 public interface KolRouter {
-    void actionApplinkFromActivity(Activity activity, String linkUrl);
-
     void openRedirectUrl(Activity activity, String url);
-
-    Interceptor getChuckInterceptor();
 
     void shareFeed(Activity activity, String valueOf, String url, String title, String imageUrl,
                    String description);

@@ -181,7 +181,7 @@ public class KolCommentFragment extends BaseDaggerFragment
 
     @Override
     public void openRedirectUrl(String url) {
-        kolRouter.openRedirectUrl(getActivity(), url);
+        routeUrl(url);
     }
 
     @Override
@@ -419,6 +419,14 @@ public class KolCommentFragment extends BaseDaggerFragment
             ImageHandler.loadImageWithIdWithoutPlaceholder(wishlist, R.drawable.ic_wishlist_checked);
         else
             ImageHandler.loadImageWithIdWithoutPlaceholder(wishlist, R.drawable.ic_wishlist_unchecked);
+    }
+
+    private void routeUrl(String url) {
+        if (RouteManager.isSupportApplink(getActivity(), url)) {
+            RouteManager.route(getActivity(), url);
+        } else {
+
+        }
     }
 
     @Override
