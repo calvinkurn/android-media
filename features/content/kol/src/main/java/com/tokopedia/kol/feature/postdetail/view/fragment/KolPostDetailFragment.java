@@ -107,7 +107,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private ImageView likeButton, commentButton, shareButton;
     private TextView likeCount, commentCount, shareText;
     private View footer;
-    private KolRouter kolRouter;
     private PerformanceMonitoring performanceMonitoring;
 
     private DynamicPostViewModel dynamicPostViewModel;
@@ -174,14 +173,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        if (getActivity().getApplicationContext() instanceof KolRouter) {
-            kolRouter = (KolRouter) getActivity().getApplicationContext();
-        } else {
-            throw new IllegalStateException("Application must be an instance of "
-                    + KolRouter.class.getSimpleName());
-        }
-
         initVar();
 
         swipeToRefresh.setOnRefreshListener(this);
