@@ -364,7 +364,7 @@ class ProductDetailTracking() {
     }
 
     fun eventEnhanceEcommerceProductDetail(trackerListName: String?, productInfo: ProductInfo?, shopInfo: ShopInfo?, trackerAttribution: String?,
-                                           isTradeIn : Boolean, isDiagnosed : Boolean) {
+                                           isTradeIn : Boolean, isDiagnosed : Boolean, multiOrigin: Boolean) {
             val dimension55 = if(isTradeIn && isDiagnosed)
                 "true diagnostic"
             else if(isTradeIn && !isDiagnosed)
@@ -388,7 +388,8 @@ class ProductDetailTracking() {
                 "category", getEnhanceCategoryFormatted(productInfo?.category?.detail),
                 "variant", "none / other",
                 "dimension38", trackerAttribution ?: "none / other",
-                "dimension55",dimension55))).apply {
+                "dimension55",dimension55),
+                "dimension54", getMultiOriginAttribution(multiOrigin))).apply {
             if (trackerListName?.isNotEmpty() == true) {
                 put("actionField", DataLayer.mapOf("list", trackerListName))
             }
@@ -540,6 +541,11 @@ class ProductDetailTracking() {
 
     private fun getFormattedPrice(price: Int): String {
         return CurrencyFormatUtil.getThousandSeparatorString(price.toDouble(), false, 0).formattedString
+    }
+
+    private fun getMultiOriginAttribution(isMultiOrigin: Boolean): String = when(isMultiOrigin) {
+        true -> "tokopedia"
+        else -> "regular"
     }
 
 }

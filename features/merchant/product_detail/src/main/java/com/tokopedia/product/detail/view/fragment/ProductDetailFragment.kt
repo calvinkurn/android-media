@@ -354,7 +354,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if(it) {
                 if(productInfo!=null && shopInfo!=null)
                     productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
-                            it, tradeInParams?.usedPrice > 0)
+                            it, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
 
                 if (tv_trade_in_promo != null) {
                     tv_trade_in_promo.visible()
@@ -363,7 +363,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             } else
                 if(productInfo!=null && shopInfo!=null)
                     productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
-                            it, tradeInParams?.usedPrice > 0)
+                            it, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
 
         }
         context?.let {
@@ -1150,11 +1150,11 @@ class ProductDetailFragment : BaseDaggerFragment() {
             }
             if (!isHandPhone)
                 productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, this, productInfoP2.shopInfo, trackerAttribution,
-                        false, false)
+                        false, false, productInfoViewModel.multiOrigin.isFulfillment)
 
-                productDetailTracking.sendMoEngageOpenProduct(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
+            productDetailTracking.sendMoEngageOpenProduct(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
                         ?: "")
-                productDetailTracking.eventAppsFylerOpenProduct(this)
+            productDetailTracking.eventAppsFylerOpenProduct(this)
             }
 
     }
