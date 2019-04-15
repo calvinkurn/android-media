@@ -84,7 +84,6 @@ import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.feedplus.view.viewmodel.RetryModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
@@ -1057,33 +1056,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void trackEEPoll(PollOptionViewModel element, String trackingPromoCode, int rowNumber,
-                            PollViewModel pollViewModel) {
-        UserSessionInterface userSession = getUserSession();
-        int loginId = Integer.valueOf(
-                !TextUtils.isEmpty(userSession.getUserId()) ? userSession.getUserId() : "0"
-        );
-
-        List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
-        list.add(new FeedEnhancedTracking.Promotion(
-                Integer.valueOf(element.getOptionId()),
-                FeedEnhancedTracking.Promotion.createContentNameVote(),
-                element.getOption(),
-                rowNumber,
-                pollViewModel.getReview(),
-                Integer.valueOf(pollViewModel.getPollId()),
-                trackingPromoCode
-        ));
-
-        analytics.eventTrackingEnhancedEcommerce(
-                FeedEnhancedTracking.getClickTracking(
-                        list,
-                        loginId
-                )
-        );
-    }
-
-    @Override
     public void onVoteOptionClicked(int rowNumber, String pollId, String optionId) {
         presenter.sendVote(rowNumber, pollId, optionId);
     }
@@ -1315,27 +1287,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onSuccessSendVote(int rowNumber, String optionId,
                                   VoteStatisticDomainModel voteStatisticDomainModel) {
-        if (adapter.getlist().size() > rowNumber
-                && adapter.getlist().get(rowNumber) instanceof PollViewModel) {
-            PollViewModel pollViewModel = (PollViewModel) adapter.getlist().get(rowNumber);
-            pollViewModel.setVoted(true);
-            pollViewModel.setTotalVoter(voteStatisticDomainModel.getTotalParticipants());
-
-            for (int i = 0; i < pollViewModel.getOptionViewModels().size(); i++) {
-                PollOptionViewModel pollOptionViewModel
-                        = pollViewModel.getOptionViewModels().get(i);
-
-                pollOptionViewModel.setSelected(optionId.equals(pollOptionViewModel.getOptionId()) ?
-                        PollOptionViewModel.SELECTED : PollOptionViewModel.UNSELECTED);
-
-                String newPercentage
-                        = voteStatisticDomainModel.getListOptions().get(i).getPercentage();
-                pollOptionViewModel.setPercentage(newPercentage);
-            }
-
-            adapter.notifyItemChanged(rowNumber);
-        }
-
         if (adapter.getlist().size() > rowNumber
                 && adapter.getlist().get(rowNumber) instanceof DynamicPostViewModel) {
             DynamicPostViewModel model = (DynamicPostViewModel) adapter.getlist().get(rowNumber);

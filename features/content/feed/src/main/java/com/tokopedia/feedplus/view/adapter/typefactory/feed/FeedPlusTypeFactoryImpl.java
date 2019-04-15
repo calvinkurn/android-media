@@ -11,6 +11,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHold
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation
@@ -24,9 +25,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendat
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder;
-import com.tokopedia.feedplus.view.adapter.viewholder.kol.ContentProductViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.KolRecommendationViewHolder;
-import com.tokopedia.feedplus.view.adapter.viewholder.kol.PollViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.WhitelistViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolder;
@@ -35,9 +34,7 @@ import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel;
 import com.tokopedia.feedplus.view.viewmodel.RetryModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder;
@@ -135,16 +132,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
-    public int type(ContentProductViewModel contentProductViewModel) {
-        return ContentProductViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(PollViewModel pollViewModel) {
-        return PollViewHolder.LAYOUT;
-    }
-
-    @Override
     public int type(WhitelistViewModel whitelistViewModel) {
         return WhitelistViewHolder.LAYOUT;
     }
@@ -190,10 +177,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new RetryViewHolder(view, viewListener);
         else if (type == KolRecommendationViewHolder.LAYOUT)
             viewHolder = new KolRecommendationViewHolder(view, kolViewListener, analytics);
-        else if (type == ContentProductViewHolder.LAYOUT)
-            viewHolder = new ContentProductViewHolder(view, viewListener);
-        else if (type == PollViewHolder.LAYOUT)
-            viewHolder = new PollViewHolder(view, kolViewListener, pollingViewListener);
         else if (type == EmptyFeedBeforeLoginViewHolder.LAYOUT)
             viewHolder = new EmptyFeedBeforeLoginViewHolder(view, viewListener);
         else if (type == KolPostViewHolder.LAYOUT)

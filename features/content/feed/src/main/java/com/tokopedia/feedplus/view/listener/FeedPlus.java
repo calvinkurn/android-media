@@ -6,8 +6,6 @@ import android.content.res.Resources;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -74,8 +72,6 @@ public interface FeedPlus {
             void onVoteOptionClicked(int rowNumber, String pollId, String optionId);
 
             void onGoToLink(String link);
-
-            void trackEEPoll(PollOptionViewModel element, String trackingPromoCode, int rowNumber, PollViewModel pollViewModel);
         }
 
         void setLastCursorOnFirstPage(String lastCursor);
