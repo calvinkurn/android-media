@@ -100,55 +100,6 @@ class FilterController {
                 && bundledOptionValueList.containsAll(optionValueList)
     }
 
-    private fun addOrCombineOptions(optionsForFilterViewState: MutableList<Option>, option: Option) {
-        val optionsWithSameKey = optionsForFilterViewState.filter { it.key == option.key }
-
-        if (optionsWithSameKey.isEmpty()) {
-            optionsForFilterViewState.add(option)
-        } else {
-            setBundledOptionsForFilterViewState(optionsForFilterViewState, option)
-        }
-    }
-
-    private fun setBundledOptionsForFilterViewState(optionsForFilterViewState: MutableList<Option>, option: Option) {
-        val iterator = optionsForFilterViewState.listIterator()
-        var optionHasBeenAddedOrReplaced = false
-
-        while (iterator.hasNext()) {
-            val existingOption = iterator.next()
-
-            if(existingOption.key == option.key) {
-                optionHasBeenAddedOrReplaced = addOrReplaceOptionWithSameKey(iterator, existingOption, option)
-            }
-        }
-
-        if(!optionHasBeenAddedOrReplaced) {
-            optionsForFilterViewState.add(option)
-        }
-    }
-
-    private fun addOrReplaceOptionWithSameKey(iterator: MutableListIterator<Option>, existingOption: Option, currentOption: Option) : Boolean {
-        val existingOptionValueList = existingOption.value.split(OptionHelper.VALUE_SEPARATOR).toList()
-        val currentOptionValueList = currentOption.value.split(OptionHelper.VALUE_SEPARATOR).toList()
-
-        return when {
-            shouldReplaceExistingOptionWithCurrentOption(currentOptionValueList, existingOptionValueList)-> {
-                iterator.set(currentOption)
-                true
-            }
-            existingOptionAlreadyContainsCurrentOption(currentOptionValueList, existingOptionValueList) -> true
-            else -> false
-        }
-    }
-
-    private fun shouldReplaceExistingOptionWithCurrentOption(currentOptionValueList: List<String>, existingOptionValueList: List<String>) : Boolean {
-        return currentOptionValueList.containsAll(existingOptionValueList)
-    }
-
-    private fun existingOptionAlreadyContainsCurrentOption(currentOptionValueList: List<String>, existingOptionValueList: List<String>) : Boolean {
-        return existingOptionValueList.containsAll(currentOptionValueList)
-    }
-
     private fun loopSelectedOptionsInFilterList(action: (filter: Filter, option: Option) -> Unit) {
         loopOptionsInFilterList { filter, option ->
             if(isOptionSelected(option)) {
