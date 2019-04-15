@@ -178,7 +178,7 @@
                         android:text="@string/see_all"
                         android:textSize="@dimen/sp_12"
                         android:textColor="#03ac0e"
-                        android:padding="@dimen/dp_4"
+                        android:padding="@dimen/dp_8"
                         android:layout_marginRight="@dimen/dp_8"
                         app:layout_constraintBottom_toBottomOf="@+id/tv_popular_brand"
                         app:layout_constraintRight_toRightOf="parent"

@@ -364,18 +364,14 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         }
     }
 
-    public void onClickBanner() {
-        CategoryItem carousel = getCarouselOrTop(categoryItems, CAROUSEL);
-        if (carousel != null) {
-            ProductItem productItem = carousel.getItems().get(currentPage);
-            if (productItem.getUrl().contains("www.tokopedia.com")
-                    || productItem.getUrl().contains("docs.google.com")) {
-                getView().startGeneralWebView(productItem.getUrl());
-            } else {
-                Intent detailsIntent = new Intent(getView().getActivity(), DealDetailsActivity.class);
-                detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, productItem.getSeoUrl());
-                getView().navigateToActivity(detailsIntent);
-            }
+    public void onClickBanner(ProductItem productItem) {
+        if (productItem.getUrl().contains("www.tokopedia.com")
+                || productItem.getUrl().contains("docs.google.com")) {
+            getView().startGeneralWebView(productItem.getUrl());
+        } else {
+            Intent detailsIntent = new Intent(getView().getActivity(), DealDetailsActivity.class);
+            detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, productItem.getSeoUrl());
+            getView().navigateToActivity(detailsIntent);
         }
     }
 

@@ -111,6 +111,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private TextView tvLocationName;
     private LinearLayoutManager layoutManager;
     private TextView tvSeeAllBrands;
+    private TextView toolbarTitle;
     private TextView tvSeeAllPromo;
     private TextView tvSeeAllTrendingDeals;
     private int adapterPosition = -1;
@@ -168,6 +169,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private void setUpVariables(View view) {
         shimmerLayout = view.findViewById(R.id.shimmer_layout);
         toolbar = view.findViewById(R.id.deals_toolbar);
+        toolbarTitle = view.findViewById(R.id.toolbar_title);
         backArrow = view.findViewById(R.id.backArraw);
         overFlowIcon = view.findViewById(R.id.overFlow_icon);
         catItems = view.findViewById(R.id.category_items);
@@ -188,6 +190,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         tvSeeAllBrands.setOnClickListener(this);
         searchInputView.setOnClickListener(this);
         tvLocationName.setOnClickListener(this);
+        toolbarTitle.setOnClickListener(this);
         nestedScrollView = view.findViewById(R.id.nested_scroll_view);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         trendingDeals = view.findViewById(R.id.cl_topDeals);
