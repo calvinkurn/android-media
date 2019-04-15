@@ -612,7 +612,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     selectedVariantId ?: "",
                     this, quantity,
                     shopId, shopType, shopName, cartId,
-                    trackerAttribution, trackerListName)
+                    trackerAttribution, trackerListName,
+                        viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment?: false)
             }
             activity?.run {
                 val intent = router.getCheckoutIntent(this, ShipmentFormRequest.BundleBuilder().build())
@@ -656,7 +657,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     selectedVariantId ?: "",
                     this, quantity,
                     shopId, shopType, shopName, cartId,
-                    trackerAttribution, trackerListName)
+                    trackerAttribution, trackerListName,
+                        viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment?: false)
             }
         }, onRetryWhenError = {
             addToCart()
