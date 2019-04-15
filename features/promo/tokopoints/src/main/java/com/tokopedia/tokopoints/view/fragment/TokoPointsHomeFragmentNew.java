@@ -53,6 +53,7 @@ import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
 import com.tokopedia.tokopoints.view.activity.TokoPointsHomeActivity;
 import com.tokopedia.tokopoints.view.adapter.ExploreSectionPagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter;
+import com.tokopedia.tokopoints.view.adapter.SectionTickerPagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.TickerPagerAdapter;
 import com.tokopedia.tokopoints.view.contract.TokoPointsHomeContract;
 import com.tokopedia.tokopoints.view.customview.CustomViewPager;
@@ -340,7 +341,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_MEMBERSHIP,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_STATUS_MEMBERSHIP,
                     mValueMembershipDescription);
         } else if (source.getId() == R.id.view_loyalty_bottom) {
             ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
@@ -756,13 +757,14 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         }
 
         ViewPager pager = getView().findViewById(R.id.view_pager_ticker);
-        pager.setAdapter(new TickerPagerAdapter(getContext(), content.getLayoutTickerAttr().getTickerList()));
+        pager.setAdapter(new SectionTickerPagerAdapter(getContext(), content.getLayoutTickerAttr().getTickerList()));
         CirclePageIndicator pageIndicator = getView().findViewById(R.id.page_indicator_ticker);
+        View hideTickerView = getView().findViewById(R.id.ic_close_ticker);
+        hideTickerView.setOnClickListener(v -> tickerContainer.setVisibility(View.GONE));
+
         if (content.getLayoutTickerAttr().getTickerList().size() > 1) {
             //adding bottom dots(Page Indicator)
             pageIndicator.setVisibility(View.VISIBLE);
-            pageIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
-            pageIndicator.setPageColor(ContextCompat.getColor(getContext(), R.color.white_two));
             pageIndicator.setViewPager(pager, 0);
         } else {
             pageIndicator.setVisibility(View.GONE);
@@ -889,10 +891,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
             return;
         }
 
-        if (tickerContainer != null) {
-            tickerContainer.setVisibility(View.GONE);
-        }
-
         List<SectionContent> exploreSectionItem = new ArrayList<>();
         SectionContent couponSection = null;
 
@@ -959,7 +957,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                             AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_PENUKARAN,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_EXPLORE,
                             "");
                 } else {
                     appBarHeader.removeOnOffsetChangedListener(offsetChangedListenerBottomView);
@@ -1004,6 +1002,11 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     public void onToolbarLeaderboardClick() {
         if (getAppContext() instanceof TokopointRouter) {
             ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.LEADERBOARD, getString(R.string.tp_leader));
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_LEADERBOARD,
+                    "");
         }
     }
 
@@ -1012,7 +1015,11 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         if (getActivity() == null) {
             return;
         }
-
         startActivity(MyCouponListingActivity.getCallingIntent(getActivity()));
+        AnalyticsTrackerUtil.sendEvent(getContext(),
+                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_COUNTER_KUPON_SAYA,
+                "");
     }
 }

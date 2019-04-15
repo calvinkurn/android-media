@@ -921,14 +921,15 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun onShippingDurationChoosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>?,
-                                           courierItemData: CourierItemData?,
-                                           recipientAddressModel: RecipientAddressModel?,
+    override fun onShippingDurationChoosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>,
+                                           courierItemData: CourierItemData,
+                                           recipientAddressModel: RecipientAddressModel,
                                            cartPosition: Int,
                                            selectedServiceId: Int,
                                            selectedServiceName: String,
                                            flagNeedToSetPinpoint: Boolean,
-                                           hasCourierPromo: Boolean) {
+                                           hasCourierPromo: Boolean,
+                                           hasLogisticPromo: Boolean) {
         if (shippingCourierViewModels != null) {
             val summaryViewModel = fragmentViewModel.getSummaryViewModel()
             if (summaryViewModel != null) {
@@ -1056,6 +1057,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                     }
                 }
             }))
+    }
+
+    override fun onLogisticPromoChosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>?, courierData: CourierItemData?, recipientAddressModel: RecipientAddressModel?, cartPosition: Int, selectedServiceId: Int, selectedServiceName: String?, flagNeedToSetPinpoint: Boolean) {
+        // Haven't discussed yet
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

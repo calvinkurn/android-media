@@ -89,9 +89,9 @@ public class SectionCategoryAdapter extends RecyclerView.Adapter<SectionCategory
                 }
 
                 AnalyticsTrackerUtil.sendEvent(itemView.getContext(),
-                        AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_TOKOPOINT,
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                         AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                        AnalyticsTrackerUtil.ActionKeys.CLICK_DYNAMIC_CAT,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_DYNAMIC_ICON,
                         category.getText()
                 );
             });

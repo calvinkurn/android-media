@@ -55,7 +55,7 @@ public class ExpandableItemSelectedListAdapter extends
 
         public ViewHolder(View itemView) {
             super(itemView);
-            selectedItem = (DeletableItemView) itemView.findViewById(R.id.selected_item);
+            selectedItem = itemView.findViewById(R.id.selected_item);
         }
 
         public void bind(final Option option, final int position) {
@@ -66,14 +66,11 @@ public class ExpandableItemSelectedListAdapter extends
                 selectedItem.setItemName(option.getName());
             }
 
-            selectedItem.setOnDeleteListener(new DeletableItemView.OnDeleteListener() {
-                @Override
-                public void onDelete() {
-                    filterView.removeSelectedOption(option);
-                    selectedOptionsList.remove(position);
-                    notifyItemRemoved(position);
-                    notifyItemRangeChanged(position, getItemCount());
-                }
+            selectedItem.setOnDeleteListener(() -> {
+                filterView.removeSelectedOption(option);
+                selectedOptionsList.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, getItemCount());
             });
         }
     }

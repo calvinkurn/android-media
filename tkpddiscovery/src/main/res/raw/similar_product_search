@@ -30,6 +30,7 @@ query similar_products_image_search($product_id: String!, $params: String!) {
         discount_expired_time
         discount_start_time
         discount_percentage
+        wishlist
       }
     }
   }

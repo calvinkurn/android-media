@@ -107,7 +107,12 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
     }
 
     private Observable<Boolean> checkIsAffiliate(RequestParams requestParams) {
-        return checkAffiliateUseCase.createObservable(requestParams).subscribeOn(Schedulers.io());
+        if (userSession.isAffiliate()) {
+            return Observable.just(userSession.isAffiliate());
+        } else {
+            return checkAffiliateUseCase.createObservable(requestParams)
+                    .subscribeOn(Schedulers.io());
+        }
     }
 
     private void saveLocallyWallet(AccountModel accountModel) {
