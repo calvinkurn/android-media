@@ -29,8 +29,6 @@ public interface FeedPlus {
 
         Resources getResources();
 
-        void eventTrackingEEGoToProduct(Integer shopId, String feedId, int totalProduct, int positionInFeed, String category);
-
         void sendMoEngageOpenFeedEvent();
 
         void stopTracePerformanceMon();

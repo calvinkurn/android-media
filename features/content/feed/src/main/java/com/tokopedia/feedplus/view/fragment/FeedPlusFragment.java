@@ -1236,30 +1236,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void eventTrackingEEGoToProduct(Integer shopIdInt, String feedId, int totalProduct, int
-            positionInFeed, String category) {
-        String SHOP_ID_BRACKETS = "{shop_id}";
-
-        String loginIdString = getUserSession().getUserId();
-        int loginIdInt = loginIdString.isEmpty() ? 0 : Integer.valueOf(loginIdString);
-
-        String shopId = String.valueOf(shopIdInt);
-        List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
-        list.add(new FeedEnhancedTracking.Promotion(
-                Integer.valueOf(feedId),
-                FeedEnhancedTracking.Promotion.createContentNameProductUpload(totalProduct),
-                String.valueOf(totalProduct),
-                positionInFeed,
-                category,
-                shopIdInt,
-                ApplinkConst.SHOP.replace(SHOP_ID_BRACKETS, shopId)
-        ));
-
-        analytics.eventTrackingEnhancedEcommerce(
-                FeedEnhancedTracking.getClickTracking(list, loginIdInt));
-    }
-
-    @Override
     public void sendMoEngageOpenFeedEvent() {
         feedModuleRouter.sendMoEngageOpenFeedEvent(!hasFeed());
     }
@@ -1643,10 +1619,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onVideoPlayerClicked(int positionInFeed,
                                      int contentPosition,
-                                     String postId) {
-        startActivity(VideoDetailActivity.Companion.getInstance(
-                getActivity(),
-                postId));
+                                     @NotNull String postId) {
+        if (getActivity() != null) {
+            startActivity(VideoDetailActivity.Companion.getInstance(
+                    getActivity(),
+                    postId));
+        }
     }
 
     private void goToContentReport(int contentId) {
