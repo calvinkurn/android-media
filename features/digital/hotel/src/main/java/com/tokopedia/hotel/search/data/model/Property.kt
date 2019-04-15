@@ -58,7 +58,7 @@ data class Property(
         data class Review(
             @SerializedName("reviewScore")
             @Expose
-            val score: Int = 0,
+            val score: Float = 0.0f,
 
             @SerializedName("reviewDescription")
             @Expose
