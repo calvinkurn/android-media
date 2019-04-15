@@ -9,8 +9,8 @@ public class GlobalCouponAttr {
     @SerializedName("description")
     private String description;
 
-    @SerializedName("quantity")
-    private int quantity;
+    @SerializedName("quantity_label")
+    private String quantityLabel;
 
     public String getDescription() {
         return description;
@@ -20,11 +20,11 @@ public class GlobalCouponAttr {
         this.description = description;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public String getQuantityLabel() {
+        return quantityLabel;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setQuantityLabel(String quantityLabel) {
+        this.quantityLabel = quantityLabel;
     }
 }

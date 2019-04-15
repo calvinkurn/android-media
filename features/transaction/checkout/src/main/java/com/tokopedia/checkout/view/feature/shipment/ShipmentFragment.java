@@ -794,10 +794,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void setPromoStackingData(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        boolean flagAutoApplyStack = false;
         PromoStackingData.Builder builder = new PromoStackingData.Builder();
         if (cartShipmentAddressFormData.getAutoApplyStackData() != null) {
             AutoApplyStackData autoApplyStackData = cartShipmentAddressFormData.getAutoApplyStackData();
             if (!TextUtils.isEmpty(autoApplyStackData.getCode())) {
+                flagAutoApplyStack = true;
                 builder.typePromo(autoApplyStackData.getIsCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON() ?
                         PromoStackingData.CREATOR.getTYPE_COUPON() : PromoStackingData.CREATOR.getTYPE_VOUCHER())
                         .description(autoApplyStackData.getMessageSuccess())
@@ -835,6 +837,23 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else {
             builder.state(TickerPromoStackingCheckoutView.State.EMPTY);
         }
+
+        if (!flagAutoApplyStack) {
+            if (cartShipmentAddressFormData.getGlobalCouponAttrData() != null) {
+                if (cartShipmentAddressFormData.getGlobalCouponAttrData().getDescription() != null) {
+                    if (!cartShipmentAddressFormData.getGlobalCouponAttrData().getDescription().isEmpty()) {
+                        builder.title(cartShipmentAddressFormData.getGlobalCouponAttrData().getDescription());
+                    }
+                }
+
+                if (cartShipmentAddressFormData.getGlobalCouponAttrData().getQuantityLabel() != null) {
+                    if (!cartShipmentAddressFormData.getGlobalCouponAttrData().getQuantityLabel().isEmpty()) {
+                        builder.counterLabel(cartShipmentAddressFormData.getGlobalCouponAttrData().getQuantityLabel());
+                    }
+                }
+            }
+        }
+
         shipmentAdapter.addPromoStackingVoucherData(builder.build());
         shipmentAdapter.notifyDataSetChanged();
     }
@@ -2239,6 +2258,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             promoStackingData.setAmount(0);
             promoStackingData.setPromoCode("");
             promoStackingData.setDescription("");
+            promoStackingData.setTitle("");
+            promoStackingData.setCounterLabel("");
             shipmentAdapter.updateItemPromoStackVoucher(promoStackingData);
         } else {
             ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(shopIndex);

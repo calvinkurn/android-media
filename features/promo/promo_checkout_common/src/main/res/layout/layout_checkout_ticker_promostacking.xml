@@ -24,6 +24,16 @@
             android:layout_marginLeft="@dimen/dp_10"
             android:src="@drawable/ic_kupon_telur" />
 
+        <ImageView
+            android:id="@+id/bg_button_coupon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg_button_promostacking" />
+
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/title_button_coupon"
             android:layout_width="wrap_content"
@@ -38,15 +48,31 @@
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/tkpd_main_green" />
 
-        <ImageView
-            android:id="@+id/bg_button_coupon"
+        <LinearLayout
+            android:id="@+id/layout_counter_coupons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_centerInParent="true"
-            android:scaleType="centerCrop"
-            android:src="@drawable/bg_button_promostacking" />
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_centerVertical="true"
+            android:background="@drawable/bg_counter">
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/counter_coupons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:textSize="@dimen/sp_10"
+                android:paddingStart="@dimen/dp_3"
+                android:paddingLeft="@dimen/dp_3"
+                android:paddingEnd="@dimen/dp_3"
+                android:paddingRight="@dimen/dp_3"/>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/title_action_coupon"

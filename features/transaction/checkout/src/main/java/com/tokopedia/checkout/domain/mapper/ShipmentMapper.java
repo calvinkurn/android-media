@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.checkout.domain.datamodel.promostacking.GlobalCouponAttrData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.MessageData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
@@ -24,6 +25,7 @@ import com.tokopedia.shipping_recommendation.domain.shipping.AnalyticsProductChe
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.transactiondata.entity.response.cartlist.GlobalCouponAttr;
 import com.tokopedia.transactiondata.entity.response.cartlist.Message;
 import com.tokopedia.transactiondata.entity.response.cartlist.VoucherOrdersItem;
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
@@ -147,6 +149,22 @@ public class ShipmentMapper implements IShipmentMapper {
             }
             dataResult.setAutoApplyStackData(autoApplyStackData);
         }
+
+        // if (shipmentAddressFormDataResponse.getGlobalCouponAttr() != null) {
+            GlobalCouponAttrData globalCouponAttrData = new GlobalCouponAttrData();
+            if (shipmentAddressFormDataResponse.getGlobalCouponAttr() != null) {
+                if (shipmentAddressFormDataResponse.getGlobalCouponAttr().getDescription() != null) {
+                    globalCouponAttrData.setDescription(shipmentAddressFormDataResponse.getGlobalCouponAttr().getDescription());
+                }
+                globalCouponAttrData.setQuantityLabel(shipmentAddressFormDataResponse.getGlobalCouponAttr().getQuantityLabel());
+            }
+
+            // test hardcode
+            globalCouponAttrData.setDescription("Gunakan kode di Checkout");
+            globalCouponAttrData.setQuantityLabel("15 kupon");
+
+            dataResult.setGlobalCouponAttrData(globalCouponAttrData);
+        // }
 
         if (shipmentAddressFormDataResponse.getDonation() != null) {
             Donation donation = new Donation();

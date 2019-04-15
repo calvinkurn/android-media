@@ -956,6 +956,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         this.cartListData = cartListData;
         cartAdapter.resetData();
 
+        boolean flagAutoApplyStack = false;
         PromoStackingData.Builder builderGlobal = new PromoStackingData.Builder();
         if (cartListData.getAutoApplyStackData() != null && cartListData.getAutoApplyStackData().isSuccess()
                 && !TextUtils.isEmpty(cartListData.getAutoApplyStackData().getCode())) {
@@ -972,13 +973,32 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                             .title(autoApplyStackData.getTitleDescription())
                             .build();
                     sendAnalyticsOnViewPromoAutoApply();
+                    flagAutoApplyStack = true;
                 }
             } else {
                 builderGlobal.state(TickerPromoStackingCheckoutView.State.EMPTY);
             }
         } else {
+
             builderGlobal.state(TickerPromoStackingCheckoutView.State.EMPTY);
         }
+
+        if (!flagAutoApplyStack) {
+            if (cartListData.getGlobalCouponAttr() != null) {
+                if (cartListData.getGlobalCouponAttr().getDescription() != null) {
+                    if (!cartListData.getGlobalCouponAttr().getDescription().isEmpty()) {
+                        builderGlobal.title(cartListData.getGlobalCouponAttr().getDescription());
+                    }
+                }
+
+                if (cartListData.getGlobalCouponAttr().getQuantityLabel() != null) {
+                    if (!cartListData.getGlobalCouponAttr().getQuantityLabel().isEmpty()) {
+                        builderGlobal.counterLabel(cartListData.getGlobalCouponAttr().getQuantityLabel());
+                    }
+                }
+            }
+        }
+
         cartAdapter.addPromoStackingVoucherData(builderGlobal.build());
 
         if (cartListData.getCartPromoSuggestion().isVisible()) {
@@ -1967,6 +1987,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             promoStackingData.setAmount(0);
             promoStackingData.setPromoCode("");
             promoStackingData.setDescription("");
+            promoStackingData.setTitle("");
+            promoStackingData.setCounterLabel("");
             cartAdapter.updateItemPromoStackVoucher(promoStackingData);
         } else {
             CartShopHolderData cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(shopIndex);

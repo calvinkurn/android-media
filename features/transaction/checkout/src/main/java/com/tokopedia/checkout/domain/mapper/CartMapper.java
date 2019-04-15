@@ -20,6 +20,7 @@ import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemDa
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartList;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartMultipleAddressDataListResponse;
+import com.tokopedia.transactiondata.entity.response.cartlist.GlobalCouponAttr;
 import com.tokopedia.transactiondata.entity.response.cartlist.Message;
 import com.tokopedia.transactiondata.entity.response.cartlist.Shop;
 import com.tokopedia.transactiondata.entity.response.cartlist.VoucherOrdersItem;
@@ -281,10 +282,19 @@ public class CartMapper implements ICartMapper {
         cartPromoSuggestion.setVisible(cartDataListResponse.getPromoSuggestion().getIsVisible() == 1);
         cartListData.setCartPromoSuggestion(cartPromoSuggestion);
 
-
+        GlobalCouponAttr globalCouponAttr = new GlobalCouponAttr();
         if (cartDataListResponse.getGlobalCouponAttr() != null) {
-            // lanjut di mari
+            if (cartDataListResponse.getGlobalCouponAttr().getDescription() != null) {
+                globalCouponAttr.setDescription(cartDataListResponse.getGlobalCouponAttr().getDescription());
+            }
+            globalCouponAttr.setQuantityLabel(cartDataListResponse.getGlobalCouponAttr().getQuantityLabel());
         }
+
+        // test hardcode
+        globalCouponAttr.setDescription("Gunakan kode atau kupon yaaaaa");
+        globalCouponAttr.setQuantityLabel("10 kupon");
+
+        cartListData.setGlobalCouponAttr(globalCouponAttr);
 
         AutoApplyStackData autoApplyStackData = new AutoApplyStackData();
         if (cartDataListResponse.getAutoapplyStack() != null) {
