@@ -31,6 +31,9 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.Filter;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -382,13 +385,13 @@ public class HotlistFragment extends BrowseSectionFragment
     private void setupListener() {
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
         topAdsRecyclerAdapter.setTopAdsListener(this);
-        topAdsRecyclerAdapter.setAdsImpressionListener(new TopAdsItemImpressionListener() {
-            @Override
-            public void onImpressionProductAdsItem(int position, Product product) {
-                TopAdsGtmTracker.eventHotlistProductView(getContext(), getQueryModel().getQueryKey(),
-                        product, position);
-            }
-        });
+//        topAdsRecyclerAdapter.setAdsImpressionListener(new TopAdsItemImpressionListener() {
+//            @Override
+//            public void onImpressionProductAdsItem(int position, Product product) {
+//                TopAdsGtmTracker.eventHotlistProductView(getContext(), getQueryModel().getQueryKey(),
+//                        product, position);
+//            }
+//        });
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnScrollListener() {
             @Override
             public void onLoad(int page, int totalCount) {
@@ -928,6 +931,37 @@ public class HotlistFragment extends BrowseSectionFragment
     @Override
     public void getDynamicFilter() {
         presenter.requestDynamicFilter();
+    }
+
+    @Override
+    public void renderDynamicFilter(DynamicFilterModel pojo) {
+
+
+
+        List<Option> optionList = new ArrayList<>();
+        for (Filter filter: pojo.getData().getFilter()) {
+            if (filter.getTitle().equalsIgnoreCase("toko")) {
+                for (Option option: filter.getOptions()) {
+                    if (option.getName().equalsIgnoreCase("Power Badge")) {
+                        optionList.add(option);
+                    } else if (option.getName().equalsIgnoreCase("Official Store")) {
+                        optionList.add(option);
+                    }
+                }
+            } else if (filter.getTitle().equalsIgnoreCase("Dukungan Pengiriman")) {
+                for (Option option: filter.getOptions()) {
+                    if (option.getName().equalsIgnoreCase("Instant Courier")) {
+                        optionList.add(option);
+                    }
+                }
+            }
+        }
+
+        if (!hotlistAdapter.getItemList().isEmpty()) {
+            HotlistHeaderViewModel headerViewModel = (HotlistHeaderViewModel) hotlistAdapter.getItemList().get(0);
+            headerViewModel.setQuickFilterList(optionList);
+            hotlistAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

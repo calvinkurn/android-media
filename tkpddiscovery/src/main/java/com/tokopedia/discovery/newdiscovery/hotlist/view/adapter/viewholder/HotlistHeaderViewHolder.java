@@ -14,6 +14,7 @@ import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
@@ -135,24 +136,22 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
             hotlistPromoView.setVisibility(View.GONE);
         }
 
-        renderQuickFilter();
+        renderQuickFilter(element.getOptionList());
     }
 
-    private void renderQuickFilter() {
-        CustomViewRoundedQuickFilterItem quickFilterItem1 = new CustomViewRoundedQuickFilterItem();
-        quickFilterItem1.setName("Official Store");
-        quickFilterItem1.setType("1");
-        CustomViewRoundedQuickFilterItem quickFilterItem2 = new CustomViewRoundedQuickFilterItem();
-        quickFilterItem2.setName("Instant Courier");
-        quickFilterItem2.setType("2");
-        CustomViewRoundedQuickFilterItem quickFilterItem3 = new CustomViewRoundedQuickFilterItem();
-        quickFilterItem3.setName("Power Badge");
-        quickFilterItem3.setType("3");
-
+    private void renderQuickFilter(List<Option> filterList) {
+        if(filterList==null || filterList.isEmpty()){
+            return;
+        }
         List<QuickFilterItem> filterItems = new ArrayList<>();
-        filterItems.add(quickFilterItem1);
-        filterItems.add(quickFilterItem2);
-        filterItems.add(quickFilterItem3);
+
+        for (int i=0; i<filterList.size(); i++) {
+            CustomViewRoundedQuickFilterItem quickFilterItem = new CustomViewRoundedQuickFilterItem();
+            quickFilterItem.setName(filterList.get(i).getName());
+            quickFilterItem.setType(filterList.get(i).getKey());
+
+            filterItems.add(quickFilterItem);
+        }
 
         customViewRounderCornerFilterView.renderFilter(filterItems);
     }
