@@ -281,6 +281,11 @@ public class CartMapper implements ICartMapper {
         cartPromoSuggestion.setVisible(cartDataListResponse.getPromoSuggestion().getIsVisible() == 1);
         cartListData.setCartPromoSuggestion(cartPromoSuggestion);
 
+
+        if (cartDataListResponse.getGlobalCouponAttr() != null) {
+            // lanjut di mari
+        }
+
         AutoApplyStackData autoApplyStackData = new AutoApplyStackData();
         if (cartDataListResponse.getAutoapplyStack() != null) {
             autoApplyStackData = new AutoApplyStackData();
