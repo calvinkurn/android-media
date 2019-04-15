@@ -758,7 +758,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                 ShopEtalaseViewModel firstModel = shopEtalaseViewModelList.get(0);
                 selectedEtalaseId = firstModel.getEtalaseId();
                 selectedEtalaseName = firstModel.getEtalaseName();
-//                updateHintRemoteConfig(selectedEtalaseName);
+                updateHintRemoteConfig(selectedEtalaseName);
                 isUseAce = firstModel.isUseAce();
                 etalaseBadge = firstModel.getEtalaseBadge();
             }
