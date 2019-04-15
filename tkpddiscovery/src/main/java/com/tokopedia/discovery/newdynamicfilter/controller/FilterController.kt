@@ -63,19 +63,7 @@ class FilterController {
             optionsForFilterViewState.add(option)
         }
 
-        val iterator = optionsForFilterViewState.listIterator()
-        while(iterator.hasNext()) {
-            val option = iterator.next()
-
-            val iterator2 = optionsForFilterViewState.listIterator()
-            while(iterator2.hasNext()) {
-                val optionToCompare = iterator2.next()
-                if(option.value != optionToCompare.value &&
-                    isOptionAlreadyBundled(option.value, optionToCompare.value)) {
-                    iterator.remove()
-                }
-            }
-        }
+        iterateOptionAndCheckForBundledOption(optionsForFilterViewState)
 
         for(option in optionsForFilterViewState) {
             if(option.value == "") option.value = getFilterValue(option.key)
@@ -83,11 +71,33 @@ class FilterController {
         }
     }
 
+    private fun iterateOptionAndCheckForBundledOption(optionsForFilterViewState: MutableList<Option>) {
+        val currentIterator = optionsForFilterViewState.listIterator()
+        
+        while(currentIterator.hasNext()) {
+            val currentOption = currentIterator.next()
+
+            reIterateOptionAndCheckForBundledOption(optionsForFilterViewState, currentIterator, currentOption)
+        }
+    }
+
+    private fun reIterateOptionAndCheckForBundledOption(optionsForFilterViewState: MutableList<Option>, currentIterator: MutableListIterator<Option>, currentOption: Option) {
+        val bundledOptionList = listOf<Option>() + optionsForFilterViewState
+
+        for(bundledOption in bundledOptionList) {
+            if(isOptionAlreadyBundled(currentOption.value, bundledOption.value)) {
+                currentIterator.remove()
+                break
+            }
+        }
+    }
+
     private fun isOptionAlreadyBundled(optionValue: String, bundledOptionValue: String) : Boolean {
         val optionValueList = optionValue.split(OptionHelper.VALUE_SEPARATOR).toList()
         val bundledOptionValueList = bundledOptionValue.split(OptionHelper.VALUE_SEPARATOR).toList()
 
-        return bundledOptionValueList.containsAll(optionValueList)
+        return optionValue.length < bundledOptionValue.length
+                && bundledOptionValueList.containsAll(optionValueList)
     }
 
     private fun addOrCombineOptions(optionsForFilterViewState: MutableList<Option>, option: Option) {
