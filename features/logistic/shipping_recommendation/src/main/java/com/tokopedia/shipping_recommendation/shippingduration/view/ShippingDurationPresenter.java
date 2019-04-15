@@ -35,18 +35,13 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         implements ShippingDurationContract.Presenter {
 
     private final GetCourierRecommendationUseCase getCourierRecommendationUseCase;
-    private final ShippingDurationConverter shippingDurationConverter;
     private final ShippingCourierConverter shippingCourierConverter;
-
-    private List<ShippingDurationViewModel> shippingDurationViewModelList = new ArrayList<>();
     private RecipientAddressModel recipientAddressModel;
 
     @Inject
     public ShippingDurationPresenter(GetCourierRecommendationUseCase getCourierRecommendationUseCase,
-                                     ShippingDurationConverter shippingDurationConverter,
                                      ShippingCourierConverter shippingCourierConverter) {
         this.getCourierRecommendationUseCase = getCourierRecommendationUseCase;
-        this.shippingDurationConverter = shippingDurationConverter;
         this.shippingCourierConverter = shippingCourierConverter;
     }
 
@@ -87,9 +82,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         if (getView() != null) {
             getView().showLoading();
             String query = GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.rates_v3_query);
-
             ShippingParam shippingParam = getShippingParam(shipmentDetailData);
-
             int selectedSpId = 0;
             if (shipmentDetailData.getSelectedCourier() != null) {
                 selectedSpId = shipmentDetailData.getSelectedCourier().getShipperProductId();
@@ -133,9 +126,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                         }
                                     }
                                 }
-
-                                shippingDurationViewModelList.addAll(shippingRecommendationData.getShippingDurationViewModels());
-                                getView().showData(shippingDurationViewModelList, shippingRecommendationData.getLogisticPromo());
+                                getView().showData(shippingRecommendationData.getShippingDurationViewModels(), shippingRecommendationData.getLogisticPromo());
                                 getView().stopTrace();
                             } else {
                                 getView().showNoCourierAvailable(getView().getActivity().getString(R.string.label_no_courier_bottomsheet_message));
@@ -170,14 +161,6 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         shippingParam.setAddressId(shipmentDetailData.getAddressId());
         shippingParam.setTradein(shipmentDetailData.isTradein());
         return shippingParam;
-    }
-
-    @Override
-    public List<ShippingDurationViewModel> getShippingDurationViewModels() {
-        if (shippingDurationViewModelList == null) {
-            shippingDurationViewModelList = new ArrayList<>();
-        }
-        return shippingDurationViewModelList;
     }
 
     @Override

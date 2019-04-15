@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
+    android:layout_marginTop="@dimen/dp_8"
     android:paddingLeft="@dimen/dp_16"
     android:paddingTop="@dimen/dp_8"
     android:paddingRight="@dimen/dp_16"

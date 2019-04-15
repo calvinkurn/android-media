@@ -99,7 +99,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun onErrorEmptyPromoCode() {
-        textInputLayoutCoupon.error = getString(R.string.promo_checkout_label_error_empty_voucher_code)
+        textInputLayoutCoupon.error = getString(R.string.promostacking_checkout_label_error_empty_voucher_code)
     }
 
     override fun onSuccessCheckPromoStackingCode(data: DataUiModel) {

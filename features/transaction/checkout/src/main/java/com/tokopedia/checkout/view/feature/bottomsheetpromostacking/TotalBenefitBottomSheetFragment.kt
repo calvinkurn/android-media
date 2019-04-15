@@ -57,4 +57,10 @@ open class TotalBenefitBottomSheetFragment : BottomSheets() {
         tvTotalAmount = view.findViewById(R.id.label_total_amount)
         tvTotalAmount.text = benefitUiModel.finalBenefitAmountStr
     }
+
+    override fun configView(parentView: View?) {
+        super.configView(parentView)
+        parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
+        parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener{ onCloseButtonClick() }
+    }
 }

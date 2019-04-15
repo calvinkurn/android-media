@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.tokopedia.shipping_recommendation.R
 import com.tokopedia.shipping_recommendation.domain.shipping.LogisticPromoViewModel
-import kotlinx.android.synthetic.main.item_logistic_voucher.view.*
+import kotlinx.android.synthetic.main.item_logistic_voucher_stacking.view.*
 
 /**
  * Created by fajarnuha on 29/03/19.
@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.item_logistic_voucher.view.*
 class LogisticPromoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
-        @JvmStatic val LAYOUT: Int = R.layout.item_logistic_voucher
+        @JvmStatic val LAYOUT = R.layout.item_logistic_voucher_stacking
     }
 
     fun bindData(data: LogisticPromoViewModel, listener: ShippingDurationAdapterListener) {

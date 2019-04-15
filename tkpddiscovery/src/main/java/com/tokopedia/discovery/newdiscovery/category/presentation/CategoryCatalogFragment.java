@@ -21,6 +21,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
@@ -39,6 +40,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.fact
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogFragmentContract;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogPresenter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -273,6 +275,11 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
     public void onEmptyButtonClicked() {
         SearchTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
         showSearchInputView();
+    }
+
+    @Override
+    public List<Option> getSelectedFilterAsOptionList() {
+        return null;
     }
 
     protected void setupAdapter() {
@@ -600,5 +607,10 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
     @Override
     protected String getScreenName() {
         return getScreenNameId();
+    }
+
+    @Override
+    public SearchParameter getSearchParameter() {
+        return new SearchParameter();
     }
 }

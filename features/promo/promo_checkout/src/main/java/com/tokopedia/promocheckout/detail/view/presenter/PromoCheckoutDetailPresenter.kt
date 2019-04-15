@@ -12,6 +12,7 @@ import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMa
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
@@ -79,19 +80,19 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
                 if (isViewAttached) {
                     view.hideProgressLoading()
                     val responseGetPromoStack = checkPromoStackingCodeMapper.call(t)
-                    if (responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerCheckoutView.State.FAILED) {
-                        if (!isFromLoadDetail) {
-                            view.onErrorValidatePromo(MessageErrorException(responseGetPromoStack.data.message.text))
-                        }
+                    if (responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
+                        view.onErrorValidatePromoStacking(MessageErrorException(responseGetPromoStack.data.message.text))
                     } else {
                         if (!isFromLoadDetail) {
                             if (promo.skipApply == 0 && responseGetPromoStack.data.clashings.isClashedPromos) {
                                 view.onClashCheckPromo(responseGetPromoStack.data.clashings)
                             } else {
-                                view.onSuccessValidatePromoStacking(responseGetPromoStack.data)
+                                if (responseGetPromoStack.data.message.state.equals("red")) {
+                                    view.onErrorValidatePromo(MessageErrorException(responseGetPromoStack.data.message.text))
+                                } else {
+                                    view.onSuccessValidatePromoStacking(responseGetPromoStack.data)
+                                }
                             }
-                        } else {
-                            view.onErroGetDetail(CheckPromoCodeDetailException(responseGetPromoStack.data.message.text))
                         }
                     }
                 }
