@@ -66,7 +66,7 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
     @Override
     protected boolean isDialogNeedToBeShown() {
         if(remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_SHOW_SIMPLE_APP_RATING, false)
-                && TextUtils.isEmpty(PersistentCacheManager.instance.getString(HIDE_SIMPLE_APP_RATING))) {
+                && PersistentCacheManager.instance.isExpired(HIDE_SIMPLE_APP_RATING)) {
             Integer appRatingVersion = cacheHandler.getInt(KEY_APP_RATING_VERSION);
             return appRatingVersion == null || appRatingVersion == -1;
         }

@@ -92,6 +92,8 @@ abstract class CacheManager(val context: Context) {
         }
     }
 
+    fun isExpired(key:String) = cacheRepository.get(key)?.isEmpty() ?: true
+
     fun deleteExpiredRecords() {
         cacheRepository.deleteExpiredRecords()
     }

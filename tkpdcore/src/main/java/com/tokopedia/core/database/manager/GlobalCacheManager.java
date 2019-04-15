@@ -64,7 +64,7 @@ public class GlobalCacheManager implements CacheManager {
 
     @Override
     public boolean isExpired(String key) {
-        return TextUtils.isEmpty(get(key));
+        return PersistentCacheManager.instance.isExpired(key);
     }
 
     public String getValueString(String key) {
@@ -91,6 +91,6 @@ public class GlobalCacheManager implements CacheManager {
 
     @Deprecated
     public static boolean isAvailable(String key) {
-        return !TextUtils.isEmpty(PersistentCacheManager.instance.getString(key, null));
+        return !PersistentCacheManager.instance.isExpired(key);
     }
 }

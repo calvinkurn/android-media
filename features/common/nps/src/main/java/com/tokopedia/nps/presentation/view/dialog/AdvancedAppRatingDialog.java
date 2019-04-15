@@ -115,7 +115,7 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
     @Override
     protected boolean isDialogNeedToBeShown() {
         if (remoteConfig.getBoolean(getRemoteConfigKey(), false)
-                && TextUtils.isEmpty(PersistentCacheManager.instance.getString(HIDE_ADVANCED_APP_RATING))) {
+                && PersistentCacheManager.instance.isExpired(HIDE_ADVANCED_APP_RATING)) {
             Integer appRatingVersion = cacheHandler.getInt(getLocalKey());
             Integer rating = cacheHandler.getInt(KEY_RATING);
             if (appRatingVersion == null || appRatingVersion == -1 || appRatingVersion < GlobalConfig.VERSION_CODE) {
