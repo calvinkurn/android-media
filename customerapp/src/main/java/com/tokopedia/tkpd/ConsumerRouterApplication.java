@@ -286,7 +286,6 @@ import com.tokopedia.officialstore.activity.OldReactNativeOfficialStoreActivity;
 import com.tokopedia.officialstore.fragment.ReactNativeOfficialStoreFragment;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
-import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.ovo.OvoPayWithQrRouter;
@@ -530,7 +529,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         SearchBarRouter,
         GlobalNavRouter,
         AccountHomeRouter,
-        OtpModuleRouter,
         DealsModuleRouter,
         OmsModuleRouter,
         ProductEditModuleRouter,
@@ -2760,11 +2758,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getChangePhoneNumberRequestIntent(Context context, String userId, String oldPhoneNumber) {
-        return ChangeInactiveFormRequestActivity.createIntentWithUserId(context, userId, oldPhoneNumber);
-    }
-
-    @Override
     public @NonNull
     Intent getManageShopEtalaseIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsEtalaseActivity(context);
@@ -3258,7 +3251,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
-        InstabugInitalize.dispatchTouchEvent(activity, me);
+//        InstabugInitalize.dispatchTouchEvent(activity, me);
     }
 
     @Override

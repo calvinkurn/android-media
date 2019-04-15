@@ -9,18 +9,12 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="@string/internal_scheme"
-                    android:host="@string/host_marketplace"
-                    android:pathPattern="@string/path_product_detail"/>
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_marketplace"
-                    android:pathPattern="@string/path_product_detail_domain"/>
-
+                    android:host="@string/host_global"
+                    android:pathPattern="@string/path_withdraw"/>
             </intent-filter>
         </activity>
 

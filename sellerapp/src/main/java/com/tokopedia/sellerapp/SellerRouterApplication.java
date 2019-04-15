@@ -114,7 +114,6 @@ import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
-import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
@@ -244,7 +243,7 @@ public abstract class SellerRouterApplication extends MainApplication
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter, ProfileModuleRouter,
         MitraToppersRouter, AbstractionRouter, ShopModuleRouter,
-        ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
+        ApplinkRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
         NetworkRouter, TopChatRouter, ProductEditModuleRouter, TopAdsWebViewRouter, ContactUsModuleRouter,
         ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter,
         KolRouter, PaymentSettingRouter, TalkRouter, PhoneVerificationRouter,
@@ -1153,11 +1152,6 @@ public abstract class SellerRouterApplication extends MainApplication
         intent.setData(Uri.parse(applink));
 
         return intent;
-    }
-
-    @Override
-    public Intent getChangePhoneNumberRequestIntent(Context context, String userId, String oldPhoneNumber) {
-        return ChangeInactiveFormRequestActivity.createIntentWithUserId(context, userId, oldPhoneNumber);
     }
 
     @Override
