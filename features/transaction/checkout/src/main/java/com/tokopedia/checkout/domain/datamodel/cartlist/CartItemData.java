@@ -159,6 +159,7 @@ public class CartItemData implements Parcelable {
         private String goldMerchantLogoUrl;
         private String officialStoreLogoUrl;
         private String preOrderInfo;
+        private String cartString;
 
         public String getTrackerAttribution() {
             return trackerAttribution;
@@ -488,6 +489,14 @@ public class CartItemData implements Parcelable {
             isCod = cod;
         }
 
+        public String getCartString() {
+            return cartString;
+        }
+
+        public void setCartString(String cartString) {
+            this.cartString = cartString;
+        }
+
         public OriginData() {
         }
 
@@ -538,6 +547,7 @@ public class CartItemData implements Parcelable {
             dest.writeString(this.goldMerchantLogoUrl);
             dest.writeString(this.officialStoreLogoUrl);
             dest.writeString(this.preOrderInfo);
+            dest.writeString(this.cartString);
         }
 
         protected OriginData(Parcel in) {
@@ -581,6 +591,7 @@ public class CartItemData implements Parcelable {
             this.goldMerchantLogoUrl = in.readString();
             this.officialStoreLogoUrl = in.readString();
             this.preOrderInfo = in.readString();
+            this.cartString = in.readString();
         }
 
         public static final Creator<OriginData> CREATOR = new Creator<OriginData>() {

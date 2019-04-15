@@ -24,11 +24,11 @@
         android:id="@+id/view_category_new"
         android:layout_width="@dimen/dp_12"
         android:layout_height="@dimen/dp_12"
-        android:background="@drawable/bg_category_new"
-        android:layout_marginRight="@dimen/dp_14"
         android:layout_marginTop="@dimen/dp_12"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="@+id/iv_bg" />
+        android:layout_marginRight="@dimen/dp_14"
+        android:background="@drawable/bg_category_new"
+        app:layout_constraintRight_toRightOf="@+id/iv_bg"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/text_title"

@@ -63,7 +63,7 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".purchase.detail.activity.OrderHistoryActivity"
-            android:label="@string/title_activity_people_tx_history" />
+            android:label="@string/transaction_title_activity_order_history" />
         <activity
             android:name=".purchase.activity.PaymentProcedureActivity"
             android:label="@string/title_payment_procedure"

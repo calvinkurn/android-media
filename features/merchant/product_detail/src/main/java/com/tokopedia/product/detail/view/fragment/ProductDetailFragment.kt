@@ -1007,8 +1007,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         if (shouldShowCod && shopCod && userCod) label_cod.visible() else label_cod.gone()
         headerView.renderCod(shouldShowCod && shopCod && userCod)
         productInfoP3.rateEstSummarizeText?.let {
-            partialVariantAndRateEstView.renderRateEstimation(it,
-                    shopInfo?.location ?: "", ::gotoRateEstimation)
+            partialVariantAndRateEstView.renderRateEstimation(it, ::gotoRateEstimation)
         }
         shopInfo?.let { updateWishlist(it, productInfoP3.isWishlisted) }
         productInfoP3.pdpAffiliate?.let { renderAffiliate(it) }

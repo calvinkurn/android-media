@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -115,6 +116,7 @@ public class SearchInputView extends BaseCustomView {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH && listener != null) {
+                    hideKeyboard();
                     listener.onSearchSubmitted(textView.getText().toString());
                     return true;
                 }
@@ -126,11 +128,18 @@ public class SearchInputView extends BaseCustomView {
             @Override
             public void onClick(View v) {
                 searchTextView.setText("");
+                hideKeyboard();
                 if (reset != null) {
                     reset.onSearchReset();
                 }
             }
         });
+    }
+
+    public void hideKeyboard(){
+        searchTextView.clearFocus();
+        InputMethodManager in = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        in.hideSoftInputFromWindow(searchTextView.getWindowToken(), 0);
     }
 
     public void setSearchText(String searchText) {

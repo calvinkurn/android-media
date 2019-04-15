@@ -274,7 +274,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
 
     @Override
     protected String getScreenName() {
-        return ConstantKey.Analytics.AppScreen.UnifyTracking.SCREEN_UNIFY_HOME_BERANDA;
+        return null;
     }
 
     public void scrollToTop() {
