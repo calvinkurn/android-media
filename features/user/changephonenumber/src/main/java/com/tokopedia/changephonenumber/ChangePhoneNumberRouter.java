@@ -3,8 +3,6 @@ package com.tokopedia.changephonenumber;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-
 import okhttp3.Interceptor;
 
 /**
@@ -12,9 +10,8 @@ import okhttp3.Interceptor;
  */
 
 public interface ChangePhoneNumberRouter {
-    AnalyticTracker getAnalyticTracker();
 
-    Intent getWithdrawIntent(Context context);
+    Intent getWithdrawIntent(Context context, boolean isSeller);
 
     Interceptor getChuckInterceptor();
 }

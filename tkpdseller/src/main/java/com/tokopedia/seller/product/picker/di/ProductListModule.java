@@ -3,7 +3,6 @@ package com.tokopedia.seller.product.picker.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
@@ -17,7 +16,6 @@ import com.tokopedia.gm.common.data.source.cloud.GMCommonCloudDataSource;
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi;
 import com.tokopedia.gm.common.domain.interactor.GetCashbackUseCase;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
-import com.tokopedia.product.manage.item.common.di.scope.ProductScope;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.picker.data.api.GetProductListSellerApi;
 import com.tokopedia.seller.product.picker.data.repository.GetProductListSellingRepositoryImpl;
@@ -28,6 +26,7 @@ import com.tokopedia.seller.product.picker.view.mapper.GetProductListPickerMappe
 import com.tokopedia.seller.product.picker.view.presenter.ProductListPickerSearchPresenter;
 import com.tokopedia.seller.product.picker.view.presenter.ProductListPickerSearchPresenterImpl;
 import com.tokopedia.seller.shop.common.interceptor.HeaderErrorResponseInterceptor;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
@@ -84,16 +83,6 @@ public class ProductListModule {
         }
     }
 
-    @ProductListScope
-    @Provides
-    public UserSession provideUserSessionAbstract(@ApplicationContext Context context) {
-        if(context instanceof AbstractionRouter){
-            return ((AbstractionRouter)context).getSession();
-        }else{
-            return null;
-        }
-    }
-
     @Provides
     public CacheApiInterceptor provideCacheApiInterceptor() {
         return new CacheApiInterceptor();
@@ -111,9 +100,8 @@ public class ProductListModule {
 
     @Provides
     public GMAuthInterceptor provideGMAuthInterceptor(@ApplicationContext Context context,
-                                                      AbstractionRouter abstractionRouter,
-                                                      UserSession userSession) {
-        return new GMAuthInterceptor(context, abstractionRouter, userSession);
+                                                      AbstractionRouter abstractionRouter) {
+        return new GMAuthInterceptor(context, abstractionRouter);
     }
 
     @ProductListGMFeaturedQualifier
@@ -170,7 +158,7 @@ public class ProductListModule {
 
     @ProductListScope
     @Provides
-    public UserSessionInterface provideUserSession(@ApplicationContext Context context) {
-        return new com.tokopedia.user.session.UserSession(context);
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

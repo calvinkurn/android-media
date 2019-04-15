@@ -20,6 +20,8 @@ buildscript {
 }
 
 dependencies {
+    
+    implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.productManageItem)
@@ -34,6 +36,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.baseListSeller)
     implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation project(rootProject.ext.libraries.userSession)
 
     implementation rootProject.ext.miscDependencies.multiDex
 

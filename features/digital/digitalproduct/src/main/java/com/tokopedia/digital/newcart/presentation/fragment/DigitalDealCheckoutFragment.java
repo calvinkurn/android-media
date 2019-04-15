@@ -28,8 +28,8 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.cart.di.DigitalCartComponent;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
+import com.tokopedia.digital.newcart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalDealCheckoutContract;
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealActionListener;
@@ -124,6 +124,11 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (interactionListener == null) {
+            if (getParentFragment() instanceof InteractionListener) {
+                interactionListener = (InteractionListener) getParentFragment();
+            }
+        }
         presenter.attachView(this);
         presenter.onDealsCheckout();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -303,7 +308,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
                                 ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.WRAP_CONTENT
                         );
-                        layoutParams.setMargins(0, getResources().getDimensionPixelSize(R.dimen.dp_8), 0 , 0);
+                        layoutParams.setMargins(0, getResources().getDimensionPixelSize(R.dimen.dp_8), 0, 0);
                         containerLayout.setLayoutParams(
                                 layoutParams
                         );
@@ -389,7 +394,9 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
     @Override
     public void updateToolbarTitle(String toolbarTitle) {
-        interactionListener.updateToolbarTitle(toolbarTitle);
+        if (interactionListener != null) {
+            interactionListener.updateToolbarTitle(toolbarTitle);
+        }
     }
 
     @Override
@@ -418,7 +425,10 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
     @Override
     public boolean isAlreadyShowOnBoard() {
-        return interactionListener.isAlreadyShowOnBoard();
+        if (interactionListener != null) {
+            return interactionListener.isAlreadyShowOnBoard();
+        }
+        return true;
     }
 
     public void updateSelectedDeal(DealProductViewModel viewModel) {

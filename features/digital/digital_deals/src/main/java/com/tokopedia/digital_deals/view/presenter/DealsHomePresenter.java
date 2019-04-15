@@ -9,10 +9,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common.network.data.model.RestResponse;
@@ -39,6 +37,8 @@ import com.tokopedia.digital_deals.view.model.response.DealsResponse;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -77,7 +77,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     private RequestParams searchNextParams = RequestParams.create();
     private Subscription subscription;
     private HashMap<String, Object> params = new HashMap<>();
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private DealsAnalytics dealsAnalytics;
 
 
@@ -91,7 +91,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
     @Override
     public void initialize() {
-        userSession = ((AbstractionRouter) getView().getActivity().getApplication()).getSession();
+        userSession = new UserSession(getView().getActivity());
 
     }
 

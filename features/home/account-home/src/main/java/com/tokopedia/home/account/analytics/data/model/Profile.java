@@ -8,37 +8,37 @@ public class Profile {
 
     @SerializedName("user_id")
     @Expose
-    private String userId;
+    private String userId = "";
     @SerializedName("first_name")
     @Expose
-    private String firstName;
+    private String firstName = "";
     @SerializedName("full_name")
     @Expose
-    private String fullName;
+    private String fullName = "";
     @SerializedName("email")
     @Expose
-    private String email;
+    private String email = "";
     @SerializedName("gender")
     @Expose
-    private String gender;
+    private String gender = "";
     @SerializedName("bday")
     @Expose
-    private String bday;
+    private String bday = "";
     @SerializedName("age")
     @Expose
-    private String age;
+    private String age = "";
     @SerializedName("phone")
     @Expose
-    private String phone;
+    private String phone = "";
     @SerializedName("register_date")
     @Expose
-    private String registerDate;
+    private String registerDate = "";
     @SerializedName("profile_picture")
     @Expose
-    private String profilePicture;
+    private String profilePicture = "";
     @SerializedName("completion")
     @Expose
-    private Integer completion;
+    private Integer completion = 0;
 
     public String getUserId() {
         return userId;

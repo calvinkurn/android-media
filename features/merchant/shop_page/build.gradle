@@ -34,11 +34,13 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
+    implementation project(rootProject.ext.libraries.userSession)
     implementation (rootProject.ext.miscDependencies.flexBoxLayout){
         exclude group: 'com.android.support'
     }
 
     implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.shopEtalasePicker)
 
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
@@ -65,6 +67,8 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    
+    implementation project(rootProject.ext.libraries.track)
 }
 
 apply from: '../../../publish_local.gradle'

@@ -4,10 +4,13 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.navigation.presentation.adapter.InboxTypeFactory;
+
 /**
  * Created by meta on 15/07/18.
  */
-public class Inbox {
+public class Inbox implements Visitable<InboxTypeFactory> {
 
     private @DrawableRes Integer icon;
     private @StringRes Integer title;
@@ -50,5 +53,10 @@ public class Inbox {
 
     public void setTotalBadge(String totalBadge) {
         this.totalBadge = totalBadge;
+    }
+
+    @Override
+    public int type(InboxTypeFactory typeFactory) {
+        return typeFactory.type(this);
     }
 }

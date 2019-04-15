@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 public class TokopointsModel {
     @SerializedName("status")
     @Expose
-    private TokopointStatusModel status;
+    private TokopointStatusModel status = new TokopointStatusModel();
 
     public TokopointStatusModel getStatus() {
         return status;

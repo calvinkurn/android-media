@@ -14,23 +14,23 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.design.component.Dialog;
+import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.tkpdreactnative.R;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerPrintUIHelper;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerprintDialogConfirmation;
 import com.tokopedia.tkpdreactnative.react.singleauthpayment.view.SingleAuthPaymentDialog;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
 
@@ -112,14 +112,16 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     }
 
     public static String getUserId(Context context){
-        return SessionHandler.getLoginID(context);
+        UserSessionInterface userSession = new UserSession(context);
+        return userSession.getUserId();
     }
 
 
     @ReactMethod
     public void getCurrentDeviceId(Promise promise) {
         if (context.getApplicationContext() instanceof AbstractionRouter) {
-            promise.resolve(((AbstractionRouter) context.getApplicationContext()).getSession().getDeviceId());
+            UserSessionInterface userSession = new UserSession(context);
+            promise.resolve(userSession.getDeviceId());
         }
     }
 
@@ -196,15 +198,13 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     @ReactMethod
     public void sendTrackingEvent(ReadableMap dataLayer) {
         HashMap<String, Object> maps = dataLayer.toHashMap();
-        TrackingUtils.eventTrackingEnhancedEcommerce(appContext, maps);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(maps);
+
     }
 
     @ReactMethod
     public void trackScreenName(String name) {
-        if(context.getApplicationContext() instanceof AbstractionRouter) {
-            AnalyticTracker analyticTracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-            analyticTracker.sendScreen(getCurrentActivity(), name);
-        }
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(name);
     }
 
     @ReactMethod

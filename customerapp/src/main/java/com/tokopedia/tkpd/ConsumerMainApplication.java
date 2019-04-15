@@ -3,6 +3,7 @@ package com.tokopedia.tkpd;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
@@ -11,14 +12,13 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.soloader.SoLoader;
 import com.github.anrwatchdog.ANRWatchDog;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
@@ -30,6 +30,7 @@ import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
+import com.tokopedia.affiliatecommon.data.network.TopAdsConstantKt;
 import com.tokopedia.analytics.Analytics;
 import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
@@ -42,18 +43,20 @@ import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.common.category.CategoryDbFlow;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.cpm.CharacterPerMinuteActivityLifecycleCallbacks;
+import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.digital.newcart.data.DigitalDealsUrl;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
+import com.tokopedia.discovery.newdiscovery.constant.DiscoveryBaseURL;
 import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.feedplus.data.api.FeedUrl;
-import com.tokopedia.discovery.newdiscovery.constant.DiscoveryBaseURL;
 import com.tokopedia.flight.common.constant.FlightUrl;
-import com.tokopedia.flight_dbflow.TkpdFlight;
 import com.tokopedia.gamification.GamificationUrl;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -62,7 +65,6 @@ import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
 import com.tokopedia.groupchat.common.data.GroupChatUrl;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.constant.BerandaUrl;
-import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.imageuploader.data.ImageUploaderUrl;
 import com.tokopedia.inbox.rescenter.network.ResolutionUrl;
 import com.tokopedia.instantloan.network.InstantLoanUrl;
@@ -73,7 +75,6 @@ import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 import com.tokopedia.logout.data.LogoutUrl;
 import com.tokopedia.network.SessionUrl;
-import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.data.source.CMNotificationUrls;
 import com.tokopedia.oms.data.source.OmsUrl;
 import com.tokopedia.otp.cotp.data.CotpUrl;
@@ -82,7 +83,6 @@ import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
 import com.tokopedia.phoneverification.PhoneVerificationConst;
 import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
-import com.tokopedia.profile.data.network.TopAdsConstantKt;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.recentview.data.api.RecentViewUrl;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
@@ -91,6 +91,7 @@ import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
 import com.tokopedia.settingbank.choosebank.data.BankListUrl;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
+import com.tokopedia.product.detail.data.util.ProductDetailConstant;
 import com.tokopedia.talk.common.data.TalkUrl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
@@ -106,9 +107,10 @@ import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.transaction.network.TransactionUrl;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL;
-import com.tokopedia.useridentification.KycUrl;
 import com.tokopedia.user_identification_common.KycCommonUrl;
 import com.tokopedia.vote.data.VoteUrl;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -118,17 +120,15 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
-import io.hansel.hanselsdk.Hansel;
-
-import static android.content.Context.NOTIFICATION_SERVICE;
-
 /**
  * Created by ricoharisin on 11/11/16.
  */
 
 public class ConsumerMainApplication extends ConsumerRouterApplication implements
         MoEPushCallBacks.OnMoEPushNavigationAction,
-        InAppManager.InAppMessageListener {
+        InAppManager.InAppMessageListener,
+        CharacterPerMinuteInterface
+{
 
     private final String NOTIFICATION_CHANNEL_NAME = "Promo";
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
@@ -145,6 +145,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void onCreate() {
+        com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
         setVersionCode();
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
@@ -181,18 +182,33 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
         InstabugInitalize.init(this);
-        initFirebase();
 
         if (!GlobalConfig.DEBUG) {
             new ANRWatchDog().setANRListener(Crashlytics::logException).start();
         }
+
+        cacheManager = new GlobalCacheManager();
+        cacheManager.setCacheDuration(600);
+        if(callback == null) {
+            callback = new CharacterPerMinuteActivityLifecycleCallbacks(this);
+        }
+        registerActivityLifecycleCallbacks(callback);
     }
+
+    CharacterPerMinuteActivityLifecycleCallbacks callback;
 
     @Override
     public void onTerminate() {
         super.onTerminate();
         TrackApp.getInstance().delete();
         TrackApp.deleteInstance();
+        unregisterActivityLifecycleCallbacks(callback);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        unregisterActivityLifecycleCallbacks(callback);
     }
 
     private void createCustomSoundNotificationChannel() {
@@ -258,6 +274,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TkpdBaseURL.GALADRIEL = ConsumerAppBaseUrl.GALADRIEL;
         TkpdBaseURL.CHAT_DOMAIN = ConsumerAppBaseUrl.CHAT_DOMAIN;
         TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN = ConsumerAppBaseUrl.CHAT_WEBSOCKET_DOMAIN;
+        com.tokopedia.network.constant.TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN =
+                ConsumerAppBaseUrl.CHAT_WEBSOCKET_DOMAIN;
+        com.tokopedia.network.constant.TkpdBaseURL.GROUP_CHAT_WEBSOCKET_DOMAIN =
+                ConsumerAppBaseUrl.GROUP_CHAT_WEBSOCKET_DOMAIN;
         TkpdBaseURL.MAPS_DOMAIN = ConsumerAppBaseUrl.MAPS_DOMAIN;
         TkpdBaseURL.WALLET_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
         TkpdBaseURL.EVENTS_DOMAIN = ConsumerAppBaseUrl.EVENT_DOMAIN;
@@ -281,10 +301,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         ShopUrl.BASE_ACE_URL = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
         ShopCommonUrl.BASE_URL = ConsumerAppBaseUrl.BASE_TOME_DOMAIN;
         ShopCommonUrl.BASE_WS_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
+        ProductDetailConstant.BASE_REST_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
         ReputationCommonUrl.BASE_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
         KolUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         DigitalUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         GroupChatUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
+        GroupChatUrl.BASE_GCP_URL = ConsumerAppBaseUrl.PLAY_DOMAIN;
         VoteUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
         GamificationUrl.GQL_BASE_URL = ConsumerAppBaseUrl.GAMIFICATION_BASE_URL;
         CotpUrl.BASE_URL = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
@@ -333,7 +355,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         CheckMsisdnUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         RecentViewUrl.MOJITO_DOMAIN = ConsumerAppBaseUrl.BASE_MOJITO_DOMAIN;
         com.tokopedia.network.constant.TkpdBaseURL.MOBILE_DOMAIN = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
-        com.tokopedia.common_digital.common.constant.DigitalUrl.DIGITAL_API_DOMAIN = ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
+        com.tokopedia.common_digital.common.constant.DigitalUrl.INSTANCE.setDIGITAL_API_DOMAIN(ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN);
         DigitalDealsUrl.BASE_URL = ConsumerAppBaseUrl.DEALS_DOMAIN;
         LogisticDataConstantUrl.KeroRates.BASE_URL = ConsumerAppBaseUrl.LOGISTIC_BASE_DOMAIN;
         TransactionDataApiUrl.Cart.BASE_URL = ConsumerAppBaseUrl.CART_BASE_DOMAIN;
@@ -349,6 +371,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.network.constant.TkpdBaseURL.ACCOUNTS_DOMAIN =
                 ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
         CMNotificationUrls.CM_TOKEN_UPDATE = ConsumerAppBaseUrl.CM_TOKEN_UPDATE;
+        tradein_common.Constants.LAKU6_BASEURL = ConsumerAppBaseUrl.LAKU6_BASE_URL;
+        com.tokopedia.inbox.common.ResolutionUrl.HOSTNAME=ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
 
     }
 
@@ -367,7 +391,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdCacheApiGeneratedDatabaseHolder.class)
                 .build());
-        TkpdFlight.initDatabase(getApplicationContext());
         PushNotification.initDatabase(getApplicationContext());
         Analytics.initDB(getApplicationContext());
         CategoryDbFlow.initDatabase(getApplicationContext());
@@ -536,16 +559,26 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     }
 
-    private void initFirebase() {
-        if (GlobalConfig.DEBUG && FirebaseApp.getInstance() == null) {
-            FirebaseOptions.Builder builder = new FirebaseOptions.Builder();
-            builder.setApplicationId("1:692092518182:android:f4cc247c743f7921");
-            FirebaseApp.initializeApp(this, builder.build());
-        }
-    }
-
-
     public Class<?> getDeeplinkClass() {
         return DeepLinkActivity.class;
     }
+
+    GlobalCacheManager cacheManager;
+
+    @Override
+    public void saveCPM(@NonNull String cpm) {
+        cacheManager.save(CharacterPerMinuteInterface.KEY, cpm, 60);
+    }
+
+    @Override
+    public String getCPM() {
+        return cacheManager.get(CharacterPerMinuteInterface.KEY);
+    }
+
+    @Override
+    public boolean isEnable() {
+        return getBooleanRemoteConfig("android_customer_typing_tracker_enabled", false);
+    }
+
+
 }

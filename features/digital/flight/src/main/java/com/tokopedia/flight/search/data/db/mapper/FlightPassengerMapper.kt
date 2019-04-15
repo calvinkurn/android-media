@@ -1,14 +1,22 @@
 package com.tokopedia.flight.search.data.db.mapper
 
 import com.tokopedia.flight.passenger.data.cloud.entity.PassengerListEntity
-import com.tokopedia.flight_dbflow.FlightPassengerDB
+import com.tokopedia.flight.passenger.data.db.FlightPassengerTable
+import javax.inject.Inject
 
 /**
  * Created by Rizky on 25/10/18.
  */
-class FlightPassengerMapper {
 
-    fun mapToFlightPassengerDb(passengerListEntity: PassengerListEntity) : FlightPassengerDB {
+class FlightPassengerMapper @Inject constructor() {
+
+    fun mapListEntityToTable(passengerListEntity: List<PassengerListEntity>) : List<FlightPassengerTable> {
+        return passengerListEntity.map {
+            return@map mapToFlightPassengerDb(it)
+        }
+    }
+
+    fun mapToFlightPassengerDb(passengerListEntity: PassengerListEntity): FlightPassengerTable {
         val birthdate = if (passengerListEntity.passengerAttribute.dob != null) {
             passengerListEntity.passengerAttribute.dob
         } else ""
@@ -29,7 +37,7 @@ class FlightPassengerMapper {
             passengerListEntity.passengerAttribute.nationality
         } else ""
 
-        return FlightPassengerDB(
+        return FlightPassengerTable(
                 passengerListEntity.id,
                 passengerListEntity.passengerAttribute.firstName,
                 passengerListEntity.passengerAttribute.lastName,

@@ -29,5 +29,6 @@ public class Authenticated {
     public static final String ADS_ID = "adsId";
 
     public static final String GA_CLIENT_ID = "clientId";
+    public static final String KEY_DEEPLINK_URL = "deeplinkURL";
 
 }

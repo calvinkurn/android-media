@@ -1,17 +1,13 @@
 package com.tokopedia.expresscheckout.view.variant.di
 
 import android.content.Context
-import com.tokopedia.abstraction.AbstractionRouter
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.view.profile.CheckoutProfileBottomSheet
-import com.tokopedia.expresscheckout.view.profile.di.CheckoutProfileScope
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantContract
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantItemDecorator
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantPresenter
 import com.tokopedia.expresscheckout.view.variant.viewmodel.FragmentViewModel
-import com.tokopedia.logisticcommon.utils.TkpdProgressDialog
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheet
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheet
 import com.tokopedia.transactionanalytics.ExpressCheckoutAnalyticsTracker
@@ -46,12 +42,6 @@ class CheckoutVariantModule {
 
     @CheckoutVariantScope
     @Provides
-    fun provideProgressDialog(@ApplicationContext context: Context): TkpdProgressDialog {
-        return TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS)
-    }
-
-    @CheckoutVariantScope
-    @Provides
     fun provideItemDecorator(): CheckoutVariantItemDecorator {
         return CheckoutVariantItemDecorator()
     }
@@ -82,11 +72,7 @@ class CheckoutVariantModule {
 
     @CheckoutVariantScope
     @Provides
-    fun provideAnalyticsTracker(router: AbstractionRouter): AnalyticTracker = router.analyticTracker
-
-    @CheckoutVariantScope
-    @Provides
-    fun provideAnalytics(tracker: AnalyticTracker): ExpressCheckoutAnalyticsTracker = ExpressCheckoutAnalyticsTracker(tracker)
+    fun provideAnalytics(): ExpressCheckoutAnalyticsTracker = ExpressCheckoutAnalyticsTracker()
 
     @CheckoutVariantScope
     @Provides

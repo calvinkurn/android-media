@@ -52,6 +52,11 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
+    implementation project(rootProject.ext.libraries.cpm)
 }
 
 apply from: '../../publish_local.gradle'

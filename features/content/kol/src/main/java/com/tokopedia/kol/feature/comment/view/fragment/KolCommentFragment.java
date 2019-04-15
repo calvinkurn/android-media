@@ -16,10 +16,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
@@ -37,6 +35,10 @@ import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,7 +63,6 @@ public class KolCommentFragment extends BaseDaggerFragment
     private KolCommentAdapter adapter;
     private ProgressBar progressBar;
     private KolRouter kolRouter;
-    private AbstractionRouter abstractionRouter;
 
     private boolean isFromApplink;
     private int totalNewComment = 0;
@@ -71,10 +72,9 @@ public class KolCommentFragment extends BaseDaggerFragment
     KolComment.Presenter presenter;
 
     @Inject
-    UserSession userSession;
-
-    @Inject
     KolCommentTypeFactory typeFactory;
+
+    private UserSessionInterface userSession;
 
     public static KolCommentFragment createInstance(Bundle bundle) {
         KolCommentFragment fragment = new KolCommentFragment();
@@ -99,6 +99,7 @@ public class KolCommentFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userSession = new UserSession(getActivity());
         if (getArguments() != null) {
             if (getArguments().get(KolCommentActivity.ARGS_FROM_APPLINK) != null
                     && getArguments().getBoolean(KolCommentActivity.ARGS_FROM_APPLINK)) {
@@ -147,13 +148,6 @@ public class KolCommentFragment extends BaseDaggerFragment
         } else {
             throw new IllegalStateException("Application must be an instance of " +
                     KolRouter.class.getSimpleName());
-        }
-
-        if (getActivity().getApplicationContext() instanceof AbstractionRouter) {
-            abstractionRouter = (AbstractionRouter) getActivity().getApplicationContext();
-        } else {
-            throw new IllegalStateException("Application must be an instance of " +
-                    AbstractionRouter.class.getSimpleName());
         }
 
         presenter.getCommentFirstTime(getArguments().getInt(KolCommentActivity.ARGS_ID));
@@ -266,12 +260,12 @@ public class KolCommentFragment extends BaseDaggerFragment
 
     @Override
     public void loadMoreComments() {
-        abstractionRouter.getAnalyticTracker().sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 KolEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 KolEventTracking.Category.FEED_CONTENT_COMMENT_DETAIL,
                 KolEventTracking.Action.FEED_LOAD_MORE_COMMENTS,
                 KolEventTracking.EventLabel.FEED_CONTENT_COMMENT_DETAIL_LOAD_MORE
-        );
+        ));
         if (adapter.getHeader() != null) {
             adapter.getHeader().setLoading(true);
             adapter.notifyItemChanged(0);
@@ -308,12 +302,12 @@ public class KolCommentFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessSendComment(SendKolCommentDomain sendKolCommentDomain) {
-        abstractionRouter.getAnalyticTracker().sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 KolEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 KolEventTracking.Category.FEED_CONTENT_COMMENT_DETAIL,
                 KolEventTracking.Action.FEED_SUBMIT_COMMENT,
                 KolEventTracking.EventLabel.FEED_CONTENT_COMMENT_DETAIL_COMMENT
-        );
+        ));
         adapter.addItem(new KolCommentViewModel(
                 sendKolCommentDomain.getId(),
                 String.valueOf(sendKolCommentDomain.getDomainUser().getId()),

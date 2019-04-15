@@ -59,6 +59,8 @@ public interface ProductDetailPresenter {
 
     void processToCart(@NonNull Activity context, @NonNull ProductCartPass data);
 
+    void processToShippingTradeIn(Activity context, Intent shippingIntent, ProductCartPass data);
+
     void sendAnalytics(@NonNull ProductDetailData successResult);
 
     void processToPicturePreview(@NonNull Context context, @NonNull Bundle bundle);
@@ -130,4 +132,6 @@ public interface ProductDetailPresenter {
     void requestAffiliateProductData(ProductDetailData productDetailData);
 
     void getPromoWidget(final @NonNull Context context, @NonNull ProductDetailData productDetailData);
+
+    void checkExpressCheckoutProfile(Activity activity);
 }

@@ -103,14 +103,9 @@ public class DealsSearchPresenter
 
     @Override
     public void searchTextChanged(String searchText) {
-        if (!TextUtils.isEmpty(searchText)) {
-            if (searchText.length() > 2) {
-                getDealsListBySearch(searchText);
-            } else {
-                getSearchDealsListRequestUseCase.unsubscribe();
-                getSearchNextUseCase.unsubscribe();
-                getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
-            }
+        if (!TextUtils.isEmpty(searchText.trim())) {
+            getDealsListBySearch(searchText);
+
         } else {
             getSearchDealsListRequestUseCase.unsubscribe();
             getSearchNextUseCase.unsubscribe();
@@ -119,10 +114,8 @@ public class DealsSearchPresenter
     }
 
     @Override
-    public void searchSubmitted(String searchText) {
-        if (searchText.length() > 2) {
-            getView().renderFromSearchResults();
-        }
+    public void searchSubmitted() {
+        getView().renderFromSearchResults();
     }
 
     @Override

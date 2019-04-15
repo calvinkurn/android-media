@@ -25,8 +25,13 @@ import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.customView.OrderStatusView;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -34,6 +39,7 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.adapter.TxProductListAdapter;
@@ -419,7 +425,15 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     @OnClick(R2.id.receive_btn)
     void actionConfirmDeliver() {
         presenter.processFinish(this, orderData);
-        UnifyTracking.eventReceivedShipping(this);
+        eventReceivedShipping();
+    }
+
+    public static void eventReceivedShipping () {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.RECEIVED,
+                AppEventTracking.Category.RECEIVED,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.CONFIRMATION);
     }
 
     @OnClick(R2.id.btn_do_complain)
@@ -430,7 +444,15 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     @OnClick(R2.id.track_btn)
     void actionTracking() {
         presenter.processTrackOrder(this, orderData);
-        UnifyTracking.eventTrackOrder(this);
+        eventTrackOrder();
+    }
+
+    public static void eventTrackOrder() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.STATUS,
+                AppEventTracking.Category.STATUS,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.TRACK);
     }
 
     @OnClick(R2.id.btn_request_cancel_order)
@@ -465,9 +487,12 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
 
     @Override
     public void actionToProductInfo(ProductPass productPass) {
-        Intent intent = ProductDetailRouter
-                .createInstanceProductDetailInfoActivity(this, productPass);
+        Intent intent = getProductIntent(productPass.getProductId());
         navigateToActivity(intent);
+    }
+
+    private Intent getProductIntent(String productId){
+            return RouteManager.getIntent(this,ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
     }
 
     @Override

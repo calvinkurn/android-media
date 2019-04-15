@@ -995,6 +995,8 @@ public interface AppEventTracking {
         String REFERRAL_SHARE_EVENT = "Share_Event";
         String OPEN_SHOP_SCREEN = "Open_Shop_Screen_Launched";
         String PARTNER_REFERRAL = "Partner_Referred";
+        String PUSH_PREFERENCE = "push_pref_android";
+        String EMAIL_PREFERENCE = "email_pref";
     }
 
 

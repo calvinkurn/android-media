@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,7 +34,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -95,6 +95,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public static final int REQUEST_CANCEL_ORDER = 101;
     public static final int REJECT_BUYER_REQUEST = 102;
     public static final int CANCEL_BUYER_REQUEST = 103;
+    public static final int TEXT_SIZE_MEDIUM = 12;
+    public static final int TEXT_SIZE_LARGE = 14;
     @Inject
     OrderListDetailPresenter presenter;
     private LinearLayout mainView;
@@ -221,10 +223,17 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_9));
-        shape.setColor(android.graphics.Color.parseColor(conditionalInfo.color().background()));
-        shape.setStroke(getResources().getDimensionPixelOffset(R.dimen.dp_1), android.graphics.Color.parseColor(conditionalInfo.color().border()));
+        if (!TextUtils.isEmpty(conditionalInfo.color().background())) {
+            shape.setColor(Color.parseColor(conditionalInfo.color().background()));
+        }
+        if (!TextUtils.isEmpty(conditionalInfo.color().border())) {
+            shape.setStroke(getResources().getDimensionPixelOffset(R.dimen.dp_1), Color.parseColor(conditionalInfo.color().border()));
+        }
         conditionalInfoText.setBackground(shape);
         conditionalInfoText.setText(conditionalInfo.text());
+        if (!TextUtils.isEmpty(conditionalInfo.color().textColor())) {
+            conditionalInfoText.setTextColor(Color.parseColor(conditionalInfo.color().textColor()));
+        }
 
     }
 
@@ -238,7 +247,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             doubleTextView.setBottomTextColor(Color.parseColor(title.textColor()));
         }
         if (title.backgroundColor() != null && !title.backgroundColor().isEmpty()) {
-            Drawable drawable = getContext().getDrawable(R.drawable.background_deadline);
+            Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.background_deadline);
             doubleTextView.setBottomTextBackground(drawable);
             doubleTextView.setBottomTextRightPadding(getResources().getDimensionPixelSize(R.dimen.dp_20), getResources().getDimensionPixelSize(R.dimen.dp_10), getResources().getDimensionPixelSize(R.dimen.dp_20), getResources().getDimensionPixelSize(R.dimen.dp_10));
 
@@ -278,7 +287,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             doubleTextView.setTopText(detail.label());
             doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
             doubleTextView.setBottomText(detail.value());
-            doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70));
+            doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_seventy_percent_));
+            doubleTextView.setBottomTextStyle("bold");
+            doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
         } else {
             doubleTextView.setTopText(detail.label());
             String text = detail.value() + NO_SANIN_NEXT_LINE;
@@ -345,7 +356,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
         doubleTextView.setBottomText(pricing.value());
         doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70));
-        doubleTextView.setBottomTextSize(16);
+        doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
         doubleTextView.setBottomGravity(Gravity.RIGHT);
         infoValue.addView(doubleTextView);
     }
@@ -356,7 +367,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         doubleTextView.setTopText(payMethod.getLabel());
         doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
         doubleTextView.setBottomText(payMethod.getValue());
-        doubleTextView.setBottomTextSize(16);
+        doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
+        doubleTextView.setTopTextSize(TEXT_SIZE_MEDIUM);
         doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70));
         doubleTextView.setBottomGravity(Gravity.RIGHT);
         paymentMethod.addView(doubleTextView);
@@ -605,8 +617,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         Uri uri = Uri.parse(actionButton.getUri());
                         invoiceUrl = uri.getQueryParameter("invoiceUrl");
                         String applink = "tokopedia://topchat/askseller/" + shopId;
-                        applink = applink.concat("?customMessage=" + invoiceUrl + "&source=" + "tx_ask_seller" + "&opponent_name=" + "" + "&avatar=" + "");
                         RouteManager.route(getContext(), applink);
+                        Intent intent = RouteManager.getIntent(getContext(), applink);
+                        intent.putExtra(ApplinkConst.Chat.CUSTOM_MESSAGE, invoiceUrl);
+                        intent.putExtra(ApplinkConst.Chat.SOURCE, "tx_ask_seller");
+                        startActivity(intent);
                     }
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                     Intent intent = new Intent(getContext(), RequestCancelActivity.class);
@@ -672,12 +687,14 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void setPaymentData(PaymentData paymentData) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(paymentData.label());
-        doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
+        doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.black_70_new));
+        doubleTextView.setTopTextSize(TEXT_SIZE_LARGE);
+        doubleTextView.setTopTextStyle("bold");
         doubleTextView.setBottomText(paymentData.value());
         if (!paymentData.textColor().equals(""))
             doubleTextView.setBottomTextColor(Color.parseColor(paymentData.textColor()));
-        doubleTextView.setBottomTextSize(16);
-        doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70));
+        doubleTextView.setBottomTextSize(TEXT_SIZE_LARGE);
+        doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.orange));
         doubleTextView.setBottomGravity(Gravity.RIGHT);
         totalPrice.addView(doubleTextView);
     }
@@ -780,10 +797,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     }
 
     @Override
-    public void setItems(List<Items> items) {
+    public void setItems(List<Items> items, boolean isTradeIn) {
         productInformationTitle.setVisibility(View.VISIBLE);
         itemsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter));
+        itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter, isTradeIn));
     }
 
     @Override
@@ -796,8 +813,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         presenter.detachView();
+        super.onDestroyView();
     }
 
     @Override

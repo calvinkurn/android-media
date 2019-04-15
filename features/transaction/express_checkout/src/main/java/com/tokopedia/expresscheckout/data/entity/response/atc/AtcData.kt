@@ -1,9 +1,8 @@
 package com.tokopedia.expresscheckout.data.entity.response.atc
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.expresscheckout.data.entity.response.profile.Profile
+import com.tokopedia.transactiondata.entity.response.expresscheckout.profile.Profile
 import com.tokopedia.transactiondata.entity.response.cartlist.AutoApply
-import com.tokopedia.transactiondata.entity.response.cartlist.Messages
 import com.tokopedia.transactiondata.entity.response.cartlist.PromoSuggestion
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.Donation
 

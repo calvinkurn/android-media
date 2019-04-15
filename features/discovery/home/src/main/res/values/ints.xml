@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="spotlight_title_char_limit">15</integer>
+    <integer name="spotlight_label_char_limit">4</integer>
+</resources>

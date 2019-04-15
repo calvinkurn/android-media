@@ -44,7 +44,7 @@ public class CodCheckoutUseCase extends GraphqlUseCase {
                 mFingerPrintSupport, mFingerPrintPublicKey, carts, 0,
                 String.valueOf(isOneClickShipment));
         String query = GraphqlHelper.loadRawString(context.getResources(), R.raw.checkout_cod_query);
-        return new GraphqlRequest(query, CodResponse.class, getParam(request));
+        return new GraphqlRequest(query, CodResponse.class, getParam(request), false);
     }
 
     private Map<String, Object> getParam(Object json) {

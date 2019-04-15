@@ -43,7 +43,7 @@ public class SetMerchantSaldoStatus {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_set_saldo_status),
                 GqlSetMerchantSaldoStatus.class,
-                variables, SET_MERCHANT_SALDO_STATUS);
+                variables, SET_MERCHANT_SALDO_STATUS, false);
 
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(subscriber);

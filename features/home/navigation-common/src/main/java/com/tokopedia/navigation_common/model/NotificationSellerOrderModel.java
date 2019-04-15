@@ -9,16 +9,16 @@ import com.google.gson.annotations.SerializedName;
 public class NotificationSellerOrderModel {
     @SerializedName("newOrder")
     @Expose
-    private Integer newOrder;
+    private Integer newOrder = 0;
     @SerializedName("readyToShip")
     @Expose
-    private Integer readyToShip;
+    private Integer readyToShip = 0;
     @SerializedName("shipped")
     @Expose
-    private Integer shipped;
+    private Integer shipped = 0;
     @SerializedName("arriveAtDestination")
     @Expose
-    private Integer arriveAtDestination;
+    private Integer arriveAtDestination = 0;
 
     public Integer getNewOrder() {
         return newOrder;

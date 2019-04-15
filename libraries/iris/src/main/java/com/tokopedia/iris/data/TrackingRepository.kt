@@ -9,8 +9,8 @@ import com.tokopedia.iris.data.db.dao.TrackingDao
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.data.network.ApiService
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.withContext
 import java.io.File
 
 /**
@@ -22,12 +22,10 @@ class TrackingRepository (
 
     private val trackingDao: TrackingDao = IrisDb.getInstance(context).trackingDao()
 
-    fun saveEvent(data: String, session: Session) {
-
+    suspend fun saveEvent(data: String, session: Session) = withContext(Dispatchers.IO) {
         if (isSizeOver()) { // check if db over 2 MB
             trackingDao.flush()
         }
-
         trackingDao.insert(Tracking(data, session.getUserId(), session.getDeviceId()))
     }
 
@@ -35,18 +33,16 @@ class TrackingRepository (
 
     fun delete(data: List<Tracking>) = trackingDao.delete(data)
 
-    fun sendSingleEvent(data: String, session: Session) {
-        val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(), session.getUserId(), session.getDeviceId())
-        val service = ApiService(context).makeRetrofitService()
-        GlobalScope.launch {
-            val requestBody = ApiService.parse(dataRequest)
-            val request = service.sendSingleEvent(requestBody)
-            val response = request.await()
-            if (response.isSuccessful) {
-                Log.d("Iris Service Single", "${response.code()}: response.body().toString()")
+    suspend fun sendSingleEvent(data: String, session: Session) : Boolean =
+            withContext(Dispatchers.Default) {
+                val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(),
+                        session.getUserId(), session.getDeviceId())
+                val service = ApiService(context).makeRetrofitService()
+                val requestBody = ApiService.parse(dataRequest)
+                val request = service.sendSingleEvent(requestBody)
+                val response = request.await()
+                response.isSuccessful
             }
-        }
-    }
 
     private fun isSizeOver() : Boolean {
         val f: File? = context.getDatabasePath(DATABASE_NAME)

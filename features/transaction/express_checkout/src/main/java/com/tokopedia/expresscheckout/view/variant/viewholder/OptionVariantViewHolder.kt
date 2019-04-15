@@ -10,6 +10,9 @@ import android.view.View
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.VariantChangeListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_AVAILABLE
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
 import kotlinx.android.synthetic.main.item_checkout_variant_option.view.*
 
 /**
@@ -25,20 +28,20 @@ class OptionVariantViewHolder(view: View?, val listener: VariantChangeListener) 
 
     fun bind(viewModel: OptionVariantViewModel?) {
         if (viewModel != null) {
-            if (!viewModel.hasAvailableChild) viewModel.currentState = viewModel.STATE_NOT_AVAILABLE
-            if (viewModel.currentState != viewModel.STATE_NOT_AVAILABLE) {
+            if (!viewModel.hasAvailableChild) viewModel.currentState = STATE_NOT_AVAILABLE
+            if (viewModel.currentState != STATE_NOT_AVAILABLE) {
                 itemView.setOnClickListener {
                     listener.onSelectedVariantChanged(viewModel)
                 }
             }
             when {
-                viewModel.currentState == viewModel.STATE_SELECTED -> renderSelectedVariant(viewModel)
-                viewModel.currentState == viewModel.STATE_NOT_SELECTED -> {
+                viewModel.currentState == STATE_SELECTED -> renderSelectedVariant(viewModel)
+                viewModel.currentState == STATE_NOT_SELECTED -> {
                     renderNotSelectedVariant(viewModel)
                     itemView.ll_not_selected_variant_container.background =
                             ContextCompat.getDrawable(itemView.context, R.drawable.bg_variant_item_round_not_selected)
                 }
-                viewModel.currentState == viewModel.STATE_NOT_AVAILABLE -> {
+                viewModel.currentState == STATE_NOT_AVAILABLE -> {
                     renderNotSelectedVariant(viewModel)
                     itemView.ll_not_selected_variant_container.background =
                             ContextCompat.getDrawable(itemView.context, R.drawable.bg_variant_item_round_disabled)

@@ -32,4 +32,7 @@ class ProductProfile {
     @SerializedName("price_before")
     @Expose
     val priceBefore: String = ""
+    @SerializedName("shop_id")
+    @Expose
+    val shopId: Int = 0
 }

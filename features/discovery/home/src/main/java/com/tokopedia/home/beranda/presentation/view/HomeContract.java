@@ -8,7 +8,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
+import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
@@ -55,6 +57,8 @@ public interface HomeContract {
 
         void updateListOnResume(List<Visitable> visitables);
 
+        void addImpressionToTrackingQueue(List<TrackedVisitable> visitables);
+
         void showRecomendationButton();
 
         Observable<HomeHeaderWalletAction> getTokocashBalance();
@@ -89,8 +93,6 @@ public interface HomeContract {
 
         void updateHeaderTokoCashPendingData(CashBackData cashBackData);
 
-        void updateHeaderTokoPointData(TokopointHomeDrawerData tokoPointDrawerData);
-
         void getShopInfo(String url, String shopDomain);
 
         void openProductPageIfValid(String url, String shopDomain);
@@ -112,6 +114,8 @@ public interface HomeContract {
         void hitBannerImpression(BannerSlidesModel slidesModel);
 
         void onBannerClicked(BannerSlidesModel slidesModel);
+
+        void updateHeaderTokoPointData(TokopointsDrawerHomeData tokopointsDrawerHomeData);
 
         void getFeedTabData();
     }

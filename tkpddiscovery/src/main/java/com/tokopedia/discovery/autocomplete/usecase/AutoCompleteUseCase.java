@@ -3,12 +3,15 @@ package com.tokopedia.discovery.autocomplete.usecase;
 import android.text.TextUtils;
 
 import com.tokopedia.discovery.autocomplete.repository.AutoCompleteRepository;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 
@@ -24,6 +27,7 @@ public class AutoCompleteUseCase extends UseCase<List<SearchData>> {
     public static final String DEFAULT_SOURCE = "searchbar";
     public static final String DEFAULT_COUNT = "5";
     private static final String DEVICE_ID = "device_id";
+    private static final String KEY_IS_OFFICIAL = "official";
 
     private final AutoCompleteRepository autoCompleteRepository;
 
@@ -40,7 +44,16 @@ public class AutoCompleteUseCase extends UseCase<List<SearchData>> {
     }
 
     public static RequestParams getParams(String query, String registrationId, String userId) {
+        Map<String, Object> searchParameter = new HashMap<>();
+        searchParameter.put(SearchApiConst.Q, query);
+        return getParams(searchParameter, registrationId, userId);
+    }
+
+    public static RequestParams getParams(Map<String, Object> searchParameter, String registrationId, String userId) {
         RequestParams params = RequestParams.create();
+
+        params.putAll(searchParameter);
+
         params.putString(KEY_DEVICE, DEFAULT_DEVICE);
         params.putString(KEY_SOURCE, DEFAULT_SOURCE);
         params.putString(KEY_COUNT, DEFAULT_COUNT);
@@ -51,7 +64,7 @@ public class AutoCompleteUseCase extends UseCase<List<SearchData>> {
         }
         params.putString(KEY_UNIQUE_ID, uniqueId);
         params.putString(DEVICE_ID, registrationId);
-        params.putString(KEY_QUERY, (query.isEmpty() ? "" : query));
+
         return params;
     }
 }

@@ -1,7 +1,5 @@
 package com.tokopedia.tkpd.tkpdreputation.review.product.domain;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.GetLikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain;
@@ -11,6 +9,7 @@ import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.Da
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.Review;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +29,12 @@ public class ReviewProductGetHelpfulUseCase extends UseCase<DataResponseReviewHe
     public static final String USER_ID = "user_id";
     private ReputationRepository reputationRepository;
     private GetLikeDislikeReviewUseCase getLikeDislikeReviewUseCase;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
     public ReviewProductGetHelpfulUseCase(ReputationRepository reputationRepository,
                                           GetLikeDislikeReviewUseCase getLikeDislikeReviewUseCase,
-                                          UserSession userSession) {
+                                          UserSessionInterface userSession) {
         this.reputationRepository = reputationRepository;
         this.getLikeDislikeReviewUseCase = getLikeDislikeReviewUseCase;
         this.userSession = userSession;

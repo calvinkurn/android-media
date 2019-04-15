@@ -19,7 +19,6 @@ import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.digital.R;
 
-
 import java.util.List;
 
 /**
@@ -86,7 +85,7 @@ public class DigitalWidgetRadioInputView extends LinearLayout {
                 EMPTY_MARGIN_VALUE
         );
 
-        if (inputFieldModel.getName().equals(InputFieldModel.NAME_OPERATOR_ID)) {
+        if (inputFieldModel.getName().equals(InputFieldModel.Companion.getNAME_OPERATOR_ID())) {
             for (int i = 0; i < items.size(); i++) {
                 Operator operator = ((Operator) items.get(i));
                 View radioView = inflater.inflate(R.layout.view_digital_radio_button,null, false);
@@ -94,7 +93,7 @@ public class DigitalWidgetRadioInputView extends LinearLayout {
                 radioButton.setLayoutParams(layoutParams);
                 radioButton.setId(i);
                 radioButton.setText(operator.getName());
-                radioButton.setTextSize(getResources().getDimension(R.dimen.text_size_small) /
+                radioButton.setTextSize(getResources().getDimension(R.dimen.sp_12) /
                         getResources().getDisplayMetrics().density);
                 radioButton.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_600));
                 radioGroup.addView(radioButton);
@@ -105,7 +104,7 @@ public class DigitalWidgetRadioInputView extends LinearLayout {
             actionListener.onItemSelected(operator);
             selectDefaultId(radioGroup, items, inputFieldModel, defaultId);
 //            initCheckRadioButtonBasedOnLastOrder(radioGroup, defaultId);
-        } else if (inputFieldModel.getName().equals(InputFieldModel.NAME_PRODUCT_ID)) {
+        } else if (inputFieldModel.getName().equals(InputFieldModel.Companion.getNAME_PRODUCT_ID())) {
 
         }
 

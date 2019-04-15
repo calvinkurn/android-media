@@ -1,11 +1,10 @@
 package com.tokopedia.logisticanalytics;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.logisticanalytics.ConstantLogisticAnalytics.*;
-
-import javax.inject.Inject;
-
+import com.tokopedia.logisticanalytics.ConstantLogisticAnalytics.EventAction;
+import com.tokopedia.logisticanalytics.ConstantLogisticAnalytics.EventCategory;
+import com.tokopedia.logisticanalytics.ConstantLogisticAnalytics.EventName;
+import com.tokopedia.logisticanalytics.ConstantLogisticAnalytics.Key;
 
 import java.util.Map;
 
@@ -14,8 +13,7 @@ import java.util.Map;
  */
 public class CodAnalytics extends LogisticAnalytics {
 
-    public CodAnalytics(AnalyticTracker analyticTracker) {
-        super(analyticTracker);
+    public CodAnalytics() {
     }
 
     public void eventViewBayarDiTempat() {
@@ -94,15 +92,30 @@ public class CodAnalytics extends LogisticAnalytics {
         );
     }
 
-    public void eventClickBayarDiTempatShipmentFailed(boolean ineligible) {
-        String label;
-        if (ineligible) label = "not success - ineligible";
-        else label = "not success - incomplete";
+    public void eventClickBayarDiTempatShipmentNotSuccessIneligible() {
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_BAYAR_DI_TEMPAT,
-                label
+                ConstantLogisticAnalytics.EventLabel.NOT_SUCCESS_INELIGIBLE
+        );
+    }
+
+    public void eventClickBayarDiTempatShipmentNotSuccessIncomplete() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_BAYAR_DI_TEMPAT,
+                ConstantLogisticAnalytics.EventLabel.NOT_SUCCESS_INCOMPLETE
+        );
+    }
+
+    public void eventClickBayarDiTempatShipmentSuccessEligible() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_BAYAR_DI_TEMPAT,
+                ConstantLogisticAnalytics.EventLabel.SUCCESS_ELIGIBLE
         );
     }
 
@@ -145,5 +158,26 @@ public class CodAnalytics extends LogisticAnalytics {
                 EventAction.CLICK_BAYAR_DI_TEMPAT
         );
     }
+
+    public void eventImpressionEligibleCod() {
+        sendEventCategoryAction(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.IMPRESSION_ELIGIBLE_COD
+        );
+    }
+
+    public void eventEEClickBayarDiTempat(Map<String, Object> data) {
+        sendEnhancedEcommerce(
+                DataLayer.mapOf(
+                        Key.EVENT, EventName.CHECKOUT,
+                        Key.EVENT_CATEGORY, EventCategory.CASH_ON_DELIVERY,
+                        Key.EVENT_ACTION, EventAction.CLICK_BAYAR_DI_TEMPAT,
+                        Key.EVENT_LABEL, "",
+                        Key.E_COMMERCE, data
+                )
+        );
+    }
+
 
 }

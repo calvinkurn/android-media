@@ -10,14 +10,18 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shipping_recommendation.R;
 import com.tokopedia.shipping_recommendation.domain.ShippingParam;
+import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
+import com.tokopedia.shipping_recommendation.domain.shipping.LogisticPromoViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
@@ -61,6 +65,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     private boolean isChooseCourierTraceStopped;
 
     private boolean isDisableCourierPromo;
+    private int mCartPosition = -1;
 
     @Inject
     ShippingDurationContract.Presenter presenter;
@@ -140,14 +145,14 @@ public class ShippingDurationBottomsheet extends BottomSheets
         if (getArguments() != null) {
             RecipientAddressModel recipientAddressModel = getArguments().getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL);
             presenter.setRecipientAddressModel(recipientAddressModel);
-            int cartPosition = getArguments().getInt(ARGUMENT_CART_POSITION);
+            mCartPosition = getArguments().getInt(ARGUMENT_CART_POSITION);
             int selectedServiceId = getArguments().getInt(ARGUMENT_SELECTED_SERVICE_ID);
             int codHistory = getArguments().getInt(ARGUMENT_COD_HISTORY);
             if (recipientAddressModel != null) {
                 mCornerId = recipientAddressModel.isCornerAddress() ? recipientAddressModel.getId() : "";
             }
             isDisableCourierPromo = getArguments().getBoolean(ARGUMENT_DISABLE_PROMO_COURIER);
-            setupRecyclerView(cartPosition);
+            setupRecyclerView(mCartPosition);
             ShipmentDetailData shipmentDetailData = getArguments().getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA);
             ShippingParam shippingParam = getArguments().getParcelable(ARGUMENT_SHIPPING_PARAM);
             List<ShopShipment> shopShipments = getArguments().getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST);
@@ -169,7 +174,6 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     private void setupRecyclerView(int cartPosition) {
         shippingDurationAdapter.setShippingDurationAdapterListener(this);
-        shippingDurationAdapter.setShippingDurationViewModels(presenter.getShippingDurationViewModels());
         shippingDurationAdapter.setCartPosition(cartPosition);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 getContext(), LinearLayoutManager.VERTICAL, false);
@@ -215,9 +219,10 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     @Override
-    public void showData(List<ShippingDurationViewModel> shippingDurationViewModelList) {
+    public void showData(List<ShippingDurationViewModel> shippingDurationViewModelList, LogisticPromoViewModel promoViewModel) {
         shippingDurationAdapter.setHasCourierPromo(checkHasCourierPromo(shippingDurationViewModelList));
-        shippingDurationAdapter.notifyDataSetChanged();
+        shippingDurationAdapter.setShippingDurationViewModels(shippingDurationViewModelList, promoViewModel);
+        shippingDurationAdapter.initiateShowcase();
         updateHeight();
         boolean hasCourierPromo = checkHasCourierPromo(shippingDurationViewModelList);
         if (hasCourierPromo) {
@@ -294,7 +299,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
             shippingDurationBottomsheetListener.onShippingDurationChoosen(
                     shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
                     presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceData.getServiceName(),
-                    flagNeedToSetPinpoint, hasCourierPromo);
+                    flagNeedToSetPinpoint, hasCourierPromo, false);
         }
         dismiss();
     }
@@ -332,4 +337,31 @@ public class ShippingDurationBottomsheet extends BottomSheets
         }
         return false;
     }
+
+    @Override
+    public void onLogisticPromoClicked(LogisticPromoViewModel data) {
+        Dialog tkpdDialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        tkpdDialog.setTitle("Tokopedia Promo");
+        tkpdDialog.setDesc(MethodChecker.fromHtml(data.getDialogMsg()));
+        tkpdDialog.setBtnOk("Lanjutkan");
+        tkpdDialog.setBtnCancel("Batalkan");
+        tkpdDialog.setOnCancelClickListener(view -> tkpdDialog.dismiss());
+        tkpdDialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ShippingDurationViewModel serviceData = shippingDurationAdapter.getRatesDataFromLogisticPromo(data.getServiceId());
+                CourierItemData courierData = presenter.getCourierItemDataById(data.getShipperProductId(), serviceData.getShippingCourierViewModelList());
+                courierData.setLogPromoCode(data.getPromoCode());
+                courierData.setLogPromoMsg(data.getDisableText());
+                shippingDurationBottomsheetListener.onLogisticPromoChosen(
+                        serviceData.getShippingCourierViewModelList(), courierData,
+                        presenter.getRecipientAddressModel(), mCartPosition, data.getServiceId(),
+                        serviceData.getServiceData().getServiceName(), false);
+                tkpdDialog.dismiss();
+                dismiss();
+            }
+        });
+        tkpdDialog.show();
+    }
+
 }

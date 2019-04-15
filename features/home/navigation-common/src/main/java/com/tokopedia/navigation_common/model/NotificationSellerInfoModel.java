@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 public class NotificationSellerInfoModel {
     @SerializedName("notification")
     @Expose
-    private Integer notification;
+    private Integer notification = 0;
 
     public Integer getNotification() {
         return notification;

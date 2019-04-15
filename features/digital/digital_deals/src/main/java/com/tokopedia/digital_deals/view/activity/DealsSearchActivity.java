@@ -20,10 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponentInstance;
@@ -38,6 +35,8 @@ import com.tokopedia.digital_deals.view.presenter.DealsSearchPresenter;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -136,7 +135,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_SEARCH_VOUCHER_OR_OUTLET, text);
         back.setImageResource(R.drawable.ic_action_back);
         DrawableCompat.setTint(back.getDrawable(), ContextCompat.getColor(getActivity(), R.color.toolbar_home));
-        mPresenter.searchSubmitted(text);
+        mPresenter.searchSubmitted();
     }
 
     @Override
@@ -340,7 +339,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                 break;
             case DealsHomeActivity.REQUEST_CODE_LOGIN:
                 if (resultCode == RESULT_OK) {
-                    UserSession userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+                    UserSessionInterface userSession = new UserSession(this);
                     if (userSession.isLoggedIn()) {
                         if (adapterPosition != -1) {
                             if (dealsCategoryAdapter != null)

@@ -1,0 +1,4 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/gf_bg_button_disabled_rounded" android:state_enabled="false" />
+    <item android:drawable="@drawable/gf_bg_button_green_rounded_enabled" android:state_enabled="true" />
+</selector>

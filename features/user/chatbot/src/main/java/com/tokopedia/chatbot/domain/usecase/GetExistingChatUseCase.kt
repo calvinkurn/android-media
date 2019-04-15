@@ -22,7 +22,7 @@ class GetExistingChatUseCase @Inject constructor(
     fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(resources, R.raw.query_get_chat_replies)
         val graphqlRequest = GraphqlRequest(query,
-                GetExistingChatPojo::class.java, requestParams)
+                GetExistingChatPojo::class.java, requestParams, false)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

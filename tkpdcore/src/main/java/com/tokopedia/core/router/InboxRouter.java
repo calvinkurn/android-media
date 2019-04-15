@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.onboarding.FreeReturnOnboardingActivity;
 import com.tokopedia.core.util.RouterUtils;
 
@@ -84,22 +86,32 @@ public class InboxRouter {
     }
 
     public static Intent getCreateResCenterActivityIntent(Context context, String orderID) {
-        Intent intent = RouterUtils.getActivityIntent(context, CREATE_RESCENTER_ACTIVITY);
-        Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_ORDER_ID, orderID);
-        bundle.putInt(InboxRouter.EXTRA_STATE_FLAG_RECEIVED, 1);
-        intent.putExtras(bundle);
+        Intent intent;
+        if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
+            intent = ((TkpdCoreRouter)MainApplication.getAppContext()).getCreateResCenterActivityIntent(context, orderID);
+        } else {
+            intent = RouterUtils.getActivityIntent(context, CREATE_RESCENTER_ACTIVITY);
+            Bundle bundle = new Bundle();
+            bundle.putString(EXTRA_ORDER_ID, orderID);
+            bundle.putInt(InboxRouter.EXTRA_STATE_FLAG_RECEIVED, 1);
+            intent.putExtras(bundle);
+        }
         return intent;
     }
 
     public static Intent getCreateResCenterActivityIntent(Context context, String orderID, int troubleID, int solutionID) {
-        Intent intent = RouterUtils.getActivityIntent(context, CREATE_RESCENTER_ACTIVITY);
-        Bundle bundle = new Bundle();
-        bundle.putString(InboxRouter.EXTRA_ORDER_ID, orderID);
-        bundle.putInt(InboxRouter.EXTRA_STATE_FLAG_RECEIVED, 0);
-        bundle.putInt(InboxRouter.EXTRA_TROUBLE_ID, troubleID);
-        bundle.putInt(InboxRouter.EXTRA_SOLUTION_ID, solutionID);
-        intent.putExtras(bundle);
+        Intent intent;
+        if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
+            intent = ((TkpdCoreRouter)MainApplication.getAppContext()).getCreateResCenterActivityIntent(context, orderID, troubleID, solutionID);
+        } else {
+            intent = RouterUtils.getActivityIntent(context, CREATE_RESCENTER_ACTIVITY);
+            Bundle bundle = new Bundle();
+            bundle.putString(InboxRouter.EXTRA_ORDER_ID, orderID);
+            bundle.putInt(InboxRouter.EXTRA_STATE_FLAG_RECEIVED, 0);
+            bundle.putInt(InboxRouter.EXTRA_TROUBLE_ID, troubleID);
+            bundle.putInt(InboxRouter.EXTRA_SOLUTION_ID, solutionID);
+            intent.putExtras(bundle);
+        }
         return intent;
     }
 

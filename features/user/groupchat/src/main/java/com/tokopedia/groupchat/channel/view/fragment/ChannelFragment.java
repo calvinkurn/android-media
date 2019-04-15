@@ -33,6 +33,7 @@ import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
 import com.tokopedia.groupchat.common.di.component.GroupChatComponent;
+import com.tokopedia.groupchat.room.view.activity.PlayActivity;
 
 import javax.inject.Inject;
 
@@ -220,8 +221,8 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     private void goToChannel(ChannelViewModel channelViewModel, int position) {
         analytics.eventClickGroupChatList(channelViewModel.getChannelUrl());
-        startActivityForResult(GroupChatActivity.getCallingIntent(getActivity(),
-                channelViewModel, position),
+        startActivityForResult(PlayActivity.getCallingIntent(getActivity(),
+                    channelViewModel, position),
                 REQUEST_OPEN_GROUPCHAT);
     }
 

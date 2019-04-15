@@ -1,8 +1,7 @@
 package com.tokopedia.digital.newcart.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.digital.common.router.DigitalModuleRouter;
-import com.tokopedia.digital.common.util.DigitalAnalytics;
+import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.newcart.domain.DigitalDealGetProductsUseCase;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.domain.model.DealProductsViewModel;

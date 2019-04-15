@@ -5,14 +5,20 @@ import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
+import com.tokopedia.home.beranda.data.model.TokopointsDrawer;
+import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
+import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author anggaprasetiyo on 11/12/17.
  */
 
-public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
+public class HeaderViewModel implements Parcelable, TrackedVisitable<HomeTypeFactory> {
 
     public static final Creator<HeaderViewModel> CREATOR = new Creator<HeaderViewModel>() {
         @Override
@@ -27,17 +33,20 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
     };
     private HomeHeaderWalletAction homeHeaderWalletActionData;
     private TokopointHomeDrawerData tokoPointDrawerData;
+    private TokopointsDrawer tokopointsDrawerHomeData;
     private CashBackData cashBackData;
     private boolean pendingTokocashChecked;
     private boolean isWalletError;
     private boolean isTokoPointError;
+    private boolean isUserLogin;
 
     public HeaderViewModel() {
     }
 
     protected HeaderViewModel(Parcel in) {
         homeHeaderWalletActionData = in.readParcelable(HomeHeaderWalletAction.class.getClassLoader());
-        tokoPointDrawerData = in.readParcelable(TokopointHomeDrawerData.class.getClassLoader());
+        tokoPointDrawerData = in.readParcelable(TokopointsDrawer.class.getClassLoader());
+        tokopointsDrawerHomeData = in.readParcelable(TokopointsDrawerHomeData.class.getClassLoader());
         cashBackData = in.readParcelable(CashBackData.class.getClassLoader());
         pendingTokocashChecked = in.readByte() != 0;
         isWalletError = in.readByte() != 0;
@@ -81,7 +90,6 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
         this.pendingTokocashChecked = pendingTokocashChecked;
     }
 
-
     public void setWalletDataSuccess() {
         this.isWalletError = false;
     }
@@ -98,12 +106,58 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
         this.isTokoPointError = false;
     }
 
+    public boolean isUserLogin() {
+        return isUserLogin;
+    }
+
+    public void setUserLogin(boolean userLogin) {
+        isUserLogin = userLogin;
+    }
+
     public void setTokoPointDataError() {
         this.isTokoPointError = true;
     }
 
     public boolean isTokoPointDataError() {
         return isTokoPointError;
+    }
+
+    public TokopointsDrawer getTokopointsDrawerHomeData() {
+        return tokopointsDrawerHomeData;
+    }
+
+    public void setTokopointsDrawerHomeData(TokopointsDrawer tokopointsDrawerHomeData) {
+        this.tokopointsDrawerHomeData = tokopointsDrawerHomeData;
+    }
+
+    @Override
+    public void setTrackingData(Map<String, Object> trackingData) {
+
+    }
+
+    @Override
+    public Map<String, Object> getTrackingData() {
+        return null;
+    }
+
+    @Override
+    public List<Object> getTrackingDataForCombination() {
+        return null;
+    }
+
+    @Override
+    public void setTrackingDataForCombination(List<Object> object) {
+
+    }
+
+    @Override
+    public boolean isTrackingCombined() {
+        return false;
+    }
+
+    @Override
+    public void setTrackingCombined(boolean isCombined) {
+
     }
 
     @Override
@@ -115,6 +169,7 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeParcelable(homeHeaderWalletActionData, i);
         parcel.writeParcelable(tokoPointDrawerData, i);
+        parcel.writeParcelable(tokopointsDrawerHomeData, i);
         parcel.writeParcelable(cashBackData, i);
         parcel.writeByte((byte) (pendingTokocashChecked ? 1 : 0));
         parcel.writeByte((byte) (isWalletError ? 1 : 0));

@@ -101,7 +101,7 @@ public class ProductModule {
 
     @ProductScope
     @Provides
-    public UserSessionInterface provideUserSession(@ApplicationContext Context context) {
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 }

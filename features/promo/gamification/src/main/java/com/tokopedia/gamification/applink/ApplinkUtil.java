@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.applink;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
@@ -31,4 +32,5 @@ public class ApplinkUtil {
             activity.startActivity(intent);
         }
     }
+
 }

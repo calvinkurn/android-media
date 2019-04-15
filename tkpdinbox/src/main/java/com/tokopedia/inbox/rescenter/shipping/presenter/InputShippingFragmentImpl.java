@@ -142,7 +142,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     private void requestShippingList() {
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(viewListener.getActivity().getResources(),
-                R.raw.get_kurir_list), ResKurirListResponse.class);
+                R.raw.get_kurir_list), ResKurirListResponse.class, false);
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
 
@@ -185,7 +185,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     private Observable<ShippingParamsPostModel> getObservableGeneratedHost(ShippingParamsPostModel passData) {
         GraphqlRequest getUploadhostRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(viewListener.getActivity().getResources(),
-                R.raw.get_upload_host), JsonObject.class);
+                R.raw.get_upload_host), JsonObject.class, false);
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(getUploadhostRequest);
         return graphqlUseCase.getExecuteObservable(RequestParams.EMPTY)
@@ -599,7 +599,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     private GraphqlRequest getGraphQLRequest(int queryId, Type
             typeOfT, Map<String, Object> variables) {
         return new GraphqlRequest(GraphqlHelper.loadRawString(viewListener.getActivity().getResources(),
-                queryId), typeOfT, variables);
+                queryId), typeOfT, variables, false);
     }
 
     private GraphQLResponseSubscriber getResponseSubscriber(boolean isVerify) {

@@ -14,7 +14,7 @@ class GetRateEstimationUseCase(private val graphqlUseCase: GraphqlUseCase) : Use
         val query = requestParams.getString(PARAM_QUERY, "")
         requestParams.clearValue(PARAM_QUERY)
 
-        val graphqlRequest = GraphqlRequest(query, RatesEstimationModel.Response::class.java, requestParams.parameters)
+        val graphqlRequest = GraphqlRequest(query, RatesEstimationModel.Response::class.java, requestParams.parameters, false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(null).map {

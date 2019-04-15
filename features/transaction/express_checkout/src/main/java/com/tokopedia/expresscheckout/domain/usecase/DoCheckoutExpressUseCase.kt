@@ -56,7 +56,7 @@ open class DoCheckoutExpressUseCase @Inject constructor(@ApplicationContext val 
 
     override fun execute(requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.mutation_checkout_express), CheckoutExpressGqlResponse::class.java, variables)
+                R.raw.mutation_checkout_express), CheckoutExpressGqlResponse::class.java, variables, false)
         clearRequest()
         addRequest(graphqlRequest)
 

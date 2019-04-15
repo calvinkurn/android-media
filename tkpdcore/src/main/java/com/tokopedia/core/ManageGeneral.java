@@ -154,14 +154,6 @@ public class ManageGeneral extends TkpdActivity implements NotificationReceivedL
     }
 
     @Override
-    protected void onResume() {
-        //[START] this is for set current activity
-        MainApplication.setCurrentActivity(this);
-        //[END] this is for set current activity
-        super.onResume();
-    }
-
-    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
     }

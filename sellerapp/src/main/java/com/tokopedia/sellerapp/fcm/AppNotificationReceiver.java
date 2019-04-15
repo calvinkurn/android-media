@@ -112,7 +112,7 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
     }
 
     @Override
-    public boolean isFromCMNotificationPlatform(Map<String ,String > extra) {
+    public boolean isFromCMNotificationPlatform(Map<String, String> extra) {
         return false;
     }
 
@@ -125,15 +125,5 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
 
     private boolean isApplinkNotification(Bundle data) {
         return !data.getString(Constants.ARG_NOTIFICATION_APPLINK, "").equals("");
-    }
-
-    @Override
-    public void onCampaignManagementNotificationReceived(RemoteMessage message) {
-
-    }
-
-    @Override
-    public boolean isFromCMNotificationPlatform(Map<String, String> extra) {
-        return false;
     }
 }

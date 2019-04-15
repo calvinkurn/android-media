@@ -28,7 +28,8 @@ public class GetDashboardLoadMoreUseCase extends GraphqlUseCase {
         return new GraphqlRequest(GraphqlHelper.loadRawString(
                 context.getResources(),
                 R.raw.query_dashboard_loadmore),
-                DashboardQuery.class, getParam(cursor).getParameters());
+                DashboardQuery.class, getParam(cursor).getParameters(),
+                false);
     }
 
     public static RequestParams getParam(String cursor) {

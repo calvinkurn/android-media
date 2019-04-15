@@ -3,9 +3,9 @@ package com.tokopedia.expresscheckout.domain.mapper.atc
 import com.tokopedia.expresscheckout.data.constant.MAX_QUANTITY
 import com.tokopedia.expresscheckout.data.entity.response.atc.AtcResponse
 import com.tokopedia.expresscheckout.data.entity.response.atc.Message
-import com.tokopedia.expresscheckout.data.entity.response.profile.Address
-import com.tokopedia.expresscheckout.data.entity.response.profile.Payment
-import com.tokopedia.expresscheckout.data.entity.response.profile.Shipment
+import com.tokopedia.transactiondata.entity.response.expresscheckout.profile.Address
+import com.tokopedia.transactiondata.entity.response.expresscheckout.profile.Payment
+import com.tokopedia.transactiondata.entity.response.expresscheckout.profile.Shipment
 import com.tokopedia.expresscheckout.domain.model.HeaderModel
 import com.tokopedia.expresscheckout.domain.model.atc.*
 import com.tokopedia.expresscheckout.domain.model.profile.AddressModel
@@ -70,8 +70,9 @@ open class AtcDomainModelMapper @Inject constructor() : AtcDataMapper {
         dataModel.maxQuantity = atcResponse.data.maxQuantity ?: 0
 
         val messagesModel = HashMap<String, String>()
-        if (atcResponse.data.messages != null) {
-            for (message: Message in atcResponse.data.messages) {
+        val messages = atcResponse.data.messages
+        if (messages != null) {
+            for (message: Message in messages) {
                 messagesModel[message.index] = message.message
             }
         }

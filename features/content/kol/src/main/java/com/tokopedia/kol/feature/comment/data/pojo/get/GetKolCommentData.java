@@ -8,7 +8,7 @@ public class GetKolCommentData {
 
     @SerializedName("get_user_post_comment")
     @Expose
-    private GetUserPostComment getUserPostComment;
+    private GetUserPostComment getUserPostComment = new GetUserPostComment();
 
     public GetKolCommentData(GetUserPostComment getUserPostComment) {
         this.getUserPostComment = getUserPostComment;

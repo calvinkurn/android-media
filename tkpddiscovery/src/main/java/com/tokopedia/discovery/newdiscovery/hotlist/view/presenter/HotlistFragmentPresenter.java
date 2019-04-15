@@ -231,11 +231,6 @@ public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl
     }
 
     @Override
-    public String getString(int resId) {
-        return getView().getString(resId);
-    }
-
-    @Override
     public void detachView() {
         super.detachView();
         addWishlistActionUseCase.unsubscribe();

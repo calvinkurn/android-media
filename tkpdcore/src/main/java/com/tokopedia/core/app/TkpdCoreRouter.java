@@ -185,11 +185,7 @@ public interface TkpdCoreRouter {
 
     Intent getInboxMessageIntent(Context context);
 
-    void sendTrackingGroupChatLeftNavigation();
-
     String getDesktopLinkGroupChat();
-
-    Intent getWithdrawIntent(Context context);
 
     String getStringRemoteConfig(String key);
 
@@ -199,4 +195,8 @@ public interface TkpdCoreRouter {
     Intent getInboxTalkCallingIntent(Context context);
 
     Intent getAutomaticResetPasswordIntent(Context context, String email);
+
+    Intent getCreateResCenterActivityIntent(Context context, String orderId);
+
+    Intent getCreateResCenterActivityIntent(Context context, String orderId, int troubleId, int solutionId);
 }

@@ -20,7 +20,7 @@ class SendRatingReasonUseCase @Inject constructor(val resources: Resources,
     fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(resources, R.raw.mutation_send_rating_reason)
         val graphqlRequest = GraphqlRequest(query,
-                SendReasonRatingPojo::class.java, requestParams)
+                SendReasonRatingPojo::class.java, requestParams, false)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

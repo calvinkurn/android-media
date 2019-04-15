@@ -1,9 +1,9 @@
 package com.tokopedia.merchantvoucher.voucherDetail.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQueryResult
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.UseMerchantVoucherUseCase
+import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -11,18 +11,18 @@ import javax.inject.Inject
  * Created by hendry on 01/10/18.
  */
 class MerchantVoucherDetailPresenter @Inject
-constructor(private val userSession: UserSession,
+constructor(private val userSessionInterface: UserSessionInterface,
             private val useMerchantVoucherUseCase: UseMerchantVoucherUseCase )
     : BaseDaggerPresenter<MerchantVoucherDetailView>(){
 
     var voucherCodeInProgress:String = ""
 
-    fun isLogin() = (userSession.isLoggedIn)
+    fun isLogin() = (userSessionInterface.isLoggedIn)
     fun isMyShop(shopId: String?) :Boolean{
         if (shopId == null) {
             return false
         }
-        return (userSession.shopId == shopId)
+        return (userSessionInterface.shopId == shopId)
     }
 
     fun getVoucherDetail(voucherId: Int) {

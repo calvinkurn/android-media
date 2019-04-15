@@ -3,7 +3,6 @@ package com.tokopedia.loginphone.common.di;
 import android.content.Context;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
@@ -16,6 +15,8 @@ import com.tokopedia.loginphone.common.network.TokoCashErrorResponse;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -31,8 +32,8 @@ public class LoginRegisterPhoneModule {
 
     @LoginRegisterPhoneScope
     @Provides
-    LoginPhoneNumberAnalytics provideLoginAnalytics(@ApplicationContext Context context) {
-        return new LoginPhoneNumberAnalytics(((AbstractionRouter) context).getAnalyticTracker());
+    LoginPhoneNumberAnalytics provideLoginAnalytics() {
+        return new LoginPhoneNumberAnalytics();
     }
 
     @LoginRegisterPhoneScope
@@ -72,4 +73,9 @@ public class LoginRegisterPhoneModule {
         return retrofit.create(LoginRegisterPhoneApi.class);
     }
 
+    @LoginRegisterPhoneScope
+    @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
 }

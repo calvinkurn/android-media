@@ -16,6 +16,7 @@ interface LoginEmailPhoneContract : LoginContract {
         fun onEmailExist(email: String)
         fun showNotRegisteredEmailDialog(email: String)
         fun onBackPressed()
+        fun trackSuccessValidate()
     }
 
     interface Presenter : LoginContract.Presenter {

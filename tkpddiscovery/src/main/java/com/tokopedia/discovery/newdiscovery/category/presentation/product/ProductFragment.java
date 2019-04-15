@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.category.presentation.product;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,10 +17,15 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -44,12 +50,12 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapte
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragment;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -62,6 +68,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
@@ -357,22 +364,14 @@ public class ProductFragment extends BrowseSectionFragment
     }
 
     private void loadDataProduct(final int startRow) {
-        SearchParameter searchParameter = new SearchParameter();
-        searchParameter.setUniqueID(generateUniqueId());
-        searchParameter.setUserID(generateUserId());
-        searchParameter.setDepartmentId(productViewModel.getCategoryHeaderModel().getDepartementId());
-        searchParameter.setStartRow(startRow);
-        searchParameter.setSource(BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
+        SearchParameter searchParameter = generateSearchParameter(startRow, productViewModel.getCategoryHeaderModel().getDepartementId());
+
         presenter.loadDataProduct(searchParameter, productViewModel.getCategoryHeaderModel());
     }
 
     private void loadMoreProduct(final int startRow) {
-        SearchParameter searchParameter = new SearchParameter();
-        searchParameter.setUniqueID(generateUniqueId());
-        searchParameter.setUserID(generateUserId());
-        searchParameter.setDepartmentId(productViewModel.getCategoryHeaderModel().getDepartementId());
-        searchParameter.setStartRow(startRow);
-        searchParameter.setSource(BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
+        SearchParameter searchParameter = generateSearchParameter(startRow, productViewModel.getCategoryHeaderModel().getDepartementId());
+
         isLoadingData = true;
         presenter.loadMore(searchParameter, new ProductPresenter.LoadMoreListener() {
             @Override
@@ -402,6 +401,17 @@ public class ProductFragment extends BrowseSectionFragment
         });
     }
 
+    private SearchParameter generateSearchParameter(int startRow, String departementID) {
+        SearchParameter searchParameter = new SearchParameter();
+        searchParameter.set(SearchApiConst.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
+        searchParameter.set(SearchApiConst.SC, departementID);
+        searchParameter.set(SearchApiConst.UNIQUE_ID, generateUniqueId());
+        searchParameter.set(SearchApiConst.USER_ID, generateUserId());
+        searchParameter.set(SearchApiConst.START, String.valueOf(startRow));
+
+        return searchParameter;
+    }
+
     @Override
     public void showNetworkError(final int startRow) {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
@@ -413,7 +423,7 @@ public class ProductFragment extends BrowseSectionFragment
     }
 
     private String generateUserId() {
-        return userSession.isLoggedIn() ? userSession.getUserId() : null;
+        return userSession.isLoggedIn() ? userSession.getUserId() : "0";
     }
 
     private String generateUniqueId() {
@@ -455,7 +465,7 @@ public class ProductFragment extends BrowseSectionFragment
                     case 3:
                         String currentCategoryId = productViewModel.getCategoryHeaderModel().getDepartementId();
                         String currentRootCategoryId = productViewModel.getCategoryHeaderModel().getRootCategoryId();
-                        UnifyTracking.eventBottomCategoryNavigation(getActivity(),currentRootCategoryId, currentCategoryId);
+                        eventBottomCategoryNavigation(currentRootCategoryId, currentCategoryId);
                         Intent intent = CategoryNavigationActivity.createInstance(getActivity(), productViewModel.getCategoryHeaderModel().getDepartementId());
                         startActivityForResult(intent, CategoryNavigationActivity.DESTROY_BROWSE_PARENT);
                         getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, android.R.anim.fade_out);
@@ -465,6 +475,15 @@ public class ProductFragment extends BrowseSectionFragment
                 }
             }
         };
+    }
+
+    private void eventBottomCategoryNavigation(String parentCat, String categoryId){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.BOTTOM_NAVIGATION_CATEGORY,
+                categoryId
+        ).getEvent());
     }
 
     @Override
@@ -561,12 +580,21 @@ public class ProductFragment extends BrowseSectionFragment
             }
         }
 
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
+        Intent intent = getProductIntent(data.id, data.getTrackerAttribution(), data.getTrackerListName());
         intent.putExtra(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+    }
+
+    private Intent getProductIntent(String productId, String trackerAttribution, String trackerListName){
+        if (getContext() != null) {
+            Bundle bundle = new Bundle();
+            bundle.putString("tracker_attribution", trackerAttribution);
+            bundle.putString("tracker_list_name", trackerListName);
+            Intent intent = RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+            return intent;
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -711,15 +739,7 @@ public class ProductFragment extends BrowseSectionFragment
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        com.tokopedia.core.var.ProductItem data = new com.tokopedia.core.var.ProductItem();
-        data.setId(product.getId());
-        data.setName(product.getName());
-        data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_ecs());
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
+        Intent intent = getProductIntent(product.getId(), "", "");
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
         TopAdsGtmTracker.eventCategoryProductClick(getContext(), "", product, position);
     }
@@ -737,7 +757,7 @@ public class ProductFragment extends BrowseSectionFragment
 
     @Override
     public void onCategoryClick(ChildCategoryModel child) {
-        UnifyTracking.eventLevelCategory(getActivity(),productViewModel.getCategoryHeaderModel().getDepartementId()
+        eventLevelCategory(productViewModel.getCategoryHeaderModel().getDepartementId()
                 , child.getCategoryId());
         CategoryActivity.moveTo(
                 getActivity(),
@@ -750,7 +770,7 @@ public class ProductFragment extends BrowseSectionFragment
 
     @Override
     public void onCategoryRevampClick(ChildCategoryModel child) {
-        UnifyTracking.eventLevelCategory(getActivity(),productViewModel.getCategoryHeaderModel().getDepartementId(),
+        eventLevelCategory(productViewModel.getCategoryHeaderModel().getDepartementId(),
                 child.getCategoryId());
         CategoryActivity.moveTo(
                 getActivity(),
@@ -759,6 +779,14 @@ public class ProductFragment extends BrowseSectionFragment
                 true,
                 ""
         );
+    }
+
+    public void eventLevelCategory(String parentCat, String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.CATEGORY_LEVEL,
+                label);
     }
 
     @Override

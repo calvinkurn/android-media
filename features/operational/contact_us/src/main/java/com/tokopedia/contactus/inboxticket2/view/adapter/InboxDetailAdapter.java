@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem;
@@ -148,7 +150,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 if (searchMode) {
                     tvComment.setText(utils.getHighlightText(searchText, item.getMessagePlaintext()));
                 } else {
-                    tvComment.setText(item.getMessagePlaintext());
+                    tvComment.setText(MethodChecker.fromHtml(item.getMessage()));
                 }
                 tvComment.setVisibility(View.VISIBLE);
                 if (position == commentList.size() - 1 && needAttachment) {
@@ -162,7 +164,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                     rvAttachedImage.setVisibility(View.VISIBLE);
             } else {
                 tvAttachmentHint.setVisibility(View.GONE);
-                tvDateRecent.setText(item.getMessagePlaintext());
+                tvDateRecent.setText(MethodChecker.fromHtml(item.getMessage()));
                 tvComment.setText("");
                 tvCollapsedTime.setText(item.getShortTime());
                 tvCollapsedTime.setVisibility(View.VISIBLE);

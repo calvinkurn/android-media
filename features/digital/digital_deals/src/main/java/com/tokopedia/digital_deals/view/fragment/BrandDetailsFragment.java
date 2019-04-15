@@ -26,10 +26,8 @@ import android.widget.ProgressBar;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
@@ -43,6 +41,8 @@ import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -302,7 +302,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
                 break;
             case DealsHomeActivity.REQUEST_CODE_LOGIN:
                 if (resultCode == RESULT_OK) {
-                    UserSession userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+                    UserSessionInterface userSession = new UserSession(getActivity());
                     if (userSession.isLoggedIn()) {
                         if (adapterPosition != -1) {
                             if (dealsAdapter != null)

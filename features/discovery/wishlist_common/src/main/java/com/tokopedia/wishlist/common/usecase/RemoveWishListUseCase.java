@@ -42,7 +42,7 @@ public class RemoveWishListUseCase {
                 GraphqlHelper.loadRawString(context.getResources(),
                         R.raw.query_remove_wishlist),
                 RemoveWishListResponse.class,
-                variables, OPERATION_NAME);
+                variables, OPERATION_NAME, false);
 
         graphqlUseCase.addRequest(graphqlRequest);
 

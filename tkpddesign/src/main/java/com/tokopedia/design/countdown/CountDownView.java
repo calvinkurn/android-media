@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.AttrRes;
@@ -40,6 +41,7 @@ public class CountDownView extends FrameLayout {
     private int hour;
     private int minute;
     private int second;
+    private boolean isUnify;
 
     private Handler refreshCounterHandler;
     private Runnable runnableRefreshCounter;
@@ -61,7 +63,12 @@ public class CountDownView extends FrameLayout {
 
     private void init(Context context, AttributeSet attrs) {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Jakarta"));
-        rootView = inflate(context, R.layout.widget_count_down_view, this);
+        if (isUnify) {
+            rootView = inflate(context, R.layout.widget_count_down_view_unify, this);
+        } else {
+            rootView = inflate(context, R.layout.widget_count_down_view, this);
+        }
+
         hourView = (TextView) rootView.findViewById(R.id.hourView);
         minuteView = (TextView) rootView.findViewById(R.id.minuteView);
         secondView = (TextView) rootView.findViewById(R.id.secondView);
@@ -92,7 +99,7 @@ public class CountDownView extends FrameLayout {
 
     public void setup(final long serverTimeOffset, final Date expiredTime,
                       final CountDownListener listener) {
-        Date serverTime = new Date();
+        Date serverTime = new Date(System.currentTimeMillis());
         serverTime.setTime(
                 serverTime.getTime() + serverTimeOffset
         );
@@ -120,6 +127,26 @@ public class CountDownView extends FrameLayout {
             }
         };
         startAutoRefreshCounter();
+    }
+
+
+    public void setupTimerFromRemianingMillis(final long expiredTime,
+                                              final CountDownListener listener) {
+        new CountDownTimer(expiredTime, REFRESH_DELAY_MS) {
+            @Override
+            public void onTick(long l) {
+                int seconds = (int) (l / 1000) % 60;
+                int minutes = (int) ((l / (1000 * 60)) % 60);
+                int hours = (int) ((l / (1000 * 60 * 60)) % 24);
+                setTime(hours, minutes, seconds);
+            }
+
+            @Override
+            public void onFinish() {
+                setTime(0, 0, 0);
+                handleExpiredTime(listener);
+            }
+        }.start();
     }
 
     private void handleExpiredTime(CountDownListener listener) {
@@ -195,6 +222,14 @@ public class CountDownView extends FrameLayout {
 
     public String getCurrentCountDown() {
         return String.format("%s:%s:%s", hourView.getText(), minuteView.getText(), secondView.getText());
+    }
+
+    public boolean isUnify() {
+        return isUnify;
+    }
+
+    public void setUnify(boolean unify) {
+        isUnify = unify;
     }
 
     private static class TimeDiffModel {

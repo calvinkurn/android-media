@@ -28,6 +28,8 @@ public class GetPeopleAddressUseCase extends UseCase<PeopleAddressModel> {
     private static final String PARAM_PAGE = "page";
     private static final String PARAM_QUERY = "query";
 
+    private static final String VALUE_ASCENDING = "1"; // Default value, never change in client
+
     private final PeopleAddressRepository peopleAddressRepository;
     private final UserSessionInterface userSessionInterface;
 
@@ -44,11 +46,11 @@ public class GetPeopleAddressUseCase extends UseCase<PeopleAddressModel> {
         return Observable.zip(oldAddressRx, addressWithCornerRx, new PeopleAddressWithCornerMapper());
     }
 
-    public RequestParams getRequestParams(final int order, final String query, final int page) {
+    public RequestParams getRequestParams(final String query, final int page) {
 
         // Get people address list from api requires parameter of order, keyword, and page
         final HashMap<String, String> params = new HashMap<String, String>() {{
-            put(PARAM_ORDER_BY, String.valueOf(order));
+            put(PARAM_ORDER_BY, VALUE_ASCENDING);
             put(PARAM_QUERY, query);
             put(PARAM_PAGE, String.valueOf(page));
         }};

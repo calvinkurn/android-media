@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.data.mapper;
 
 import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedGqlResponse;
+import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse;
 import com.tokopedia.home.beranda.domain.gql.feed.Product;
 import com.tokopedia.home.beranda.domain.gql.feed.RecommendationProduct;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedListModel;
@@ -20,7 +20,7 @@ public class HomeFeedMapper implements Func1<GraphqlResponse, HomeFeedListModel>
 
     @Override
     public HomeFeedListModel call(GraphqlResponse graphqlResponse) {
-        HomeFeedGqlResponse gqlResponse = graphqlResponse.getData(HomeFeedGqlResponse.class);
+        HomeFeedContentGqlResponse gqlResponse = graphqlResponse.getData(HomeFeedContentGqlResponse.class);
         RecommendationProduct recommendationProduct
                 = gqlResponse.getHomeRecommendation().getRecommendationProduct();
         return convertToHomeFeedListModel(recommendationProduct);
@@ -46,8 +46,12 @@ public class HomeFeedMapper implements Func1<GraphqlResponse, HomeFeedListModel>
                     product.getRecommendationType(),
                     product.getImageUrl(),
                     product.getPrice(),
+                    product.getRating(),
+                    product.getCountReview(),
                     product.getClickUrl(),
                     product.getTrackerImageUrl(),
+                    product.getSlashedPrice(),
+                    product.getDiscountPercentage(),
                     product.getPriceInt(),
                     product.getIsTopads(),
                     (position+1)

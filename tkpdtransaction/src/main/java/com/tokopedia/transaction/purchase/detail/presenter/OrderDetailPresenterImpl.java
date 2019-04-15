@@ -341,7 +341,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.buy_again), ResponseBuyAgain.class, variables);
+                R.raw.buy_again), ResponseBuyAgain.class, variables, false);
 
         buyAgainUseCase.clearRequest();
         buyAgainUseCase.addRequest(graphqlRequest);

@@ -51,7 +51,7 @@ public class DealsSearchContract {
 
         void searchTextChanged(String searchText);
 
-        void searchSubmitted(String searchText);
+        void searchSubmitted();
 
         boolean onItemClick(int id);
 

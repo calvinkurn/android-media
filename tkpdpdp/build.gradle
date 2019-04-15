@@ -53,6 +53,7 @@ dependencies {
     implementation project(rootProject.ext.features.gallery)
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.tradeIn)
     implementation project(rootProject.ext.features.expressCheckoutCommon)
 
     implementation project(rootProject.ext.libraries.abstraction)
@@ -65,6 +66,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
@@ -75,8 +77,8 @@ dependencies {
     implementation rootProject.ext.analyticsDependencies.appsflyer
 
     implementation rootProject.ext.playServicesDependencies.analytics
-    implementation rootProject.ext.playServicesDependencies.appIndexing
-    implementation rootProject.ext.playServicesDependencies.perfMon
+    implementation rootProject.ext.firebase.appIndexing
+    implementation rootProject.ext.firebase.performance
     implementation rootProject.ext.playServicesDependencies.maps
 
     implementation rootProject.ext.viewDependencies.appIntro
@@ -116,6 +118,8 @@ dependencies {
     }
 
     implementation project(rootProject.ext.libraries.core_legacy)
+    
+    implementation project(rootProject.ext.libraries.track)
 }
 
 apply from: '../publish_local.gradle'

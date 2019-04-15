@@ -35,8 +35,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.graphql)
 
-    implementation rootProject.ext.playServicesDependencies.firebaseAnalytics
-    implementation rootProject.ext.playServicesDependencies.perfMon
+    implementation rootProject.ext.firebase.core
+    implementation rootProject.ext.firebase.performance
 
     implementation rootProject.ext.miscDependencies.multiDex
 

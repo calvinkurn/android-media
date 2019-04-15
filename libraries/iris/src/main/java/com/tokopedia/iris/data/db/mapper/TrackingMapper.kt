@@ -1,6 +1,5 @@
 package com.tokopedia.iris.data.db.mapper
 
-import android.util.Log
 import com.tokopedia.iris.KEY_CONTAINER
 import com.tokopedia.iris.KEY_EVENT
 import com.tokopedia.iris.data.db.table.Tracking
@@ -36,7 +35,6 @@ class TrackingMapper {
     fun transformListEvent(tracking: List<Tracking>) : String {
         val result = JSONObject()
         val data = JSONArray()
-        val row = JSONObject()
         var event = JSONArray()
         for (i in tracking.indices) {
             val item = tracking[i]
@@ -47,8 +45,9 @@ class TrackingMapper {
                 } catch (e: IndexOutOfBoundsException) {
                     null
                 }
-                val userId : String = nextItem?.userId ?: ""
-                if (item.userId != userId) {
+                val nextUserId : String = nextItem?.userId ?: ""
+                if (item.userId != nextUserId || i == tracking.size - 1) {
+                    val row = JSONObject()
                     row.put("device_id", item.deviceId)
                     row.put("user_id", item.userId)
                     if (event.length() > 0) {

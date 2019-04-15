@@ -17,6 +17,7 @@
     <string name="kol_delete_post_desc">Setelah dihapus, kamu tidak akan bisa melihat post ini lagi.</string>
     <string name="kol_post_deleted">Post berhasil dihapus</string>
     <string name="kol_error_delete">Terjadi kesalahan saat menghapus post.</string>
+    <string name="kol_edit_post">Edit Post</string>
 
     <!--Kol Comment-->
     <string name="title_comment_kol">Comments</string>

@@ -16,7 +16,7 @@ import rx.Subscriber;
  */
 
 public class FlightCancellationListPresenter extends BaseDaggerPresenter<FlightCancellationListContract.View>
-        implements FlightCancellationListContract.Presenter{
+        implements FlightCancellationListContract.Presenter {
 
     private FlightCancellationGetCancellationListUseCase flightCancellationGetCancellationListUseCase;
 
@@ -31,20 +31,20 @@ public class FlightCancellationListPresenter extends BaseDaggerPresenter<FlightC
                 flightCancellationGetCancellationListUseCase.createRequestParams(
                         getView().getInvoiceId()
                 ),
-                new Subscriber<List<FlightCancellationListViewModel>>() {
+                new Subscriber<List<? extends FlightCancellationListViewModel>>() {
                     @Override
                     public void onCompleted() {
 
                     }
 
                     @Override
-                    public void onError(Throwable throwable) {
-                        throwable.printStackTrace();
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
                     }
 
                     @Override
-                    public void onNext(List<FlightCancellationListViewModel> flightCancellationListViewModels) {
-                        getView().setFlightCancellationList(flightCancellationListViewModels);
+                    public void onNext(List<? extends FlightCancellationListViewModel> flightCancellationListViewModels) {
+                        getView().setFlightCancellationList((List<FlightCancellationListViewModel>) flightCancellationListViewModels);
                         getView().renderList();
                     }
                 });

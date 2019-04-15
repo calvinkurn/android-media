@@ -11,7 +11,7 @@ public class ProductPreorder {
 
     @SerializedName("duration_text")
     @Expose
-    private String durationText;
+    private String durationText = "";
     @SerializedName("duration_day")
     @Expose
     private int durationDay;
@@ -20,7 +20,7 @@ public class ProductPreorder {
     private int durationUnitCode;
     @SerializedName("duration_unit_text")
     @Expose
-    private String durationUnitText;
+    private String durationUnitText = "";
     @SerializedName("duration_value")
     @Expose
     private int durationValue;

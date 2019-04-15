@@ -33,8 +33,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.design)
-
-    implementation rootProject.ext.playServicesDependencies.firebase
+    implementation project(rootProject.ext.libraries.userSession)
+    
+    implementation rootProject.ext.firebase.messaging
 
     implementation rootProject.ext.networkDependencies.glide
 

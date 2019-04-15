@@ -1,7 +1,6 @@
 package com.tokopedia.payment.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.payment.fingerprint.data.model.ResponsePaymentFingerprint;
 import com.tokopedia.payment.fingerprint.domain.GetPostDataOtpUseCase;
 import com.tokopedia.payment.fingerprint.domain.PaymentFingerprintUseCase;
@@ -9,6 +8,7 @@ import com.tokopedia.payment.fingerprint.domain.SaveFingerPrintUseCase;
 import com.tokopedia.payment.fingerprint.domain.SavePublicKeyUseCase;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.utils.ErrorNetMessage;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -26,12 +26,12 @@ public class TopPayPresenter extends BaseDaggerPresenter<TopPayContract.View> im
     private SaveFingerPrintUseCase saveFingerPrintUseCase;
     private PaymentFingerprintUseCase paymentFingerprintUseCase;
     private GetPostDataOtpUseCase getPostDataOtpUseCase;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     public TopPayPresenter(SaveFingerPrintUseCase saveFingerPrintUseCase,
                            SavePublicKeyUseCase savePublicKeyUseCase,
                            PaymentFingerprintUseCase paymentFingerprintUseCase,
-                           GetPostDataOtpUseCase getPostDataOtpUseCase, UserSession userSession) {
+                           GetPostDataOtpUseCase getPostDataOtpUseCase, UserSessionInterface userSession) {
         this.saveFingerPrintUseCase = saveFingerPrintUseCase;
         this.paymentFingerprintUseCase = paymentFingerprintUseCase;
         this.getPostDataOtpUseCase = getPostDataOtpUseCase;

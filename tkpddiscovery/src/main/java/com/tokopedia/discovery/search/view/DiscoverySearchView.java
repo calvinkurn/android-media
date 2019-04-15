@@ -33,13 +33,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.design.component.EditTextCompat;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AnimationUtil;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -98,6 +100,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private boolean finishOnClose = false;
     private SavedState mSavedState;
     private boolean submit = false;
+    private SearchParameter searchParameter = new SearchParameter();
 
     private boolean ellipsize = false;
 
@@ -311,6 +314,9 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
                         copyText = false;
                     }
                     mUserQuery = keyword;
+
+                    searchParameter.setSearchQuery(keyword);
+
                     if (queryListener != null) {
                         queryListener.onQueryChanged(keyword);
                     }
@@ -457,14 +463,14 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mOldQueryText = newText.toString();
 
         if (mSuggestionFragment != null) {
-            mSuggestionFragment.search(newText.toString());
+            mSuggestionFragment.search(searchParameter);
         }
     }
 
     private void onSubmitQuery() {
         CharSequence query = mSearchSrcTextView.getText();
         if (query != null && TextUtils.getTrimmedLength(query) > 0) {
-            if (mOnQueryChangeListener == null || !mOnQueryChangeListener.onQueryTextSubmit(query.toString())) {
+            if (mOnQueryChangeListener == null || !mOnQueryChangeListener.onQueryTextSubmit(searchParameter)) {
                 closeSearch();
                 mSearchSrcTextView.setText(null);
             }
@@ -686,6 +692,17 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         showSearch(true);
     }
 
+    public void showSearch(boolean finishOnClose, boolean animate, SearchParameter searchParameter) {
+        if(mSuggestionFragment != null) {
+            mSuggestionFragment.setSearchParameter(this.searchParameter);
+        }
+
+        this.searchParameter = searchParameter;
+
+        setLastQuery(searchParameter.getSearchQuery());
+        showSearch(finishOnClose, animate);
+    }
+
     public void showSearch(boolean finishOnClose, boolean animate) {
         this.finishOnClose = finishOnClose;
         showSearch(animate);
@@ -719,21 +736,29 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             return;
         }
 
-        //Request Focus
-        mSearchSrcTextView.setText(lastQuery);
-        mSearchSrcTextView.requestFocus();
-        mSearchSrcTextView.setSelection(mSearchSrcTextView.getText().length());
+        textViewRequestFocus();
+
         if (animate) {
             setVisibleWithAnimation();
-
         } else {
-            mSearchLayout.setVisibility(VISIBLE);
-            if (mSearchViewListener != null) {
-                mSearchViewListener.onSearchViewShown();
-            }
+            setVisibleWithoutAnimation();
         }
 
         mIsSearchOpen = true;
+    }
+
+    private void textViewRequestFocus() {
+        mSearchSrcTextView.setText(lastQuery);
+        searchTextViewRequestFocus();
+        searchTextViewSetCursorSelectionAtTextEnd();
+    }
+
+    public void searchTextViewRequestFocus() {
+        mSearchSrcTextView.requestFocus();
+    }
+
+    public void searchTextViewSetCursorSelectionAtTextEnd() {
+        mSearchSrcTextView.setSelection(mSearchSrcTextView.getText().length());
     }
 
     public void showSearch(boolean animate, int tab) {
@@ -783,6 +808,13 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         }
     }
 
+    private void setVisibleWithoutAnimation() {
+        mSearchLayout.setVisibility(VISIBLE);
+        if (mSearchViewListener != null) {
+            mSearchViewListener.onSearchViewShown();
+        }
+    }
+
     public SearchMainFragment getSuggestionFragment() {
         return mSuggestionFragment;
     }
@@ -813,6 +845,10 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
     public String getLastQuery() {
         return lastQuery;
+    }
+
+    public boolean getIsOfficial() {
+        return searchParameter.getBoolean(SearchApiConst.OFFICIAL);
     }
 
     /**
@@ -955,7 +991,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
          * @return true if the query has been handled by the listener, false to let the
          * SearchView perform the default action.
          */
-        boolean onQueryTextSubmit(String query);
+        boolean onQueryTextSubmit(SearchParameter searchParameter);
 
         /**
          * Called when the query text is changed by the user.

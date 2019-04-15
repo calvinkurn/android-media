@@ -18,19 +18,19 @@
             android:id="@+id/dummy_view_1"
             android:layout_width="@dimen/dp_100"
             android:layout_height="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/keyline_1"
-            android:layout_marginRight="@dimen/keyline_1"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             android:background="@color/grey_200"
-            android:textSize="@dimen/fontvs" />
+            android:textSize="@dimen/sp_12" />
 
         <View
             android:id="@+id/dummy_view_2"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_30"
             android:layout_below="@id/dummy_view_1"
-            android:layout_marginLeft="@dimen/keyline_1"
+            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_10"
-            android:layout_marginRight="@dimen/keyline_1"
+            android:layout_marginRight="@dimen/dp_16"
             android:background="@color/grey_200" />
 
     </RelativeLayout>

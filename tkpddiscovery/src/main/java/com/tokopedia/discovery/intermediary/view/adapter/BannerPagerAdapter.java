@@ -2,21 +2,19 @@ package com.tokopedia.discovery.intermediary.view.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.view.PagerAdapter;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.util.DeepLinkChecker;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.intermediary.domain.model.BannerModel;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +31,7 @@ public class BannerPagerAdapter extends PagerAdapter {
     private OnPromoClickListener listener;
 
     public interface OnPromoClickListener {
-        void onPromoClick(String applink, String url);
+        void onPromoClick(int pos, String categoryName, String name, String applink, String url,String imgUrl);
     }
 
     public BannerPagerAdapter(Context context,
@@ -60,15 +58,21 @@ public class BannerPagerAdapter extends PagerAdapter {
         View view = inflater.inflate(R.layout.slider_intermediary, container, false);
 
         final ImageView bannerImage = (ImageView) view.findViewById(R.id.image);
-        if (bannerList.get(position).getUrl()!=null && bannerList.get(position).getUrl().length()>0) {
+        if (bannerList.get(position).getUrl() != null && bannerList.get(position).getUrl().length() > 0) {
             bannerImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    UnifyTracking.eventBannerClickCategory(view.getContext(), categoryId,bannerList.get(position).getUrl());
+                    eventBannerClickCategory(categoryId, bannerList.get(position).getUrl());
                     if (listener != null) {
+                        BannerModel model = bannerList.get(position);
+                        String categoryName =model.getCategoryName().toLowerCase();
                         listener.onPromoClick(
-                                bannerList.get(position).getApplink(),
-                                bannerList.get(position).getUrl()
+                                model.getPosition(),
+                                categoryName,
+                                model.getTitle(),
+                                model.getApplink(),
+                                model.getUrl(),
+                                model.getImageUrl()
                         );
                     }
                 }
@@ -80,6 +84,14 @@ public class BannerPagerAdapter extends PagerAdapter {
         );
         container.addView(view);
         return view;
+    }
+
+    private void eventBannerClickCategory(String parentCat, String bannerName){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.BANNER_CLICK,
+                bannerName);
     }
 
     @Override

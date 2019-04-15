@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_view"
     android:layout_width="match_parent"
     android:layout_height="130dp"
-    android:orientation="vertical"
     android:clickable="true"
     android:focusable="true"
-    android:foreground="?android:attr/selectableItemBackground">
+    android:foreground="?android:attr/selectableItemBackground"
+    android:orientation="vertical">
 
     <com.tokopedia.feedplus.view.customview.RoundedCornerImageView
         android:id="@+id/product_image"
         android:layout_width="@dimen/feed_detail_product"
         android:layout_height="@dimen/feed_detail_product"
         android:layout_marginLeft="@dimen/dp_10"
-        android:layout_marginRight="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
         android:background="@drawable/feed_container_rounded_corners_border"
         tools:src="@drawable/product_no_photo_default" />
 
@@ -34,16 +34,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_10"
-        android:layout_toEndOf="@+id/product_image"
-        android:layout_toLeftOf="@id/wishlist"
-        android:layout_toRightOf="@+id/product_image"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_5"
         android:layout_toStartOf="@id/wishlist"
+        android:layout_toLeftOf="@id/wishlist"
+        android:layout_toEndOf="@+id/product_image"
+        android:layout_toRightOf="@+id/product_image"
         android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
         android:lineSpacingExtra="4sp"
-        android:layout_marginBottom="@dimen/dp_5"
         android:maxLines="2"
         android:textColor="@color/black_70"
         tools:text="IKEA (R) Ringsjon - Tirai kamar  wadawdasd" />
@@ -81,9 +82,10 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="25dp"
+        android:layout_height="wrap_content"
         android:layout_above="@id/separator"
-        android:layout_alignBottom="@id/product_image"
+        android:layout_marginBottom="@dimen/dp_4"
+        android:layout_toEndOf="@id/product_image"
         android:layout_toRightOf="@id/product_image"
         android:gravity="center_vertical">
 
@@ -91,8 +93,10 @@
             android:id="@+id/cashback"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
+            android:layout_marginEnd="@dimen/dp_5"
             android:layout_marginRight="@dimen/dp_5"
             android:background="@drawable/green_button_rounded"
             android:padding="@dimen/dp_5"
@@ -106,7 +110,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:layout_marginEnd="@dimen/dp_5"
             android:layout_marginRight="@dimen/dp_5"
+            android:layout_toEndOf="@id/cashback"
             android:layout_toRightOf="@id/cashback"
             android:background="@drawable/cards_ui"
             android:padding="@dimen/dp_5"
@@ -118,7 +124,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:layout_marginEnd="@dimen/dp_5"
             android:layout_marginRight="@dimen/dp_5"
+            android:layout_toEndOf="@+id/wholesale"
             android:layout_toRightOf="@+id/wholesale"
             android:background="@drawable/cards_ui"
             android:padding="@dimen/dp_5"
@@ -131,6 +139,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/icon_prod_size"
             android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/preorder"
             android:layout_toRightOf="@id/preorder"
             app:srcCompat="@drawable/ic_badge_free_return" />
 

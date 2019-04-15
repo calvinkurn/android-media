@@ -381,9 +381,8 @@
     <string name="flight_cancellation_dialog_back_button_text">Kembali</string>
     <string name="flight_cancellation_dialog_refundable_description"><![CDATA[Dengan melakukan pembatalan tiket pesawat, nominal dana yang dikembalikan akan disesuaikan dengan kebijakan maskapai.]]></string>
     <string name="flight_cancellation_should_choose_at_least_one_passenger_error">Harap pilih setidaknya satu penumpang untuk di batalkan.</string>
-    <string name="flight_cancellation_review_dialog_success_title">Pengajuan Pembatalan Pesanan Telah Diterima</string>
+    <string name="flight_cancellation_review_dialog_success_title">Pengajuan Pembatalan Telah Diterima</string>
     <string name="flight_cancellation_review_dialog_non_refundable_success_description">Pembatalan pesanan Anda akan segera diproses.</string>
-    <string name="flight_cancellation_review_dialog_refundable_success_description"><![CDATA[Pembatalan pesanan Anda akan segera diproses. Pengembalian dana akan membutuhkan waktu <b>7 hingga 30 hari kerja</b> sesuai dengan ketentuan yang berlaku.]]></string>
     <string name="flight_label_additional_data">Data Pendukung</string>
     <string name="flight_cancellation_review_total_refund_label">Total Refund</string>
     <string name="flight_cancellation_terms_and_condition_button_text">Selengkapnya</string>

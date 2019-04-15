@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         >
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none">
@@ -98,6 +98,8 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_1"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:layout_marginEnd="@dimen/dp_16"
                         android:background="@color/grey_300" />
 
                     <LinearLayout
@@ -117,6 +119,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/lihat_text"
+                            android:textSize="@dimen/sp_12"
                             android:textColor="@color/green_250" />
 
                     </LinearLayout>
@@ -128,7 +131,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_12"
-                android:paddingBottom="@dimen/dp_20"
                 android:background="@color/white"
                 android:orientation="vertical">
 
@@ -137,9 +139,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_12"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_8"
+                    android:textColor="@color/black_70"
                     android:text="@string/product_info_label"
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold"
@@ -147,9 +150,11 @@
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_items"
+                    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clipToPadding="false" />
+                    android:nestedScrollingEnabled="false"
+                    tools:listItem="@layout/marketplace_product_detail_item"/>
 
             </LinearLayout>
 
@@ -162,7 +167,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_16"
                     android:paddingBottom="@dimen/dp_10"
                     android:background="@color/white"
                     android:orientation="vertical">
@@ -172,10 +177,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_16"
                         android:layout_marginRight="@dimen/dp_16"
-                        android:layout_marginBottom="@dimen/dp_8"
                         android:text="@string/detail_label"
+                        android:textColor="@color/black_70"
                         android:textSize="@dimen/sp_16"
                         android:textStyle="bold" />
 
@@ -220,7 +224,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_12"
                     android:background="@color/white"
                     android:orientation="vertical">
 
@@ -228,7 +231,9 @@
                         android:id="@+id/info_label"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/dp_16"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginTop="@dimen/dp_16"
                         android:text="@string/info_label"
                         android:textSize="@dimen/sp_14"
                         android:textColor="@color/black_70"
@@ -291,7 +296,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_8"
                     android:gravity="center" />
 
                 <TextView
@@ -314,7 +319,7 @@
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_24"
-                    android:background="@color/deep_orange_500"
+                    android:background="@color/orange"
                     android:gravity="center"
                     android:padding="@dimen/dp_16"
                     android:text="@string/bottom_btn_text"
@@ -322,7 +327,7 @@
 
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 

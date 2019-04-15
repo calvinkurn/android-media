@@ -47,6 +47,8 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
 
     void resetTotalPrice();
 
+    void showBottomSheetTotalBenefit();
+
     void onInsuranceChecked(int position);
 
     void onNeedUpdateViewItem(int position);
@@ -64,6 +66,8 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
     void onChoosePaymentMethodButtonClicked();
 
     void onDonationChecked(boolean checked);
+
+    void onEgoldChecked(boolean checked);
 
     void onChangeShippingDuration(ShipmentCartItemModel shipmentCartItemModel,
                                   RecipientAddressModel recipientAddressModel,
@@ -94,4 +98,6 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
     void navigateToProtectionMore(String url);
 
     void onNotifierClicked(String url);
+
+    void onClickChangePhoneNumber(RecipientAddressModel recipientAddressModel);
 }

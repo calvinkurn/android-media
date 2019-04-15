@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -18,6 +17,8 @@ import com.tokopedia.flight.detail.view.fragment.FlightDetailOrderFragment;
 import com.tokopedia.flight.orderlist.di.DaggerFlightOrderComponent;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * Created by zulfikarrahman on 12/12/17.
@@ -40,7 +41,7 @@ public class FlightDetailOrderActivity extends BaseSimpleActivity implements Has
         passData.setOrderId(extras.getString("id"));
 
         if (context.getApplicationContext() instanceof AbstractionRouter){
-            UserSession userSession = ((AbstractionRouter) context.getApplicationContext()).getSession();
+            UserSessionInterface userSession = new UserSession(context);
 
             if (!userSession.isLoggedIn()) {
                 return ((FlightModuleRouter) context.getApplicationContext()).getLoginIntent();

@@ -1,11 +1,10 @@
 package com.tokopedia.payment.fingerprint.domain;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Map;
 
@@ -29,11 +28,11 @@ public class SaveFingerPrintUseCase extends UseCase<Boolean> {
     public static final String OS_ANDROID_VALUE = "1";
     private FingerprintRepository fingerprintRepository;
     private SavePublicKeyUseCase savePublicKeyUseCase;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
     public SaveFingerPrintUseCase(FingerprintRepository fingerprintRepository,
-                                  SavePublicKeyUseCase savePublicKeyUseCase, UserSession userSession) {
+                                  SavePublicKeyUseCase savePublicKeyUseCase, UserSessionInterface userSession) {
         this.fingerprintRepository = fingerprintRepository;
         this.savePublicKeyUseCase = savePublicKeyUseCase;
         this.userSession = userSession;

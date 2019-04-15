@@ -54,7 +54,7 @@ public class SellerDrawerAdapter extends DrawerAdapter {
     }
 
     public void renderGMDrawer() {
-        DrawerGroup goldMerchantMenu = getGoldMerchantMenu(isGoldMerchant);
+        DrawerGroup goldMerchantMenu = getGoldMerchantMenu();
         goldMerchantMenu.setExpanded(false);
 
         // find gold merchant index based on drawerposition
@@ -82,7 +82,7 @@ public class SellerDrawerAdapter extends DrawerAdapter {
         notifyDataSetChanged();
     }
 
-    public DrawerGroup getGoldMerchantMenu(boolean isGoldMerchant) {
+    public DrawerGroup getGoldMerchantMenu() {
 	String gm = context.getString(GMConstant.getGMTitleResource(context));
         DrawerGroup gmMenu = new DrawerGroup(gm,
             GMConstant.getGMDrawerDrawableResource(context),

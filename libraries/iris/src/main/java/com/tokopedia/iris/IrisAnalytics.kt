@@ -7,45 +7,51 @@ import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.model.Configuration
 import com.tokopedia.iris.worker.SendDataWorker
+import kotlinx.coroutines.experimental.CoroutineScope
+import kotlinx.coroutines.experimental.Dispatchers
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.launch
+import kotlin.coroutines.experimental.CoroutineContext
 
 
 /**
  * @author okasurya on 10/2/18.
  */
-class IrisAnalytics(context: Context) : Iris {
+class IrisAnalytics(context: Context) : Iris, CoroutineScope {
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO
     private val trackingRepository: TrackingRepository = TrackingRepository(context)
     private val session: Session = IrisSession(context)
 
     override fun setService(config: Configuration) {
-        GlobalScope.launch {
-            setWorkManager(config)
-        }
+        setWorkManager(config)
     }
 
     override fun resetService(config: Configuration) {
-        GlobalScope.launch {
-            WorkManager.getInstance().cancelAllWorkByTag(WORKER_SEND_DATA)
-            setWorkManager(config)
-        }
+        WorkManager.getInstance().cancelAllWorkByTag(WORKER_SEND_DATA)
+        setWorkManager(config)
     }
 
     override fun saveEvent(map: Map<String, Any>) {
-        GlobalScope.launch(context = Dispatchers.IO) {
+        launchCatchError(block = {
             // convert map to json then save as string
             val event = JSONObject(map).toString()
             val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
             trackingRepository.saveEvent(resultEvent.toString(), session)
+        }) {
+            // no-op
         }
     }
 
     override fun sendEvent(map: Map<String, Any>) {
-        GlobalScope.launch(context = Dispatchers.IO) {
-            trackingRepository.sendSingleEvent(JSONObject(map).toString(), session)
+        launchCatchError(block = {
+            val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(),
+                    session)
+            if (isSuccess && BuildConfig.DEBUG) {
+                Log.e("Iris", "Success Send Single Event")
+            }
+        }) {
+            // no-op
         }
     }
 

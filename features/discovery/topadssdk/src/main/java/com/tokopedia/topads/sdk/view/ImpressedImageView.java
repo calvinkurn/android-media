@@ -33,21 +33,15 @@ public class ImpressedImageView extends AppCompatImageView {
     public static final float DEF_VALUE = 8.0f;
     private ImpressHolder holder;
     private ViewHintListener hintListener;
-    private float radius = 0.0f;
-    private Path path;
-    private RectF rect;
     private int offset;
-    private TypedArray styledAttributes;
     private ViewTreeObserver.OnScrollChangedListener scrollChangedListener;
 
     public ImpressedImageView(Context context) {
         super(context);
-        init(context, null);
     }
 
     public ImpressedImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context, attrs);
     }
 
     @Override
@@ -64,24 +58,6 @@ public class ImpressedImageView extends AppCompatImageView {
         if (holder != null && holder.isInvoke()) {
             revoke();
         }
-    }
-
-    private void init(Context context, AttributeSet attrs) {
-        path = new Path();
-        styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.ImpressedImageView, 0, 0);
-        try{
-            radius = styledAttributes.getDimension(R.styleable.ImpressedImageView_corner_radius, DEF_VALUE);
-        } finally {
-            styledAttributes.recycle();
-        }
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        rect = new RectF(0, 0, this.getWidth(), this.getHeight());
-        path.addRoundRect(rect, radius, radius, Path.Direction.CW);
-        canvas.clipPath(path);
-        super.onDraw(canvas);
     }
 
     @Override
@@ -143,9 +119,10 @@ public class ImpressedImageView extends AppCompatImageView {
 
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-        float X = location[0];
-        float Y = location[1];
-        if (screen.top <= Y && screen.bottom >= Y && screen.left <= X && screen.right >= X) {
+        int offset = getResources().getDimensionPixelOffset(R.dimen.dp_45);
+        float X = location[0] + offset;
+        float Y = location[1] + offset;
+        if (screen.top <= Y && screen.bottom >= Y && (screen.left) <= X && (screen.right) >= X) {
             return true;
         } else {
             return false;

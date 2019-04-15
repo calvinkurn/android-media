@@ -10,6 +10,7 @@
     <string name="gm_home_subtitle">Nikmati beragam keistimewaan untuk toko Anda</string>
     <string name="gmsubscribe_home_button_finish">Pilih Paket Berlangganan</string>
 
+    <string name="best_deal">BEST DEAL!</string>
     <string name="gmsubscribe_membership_auto_extend_date"><![CDATA[Keanggotaan Gold Merchant Anda akan <b>otomatis diperpanjang pada %s</b>]]></string>
     <string name="gmsubscribe_witdraw">Penarikan Saldo</string>
     <string name="gmsubscribe_auto_extend_withdrawal"><![CDATA[<b>Penarikan Saldo</b> perpanjang otomatis akan dilakukan pada <b>%s</b> dengan metode pembayaran Saldo Tokopedia.]]></string>

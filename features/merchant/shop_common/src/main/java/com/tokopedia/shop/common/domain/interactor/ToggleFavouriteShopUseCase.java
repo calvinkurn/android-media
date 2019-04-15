@@ -51,7 +51,7 @@ public class ToggleFavouriteShopUseCase extends UseCase<Boolean> {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(resources, R.raw.gql_mutation_favorite_shop),
                 DataFollowShop.class,
-                variables);
+                variables, false);
 
         graphqlUseCase.addRequest(graphqlRequest);
         return graphqlUseCase.createObservable(requestParams)

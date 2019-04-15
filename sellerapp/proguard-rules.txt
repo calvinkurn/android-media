@@ -345,6 +345,9 @@
 -dontwarn com.clevertap.android.sdk.**
 -dontwarn com.segment.analytics.**
 
+# Every class that extends exception
+-keep class * extends java.lang.Exception
+
 # -- Coroutines --
 -keepclassmembernames class kotlinx.** {
     volatile <fields>;
@@ -352,3 +355,7 @@
 
 -keepnames class kotlinx.coroutines.experimental.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.experimental.CoroutineExceptionHandler {}
+
+-keep class com.tokopedia.track.** { *; }
+-keep class com.tokopedia.track.interfaces.** { *; }
+-keep class * extends com.tokopedia.track.interfaces.ContextAnalytics { *; }

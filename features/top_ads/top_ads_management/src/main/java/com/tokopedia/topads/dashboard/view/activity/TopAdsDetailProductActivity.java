@@ -12,13 +12,15 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.R;
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.common.view.listener.OneUseGlobalLayoutListener;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
@@ -32,6 +34,7 @@ import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TopAdsDetailProductActivity extends BaseSimpleActivity implements TopAdsDetailProductFragment.TopAdsDetailProductFragmentListener {
 
@@ -52,7 +55,7 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
                             .putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, true)
                             .putExtras(extras);
                 } else {
-                    return ((TopAdsManagementRouter)context.getApplicationContext()).getTopAdsDashboardIntent(context)
+                    return ((TopAdsManagementRouter) context.getApplicationContext()).getTopAdsDashboardIntent(context)
                             .putExtras(extras);
                 }
             } else {
@@ -76,9 +79,9 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
     @Override
     protected Fragment getNewFragment() {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(getTagFragment());
-        if(fragment != null){
+        if (fragment != null) {
             return fragment;
-        }else{
+        } else {
             ProductAd ad = null;
             String adId = null;
             boolean isEnoughDeposit = false;
@@ -110,8 +113,20 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
 
     @Override
     public void goToProductActivity(String productUrl) {
-        if (getApplication() instanceof SellerModuleRouter) {
-            ((SellerModuleRouter) getApplication()).goToProductDetail(this, productUrl);
+        Uri uri = Uri.parse(productUrl);
+        List<String> pathSegmentList = uri.getPathSegments();
+        if (pathSegmentList.size() > 1) {
+            String shopDomain = pathSegmentList.get(pathSegmentList.size() - 2);
+            String productKey = pathSegmentList.get(pathSegmentList.size() - 1);
+            Intent intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
+                    shopDomain, productKey);
+            if (intent != null) {
+                startActivity(intent);
+            } else {
+                RouteManager.route(this, productUrl);
+            }
+        } else {
+            RouteManager.route(this, productUrl);
         }
     }
 
@@ -121,10 +136,10 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
         if (isTaskRoot()) {
             //coming from deeplink
             String deepLink = getIntent().getStringExtra(DeepLink.URI);
-            if(deepLink!= null && deepLink.contains(Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL)) {
+            if (deepLink != null && deepLink.contains(Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL)) {
                 super.onBackPressed();
             } else {
-                Intent intent = ((TopAdsManagementRouter)getApplication()).getTopAdsDashboardIntent(this);
+                Intent intent = ((TopAdsManagementRouter) getApplication()).getTopAdsDashboardIntent(this);
                 this.startActivity(intent);
                 this.finish();
             }

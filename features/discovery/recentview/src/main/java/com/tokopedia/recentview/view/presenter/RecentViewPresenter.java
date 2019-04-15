@@ -1,10 +1,10 @@
 package com.tokopedia.recentview.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.recentview.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.recentview.view.listener.RecentView;
 import com.tokopedia.recentview.view.subscriber.RecentViewSubscriber;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -21,7 +21,7 @@ public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
     private final GetRecentViewUseCase getRecentProductUseCase;
     private final AddWishListUseCase addWishListUseCase;
     private final RemoveWishListUseCase removeWishListUseCase;
-    private final UserSession userSession;
+    private final UserSessionInterface userSession;
     private RecentView.View viewListener;
     private WishListActionListener wishListActionListener;
 
@@ -29,7 +29,7 @@ public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
     RecentViewPresenter(GetRecentViewUseCase getRecentProductUseCase,
                         AddWishListUseCase addWishListUseCase,
                         RemoveWishListUseCase removeWishListUseCase,
-                        UserSession userSession) {
+                        UserSessionInterface userSession) {
         this.getRecentProductUseCase = getRecentProductUseCase;
         this.addWishListUseCase = addWishListUseCase;
         this.removeWishListUseCase = removeWishListUseCase;

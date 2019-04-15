@@ -6,7 +6,18 @@
         <activity
             android:name=".view.activity.ShopOpenRoutingActivity"
             android:label="@string/title_open_shop"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_marketplace"
+                    android:path="@string/path_open_shop"/>
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".view.activity.ShopOpenCreateSuccessActivity"

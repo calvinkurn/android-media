@@ -15,6 +15,8 @@ public class FlightUrl {
     public static final String FLIGHT_SEARCH_COMBINED = FLIGHT_PATH + "search/combined";
     public static final String FLIGHT_CLASS_PATH = FLIGHT_PATH + "dropdown/class";
     public static final String FLIGHT_CART_PATH = FLIGHT_PATH + "cart";
+    public static final String FLIGHT_CART_PATH_WITH_ID = FLIGHT_PATH + "cart/{id}";
+    public static final String FLIGHT_CART_PATH_V11 = FLIGHT_PATH_V11 + "cart";
     public static final String FLIGHT_CHECK_VOUCHER_CODE = FLIGHT_PATH + "voucher/check";
     public static final String FLIGHT_CANCEL_VOUCHER_CODE = FLIGHT_PATH + "voucher/cancel";
     public static final String FLIGHT_PASSENGER_SAVED = FLIGHT_PATH + "passenger";
@@ -23,7 +25,7 @@ public class FlightUrl {
     public static final String FLIGHT_CANCELLATION_PASSENGER = FLIGHT_CANCELLATION_PATH + "passenger";
     public static final String FLIGHT_CANCELLATION_ESTIMATE_REFUND = FLIGHT_CANCELLATION_PATH + "estimate";
     public static final String FLIGHT_CANCELLATION_REQUEST = FLIGHT_CANCELLATION_PATH_V11 + "request";
-    public static final String FLIGHT_VERIFY_BOOKING = "travel/v1/oms/verify";
+    public static final String FLIGHT_VERIFY_BOOKING = "travel/v1.1/oms/verify";
     public static final String FLIGHT_CHECKOUT_BOOKING = "travel/v1/oms/checkout";
     public static final String FLIGHT_ORDERS = FLIGHT_PATH + "order/list";
     public static final String FLIGHT_ORDER = FLIGHT_PATH + "order/{id}";

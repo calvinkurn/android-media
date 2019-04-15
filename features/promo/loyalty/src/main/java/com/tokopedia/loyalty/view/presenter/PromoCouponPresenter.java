@@ -72,6 +72,9 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         } else if (platform.equalsIgnoreCase(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.TRAIN_STRING)) {
             platform = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.KAI;
             param.put(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.CATEGORY_ID, view.getCategoryId());
+        } else if(platform.equalsIgnoreCase(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING)){
+            platform = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING;
+            param.put(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.CATEGORY_ID, view.getCategoryId());
         }
         param.put(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.TYPE, platform);
 
@@ -409,6 +412,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
             @Override
             public void onError(Throwable e) {
                 view.hideProgressLoading();
+                view.sendTrackingOnCheckDigitalVoucherError(e.getMessage());
                 if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException) {
                     couponData.setErrorMessage(e.getMessage());
                     view.couponError();
@@ -420,6 +424,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
             @Override
             public void onNext(CouponViewModel couponViewModel) {
                 view.receiveDigitalResult(couponViewModel);
+                view.sendTrackingOnCheckDigitalVoucherSuccess(couponViewModel.getCode());
                 view.hideProgressLoading();
             }
         };

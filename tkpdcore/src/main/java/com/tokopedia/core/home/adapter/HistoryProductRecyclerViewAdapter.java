@@ -1,6 +1,7 @@
 package com.tokopedia.core.home.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
@@ -18,8 +24,11 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.track.TrackApp;
 
 import java.util.List;
+
+import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
 
 /**
  * Created by Nisie on 4/06/15.
@@ -94,13 +103,19 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
             @Override
             public void onClick(View view) {
                 if(position < data.size()) {
-                    UnifyTracking.eventFeedRecent(view.getContext(), data.get(position).getName());
-                    ((PdpRouter) ((BaseActivity) context)
-                            .getApplication())
-                            .goToProductDetail(context, getProductDataToPass(data.get(position)));
+                    eventFeedRecent(data.get(position).getName());
+                    RouteManager.route(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, data.get(position).getId());
                 }
             }
         };
+    }
+
+    private void eventFeedRecent(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.FEED,
+                AppEventTracking.Category.FEED,
+                AppEventTracking.Action.VIEW_RECENT,
+                label);
     }
 
     @Override

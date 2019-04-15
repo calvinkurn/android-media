@@ -4,17 +4,20 @@ apply from: 'buildconfig/dependencies/dependency-libraries.gradle'
 //apply from: 'buildconfig/dependencies/dependency-libraries-no-op.gradle'
 apply from: 'buildconfig/dependencies/dependency-features.gradle'
 //apply from: 'buildconfig/dependencies/dependency-features-no-op.gradle'
+apply from: 'tools/quality.gradle'
 
 
 buildscript {
     ext.jacocoVersion = '0.7.9'
     repositories {
+        gradlePluginPortal()
         google()
         maven { url "https://maven.google.com" }
         jcenter()
         mavenLocal()
+	maven { url 'https://plugins.gradle.org/m2/' }
         maven { url 'https://maven.fabric.io/public' }
-        maven { url 'http://central.maven.org/maven2/'}
+        maven { url 'http://central.maven.org/maven2/' }
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
@@ -36,18 +39,27 @@ buildscript {
             }
         }
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.51"
+        classpath "com.google.gms:google-services:4.1.0"
+        classpath "io.fabric.tools:gradle:1.26.1"
+        classpath "com.vanniktech:gradle-code-quality-tools-plugin:0.17.0"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7"
     }
 }
 
 allprojects {
     project.apply from: rootProject.file('buildconfig/dependencies/dependencies.gradle')
     repositories {
+        google()
+        mavenCentral()
         mavenLocal()
         maven { url "https://maven.google.com" }
         jcenter()
-        mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://www.jitpack.io" }
+        maven {
+            url "https://jitpack.io"
+            credentials { username "${authToken}" }
+        }
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'https://dl.bintray.com/guardian/android' }
         maven { url 'https://mymavenrepo.com/repo/e01iL1W9Gdxw73PGI9LA' }
@@ -61,32 +73,32 @@ allprojects {
         maven { url "$rootDir/node_modules/react-native/android" }
         flatDir {
             dirs '../aars'
+            dirs project(rootProject.ext.libraries.inappupdate).file('libs')
         }
         maven { url 'https://hansel.io/maven' }
     }
 }
-
 apply plugin: 'com.uber.okbuck'
 
 okbuck {
 
     buildToolVersion = "27.0.3"
-    target = "android-27"
+    target = "android-28"
     linearAllocHardLimit = [
             customerapp: 10130000,
-            sellerapp: 10130000,
-            posapp: 16000000,
+            sellerapp  : 10130000,
+            posapp     : 16000000,
     ]
     extraBuckOpts = [
             'customerappDebug': [
                     "android_binary": ["trim_resource_ids = True"] as Set
             ]
-            ,'sellerappDebug': [
-                    "android_binary": ["trim_resource_ids = True"] as Set
-            ]
-            ,'posappDebug': [
-                    "android_binary": ["trim_resource_ids = True"] as Set
-            ]
+            , 'sellerappDebug': [
+            "android_binary": ["trim_resource_ids = True"] as Set
+    ]
+            , 'posappDebug'   : [
+            "android_binary": ["trim_resource_ids = True"] as Set
+    ]
     ]
 
     primaryDexPatterns = [
@@ -117,9 +129,6 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.14.1'
-}
 
 ext {
     artifactoryUrl = "${artifactory_url}"
@@ -161,6 +170,7 @@ subprojects {
                 substitute module('com.google.firebase:firebase-config') with module("com.google.firebase:firebase-config:${playServiceFirebaseConfig}")
                 substitute module('com.google.android.gms:play-services-base') with module("com.google.android.gms:play-services-base:${playServiceBaseVersion}")
                 substitute module('com.google.firebase:firebase-iid') with module("com.google.firebase:firebase-iid:${playServiceFirebaseIidVersion}")
+                substitute module('com.google.android.gms:play-services-measurement-base') with module("com.google.android.gms:play-services-measurement-base:16.0.5")
             }
         }
     }

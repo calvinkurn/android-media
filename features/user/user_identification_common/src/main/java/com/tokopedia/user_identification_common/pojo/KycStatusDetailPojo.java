@@ -10,15 +10,15 @@ public class KycStatusDetailPojo {
 
     @Expose
     @SerializedName("IsSuccess")
-    private int isSuccess;
+    private int isSuccess = 0;
 
     @Expose
     @SerializedName("Status")
-    private int status;
+    private int status = 0;
 
     @Expose
     @SerializedName("StatusName")
-    private String statusName;
+    private String statusName = "";
 
     public int getIsSuccess() {
         return isSuccess;

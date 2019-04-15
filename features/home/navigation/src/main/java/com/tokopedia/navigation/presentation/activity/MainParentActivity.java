@@ -1,5 +1,6 @@
 package com.tokopedia.navigation.presentation.activity;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
@@ -10,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
+import android.graphics.Color;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
@@ -19,33 +21,28 @@ import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
-import com.tokopedia.navigation.GlobalNavAnalytics;
-import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
-import com.tokopedia.navigation_common.AbTestingOfficialStore;
-import com.tokopedia.navigation_common.listener.CartNotifyListener;
-import com.tokopedia.navigation_common.listener.InboxNotificationListener;
-import com.tokopedia.navigation_common.listener.NotificationListener;
-import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
@@ -53,19 +50,25 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
+import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
+import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
+import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
-import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
+import com.tokopedia.navigation_common.listener.AllNotificationListener;
+import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.navigation_common.listener.ShowCaseListener;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.showcase.ShowCaseBuilder;
-import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
@@ -83,12 +86,11 @@ public class MainParentActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent,
         MainParentView, ShowCaseListener, CartNotifyListener, EmptyCartListener {
 
-    public static final String FORCE_HOCKEYAPP = "com.tokopedia.tkpd.FORCE_HOCKEYAPP";
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
     public static final int HOME_MENU = 0;
     public static final int FEED_MENU = 1;
-    public static final int INBOX_MENU = 2;
+    public static final int OS_MENU = 2;
     public static final int CART_MENU = 3;
     public static final int ACCOUNT_MENU = 4;
     public static final int RECOMENDATION_LIST = 5;
@@ -103,6 +105,7 @@ public class MainParentActivity extends BaseActivity implements
     private static final String SHORTCUT_DIGITAL_ID = "Bayar";
     private static final String SHORTCUT_SHARE_ID = "Share";
     private static final String SHORTCUT_SHOP_ID = "Jual";
+    private static final String ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED = "android_customer_new_os_home_enabled";
 
     @Inject
     UserSessionInterface userSession;
@@ -122,12 +125,12 @@ public class MainParentActivity extends BaseActivity implements
     private Fragment emptyCartFragment;
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
-    private BroadcastReceiver hockeyBroadcastReceiver;
     private BroadcastReceiver newFeedClickedReceiver;
     private SharedPreferences cacheManager;
-    private AbTestingOfficialStore abTestingOfficialStore;
+    private RemoteConfig remoteConfig;
 
     private Handler handler = new Handler();
+    private CoordinatorLayout fragmentContainer;
 
     @DeepLink({ApplinkConst.HOME, ApplinkConst.HOME_CATEGORY})
     public static Intent getApplinkIntent(Context context, Bundle bundle) {
@@ -138,6 +141,7 @@ public class MainParentActivity extends BaseActivity implements
     public static Intent getApplinkFeedIntent(Context context, Bundle bundle) {
         Intent intent = start(context);
         intent.putExtra(ARGS_TAB_POSITION, FEED_MENU);
+        intent.putExtras(bundle);
         return intent;
     }
 
@@ -148,17 +152,24 @@ public class MainParentActivity extends BaseActivity implements
         return intent;
     }
 
-    public static Intent getApplinkFeedIntent(Context context) {
-        Intent intent = start(context);
-        intent.putExtra(ARGS_TAB_POSITION, FEED_MENU);
-        return intent;
+    @DeepLink({ ApplinkConst.OFFICIAL_STORES, ApplinkConst.OFFICIAL_STORE })
+    public static Intent getApplinkOfficialStoreIntent(Context context, Bundle bundle) {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        if(remoteConfig.getBoolean(ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED, false)) {
+            Intent intent = start(context);
+            intent.putExtra(ARGS_TAB_POSITION, OS_MENU);
+            return intent;
+        } else {
+            return ((GlobalNavRouter) context.getApplicationContext()).getOldOfficialStore(context);
+        }
     }
+
     public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
     @DeepLink({ApplinkConst.HOME_RECOMMENDATION})
     public static Intent getApplinkRecommendationEvent(Context context) {
         Intent intent = start(context);
         intent.putExtra(ARGS_TAB_POSITION, RECOMENDATION_LIST);
-        intent.putExtra(SCROLL_RECOMMEND_LIST,true);
+        intent.putExtra(SCROLL_RECOMMEND_LIST, true);
         return intent;
     }
 
@@ -176,7 +187,6 @@ public class MainParentActivity extends BaseActivity implements
             presenter.setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
         }
         cacheManager = PreferenceManager.getDefaultSharedPreferences(this);
-        abTestingOfficialStore = new AbTestingOfficialStore(this);
         createView(savedInstanceState);
         ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
     }
@@ -215,7 +225,7 @@ public class MainParentActivity extends BaseActivity implements
         super.onRestoreInstanceState(savedInstanceState);
     }
 
-    public boolean isFirstTimeUser(){
+    public boolean isFirstTimeUser() {
         return userSession.isFirstTimeUser();
     }
 
@@ -224,7 +234,9 @@ public class MainParentActivity extends BaseActivity implements
         setContentView(R.layout.activity_main_parent);
 
         bottomNavigation = findViewById(R.id.bottomnav);
+        fragmentContainer = findViewById(R.id.container);
 
+        bottomNavigation.setItemIconTintList(null);
         bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
         bottomNavigation.setOnNavigationItemReselectedListener(item -> {
             Fragment fragment = fragmentList.get(getPositionFragmentByMenu(item));
@@ -238,7 +250,7 @@ public class MainParentActivity extends BaseActivity implements
         }
 
         handleAppLinkBottomNavigation(savedInstanceState);
-        checkAppUpdate();
+        checkAppUpdateAndInApp();
         checkApplinkCouponCode(getIntent());
 
         initNewFeedClickReceiver();
@@ -255,6 +267,10 @@ public class MainParentActivity extends BaseActivity implements
                 case ACCOUNT_MENU:
                     bottomNavigation.getMenu().findItem(R.id.menu_account).setChecked(true);
                     onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_account));
+                    break;
+                case OS_MENU:
+                    bottomNavigation.getMenu().findItem(R.id.menu_os).setChecked(true);
+                    onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_os));
                     break;
                 case RECOMENDATION_LIST:
                 case HOME_MENU:
@@ -302,8 +318,8 @@ public class MainParentActivity extends BaseActivity implements
         int position = HOME_MENU;
         if (i == R.id.menu_feed) {
             position = FEED_MENU;
-        } else if (i == R.id.menu_inbox) {
-            position = INBOX_MENU;
+        } else if (i == R.id.menu_os) {
+            position = OS_MENU;
         } else if (i == R.id.menu_cart) {
             position = CART_MENU;
         } else if (i == R.id.menu_account) {
@@ -317,15 +333,17 @@ public class MainParentActivity extends BaseActivity implements
         int position = getPositionFragmentByMenu(item);
         globalNavAnalytics.eventBottomNavigation(item.getTitle().toString()); // push analytics
 
-        if (item.getTitle().equals(getString(R.string.os))) {
-            RouteManager.route(this, ApplinkConst.OFFICIAL_STORES);
+        if (position == OS_MENU && !isNewOfficialStoreEnabled()) {
+            startActivity(((GlobalNavRouter) getApplication()).getOldOfficialStore(this));
             return false;
         }
 
-        if ((position == CART_MENU || position == ACCOUNT_MENU || position == INBOX_MENU) && !presenter.isUserLogin()) {
+        if ((position == CART_MENU || position == ACCOUNT_MENU ) && !presenter.isUserLogin()) {
             RouteManager.route(this, ApplinkConst.LOGIN);
             return false;
         }
+
+        hideStatusBar();
 
         Fragment fragment = fragmentList.get(position);
         if (fragment != null) {
@@ -333,6 +351,46 @@ public class MainParentActivity extends BaseActivity implements
             selectFragment(fragment);
         }
         return true;
+    }
+
+    private void hideStatusBar() {
+        //apply inset to allow recyclerview scrolling behind status bar
+        fragmentContainer.setFitsSystemWindows(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            fragmentContainer.requestApplyInsets();
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int flags = fragmentContainer.getSystemUiVisibility();
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            fragmentContainer.setSystemUiVisibility(flags);
+            getWindow().setStatusBarColor(Color.WHITE);
+        }
+
+        //make full transparent statusBar
+        if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
+            setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true);
+        }
+
+        if (Build.VERSION.SDK_INT >= 19) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        }
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
+    }
+
+    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
+        Window win = activity.getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        if (on) {
+            winParams.flags |= bits;
+        } else {
+            winParams.flags &= ~bits;
+        }
+        win.setAttributes(winParams);
     }
 
     private void selectFragment(Fragment fragment) {
@@ -375,21 +433,6 @@ public class MainParentActivity extends BaseActivity implements
         this.userSession = userSession;
     }
 
-    /**
-     * AB Testing Official Store
-     */
-    private void abTestBottomNavforOs() {
-        Menu menuBottomNav = bottomNavigation.getMenu();
-        MenuItem itemInbox = menuBottomNav.findItem(R.id.menu_inbox);
-        if (abTestingOfficialStore.shouldDoAbTesting()) {
-            itemInbox.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_menu_os));
-            itemInbox.setTitle(R.string.os);
-        } else {
-            itemInbox.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_menu_inbox));
-            itemInbox.setTitle(R.string.inbox);
-        }
-    }
-
 
     @Override
     public BaseAppComponent getComponent() {
@@ -399,6 +442,9 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        // if user is downloading the update (in app update feature),
+        // check if the download is finished or is in progress
+        checkForInAppUpdateInProgressOrCompleted();
         presenter.onResume();
         if (userSession.isLoggedIn() && isUserFirstTimeLogin) {
             reloadPage();
@@ -406,12 +452,30 @@ public class MainParentActivity extends BaseActivity implements
         isUserFirstTimeLogin = !userSession.isLoggedIn();
 
         addShortcuts();
-        abTestBottomNavforOs();
 
         registerNewFeedClickedReceiver();
 
-        if(!((BaseMainApplication)getApplication()).checkAppSignature()){
+        if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
             finish();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        AppUpdateManagerWrapper.onActivityResult(this, requestCode, resultCode);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * While refreshing the app update info, we also check whether we have updates in progress to
+     * complete.
+     *
+     * <p>This is important, so the app doesn't forget about downloaded updates even if it gets killed
+     * during the download or misses some notifications.
+     */
+    private void checkForInAppUpdateInProgressOrCompleted() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AppUpdateManagerWrapper.checkUpdateInProgressOrCompleted(this);
         }
     }
 
@@ -430,9 +494,9 @@ public class MainParentActivity extends BaseActivity implements
     private List<Fragment> fragments() {
         List<Fragment> fragmentList = new ArrayList<>();
         if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
-            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST,false)));
+            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment(getIntent().getExtras()));
-            fragmentList.add(InboxFragment.newInstance(true));
+            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getOfficialStoreFragment(getIntent().getExtras()));
             cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(null);
             fragmentList.add(cartFragment);
             fragmentList.add(AccountHomeFragment.newInstance());
@@ -448,11 +512,6 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void renderNotification(Notification notification) {
         this.notification = notification;
-        if (abTestingOfficialStore.shouldDoAbTesting()) {
-            bottomNavigation.setNotification(0, INBOX_MENU);
-        } else {
-            bottomNavigation.setNotification(notification.getTotalInbox(), INBOX_MENU);
-        }
         bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
         if (notification.getHaveNewFeed()) {
             bottomNavigation.setNotification(-1, FEED_MENU);
@@ -464,8 +523,6 @@ public class MainParentActivity extends BaseActivity implements
         }
         if (currentFragment != null)
             setBadgeNotifCounter(currentFragment);
-
-        abTestingOfficialStore.putCacheForAbTesting(notification.getShouldOsAppear()); // save cache for ab testing
     }
 
     @Override
@@ -511,13 +568,10 @@ public class MainParentActivity extends BaseActivity implements
         if (fragment == null)
             return;
 
-        if (fragment instanceof NotificationListener && notification != null) {
-            ((NotificationListener) fragment).onNotifyBadgeNotification(notification.getTotalNotif());
+        if (fragment instanceof AllNotificationListener && notification != null) {
+            ((AllNotificationListener) fragment).onNotificationChanged(notification.getTotalNotif(), notification.getTotalInbox());
         }
 
-        if (fragment instanceof InboxNotificationListener && notification != null) {
-            ((InboxNotificationListener) fragment).onNotifyBadgeInboxNotification(notification.getTotalInbox());
-        }
         invalidateOptionsMenu();
     }
 
@@ -562,12 +616,25 @@ public class MainParentActivity extends BaseActivity implements
 
         showCaseDialog = createShowCase();
 
+        int bottomNavTopPos = bottomNavigation.getTop();
+        int bottomNavBottomPos = bottomNavigation.getBottom();
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            bottomNavBottomPos =
+                    bottomNavBottomPos - DisplayMetricUtils.getStatusBarHeight(this);
+            bottomNavTopPos =
+                    bottomNavTopPos - DisplayMetricUtils.getStatusBarHeight(this);
+        }
         ArrayList<ShowCaseObject> showcases = new ArrayList<>();
         showcases.add(new ShowCaseObject(
                 bottomNavigation,
                 getString(R.string.title_showcase),
-                getString(R.string.desc_showcase),
-                ShowCaseContentPosition.UNDEFINED));
+                getString(R.string.desc_showcase))
+                .withCustomTarget(new int[]{
+                        bottomNavigation.getLeft(),
+                        bottomNavTopPos,
+                        bottomNavigation.getRight(),
+                        bottomNavBottomPos} ));
         showcases.addAll(showCaseObjects);
 
         showCaseDialog.show(this, showCaseTag, showcases);
@@ -578,7 +645,21 @@ public class MainParentActivity extends BaseActivity implements
         return cache.getBoolean(GlobalNavConstant.Cache.KEY_IS_FIRST_TIME, false);
     }
 
-    private void checkAppUpdate() {
+    private void checkAppUpdateAndInApp() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // if download finished or flexible update is in progress, we do not need to show the update dialog
+            AppUpdateManagerWrapper.checkUpdateInFlexibleProgressOrCompleted(this, isOnProgress -> {
+                if (!isOnProgress) {
+                    checkAppUpdateRemoteConfig();
+                }
+                return null;
+            });
+        } else {
+            checkAppUpdateRemoteConfig();
+        }
+    }
+
+    private void checkAppUpdateRemoteConfig(){
         appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
             @Override
             public void onNeedUpdate(DetailUpdate detail) {
@@ -688,10 +769,10 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public void onCartEmpty(String autoApplyMessage, String state, String titleDesc) {
+    public void onCartEmpty(String autoApplyMessage, String state, String titleDesc, String promoCode) {
         if (fragmentList != null && fragmentList.get(CART_MENU) != null) {
             if (emptyCartFragment == null) {
-                emptyCartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getEmptyCartFragment(autoApplyMessage, state, titleDesc);
+                emptyCartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getEmptyCartFragment(autoApplyMessage, state, titleDesc, promoCode);
             }
             fragmentList.set(CART_MENU, emptyCartFragment);
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
@@ -807,5 +888,13 @@ public class MainParentActivity extends BaseActivity implements
                 e.printStackTrace();
             }
         }
+    }
+
+    private boolean isNewOfficialStoreEnabled() {
+        if(remoteConfig == null) {
+            remoteConfig = new FirebaseRemoteConfigImpl(this);
+        }
+
+        return remoteConfig.getBoolean(ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED, false);
     }
 }
