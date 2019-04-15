@@ -22,6 +22,10 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.core.discovery.model.DataValue;
+import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -284,12 +288,18 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void setProductList(List<Visitable> list) {
+    public void addProductList(List<Visitable> list) {
         isListEmpty = false;
 
         sendProductImpressionTrackingEvent(list);
 
         adapter.appendItems(list);
+    }
+
+    public void setProductList(List<Visitable> list) {
+        adapter.clear();
+
+        addProductList(list);
     }
 
     private void sendProductImpressionTrackingEvent(List<Visitable> list) {

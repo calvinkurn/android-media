@@ -36,7 +36,6 @@ import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel;
-import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
@@ -405,12 +404,19 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void updateSelectedAddress(RecipientAddressModel newlySelectedAddress) {
         int addressIndex = 0;
-        shipmentDataList.set(addressIndex, newlySelectedAddress);
-        this.recipientAddressModel = newlySelectedAddress;
-        shipmentCostModel.setTotalPromoStackAmount(0);
-        resetCourier();
-        notifyDataSetChanged();
-        shipmentAdapterActionListener.resetTotalPrice();
+        for (Object item : shipmentDataList) {
+            if (item instanceof RecipientAddressModel) {
+                addressIndex = shipmentDataList.indexOf(item);
+                break;
+            }
+        }
+        if (addressIndex != 0) {
+            shipmentDataList.set(addressIndex, newlySelectedAddress);
+            this.recipientAddressModel = newlySelectedAddress;
+            resetCourier();
+            notifyDataSetChanged();
+            shipmentAdapterActionListener.resetTotalPrice();
+        }
     }
 
     public void updateDonation(boolean checked) {
@@ -481,6 +487,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperName(null);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(null);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setUsePartialOrder(false);
+                shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
                 updateShipmentCostModel();
                 updateInsuranceTncVisibility();
             }
@@ -539,7 +546,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public ShipmentCartItemModel setSelectedCourier(int position, CourierItemData newCourierItemData, boolean setLogisticPromo) {
+    public ShipmentCartItemModel setSelectedCourier(int position, CourierItemData newCourierItemData) {
         ShipmentCartItemModel shipmentCartItemModel = null;
         Object currentShipmentData = shipmentDataList.get(position);
         if (currentShipmentData instanceof ShipmentCartItemModel) {
@@ -560,13 +567,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (!newCourierItemData.isAllowDropshiper()) {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
                 }
-            }
-            // Logistic promo stacking logic
-            if (setLogisticPromo) {
-                VoucherLogisticItemUiModel logPromo = new VoucherLogisticItemUiModel();
-                logPromo.setCode(newCourierItemData.getLogPromoCode());
-                logPromo.setMessage(newCourierItemData.getLogPromoMsg());
-                shipmentCartItemModel.setVoucherLogisticItemUiModel(logPromo);
             }
             updateShipmentCostModel();
             checkDataForCheckout();
@@ -757,6 +757,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void clearTotalPromoStackAmount() {
         shipmentCostModel.setTotalPromoStackAmount(0);
+        shipmentCostModel.setTotalDiscWithoutCashback(0);
     }
 
     public int getShipmentCostPosition() {
@@ -784,6 +785,34 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 notifyItemChanged(i);
             }
         }
+    }
+
+    public void clearAllPromo() {
+        if (promoGlobalStackData != null) {
+            promoGlobalStackData.setDescription("");
+            promoGlobalStackData.setPromoCode("");
+            promoGlobalStackData.setAmount(0);
+            promoGlobalStackData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
+            promoGlobalStackData.setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
+            promoGlobalStackData.setTitle("");
+            promoGlobalStackData.setTypePromo(0);
+        }
+
+        if (shipmentCartItemModelList != null) {
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
+                shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
+            }
+        }
+
+        if (shipmentCostModel != null){
+            shipmentCostModel.setPromoMessage("");
+            shipmentCostModel.setPromoPrice(0);
+            shipmentCostModel.setTotalPromoStackAmount(0);
+            shipmentCostModel.setTotalPromoStackAmountStr("");
+        }
+
+        notifyDataSetChanged();
     }
 
     public void updatePromoStack(DataUiModel dataUiModel) {
@@ -963,7 +992,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
 
-            if (itemAdapter instanceof  ShipmentCartItemModel) {
+            if (itemAdapter instanceof ShipmentCartItemModel) {
                 if (((ShipmentCartItemModel) itemAdapter).getVoucherOrdersItemUiModel() != null) {
                     if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(((ShipmentCartItemModel) itemAdapter).getVoucherOrdersItemUiModel().getMessage().getState()) != TickerPromoStackingCheckoutView.State.EMPTY) {
                         hasApplied = true;
@@ -1021,9 +1050,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.lastServiceId = lastServiceId;
     }
 
-    public String getBlackboxInfo() { return blackboxInfo; }
+    public String getBlackboxInfo() {
+        return blackboxInfo;
+    }
 
-    public void setBlackboxInfo(String blackboxInfo) { this.blackboxInfo = blackboxInfo; }
+    public void setBlackboxInfo(String blackboxInfo) {
+        this.blackboxInfo = blackboxInfo;
+    }
 
     public PromoStackingData getPromoGlobalStackData() {
         return promoGlobalStackData;
