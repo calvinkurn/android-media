@@ -25,7 +25,6 @@ import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.kol.KolComponentInstance;
-import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.common.util.PostMenuListener;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
@@ -82,7 +81,6 @@ public class KolPostFragment extends BaseDaggerFragment implements
     private RecyclerView kolRecyclerView;
     private LinearLayoutManager layoutManager;
     private AbstractionRouter abstractionRouter;
-    private KolRouter kolRouter;
     private String userId;
     private Intent resultIntent;
 
@@ -119,15 +117,6 @@ public class KolPostFragment extends BaseDaggerFragment implements
         initVar();
         initView(parentView);
         setViewListener();
-
-        if (getActivity() != null
-                && getActivity().getApplicationContext() != null
-                && getActivity().getApplicationContext() instanceof
-                KolRouter) {
-            kolRouter = (KolRouter) getActivity().getApplicationContext();
-        } else {
-            throw new IllegalStateException("Application must be an instance of KolRouter!");
-        }
 
         if (getActivity().getApplicationContext() instanceof AbstractionRouter) {
             abstractionRouter = (AbstractionRouter) getActivity().getApplicationContext();
@@ -212,11 +201,6 @@ public class KolPostFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public KolRouter getKolRouter() {
-        return kolRouter;
-    }
-
-    @Override
     public AbstractionRouter getAbstractionRouter() {
         return abstractionRouter;
     }
@@ -298,7 +282,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
 
     @Override
     public void onOpenKolTooltip(int rowNumber, String uniqueTrackingId, String url) {
-        kolRouter.openRedirectUrl(getActivity(), url);
+
     }
 
     @Override

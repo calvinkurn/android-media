@@ -29,7 +29,6 @@ import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
-import com.tokopedia.kol.KolRouter
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
@@ -61,7 +60,6 @@ class VideoDetailFragment:
 
     lateinit var dynamicPostViewModel: DynamicPostViewModel
     lateinit var videoViewModel: VideoViewModel
-    lateinit var kolRouter: KolRouter
 
     private var id: String = ""
     companion object {
@@ -212,10 +210,6 @@ class VideoDetailFragment:
             activity?.finish()
         } else {
             initData()
-        }
-
-        if (activity!!.applicationContext is KolRouter) {
-            kolRouter = activity?.applicationContext as KolRouter
         }
     }
 

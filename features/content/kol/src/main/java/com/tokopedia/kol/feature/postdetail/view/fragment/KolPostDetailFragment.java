@@ -46,7 +46,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.kol.KolComponentInstance;
-import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
 import com.tokopedia.kol.analytics.PostTagAnalytics;
@@ -465,7 +464,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToProfile(String url) {
-        kolRouter.openRedirectUrl(getActivity(), url);
+        onGoToLink(url);
     }
 
     @Override
@@ -683,7 +682,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     public void onGoToLink(String link) {
         if (!TextUtils.isEmpty(link)) {
-//            kolRouter.openRedirectUrl(getActivity(), link);
             RouteManager.route(getActivity(), link);
         }
     }

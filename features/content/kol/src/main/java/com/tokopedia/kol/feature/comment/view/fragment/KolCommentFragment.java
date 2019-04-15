@@ -24,7 +24,6 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.kol.KolComponentInstance;
-import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
 import com.tokopedia.kol.feature.comment.di.DaggerKolCommentComponent;
@@ -64,7 +63,6 @@ public class KolCommentFragment extends BaseDaggerFragment
 
     private KolCommentAdapter adapter;
     private ProgressBar progressBar;
-    private KolRouter kolRouter;
 
     private boolean isFromApplink;
     private int totalNewComment = 0;
@@ -144,13 +142,6 @@ public class KolCommentFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        if (getActivity().getApplicationContext() instanceof KolRouter) {
-            kolRouter = (KolRouter) getActivity().getApplicationContext();
-        } else {
-            throw new IllegalStateException("Application must be an instance of " +
-                    KolRouter.class.getSimpleName());
-        }
 
         presenter.getCommentFirstTime(getArguments().getInt(KolCommentActivity.ARGS_ID));
     }
