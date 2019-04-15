@@ -269,7 +269,7 @@
         android:layout_marginTop="@dimen/dp_10"
         android:drawablePadding="@dimen/dp_4"
         android:visibility="gone"
-        app:drawableRightCompat="@drawable/ic_official_store_product"
+        <!--app:drawableRightCompat="@drawable/ic_official_store_product"-->
         app:fontSize="micro"
         app:layout_constraintLeft_toLeftOf="@+id/product_name"
         app:layout_constraintStart_toStartOf="@+id/product_name"

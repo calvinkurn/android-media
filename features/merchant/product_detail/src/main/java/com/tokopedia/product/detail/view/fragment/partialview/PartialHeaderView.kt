@@ -52,7 +52,7 @@ class PartialHeaderView private constructor(private val view: View,
 
         if (goldOs.isGoldBadge == 1) {
             labelIc = contex.getString(R.string.from_official_store_label)
-            imageIc = ImageSpan(contex, R.drawable.ic_badge_pm)
+            imageIc = ImageSpan(contex, R.drawable.ic_pointer_power_merchant)
             colorIc = ContextCompat.getColor(contex,R.color.green_power_badge)
         } else {
             labelIc = contex.getString(R.string.from_power_badge_label)
