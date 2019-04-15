@@ -73,7 +73,7 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                 override fun onError(e: Throwable) {
                     if (isViewAttached) {
                         view.hideLoadingDialog()
-                        view.onErrorCheckPromoFirstStep(ErrorHandler.getErrorMessage(view.getActivityContext(), e), isFromList)
+                        view.onErrorCheckPromoFirstStep(ErrorHandler.getErrorMessage(view.getActivityContext(), e))
                     }
                 }
 
@@ -83,15 +83,15 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                         val responseGetPromoStack = checkPromoStackingCodeMapper.call(response)
                         if (responseGetPromoStack.status != "OK" || responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
                             val message = responseGetPromoStack.data.message.text
-                            view.onErrorCheckPromoFirstStep(message, isFromList)
+                            view.onErrorCheckPromoFirstStep(message)
                         } else {
                             if (responseGetPromoStack.data.codes.isEmpty() && responseGetPromoStack.data.voucherOrders.isEmpty()) {
                                 view.hideLoadingDialog()
-                                view.onErrorCheckPromoFirstStep("", isFromList)
+                                view.onErrorCheckPromoFirstStep("")
                             } else {
                                 responseGetPromoStack.data.voucherOrders.forEach {
                                     if (!it.success && it.message.state.equals("red")) {
-                                        view.onErrorCheckPromoFirstStep(it.message.text, isFromList)
+                                        view.onErrorCheckPromoFirstStep(it.message.text)
                                         return
                                     }
                                 }

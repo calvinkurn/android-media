@@ -22,7 +22,9 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_total_benefit"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_20"/>
 
             <android.support.v7.widget.CardView
                 android:id="@+id/cardTicker"
@@ -33,8 +35,7 @@
                 android:layout_marginRight="@dimen/dp_20"
                 android:layout_marginEnd="@dimen/dp_20"
                 app:cardCornerRadius="@dimen/dp_8"
-                tools:visibility="visible"
-                app:cardElevation="@dimen/dp_3">
+                tools:visibility="visible">
 
                 <FrameLayout
                     android:id="@+id/layoutTickerFrameGlobal"
@@ -98,6 +99,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
                     android:textStyle="bold"
+                    android:textColor="@color/total_benefit"
                     android:text="@string/totalbenefit_bottomsheet_all_amount"/>
 
             </RelativeLayout>

@@ -85,7 +85,7 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
         imageCloseGlobal?.setOnClickListener {
             actionListener?.onResetPromoDiscount()
         }
-        layoutUsePromoGlobal?.setOnClickListener {
+        relativeLayoutUsePromoGlobal?.setOnClickListener {
             if (state != State.DISABLED) actionListener?.onClickUsePromo()
         }
         layoutTickerFrameGlobal?.setOnClickListener {
@@ -106,13 +106,13 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
     }
 
     private fun setViewEmpty() {
-        layoutUsePromoGlobal?.visibility = View.VISIBLE
-        layoutTickerFrameGlobal?.visibility = View.GONE
+        relativeLayoutUsePromoGlobal?.visibility = View.VISIBLE
+        layoutState.visibility = View.GONE
     }
 
     private fun setViewCouponShow() {
-        layoutUsePromoGlobal?.visibility = View.GONE
-        layoutTickerFrameGlobal?.visibility = View.VISIBLE
+        relativeLayoutUsePromoGlobal?.visibility = View.GONE
+        layoutState.visibility = View.VISIBLE
     }
 
     private fun setViewFailed() {
@@ -144,11 +144,13 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
 
     private fun setViewGlobal() {
         ic_button_coupon.setImageResource(R.drawable.ic_kupon_telur)
+        ic_button_coupon.visibility = View.VISIBLE
         title_button_coupon.setText(R.string.promo_global_title)
     }
 
     private fun setViewMerchant() {
         ic_button_coupon.setImageResource(R.drawable.ic_merchant_promo)
+        ic_button_coupon.visibility = View.GONE
         title_button_coupon.setText(R.string.promo_merchant_title)
     }
 

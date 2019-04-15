@@ -1112,13 +1112,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         restartBanner(isVisibleToUser);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        HomePageTracking.sendScreen(getActivity(), getScreenName());
-        sendScreen();
-    }
-
     private void restartBanner(boolean isVisibleToUser) {
         if ((isVisibleToUser && getView() != null) && adapter != null) {
             adapter.notifyDataSetChanged();
@@ -1127,7 +1120,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void trackScreen(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() != null) {
-            HomePageTracking.sendScreen(getActivity(), getScreenName());
             sendScreen();
         }
     }

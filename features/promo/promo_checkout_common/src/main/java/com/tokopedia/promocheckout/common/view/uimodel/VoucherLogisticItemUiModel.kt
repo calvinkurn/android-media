@@ -9,6 +9,7 @@ import android.os.Parcelable
 data class VoucherLogisticItemUiModel(var code: String = "", var couponDesc: String = "", var message: String = "") : Parcelable {
     constructor(source: Parcel) : this(
             source.readString(),
+            source.readString(),
             source.readString()
     )
 
@@ -16,6 +17,7 @@ data class VoucherLogisticItemUiModel(var code: String = "", var couponDesc: Str
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeString(code)
+        writeString(couponDesc)
         writeString(message)
     }
 
