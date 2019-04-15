@@ -51,7 +51,7 @@ abstract class CacheManager(val context: Context) {
     }
 
     @JvmOverloads
-    fun getString(customId: String, defaultString: String = ""): String? {
+    fun getString(customId: String, defaultString: String? = ""): String? {
         try {
             val value: String? = cacheRepository.get(id + customId)
             if (value.isNullOrEmpty()) {

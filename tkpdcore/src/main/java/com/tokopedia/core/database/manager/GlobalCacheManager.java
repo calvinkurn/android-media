@@ -1,27 +1,18 @@
 package com.tokopedia.core.database.manager;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.sql.language.Delete;
-import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.core.database.DbFlowDatabase;
-import com.tokopedia.core.database.DbFlowOperation;
-import com.tokopedia.core.database.model.SimpleDatabaseModel;
-import com.tokopedia.core.database.model.SimpleDatabaseModel_Table;
-
-import java.util.List;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 
 /**
  * Created by ricoharisin on 11/23/15.
- * Use PersistentCacheManager library instead
+ * Use PersistentCacheManager library direcly instead
  */
 @Deprecated
-public class GlobalCacheManager implements DbFlowOperation<SimpleDatabaseModel>,
-        CacheManager {
+public class GlobalCacheManager implements CacheManager {
 
     private String Key;
     private String Value;
@@ -52,87 +43,34 @@ public class GlobalCacheManager implements DbFlowOperation<SimpleDatabaseModel>,
         return this;
     }
 
-    @Deprecated
-    public long getCacheDuration(int duration) {
-        return System.currentTimeMillis() / 1000L + (duration * 1000);
-    }
-
     public void store() {
-        SimpleDatabaseModel simpleDB = new SimpleDatabaseModel();
-        simpleDB.key = Key;
-        simpleDB.value = Value;
-        simpleDB.expiredTime = expiredTime;
-        simpleDB.save();
-    }
-
-    @Override
-    public void store(SimpleDatabaseModel data) {
-
+        PersistentCacheManager.instance.put(Key, Value,
+                this.expiredTime - System.currentTimeMillis());
     }
 
     @Override
     public void save(String key, String value, long durationInSeconds) {
-        SimpleDatabaseModel simpleDB = new SimpleDatabaseModel();
-        simpleDB.key = key;
-        simpleDB.value = value;
-        simpleDB.expiredTime = System.currentTimeMillis() + durationInSeconds * 1000L;
-        simpleDB.save();
+        PersistentCacheManager.instance.put(key, value, durationInSeconds * 1000L);
     }
 
     public void delete(String key) {
-        new Delete().from(SimpleDatabaseModel.class).where(SimpleDatabaseModel_Table.key.is(key)).execute();
+        PersistentCacheManager.instance.delete(key);
     }
 
     @Override
     public String get(String key) {
-        SimpleDatabaseModel cache = new Select().from(SimpleDatabaseModel.class)
-                .where(SimpleDatabaseModel_Table.key.is(key)).querySingle();
-        if (cache == null)
-            return null;
-        if (isExpired(cache.expiredTime)) {
-            return null;
-        } else {
-            return cache.value;
-        }
+        return PersistentCacheManager.instance.getString(key, null);
     }
 
     @Override
     public boolean isExpired(String key) {
-        SimpleDatabaseModel cache = new Select().from(SimpleDatabaseModel.class)
-                .where(SimpleDatabaseModel_Table.key.is(key)).querySingle();
-        return cache == null || isExpired(cache.expiredTime);
-    }
-
-    @Deprecated
-    public void bulkInsert(List<String> key, List<String> value) {
-        final DatabaseWrapper database = FlowManager.getDatabase(DbFlowDatabase.NAME).getWritableDatabase();
-        database.beginTransaction();
-        try {
-            for (int i = 0; i < key.size(); i++) {
-                SimpleDatabaseModel simpleDB = new SimpleDatabaseModel();
-                simpleDB.key = key.get(i);
-                simpleDB.value = value.get(i);
-                simpleDB.save();
-            }
-            database.setTransactionSuccessful();
-        } finally {
-            database.endTransaction();
-        }
+        return TextUtils.isEmpty(get(key));
     }
 
     public String getValueString(String key) {
-        SimpleDatabaseModel cache = new Select().from(SimpleDatabaseModel.class)
-                .where(SimpleDatabaseModel_Table.key.is(key)).querySingle();
-        if (cache == null)
-            return null;
-        if (isExpired(cache.expiredTime)) {
-            throw new RuntimeException("Cache is expired!!");
-        } else {
-            return cache.value;
-        }
+        return get(key);
     }
 
-    @Override
     public <T> T getConvertObjData(String key, Class<T> clazz) {
         Gson gson = new Gson();
         return gson.fromJson(getValueString(key), clazz);
@@ -145,32 +83,14 @@ public class GlobalCacheManager implements DbFlowOperation<SimpleDatabaseModel>,
         return expiredTime < System.currentTimeMillis();
     }
 
-    @Override
-    public SimpleDatabaseModel getData(String key) {
-        return null;
-    }
 
-    @Override
-    public List<SimpleDatabaseModel> getDataList(String key) {
-        return null;
-    }
-
-    /**
-     * use PersistentCacheManager to replace GlobalCacheManager
-     * PersistentCacheManager.instance.delete()
-     */
     @Deprecated
     public void deleteAll() {
-        new Delete().from(SimpleDatabaseModel.class).execute();
+        PersistentCacheManager.instance.delete();
     }
 
-    /**
-     * use PersistentCacheManager to replace GlobalCacheManager
-     */
     @Deprecated
     public static boolean isAvailable(String key) {
-        SimpleDatabaseModel cache = new Select().from(SimpleDatabaseModel.class)
-                .where(SimpleDatabaseModel_Table.key.is(key)).querySingle();
-        return cache != null;
+        return !TextUtils.isEmpty(PersistentCacheManager.instance.getString(key, null));
     }
 }
