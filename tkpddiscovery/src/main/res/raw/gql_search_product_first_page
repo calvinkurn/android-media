@@ -316,4 +316,20 @@ searchProduct(params: $params) {
         applinks
       }
     }
+    global_search_navigation(keyword:$query, device:"android", size:4){
+        data{
+          title
+          keyword
+          nav_template
+          see_all_applink
+          see_all_url
+          list {
+            name
+            info
+            image_url
+            applink
+            url
+          }
+        }
+    }
 }
