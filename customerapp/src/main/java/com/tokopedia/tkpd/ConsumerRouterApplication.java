@@ -17,7 +17,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.crashlytics.android.Crashlytics;
@@ -86,7 +85,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.screen.IndexScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -102,7 +100,6 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
@@ -132,7 +129,6 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.share.DefaultShare;
@@ -198,7 +194,6 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.channel.view.fragment.ChannelFragment;
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
-import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.groupchat.room.view.activity.PlayActivity;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.IHomeRouter;
@@ -227,7 +222,6 @@ import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.model.Configuration;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
 import com.tokopedia.kyc.KYCRouter;
@@ -418,7 +412,6 @@ import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokopoints.TokopointRouter;
-import com.tokopedia.tokopoints.view.activity.TokoPointsHomeActivity;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.dashboard.TopAdsDashboardRouter;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
@@ -428,7 +421,6 @@ import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.constant.TrainUrl;
@@ -443,7 +435,6 @@ import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
-import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.others.CreditCardFingerPrintUseCase;
@@ -455,7 +446,6 @@ import com.tokopedia.transaction.wallet.WalletActivity;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.cod.Data;
-import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.usecase.UseCase;
@@ -2021,22 +2011,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return intent;
     }
 
-    @Override
-    public Intent getAddToCartIntent(Context context, String productId, String price, String
-            imageSource) {
-        String EXTRA_PRODUCT_CART = "EXTRA_PRODUCT_CART";
-
-        ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
-                .setProductId(productId)
-                .setPrice(price)
-                .setImageUri(imageSource)
-                .build();
-
-        Intent intent = new Intent(context, CartActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        return intent;
-    }
-
     public Observable<String> getAtcObsr() {
         FlightAddToCartUseCase useCase = new FlightAddToCartUseCase(null, null);
         return useCase.createObservable(null)
@@ -2264,11 +2238,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void unregisterShake() {
         ShakeDetectManager.getShakeDetectManager().unregisterShake();
-    }
-
-    @Override
-    public Intent getKolCommentActivity(Context context, int postId, int rowNumber) {
-        return KolCommentActivity.getCallingIntent(context, postId, rowNumber);
     }
 
     @Override
