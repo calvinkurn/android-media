@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -163,7 +162,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private SwipeToRefresh swipeToRefresh;
     private View mainContent;
     private View newFeed;
-    private AbstractionRouter abstractionRouter;
     private FeedModuleRouter feedModuleRouter;
     private BroadcastReceiver newFeedReceiver;
 
@@ -238,15 +236,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         layoutManager = new NpaLinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL,
                 false);
-
-        if (getActivity() != null
-                && getActivity().getApplicationContext() != null
-                && getActivity().getApplicationContext() instanceof AbstractionRouter) {
-            abstractionRouter = (AbstractionRouter) getActivity().getApplicationContext();
-        } else {
-            throw new IllegalStateException("Application must implement " +
-                    AbstractionRouter.class.getSimpleName());
-        }
 
         if (getActivity().getApplication() instanceof FeedModuleRouter) {
             feedModuleRouter = (FeedModuleRouter) getActivity().getApplication();
@@ -402,9 +391,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-    private void goToProductDetail(String productId, String imageSourceSingle, String name,
-                                   String price) {
-        getActivity().startActivity(getProductIntent(productId));
+    private void goToProductDetail(String productId) {
+        if (getActivity() != null) {
+            getActivity().startActivity(getProductIntent(productId));
+        }
     }
 
     private Intent getProductIntent(String productId) {
@@ -630,10 +620,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        goToProductDetail(product.getId(),
-                product.getImage().getS_ecs(),
-                product.getName(),
-                product.getPriceFormat()
+        goToProductDetail(product.getId()
         );
 
         analytics.eventFeedClickProduct(getScreenName(),
