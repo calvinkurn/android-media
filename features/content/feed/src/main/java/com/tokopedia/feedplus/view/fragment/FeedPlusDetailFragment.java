@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.feedplus.FeedModuleRouter;
@@ -273,8 +274,9 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     private void goToShopDetail(Integer shopId) {
         if (getActivity() != null && getActivity().getApplicationContext() != null) {
-            Intent intent = ((FeedModuleRouter) getActivity().getApplicationContext())
-                    .getShopPageIntent(getActivity(), String.valueOf(shopId));
+            Intent intent = RouteManager.getIntent(getActivity(),
+                    ApplinkConst.SHOP,
+                    String.valueOf(shopId));
             startActivity(intent);
         }
     }

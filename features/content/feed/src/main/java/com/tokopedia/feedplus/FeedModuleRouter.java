@@ -14,8 +14,6 @@ public interface FeedModuleRouter {
 
     Interceptor getChuckInterceptor();
 
-    Intent getShopPageIntent(Context context, String shopId);
-
     Intent getHomeIntent(Context context);
 
     void openRedirectUrl(Activity activity, String url);

@@ -391,20 +391,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-    private void goToProductDetail(String productId) {
-        if (getActivity() != null) {
-            getActivity().startActivity(getProductIntent(productId));
-        }
-    }
-
-    private Intent getProductIntent(String productId) {
-        if (getContext() != null) {
-            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
-        } else {
-            return null;
-        }
-    }
-
     @Override
     public void onOpenVideo(String videoUrl, String subtitle) {
         Intent intent = TransparentVideoActivity.getIntent(getActivity(), videoUrl, subtitle);
@@ -503,11 +489,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSearchShopButtonClicked() {
-        int INIT_STATE_FRAGMENT_FAVORITE = 2;
-        String EXTRA_INIT_FRAGMENT = "EXTRA_INIT_FRAGMENT";
-        Intent intent = feedModuleRouter.getHomeIntent(getContext());
-        intent.putExtra(EXTRA_INIT_FRAGMENT, INIT_STATE_FRAGMENT_FAVORITE);
-        startActivity(intent);
+        if (getContext() != null) {
+            int INIT_STATE_FRAGMENT_FAVORITE = 2;
+            String EXTRA_INIT_FRAGMENT = "EXTRA_INIT_FRAGMENT";
+            Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.HOME);
+            intent.putExtra(EXTRA_INIT_FRAGMENT, INIT_STATE_FRAGMENT_FAVORITE);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -647,8 +635,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onShopItemClicked(int position, Shop shop) {
-        Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), shop.getId());
-        startActivity(intent);
+        goToShopPage(shop.getId());
         analytics.eventFeedClickShop(getScreenName(),
                 shop.getId(),
                 FeedTrackingEventLabel.Click.TOP_ADS_SHOP);
@@ -1318,8 +1305,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onShopItemClicked(int positionInFeed, int adapterPosition, @NotNull Shop shop) {
-        Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), shop.getId());
-        startActivity(intent);
+        goToShopPage(shop.getId());
 
         if (adapter.getlist().get(positionInFeed) instanceof TopadsShopViewModel) {
             TopadsShopViewModel model = (TopadsShopViewModel) adapter.getlist().get(positionInFeed);
@@ -1634,6 +1620,27 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     contentId
             );
             startActivityForResult(intent, OPEN_CONTENT_REPORT);
+        }
+    }
+
+    private void goToProductDetail(String productId) {
+        if (getActivity() != null) {
+            getActivity().startActivity(getProductIntent(productId));
+        }
+    }
+
+    private Intent getProductIntent(String productId) {
+        if (getContext() != null) {
+            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
+        }
+    }
+
+    private void goToShopPage(String shopId) {
+        if (getActivity() != null) {
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SHOP, shopId);
+            getActivity().startActivity(intent);
         }
     }
 
