@@ -82,8 +82,6 @@ import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.feedplus.view.viewmodel.RetryModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
@@ -721,16 +719,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 break;
             case CREATE_POST:
                 break;
-            case OPEN_KOL_PROFILE_FROM_RECOMMENDATION:
-                if (resultCode == Activity.RESULT_OK) {
-                    onSuccessFollowUnfollowFromProfileRecommendation(
-                            data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
-                            data.getIntExtra(ARGS_ITEM_ROW_NUMBER, DEFAULT_VALUE),
-                            data.getIntExtra(ProfileActivity.PARAM_IS_FOLLOWING,
-                                    DEFAULT_VALUE)
-                    );
-                }
-                break;
             case OPEN_CONTENT_REPORT:
                 if (resultCode == Activity.RESULT_OK) {
                     if (data.getBooleanExtra(ContentReportActivity.RESULT_SUCCESS, false)) {
@@ -1229,27 +1217,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-    private void onSuccessFollowUnfollowFromProfileRecommendation(int rowNumber,
-                                                                  int itemRowNumber,
-                                                                  int isFollowing) {
-        if (rowNumber != DEFAULT_VALUE
-                && itemRowNumber != DEFAULT_VALUE
-                && adapter.getlist().size() > rowNumber
-                && adapter.getlist().get(rowNumber) instanceof KolRecommendationViewModel) {
-            KolRecommendationViewModel recommendationViewModel =
-                    (KolRecommendationViewModel) adapter.getlist().get(rowNumber);
-
-            if (isFollowing != DEFAULT_VALUE) {
-                recommendationViewModel.getListRecommend()
-                        .get(itemRowNumber)
-                        .setFollowed(isFollowing
-                                == ProfileActivity.IS_FOLLOWING_TRUE);
-            }
-
-            adapter.notifyItemChanged(rowNumber);
-        }
-    }
-
     private void onSuccessReportContent() {
         ToasterNormal
                 .make(getView(),
@@ -1308,7 +1275,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                 = pollContentViewModel.getOptionList().get(i);
 
                         optionViewModel.setSelected(optionId.equals(optionViewModel.getOptionId()) ?
-                                PollOptionViewModel.SELECTED : PollOptionViewModel.UNSELECTED);
+                                PollContentOptionViewModel.SELECTED
+                                : PollContentOptionViewModel.UNSELECTED);
 
                         int newPercentage = 0;
                         try {

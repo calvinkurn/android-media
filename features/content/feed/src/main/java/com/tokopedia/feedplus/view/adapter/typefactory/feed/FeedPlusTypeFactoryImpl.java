@@ -11,7 +11,6 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHold
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation
@@ -25,7 +24,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendat
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder;
-import com.tokopedia.feedplus.view.adapter.viewholder.kol.KolRecommendationViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.WhitelistViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolder;
@@ -34,7 +32,6 @@ import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel;
 import com.tokopedia.feedplus.view.viewmodel.RetryModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder;
@@ -127,11 +124,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
-    public int type(KolRecommendationViewModel kolRecommendationViewModel) {
-        return KolRecommendationViewHolder.LAYOUT;
-    }
-
-    @Override
     public int type(WhitelistViewModel whitelistViewModel) {
         return WhitelistViewHolder.LAYOUT;
     }
@@ -175,8 +167,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new EmptyFeedViewHolder(view, viewListener);
         else if (type == RetryViewHolder.LAYOUT)
             viewHolder = new RetryViewHolder(view, viewListener);
-        else if (type == KolRecommendationViewHolder.LAYOUT)
-            viewHolder = new KolRecommendationViewHolder(view, kolViewListener, analytics);
         else if (type == EmptyFeedBeforeLoginViewHolder.LAYOUT)
             viewHolder = new EmptyFeedBeforeLoginViewHolder(view, viewListener);
         else if (type == KolPostViewHolder.LAYOUT)

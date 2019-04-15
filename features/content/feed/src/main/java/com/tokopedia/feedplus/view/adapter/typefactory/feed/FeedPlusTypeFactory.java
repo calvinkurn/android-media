@@ -5,7 +5,6 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel;
 import com.tokopedia.feedplus.view.viewmodel.RetryModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
@@ -16,8 +15,6 @@ import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 public interface FeedPlusTypeFactory {
 
     int type(KolPostViewModel kolPostViewModel);
-
-    int type(KolRecommendationViewModel kolRecommendationViewModel);
 
     int type(EmptyFeedBeforeLoginModel emptyFeedBeforeLoginModel);
 
