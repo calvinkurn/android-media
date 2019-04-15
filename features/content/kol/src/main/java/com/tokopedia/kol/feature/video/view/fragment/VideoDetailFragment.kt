@@ -348,14 +348,8 @@ class VideoDetailFragment:
                 shareText.show()
                 shareText.text = footer.share.text
                 shareIcon.setOnClickListener {
-                    kolRouter.shareFeed(
-                            activity!!,
-                            id,
-                            dynamicPostViewModel.footer.share.url,
-                            dynamicPostViewModel.footer.share.title,
-                            dynamicPostViewModel.footer.share.imageUrl,
-                            dynamicPostViewModel.footer.share.description
-                    )
+                    doShare(String.format("%s %s", dynamicPostViewModel.footer.share.description, dynamicPostViewModel.footer.share.url)
+                            , dynamicPostViewModel.footer.share.title)
                 }
             } else {
                 shareIcon.hide()
@@ -363,6 +357,15 @@ class VideoDetailFragment:
             }
         }
 
+    }
+
+    private fun doShare(body: String, title: String) {
+        val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
+        sharingIntent.type = "text/plain"
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, body)
+        startActivity(
+                Intent.createChooser(sharingIntent, title)
+        )
     }
 
     private fun bindLike(like: Like) {

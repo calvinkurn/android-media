@@ -13,7 +13,4 @@ import okhttp3.Interceptor;
 
 public interface KolRouter {
     void openRedirectUrl(Activity activity, String url);
-
-    void shareFeed(Activity activity, String valueOf, String url, String title, String imageUrl,
-                   String description);
 }

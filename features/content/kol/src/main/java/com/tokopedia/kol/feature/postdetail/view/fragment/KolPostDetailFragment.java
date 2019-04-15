@@ -683,7 +683,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     public void onGoToLink(String link) {
         if (!TextUtils.isEmpty(link)) {
-            kolRouter.openRedirectUrl(getActivity(), link);
+//            kolRouter.openRedirectUrl(getActivity(), link);
+            RouteManager.route(getActivity(), link);
         }
     }
 
