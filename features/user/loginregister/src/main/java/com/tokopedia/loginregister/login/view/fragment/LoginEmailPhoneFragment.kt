@@ -37,6 +37,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalFintech
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.loginregister.LoginRegisterPhoneRouter
@@ -697,9 +700,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun goToLoginPhoneVerifyPage(phoneNumber: String) {
         analytics.trackLoginPhoneNumber()
         activity?.let {
-            val intent = (it.applicationContext as LoginRegisterPhoneRouter).getTokoCashOtpIntent(
-                    it, phoneNumber, true, RequestOtpUseCase.MODE_SMS
-            )
+            val intent = VerificationActivity.getShowChooseVerificationMethodIntent(it,
+                    RequestOtpUseCase.OTP_TYPE_LOGIN_PHONE_NUMBER, phoneNumber, "")
             startActivityForResult(intent, REQUEST_LOGIN_PHONE)
         }
     }
@@ -830,10 +832,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     private fun goToChooseAccountPage(data: ChooseTokoCashAccountViewModel) {
         if (activity != null && activity!!.applicationContext != null) {
-
-            val intent = (activity!!.applicationContext as LoginRegisterPhoneRouter)
-                    .getChooseTokocashAccountIntent(activity!!, data)
-
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal
+                    .CHOOSE_ACCOUNT)
             startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
         }
     }
@@ -890,13 +890,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     && resultCode == Activity.RESULT_OK
                     && data != null
                     && data.getParcelableExtra<Parcelable>(ChooseTokoCashAccountViewModel.ARGS_DATA) != null) {
-                val chooseTokoCashAccountViewModel = data.getParcelableExtra<ChooseTokoCashAccountViewModel>(ChooseTokoCashAccountViewModel.ARGS_DATA)
-                if (!chooseTokoCashAccountViewModel.listAccount.isEmpty()) {
-                    goToChooseAccountPage(chooseTokoCashAccountViewModel)
-                } else {
-                    val phoneNumber = emailPhoneEditText.text.toString()
-                    goToNoTokocashAccountPage(phoneNumber)
-                }
+                goToChooseAccountPage(chooseTokoCashAccountViewModel)
+
             } else if (requestCode == REQUEST_LOGIN_PHONE && resultCode ==
                     LoginRegisterPhoneRouter.RESULT_SUCCESS_AUTO_LOGIN) run {
                 onSuccessLoginPhoneNumber()

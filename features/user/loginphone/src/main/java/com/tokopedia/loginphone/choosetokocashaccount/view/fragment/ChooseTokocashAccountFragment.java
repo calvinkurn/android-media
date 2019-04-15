@@ -49,6 +49,8 @@ import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -121,9 +123,9 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            viewModel = savedInstanceState.getParcelable(ChooseTokoCashAccountViewModel.ARGS_DATA);
+//            viewModel = savedInstanceState.getParcelable(ChooseTokoCashAccountViewModel.ARGS_DATA);
         } else if (getArguments() != null) {
-            viewModel = getArguments().getParcelable(ChooseTokoCashAccountViewModel.ARGS_DATA);
+//            viewModel = getArguments().getParcelable(ChooseTokoCashAccountViewModel.ARGS_DATA);
         } else if (getActivity() != null) {
             getActivity().finish();
         }
@@ -181,7 +183,9 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     }
 
     private void prepareView() {
-        adapter = TokocashAccountAdapter.createInstance(this, viewModel.getListAccount());
+//        adapter = TokocashAccountAdapter.createInstance(this, viewModel.getListAccount());
+        adapter = TokocashAccountAdapter.createInstance(this, new ArrayList<>());
+
         listAccount.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager
                 .VERTICAL, false));
         listAccount.setAdapter(adapter);

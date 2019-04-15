@@ -12,11 +12,11 @@ import com.tokopedia.loginphone.choosetokocashaccount.view.fragment.ChooseTokoca
 
 /**
  * @author by nisie on 12/4/17.
+ * For navigating to this class
+ * @see com.tokopedia.applink.internal.ApplinkConstInternalGlobal#CHOOSE_ACCOUNT
  */
 
 public class ChooseTokocashAccountActivity extends BaseSimpleActivity {
-
-    public static final String ARGS_DATA = "data";
 
     @Override
     protected Fragment getNewFragment() {
