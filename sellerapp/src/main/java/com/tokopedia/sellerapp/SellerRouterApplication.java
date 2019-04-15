@@ -1122,11 +1122,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void startAddProduct(Activity activity, String shopId) {
-        goToAddProduct(activity);
-    }
-
-    @Override
     public String getDesktopLinkGroupChat() {
         return "";
     }

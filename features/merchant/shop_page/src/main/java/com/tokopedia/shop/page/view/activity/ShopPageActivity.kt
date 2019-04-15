@@ -15,8 +15,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import com.airbnb.deeplinkdispatch.DeepLink
-import com.google.android.gms.tagmanager.DataLayer
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
@@ -27,6 +25,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed
@@ -502,7 +502,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         shopInfo?.run {
             shopPageTracking.clickAddProduct(CustomDimensionShopPage.create(shopInfo))
         }
-        (application as ShopModuleRouter).goToAddProduct(this)
+        RouteManager.route(this, ApplinkConst.PRODUCT_ADD)
     }
 
     override fun openShop() {

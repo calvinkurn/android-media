@@ -13,10 +13,10 @@ import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -37,7 +37,6 @@ import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.SecurityModel;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -47,16 +46,16 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivi
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.loyalty.LoyaltyRouter;
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
 import com.tokopedia.referral.view.activity.ReferralActivity;
 import com.tokopedia.session.domain.interactor.SignInInteractor;
 import com.tokopedia.session.domain.interactor.SignInInteractorImpl;
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.tkpd.deeplink.WhitelistItem;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.di.component.DaggerDeeplinkComponent;
 import com.tokopedia.tkpd.deeplink.di.component.DeeplinkComponent;
-import com.tokopedia.tkpd.deeplink.domain.GetShopInfoUseCase;
 import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.home.ReactNativeDiscoveryActivity;
@@ -67,7 +66,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -99,7 +97,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private MapUrlUseCase mapUrlUseCase;
 
     @Inject
-    GetShopInfoUseCase getShopInfoUseCase;
+    GetShopInfoByDomainUseCase getShopInfoUseCase;
 
     @Inject
     @Named("productUseCase")
@@ -170,7 +168,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void initInjection(DeepLinkActivity activity) {
         DeeplinkComponent component = DaggerDeeplinkComponent.builder()
-                .appComponent(activity.getApplicationComponent())
+                .baseAppComponent(((BaseMainApplication) activity.getApplication()).getBaseAppComponent())
                 .build();
         component.inject(this);
     }
@@ -551,9 +549,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openShopInfo(final List<String> linkSegment, final Uri uriData) {
         viewListener.showLoading();
-        RequestParams params = RequestParams.create();
-        params.putString("shop_domain", linkSegment.get(0));
-        getShopInfoUseCase.execute(params, new Subscriber<ShopModel>() {
+        getShopInfoUseCase.execute(GetShopInfoByDomainUseCase.createRequestParam(linkSegment.get(0)), new Subscriber<ShopInfo>() {
             @Override
             public void onCompleted() {
 
@@ -567,10 +563,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             }
 
             @Override
-            public void onNext(ShopModel shopModel) {
+            public void onNext(ShopInfo shopInfo) {
                 viewListener.finishLoading();
-                if (shopModel != null && shopModel.info != null) {
-                    Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopModel.info.getShopId());
+                if (shopInfo != null && shopInfo.getInfo() != null) {
+                    Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopInfo.getInfo().getShopId());
                     context.startActivity(intent);
                 } else {
                     if (!GlobalConfig.DEBUG) {
@@ -586,7 +582,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void openProduct(final List<String> linkSegment, final Uri uriData) {
         RequestParams params = RequestParams.create();
         params.putString("shop_domain", linkSegment.get(0));
-        getShopInfoUseCase.execute(params, new Subscriber<ShopModel>() {
+        getShopInfoUseCase.execute(GetShopInfoByDomainUseCase.createRequestParam(linkSegment.get(0)), new Subscriber<ShopInfo>() {
             @Override
             public void onCompleted() {
 
@@ -601,9 +597,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             }
 
             @Override
-            public void onNext(ShopModel shopModel) {
+            public void onNext(ShopInfo shopInfo) {
                 viewListener.finishLoading();
-                if (shopModel != null && shopModel.info != null) {
+                if (shopInfo != null && shopInfo.getInfo() != null) {
                     context.startActivity(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
                             linkSegment.get(0), linkSegment.get(1)));
                 } else {
