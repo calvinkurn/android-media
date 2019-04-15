@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.text.style.ImageSpan
 import android.text.style.StyleSpan
 import android.view.View
 import android.widget.TextView
@@ -18,6 +19,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Campaign
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.product.detail.data.model.shop.ShopInfo
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
 import kotlinx.android.synthetic.main.partial_product_detail_header.view.*
@@ -37,23 +39,46 @@ class PartialHeaderView private constructor(private val view: View,
     }
 
     init {
-        with(view.label_official_store){
-            val blackString = context.getString(R.string.product_from)+" "
-            val startSpan = blackString.length
 
-            val spanText = SpannableString(blackString +
-                    context.getString(R.string.from_official_store_label))
+
+
+    }
+
+    fun showOfficialStore(goldOs: ShopInfo.GoldOS){
+        var imageIc:Any
+        var colorIc:Any
+        var labelIc:String
+        val contex = activity!!.applicationContext
+
+        if (goldOs.isGoldBadge == 1) {
+            labelIc = contex.getString(R.string.from_official_store_label)
+            imageIc = ImageSpan(contex, R.drawable.ic_badge_pm)
+            colorIc = ContextCompat.getColor(contex,R.color.green_power_badge)
+        } else {
+            labelIc = contex.getString(R.string.from_power_badge_label)
+            imageIc = ImageSpan(contex, R.drawable.ic_official_store_product)
+            colorIc = ContextCompat.getColor(contex,R.color.purple_official_store)
+        }
+
+        with(view.label_official_store){
+
+            val blackString = context.getString(R.string.product_from)+" "
+            val startSpan = blackString.length+1
+
+            val spanText = SpannableString(blackString + imageIc + " " +
+                   labelIc)
             spanText.setSpan(
-                    ForegroundColorSpan(ContextCompat.getColor(context, R.color.purple_official_store)),
+                    ForegroundColorSpan(colorIc),
                     startSpan, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             spanText.setSpan(StyleSpan(Typeface.BOLD), startSpan, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             setText(spanText, TextView.BufferType.SPANNABLE)
         }
-    }
 
-    fun showOfficialStore(shown: Boolean){
-        if (shown) view.label_official_store.visible()
-        else view.label_official_store.gone()
+
+
+
+        if (goldOs.isOfficial==1 || goldOs.isGoldBadge==1) view.label_official_store.visible()
+        else  view.label_official_store.gone()
     }
 
     fun renderData(data: ProductInfo) {
