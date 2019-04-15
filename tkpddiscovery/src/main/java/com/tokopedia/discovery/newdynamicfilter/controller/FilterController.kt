@@ -60,13 +60,34 @@ class FilterController {
         val optionsForFilterViewState = mutableListOf<Option>()
 
         loopSelectedOptionsInFilterList { _, option ->
-            addOrCombineOptions(optionsForFilterViewState, option)
+            optionsForFilterViewState.add(option)
+        }
+
+        val iterator = optionsForFilterViewState.listIterator()
+        while(iterator.hasNext()) {
+            val option = iterator.next()
+
+            val iterator2 = optionsForFilterViewState.listIterator()
+            while(iterator2.hasNext()) {
+                val optionToCompare = iterator2.next()
+                if(option.value != optionToCompare.value &&
+                    isOptionAlreadyBundled(option.value, optionToCompare.value)) {
+                    iterator.remove()
+                }
+            }
         }
 
         for(option in optionsForFilterViewState) {
             if(option.value == "") option.value = getFilterValue(option.key)
             filterViewState.add(option.uniqueId)
         }
+    }
+
+    private fun isOptionAlreadyBundled(optionValue: String, bundledOptionValue: String) : Boolean {
+        val optionValueList = optionValue.split(OptionHelper.VALUE_SEPARATOR).toList()
+        val bundledOptionValueList = bundledOptionValue.split(OptionHelper.VALUE_SEPARATOR).toList()
+
+        return bundledOptionValueList.containsAll(optionValueList)
     }
 
     private fun addOrCombineOptions(optionsForFilterViewState: MutableList<Option>, option: Option) {
