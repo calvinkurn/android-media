@@ -38,11 +38,11 @@ class PartialHeaderView private constructor(private val view: View,
         fun build(_view: View, _activity: Activity?) = PartialHeaderView(_view, _activity)
     }
 
-    init {
-
-
-
-    }
+//    init {
+//
+//
+//
+//    }
 
     fun showOfficialStore(goldOs: ShopInfo.GoldOS){
         var imageIc:Any
