@@ -39,10 +39,6 @@ public interface FeedPlus {
 
             UserSessionInterface getUserSession();
 
-            void onGoToKolProfileFromRecommendation(int position, int itemPosition, String userId);
-
-            void onGoToListKolRecommendation(int page, int rowNumber, String url);
-
             void onErrorFollowKol(String errorMessage, int id, int status, int rowNumber);
 
             void onSuccessFollowUnfollowKol(int rowNumber);
@@ -76,32 +72,6 @@ public interface FeedPlus {
 
         void setLastCursorOnFirstPage(String lastCursor);
 
-        void onGoToProductDetail(int rowNumber, int page, String id, String imageSourceSingle, String name, String productId);
-
-        void onGoToProductDetailFromProductUpload(
-                int rowNumber,
-                int positionFeedCard,
-                int page,
-                int itemPosition,
-                String productId,
-                String imageSourceSingle,
-                String name,
-                String price,
-                String priceInt,
-                String productUrl,
-                String eventLabel
-        );
-
-        void onGoToProductDetailFromRecentView(String productID, String imgUri, String name, String price);
-
-        void onGoToProductDetailFromInspiration(int page, int rowNumber, String productId,
-                                                String imageSource, String name, String price, String priceInt,
-                                                String productUrl, String source, int positionFeedCard, int itemPosition, String eventLabel);
-
-        void onGoToFeedDetail(int page, int rowNumber, String feedId);
-
-        void onGoToShopDetail(int page, int rowNumber, Integer shopId, String url);
-
         void onOpenVideo(String videoUrl, String subtitle);
 
         void onInfoClicked();
@@ -111,8 +81,6 @@ public interface FeedPlus {
         void onErrorGetFeedFirstPage(String errorMessage);
 
         void onSearchShopButtonClicked();
-
-        void onFavoritedClicked(int adapterPosition);
 
         void showSnackbar(String s);
 
@@ -154,8 +122,6 @@ public interface FeedPlus {
 
         void updateFavoriteFromEmpty(String shopId);
 
-        void onContentProductLinkClicked(String url);
-
         void onUserNotLogin();
 
         void onGoToLogin();
@@ -164,8 +130,6 @@ public interface FeedPlus {
                                VoteStatisticDomainModel voteStatisticDomainModel);
 
         void onErrorSendVote(String message);
-
-        int getAdapterListSize();
 
         void onWhitelistClicked(WhitelistViewModel element);
 

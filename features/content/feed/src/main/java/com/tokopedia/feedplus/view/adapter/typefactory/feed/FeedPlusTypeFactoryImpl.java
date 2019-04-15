@@ -56,8 +56,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         implements FeedPlusTypeFactory, KolPostTypeFactory, DynamicFeedTypeFactory {
 
     private final FeedPlus.View viewListener;
-    private final FeedPlus.View.Kol kolViewListener;
-    private final FeedPlus.View.Polling pollingViewListener;
     private final KolPostListener.View.ViewHolder kolPostListener;
     private final DynamicPostViewHolder.DynamicPostListener dynamicPostListener;
     private final BannerAdapter.BannerItemListener bannerListener;
@@ -75,9 +73,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     public FeedPlusTypeFactoryImpl(FeedPlusFragment context, FeedAnalytics analytics,
                                    UserSessionInterface userSession) {
         this.viewListener = context;
-        this.kolViewListener = context;
         this.kolPostListener = context;
-        this.pollingViewListener = context;
         this.dynamicPostListener = context;
         this.bannerListener = context;
         this.topadsShopListener = context;

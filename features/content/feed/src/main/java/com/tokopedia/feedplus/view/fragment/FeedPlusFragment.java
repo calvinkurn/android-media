@@ -67,7 +67,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
-import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity;
 import com.tokopedia.feedplus.view.activity.TransparentVideoActivity;
 import com.tokopedia.feedplus.view.adapter.EntryPointAdapter;
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter;
@@ -145,7 +144,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
     private static final int OPEN_KOL_PROFILE = 13;
-    private static final int OPEN_KOL_PROFILE_FROM_RECOMMENDATION = 83;
     private static final int OPEN_CONTENT_REPORT = 1310;
     private static final int CREATE_POST = 888;
     private static final int DEFAULT_VALUE = -1;
@@ -153,8 +151,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private static final String TAG = FeedPlusFragment.class.getSimpleName();
     private static final String ARGS_ROW_NUMBER = "row_number";
-    private static final String ARGS_ITEM_ROW_NUMBER = "item_row_number";
-    private static final String FIRST_CURSOR = "FIRST_CURSOR";
     private static final String YOUTUBE_URL = "{youtube_url}";
     private static final String FEED_TRACE = "mp_feed";
     private static final String AFTER_POST = "after_post";
@@ -420,104 +416,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductDetail(int rowNumber, int page, String productId, String
-            imageSourceSingle, String name, String price) {
-        goToProductDetail(productId, imageSourceSingle, name, price);
-        analytics.eventFeedViewProduct(
-                getScreenName(),
-                productId,
-                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View.FEED_PDP);
-    }
-
-    @Override
-    public void onGoToProductDetailFromProductUpload(int rowNumber,
-                                                     int positionFeedCard,
-                                                     int page,
-                                                     int itemPosition,
-                                                     String productId,
-                                                     String imageSourceSingle,
-                                                     String name,
-                                                     String price,
-                                                     String priceInt,
-                                                     String productUrl,
-                                                     String eventLabel) {
-
-        analytics.trackEventClickProductUploadEnhanced(
-                name,
-                productId,
-                priceInt,
-                productUrl,
-                positionFeedCard,
-                itemPosition,
-                getUserSession().getUserId(),
-                eventLabel
-        );
-        goToProductDetail(productId, imageSourceSingle, name, price);
-    }
-
-    @Override
-    public void onGoToProductDetailFromRecentView(String productId, String imgUri,
-                                                  String name, String price) {
-        goToProductDetail(productId, imgUri, name, price);
-        analytics.eventFeedViewProduct(getScreenName(),
-                productId,
-                FeedTrackingEventLabel.View.VIEW_RECENT,
-                FeedTrackingEventLabel.View.FEED_PDP);
-    }
-
-    @Override
-    public void onGoToProductDetailFromInspiration(int page,
-                                                   int rowNumber,
-                                                   String productId,
-                                                   String imageSource,
-                                                   String name,
-                                                   String price,
-                                                   String priceInt,
-                                                   String productUrl,
-                                                   String source,
-                                                   int positionFeedCard,
-                                                   int itemPosition,
-                                                   String eventLabel) {
-        analytics.trackEventClickInspirationEnhanced(
-                name,
-                productId,
-                priceInt,
-                productUrl,
-                positionFeedCard,
-                itemPosition,
-                source,
-                getUserSession().getUserId(),
-                eventLabel
-        );
-
-        goToProductDetail(productId, imageSource, name, price);
-        analytics.eventR3Product(productId, getFeedAnalyticsHeader(page, rowNumber)
-                + FeedTrackingEventLabel.Click.FEED_RECOMMENDATION_PDP);
-    }
-
-    @Override
-    public void onGoToFeedDetail(int page, int rowNumber, String feedId) {
-        Intent intent = FeedPlusDetailActivity.getIntent(
-                getActivity(),
-                feedId,
-                getFeedAnalyticsHeader(page, rowNumber));
-        startActivityForResult(intent, OPEN_DETAIL);
-        analytics.eventFeedView(
-                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View
-                        .FEED_PRODUCT_LIST);
-
-    }
-
-    @Override
-    public void onGoToShopDetail(int page, int rowNumber, Integer shopId, String url) {
-        Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), String.valueOf(shopId));
-        startActivity(intent);
-        analytics.eventFeedViewShop(getScreenName(),
-                String.valueOf(shopId),
-                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View.FEED_SHOP);
-    }
-
-    @Override
     public void onOpenVideo(String videoUrl, String subtitle) {
         Intent intent = TransparentVideoActivity.getIntent(getActivity(), videoUrl, subtitle);
         startActivity(intent);
@@ -526,11 +424,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onInfoClicked() {
         infoBottomSheet.show();
-    }
-
-    @Override
-    public void onFavoritedClicked(int adapterPosition) {
-        adapter.getItemViewType(adapterPosition);
     }
 
     @SuppressLint("Range")
@@ -883,34 +776,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 && !(adapter.getlist().get(0) instanceof EmptyModel);
     }
 
-    private String getFeedAnalyticsHeader(int page, int rowNumber) {
-        return page + "." + rowNumber + " ";
-    }
-
-    private void openWebViewBrandsURL(String url) {
-        if (!url.trim().equals("")) {
-            startActivity(feedModuleRouter.getBrandsWebViewIntent(getActivity(), url));
-        }
-    }
-
-    @Override
-    public void onContentProductLinkClicked(String url) {
-        if (!TextUtils.isEmpty(url)) {
-            feedModuleRouter.openRedirectUrl(getActivity(), url);
-        }
-    }
-
-    @Override
-    public void onGoToKolProfileFromRecommendation(int position, int itemPosition, String userId) {
-        if (getContext() != null) {
-            Intent profileIntent = ProfileActivity.Companion.createIntent(getContext(), userId)
-                    .putExtra(ARGS_ROW_NUMBER, position)
-                    .putExtra(ARGS_ITEM_ROW_NUMBER, itemPosition);
-
-            startActivityForResult(profileIntent, OPEN_KOL_PROFILE_FROM_RECOMMENDATION);
-        }
-    }
-
     @Override
     public void onGoToKolProfile(int rowNumber, String userId, int postId) {
         if (getContext() != null) {
@@ -1046,15 +911,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onVoteOptionClicked(int rowNumber, String pollId, String optionId) {
         presenter.sendVote(rowNumber, pollId, optionId);
-    }
-
-    @Override
-    public void onGoToListKolRecommendation(int page, int rowNumber, String url) {
-        if (getParentFragment() instanceof FeedPlusContainerFragment) {
-            ((FeedPlusContainerFragment) getParentFragment()).goToExplore(true);
-        } else {
-            feedModuleRouter.openRedirectUrl(getActivity(), url);
-        }
     }
 
     @Override
@@ -1302,11 +1158,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public int getAdapterListSize() {
-        return adapter.getItemCount();
-    }
-
-    @Override
     public void onWhitelistClicked(WhitelistViewModel element) {
         analytics.trackClickCreatePost(userSession.getUserId());
         showBottomSheetCreatePost(element);
@@ -1332,8 +1183,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private View createCustomCreatePostBottomSheetView(@NonNull LayoutInflater layoutInflater, WhitelistViewModel element) {
-        View view = layoutInflater.inflate(R.layout.layout_create_post_bottom_sheet
-                , null);
+        View view = layoutInflater.inflate(R.layout.layout_create_post_bottom_sheet, null);
 
         if (getActivity() != null) {
             RecyclerView entryPointRecyclerView = view.findViewById(R.id.entry_point_list);
