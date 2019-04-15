@@ -27,7 +27,6 @@ import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHo
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.ContentProductViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.KolRecommendationViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.PollViewHolder;
-import com.tokopedia.feedplus.view.adapter.viewholder.kol.ProductCommunicationViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.WhitelistViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolder;
@@ -39,7 +38,6 @@ import com.tokopedia.feedplus.view.viewmodel.RetryModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder;
@@ -142,11 +140,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
-    public int type(ProductCommunicationViewModel productCommunicationViewModel) {
-        return ProductCommunicationViewHolder.LAYOUT;
-    }
-
-    @Override
     public int type(PollViewModel pollViewModel) {
         return PollViewHolder.LAYOUT;
     }
@@ -199,8 +192,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new KolRecommendationViewHolder(view, kolViewListener, analytics);
         else if (type == ContentProductViewHolder.LAYOUT)
             viewHolder = new ContentProductViewHolder(view, viewListener);
-        else if (type == ProductCommunicationViewHolder.LAYOUT)
-            viewHolder = new ProductCommunicationViewHolder(view, viewListener, analytics);
         else if (type == PollViewHolder.LAYOUT)
             viewHolder = new PollViewHolder(view, kolViewListener, pollingViewListener);
         else if (type == EmptyFeedBeforeLoginViewHolder.LAYOUT)
