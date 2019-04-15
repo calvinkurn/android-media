@@ -800,7 +800,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (getUserSession() != null && getUserSession().isLoggedIn()) {
             presenter.followKol(id, rowNumber, this);
         } else {
-            startActivity(feedModuleRouter.getLoginIntent(getActivity()));
+            onGoToLogin();
         }
     }
 
@@ -809,7 +809,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (getUserSession() != null && getUserSession().isLoggedIn()) {
             presenter.unfollowKol(id, rowNumber, this);
         } else {
-            startActivity(feedModuleRouter.getLoginIntent(getActivity()));
+            onGoToLogin();
         }
 
     }
@@ -820,7 +820,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (getUserSession() != null && getUserSession().isLoggedIn()) {
             presenter.likeKol(id, rowNumber, this);
         } else {
-            startActivity(feedModuleRouter.getLoginIntent(getActivity()));
+            onGoToLogin();
         }
     }
 
@@ -830,7 +830,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (getUserSession() != null && getUserSession().isLoggedIn()) {
             presenter.unlikeKol(id, rowNumber, this);
         } else {
-            startActivity(feedModuleRouter.getLoginIntent(getActivity()));
+            onGoToLogin();
         }
     }
 
@@ -1089,7 +1089,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onGoToLogin() {
         if (getActivity() != null) {
-            Intent intent = feedModuleRouter.getLoginIntent(getActivity());
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
             getActivity().startActivityForResult(intent, REQUEST_LOGIN);
         }
     }

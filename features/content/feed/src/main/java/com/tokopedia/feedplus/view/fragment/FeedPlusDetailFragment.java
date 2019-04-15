@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
@@ -229,17 +228,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     @Override
     public void onBackPressed() {
         if (getActivity() != null) getActivity().onBackPressed();
-    }
-
-    @Override
-    public void onGoToBuyProduct(String productId, String price, String imageSource) {
-
-
-        if (getActivity() != null) {
-            Intent intent = ((FeedModuleRouter) getActivity().getApplicationContext()).getAddToCartIntent(
-                    getActivity(), productId, price, imageSource);
-            startActivity(intent);
-        }
     }
 
     @Override
