@@ -151,8 +151,13 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
         tv_hotel_homepage_checkin_date.setText(hotelHomepageModel.checkInDateFmt)
         tv_hotel_homepage_checkout_date.setText(hotelHomepageModel.checkOutDateFmt)
         tv_hotel_homepage_night_count.text = hotelHomepageModel.nightCounter.toString()
-        tv_hotel_homepage_guest_info.setText(String.format(getString(R.string.hotel_homepage_guest_detail),
-                hotelHomepageModel.roomCount, hotelHomepageModel.adultCount, hotelHomepageModel.childCount))
+        if (hotelHomepageModel.childCount > 0) {
+            tv_hotel_homepage_guest_info.setText(String.format(getString(R.string.hotel_homepage_guest_detail_with_child),
+                    hotelHomepageModel.roomCount, hotelHomepageModel.adultCount, hotelHomepageModel.childCount))
+        } else {
+            tv_hotel_homepage_guest_info.setText(String.format(getString(R.string.hotel_homepage_guest_detail_without_child),
+                    hotelHomepageModel.roomCount, hotelHomepageModel.adultCount))
+        }
     }
 
     private fun onDestinationChangeClicked() {
@@ -219,6 +224,9 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     private fun onGuestInfoClicked() {
         val hotelRoomAndGuestBottomSheets = HotelRoomAndGuestBottomSheets()
         hotelRoomAndGuestBottomSheets.listener = this
+        hotelRoomAndGuestBottomSheets.roomCount = hotelHomepageModel.roomCount
+        hotelRoomAndGuestBottomSheets.adultCount = hotelHomepageModel.adultCount
+        hotelRoomAndGuestBottomSheets.childCount = hotelHomepageModel.childCount
         hotelRoomAndGuestBottomSheets.show(activity!!.supportFragmentManager, TAG_GUEST_INFO)
     }
 
