@@ -2093,8 +2093,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             if (productData != null && productData.getInfo().getHasVariant() && productVariant != null) {
                 productId = productVariant.getParentId();
             }
-            Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).goToEditProduct(getActivity(), isEdit, Integer.toString(productId));
-            navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT);
+            // Old PDP Will be removed
         }
     }
 

@@ -13,6 +13,7 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
@@ -31,6 +32,7 @@ import android.util.TypedValue;
 import android.util.Base64;
 import android.view.View;
 import android.view.Window;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -945,5 +947,23 @@ public class ImageHandler {
                 }
             });
         }
+    }
+
+    public static void loadBackgroundImage(View view, String url) {
+        if (view == null || !URLUtil.isValidUrl(url)) {
+            return;
+        }
+
+        Glide.with(view.getContext())
+                .load(url)
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        if (resource.getWidth() > 1) {
+                            view.setBackground(new BitmapDrawable(view.getResources(), resource));
+                        }
+                    }
+                });
     }
 }
