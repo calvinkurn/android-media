@@ -20,11 +20,11 @@ class HotelRoomAndGuestBottomSheets : BottomSheets() {
 
     override fun getLayoutResourceId(): Int = R.layout.bottom_sheets_hotel_room_and_guest
 
-    override fun initView(view: View?) {
-        spvRoomCounter = view?.findViewById(R.id.spv_hotel_room) as SelectPassengerView
-        spvAdultCounter = view?.findViewById(R.id.spv_hotel_adult) as SelectPassengerView
-        spvChildCounter = view?.findViewById(R.id.spv_hotel_child) as SelectPassengerView
-        btnSave = view?.findViewById(R.id.btn_hotel_save_guest) as ButtonCompat
+    override fun initView(view: View) {
+        spvRoomCounter = view.findViewById(R.id.spv_hotel_room) as SelectPassengerView
+        spvAdultCounter = view.findViewById(R.id.spv_hotel_adult) as SelectPassengerView
+        spvChildCounter = view.findViewById(R.id.spv_hotel_child) as SelectPassengerView
+        btnSave = view.findViewById(R.id.btn_hotel_save_guest) as ButtonCompat
 
         spvRoomCounter.value = DEFAULT_ROOM
         spvAdultCounter.value = DEFAULT_ADULT
