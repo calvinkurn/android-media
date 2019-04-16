@@ -8,7 +8,6 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -50,6 +49,8 @@ public class BaseDiscoveryActivity
     private int activeTabPosition;
 
     private Boolean isPause = false;
+    private boolean isStartingSearchActivityWithProductViewModel = false;
+    private ProductViewModel productViewModelForOnResume;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +107,10 @@ public class BaseDiscoveryActivity
         return presenter;
     }
 
+    protected void onProductQuerySubmit() {
+
+    }
+
     @Override
     public AppComponent getComponent() {
         return getApplicationComponent();
@@ -146,27 +151,28 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
+        handleMoveToSearchActivity(productViewModel);
+    }
 
-        JSONArray afProdIds = new JSONArray();
-        HashMap<String, String> category = new HashMap<String, String>();
-        ArrayList<String> prodIdArray = new ArrayList<>();
-
-        if (productViewModel.getProductList().size() > 0) {
-            for (int i = 0; i < productViewModel.getProductList().size(); i++) {
-                if (i < 3) {
-                    prodIdArray.add(productViewModel.getProductList().get(i).getProductID());
-                    afProdIds.put(productViewModel.getProductList().get(i).getProductID());
-                } else {
-                    break;
-                }
-                category.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
-
-            }
+    protected void handleMoveToSearchActivity(ProductViewModel productViewModel) {
+        if (!isPausing()) {
+            finishAndMoveToSearchActivity(productViewModel);
         }
-        TrackingUtils.eventAppsFlyerViewListingSearch(this,afProdIds,productViewModel.getQuery(),prodIdArray);
-        sendMoEngageSearchAttempt(this, productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
+        else {
+            prepareMoveToSearchActivityDuringOnResume(productViewModel);
+        }
+    }
+
+    private void finishAndMoveToSearchActivity(ProductViewModel productViewModel) {
+        isStartingSearchActivityWithProductViewModel = false;
+
         finish();
-        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop(), isPausing());
+        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
+    }
+
+    private void prepareMoveToSearchActivityDuringOnResume(ProductViewModel productViewModel) {
+        isStartingSearchActivityWithProductViewModel = true;
+        productViewModelForOnResume = productViewModel;
     }
 
     @Override
@@ -291,6 +297,19 @@ public class BaseDiscoveryActivity
     protected void onResume() {
         super.onResume();
         isPause = false;
+
+        handleMoveToSearchActivityOnResume();
+    }
+
+    private void handleMoveToSearchActivityOnResume() {
+        if(isStartingSearchActivityWithProductViewModel) {
+            if(productViewModelForOnResume != null) {
+                finishAndMoveToSearchActivity(productViewModelForOnResume);
+            }
+            else {
+                onProductQuerySubmit();
+            }
+        }
     }
 
     public Boolean isPausing() {

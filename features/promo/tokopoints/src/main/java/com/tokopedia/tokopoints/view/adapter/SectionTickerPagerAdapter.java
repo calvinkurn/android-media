@@ -43,7 +43,7 @@ public class SectionTickerPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return mItems.size();
+        return mItems == null ? 0 : mItems.size();
     }
 
     @Override
@@ -53,11 +53,13 @@ public class SectionTickerPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup view, final int position) {
-        TextView item = (TextView) LayoutInflater.from(view.getContext()).inflate(R.layout.tp_layout_section_ticker_new, view, false);
-        item.setMovementMethod(LinkMovementMethod.getInstance());
-        item.setText(generateText(view.getContext(), mItems.get(position)));
-        view.addView(item, 0);
-        return item;
+        View mView = LayoutInflater.from(view.getContext()).inflate(R.layout.tp_layout_ticker_item_new, view, false);
+        TextView tvSubTitle = mView.findViewById(R.id.text_sub_title);
+
+        tvSubTitle.setMovementMethod(LinkMovementMethod.getInstance());
+        tvSubTitle.setText(generateText(view.getContext(), mItems.get(position)));
+        view.addView(mView, 0);
+        return mView;
     }
 
     private SpannableStringBuilder generateText(@NonNull Context context, @NonNull TickerContainer container) {
@@ -85,8 +87,8 @@ public class SectionTickerPagerAdapter extends PagerAdapter {
                         AnalyticsTrackerUtil.sendEvent(mContext,
                                 AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                                "click " + linkContent + " on ticker",
-                                "");
+                                AnalyticsTrackerUtil.ActionKeys.CLICK_TICKER,
+                                linkContent);
                     }
 
                     @Override
