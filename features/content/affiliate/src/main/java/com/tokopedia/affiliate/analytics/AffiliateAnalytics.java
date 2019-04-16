@@ -183,7 +183,7 @@ public class AffiliateAnalytics {
                 AffiliateEventTracking.Event.PRODUCT_VIEW,
                 AffiliateEventTracking.Category.BYME_EXPLORE,
                 "impression product affiliate",
-                String.format("%s-%s", sectionName, productName)
+                String.format("%s-%s", sectionName, productId)
         );
         data.put(
                 "ecommerce",
@@ -204,7 +204,7 @@ public class AffiliateAnalytics {
                 AffiliateEventTracking.Event.PRODUCT_CLICK,
                 AffiliateEventTracking.Category.BYME_EXPLORE,
                 "click product affiliate",
-                String.format("%s-%s", sectionName, productName)
+                String.format("%s-%s", sectionName, productId)
         );
         data.put(
                 "ecommerce",
