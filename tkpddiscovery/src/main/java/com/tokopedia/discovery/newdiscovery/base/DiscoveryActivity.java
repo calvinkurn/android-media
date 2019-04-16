@@ -10,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SearchEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
@@ -21,10 +20,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
@@ -39,6 +35,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -271,12 +268,11 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     public void eventDiscoveryVoiceSearch(String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 SearchEventTracking.Event.SEARCH,
                 SearchEventTracking.Category.SEARCH,
                 SearchEventTracking.Action.VOICE_SEARCH,
-                label
-        ).getEvent());
+                label);
     }
 
     private void sendGalleryImageSearchResultGTM(String label) {
