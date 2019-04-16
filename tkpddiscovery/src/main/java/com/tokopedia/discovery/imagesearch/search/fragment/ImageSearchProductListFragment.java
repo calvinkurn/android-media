@@ -40,6 +40,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.item
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GlobalNavViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
@@ -625,6 +626,16 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public void onProductImpressed(ProductItem item, int adapterPosition) {
+
+    }
+
+    @Override
+    public void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item) {
+
+    }
+
+    @Override
+    public void onGlobalNavWidgetClickSeeAll(String applink, String url) {
 
     }
 

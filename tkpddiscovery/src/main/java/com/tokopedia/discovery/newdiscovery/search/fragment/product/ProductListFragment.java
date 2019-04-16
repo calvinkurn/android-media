@@ -50,6 +50,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.list
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GlobalNavViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
@@ -447,6 +448,24 @@ public class ProductListFragment extends SearchSectionFragment
             product.setPriceFormat(item.getPrice());
             product.setCategory(new Category(item.getCategoryID()));
             TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, adapterPosition);
+        }
+    }
+
+    @Override
+    public void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item) {
+        if (!TextUtils.isEmpty(item.getApplink())) {
+            RouteManager.route(getActivity(), item.getApplink());
+        } else {
+            RouteManager.route(getActivity(), item.getUrl());
+        }
+    }
+
+    @Override
+    public void onGlobalNavWidgetClickSeeAll(String applink, String url) {
+        if (!TextUtils.isEmpty(applink)) {
+            RouteManager.route(getActivity(), applink);
+        } else {
+            RouteManager.route(getActivity(), url);
         }
     }
 
