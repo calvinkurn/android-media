@@ -55,6 +55,28 @@ public class SearchTracking {
         this.userSessionInterface = userSessionInterface;
     }
 
+    private Map<String, Object> generateEventTrackingWithUserId(String event, String category, String action, String label) {
+        Map<String, Object> eventTracking = new HashMap<>();
+
+        eventTracking.put(EVENT, event);
+        eventTracking.put(EVENT_CATEGORY, category);
+        eventTracking.put(EVENT_ACTION, action);
+        eventTracking.put(EVENT_LABEL, label);
+        eventTracking.put(USER_ID, userSessionInterface.isLoggedIn() ? userSessionInterface.getUserId() : "0");
+
+        return eventTracking;
+    }
+
+    public void sendGeneralEventWithUserId(String event, String category, String action, String label) {
+        Map<String, Object> eventTrackingMap = generateEventTrackingWithUserId(event, category, action, label);
+
+        sendGeneralEvent(eventTrackingMap);
+    }
+
+    public void sendGeneralEvent(Map<String, Object> eventTrackingMap) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventTrackingMap);
+    }
+
     public static String getActionFieldString(int pageNumber) {
         return ACTION_FIELD.replace("$1", Integer.toString(pageNumber));
     }

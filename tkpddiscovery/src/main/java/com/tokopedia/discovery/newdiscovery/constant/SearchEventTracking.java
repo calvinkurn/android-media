@@ -6,12 +6,16 @@ public interface SearchEventTracking {
         String IMAGE_SEARCH_CLICK = "imageSearchClick";
         String EVENT_CLICK_TOP_NAV = "eventTopNav";
         String SEARCH = "clickSearch";
+        String SEARCH_RESULT = "clickSearchResult";
+        String PRODUCT_VIEW = "productView";
     }
 
     interface Category {
         String IMAGE_SEARCH = "image search";
         String EVENT_TOP_NAV = "top nav";
         String SEARCH = "Search";
+        String FILTER_PRODUCT = "filter product";
+        String SEARCH_RESULT = "Search Result";
     }
 
     interface Action {
@@ -21,6 +25,8 @@ public interface SearchEventTracking {
         String VOICE_SEARCH = "Voice Search";
         String GALLERY_SEARCH_RESULT = "query search by gallery";
         String CAMERA_SEARCH_RESULT = "query search by camera";
+        String QUICK_FILTER = "quick filter";
+        String CLICK_WISHLIST = "click - wishlist";
     }
 
     interface MOENGAGE {
