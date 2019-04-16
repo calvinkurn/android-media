@@ -7,6 +7,7 @@ import com.tokopedia.core.discovery.model.Option
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper
 import org.junit.Test
+import java.util.*
 
 class FilterControllerTest {
 
@@ -205,12 +206,83 @@ class FilterControllerTest {
 
     @Test
     fun testLoadFilterViewStateWithBundledOptions() {
+        prepareLocationOptions()
+
+        val locationOptionPermutations = getAllOptionPermutations(locationOptions.toTypedArray())
+        for(locationOptionPermutation in locationOptionPermutations!!) {
+            val locationOptionPermutationList = createOptionsFromPermutations(locationOptionPermutation)
+
+            testLoadFilterViewStateWithBundledLocationOptions(locationOptionPermutationList)
+        }
+    }
+
+    private fun prepareLocationOptions() {
+        locationOptions.add(jabodetabekOption)
+        locationOptions.add(jakartaOption)
+        locationOptions.add(jakartaBaratOption)
+        locationOptions.add(tangerangOption)
+        locationOptions.add(bandungOption)
+    }
+
+    private fun getAllOptionPermutations(optionList: Array<Option>?): Set<Array<Option?>>? {
+        if (optionList == null)
+            return null
+
+        val perms = mutableSetOf<Array<Option?>>()
+
+        if (optionList.isEmpty()) {
+            perms.add(arrayOfNulls(0))
+            return perms
+        }
+
+        val first = optionList[0]
+        val remainder = Arrays.copyOfRange(optionList, 1, optionList.size)
+        val subPerms = getAllOptionPermutations(remainder)
+        for (subPerm in subPerms!!) {
+            for (i in 0..subPerm.size) {
+                val newPerm = subPerm.copyOf(subPerm.size + 1)
+                for (j in newPerm.size - 1 downTo i + 1)
+                    newPerm[j] = newPerm[j - 1]
+                newPerm[i] = first
+                perms.add(newPerm)
+            }
+        }
+
+        return perms
+    }
+
+    private fun createOptionsFromPermutations(optionArray: Array<Option?>) : List<Option> {
+        val optionList = mutableListOf<Option>()
+
+        for(option in optionArray) {
+            if(option == null) continue
+
+            optionList.add(option)
+        }
+
+        return optionList
+    }
+
+    private fun testLoadFilterViewStateWithBundledLocationOptions(locationOptions: List<Option>) {
+        printLocationOptionsName(locationOptions)
+
         val filterParameter = createFilterParameterWithBundledOption()
-        val filterList = createFilterList()
+        val filterList = createFilterListWithVariousLocationOptions(locationOptions)
 
         filterController.initFilterController(filterParameter, filterList)
 
         assertFilterViewStateOnlyHasBundledOptions()
+
+        printTestPassed()
+    }
+
+    private fun printLocationOptionsName(locationOptions: List<Option>) {
+        print("Testing location option with combination: ")
+
+        val locationOptionNames = mutableListOf<String>()
+        locationOptions.forEach { locationOptionNames.add(it.name) }
+
+        print(locationOptionNames.joinToString())
     }
 
     private fun createFilterParameterWithBundledOption() : Map<String, String> {
@@ -222,27 +294,12 @@ class FilterControllerTest {
         return filterParameter
     }
 
-    @Test
-    fun testLoadFilterViewStateWithBundledOptionsWithNotOrganizedFilterList() {
-        val filterParameter = createFilterParameterWithBundledOption()
-        val filterList = createNotOrganizedFilterList()
-
-        filterController.initFilterController(filterParameter, filterList)
-
-        assertFilterViewStateOnlyHasBundledOptions()
-    }
-
-    private fun createNotOrganizedFilterList() : List<Filter> {
+    private fun createFilterListWithVariousLocationOptions(locationOptions : List<Option>) : List<Filter> {
         val filterList = mutableListOf<Filter>()
 
         tokoOptions.add(officialOption)
         filterList.add(createFilterWithOptions(tokoOptions))
 
-        locationOptions.add(jakartaOption)
-        locationOptions.add(jakartaBaratOption)
-        locationOptions.add(tangerangOption)
-        locationOptions.add(jabodetabekOption)
-        locationOptions.add(bandungOption)
         filterList.add(createFilterWithOptions(locationOptions))
 
         categoryOptions.add(handphoneOption)
@@ -264,6 +321,10 @@ class FilterControllerTest {
 
         assertFilterViewStateSizeCorrect(expectedOptions.size)
         assertFilterViewStateCorrect(expectedOptions)
+    }
+
+    private fun printTestPassed() {
+        println(".... Passed")
     }
 
     @Test
