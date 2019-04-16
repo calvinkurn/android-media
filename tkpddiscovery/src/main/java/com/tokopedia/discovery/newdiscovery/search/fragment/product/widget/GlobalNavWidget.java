@@ -73,7 +73,6 @@ public class GlobalNavWidget extends BaseCustomView {
         globalNavRecyclerView = (RecyclerView) view.findViewById(R.id.globalNavRecyclerView);
         setupFont();
         setupBackground();
-        setupRecyclerView();
     }
 
     private void setupFont() {
@@ -182,6 +181,7 @@ public class GlobalNavWidget extends BaseCustomView {
     public void setData(GlobalNavViewModel globalNavViewModel, ClickListener clickListener) {
         this.globalNavViewModel = globalNavViewModel;
         this.clickListener = clickListener;
+        setupRecyclerView();
         renderData();
     }
 
