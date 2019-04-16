@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -382,7 +383,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public int getProductId() {
         String productIdString = cartPassData.getProductId();
-        return productIdString.isEmpty() ? 0 : Integer.parseInt(productIdString);
+        return TextUtils.isEmpty(productIdString) ? 0 : Integer.parseInt(productIdString);
     }
 
     @Override
