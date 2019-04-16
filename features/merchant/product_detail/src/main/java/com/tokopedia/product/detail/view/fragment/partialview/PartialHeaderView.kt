@@ -72,8 +72,6 @@ class PartialHeaderView private constructor(private val view: View,
                 spanText.setSpan(
                         ForegroundColorSpan(colorIc!!),
                         startSpan + 2, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                spanText.setSpan(StyleSpan(Typeface.BOLD), startSpan + 2, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
                 setText(spanText, TextView.BufferType.SPANNABLE)
             }
 
