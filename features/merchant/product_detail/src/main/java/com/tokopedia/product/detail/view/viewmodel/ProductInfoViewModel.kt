@@ -128,7 +128,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     productInfoP1.productInfo.basic.condition, productInfoP1.productInfo.basic.name,
                     productInfoP1.productInfo.category.id,
                     forceRefresh)
-            productInfoP2resp.value = productInfoP2
+            //productInfoP2resp.value = productInfoP2
             multiOrigin = productInfoP2.nearestWarehouse.warehouseInfo
 
             val domain = productParams.shopDomain ?: productInfoP2.shopInfo?.shopCore?.domain
