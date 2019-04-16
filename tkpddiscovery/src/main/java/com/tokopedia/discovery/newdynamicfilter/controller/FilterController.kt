@@ -82,7 +82,7 @@ class FilterController {
     }
 
     private fun reIterateOptionAndCheckForBundledOption(optionsForFilterViewState: MutableList<Option>, currentIterator: MutableListIterator<Option>, currentOption: Option) {
-        val bundledOptionList = listOf<Option>() + optionsForFilterViewState
+        val bundledOptionList = optionsForFilterViewState.filter { it.key == currentOption.key }
 
         for(bundledOption in bundledOptionList) {
             if(isOptionAlreadyBundled(currentOption.value, bundledOption.value)) {
