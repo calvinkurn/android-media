@@ -29,6 +29,20 @@ public class SplashScreenActivity extends SplashScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        setTheme(0);
+        super.onCreate(savedInstanceState);
+    }
+
+    private boolean checkIfInstalledFromInvalidStore() {
+        try {
+            return getResources().getIdentifier("launch_screen", "drawable", getPackageName()) == 0;
+        } catch (Throwable throwable) {
+            return true;
+        }
+    }
+
+    @Override
+    public void finishSplashScreen() {
         if (checkIfInstalledFromInvalidStore()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Tokopedia App is not valid");
@@ -44,21 +58,7 @@ public class SplashScreenActivity extends SplashScreen {
             dialog.show();
             return;
         }
-        try {
-            super.onCreate(savedInstanceState);
-        } catch (Exception ignored) { }
-    }
-
-    private boolean checkIfInstalledFromInvalidStore() {
-        try {
-            return getResources().getResourceName(R.drawable.logo_tkpd_white) != null;
-        } catch (Throwable throwable) {
-            return true;
-        }
-    }
-
-    @Override
-    public void finishSplashScreen() {
+        return;
         if (SessionHandler.isUserHasShop(this)) {
             if (getIntent().hasExtra(Constants.EXTRA_APPLINK)) {
                 String applinkUrl = getIntent().getStringExtra(Constants.EXTRA_APPLINK);
