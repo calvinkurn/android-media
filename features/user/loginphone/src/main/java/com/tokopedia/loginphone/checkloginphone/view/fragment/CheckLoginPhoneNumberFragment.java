@@ -251,10 +251,10 @@ public class CheckLoginPhoneNumberFragment extends BaseDaggerFragment
     }
 
     private void goToChooseAccountPage(ChooseTokoCashAccountViewModel data) {
-        startActivityForResult(ChooseTokocashAccountActivity.getCallingIntent(
-                getActivity(),
-                data),
-                REQUEST_CHOOSE_ACCOUNT);
+//        startActivityForResult(ChooseTokocashAccountActivity.getCallingIntent(
+//                getActivity(),
+//                data),
+//                REQUEST_CHOOSE_ACCOUNT);
     }
 
     @Override

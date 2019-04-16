@@ -116,16 +116,17 @@ public class TokoCashVerificationPresenter extends BaseDaggerPresenter<TokoCashV
     }
 
     private void loginWithTokocash(String key, UserDetail accountTokocash) {
+        //TODO DELETE
         getView().showLoadingProgress();
-        loginTokoCashUseCase.execute(LoginPhoneNumberUseCase.getParam(
-                key,
-                accountTokocash.getEmail(),
-                String.valueOf(accountTokocash.getTkpdUserId()),
-                userSessionInterface.getDeviceId()
-        ), new LoginPhoneNumberSubscriber(getView().getContext(),
-                getView().getLoginRouter(),
-                accountTokocash.getEmail(),
-                getView()));
+//        loginTokoCashUseCase.execute(LoginPhoneNumberUseCase.getParam(
+//                key,
+//                accountTokocash.getEmail(),
+//                String.valueOf(accountTokocash.getTkpdUserId()),
+//                userSessionInterface.getDeviceId(),
+//                phoneNumber), new LoginPhoneNumberSubscriber(getView().getContext(),
+//                getView().getLoginRouter(),
+//                accountTokocash.getEmail(),
+//                getView()));
     }
 
 

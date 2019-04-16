@@ -23,9 +23,15 @@ object ApplinkConstInternalGlobal {
     val PARAM_CIPF_OLD_PHONE = "oldPhone"
 
     //ChooseTokocashAccountActivity
-    // tokopedia-android-internal://global/cotp
+    // tokopedia-android-internal://global/choose-account
     @JvmField
     val CHOOSE_ACCOUNT = "$INTERNAL_GLOBAL/choose-account"
+
+    //VerificationActivity
+    @JvmField
+    val PARAM_UUID = "uuid"
+    @JvmField
+    val PARAM_MSISDN = "msisdn"
 
     // WithdrawActivity
     // tokopedia-android-internal://global/withdraw

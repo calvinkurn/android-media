@@ -3497,7 +3497,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @NotNull
     @Override
     public Intent getChooseTokocashAccountIntent(@NotNull Context context, @NotNull ChooseTokoCashAccountViewModel data) {
-        return ChooseTokocashAccountActivity.getCallingIntent(context, data);
+      //TODO REMOVE
+        return ChooseTokocashAccountActivity.getCallingIntent(context, null);
     }
 
     @NotNull
@@ -3505,12 +3506,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getTokoCashOtpIntent(@NotNull Context context, @NotNull String phoneNumber,
                                        boolean canUseOtherMethod, @NotNull String defaultRequestMode) {
         return TokoCashOtpActivity.getCallingIntent(context, phoneNumber, canUseOtherMethod, defaultRequestMode);
-    }
-
-    @NotNull
-    @Override
-    public Intent getCheckLoginPhoneNumberIntent(@NotNull Context context) {
-        return CheckLoginPhoneNumberActivity.getCallingIntent(context);
     }
 
     @SuppressLint("MissingPermission")

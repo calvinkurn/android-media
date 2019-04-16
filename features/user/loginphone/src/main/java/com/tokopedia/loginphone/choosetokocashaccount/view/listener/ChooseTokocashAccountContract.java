@@ -4,7 +4,8 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.sessioncommon.data.loginphone.UserDetail;
+import com.tokopedia.loginphone.choosetokocashaccount.AccountList;
+import com.tokopedia.loginphone.choosetokocashaccount.UserDetail;
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 
 import java.util.List;
@@ -25,6 +26,10 @@ public interface ChooseTokocashAccountContract {
         Context getContext();
 
         LoginSuccessRouter getLoginRouter();
+
+        void onSuccessGetAccountList(AccountList accountList);
+
+        void onErrorGetAccountList(Throwable e);
     }
 
     public interface ViewAdapter {
@@ -33,9 +38,10 @@ public interface ChooseTokocashAccountContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void loginWithTokocash(String key, UserDetail accountTokocash);
+        void loginWithTokocash(String key, UserDetail accountTokocash, String phoneNumber);
 
         void checkAutoLogin(String key, int itemCount, List<UserDetail> list);
 
+        void getAccountList(String validateToken, String phoneNumber);
     }
 }

@@ -7,7 +7,6 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.os.Parcelable
 import android.support.design.widget.TextInputEditText
 import android.support.v4.app.Fragment
 import android.text.SpannableString
@@ -38,7 +37,6 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalFintech
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
@@ -65,7 +63,6 @@ import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
-import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData
 import com.tokopedia.sessioncommon.data.model.SecurityPojo
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -636,15 +633,15 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
         analytics.trackEventSuccessLoginSosmed(loginMethod)
         TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
-            userSession.userId,
-            userSession.name,
-            userSession.email,
-            userSession.phoneNumber,
-            userSession.isGoldMerchant,
-            userSession.shopName,
-            userSession.shopId,
-            userSession.hasShop(),
-            loginMethod
+                userSession.userId,
+                userSession.name,
+                userSession.email,
+                userSession.phoneNumber,
+                userSession.isGoldMerchant,
+                userSession.shopName,
+                userSession.shopId,
+                userSession.hasShop(),
+                loginMethod
         )
         onSuccessLogin()
     }
@@ -657,15 +654,15 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         analytics.eventSuccessLogin(actionLoginMethod)
 
         TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
-            userSession.userId,
-            userSession.name,
-            userSession.email,
-            userSession.phoneNumber,
-            userSession.isGoldMerchant,
-            userSession.shopName,
-            userSession.shopId,
-            userSession.hasShop(),
-            actionLoginMethod
+                userSession.userId,
+                userSession.name,
+                userSession.email,
+                userSession.phoneNumber,
+                userSession.isGoldMerchant,
+                userSession.shopName,
+                userSession.shopId,
+                userSession.hasShop(),
+                actionLoginMethod
         )
         onSuccessLogin()
     }
@@ -806,15 +803,15 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         analytics.eventSuccessLoginEmail()
         analytics.trackClickOnLoginButtonSuccess()
         TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
-            userSession.userId,
-            userSession.name,
-            userSession.email,
-            userSession.phoneNumber,
-            userSession.isGoldMerchant,
-            userSession.shopName,
-            userSession.shopId,
-            userSession.hasShop(),
-            LoginRegisterAnalytics.LABEL_EMAIL
+                userSession.userId,
+                userSession.name,
+                userSession.email,
+                userSession.phoneNumber,
+                userSession.isGoldMerchant,
+                userSession.shopName,
+                userSession.shopId,
+                userSession.hasShop(),
+                LoginRegisterAnalytics.LABEL_EMAIL
         )
 
         onSuccessLogin()
@@ -830,10 +827,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
-    private fun goToChooseAccountPage(data: ChooseTokoCashAccountViewModel) {
+    private fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
         if (activity != null && activity!!.applicationContext != null) {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal
-                    .CHOOSE_ACCOUNT)
+            val intent = RouteManager.getIntent(activity,
+                    ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
             startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
         }
     }
@@ -889,12 +888,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             } else if (requestCode == REQUEST_LOGIN_PHONE
                     && resultCode == Activity.RESULT_OK
                     && data != null
-                    && data.getParcelableExtra<Parcelable>(ChooseTokoCashAccountViewModel.ARGS_DATA) != null) {
-                goToChooseAccountPage(chooseTokoCashAccountViewModel)
-
-            } else if (requestCode == REQUEST_LOGIN_PHONE && resultCode ==
-                    LoginRegisterPhoneRouter.RESULT_SUCCESS_AUTO_LOGIN) run {
-                onSuccessLoginPhoneNumber()
+                    && data.extras != null) {
+                data.extras?.run {
+                    val accessToken = getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+                    val phoneNumber = getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
+                    goToChooseAccountPage(accessToken, phoneNumber)
+                }
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
                 onSuccessLoginPhoneNumber()
             } else if (requestCode == REQUEST_LOGIN_PHONE

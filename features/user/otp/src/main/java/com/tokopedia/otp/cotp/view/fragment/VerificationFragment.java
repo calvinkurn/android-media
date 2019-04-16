@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.R;
 import com.tokopedia.otp.common.OTPAnalytics;
@@ -41,6 +42,7 @@ import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.presenter.VerificationPresenter;
 import com.tokopedia.otp.cotp.view.viewlistener.Verification;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
+import com.tokopedia.otp.cotp.view.viewmodel.ValidateOtpLoginDomain;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -137,7 +139,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     @Override
     public void onResume() {
         super.onResume();
-        if(getActivity()!= null) {
+        if (getActivity() != null) {
             smsBroadcastReceiver.register(getActivity(), getOTPReceiverListener());
         }
     }
@@ -146,7 +148,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         return new SmsBroadcastReceiver.ReceiveSMSListener() {
             @Override
             public void onReceiveOTP(@NotNull String otpCode) {
-                        processOTPSMS(otpCode);
+                processOTPSMS(otpCode);
             }
         };
     }
@@ -322,11 +324,19 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     @Override
-    public void onSuccessVerifyOTP() {
+    public void onSuccessVerifyOTP(String uuid, String msisdn) {
         removeErrorOtp();
         resetCountDown();
-        getActivity().setResult(Activity.RESULT_OK);
-        getActivity().finish();
+
+        if (getActivity() != null) {
+            Intent intent = new Intent();
+            Bundle bundle = new Bundle();
+            bundle.putString(ApplinkConstInternalGlobal.PARAM_UUID, uuid);
+            bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, msisdn);
+            intent.putExtras(bundle);
+            getActivity().setResult(Activity.RESULT_OK, intent);
+            getActivity().finish();
+        }
 
     }
 

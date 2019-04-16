@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.loginphone.R;
 import com.tokopedia.loginphone.checkloginphone.view.activity.NotConnectedTokocashActivity;
-import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
+import com.tokopedia.loginphone.choosetokocashaccount.AccountList;
 import com.tokopedia.loginphone.common.LoginPhoneNumberRouter;
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent;
@@ -128,14 +128,14 @@ public class TokoCashVerificationFragment extends VerificationFragment implement
             removeErrorOtp();
             resetCountDown();
 
-            Intent intent = new Intent();
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(ChooseTokoCashAccountViewModel.ARGS_DATA,
-                    new ChooseTokoCashAccountViewModel(verifyOtpTokoCashPojo.getUserDetails(),
-                            viewModel.getPhoneNumber(),
-                            verifyOtpTokoCashPojo.getKey()));
-            intent.putExtras(bundle);
-            getActivity().setResult(Activity.RESULT_OK, intent);
+//            Intent intent = new Intent();
+//            Bundle bundle = new Bundle();
+//            bundle.putParcelable(ChooseTokoCashAccountViewModel.ARGS_DATA,
+//                    new ChooseTokoCashAccountViewModel(verifyOtpTokoCashPojo.getUserDetails(),
+//                            viewModel.getPhoneNumber(),
+//                            verifyOtpTokoCashPojo.getKey()));
+//            intent.putExtras(bundle);
+//            getActivity().setResult(Activity.RESULT_OK, intent);
             getActivity().finish();
         }
     }
@@ -239,6 +239,16 @@ public class TokoCashVerificationFragment extends VerificationFragment implement
                 }
             }
         };
+    }
+
+    @Override
+    public void onSuccessGetAccountList(AccountList accountList) {
+
+    }
+
+    @Override
+    public void onErrorGetAccountList(Throwable e) {
+
     }
 
     @Override

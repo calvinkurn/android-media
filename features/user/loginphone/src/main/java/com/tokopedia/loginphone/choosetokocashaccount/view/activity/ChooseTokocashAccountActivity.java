@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.loginphone.choosetokocashaccount.data.ChooseTokoCashAccountViewModel;
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics;
-import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
 import com.tokopedia.loginphone.choosetokocashaccount.view.fragment.ChooseTokocashAccountFragment;
 
 /**
@@ -40,7 +40,6 @@ public class ChooseTokocashAccountActivity extends BaseSimpleActivity {
     public static Intent getCallingIntent(Context context, ChooseTokoCashAccountViewModel model) {
         Intent intent = new Intent(context, ChooseTokocashAccountActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(ChooseTokoCashAccountViewModel.ARGS_DATA, model);
         intent.putExtras(bundle);
         return intent;
     }
