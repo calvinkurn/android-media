@@ -260,4 +260,9 @@ public class TokoCashVerificationFragment extends VerificationFragment implement
             getActivity().finish();
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        loginPhoneNumberAnalytics.eventClickBackRegisterVerificationPage();
+    }
 }

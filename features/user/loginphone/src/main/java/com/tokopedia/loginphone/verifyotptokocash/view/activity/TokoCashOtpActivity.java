@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.loginphone.verifyotptokocash.view.fragment.ChooseTokocashVerificationMethodFragment;
 import com.tokopedia.loginphone.verifyotptokocash.view.fragment.TokoCashVerificationFragment;
+import com.tokopedia.loginphone.verifyotptokocash.view.viewlistener.TokoCashVerificationContract;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.loginphone.R;
@@ -67,6 +68,13 @@ public class TokoCashOtpActivity extends VerificationActivity {
             getSupportFragmentManager().popBackStack();
         } else {
             finish();
+        }
+
+        if (getSupportFragmentManager().findFragmentById(R.id.parent_view) instanceof
+                TokoCashVerificationFragment) {
+
+            ((TokoCashVerificationContract.View) getSupportFragmentManager().findFragmentById(R.id.parent_view))
+                    .onBackPressed();
         }
     }
 
