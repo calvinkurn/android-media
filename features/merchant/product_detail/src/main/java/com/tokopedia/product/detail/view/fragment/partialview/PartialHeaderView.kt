@@ -52,33 +52,37 @@ class PartialHeaderView private constructor(private val view: View,
             labelIc = context.getString(R.string.from_power_badge_label)
             imageIc = ImageSpan(drawablePm, ImageSpan.ALIGN_BOTTOM)
             colorIc = ContextCompat.getColor(context, R.color.green_power_badge)
-
+            renderTxtIcon(labelIc, colorIc, imageIc)
         } else if (goldOs.isOfficial == 1) {
             val drawableOs = MethodChecker.getDrawable(context, R.drawable.ic_badge_os)
             drawableOs?.setBounds(0, 0, drawableSize, drawableSize)
             labelIc = context.getString(R.string.from_official_store_label)
             imageIc = ImageSpan(drawableOs, ImageSpan.ALIGN_BOTTOM)
-            colorIc = ContextCompat.getColor(context, R.color.purple_official_store_new)
+            colorIc = ContextCompat.getColor(context, R.color.purple_official_store)
+            renderTxtIcon(labelIc, colorIc, imageIc)
+        } else {
+            view.label_official_store.gone()
         }
 
-        if (goldOs.isOfficial == 1 || goldOs.isGoldBadge == 1) {
-            with(view.label_official_store) {
-                val blackString = context.getString(R.string.product_from) + "  "
-                val startSpan = blackString.length
-                val spanText = SpannableString(blackString + "  " +
-                        labelIc)
-
-                spanText.setSpan(imageIc, startSpan - 1, startSpan + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                spanText.setSpan(
-                        ForegroundColorSpan(colorIc!!),
-                        startSpan + 2, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                setText(spanText, TextView.BufferType.SPANNABLE)
-            }
-
-            view.label_official_store.visible()
-        } else view.label_official_store.gone()
     }
 
+    fun renderTxtIcon(labelIc: String, colorIc: Int, imageIc: ImageSpan) {
+
+        with(view.label_official_store) {
+            val blackString = context.getString(com.tokopedia.product.detail.R.string.product_from) + "  "
+            val startSpan = blackString.length
+            val spanText = android.text.SpannableString(blackString + "  " +
+                    labelIc)
+
+            spanText.setSpan(imageIc, startSpan - 1, startSpan + 1, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spanText.setSpan(
+                    android.text.style.ForegroundColorSpan(colorIc),
+                    startSpan + 2, spanText.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setText(spanText, android.widget.TextView.BufferType.SPANNABLE)
+        }
+        view.label_official_store.visible()
+
+    }
 
     fun renderData(data: ProductInfo) {
         with(view) {
