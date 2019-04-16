@@ -69,4 +69,10 @@ public class SearchModule {
                                          UserSessionInterface userSessionInterface) {
         return new SearchTracking(context, userSessionInterface);
     }
+
+    @SearchScope
+    @Provides
+    UserSessionInterface provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
 }
