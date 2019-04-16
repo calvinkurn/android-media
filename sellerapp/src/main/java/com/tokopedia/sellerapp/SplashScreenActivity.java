@@ -1,10 +1,7 @@
 package com.tokopedia.sellerapp;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -26,36 +23,6 @@ import org.json.JSONObject;
  */
 
 public class SplashScreenActivity extends SplashScreen {
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        if (checkIfInstalledFromInvalidStore()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Tokopedia App is not valid");
-            builder.setMessage("Install Tokopedia from Google Play Store to continue");
-            builder.setPositiveButton("OK", (DialogInterface dialogInterface, int i) -> {
-                startActivity(
-                        new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id="
-                                + getApplication().getPackageName()))
-                );
-                dialogInterface.dismiss();
-            });
-            AlertDialog dialog = builder.create();
-            dialog.show();
-            return;
-        }
-        try {
-            super.onCreate(savedInstanceState);
-        } catch (Exception ignored) { }
-    }
-
-    private boolean checkIfInstalledFromInvalidStore() {
-        try {
-            return getResources().getResourceName(R.drawable.logo_tkpd_white) != null;
-        } catch (Throwable throwable) {
-            return true;
-        }
-    }
 
     @Override
     public void finishSplashScreen() {
