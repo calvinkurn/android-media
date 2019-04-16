@@ -21,9 +21,9 @@ import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
@@ -348,7 +348,17 @@ public class SearchActivity extends DiscoveryActivity
 
     @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showRationaleForStorage(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(this, request, Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onShowRationale(this, new RequestPermissionUtil.PermissionRequestListener() {
+            @Override
+            public void onProceed() {
+                request.proceed();
+            }
+
+            @Override
+            public void onCancel() {
+                request.cancel();
+            }
+        }, Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
