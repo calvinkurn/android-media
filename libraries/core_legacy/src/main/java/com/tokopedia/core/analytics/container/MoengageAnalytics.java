@@ -12,7 +12,6 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
-import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import org.json.JSONArray;
@@ -21,7 +20,13 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.moe.pushlibrary.utils.MoEHelperConstants.*;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_UNIQUE_ID;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_BDAY;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_EMAIL;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_FIRST_NAME;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_GENDER;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_MOBILE;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_NAME;
 import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT;
 import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.SHOP_ID;
 import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.SHOP_NAME;
@@ -44,6 +49,7 @@ public class MoengageAnalytics extends ContextAnalytics {
                         .setNotificationSmallIcon(R.drawable.ic_status_bar_notif_customerapp)
                         .setNotificationLargeIcon(R.drawable.ic_big_notif_customerapp)
                         .optOutTokenRegistration()
+                        .setNotificationType(R.integer.notification_type_multiple)
                         .build();
         MoEngage.initialise(moEngage);
     }
@@ -113,6 +119,7 @@ public class MoengageAnalytics extends ContextAnalytics {
     /**
      * will be eliminate soon
      * refer to setUserProfile(String... customerWrapper)
+     *
      * @param customerWrapper
      */
     @Deprecated
