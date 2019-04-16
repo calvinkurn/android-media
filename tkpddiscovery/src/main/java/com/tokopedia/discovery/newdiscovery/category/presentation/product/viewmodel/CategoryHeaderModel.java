@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 import com.tokopedia.core.network.entity.intermediary.Child;
 import com.tokopedia.core.network.entity.intermediary.Image;
@@ -35,6 +36,7 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
     private String headerImage;
     private String headerImageHexColor;
     private boolean doneTrackImpression = false;
+    private List<Option> optionList;
 
     public CategoryHeaderModel(){
 
@@ -62,6 +64,7 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
         headerImage = in.readString();
         headerImageHexColor = in.readString();
         doneTrackImpression = in.readInt() == 1 ? true : false;
+        this.optionList= in.createTypedArrayList(Option.CREATOR);
     }
 
     @Override
@@ -92,6 +95,7 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
         dest.writeString(headerImage);
         dest.writeString(headerImageHexColor);
         dest.writeInt(doneTrackImpression ? 1 : 0);
+        dest.writeTypedList(this.optionList);
     }
 
     @SuppressWarnings("unused")
@@ -237,6 +241,14 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
 
     public void setDoneTrackImpression(boolean doneTrackImpression) {
         this.doneTrackImpression = doneTrackImpression;
+    }
+
+    public void setQuickFilterList(List<Option> optionList) {
+        this.optionList=optionList;
+    }
+
+    public List<Option> getOptionList() {
+        return optionList;
     }
 
 }

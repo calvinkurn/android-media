@@ -87,7 +87,7 @@
             android:visibility="visible"
             tools:text="1.0000.0000 Produk" />
 
-        <com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView
+        <com.tokopedia.design.quickfilter.custom.CustomMultipleFilterView
             android:id="@+id/quickFilterView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

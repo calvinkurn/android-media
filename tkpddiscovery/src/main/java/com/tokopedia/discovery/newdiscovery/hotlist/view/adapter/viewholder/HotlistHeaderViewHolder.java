@@ -18,6 +18,7 @@ import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
+import com.tokopedia.design.quickfilter.custom.CustomMultipleFilterView;
 import com.tokopedia.design.quickfilter.custom.CustomViewRoundedQuickFilterItem;
 import com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView;
 import com.tokopedia.discovery.R;
@@ -39,6 +40,7 @@ import com.tokopedia.track.TrackApp;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -61,9 +63,10 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     private final TextView productCount;
     private final HotlistPromoView hotlistPromoView;
     private final TopAdsBannerView topAdsBannerView;
-    private final CustomViewRounderCornerFilterView customViewRounderCornerFilterView;
+    private final CustomMultipleFilterView customViewRounderCornerFilterView;
     private final String searchQuery;
     private final String hotlistAlias;
+    HashMap<String, String> selectedFilterList = new HashMap<>();
 
     public HotlistHeaderViewHolder(View parent, HotlistListener mHotlistListener, String searchQuery,
                                    String hotlistAlias) {
@@ -139,7 +142,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         renderQuickFilter(element.getOptionList());
     }
 
-    private void renderQuickFilter(List<Option> filterList) {
+    protected void renderQuickFilter(List<Option> filterList) {
         if(filterList==null || filterList.isEmpty()){
             return;
         }
@@ -148,7 +151,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         for (int i=0; i<filterList.size(); i++) {
             CustomViewRoundedQuickFilterItem quickFilterItem = new CustomViewRoundedQuickFilterItem();
             quickFilterItem.setName(filterList.get(i).getName());
-            quickFilterItem.setType(filterList.get(i).getKey());
+            quickFilterItem.setType(filterList.get(i).getKey() + "=" + filterList.get(i).getValue());
 
             filterItems.add(quickFilterItem);
         }
@@ -173,6 +176,13 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
 
     @Override
     public void selectFilter(String typeFilter) {
+        String[] str = typeFilter.split("=");
+        if (selectedFilterList.containsKey(str[0])) {
+            selectedFilterList.remove(str[0]);
+        } else {
+            selectedFilterList.put(str[0], str[1]);
+        }
+        mHotlistListener.onQuickFilterSelected(selectedFilterList);
 
     }
 

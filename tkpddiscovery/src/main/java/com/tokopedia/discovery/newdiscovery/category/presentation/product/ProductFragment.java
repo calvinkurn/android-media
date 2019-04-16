@@ -30,6 +30,9 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.Filter;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -47,10 +50,12 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapte
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.listener.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.typefactory.CategoryProductListTypeFactoryImpl;
+import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
@@ -73,6 +78,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -116,6 +122,7 @@ public class ProductFragment extends BrowseSectionFragment
     protected TopAdsRecyclerAdapter topAdsRecyclerAdapter;
     private ProductViewModel productViewModel;
     private String trackerAttribution;
+    private HashMap<String, String> selectedFilter;
 
     private boolean isLoadingData;
 
@@ -656,6 +663,18 @@ public class ProductFragment extends BrowseSectionFragment
     }
 
     @Override
+    public void onQuickFilterSelected(HashMap<String, String> filter) {
+        this.selectedFilter = filter;
+        setSelectedFilter(filter);
+        loadDataProduct(0);
+    }
+
+    @Override
+    public HashMap<String, String> getSelectedFilter() {
+        return selectedFilter;
+    }
+
+    @Override
     public void disableWishlistButton(String productId) {
         adapter.setWishlistButtonEnabled(productId, false);
     }
@@ -845,6 +864,34 @@ public class ProductFragment extends BrowseSectionFragment
     @Override
     protected String getScreenName() {
         return getScreenNameId();
+    }
+
+    @Override
+    public void renderDynamicFilter(DynamicFilterModel pojo) {
+        List<Option> optionList = new ArrayList<>();
+        for (Filter filter: pojo.getData().getFilter()) {
+            if (filter.getTitle().equalsIgnoreCase("toko")) {
+                for (Option option: filter.getOptions()) {
+                    if (option.getName().equalsIgnoreCase("Power Badge")) {
+                        optionList.add(option);
+                    } else if (option.getName().equalsIgnoreCase("Official Store")) {
+                        optionList.add(option);
+                    }
+                }
+            } else if (filter.getTitle().equalsIgnoreCase("Dukungan Pengiriman")) {
+                for (Option option: filter.getOptions()) {
+                    if (option.getName().equalsIgnoreCase("Instant Courier")) {
+                        optionList.add(option);
+                    }
+                }
+            }
+        }
+
+        if (!adapter.getItemList().isEmpty()) {
+            CategoryHeaderModel categoryHeaderModel = (CategoryHeaderModel) adapter.getItemList().get(0);
+            categoryHeaderModel.setQuickFilterList(optionList);
+            adapter.notifyDataSetChanged();
+        }
     }
 }
 

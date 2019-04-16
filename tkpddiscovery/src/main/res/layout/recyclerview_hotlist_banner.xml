@@ -26,6 +26,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
         android:orientation="horizontal">
 
         <TextView
@@ -39,7 +40,7 @@
             android:gravity="center"
             tools:text="200+ Produk" />
 
-        <com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView
+        <com.tokopedia.design.quickfilter.custom.CustomMultipleFilterView
             android:id="@+id/quickFilterView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

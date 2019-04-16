@@ -148,6 +148,7 @@ public class HotlistFragment extends BrowseSectionFragment
     private String trackerAttribution;
     private PerformanceMonitoring performanceMonitoring;
     private boolean isTraceStopped;
+    private HashMap<String, String> selectedFilter;
 
 
     public static Fragment createInstanceUsingAlias(String alias, String trackerAttribution) {
@@ -929,19 +930,16 @@ public class HotlistFragment extends BrowseSectionFragment
     }
 
     @Override
-    public void getDynamicFilter() {
-        presenter.requestDynamicFilter();
+    protected boolean isFilterDataAvailable() {
+        return (selectedFilter != null && !selectedFilter.isEmpty());
     }
 
     @Override
     public void renderDynamicFilter(DynamicFilterModel pojo) {
-
-
-
         List<Option> optionList = new ArrayList<>();
-        for (Filter filter: pojo.getData().getFilter()) {
+        for (Filter filter : pojo.getData().getFilter()) {
             if (filter.getTitle().equalsIgnoreCase("toko")) {
-                for (Option option: filter.getOptions()) {
+                for (Option option : filter.getOptions()) {
                     if (option.getName().equalsIgnoreCase("Power Badge")) {
                         optionList.add(option);
                     } else if (option.getName().equalsIgnoreCase("Official Store")) {
@@ -949,7 +947,7 @@ public class HotlistFragment extends BrowseSectionFragment
                     }
                 }
             } else if (filter.getTitle().equalsIgnoreCase("Dukungan Pengiriman")) {
-                for (Option option: filter.getOptions()) {
+                for (Option option : filter.getOptions()) {
                     if (option.getName().equalsIgnoreCase("Instant Courier")) {
                         optionList.add(option);
                     }
@@ -967,8 +965,10 @@ public class HotlistFragment extends BrowseSectionFragment
     @Override
     public void resetData() {
         hotlistAdapter.resetStartFrom();
-        hotlistAdapter.clearData();
-        topAdsRecyclerAdapter.reset();
+        if (!isFilterDataAvailable()) {
+            hotlistAdapter.clearData();
+            topAdsRecyclerAdapter.reset();
+        }
     }
 
     @Override
@@ -1090,5 +1090,17 @@ public class HotlistFragment extends BrowseSectionFragment
     @Override
     public boolean isLoggedIn() {
         return userSession.isLoggedIn();
+    }
+
+    @Override
+    public void onQuickFilterSelected(HashMap<String, String> filter) {
+        this.selectedFilter = filter;
+        setSelectedFilter(filter);
+        reloadData();
+    }
+
+    @Override
+    public HashMap<String, String> getSelectedFilter() {
+        return selectedFilter;
     }
 }
