@@ -38,12 +38,6 @@ class PartialHeaderView private constructor(private val view: View,
         fun build(_view: View, _activity: Activity?) = PartialHeaderView(_view, _activity)
     }
 
-//    init {
-//
-//
-//
-//    }
-
     fun showOfficialStore(goldOs: ShopInfo.GoldOS){
         var imageIc: ImageSpan? = null
         var colorIc: Int? = null
@@ -56,26 +50,22 @@ class PartialHeaderView private constructor(private val view: View,
             colorIc = ContextCompat.getColor(contex, R.color.green_power_badge)
 
         } else if (goldOs.isOfficial == 1 ) {
-
             labelIc = contex.getString(R.string.from_official_store_label)
             imageIc = ImageSpan(contex, R.drawable.ic_official_store_product, ImageSpan.ALIGN_BOTTOM)
-            colorIc = ContextCompat.getColor(contex, R.color.purple_official_store)
-
+            colorIc = ContextCompat.getColor(contex, R.color.purple_official_store_new)
         }
 
         if (goldOs.isOfficial == 1 || goldOs.isGoldBadge == 1){
-
             with(view.label_official_store) {
                 val blackString = context.getString(R.string.product_from) + "  "
                 val startSpan = blackString.length
-
                 val spanText = SpannableString(blackString + "  " +
                         labelIc)
+
                 spanText.setSpan(imageIc, startSpan - 1, startSpan + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 spanText.setSpan(
                         ForegroundColorSpan(colorIc!!),
                         startSpan + 2, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-//            spanText.setSpan(StyleSpan(Typeface.BOLD), startSpan, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 setText(spanText, TextView.BufferType.SPANNABLE)
             }
 

@@ -267,7 +267,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginTop="@dimen/dp_10"
-        android:drawablePadding="@dimen/dp_4"
         android:visibility="gone"
         app:fontSize="micro"
         app:layout_constraintLeft_toLeftOf="@+id/product_name"
