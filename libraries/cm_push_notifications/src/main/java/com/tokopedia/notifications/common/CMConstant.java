@@ -65,6 +65,7 @@ public interface CMConstant {
 
         String VISUAL_COLLAPSED_IMAGE = "collapsedImg";
         String VISUAL_EXPANDED_IMAGE = "expandedImg";
+        String ACTION_BUTTON_ICON = "icon";
     }
 
     interface ReceiverExtraData {

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.AudioAttributes;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -70,8 +71,8 @@ public abstract class BaseNotification {
         if (baseNotificationModel.isUpdateExisting()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 silentChannel();
+                builder.setChannelId("Channel_Silent");
             }
-
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 createChannelGroup();
@@ -88,6 +89,7 @@ public abstract class BaseNotification {
             builder.setLargeIcon(getBitmap(baseNotificationModel.getIcon()));
 
         }
+        builder.setPriority(Notification.PRIORITY_MAX);
         return builder;
     }
 
@@ -117,26 +119,27 @@ public abstract class BaseNotification {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void silentChannel() {
-        int importance = NotificationManager.IMPORTANCE_LOW;
+        int importance = NotificationManager.IMPORTANCE_MAX;
         NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-        NotificationChannel channel = new NotificationChannel("SILENT_01)",
-                "App channel",
+        NotificationChannel notificationChannel = new NotificationChannel("Channel_Silent",
+                "Carousal",
                 importance);
-        AudioAttributes att = new AudioAttributes.Builder()
+        /*AudioAttributes att = new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                 .build();
-        channel.setSound(null, null);
-        // channel.setShowBadge(true);
-        channel.setDescription(CMConstant.NotificationGroup.CHANNEL_DESCRIPTION);
-        //channel.setGroup(CMConstant.NotificationGroup.CHANNEL_GROUP_ID);
-        channel.setVibrationPattern(null);
-        notificationManager.createNotificationChannel(channel);
+        channel.setSound(null, null);*/
+        notificationChannel.setDescription("no sound");
+        notificationChannel.setSound(null, null);
+        notificationChannel.enableLights(false);
+        notificationChannel.setLightColor(Color.BLUE);
+        notificationChannel.enableVibration(false);
+        notificationManager.createNotificationChannel(notificationChannel);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void createNotificationChannel() {
         if (baseNotificationModel.getChannelName() != null && !baseNotificationModel.getChannelName().isEmpty()) {
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            int importance = NotificationManager.IMPORTANCE_MAX;
             NotificationChannel channel = new NotificationChannel(baseNotificationModel.getChannelName(),
                     baseNotificationModel.getChannelName(), importance);
             channel.setDescription(CMConstant.NotificationGroup.CHANNEL_DESCRIPTION);
@@ -162,7 +165,7 @@ public abstract class BaseNotification {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void createDefaultChannel() {
-        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+        int importance = NotificationManager.IMPORTANCE_MAX;
         NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
         NotificationChannel channel = new NotificationChannel(CMConstant.NotificationGroup.CHANNEL_ID,
                 CMConstant.NotificationGroup.CHANNEL,
@@ -229,6 +232,23 @@ public abstract class BaseNotification {
         }
     }
 
+    Bitmap getActionButtonBitmap(String url) {
+        try {
+            int wh = getActionButtonHeightWidth();
+            return Glide.with(context).load(url)
+                    .asBitmap()
+                    .into(wh, wh)
+                    .get(3, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException | IllegalArgumentException e) {
+            return BitmapFactory.decodeResource(context.getResources(), getDrawableLargeIcon());
+        }
+    }
+
+    private int getActionButtonHeightWidth() {
+        return context.getResources().getDimensionPixelSize(R.dimen.dp_20);
+    }
+
+
     private int getImageWidth() {
         return context.getResources().getDimensionPixelSize(R.dimen.notif_width);
     }
@@ -291,7 +311,7 @@ public abstract class BaseNotification {
     protected int getRequestCode() {
         if (cacheHandler == null)
             cacheHandler = new CMNotificationCacheHandler(context);
-        int requestCode = cacheHandler.getIntValue( CM_REQUEST_CODE);
+        int requestCode = cacheHandler.getIntValue(CM_REQUEST_CODE);
         if (requestCode < 3000 || requestCode > 4000) {
             requestCode = 3000;
         }

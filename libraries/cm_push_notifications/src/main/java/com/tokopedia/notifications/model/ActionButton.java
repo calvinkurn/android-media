@@ -13,6 +13,10 @@ public class ActionButton {
     @SerializedName(CMConstant.PayloadKeys.APP_LINK)
     private String appLink;
 
+    @SerializedName(CMConstant.PayloadKeys.ACTION_BUTTON_ICON)
+    private String actionButtonIcon;
+
+
     public String getText() {
         return text;
     }
@@ -27,5 +31,13 @@ public class ActionButton {
 
     public void setAppLink(String appLink) {
         this.appLink = appLink;
+    }
+
+    public String getActionButtonIcon() {
+        return actionButtonIcon;
+    }
+
+    public void setActionButtonIcon(String actionButtonIcon) {
+        this.actionButtonIcon = actionButtonIcon;
     }
 }

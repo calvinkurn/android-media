@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 android {
@@ -38,7 +38,9 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.useCase)
-    implementation rootProject.ext.playServicesDependencies.firebase
+    implementation rootProject.ext.firebase.messaging
+
+    implementation project(rootProject.ext.libraries.track)
 }
 
 apply from: '../../publish_local.gradle'
