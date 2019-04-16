@@ -4,6 +4,7 @@ import android.app.Activity
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.support.v4.content.ContextCompat
+import android.support.v7.content.res.AppCompatResources
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -42,20 +43,25 @@ class PartialHeaderView private constructor(private val view: View,
         var imageIc: ImageSpan? = null
         var colorIc: Int? = null
         var labelIc = ""
-        val contex = activity!!.applicationContext
+        val context = view.context
+        val drawableSize = context.resources.getDimension(R.dimen.dp_14).toInt()
 
         if (goldOs.isGoldBadge == 1 && goldOs.isOfficial == 0) {
-            labelIc = contex.getString(R.string.from_power_badge_label)
-            imageIc = ImageSpan(contex, R.drawable.ic_pointer_power_merchant, ImageSpan.ALIGN_BOTTOM)
-            colorIc = ContextCompat.getColor(contex, R.color.green_power_badge)
+            val drawablePm = AppCompatResources.getDrawable(context, R.drawable.ic_power_merchant)
+            drawablePm?.setBounds(0, 0, drawableSize, drawableSize)
+            labelIc = context.getString(R.string.from_power_badge_label)
+            imageIc = ImageSpan(drawablePm, ImageSpan.ALIGN_BOTTOM)
+            colorIc = ContextCompat.getColor(context, R.color.green_power_badge)
 
-        } else if (goldOs.isOfficial == 1 ) {
-            labelIc = contex.getString(R.string.from_official_store_label)
-            imageIc = ImageSpan(contex, R.drawable.ic_official_store_product, ImageSpan.ALIGN_BOTTOM)
-            colorIc = ContextCompat.getColor(contex, R.color.purple_official_store_new)
+        } else if (goldOs.isOfficial == 1) {
+            val drawableOs = AppCompatResources.getDrawable(context, R.drawable.ic_official_store_product)
+            drawableOs?.setBounds(0, 0, drawableSize, drawableSize)
+            labelIc = context.getString(R.string.from_official_store_label)
+            imageIc = ImageSpan(drawableOs, ImageSpan.ALIGN_BOTTOM)
+            colorIc = ContextCompat.getColor(context, R.color.purple_official_store_new)
         }
 
-        if (goldOs.isOfficial == 1 || goldOs.isGoldBadge == 1){
+        if (goldOs.isOfficial == 1 || goldOs.isGoldBadge == 1) {
             with(view.label_official_store) {
                 val blackString = context.getString(R.string.product_from) + "  "
                 val startSpan = blackString.length
@@ -66,12 +72,13 @@ class PartialHeaderView private constructor(private val view: View,
                 spanText.setSpan(
                         ForegroundColorSpan(colorIc!!),
                         startSpan + 2, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spanText.setSpan(StyleSpan(Typeface.BOLD), startSpan + 2, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
                 setText(spanText, TextView.BufferType.SPANNABLE)
             }
 
             view.label_official_store.visible()
-        }
-        else view.label_official_store.gone()
+        } else view.label_official_store.gone()
     }
 
 
