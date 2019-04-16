@@ -54,7 +54,7 @@ class PartialHeaderView private constructor(private val view: View,
             colorIc = ContextCompat.getColor(context, R.color.green_power_badge)
 
         } else if (goldOs.isOfficial == 1) {
-            val drawableOs = MethodChecker.getDrawable(context, R.drawable.ic_official_store_product)
+            val drawableOs = MethodChecker.getDrawable(context, R.drawable.ic_badge_os)
             drawableOs?.setBounds(0, 0, drawableSize, drawableSize)
             labelIc = context.getString(R.string.from_official_store_label)
             imageIc = ImageSpan(drawableOs, ImageSpan.ALIGN_BOTTOM)
