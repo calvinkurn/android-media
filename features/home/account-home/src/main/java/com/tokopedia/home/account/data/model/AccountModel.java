@@ -2,6 +2,7 @@ package com.tokopedia.home.account.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.navigation_common.model.DebitInstantModel;
 import com.tokopedia.navigation_common.model.LePreapproveModel;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.navigation_common.model.PendingCashbackModel;
@@ -49,6 +50,9 @@ public class AccountModel {
     @SerializedName("le_preapprove")
     @Expose
     private LePreapproveModel lePreapprove = new LePreapproveModel();
+    @SerializedName("openDebitSettings")
+    @Expose
+    private DebitInstantModel debitInstant = new DebitInstantModel();
 
     @SerializedName("vcc_user_status")
     private VccUserStatus vccUserStatus = new VccUserStatus();
@@ -181,5 +185,13 @@ public class AccountModel {
 
     public void setSaldoModel(SaldoModel saldoModel) {
         this.saldoModel = saldoModel;
+    }
+
+    public DebitInstantModel getDebitInstant() {
+        return debitInstant;
+    }
+
+    public void setDebitInstant(DebitInstantModel debitInstant) {
+        this.debitInstant = debitInstant;
     }
 }
