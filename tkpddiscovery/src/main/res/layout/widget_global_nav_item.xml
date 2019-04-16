@@ -13,7 +13,7 @@
         <ImageView
             android:layout_width="@dimen/dp_64"
             android:layout_height="@dimen/dp_64"
-            android:src="@drawable/squircle"
+            android:src="@drawable/ic_squircle"
             android:scaleType="fitXY"/>
 
         <ImageView
