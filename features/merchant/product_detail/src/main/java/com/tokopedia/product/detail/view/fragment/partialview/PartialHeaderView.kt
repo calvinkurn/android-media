@@ -45,40 +45,43 @@ class PartialHeaderView private constructor(private val view: View,
 //    }
 
     fun showOfficialStore(goldOs: ShopInfo.GoldOS){
-        var imageIc:ImageSpan?=null
-        var colorIc:Int? = null
-        var labelIc =""
+        var imageIc: ImageSpan? = null
+        var colorIc: Int? = null
+        var labelIc = ""
         val contex = activity!!.applicationContext
 
-        if (goldOs.isGoldBadge == 1) {
+        if (goldOs.isGoldBadge == 1 && goldOs.isOfficial == 0) {
             labelIc = contex.getString(R.string.from_power_badge_label)
-            imageIc = ImageSpan(contex, R.drawable.ic_pointer_power_merchant,ImageSpan.ALIGN_BOTTOM)
-            colorIc = ContextCompat.getColor(contex,R.color.green_power_badge)
-        } else if (goldOs.isOfficial==1){
+            imageIc = ImageSpan(contex, R.drawable.ic_pointer_power_merchant, ImageSpan.ALIGN_BOTTOM)
+            colorIc = ContextCompat.getColor(contex, R.color.green_power_badge)
+
+        } else if (goldOs.isOfficial == 1 ) {
+
             labelIc = contex.getString(R.string.from_official_store_label)
-            imageIc = ImageSpan(contex, R.drawable.ic_official_store_product,ImageSpan.ALIGN_BOTTOM)
-            colorIc = ContextCompat.getColor(contex,R.color.purple_official_store)
+            imageIc = ImageSpan(contex, R.drawable.ic_official_store_product, ImageSpan.ALIGN_BOTTOM)
+            colorIc = ContextCompat.getColor(contex, R.color.purple_official_store)
+
         }
 
+        if (goldOs.isOfficial == 1 || goldOs.isGoldBadge == 1){
 
-            with(view.label_official_store){
-                val blackString = context.getString(R.string.product_from)+"  "
+            with(view.label_official_store) {
+                val blackString = context.getString(R.string.product_from) + "  "
                 val startSpan = blackString.length
 
                 val spanText = SpannableString(blackString + "  " +
                         labelIc)
-                spanText.setSpan(imageIc,startSpan-1,startSpan+1,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spanText.setSpan(imageIc, startSpan - 1, startSpan + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 spanText.setSpan(
                         ForegroundColorSpan(colorIc!!),
-                        startSpan+2, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        startSpan + 2, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 //            spanText.setSpan(StyleSpan(Typeface.BOLD), startSpan, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 setText(spanText, TextView.BufferType.SPANNABLE)
             }
 
-
-
-        if (goldOs.isOfficial==1 || goldOs.isGoldBadge==1) view.label_official_store.visible()
-        else  view.label_official_store.gone()
+            view.label_official_store.visible()
+        }
+        else view.label_official_store.gone()
     }
 
 
