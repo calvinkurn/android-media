@@ -40,7 +40,7 @@ import java.util.Random;
 public class GlobalNavWidget extends BaseCustomView {
 
     private static final int GLOBAL_NAV_SPAN_COUNT = 4;
-    private int[] backgroundGradientColorList = {0xfffae6, 0xe5f5ff, 0xebffef, 0xffeaef};
+    private int[] backgroundGradientColorList = {0xfffffae6, 0xffe5f5ff, 0xffebffef, 0xffffeaef};
 
     private LinearLayout globalNavContainerLayout;
     private TextView globalNavTitle;
