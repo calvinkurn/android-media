@@ -22,4 +22,15 @@ public interface SearchEventTracking {
         String GALLERY_SEARCH_RESULT = "query search by gallery";
         String CAMERA_SEARCH_RESULT = "query search by camera";
     }
+
+    interface MOENGAGE {
+        String KEYWORD = "keyword";
+        String IS_RESULT_FOUND = "is_result_found";
+        String CATEGORY_ID_MAPPING = "category_id_mapping";
+        String CATEGORY_NAME_MAPPING = "category_name_mapping";
+    }
+
+    interface EventMoEngage {
+        String SEARCH_ATTEMPT = "Search_Attempt";
+    }
 }
