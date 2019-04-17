@@ -142,7 +142,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                     divider.setVisibility(View.GONE);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         appBarToolbar.setElevation(getResources().getDimension(R.dimen.dp_4));
-                        KeyboardHandler.hideSoftKeyboard(getActivity());
+                       // KeyboardHandler.hideSoftKeyboard(getActivity());
                     }
                 } else {
                     divider.setVisibility(View.VISIBLE);
@@ -365,6 +365,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
+            KeyboardHandler.hideSoftKeyboard(getActivity());
         }
 
         @Override
