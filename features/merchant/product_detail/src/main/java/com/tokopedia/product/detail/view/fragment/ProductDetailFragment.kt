@@ -1306,6 +1306,11 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 }
             }
         }
+        actionButtonView.renderData(!data.basic.isActive(),
+                (productInfoViewModel.isShopOwner(data.basic.shopID)
+                        || shopInfo?.allowManage == true),
+                data.preorder)
+        actionButtonView.visibility = !isAffiliate
         activity?.invalidateOptionsMenu()
     }
 
