@@ -144,9 +144,9 @@ class TabBusinessFragment : BaseDaggerFragment() {
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
+                HomePageTracking.eventClickTabHomeWidget(activity, tab.text.toString().toLowerCase())
                 viewPager.setCurrentItem(tab.position, false)
                 adapter.notifyDataSetChanged()
-                HomePageTracking.eventClickTabHomeWidget(activity, tab.text.toString().toLowerCase())
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}

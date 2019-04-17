@@ -57,7 +57,7 @@
     <string name="location_changed_to">Lokasi Anda telah berubah menjadi:\u0020</string>
     <string name="see_how_to_redeem_voucher">Lihat Cara Redeem Voucher</string>
     <string name="text_purchase_detail">Rincian Pembelian</string>
-    <string name="deals_quantity">Kuantitas</string>
+    <string name="deal_quantity">Kuantitas</string>
     <string name="price">Harga</string>
     <string name="total_amount">Total Pembayaran</string>
     <string name="redeem_locations">Lokasi Redeem\u0020</string>

@@ -13,6 +13,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kol.R
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.user.session.UserSessionInterface
 
 
 /**
@@ -25,15 +26,18 @@ class KolPostDetailViewHolder(private val kolView: View,
                               private val youtubePostListener: YoutubeViewHolder.YoutubePostListener,
                               private val pollOptionListener: PollAdapter.PollOptionListener,
                               private val gridItemListener: GridPostAdapter.GridItemListener,
-                              private val videoViewListener: VideoViewHolder.VideoViewListener) :
+                              private val videoViewListener: VideoViewHolder.VideoViewListener,
+                              private val userSession : UserSessionInterface) :
         DynamicPostViewHolder(kolView, listener, cardTitleListener,
-                imagePostListener, youtubePostListener, pollOptionListener, gridItemListener, videoViewListener) {
+                imagePostListener, youtubePostListener, pollOptionListener, gridItemListener,
+                videoViewListener, userSession) {
 
 
     override fun bind(element: DynamicPostViewModel?) {
         super.bind(element)
         val footer = kolView.findViewById<View>(R.id.footer)
-        footer.visibility = View.GONE
+        val footerCta = footer.findViewById<View>(R.id.footerCta)
+        footerCta.visibility = View.GONE
     }
 
     override fun bindCaption(caption: Caption, template: TemplateBody) {

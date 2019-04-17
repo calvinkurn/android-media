@@ -14,6 +14,7 @@ class InstantCheckoutData : Parcelable {
     var redirectUrl: String? = null
     var transactionId: String? = null
     var stringQuery: String? = null
+    var thanksUrl: String? = null
 
 
     override fun describeContents(): Int {
@@ -26,6 +27,7 @@ class InstantCheckoutData : Parcelable {
         dest.writeString(this.redirectUrl)
         dest.writeString(this.transactionId)
         dest.writeString(this.stringQuery)
+        dest.writeString(this.thanksUrl)
     }
 
     constructor() {}
@@ -36,6 +38,7 @@ class InstantCheckoutData : Parcelable {
         this.redirectUrl = `in`.readString()
         this.transactionId = `in`.readString()
         this.stringQuery = `in`.readString()
+        this.thanksUrl = `in`.readString()
     }
 
     companion object CREATOR : Parcelable.Creator<InstantCheckoutData> {

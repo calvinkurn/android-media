@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.tradein.R;
 
 import java.lang.ref.WeakReference;
@@ -107,6 +108,12 @@ public class FinalPriceViewModel extends ViewModel implements LifecycleObserver 
             }
         });
 
+        if (TrackApp.getInstance() != null && TrackApp.getInstance().getGTM() != null) {
+            TrackApp.getInstance().getGTM().sendGeneralEvent("viewTradeIn",
+                    "harga final trade in",
+                    "view harga final",
+                    "");
+        }
     }
 
 }
