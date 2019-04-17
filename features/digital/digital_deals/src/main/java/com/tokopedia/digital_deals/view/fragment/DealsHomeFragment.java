@@ -111,6 +111,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private TextView tvLocationName;
     private LinearLayoutManager layoutManager;
     private TextView tvSeeAllBrands;
+    private TextView toolbarTitle;
     private TextView tvSeeAllPromo;
     private TextView tvSeeAllTrendingDeals;
     private int adapterPosition = -1;
@@ -167,6 +168,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private void setUpVariables(View view) {
         shimmerLayout = view.findViewById(R.id.shimmer_layout);
         toolbar = view.findViewById(R.id.deals_toolbar);
+        toolbarTitle = view.findViewById(R.id.toolbar_title);
         backArrow = view.findViewById(R.id.backArraw);
         overFlowIcon = view.findViewById(R.id.overFlow_icon);
         catItems = view.findViewById(R.id.category_items);
@@ -187,6 +189,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         tvSeeAllBrands.setOnClickListener(this);
         searchInputView.setOnClickListener(this);
         tvLocationName.setOnClickListener(this);
+        toolbarTitle.setOnClickListener(this);
         nestedScrollView = view.findViewById(R.id.nested_scroll_view);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         trendingDeals = view.findViewById(R.id.cl_topDeals);
@@ -257,7 +260,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
 
-
     private void setDrawableTint(Drawable img) {
         Drawable wrappedDrawable = DrawableCompat.wrap(img);
         Drawable mutableDrawable = wrappedDrawable.mutate();
@@ -303,7 +305,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         switch (requestCode) {
-
             case DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY:
                 if (resultCode == RESULT_OK) {
                     Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
@@ -440,14 +441,17 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void renderTopDeals(CategoryItem categoryItem) {
         if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {
             trendingDeals.setVisibility(View.VISIBLE);
-            tvSeeAllTrendingDeals.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!TextUtils.isEmpty(categoryItem.getCategoryUrl())) {
-                        mPresenter.getAllTrendingDeals(categoryItem.getCategoryUrl(), getContext().getResources().getString(R.string.trending_deals));
+            if (categoryItem.getItems().size() >= 9) {
+                tvSeeAllTrendingDeals.setVisibility(View.VISIBLE);
+                tvSeeAllTrendingDeals.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!TextUtils.isEmpty(categoryItem.getCategoryUrl())) {
+                            mPresenter.getAllTrendingDeals(categoryItem.getCategoryUrl(), getContext().getResources().getString(R.string.trending_deals));
+                        }
                     }
-                }
-            });
+                });
+            }
             noContent.setVisibility(View.GONE);
             categoryAdapter.clearList();
             categoryAdapter.setDealsHomeLayout(true);
@@ -495,7 +499,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         if (categoryItems != null && categoryItems.size() > 0) {
             curatedDealsLayout.setVisibility(View.VISIBLE);
             curatedDealsLayout.removeAllViews();
-            noContent.setVisibility(View.GONE);
             boolean isItemsAvailable = false;
             for (CategoryItem categoryItem : categoryItems) {
                 if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {
@@ -503,10 +506,10 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                     DealsCategoryAdapter.INavigateToActivityRequest listener = new DealsCategoryAdapter.INavigateToActivityRequest() {
                         @Override
                         public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
-startActivityForResult(intent, requestCode);
+                            startActivityForResult(intent, requestCode);
                         }
                     };
-                    CuratedDealsView curatedDealsView = new CuratedDealsView(getActivity(), categoryItem, listener, openTrendingDeals,  "", mPresenter);
+                    CuratedDealsView curatedDealsView = new CuratedDealsView(getActivity(), categoryItem, listener, openTrendingDeals, "", mPresenter);
                     curatedDealsLayout.addView(curatedDealsView);
                 }
             }
@@ -701,7 +704,9 @@ startActivityForResult(intent, requestCode);
     @Override
     public void startLocationFragment(List<Location> locationList, boolean isForFirstime) {
         Utils.getSingletonInstance().updateLocation(getContext(), locationList.get(0));
-        mPresenter.getDealsList(false);
+        if (isForFirstime) {
+            mPresenter.getDealsList(false);
+        }
         selectLocationFragment.setCustomContentView(new SelectLocationBottomSheet(getContext(), isForFirstime, locationList, this, tvLocationName.getText().toString(), this), "", false);
         selectLocationFragment.show();
         if (isForFirstime) {

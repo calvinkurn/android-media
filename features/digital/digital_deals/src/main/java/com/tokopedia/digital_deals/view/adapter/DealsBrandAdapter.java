@@ -38,16 +38,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
 
     public DealsBrandAdapter(List<Brand> brandItems, int itemViewType) {
-
-        if (brandItems != null && itemViewType == ITEM_BRAND_SHORT) {
-            this.brandItems = new ArrayList<>();
-            MAX_BRANDS = brandItems.size() < MAX_BRANDS ? brandItems.size() : MAX_BRANDS;
-            for (int i = 0; i < MAX_BRANDS; i++) {
-                this.brandItems.add(brandItems.get(i));
-            }
-        } else {
-            this.brandItems = (brandItems == null ? new ArrayList<>() : brandItems);
-        }
+        this.brandItems = (brandItems == null ? new ArrayList<>() : brandItems);
         this.itemViewType = itemViewType;
     }
 

@@ -63,7 +63,7 @@ public class PromoAdapter extends RecyclerView.Adapter<PromoAdapter.PromosViewHo
             promoImage.setOnClickListener(view -> {
                 mPresenter.sendEventEcommerce(item.getId(), position, item.getDisplayName(), DealsAnalytics.EVENT_PROMO_CLICK
                         , DealsAnalytics.EVENT_CLICK_PROMO_BANNER, DealsAnalytics.LIST_DEALS_TOP_BANNER);
-                mPresenter.onClickBanner();
+                mPresenter.onClickBanner(item);
             });
         }
     }

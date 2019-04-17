@@ -25,6 +25,7 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
+            android:visibility="gone"
             app:layout_scrollFlags="scroll" />
     </android.support.design.widget.AppBarLayout>
 
