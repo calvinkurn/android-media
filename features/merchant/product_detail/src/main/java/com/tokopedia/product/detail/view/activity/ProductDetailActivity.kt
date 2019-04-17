@@ -146,7 +146,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
                 trackerListName = it.getString(PARAM_TRACKER_LIST_NAME)
             }
             if (it.containsKey(PARAM_IS_SPECIAL_PRIZE)){
-                isSpecialPrize = it.getBoolean(PARAM_IS_SPECIAL_PRIZE)
+                isSpecialPrize = it.getString(PARAM_IS_SPECIAL_PRIZE, "").toLowerCase() == "true"
             }
         }
         if (uri != null && uri.host == AFFILIATE_HOST) {
