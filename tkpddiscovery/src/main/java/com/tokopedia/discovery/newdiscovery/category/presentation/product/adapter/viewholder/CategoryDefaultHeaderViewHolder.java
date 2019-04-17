@@ -221,11 +221,15 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
     @Override
     public void selectFilter(String typeFilter) {
         String[] str = typeFilter.split("=");
+        String eventLabel;
         if (selectedFilterList.containsKey(str[0])) {
             selectedFilterList.remove(str[0]);
+            eventLabel = "false";
         } else {
             selectedFilterList.put(str[0], str[1]);
+            eventLabel = "true";
         }
-        categoryListener.onQuickFilterSelected(selectedFilterList);
+        eventLabel = str[0] + "-" + str[1] + "-" + eventLabel;
+        categoryListener.onQuickFilterSelected(selectedFilterList, eventLabel);
     }
 }

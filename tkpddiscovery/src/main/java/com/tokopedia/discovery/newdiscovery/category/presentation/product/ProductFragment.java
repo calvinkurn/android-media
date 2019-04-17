@@ -122,7 +122,6 @@ public class ProductFragment extends BrowseSectionFragment
     protected TopAdsRecyclerAdapter topAdsRecyclerAdapter;
     private ProductViewModel productViewModel;
     private String trackerAttribution;
-    private HashMap<String, String> selectedFilter;
 
     private boolean isLoadingData;
 
@@ -663,15 +662,16 @@ public class ProductFragment extends BrowseSectionFragment
     }
 
     @Override
-    public void onQuickFilterSelected(HashMap<String, String> filter) {
+    public void onQuickFilterSelected(HashMap<String, String> filter, String eventLabel) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE,
+                "quick filter" + "-" + getScreenName(),
+                eventLabel
+        ).getEvent());
         this.selectedFilter = filter;
         setSelectedFilter(filter);
         loadDataProduct(0);
-    }
-
-    @Override
-    public HashMap<String, String> getSelectedFilter() {
-        return selectedFilter;
     }
 
     @Override

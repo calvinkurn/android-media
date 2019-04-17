@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.discovery.model.Option;
@@ -279,11 +281,15 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
     @Override
     public void selectFilter(String typeFilter) {
         String[] str = typeFilter.split("=");
+        String eventLabel;
         if (selectedFilterList.containsKey(str[0])) {
             selectedFilterList.remove(str[0]);
+            eventLabel = "false";
         } else {
             selectedFilterList.put(str[0], str[1]);
+            eventLabel = "true";
         }
-        categoryListener.onQuickFilterSelected(selectedFilterList);
+        eventLabel = str[0] + "-" + str[1] + "-" + eventLabel;
+        categoryListener.onQuickFilterSelected(selectedFilterList, eventLabel);
     }
 }

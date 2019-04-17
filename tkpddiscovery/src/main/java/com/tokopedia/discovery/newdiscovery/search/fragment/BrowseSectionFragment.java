@@ -81,7 +81,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     private ArrayList<Sort> sort;
     private ArrayList<Filter> filters;
     private HashMap<String, String> selectedSort;
-    private HashMap<String, String> selectedFilter;
+    protected HashMap<String, String> selectedFilter;
     private FilterFlagSelectedModel flagFilterHelper;
     private boolean isGettingDynamicFilter;
 

@@ -27,6 +27,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.model.Hotlist;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -148,8 +149,6 @@ public class HotlistFragment extends BrowseSectionFragment
     private String trackerAttribution;
     private PerformanceMonitoring performanceMonitoring;
     private boolean isTraceStopped;
-    private HashMap<String, String> selectedFilter;
-
 
     public static Fragment createInstanceUsingAlias(String alias, String trackerAttribution) {
         HotlistFragment fragment = new HotlistFragment();
@@ -576,10 +575,17 @@ public class HotlistFragment extends BrowseSectionFragment
                 showBottomBarNavigation(false);
                 updateDepartmentId(getFlagFilterHelper().getCategoryId());
                 reloadData();
+                showSelectedFilters(getSelectedFilter());
             }
         }
         onHandlingDataFromPDP(requestCode, resultCode, data);
     }
+
+    private void showSelectedFilters(HashMap<String, String> selectedFilter) {
+        //pass viewHolder
+
+    }
+
 
     @Override
     public void reloadData() {
@@ -929,8 +935,7 @@ public class HotlistFragment extends BrowseSectionFragment
         return queryModel;
     }
 
-    @Override
-    protected boolean isFilterDataAvailable() {
+    protected boolean isFilterAvailable() {
         return (selectedFilter != null && !selectedFilter.isEmpty());
     }
 
@@ -965,7 +970,7 @@ public class HotlistFragment extends BrowseSectionFragment
     @Override
     public void resetData() {
         hotlistAdapter.resetStartFrom();
-        if (!isFilterDataAvailable()) {
+        if (!isFilterAvailable()) {
             hotlistAdapter.clearData();
             topAdsRecyclerAdapter.reset();
         }
@@ -1093,14 +1098,15 @@ public class HotlistFragment extends BrowseSectionFragment
     }
 
     @Override
-    public void onQuickFilterSelected(HashMap<String, String> filter) {
+    public void onQuickFilterSelected(HashMap<String, String> filter, String eventLabel) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
+                AppEventTracking.Event.HOTLIST,
+                AppEventTracking.Event.HOTLIST_PAGE,
+                "quick filter" + "-" + getScreenName(),
+                eventLabel
+        ).getEvent());
         this.selectedFilter = filter;
         setSelectedFilter(filter);
         reloadData();
-    }
-
-    @Override
-    public HashMap<String, String> getSelectedFilter() {
-        return selectedFilter;
     }
 }
