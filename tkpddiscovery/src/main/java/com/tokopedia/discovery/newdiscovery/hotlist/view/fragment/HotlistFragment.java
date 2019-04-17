@@ -43,6 +43,7 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.SortProductActivity;
@@ -149,6 +150,7 @@ public class HotlistFragment extends BrowseSectionFragment
     private String trackerAttribution;
     private PerformanceMonitoring performanceMonitoring;
     private boolean isTraceStopped;
+    private List<QuickFilterItem> quickFilterItems;
 
     public static Fragment createInstanceUsingAlias(String alias, String trackerAttribution) {
         HotlistFragment fragment = new HotlistFragment();
@@ -584,6 +586,14 @@ public class HotlistFragment extends BrowseSectionFragment
     private void showSelectedFilters(HashMap<String, String> selectedFilter) {
         //pass viewHolder
 
+
+        for (QuickFilterItem quickFilterItem: this.quickFilterItems) {
+            String[] str = quickFilterItem.getType().split("=");
+            if (selectedFilter.containsKey(str[0])) {
+                quickFilterItem.setSelected(true);
+            }
+        }
+        hotlistAdapter.notifyDataSetChanged();
     }
 
 
@@ -941,6 +951,7 @@ public class HotlistFragment extends BrowseSectionFragment
 
     @Override
     public void renderDynamicFilter(DynamicFilterModel pojo) {
+        super.renderDynamicFilter(pojo);
         List<Option> optionList = new ArrayList<>();
         for (Filter filter : pojo.getData().getFilter()) {
             if (filter.getTitle().equalsIgnoreCase("toko")) {
@@ -1108,5 +1119,10 @@ public class HotlistFragment extends BrowseSectionFragment
         this.selectedFilter = filter;
         setSelectedFilter(filter);
         reloadData();
+    }
+
+    @Override
+    public void setQuickFilterList(List<QuickFilterItem> quickFilterItems) {
+        this.quickFilterItems = quickFilterItems;
     }
 }

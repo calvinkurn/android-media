@@ -1,8 +1,10 @@
 package com.tokopedia.discovery.newdiscovery.hotlist.view.adapter;
 
+import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistProductViewModel;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by hangnadi on 10/9/17.
@@ -25,4 +27,6 @@ public interface HotlistListener {
     boolean isLoggedIn();
 
     void onQuickFilterSelected(HashMap<String, String> filter, String eventLabel);
+
+    void setQuickFilterList(List<QuickFilterItem> quickFilterItems);
 }
