@@ -4,6 +4,7 @@ package com.tokopedia.digital_deals.view.presenter;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -13,6 +14,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
@@ -365,13 +367,12 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     }
 
     public void onClickBanner(ProductItem productItem) {
-        if (productItem.getUrl().contains("www.tokopedia.com")
-                || productItem.getUrl().contains("docs.google.com")) {
-            getView().startGeneralWebView(productItem.getUrl());
-        } else {
-            Intent detailsIntent = new Intent(getView().getActivity(), DealDetailsActivity.class);
-            detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, productItem.getSeoUrl());
-            getView().navigateToActivity(detailsIntent);
+        String applink;
+        if (!TextUtils.isEmpty(productItem.getSeoUrl())) {
+            if (productItem.getSeoUrl().contains("www.tokopedia.com")) {
+                applink = productItem.getSeoUrl().replace("https://www.tokopedia.com/", "tokopedia://");
+                RouteManager.route(getView().getActivity(), applink);
+            }
         }
     }
 
