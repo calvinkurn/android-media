@@ -894,6 +894,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             public void onNext(GraphqlResponse graphqlResponse) {
                 if (getView() != null) {
                     getView().hideLoading();
+                    checkPromoStackingCodeMapper.setFinal(false);
                     boolean flagError = false;
                     ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
 

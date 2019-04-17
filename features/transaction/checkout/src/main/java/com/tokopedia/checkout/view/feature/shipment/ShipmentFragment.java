@@ -2200,7 +2200,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
             order.setUniqueId(shipmentCartItemModel.getCartString());
             order.setShopId(shipmentCartItemModel.getShopId());
-            if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+            if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
+                    shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
                 order.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId());
                 order.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId());
             }
