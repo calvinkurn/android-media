@@ -512,7 +512,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (productInfoViewModel.isUserSessionActive()) {
                 val isExpressCheckout = (productInfoViewModel.productInfoP3resp.value)?.isExpressCheckoutType
                         ?: false
-                if (isExpressCheckout) {
+                if (isExpressCheckout || isSpecialPrize) {
                     goToAtcExpress()
                 } else {
                     goToNormalCheckout()
@@ -616,6 +616,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         if (!::actionButtonView.isInitialized) {
             actionButtonView = PartialButtonActionView.build(base_btn_action, onViewClickListener)
+            actionButtonView.isSpecialPrize = isSpecialPrize
         }
 
         if (!::productShopView.isInitialized) {
