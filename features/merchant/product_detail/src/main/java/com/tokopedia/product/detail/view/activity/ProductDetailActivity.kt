@@ -33,6 +33,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var productId: String? = null
     private var trackerAttribution: String? = null
     private var trackerListName: String? = null
+    private var isSpecialPrize: Boolean = false
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -42,6 +43,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         private const val IS_FROM_EXPLORE_AFFILIATE = "is_from_explore_affiliate"
         private const val PARAM_TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val PARAM_TRACKER_LIST_NAME = "tracker_list_name"
+        private const val PARAM_IS_SPECIAL_PRIZE = "is_special_prize"
 
         private const val AFFILIATE_HOST = "affiliate"
 
@@ -90,7 +92,8 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     }
 
     override fun getNewFragment(): Fragment = ProductDetailFragment
-        .newInstance(productId, shopDomain, productKey, isFromDeeplink, isFromAffiliate, trackerAttribution, trackerListName)
+        .newInstance(productId, shopDomain, productKey, isFromDeeplink, isFromAffiliate, isSpecialPrize,
+                trackerAttribution, trackerListName)
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
         .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
@@ -122,6 +125,9 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             }
             trackerAttribution = uri.getQueryParameter(PARAM_TRACKER_ATTRIBUTION)
             trackerListName = uri.getQueryParameter(PARAM_TRACKER_LIST_NAME)
+            if (PARAM_IS_SPECIAL_PRIZE in uri.queryParameterNames){
+                isSpecialPrize = uri.getBooleanQueryParameter(PARAM_IS_SPECIAL_PRIZE, false)
+            }
         }
         bundle?.let {
             if (productId.isNullOrEmpty()) {
@@ -138,6 +144,9 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             }
             if (trackerListName.isNullOrEmpty()) {
                 trackerListName = it.getString(PARAM_TRACKER_LIST_NAME)
+            }
+            if (it.containsKey(PARAM_IS_SPECIAL_PRIZE)){
+                isSpecialPrize = it.getBoolean(PARAM_IS_SPECIAL_PRIZE)
             }
         }
         if (uri != null && uri.host == AFFILIATE_HOST) {
