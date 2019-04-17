@@ -44,6 +44,7 @@ public class CartMapper implements ICartMapper {
     private static final String SHOP_TYPE_OFFICIAL_STORE = "official_store";
     private static final String SHOP_TYPE_GOLD_MERCHANT = "gold_merchant";
     private static final String SHOP_TYPE_REGULER = "reguler";
+    private static final String MERCHANT_VOUCHER_TYPE = "merchant";
     private final IMapperUtil mapperUtil;
 
     @Inject
@@ -114,7 +115,9 @@ public class CartMapper implements ICartMapper {
 
             if (cartDataListResponse.getAutoapplyStack() != null && cartDataListResponse.getAutoapplyStack().getVoucherOrders() != null) {
                 for (VoucherOrdersItem voucherOrdersItem : cartDataListResponse.getAutoapplyStack().getVoucherOrders()) {
-                    if (voucherOrdersItem.getUniqueId().equals(shopGroup.getCartString())) {
+                    if (voucherOrdersItem.getUniqueId().equals(shopGroup.getCartString())
+                            && !voucherOrdersItem.getType().isEmpty()
+                            && voucherOrdersItem.getType().equalsIgnoreCase(MERCHANT_VOUCHER_TYPE)) {
                         VoucherOrdersItemData voucherOrdersItemData = new VoucherOrdersItemData();
                         voucherOrdersItemData.setCode(voucherOrdersItem.getCode());
                         voucherOrdersItemData.setSuccess(voucherOrdersItem.isSuccess());
@@ -289,11 +292,6 @@ public class CartMapper implements ICartMapper {
             }
             globalCouponAttr.setQuantityLabel(cartDataListResponse.getGlobalCouponAttr().getQuantityLabel());
         }
-
-        // test hardcode
-        globalCouponAttr.setDescription("Gunakan kode atau kupon yaaaaa");
-        globalCouponAttr.setQuantityLabel("10 kupon");
-
         cartListData.setGlobalCouponAttr(globalCouponAttr);
 
         AutoApplyStackData autoApplyStackData = new AutoApplyStackData();

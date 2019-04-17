@@ -18,6 +18,8 @@ class CheckPromoFirstStepAfterClashSubscriber(val view: ICartListView?,
                                               val checkPromoCodeStackingCodeMapper: CheckPromoStackingCodeMapper)
     : Subscriber<GraphqlResponse>() {
 
+    private val statusOK = "OK"
+
     override fun onCompleted() {
 
     }
@@ -31,7 +33,38 @@ class CheckPromoFirstStepAfterClashSubscriber(val view: ICartListView?,
     override fun onNext(response: GraphqlResponse) {
         view?.hideProgressLoading()
         val responseGetPromoStack = checkPromoCodeStackingCodeMapper.call(response)
-        if (responseGetPromoStack.status != "OK" || responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
+
+        if (responseGetPromoStack.status.equals(statusOK, true)) {
+            if (responseGetPromoStack.data.clashings.isClashedPromos) {
+                view?.onClashCheckPromo(responseGetPromoStack.data.clashings)
+            } else {
+                var isRed = false
+                var message = ""
+                if (responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
+                    isRed = true
+                    message = responseGetPromoStack.data.message.text
+                } else {
+                    responseGetPromoStack.data.voucherOrders.forEach {
+                        if (it.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
+                            isRed = true
+                            message = it.message.text
+                        }
+                    }
+                }
+
+                if (isRed) {
+                    view?.hideProgressLoading()
+                    view?.showToastMessageRed(message)
+                } else {
+                    view?.onSuccessCheckPromoFirstStep(responseGetPromoStack)
+                }
+            }
+        } else {
+            val message = responseGetPromoStack.data.message.text
+            view?.showToastMessageRed(message)
+        }
+
+        /*if (responseGetPromoStack.status != "OK" || responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
             val message = responseGetPromoStack.data.message.text
             view?.showToastMessageRed(message)
         } else {
@@ -45,7 +78,7 @@ class CheckPromoFirstStepAfterClashSubscriber(val view: ICartListView?,
                     view?.onSuccessCheckPromoFirstStep(responseGetPromoStack)
                 }
             }
-        }
+        }*/
     }
 
 }

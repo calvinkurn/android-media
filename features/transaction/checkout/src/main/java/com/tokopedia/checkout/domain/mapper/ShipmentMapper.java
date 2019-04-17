@@ -150,7 +150,7 @@ public class ShipmentMapper implements IShipmentMapper {
             dataResult.setAutoApplyStackData(autoApplyStackData);
         }
 
-        // if (shipmentAddressFormDataResponse.getGlobalCouponAttr() != null) {
+        if (shipmentAddressFormDataResponse.getGlobalCouponAttr() != null) {
             GlobalCouponAttrData globalCouponAttrData = new GlobalCouponAttrData();
             if (shipmentAddressFormDataResponse.getGlobalCouponAttr() != null) {
                 if (shipmentAddressFormDataResponse.getGlobalCouponAttr().getDescription() != null) {
@@ -158,13 +158,8 @@ public class ShipmentMapper implements IShipmentMapper {
                 }
                 globalCouponAttrData.setQuantityLabel(shipmentAddressFormDataResponse.getGlobalCouponAttr().getQuantityLabel());
             }
-
-            // test hardcode
-            globalCouponAttrData.setDescription("Gunakan kode di Checkout");
-            globalCouponAttrData.setQuantityLabel("15 kupon");
-
             dataResult.setGlobalCouponAttrData(globalCouponAttrData);
-        // }
+        }
 
         if (shipmentAddressFormDataResponse.getDonation() != null) {
             Donation donation = new Donation();

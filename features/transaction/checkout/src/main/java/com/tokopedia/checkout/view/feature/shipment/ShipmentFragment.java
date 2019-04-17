@@ -729,24 +729,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void setAppliedPromoCodeData(PromoCodeCartListData promoCodeCartListData) {
     }
 
-    private void setAppliedPromoStackingCodeData(DataUiModel dataUiModel) {
-        int type;
-        if (dataUiModel.isCoupon() == 1) {
-            type = PromoStackingData.CREATOR.getTYPE_COUPON();
-        } else {
-            type = PromoStackingData.CREATOR.getTYPE_VOUCHER();
-        }
-        PromoStackingData promoStackingData = new PromoStackingData.Builder()
-                .typePromo(type)
-                .promoCode(dataUiModel.getCodes().get(0))
-                .description(dataUiModel.getMessage().getText())
-                .amount(dataUiModel.getCashbackWalletAmount())
-                .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(dataUiModel.getMessage().getState()))
-                .title(dataUiModel.getTitleDescription())
-                .build();
-        updateAppliedPromoStack(promoStackingData);
-    }
-
     @Override
     public void renderCheckPromoCodeFromCourierSuccess(PromoCodeCartListData promoCodeCartListData,
                                                        int itemPosition, boolean noToast) {

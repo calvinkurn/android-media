@@ -2007,6 +2007,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         promoStackingData.setAmount(0);
         promoStackingData.setPromoCode("");
         promoStackingData.setDescription("");
+        promoStackingData.setTitle("");
 
         // Reset merchant promo
         List<CartShopHolderData> cartShopHolderDataList = cartAdapter.getAllCartShopHolderData();

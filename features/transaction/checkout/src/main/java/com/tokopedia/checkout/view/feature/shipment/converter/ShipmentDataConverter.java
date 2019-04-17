@@ -30,6 +30,8 @@ import java.util.List;
 public class ShipmentDataConverter {
 
     private static final int PRIME_ADDRESS = 2;
+    private static final String MERCHANT_VOUCHER_TYPE = "merchant";
+    private static final String LOGISTIC_VOUCHER_TYPE = "logistic";
 
     public RecipientAddressModel getRecipientAddressModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
         if (cartShipmentAddressFormData.getGroupAddress() != null && cartShipmentAddressFormData.getGroupAddress().size() > 0) {
@@ -152,7 +154,15 @@ public class ShipmentDataConverter {
                     if (cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders() != null) {
                         for (VoucherOrdersItemData voucherOrdersItemData : cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders()) {
                             if (groupShop.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
-                                shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(voucherOrdersItemData));
+                                if (voucherOrdersItemData.getType().equalsIgnoreCase(MERCHANT_VOUCHER_TYPE)) {
+                                    shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(voucherOrdersItemData));
+                                } else if (voucherOrdersItemData.getType().equalsIgnoreCase(LOGISTIC_VOUCHER_TYPE)) {
+                                    // TODO : set logistic - fajar?
+                                    // shipmentCartItemModel.setVoucherLogisticItemUiModel();
+                                } else {
+                                    shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
+                                    shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
+                                }
                             }
                         }
                     }
@@ -221,7 +231,15 @@ public class ShipmentDataConverter {
 
         // set promo merchant
         if (groupShop.getShop().getVoucherOrdersItemData() != null) {
-            shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(groupShop.getShop().getVoucherOrdersItemData()));
+            if (groupShop.getShop().getVoucherOrdersItemData().getType().equalsIgnoreCase(MERCHANT_VOUCHER_TYPE)) {
+                shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(groupShop.getShop().getVoucherOrdersItemData()));
+            } else if (groupShop.getShop().getVoucherOrdersItemData().getType().equalsIgnoreCase(LOGISTIC_VOUCHER_TYPE)) {
+                // TODO : convert logistic - fajar?
+                // shipmentCartItemModel.setVoucherLogisticItemUiModel();
+            } else {
+                shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
+                shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
+            }
         }
 
         shipmentCartItemModel.setShipmentCartData(new RatesDataConverter()
