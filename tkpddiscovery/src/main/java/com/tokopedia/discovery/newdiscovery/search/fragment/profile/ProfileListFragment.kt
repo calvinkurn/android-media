@@ -178,7 +178,9 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     override fun onErrorToggleFollow(adapterPosition: Int, errorMessage: String) {
-        NetworkErrorHelper.showSnackbar(activity)
+        activity?.run {
+            NetworkErrorHelper.showSnackbar(activity)
+        }
     }
 
     override fun attachNavigationListener(searchNavigationListener: SearchNavigationListener) {
@@ -336,9 +338,11 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     private fun handleItemClickedIfActivityAnApplinkRouter(applink: String, shouldFinishActivity: Boolean) {
-        val router = activity!!.applicationContext as ApplinkRouter
-        if (router.isSupportApplink(applink)) {
-            handleRouterSupportApplink(router, applink, shouldFinishActivity)
+        activity?.run {
+            val router = activity!!.applicationContext as ApplinkRouter
+            if (router.isSupportApplink(applink)) {
+                handleRouterSupportApplink(router, applink, shouldFinishActivity)
+            }
         }
     }
 
