@@ -7,11 +7,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
@@ -31,6 +28,8 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Pr
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -68,6 +67,9 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     GetDynamicFilterV4UseCase getDynamicFilterV4UseCase;
     @Inject
     ProductWishlistUrlUseCase productWishlistUrlUseCase;
+    @Inject
+    UserSessionInterface userSession;
+
     private WishListActionListener wishlistActionListener;
     GraphqlUseCase graphqlUseCase;
     private Context context;
@@ -99,7 +101,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     }
 
     private Subscriber<GraphqlResponse> getFilterFromNetworkSubscriber() {
-        return new DefaultSubscriber<GraphqlResponse>() {
+        return new Subscriber<GraphqlResponse>() {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
@@ -116,6 +118,11 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
                     getView().renderDynamicFilter(dynamicFilterModel);
                 }
+            }
+
+            @Override
+            public void onCompleted() {
+
             }
         };
     }
@@ -187,16 +194,23 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     @Override
     protected RequestParams getDynamicFilterParam() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(AuthUtil.generateParamsNetwork2(context, requestParams.getParameters()));
-        requestParams.putString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_PRODUCT);
-        requestParams.putString(BrowseApi.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
-        requestParams.putString(BrowseApi.Q, getView().getQueryKey());
+        requestParams.putAll(generateParamsNetwork(requestParams));
+        requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_PRODUCT);
+        requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
+        requestParams.putString(SearchApiConst.Q, getView().getQueryKey());
         if(!TextUtils.isEmpty(getView().getSearchParameter().get(SearchApiConst.SC))) {
-            requestParams.putString(BrowseApi.SC, getView().getSearchParameter().get(SearchApiConst.SC));
+            requestParams.putString(SearchApiConst.SC, getView().getSearchParameter().get(SearchApiConst.SC));
         } else {
-            requestParams.putString(BrowseApi.SC, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SC);
+            requestParams.putString(SearchApiConst.SC, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SC);
         }
         return requestParams;
+    }
+
+    private HashMap<String, String> generateParamsNetwork(RequestParams requestParams) {
+        return new HashMap<>(
+                AuthUtil.generateParamsNetwork(userSession.getUserId(),
+                        userSession.getDeviceId(),
+                        requestParams.getParamsAllValueInString()));
     }
 
     @Override
@@ -220,8 +234,8 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         }
     }
 
-    private DefaultSubscriber<GraphqlResponse> getLoadMoreDataSubscriber(final SearchParameter searchParameter) {
-        return new DefaultSubscriber<GraphqlResponse>() {
+    private Subscriber<GraphqlResponse> getLoadMoreDataSubscriber(final SearchParameter searchParameter) {
+        return new Subscriber<GraphqlResponse>() {
             @Override
             public void onStart() {
                 loadMoreDataSubscriberOnStartIfViewAttached();
@@ -316,8 +330,8 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         }
     }
 
-    private DefaultSubscriber<GraphqlResponse> getLoadDataSubscriber(final boolean isFirstTimeLoad) {
-        return new DefaultSubscriber<GraphqlResponse>() {
+    private Subscriber<GraphqlResponse> getLoadDataSubscriber(final boolean isFirstTimeLoad) {
+        return new Subscriber<GraphqlResponse>() {
             @Override
             public void onStart() {
                 loadDataSubscriberOnStartIfViewAttached();
@@ -448,24 +462,24 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
     private RequestParams getQuickFilterRequestParams() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(AuthUtil.generateParamsNetwork2(context, requestParams.getParameters()));
-        requestParams.putString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_QUICK_FILTER);
-        requestParams.putString(BrowseApi.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
-        requestParams.putString(BrowseApi.Q, getView().getQueryKey());
+        requestParams.putAll(generateParamsNetwork(requestParams));
+        requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_QUICK_FILTER);
+        requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
+        requestParams.putString(SearchApiConst.Q, getView().getQueryKey());
         if (!TextUtils.isEmpty(getView().getSearchParameter().get(SearchApiConst.SC))) {
-            requestParams.putString(BrowseApi.SC, getView().getSearchParameter().get(SearchApiConst.SC));
+            requestParams.putString(SearchApiConst.SC, getView().getSearchParameter().get(SearchApiConst.SC));
         } else {
-            requestParams.putString(BrowseApi.SC, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SC);
+            requestParams.putString(SearchApiConst.SC, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SC);
         }
         return requestParams;
     }
 
     private void enrichWithForceSearchParam(RequestParams requestParams, boolean isForceSearch) {
-        requestParams.putBoolean(BrowseApi.REFINED, isForceSearch);
+        requestParams.putBoolean(SearchApiConst.REFINED, isForceSearch);
     }
 
     private void enrichWithRelatedSearchParam(RequestParams requestParams, boolean relatedSearchEnabled) {
-        requestParams.putBoolean(BrowseApi.RELATED, relatedSearchEnabled);
+        requestParams.putBoolean(SearchApiConst.RELATED, relatedSearchEnabled);
     }
 
     @Override

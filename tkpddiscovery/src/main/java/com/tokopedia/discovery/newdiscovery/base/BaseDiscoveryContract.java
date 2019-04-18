@@ -31,8 +31,6 @@ public interface BaseDiscoveryContract {
 
         void onHandleResponseIntermediary(String departmentId);
 
-        void onHandleOfficialStorePage();
-
         void onHandleResponseUnknown();
 
         void onHandleResponseCatalog(String redirectUrl);

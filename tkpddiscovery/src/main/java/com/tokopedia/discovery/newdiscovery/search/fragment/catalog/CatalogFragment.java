@@ -8,7 +8,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -25,7 +24,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
@@ -69,7 +67,7 @@ public class CatalogFragment extends SearchSectionFragment implements
         TopAdsListener, SearchSectionGeneralAdapter.OnItemChangeView {
 
     public static final String SCREEN_SEARCH_PAGE_CATALOG_TAB = "Search result - Catalog tab";
-    public static final String SOURCE = BrowseApi.DEFAULT_VALUE_SOURCE_CATALOG;
+    public static final String SOURCE = SearchApiConst.DEFAULT_VALUE_SOURCE_CATALOG;
 
     private static final String EXTRA_DEPARTMENT_ID = "EXTRA_DEPARTMENT_ID";
     private static final String EXTRA_QUERY = "EXTRA_QUERY";
@@ -496,7 +494,7 @@ public class CatalogFragment extends SearchSectionFragment implements
     @Override
     public void initTopAdsParamsByQuery(RequestParams requestParams) {
         TopAdsParams adsParams = new TopAdsParams();
-        adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
+        adsParams.getParam().put(TopAdsParams.KEY_SRC, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
         adsParams.getParam().put(TopAdsParams.KEY_QUERY, getQueryKey());
         adsParams.getParam().put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
         enrichWithFilterAndSortParams(adsParams);
@@ -507,7 +505,7 @@ public class CatalogFragment extends SearchSectionFragment implements
     @Override
     public void initTopAdsParamsByCategory(RequestParams requestParams) {
         TopAdsParams adsParams = new TopAdsParams();
-        adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
+        adsParams.getParam().put(TopAdsParams.KEY_SRC, SearchApiConst.DEFAULT_VALUE_SOURCE_DIRECTORY);
         adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getDepartmentId());
         adsParams.getParam().put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
         enrichWithFilterAndSortParams(adsParams);
