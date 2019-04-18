@@ -585,8 +585,6 @@ public class HotlistFragment extends BrowseSectionFragment
 
     private void showSelectedFilters(HashMap<String, String> selectedFilter) {
         //pass viewHolder
-
-
         for (QuickFilterItem quickFilterItem: this.quickFilterItems) {
             String[] str = quickFilterItem.getType().split("=");
             if (selectedFilter.containsKey(str[0])) {

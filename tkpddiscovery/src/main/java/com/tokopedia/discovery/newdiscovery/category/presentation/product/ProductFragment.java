@@ -868,6 +868,7 @@ public class ProductFragment extends BrowseSectionFragment
 
     @Override
     public void renderDynamicFilter(DynamicFilterModel pojo) {
+        super.renderDynamicFilter(pojo);
         List<Option> optionList = new ArrayList<>();
         for (Filter filter: pojo.getData().getFilter()) {
             if (filter.getTitle().equalsIgnoreCase("toko")) {
