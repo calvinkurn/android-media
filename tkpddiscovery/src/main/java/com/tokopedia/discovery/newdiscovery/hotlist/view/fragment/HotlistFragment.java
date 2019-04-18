@@ -79,7 +79,6 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
-import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 import com.tokopedia.track.TrackApp;
@@ -1109,7 +1108,7 @@ public class HotlistFragment extends BrowseSectionFragment
     }
 
     @Override
-    public void onQuickFilterSelected(HashMap<String, String> filter, String eventLabel) {
+    public void onQuickFilterSelected(HashMap<String, String> filter, String eventLabel, String duplicateKey) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
                 AppEventTracking.Event.HOTLIST,
                 AppEventTracking.Event.HOTLIST_PAGE,
@@ -1118,6 +1117,9 @@ public class HotlistFragment extends BrowseSectionFragment
         ).getEvent());
         if (this.selectedFilter == null) {
             this.selectedFilter = new HashMap<>();
+        }
+        if (this.selectedFilter.containsKey(duplicateKey)) {
+            this.selectedFilter.remove(duplicateKey);
         }
         this.selectedFilter.putAll(filter);
         reloadData();

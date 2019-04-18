@@ -19,8 +19,6 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.discovery.model.Option;
@@ -326,7 +324,7 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
             eventLabel = "true";
         }
         eventLabel = str[0] + "-" + str[1] + "-" + eventLabel;
-        categoryListener.onQuickFilterSelected(selectedFilterList, eventLabel);
+        categoryListener.onQuickFilterSelected(selectedFilterList, eventLabel, str[0]);
     }
 }
 

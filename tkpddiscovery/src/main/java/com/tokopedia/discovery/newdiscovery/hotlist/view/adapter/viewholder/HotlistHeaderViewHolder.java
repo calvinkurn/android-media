@@ -139,7 +139,6 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         } else {
             hotlistPromoView.setVisibility(View.GONE);
         }
-
         renderQuickFilter(element.getOptionList());
     }
 
@@ -186,7 +185,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
             eventLabel = "true";
         }
         eventLabel = str[0] + "-" + str[1] + "-" + eventLabel;
-        mHotlistListener.onQuickFilterSelected(selectedFilterList, eventLabel);
+        mHotlistListener.onQuickFilterSelected(selectedFilterList, eventLabel, str[0]);
 
     }
 

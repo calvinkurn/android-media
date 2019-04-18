@@ -1,7 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.category.presentation.product;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,13 +19,10 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.CategoryPageTracking;
-import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -45,7 +41,6 @@ import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.category.di.component.CategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.di.component.DaggerCategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
@@ -59,8 +54,6 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmo
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
-import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
-import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
@@ -695,7 +688,7 @@ public class ProductFragment extends BrowseSectionFragment
     }
 
     @Override
-    public void onQuickFilterSelected(HashMap<String, String> filter, String eventLabel) {
+    public void onQuickFilterSelected(HashMap<String, String> filter, String eventLabel, String duplicateKey) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE,
@@ -704,6 +697,9 @@ public class ProductFragment extends BrowseSectionFragment
         ).getEvent());
         if (this.selectedFilter == null) {
             this.selectedFilter = new HashMap<>();
+        }
+        if (this.selectedFilter.containsKey(duplicateKey)) {
+            this.selectedFilter.remove(duplicateKey);
         }
         this.selectedFilter.putAll(filter);
         loadDataProduct(0);

@@ -26,7 +26,7 @@ public interface HotlistListener {
 
     boolean isLoggedIn();
 
-    void onQuickFilterSelected(HashMap<String, String> filter, String eventLabel);
+    void onQuickFilterSelected(HashMap<String, String> filter, String eventLabel, String duplicateKey);
 
     void setQuickFilterList(List<QuickFilterItem> quickFilterItems);
 }

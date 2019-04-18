@@ -292,6 +292,6 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
             eventLabel = "true";
         }
         eventLabel = str[0] + "-" + str[1] + "-" + eventLabel;
-        categoryListener.onQuickFilterSelected(selectedFilterList, eventLabel);
+        categoryListener.onQuickFilterSelected(selectedFilterList, eventLabel, str[0]);
     }
 }
