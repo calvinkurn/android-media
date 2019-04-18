@@ -12,7 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
@@ -41,7 +42,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var homepageViewModel: HotelHomepageViewModel
 
-    private val hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
+    private var hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
 
     private lateinit var promoAdapter: HotelPromoAdapter
 
@@ -62,9 +63,13 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_MODEL)) {
+            hotelHomepageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_MODEL)!!
+        }
+
         initView()
         hidePromoContainer()
-//        loadPromoData()
+        loadPromoData()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -84,6 +89,11 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
         })
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(EXTRA_HOTEL_MODEL, hotelHomepageModel)
+    }
+
     override fun initInjector() {
         getComponent(HotelHomepageComponent::class.java).inject(this)
     }
@@ -96,10 +106,6 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
         hotelHomepageModel.childCount = child
 
         renderView()
-    }
-
-    override fun showGuestErrorTicker(resId: Int) {
-        NetworkErrorHelper.showRedCloseSnackbar(activity, getString(resId))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -138,6 +144,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
         tv_hotel_homepage_checkout_date.setOnClickListener { configAndRenderCheckOutDate() }
         tv_hotel_homepage_guest_info.setOnClickListener { onGuestInfoClicked() }
         btn_hotel_homepage_search.setOnClickListener { onSearchButtonClicked() }
+        tv_hotel_homepage_all_promo.setOnClickListener { RouteManager.route(context, ApplinkConst.PROMO_LIST) }
 
         renderView()
     }
@@ -147,8 +154,13 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
         tv_hotel_homepage_checkin_date.setText(hotelHomepageModel.checkInDateFmt)
         tv_hotel_homepage_checkout_date.setText(hotelHomepageModel.checkOutDateFmt)
         tv_hotel_homepage_night_count.text = hotelHomepageModel.nightCounter.toString()
-        tv_hotel_homepage_guest_info.setText(String.format(getString(R.string.hotel_homepage_guest_detail),
-                hotelHomepageModel.roomCount, hotelHomepageModel.adultCount, hotelHomepageModel.childCount))
+        if (hotelHomepageModel.childCount > 0) {
+            tv_hotel_homepage_guest_info.setText(String.format(getString(R.string.hotel_homepage_guest_detail_with_child),
+                    hotelHomepageModel.roomCount, hotelHomepageModel.adultCount, hotelHomepageModel.childCount))
+        } else {
+            tv_hotel_homepage_guest_info.setText(String.format(getString(R.string.hotel_homepage_guest_detail_without_child),
+                    hotelHomepageModel.roomCount, hotelHomepageModel.adultCount))
+        }
     }
 
     private fun onDestinationChangeClicked() {
@@ -215,6 +227,9 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     private fun onGuestInfoClicked() {
         val hotelRoomAndGuestBottomSheets = HotelRoomAndGuestBottomSheets()
         hotelRoomAndGuestBottomSheets.listener = this
+        hotelRoomAndGuestBottomSheets.roomCount = hotelHomepageModel.roomCount
+        hotelRoomAndGuestBottomSheets.adultCount = hotelHomepageModel.adultCount
+        hotelRoomAndGuestBottomSheets.childCount = hotelHomepageModel.childCount
         hotelRoomAndGuestBottomSheets.show(activity!!.supportFragmentManager, TAG_GUEST_INFO)
     }
 
@@ -270,8 +285,8 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     }
 
     private fun countNightDifference(): Long =
-        (TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate).time -
-                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate).time) / ONE_DAY
+            ((TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate).time -
+                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate).time)) / ONE_DAY
 
     private fun loadPromoData() {
         homepageViewModel.getHotelPromo(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_home_promo))
@@ -306,6 +321,8 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
 
         val REQUEST_CODE_DESTINATION = 101
         val REQUEST_CODE_SEARCH = 102
+
+        val EXTRA_HOTEL_MODEL = "EXTRA_HOTEL_MODEL"
 
         val TAG_CALENDAR_CHECK_IN = "calendarHotelCheckIn"
         val TAG_CALENDAR_CHECK_OUT = "calendarHotelCheckOut"

@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class RecentSearch(
-    @SerializedName("id")
+    @SerializedName("destinationId")
     @Expose
     val id: Int = 0,
 
@@ -23,4 +23,10 @@ data class RecentSearch(
     @SerializedName("uuid")
     @Expose
     val uuid: String = ""
-)
+) {
+    data class Response (
+            @SerializedName("propertyRecentSearch")
+            @Expose
+            val recentSearchList: List<RecentSearch> = listOf()
+    )
+}

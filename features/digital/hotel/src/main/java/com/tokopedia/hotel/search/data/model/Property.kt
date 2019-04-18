@@ -22,13 +22,13 @@ data class Property(
         @Expose
         val address: String = "",
 
-        @SerializedName("priceAmount")
+        @SerializedName("roomPrice")
         @Expose
-        val priceAmount: Float = 0f,
+        val roomPrice: List<PropertyPrice> = listOf(),
 
-        @SerializedName("price")
+        @SerializedName("roomAvailability")
         @Expose
-        val price: String = "0",
+        val roomAvailability: Int = 0,
 
         @SerializedName("image")
         @Expose
@@ -58,7 +58,7 @@ data class Property(
         data class Review(
             @SerializedName("reviewScore")
             @Expose
-            val score: Int = 0,
+            val score: Float = 0.0f,
 
             @SerializedName("reviewDescription")
             @Expose

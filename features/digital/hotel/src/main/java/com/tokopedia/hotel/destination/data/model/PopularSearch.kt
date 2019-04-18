@@ -35,7 +35,12 @@ data class PopularSearch(
         @Expose
         val metaDescription: String = ""
 ): Visitable<PopularSearchTypeFactory> {
+        override fun type(typeFactory: PopularSearchTypeFactory) = typeFactory.type(this)
 
-    override fun type(typeFactory: PopularSearchTypeFactory) = typeFactory.type(this)
-
+        data class Response (
+                @SerializedName("propertyPopular")
+                @Expose
+                val popularSearchList: List<PopularSearch> = listOf()
+        )
 }
+
