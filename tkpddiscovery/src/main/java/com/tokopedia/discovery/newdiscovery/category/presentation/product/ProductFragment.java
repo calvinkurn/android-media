@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.category.presentation.product;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import com.tokopedia.applink.UriUtil;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.CategoryPageTracking;
+import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
@@ -39,9 +41,11 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.category.di.component.CategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.di.component.DaggerCategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
@@ -55,12 +59,15 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmo
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -126,6 +133,8 @@ public class ProductFragment extends BrowseSectionFragment
     private boolean isLoadingData;
 
     private LocalCacheHandler trackerProductCache;
+
+    private List<QuickFilterItem> quickFilterItems;
 
     public static ProductFragment newInstance(ProductViewModel productViewModel, String trackerAttribution) {
         Bundle args = new Bundle();
@@ -522,25 +531,49 @@ public class ProductFragment extends BrowseSectionFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_GOTO_PRODUCT_DETAIL
-                && data != null
-                && data.getExtras() != null
-                && data.getExtras().getInt(ProductDetailRouter
-                .WISHLIST_STATUS_UPDATED_POSITION, -1) != -1) {
-            int position = data.getExtras().getInt(ProductDetailRouter
-                    .WISHLIST_STATUS_UPDATED_POSITION, -1);
-            boolean isWishlist = data.getExtras().getBoolean(ProductDetailRouter
-                    .WIHSLIST_STATUS_IS_WISHLIST, false);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_CODE_GOTO_PRODUCT_DETAIL
+                    && data != null
+                    && data.getExtras() != null
+                    && data.getExtras().getInt(ProductDetailRouter
+                    .WISHLIST_STATUS_UPDATED_POSITION, -1) != -1) {
+                int position = data.getExtras().getInt(ProductDetailRouter
+                        .WISHLIST_STATUS_UPDATED_POSITION, -1);
+                boolean isWishlist = data.getExtras().getBoolean(ProductDetailRouter
+                        .WIHSLIST_STATUS_IS_WISHLIST, false);
 
-            String productId = data.getExtras().getString(EXTRA_PRODUCT_ID);
+                String productId = data.getExtras().getString(EXTRA_PRODUCT_ID);
 
-            if (null == productId ||
-                    "".equals(productId)) {
-                updateWishlistFromPDP(position, isWishlist);
-            } else {
-                updateWishlistFromPDP(productId, position, isWishlist);
+                if (null == productId ||
+                        "".equals(productId)) {
+                    updateWishlistFromPDP(position, isWishlist);
+                } else {
+                    updateWishlistFromPDP(productId, position, isWishlist);
+                }
+            } else if (requestCode == getFilterRequestCode()) {
+                setFlagFilterHelper((FilterFlagSelectedModel) data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FLAG_FILTER));
+                setSelectedFilter((HashMap<String, String>) data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS));
+                clearDataFilterSort();
+                showBottomBarNavigation(false);
+                updateDepartmentId(getFlagFilterHelper().getCategoryId());
+                reloadData();
+                showSelectedFilters(getSelectedFilter());
             }
         }
+    }
+
+    private void showSelectedFilters(HashMap<String, String> selectedFilter) {
+        //pass viewHolder
+        for (QuickFilterItem quickFilterItem: this.quickFilterItems) {
+            String[] str = quickFilterItem.getType().split("=");
+            if (selectedFilter.containsKey(str[0])) {
+                quickFilterItem.setSelected(true);
+            } else {
+                quickFilterItem.setSelected(false);
+            }
+        }
+        setSelectedFilter(selectedFilter);
+        adapter.notifyDataSetChanged();
     }
 
     private void updateWishlistFromPDP(String productId, int position, boolean isWishlist) {
@@ -669,8 +702,10 @@ public class ProductFragment extends BrowseSectionFragment
                 "quick filter" + "-" + getScreenName(),
                 eventLabel
         ).getEvent());
-        this.selectedFilter = filter;
-        setSelectedFilter(filter);
+        if (this.selectedFilter == null) {
+            this.selectedFilter = new HashMap<>();
+        }
+        this.selectedFilter.putAll(filter);
         loadDataProduct(0);
     }
 
@@ -684,11 +719,17 @@ public class ProductFragment extends BrowseSectionFragment
         adapter.setWishlistButtonEnabled(productId, true);
     }
 
+    protected boolean isFilterAvailable() {
+        return (selectedFilter != null && !selectedFilter.isEmpty());
+    }
+
     @Override
     public void reloadData() {
         adapter.clearData();
         initTopAdsParams();
-        topAdsRecyclerAdapter.reset();
+        if (!isFilterAvailable()) {
+            topAdsRecyclerAdapter.reset();
+        }
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
         showBottomBarNavigation(false);
         loadDataProduct(0);
@@ -893,6 +934,11 @@ public class ProductFragment extends BrowseSectionFragment
             categoryHeaderModel.setQuickFilterList(optionList);
             adapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void setQuickFilterList(List<QuickFilterItem> quickFilterItems) {
+        this.quickFilterItems = quickFilterItems;
     }
 }
 

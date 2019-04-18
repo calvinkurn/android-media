@@ -67,6 +67,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     private final String searchQuery;
     private final String hotlistAlias;
     HashMap<String, String> selectedFilterList = new HashMap<>();
+    List<QuickFilterItem> filterItems = new ArrayList<>();
 
     public HotlistHeaderViewHolder(View parent, HotlistListener mHotlistListener, String searchQuery,
                                    String hotlistAlias) {
@@ -105,7 +106,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
             @Override
             public void onBannerAdsClicked(int position, String applink, CpmData data) {
                 mHotlistListener.onBannerAdsClicked(applink);
-                if(applink.contains(SHOP)) {
+                if (applink.contains(SHOP)) {
                     TopAdsGtmTracker.eventHotlistShopPromoClick(context, searchQuery, hotlistAlias, data, position);
                 } else {
                     TopAdsGtmTracker.eventHotlistProductPromoClick(context, searchQuery, hotlistAlias, data, position);
@@ -143,19 +144,17 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     }
 
     protected void renderQuickFilter(List<Option> filterList) {
-        if(filterList==null || filterList.isEmpty()){
+        if (filterList == null || filterList.isEmpty()) {
             return;
         }
-        List<QuickFilterItem> filterItems = new ArrayList<>();
-
-        for (int i=0; i<filterList.size(); i++) {
-            CustomViewRoundedQuickFilterItem quickFilterItem = new CustomViewRoundedQuickFilterItem();
-            quickFilterItem.setName(filterList.get(i).getName());
-            quickFilterItem.setType(filterList.get(i).getKey() + "=" + filterList.get(i).getValue());
-
-            filterItems.add(quickFilterItem);
+        if (filterItems.isEmpty()) {
+            for (int i = 0; i < filterList.size(); i++) {
+                CustomViewRoundedQuickFilterItem quickFilterItem = new CustomViewRoundedQuickFilterItem();
+                quickFilterItem.setName(filterList.get(i).getName());
+                quickFilterItem.setType(filterList.get(i).getKey() + "=" + filterList.get(i).getValue());
+                filterItems.add(quickFilterItem);
+            }
         }
-
         mHotlistListener.setQuickFilterList(filterItems);
         customViewRounderCornerFilterView.renderFilter(filterItems);
     }

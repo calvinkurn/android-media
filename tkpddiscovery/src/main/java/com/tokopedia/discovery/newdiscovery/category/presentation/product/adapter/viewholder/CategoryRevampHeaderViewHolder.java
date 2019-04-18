@@ -90,6 +90,7 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
     private boolean isUsedUnactiveChildren = false;
     private ArrayList<ChildCategoryModel> activeChildren = new ArrayList<>();
     HashMap<String, String> selectedFilterList = new HashMap<>();
+    List<QuickFilterItem> filterItems = new ArrayList<>();
 
     public CategoryRevampHeaderViewHolder(View itemView, RevampCategoryAdapter.CategoryListener categoryListener) {
         super(itemView);
@@ -233,14 +234,15 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
         if(quickFilterItems==null || quickFilterItems.isEmpty()){
             return;
         }
-        List<QuickFilterItem> filterItems = new ArrayList<>();
-
-        for (int i=0; i<quickFilterItems.size(); i++) {
-            CustomViewRoundedQuickFilterItem quickFilterItem = new CustomViewRoundedQuickFilterItem();
-            quickFilterItem.setName(quickFilterItems.get(i).getName());
-            quickFilterItem.setType(quickFilterItems.get(i).getKey() + "=" + quickFilterItems.get(i).getValue());
-            filterItems.add(quickFilterItem);
+        if (filterItems.isEmpty()) {
+            for (int i = 0; i < quickFilterItems.size(); i++) {
+                CustomViewRoundedQuickFilterItem quickFilterItem = new CustomViewRoundedQuickFilterItem();
+                quickFilterItem.setName(quickFilterItems.get(i).getName());
+                quickFilterItem.setType(quickFilterItems.get(i).getKey() + "=" + quickFilterItems.get(i).getValue());
+                filterItems.add(quickFilterItem);
+            }
         }
+        categoryListener.setQuickFilterList(filterItems);
         quickMultipleFilterView.renderFilter(filterItems);
     }
 

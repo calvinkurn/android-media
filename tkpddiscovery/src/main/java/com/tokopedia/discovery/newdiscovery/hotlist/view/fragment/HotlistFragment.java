@@ -589,6 +589,8 @@ public class HotlistFragment extends BrowseSectionFragment
             String[] str = quickFilterItem.getType().split("=");
             if (selectedFilter.containsKey(str[0])) {
                 quickFilterItem.setSelected(true);
+            } else {
+                quickFilterItem.setSelected(false);
             }
         }
         hotlistAdapter.notifyDataSetChanged();
@@ -1114,8 +1116,10 @@ public class HotlistFragment extends BrowseSectionFragment
                 "quick filter" + "-" + getScreenName(),
                 eventLabel
         ).getEvent());
-        this.selectedFilter = filter;
-        setSelectedFilter(filter);
+        if (this.selectedFilter == null) {
+            this.selectedFilter = new HashMap<>();
+        }
+        this.selectedFilter.putAll(filter);
         reloadData();
     }
 

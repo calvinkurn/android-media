@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core2.R;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
 
 import java.util.HashMap;
@@ -91,6 +92,8 @@ public class DefaultCategoryAdapter extends
         String getUserId();
 
         void onQuickFilterSelected(HashMap<String, String> filter, String eventLabel);
+
+        void setQuickFilterList(List<QuickFilterItem> quickFilterItems);
     }
 
     public void addDataChild(List<ChildCategoryModel> children) {
