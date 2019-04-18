@@ -26,7 +26,7 @@ class IrisAnalytics(context: Context) : Iris, CoroutineScope {
     
     override fun setService(config: Configuration) {
         cache.setEnabled(config)
-        if (configuration.isEnabled()) {
+        if (cache.isEnabled()) {
             setWorkManager(config)
         }
     }
@@ -37,7 +37,7 @@ class IrisAnalytics(context: Context) : Iris, CoroutineScope {
     }
 
     override fun saveEvent(map: Map<String, Any>) {
-        if (configuration.isEnabled()) {
+        if (cache.isEnabled()) {
             launchCatchError(block = {
                 // convert map to json then save as string
                 val event = JSONObject(map).toString()
@@ -50,7 +50,7 @@ class IrisAnalytics(context: Context) : Iris, CoroutineScope {
     }
 
     override fun sendEvent(map: Map<String, Any>) {
-         if (configuration.isEnabled()) {
+         if (cache.isEnabled()) {
              launchCatchError(block = {
                 val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(),
                         session)
