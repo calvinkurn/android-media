@@ -22,9 +22,14 @@ class IrisAnalytics(context: Context) : Iris, CoroutineScope {
         get() = Dispatchers.IO
     private val trackingRepository: TrackingRepository = TrackingRepository(context)
     private val session: Session = IrisSession(context)
-
+    
+    private var mConfiguration: Configuration? = null
+    
     override fun setService(config: Configuration) {
-        setWorkManager(config)
+        mConfiguration = config
+        if (config.isEnabled) {
+            setWorkManager(config)
+        }
     }
 
     override fun resetService(config: Configuration) {
@@ -33,26 +38,30 @@ class IrisAnalytics(context: Context) : Iris, CoroutineScope {
     }
 
     override fun saveEvent(map: Map<String, Any>) {
-        launchCatchError(block = {
-            // convert map to json then save as string
-            val event = JSONObject(map).toString()
-            val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
-            trackingRepository.saveEvent(resultEvent.toString(), session)
-        }) {
-            // no-op
+        if (mConfiguration != null && mConfiguration!!.isEnabled) {
+            launchCatchError(block = {
+                // convert map to json then save as string
+                val event = JSONObject(map).toString()
+                val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
+                trackingRepository.saveEvent(resultEvent.toString(), session)
+            }) {
+                // no-op
+            } 
         }
     }
 
     override fun sendEvent(map: Map<String, Any>) {
-        launchCatchError(block = {
-            val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(),
-                    session)
-            if (isSuccess && BuildConfig.DEBUG) {
-                Log.e("Iris", "Success Send Single Event")
+         if (mConfiguration != null && mConfiguration!!.isEnabled) {
+             launchCatchError(block = {
+                val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(),
+                        session)
+                if (isSuccess && BuildConfig.DEBUG) {
+                    Log.e("Iris", "Success Send Single Event")
+                }
+            }) {
+                // no-op
             }
-        }) {
-            // no-op
-        }
+         }
     }
 
     override fun setUserId(userId: String) {
