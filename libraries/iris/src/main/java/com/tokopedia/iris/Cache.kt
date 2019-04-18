@@ -6,22 +6,13 @@ import com.tokopedia.iris.model.Configuration
 /**
  * Created by meta on 18/04/19.
  */
-class Config(context: Context) {
-
-    var configuration: Configuration? = null
+class Cache(context: Context) {
 
     private val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE)
     private val editor = sharedPreferences.edit()
 
-    init {
-        setEnabled()
-    }
-
-    private fun setEnabled() {
-        if (configuration == null)
-            return
-
-        editor.putBoolean(IRIS_ENABLED, configuration!!.isEnabled)
+    private fun setEnabled(config: Configuration) {
+        editor.putBoolean(IRIS_ENABLED, configuration.isEnabled)
         editor.commit()
     }
 
