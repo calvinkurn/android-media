@@ -154,6 +154,13 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
                 filterItems.add(quickFilterItem);
             }
         }
+        for (QuickFilterItem quickFilterItem: filterItems) {
+            String[] str = quickFilterItem.getType().split("=");
+            if (!quickFilterItem.isSelected() && selectedFilterList.containsKey(str[0])) {
+                selectedFilterList.remove(str[0]);
+            }
+        }
+
         mHotlistListener.setQuickFilterList(filterItems);
         customViewRounderCornerFilterView.renderFilter(filterItems);
     }

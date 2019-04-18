@@ -268,6 +268,12 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
                 filterItems.add(quickFilterItem);
             }
         }
+        for (QuickFilterItem quickFilterItem: filterItems) {
+            String[] str = quickFilterItem.getType().split("=");
+            if (!quickFilterItem.isSelected() && selectedFilterList.containsKey(str[0])) {
+                selectedFilterList.remove(str[0]);
+            }
+        }
         categoryListener.setQuickFilterList(filterItems);
         quickMultipleFilterView.renderFilter(filterItems);
     }
