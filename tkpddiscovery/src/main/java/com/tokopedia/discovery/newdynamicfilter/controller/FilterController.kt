@@ -60,8 +60,10 @@ class FilterController {
         val optionsForFilterViewState = mutableListOf<Option>()
 
         loopSelectedOptionsInFilterList { _, option ->
-            addOrCombineOptions(optionsForFilterViewState, option)
+            optionsForFilterViewState.add(option)
         }
+
+        iterateOptionAndCheckForBundledOption(optionsForFilterViewState)
 
         for(option in optionsForFilterViewState) {
             if(option.value == "") option.value = getFilterValue(option.key)
@@ -69,53 +71,33 @@ class FilterController {
         }
     }
 
-    private fun addOrCombineOptions(optionsForFilterViewState: MutableList<Option>, option: Option) {
-        val optionsWithSameKey = optionsForFilterViewState.filter { it.key == option.key }
+    private fun iterateOptionAndCheckForBundledOption(optionsForFilterViewState: MutableList<Option>) {
+        val currentIterator = optionsForFilterViewState.listIterator()
+        
+        while(currentIterator.hasNext()) {
+            val currentOption = currentIterator.next()
 
-        if (optionsWithSameKey.isEmpty()) {
-            optionsForFilterViewState.add(option)
-        } else {
-            setBundledOptionsForFilterViewState(optionsForFilterViewState, option)
+            reIterateOptionAndCheckForBundledOption(optionsForFilterViewState, currentIterator, currentOption)
         }
     }
 
-    private fun setBundledOptionsForFilterViewState(optionsForFilterViewState: MutableList<Option>, option: Option) {
-        val iterator = optionsForFilterViewState.listIterator()
-        var optionHasBeenAddedOrReplaced = false
+    private fun reIterateOptionAndCheckForBundledOption(optionsForFilterViewState: MutableList<Option>, currentIterator: MutableListIterator<Option>, currentOption: Option) {
+        val bundledOptionList = optionsForFilterViewState.filter { it.key == currentOption.key }
 
-        while (iterator.hasNext()) {
-            val existingOption = iterator.next()
-
-            if(existingOption.key == option.key) {
-                optionHasBeenAddedOrReplaced = addOrReplaceOptionWithSameKey(iterator, existingOption, option)
+        for(bundledOption in bundledOptionList) {
+            if(isOptionAlreadyBundled(currentOption.value, bundledOption.value)) {
+                currentIterator.remove()
+                break
             }
         }
-
-        if(!optionHasBeenAddedOrReplaced) {
-            optionsForFilterViewState.add(option)
-        }
     }
 
-    private fun addOrReplaceOptionWithSameKey(iterator: MutableListIterator<Option>, existingOption: Option, currentOption: Option) : Boolean {
-        val existingOptionValueList = existingOption.value.split(OptionHelper.VALUE_SEPARATOR).toList()
-        val currentOptionValueList = currentOption.value.split(OptionHelper.VALUE_SEPARATOR).toList()
+    private fun isOptionAlreadyBundled(optionValue: String, bundledOptionValue: String) : Boolean {
+        val optionValueList = optionValue.split(OptionHelper.VALUE_SEPARATOR).toList()
+        val bundledOptionValueList = bundledOptionValue.split(OptionHelper.VALUE_SEPARATOR).toList()
 
-        return when {
-            shouldReplaceExistingOptionWithCurrentOption(currentOptionValueList, existingOptionValueList)-> {
-                iterator.set(currentOption)
-                true
-            }
-            existingOptionAlreadyContainsCurrentOption(currentOptionValueList, existingOptionValueList) -> true
-            else -> false
-        }
-    }
-
-    private fun shouldReplaceExistingOptionWithCurrentOption(currentOptionValueList: List<String>, existingOptionValueList: List<String>) : Boolean {
-        return currentOptionValueList.containsAll(existingOptionValueList)
-    }
-
-    private fun existingOptionAlreadyContainsCurrentOption(currentOptionValueList: List<String>, existingOptionValueList: List<String>) : Boolean {
-        return existingOptionValueList.containsAll(currentOptionValueList)
+        return optionValue.length < bundledOptionValue.length
+                && bundledOptionValueList.containsAll(optionValueList)
     }
 
     private fun loopSelectedOptionsInFilterList(action: (filter: Filter, option: Option) -> Unit) {
