@@ -20,7 +20,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="@dimen/sp_14"
+            style="@style/TextView.Small"
             android:textColor="@color/charcoal_grey_88"
             />
 
@@ -28,7 +28,7 @@
             android:id="@+id/globalNavSeeAllButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_12"
+            style="@style/TextView.Micro"
             android:textColor="#03ac0e"
             android:text="@string/global_nav_see_all_text"
             />
