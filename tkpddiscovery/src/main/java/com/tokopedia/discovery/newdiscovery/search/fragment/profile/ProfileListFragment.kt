@@ -274,9 +274,13 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
         hideLoading()
 
         if (!adapter.isContainData) {
-            NetworkErrorHelper.showEmptyState(activity, view) { loadData(nextPage) }
+            activity?.run {
+                NetworkErrorHelper.showEmptyState(activity, view) { loadData(nextPage) }
+            }
         } else {
-            NetworkErrorHelper.createSnackbarWithAction(activity) { loadData(nextPage) }.showRetrySnackbar()
+            activity?.run {
+                NetworkErrorHelper.createSnackbarWithAction(activity) { loadData(nextPage) }.showRetrySnackbar()
+            }
         }
     }
 
