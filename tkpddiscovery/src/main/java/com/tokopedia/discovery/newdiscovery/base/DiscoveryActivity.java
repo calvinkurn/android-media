@@ -20,12 +20,10 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
@@ -37,6 +35,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -240,9 +239,9 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     public void eventDiscoverySearch(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
-                AppEventTracking.Category.EVENT_TOP_NAV,
-                AppEventTracking.Action.SEARCH_PRODUCT,
+                SearchEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                SearchEventTracking.Category.EVENT_TOP_NAV,
+                SearchEventTracking.Action.SEARCH_PRODUCT,
                 label);
     }
 
@@ -255,9 +254,9 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     public void eventDiscoverySearchShop(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
-                AppEventTracking.Category.EVENT_TOP_NAV,
-                AppEventTracking.Action.SEARCH_SHOP,
+                SearchEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                SearchEventTracking.Category.EVENT_TOP_NAV,
+                SearchEventTracking.Action.SEARCH_SHOP,
                 label);
     }
 
@@ -269,12 +268,11 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     public void eventDiscoveryVoiceSearch(String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH,
-                AppEventTracking.Category.SEARCH,
-                AppEventTracking.Action.VOICE_SEARCH,
-                label
-        ).getEvent());
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.SEARCH,
+                SearchEventTracking.Category.SEARCH,
+                SearchEventTracking.Action.VOICE_SEARCH,
+                label);
     }
 
     private void sendGalleryImageSearchResultGTM(String label) {
@@ -283,9 +281,9 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     public void eventDiscoveryGalleryImageSearchResult(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
-                AppEventTracking.Category.IMAGE_SEARCH,
-                AppEventTracking.Action.GALLERY_SEARCH_RESULT,
+                SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
+                SearchEventTracking.Category.IMAGE_SEARCH,
+                SearchEventTracking.Action.GALLERY_SEARCH_RESULT,
                 label);
     }
 
@@ -296,9 +294,9 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     public void eventDiscoveryCameraImageSearchResult(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
-                AppEventTracking.Category.IMAGE_SEARCH,
-                AppEventTracking.Action.CAMERA_SEARCH_RESULT,
+                SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
+                SearchEventTracking.Category.IMAGE_SEARCH,
+                SearchEventTracking.Action.CAMERA_SEARCH_RESULT,
                 label);
     }
 

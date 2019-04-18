@@ -4,11 +4,10 @@ import android.content.Context;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSubscriber;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract.View;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.helper.GqlSearchHelper;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
@@ -56,8 +55,8 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
 
         requestParams.putAll(searchParameter.getSearchParameterMap());
 
-        requestParams.putString(SearchApiConst.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
-        requestParams.putString(SearchApiConst.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
+        requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
+        requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
         requestParams.putBoolean(SearchApiConst.REFINED, isForceSearch);
         requestParams.putBoolean(SearchApiConst.RELATED, true);
 
