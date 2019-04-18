@@ -5,13 +5,12 @@ import android.support.annotation.LayoutRes
 import android.view.View
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.analytics.InboxGtmTracker
 import com.tokopedia.navigation.domain.model.Recomendation
 import com.tokopedia.navigation.presentation.view.InboxAdapterListener
-import com.tokopedia.productcard.ProductCardView
+import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.Category
 import com.tokopedia.topads.sdk.domain.model.Product
@@ -20,48 +19,48 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask
 /**
  * Author errysuprayogi on 13,March,2019
  */
-class RecomendationViewHolder(itemView: View, private val listener: InboxAdapterListener) : AbstractViewHolder<Recomendation>(itemView) {
-    private val productCardView: ProductCardView
+class RecomendationViewHolder(itemView: View, private val listener: InboxAdapterListener) : AbstractViewHolder<Recomendation>(itemView), RecommendationCardView.TrackingListener {
+    override fun onImpression(item: RecommendationItem) {
+        if(item.isTopAds){
+            ImpresionTask().execute(item.trackerImageUrl)
+            val product = Product()
+            product.id = item.productId.toString()
+            product.name = item.name
+            product.priceFormat = item.price
+            product.category = Category(item.departmentId)
+            TopAdsGtmTracker.getInstance().addInboxProductViewImpressions(product, adapterPosition)
+        } else{
+            InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, adapterPosition)
+        }
+    }
+
+    override fun onClick(item: RecommendationItem) {
+        if (item.isTopAds) {
+            ImpresionTask().execute(item.clickUrl)
+            val product = Product()
+            product.id = item.productId.toString()
+            product.name = item.name
+            product.priceFormat = item.price
+            product.category = Category(item.departmentId)
+            TopAdsGtmTracker.getInstance().eventInboxProductClick(context, product, adapterPosition)
+        } else {
+            InboxGtmTracker.getInstance().eventInboxProductClick(context, item, adapterPosition)
+        }
+    }
+
+    private val recommendationCardView: RecommendationCardView
     private val context: Context
 
     init {
         this.context = itemView.context
-        productCardView = itemView.findViewById(R.id.productCardView)
+        recommendationCardView = itemView.findViewById(R.id.productCardView)
     }
 
     override fun bind(element: Recomendation) {
-        productCardView.setImageUrl(element.imageUrl)
-        productCardView.setTitle(element.productName)
-        productCardView.setPrice(element.price)
-        productCardView.setTopAdsVisible(element.isTopAds)
-        if (element.isTopAds) {
-            productCardView.imageView.addOnImpressionListener(element, object: ViewHintListener{
-                override fun onViewHint() {
-                    if(element.isTopAds){
-                        ImpresionTask().execute(element.trackerImageUrl)
-                        val product = Product()
-                        product.id = element.productId.toString()
-                        product.name = element.productName
-                        product.priceFormat = element.price
-                        product.category = Category(element.departementId)
-                        TopAdsGtmTracker.getInstance().addInboxProductViewImpressions(product, adapterPosition)
-                    } else{
-                        InboxGtmTracker.getInstance().addInboxProductViewImpressions(element, adapterPosition)
-                    }
-                }
-            })
-        }
-        productCardView.setOnClickListener {
-            listener.onItemClickListener(element, adapterPosition)
-            if (element.isTopAds) {
-                ImpresionTask().execute(element.clickUrl)
-                val product = Product()
-                product.id = element.productId.toString()
-                product.name = element.productName
-                product.priceFormat = element.price
-                product.category = Category(element.departementId)
-                TopAdsGtmTracker.getInstance().eventInboxProductClick(context, product, adapterPosition)
-            }
+        recommendationCardView.setRecommendationModel(element.recommendationItem, this)
+        val item = element.recommendationItem
+        if (item.isTopAds) {
+            recommendationCardView.setRecommendationModel(item, this)
         }
     }
 

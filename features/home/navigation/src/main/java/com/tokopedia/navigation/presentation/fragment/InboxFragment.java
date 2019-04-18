@@ -1,6 +1,5 @@
 package com.tokopedia.navigation.presentation.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,13 +14,11 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.analytics.InboxGtmTracker;
 import com.tokopedia.navigation.domain.model.Inbox;
-import com.tokopedia.navigation.domain.model.Recomendation;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
 import com.tokopedia.navigation.presentation.view.InboxAdapterListener;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapterTypeFactory;
@@ -157,20 +154,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             Inbox inbox = (Inbox) item;
             globalNavAnalytics.eventInboxPage(getString(inbox.getTitle()).toLowerCase());
             getCallingIntent(position);
-        } else if (item instanceof Recomendation) {
-            Recomendation r = (Recomendation) item;
-            getActivity().startActivity(getProductIntent(String.valueOf(r.getProductId())));
-            if(!r.isTopAds()){
-                InboxGtmTracker.getInstance().eventInboxProductClick(trackingQueue, r, position);
-            }
-        }
-    }
-
-    private Intent getProductIntent(String productId) {
-        if (getContext() != null) {
-            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
-        } else {
-            return null;
         }
     }
 
