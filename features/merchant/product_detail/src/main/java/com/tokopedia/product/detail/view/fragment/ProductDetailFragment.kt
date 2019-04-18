@@ -1007,8 +1007,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         if (shouldShowCod && shopCod && userCod) label_cod.visible() else label_cod.gone()
         headerView.renderCod(shouldShowCod && shopCod && userCod)
         productInfoP3.rateEstSummarizeText?.let {
-            partialVariantAndRateEstView.renderRateEstimation(it,
-                    shopInfo?.location ?: "", ::gotoRateEstimation)
+            partialVariantAndRateEstView.renderRateEstimation(it, ::gotoRateEstimation)
         }
         shopInfo?.let { updateWishlist(it, productInfoP3.isWishlisted) }
         productInfoP3.pdpAffiliate?.let { renderAffiliate(it) }
@@ -1199,10 +1198,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun gotoEditProduct() {
         val id = productInfo?.parentProductId ?: return
         context?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT, id)
-            intent?.run {
-                startActivityForResult(this, REQUEST_CODE_EDIT_PRODUCT)
-            }
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_ITEM, id)
+            intent?.run { startActivityForResult(this, REQUEST_CODE_EDIT_PRODUCT) }
         }
     }
 

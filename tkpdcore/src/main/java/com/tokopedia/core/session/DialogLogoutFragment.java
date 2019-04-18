@@ -16,6 +16,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -111,7 +112,7 @@ public class DialogLogoutFragment extends DialogFragment {
                                     TkpdResponse response = responseData.body();
                                     if (!response.isError() || sessionIsNotExist(response)) {
 //                                        CacheHomeInteractorImpl.deleteAllCache();
-                                        new GlobalCacheManager().deleteAll();
+                                        PersistentCacheManager.instance.delete();
                                         // clear etalase
                                         Router.clearEtalase(getActivity());
                                         DbManagerImpl.getInstance().removeAllEtalase();

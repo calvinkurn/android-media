@@ -37,6 +37,7 @@ import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.videoplayer.utils.Video
 import com.tokopedia.videoplayer.view.widget.VideoPlayerView
 import kotlinx.android.synthetic.main.kol_comment_item.*
 import kotlinx.android.synthetic.main.layout_single_video_fragment.*
@@ -62,7 +63,7 @@ class VideoDetailFragment:
 
     private var id: String = ""
     companion object {
-        private val INTENT_COMMENT = 1234
+        private const val INTENT_COMMENT = 1234
         private const val LOGIN_CODE = 1383
         private const val LOGIN_FOLLOW_CODE = 1384
 
@@ -97,17 +98,20 @@ class VideoDetailFragment:
     }
 
     override fun onPrepared(mediaPlayer: MediaPlayer?) {
-        mediaPlayer?.let {
-            resizeVideo(it.getVideoWidth(), it.getVideoHeight())
-            it.setOnVideoSizeChangedListener(object : MediaPlayer.OnVideoSizeChangedListener {
-                override fun onVideoSizeChanged(player: MediaPlayer?, width: Int, height: Int) {
-                    val mediaController = MediaController(activity!!)
-                    videoView.setMediaController(mediaController)
-                    mediaController.setAnchorView(videoView)
-                    mediaController.show()
-                }
-            })
-            it.start()
+        mediaPlayer?.let {player ->
+            activity?.let { it ->
+                //video player resize
+                val videoSize = Video.resize(it, player.videoWidth, player.videoHeight)
+                videoView.setSize(videoSize.videoWidth, videoSize.videoHeight)
+                videoView.holder.setFixedSize(videoSize.videoWidth, videoSize.videoHeight)
+
+                //showing media controller
+                val mediaController = MediaController(it)
+                videoView.setMediaController(mediaController)
+                mediaController.setAnchorView(videoView)
+                mediaController.show()
+            }
+            player.start()
         }
     }
 
@@ -176,7 +180,7 @@ class VideoDetailFragment:
 
     override fun onErrorGetVideoDetail(error: String) {
         NetworkErrorHelper.showRedSnackbar(activity!!, error)
-        activity!!.finish()
+        activity?.finish()
     }
 
     override fun onSuccessGetVideoDetail(visitables: List<Visitable<*>>) {
@@ -185,7 +189,7 @@ class VideoDetailFragment:
         bindCaption(dynamicPostViewModel.caption, dynamicPostViewModel.template.cardpost.body)
         bindFooter(dynamicPostViewModel.footer, dynamicPostViewModel.template.cardpost.footer)
 
-        videoViewModel = dynamicPostViewModel.contentList.get(0) as VideoViewModel
+        videoViewModel = dynamicPostViewModel.contentList[0] as VideoViewModel
         initPlayer(videoViewModel.url)
 
     }
@@ -202,14 +206,14 @@ class VideoDetailFragment:
 
     private fun initView() {
         val detailId = arguments!!.getString(VideoDetailActivity.PARAM_ID, "")
-        if (detailId.isEmpty() || detailId.equals("0")) {
-            activity!!.finish()
+        if (detailId.isEmpty() || detailId == "0") {
+            activity?.finish()
         } else {
             initData()
         }
 
         if (activity!!.applicationContext is KolRouter) {
-            kolRouter = activity!!.applicationContext as KolRouter
+            kolRouter = activity?.applicationContext as KolRouter
         }
     }
 
@@ -219,42 +223,39 @@ class VideoDetailFragment:
 
     private fun initPlayer(url: String) {
         videoView.setVideoURI(Uri.parse(url))
-        videoView.setOnErrorListener(object : MediaPlayer.OnErrorListener{
-            override fun onError(p0: MediaPlayer?, p1: Int, p2: Int): Boolean {
+        videoView.setOnErrorListener { _, p1, p2 ->
+            try {
+                Crashlytics.logException(Throwable(String.format("%s - what : %s - extra : %s ",
+                        VideoDetailFragment::class.java.simpleName, p1.toString(), p2.toString())))
+            } catch (e: IllegalStateException) {
+                e.printStackTrace()
+            }
 
-                try {
-                    Crashlytics.logException(Throwable(String.format("%s - what : %s - extra : %s ",
-                            VideoDetailFragment::class.java.simpleName, p1.toString(), p2.toString())))
-                } catch (e: IllegalStateException) {
-                    e.printStackTrace()
+            when(p1) {
+                MediaPlayer.MEDIA_ERROR_UNKNOWN -> {
+                    Toast.makeText(context, getString(R.string.error_unknown), Toast.LENGTH_SHORT).show()
+                    activity?.finish()
+                    true
                 }
-
-                when(p1) {
-                    MediaPlayer.MEDIA_ERROR_UNKNOWN -> {
-                        Toast.makeText(context, getString(R.string.error_unknown), Toast.LENGTH_SHORT).show()
-                        activity!!.finish()
-                        return true
-                    }
-                    MediaPlayer.MEDIA_ERROR_SERVER_DIED -> {
-                        Toast.makeText(context, getString(R.string.default_request_error_internal_server), Toast.LENGTH_SHORT).show()
-                        activity!!.finish()
-                        return true
-                    }
-                    else -> {
-                        Toast.makeText(context, getString(R.string.default_request_error_timeout), Toast.LENGTH_SHORT).show()
-                        activity!!.finish()
-                        return true
-                    }
+                MediaPlayer.MEDIA_ERROR_SERVER_DIED -> {
+                    Toast.makeText(context, getString(R.string.default_request_error_internal_server), Toast.LENGTH_SHORT).show()
+                    activity?.finish()
+                    true
+                }
+                else -> {
+                    Toast.makeText(context, getString(R.string.default_request_error_timeout), Toast.LENGTH_SHORT).show()
+                    activity?.finish()
+                    true
                 }
             }
-        })
+        }
         videoView.setOnPreparedListener(this)
     }
 
     private fun initViewListener() {
-        ivClose.setOnClickListener({
-            activity!!.finish()
-        })
+        ivClose.setOnClickListener {
+            activity!!.setResult(Activity.RESULT_OK)
+            activity!!.finish() }
 
         likeIcon.setOnClickListener(onLikeSectionClicked())
         likeText.setOnClickListener(onLikeSectionClicked())
@@ -281,27 +282,6 @@ class VideoDetailFragment:
                 goToLogin()
             }
         }
-    }
-
-    private fun resizeVideo(mVideoWidth: Int, mVideoHeight: Int) {
-        var videoWidth = mVideoWidth
-        var videoHeight = mVideoHeight
-        val displaymetrics = DisplayMetrics()
-        activity!!.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics)
-
-        val heightRatio = videoHeight.toFloat() / displaymetrics.widthPixels.toFloat()
-        val widthRatio = videoWidth.toFloat() / displaymetrics.heightPixels.toFloat()
-
-        if (videoWidth > videoHeight) {
-            videoWidth = Math.ceil((videoWidth.toFloat() * widthRatio).toDouble()).toInt()
-            videoHeight = Math.ceil((videoHeight.toFloat() * widthRatio).toDouble()).toInt()
-        } else {
-            videoWidth = Math.ceil((videoWidth.toFloat() * heightRatio).toDouble()).toInt()
-            videoHeight = Math.ceil((videoHeight.toFloat() * heightRatio).toDouble()).toInt()
-        }
-
-        videoView.setSize(videoWidth, videoHeight)
-        videoView.holder.setFixedSize(videoWidth, videoHeight)
     }
 
     private fun bindHeader(header: Header) {
@@ -427,7 +407,7 @@ class VideoDetailFragment:
     }
 
     private fun goToLogin() {
-        startActivityForResult(kolRouter.getLoginIntent(context!!), LOGIN_CODE)
+        startActivityForResult(kolRouter.getLoginIntent(context), LOGIN_CODE)
     }
 
     private fun showError(message: String, listener: View.OnClickListener?) {
@@ -435,5 +415,7 @@ class VideoDetailFragment:
                 .setAction(R.string.title_try_again, listener)
                 .show()
     }
+
+
 
 }

@@ -747,6 +747,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    // Logistic Promo
     public void eventClickPromoLogisticTicker(String promoCode) {
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,

@@ -442,11 +442,13 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         } else {
             ErrorHandler.getErrorMessage(context, throwable)
         }
-        val snackbar = ToasterError.make(activity!!.findViewById(android.R.id.content), message)
-        if (onRetry != null) {
-            snackbar.setAction(R.string.retry_label) { onRetry.invoke(it) }
+        activity?.run {
+            val snackbar = ToasterError.make(findViewById(android.R.id.content), message)
+            if (onRetry != null) {
+                snackbar.setAction(R.string.retry_label) { onRetry.invoke(it) }
+            }
+            snackbar.show()
         }
-        snackbar.show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -283,27 +283,18 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         }
     }
 
-    override fun onErrorCheckPromoFirstStep(message: String, isFromList: Boolean) {
+    override fun onErrorCheckPromoFirstStep(message: String) {
         hideKeyboard()
         var messageInfo = message
         if (TextUtils.isEmpty(messageInfo)) {
             messageInfo = getString(R.string.general_warning)
         }
-        if (isFromList) {
-            ToasterError.make(layoutMerchantVoucher, messageInfo, ToasterError.LENGTH_SHORT).show()
-            if (source.equals(CART, true)) {
-                cartPageAnalytics.eventClickPakaiMerchantVoucherFailed(message)
-            } else {
-                shipmentPageAnalytics.eventClickPakaiMerchantVoucherError(message)
-            }
+        textInputLayoutCoupon.error = messageInfo
+        updateHeight()
+        if (source.equals(CART, true)) {
+            cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputFailed(messageInfo)
         } else {
-            textInputLayoutCoupon.error = message
-            updateHeight()
-            if (source.equals(CART, true)) {
-                cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputFailed(message)
-            } else {
-                shipmentPageAnalytics.eventClickPakaiMerchantVoucherManualInputError(message)
-            }
+            shipmentPageAnalytics.eventClickPakaiMerchantVoucherManualInputError(messageInfo)
         }
     }
 
@@ -331,6 +322,12 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         hideKeyboard()
         dismiss()
         actionListener.onClashCheckPromo(model)
+    }
+
+    override fun configView(parentView: View?) {
+        super.configView(parentView)
+        parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
+        parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener{ onCloseButtonClick() }
     }
 
     private fun hideKeyboard() {

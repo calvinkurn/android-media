@@ -32,8 +32,6 @@ import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
-import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModule;
-import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModuleLoader;
 import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
@@ -82,7 +80,6 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         ShopAppLinkModule.class,
         ProfileApplinkModule.class,
         TrackingAppLinkModule.class,
-        ProductAddDeeplinkModule.class,
         TopChatAppLinkModule.class,
         CoreDeeplinkModule.class,
         CustomerCareApplinkModule.class,
@@ -114,7 +111,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new ShopAppLinkModuleLoader(),
                 new ProfileApplinkModuleLoader(),
                 new TrackingAppLinkModuleLoader(),
-                new ProductAddDeeplinkModuleLoader(),
                 new TopChatAppLinkModuleLoader(),
                 new CoreDeeplinkModuleLoader(),
                 new CustomerCareApplinkModuleLoader(),
