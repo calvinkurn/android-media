@@ -22,12 +22,11 @@ class IrisAnalytics(context: Context) : Iris, CoroutineScope {
         get() = Dispatchers.IO
     private val trackingRepository: TrackingRepository = TrackingRepository(context)
     private val session: Session = IrisSession(context)
-    
-    private var mConfiguration: Configuration? = null
+    private var configuration: Config = Config(context)
     
     override fun setService(config: Configuration) {
-        mConfiguration = config
-        if (config.isEnabled) {
+        configuration.configuration = config
+        if (configuration.isEnabled()) {
             setWorkManager(config)
         }
     }
@@ -38,7 +37,7 @@ class IrisAnalytics(context: Context) : Iris, CoroutineScope {
     }
 
     override fun saveEvent(map: Map<String, Any>) {
-        if (mConfiguration != null && mConfiguration!!.isEnabled) {
+        if (configuration.isEnabled()) {
             launchCatchError(block = {
                 // convert map to json then save as string
                 val event = JSONObject(map).toString()
@@ -51,7 +50,7 @@ class IrisAnalytics(context: Context) : Iris, CoroutineScope {
     }
 
     override fun sendEvent(map: Map<String, Any>) {
-         if (mConfiguration != null && mConfiguration!!.isEnabled) {
+         if (configuration.isEnabled()) {
              launchCatchError(block = {
                 val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(),
                         session)
