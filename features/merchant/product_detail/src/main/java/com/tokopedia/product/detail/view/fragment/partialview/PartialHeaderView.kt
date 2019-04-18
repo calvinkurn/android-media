@@ -44,7 +44,7 @@ class PartialHeaderView private constructor(private val view: View,
         var colorIc: Int? = null
         var labelIc = ""
         val context = view.context
-        val drawableSize = context.resources.getDimension(R.dimen.dp_14).toInt()
+        val drawableSize = context.resources.getDimension(R.dimen.dp_16).toInt()
 
         if (goldOs.isGoldBadge == 1 && goldOs.isOfficial == 0) {
             val drawablePm = MethodChecker.getDrawable(context, R.drawable.ic_power_merchant)
@@ -78,6 +78,8 @@ class PartialHeaderView private constructor(private val view: View,
             spanText.setSpan(
                     android.text.style.ForegroundColorSpan(colorIc),
                     startSpan + 2, spanText.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spanText.setSpan(StyleSpan(Typeface.BOLD),
+                    startSpan, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             setText(spanText, android.widget.TextView.BufferType.SPANNABLE)
         }
         view.label_official_store.visible()
