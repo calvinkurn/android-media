@@ -12,7 +12,7 @@ class Cache(context: Context) {
     private val editor = sharedPreferences.edit()
 
     fun setEnabled(config: Configuration) {
-        editor.putBoolean(IRIS_ENABLED, configuration.isEnabled)
+        editor.putBoolean(IRIS_ENABLED, config.isEnabled)
         editor.commit()
     }
 
