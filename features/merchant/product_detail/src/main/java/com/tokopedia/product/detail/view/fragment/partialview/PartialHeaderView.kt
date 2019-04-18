@@ -40,9 +40,9 @@ class PartialHeaderView private constructor(private val view: View,
     }
 
     fun showOfficialStore(goldOs: ShopInfo.GoldOS){
-        var imageIc: ImageSpan
-        var colorIc: Int
-        var labelIc = ""
+        val imageIc: ImageSpan
+        val colorIc: Int
+        val labelIc: String
         val context = view.context
         val drawableSize = context.resources.getDimension(R.dimen.dp_16).toInt()
 
@@ -71,7 +71,7 @@ class PartialHeaderView private constructor(private val view: View,
         with(view.label_official_store) {
             val blackString = context.getString(com.tokopedia.product.detail.R.string.product_from) + "  "
             val startSpan = blackString.length
-            val spanText = android.text.SpannableString(blackString + "  " +
+            val spanText = android.text.SpannableString(blackString + "   " +
                     labelIc)
 
             spanText.setSpan(imageIc, startSpan, startSpan+1, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
