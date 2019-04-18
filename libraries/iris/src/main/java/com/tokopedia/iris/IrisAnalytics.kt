@@ -22,10 +22,10 @@ class IrisAnalytics(context: Context) : Iris, CoroutineScope {
         get() = Dispatchers.IO
     private val trackingRepository: TrackingRepository = TrackingRepository(context)
     private val session: Session = IrisSession(context)
-    private var configuration: Config = Config(context)
+    private var cache: Cache = Cache(context)
     
     override fun setService(config: Configuration) {
-        configuration.configuration = config
+        cache.setEnabled(config)
         if (configuration.isEnabled()) {
             setWorkManager(config)
         }
