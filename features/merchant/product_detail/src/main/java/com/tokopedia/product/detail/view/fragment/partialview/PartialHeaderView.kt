@@ -40,8 +40,8 @@ class PartialHeaderView private constructor(private val view: View,
     }
 
     fun showOfficialStore(goldOs: ShopInfo.GoldOS){
-        var imageIc: ImageSpan? = null
-        var colorIc: Int? = null
+        var imageIc: ImageSpan
+        var colorIc: Int
         var labelIc = ""
         val context = view.context
         val drawableSize = context.resources.getDimension(R.dimen.dp_16).toInt()
@@ -74,12 +74,12 @@ class PartialHeaderView private constructor(private val view: View,
             val spanText = android.text.SpannableString(blackString + "  " +
                     labelIc)
 
-            spanText.setSpan(imageIc, startSpan - 1, startSpan, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spanText.setSpan(imageIc, startSpan, startSpan+1, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             spanText.setSpan(
                     android.text.style.ForegroundColorSpan(colorIc),
-                    startSpan + 2, spanText.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    startSpan, spanText.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             spanText.setSpan(StyleSpan(Typeface.BOLD),
-                    startSpan+1, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    startSpan, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             setText(spanText, android.widget.TextView.BufferType.SPANNABLE)
         }
         view.label_official_store.visible()
