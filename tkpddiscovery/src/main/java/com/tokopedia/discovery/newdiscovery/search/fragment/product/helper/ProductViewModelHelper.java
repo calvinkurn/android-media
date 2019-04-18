@@ -54,7 +54,9 @@ public class ProductViewModelHelper {
                 = gqlResponse.getSearchProduct();
         ProductViewModel productViewModel = new ProductViewModel();
         productViewModel.setAdsModel(gqlResponse.getTopAdsModel());
-        productViewModel.setGlobalNavViewModel(convertToViewModel(gqlResponse.getGlobalNavModel()));
+        if (ListHelper.isContainItems(gqlResponse.getGlobalNavModel().getData().getGlobalNavItems())) {
+            productViewModel.setGlobalNavViewModel(convertToViewModel(gqlResponse.getGlobalNavModel()));
+        }
         productViewModel.setCpmModel(gqlResponse.getCpmModel());
         if (searchProductResponse.getRelated() != null &&
                 !TextUtils.isEmpty(searchProductResponse.getRelated().getRelatedKeyword())) {
