@@ -123,29 +123,6 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                             val message = responseGetPromoStack.data.message.text
                             view.onErrorCheckPromoFirstStep(message)
                         }
-
-
-                        /*if (responseGetPromoStack.status != "OK" || responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
-                            val message = responseGetPromoStack.data.message.text
-                            view.onErrorCheckPromoFirstStep(message)
-                        } else {
-                            if (responseGetPromoStack.data.codes.isEmpty() && responseGetPromoStack.data.voucherOrders.isEmpty()) {
-                                view.hideLoadingDialog()
-                                view.onErrorCheckPromoFirstStep("")
-                            } else {
-                                responseGetPromoStack.data.voucherOrders.forEach {
-                                    if (!it.success && it.message.state.equals("red")) {
-                                        view.onErrorCheckPromoFirstStep(it.message.text)
-                                        return
-                                    }
-                                }
-                                if (responseGetPromoStack.data.clashings.isClashedPromos) {
-                                    view.onClashCheckPromoFirstStep(responseGetPromoStack.data.clashings)
-                                } else {
-                                    view.onSuccessCheckPromoFirstStep(responseGetPromoStack, promoMerchantCode, isFromList)
-                                }
-                            }
-                        }*/
                     }
                 }
             })

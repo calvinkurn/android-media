@@ -124,22 +124,6 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
                         val message = responseGetPromoStack.data.message.text
                         view.onErrorValidatePromoStacking(MessageErrorException(message))
                     }
-
-                    /*if (responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
-                        view.onErrorValidatePromoStacking(MessageErrorException(responseGetPromoStack.data.message.text))
-                    } else {
-                        if (!isFromLoadDetail) {
-                            if (promo.skipApply == 0 && responseGetPromoStack.data.clashings.isClashedPromos) {
-                                view.onClashCheckPromo(responseGetPromoStack.data.clashings)
-                            } else {
-                                if (responseGetPromoStack.data.message.state.equals("red")) {
-                                    view.onErrorValidatePromo(MessageErrorException(responseGetPromoStack.data.message.text))
-                                } else {
-                                    view.onSuccessValidatePromoStacking(responseGetPromoStack.data)
-                                }
-                            }
-                        }
-                    }*/
                 }
             }
 

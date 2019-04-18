@@ -930,25 +930,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         mTrackerShipment.eventClickLanjutkanTerapkanPromoSuccess(code);
                         getView().onSuccessCheckPromoFirstStep(responseGetPromoStack);
                     }
-
-                    /*if (!responseGetPromoStack.getStatus().equalsIgnoreCase("OK")
-                            || TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(
-                                    responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
-                        String errMessage = "";
-                        if (!responseGetPromoStack.getData().getVoucherOrders().isEmpty()) {
-                            errMessage = responseGetPromoStack.getData().getVoucherOrders().get(0).getMessage().getText();
-                        }
-                        mTrackerShipment.eventClickLanjutkanTerapkanPromoError(errMessage);
-                        getView().showToastError(errMessage);
-                        getView().resetCourier(cartPosition);
-                    } else {
-                        if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
-                            getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings());
-                        } else {
-                            mTrackerShipment.eventClickLanjutkanTerapkanPromoSuccess(code);
-                            getView().onSuccessCheckPromoFirstStep(responseGetPromoStack);
-                        }
-                    }*/
                 }
             }
         });

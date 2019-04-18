@@ -897,7 +897,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void renderErrorCheckPromoShipmentData(String message) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
-        shipmentAdapter.clearAllPromo();
+        shipmentAdapter.clearAllPromo(getGlobalCouponAttr(GLOBAL_COUPON_ATTR_DESC), getGlobalCouponAttr(GLOBAL_COUPON_ATTR_QTY));
         shipmentAdapter.resetCourierPromoState();
     }
 

@@ -63,22 +63,6 @@ class CheckPromoFirstStepAfterClashSubscriber(val view: ICartListView?,
             val message = responseGetPromoStack.data.message.text
             view?.showToastMessageRed(message)
         }
-
-        /*if (responseGetPromoStack.status != "OK" || responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
-            val message = responseGetPromoStack.data.message.text
-            view?.showToastMessageRed(message)
-        } else {
-            if (responseGetPromoStack.data.clashings.isClashedPromos) {
-                view?.onClashCheckPromo(responseGetPromoStack.data.clashings)
-            } else {
-                if (responseGetPromoStack.data.codes.isEmpty() && responseGetPromoStack.data.voucherOrders.isEmpty()) {
-                    view?.hideProgressLoading()
-                    view?.showToastMessageRed("")
-                } else {
-                    view?.onSuccessCheckPromoFirstStep(responseGetPromoStack)
-                }
-            }
-        }*/
     }
 
 }

@@ -14,6 +14,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Shop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.UserAddress;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
@@ -157,8 +158,10 @@ public class ShipmentDataConverter {
                                 if (voucherOrdersItemData.getType().equalsIgnoreCase(MERCHANT_VOUCHER_TYPE)) {
                                     shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(voucherOrdersItemData));
                                 } else if (voucherOrdersItemData.getType().equalsIgnoreCase(LOGISTIC_VOUCHER_TYPE)) {
-                                    // TODO : set logistic - fajar?
-                                    // shipmentCartItemModel.setVoucherLogisticItemUiModel();
+                                    VoucherLogisticItemUiModel voucherLogisticItemUiModel = new VoucherLogisticItemUiModel();
+                                    voucherLogisticItemUiModel.setCode(voucherOrdersItemData.getCode());
+                                    voucherLogisticItemUiModel.setCouponDesc(voucherOrdersItemData.getTitleDescription());
+                                    shipmentCartItemModel.setVoucherLogisticItemUiModel(voucherLogisticItemUiModel);
                                 } else {
                                     shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
                                     shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
@@ -234,8 +237,10 @@ public class ShipmentDataConverter {
             if (groupShop.getShop().getVoucherOrdersItemData().getType().equalsIgnoreCase(MERCHANT_VOUCHER_TYPE)) {
                 shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(groupShop.getShop().getVoucherOrdersItemData()));
             } else if (groupShop.getShop().getVoucherOrdersItemData().getType().equalsIgnoreCase(LOGISTIC_VOUCHER_TYPE)) {
-                // TODO : convert logistic - fajar?
-                // shipmentCartItemModel.setVoucherLogisticItemUiModel();
+                VoucherLogisticItemUiModel voucherLogisticItemUiModel = new VoucherLogisticItemUiModel();
+                voucherLogisticItemUiModel.setCode(groupShop.getShop().getVoucherOrdersItemData().getCode());
+                voucherLogisticItemUiModel.setCouponDesc(groupShop.getShop().getVoucherOrdersItemData().getTitleDescription());
+                shipmentCartItemModel.setVoucherLogisticItemUiModel(voucherLogisticItemUiModel);
             } else {
                 shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
                 shipmentCartItemModel.setVoucherLogisticItemUiModel(null);

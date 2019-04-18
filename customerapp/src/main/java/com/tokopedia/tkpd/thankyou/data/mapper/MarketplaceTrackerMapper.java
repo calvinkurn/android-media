@@ -67,7 +67,6 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
             if (paymentData.getOrders() != null) {
                 int indexOrdersData = 0;
                 for (OrderData orderData : paymentData.getOrders()) {
-                    // PurchaseTracking.marketplace(MainApplication.getAppContext(), getTrackignData(orderData, indexOrdersData, getCouponCode(paymentData), getTax(paymentData)));
                     PurchaseTracking.marketplace(MainApplication.getAppContext(), getTrackignData(orderData, indexOrdersData, getListCouponCode(paymentData, orderData.getOrderId()), getTax(paymentData)));
                     LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_COMMERCE_VAL,
                             getTrackignBranchIOData(orderData)));
@@ -184,55 +183,50 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
     private String getListCouponCode(PaymentData paymentData, int orderId) {
         // coupon = [Global Voucher], [Merchant Voucher], [Logistic Voucher], [Payment Voucher]
-        String allCoupons = "", globalVoucher = "", merchantVoucher = "", logisticVoucher = "", paymentVoucher = "";
-        if (paymentData != null) {
-            if (paymentData.getStackedPromos() != null) {
-                if (paymentData.getStackedPromos().getListBenefitByOrders() != null) {
-                    for (BenefitByOrder benefitByOrder : paymentData.getStackedPromos().getListBenefitByOrders()) {
-                        if (benefitByOrder != null) {
-                            if (benefitByOrder.getOrderId() == orderId) {
-                                if (benefitByOrder.getListGlobalLevel() != null) {
-                                    for (OrderLevel orderLevel : benefitByOrder.getListGlobalLevel()) {
-                                        if (orderLevel.getType() != null) {
-                                            if (orderLevel.getType().equalsIgnoreCase(TYPE_GLOBAL_VOUCHER)) {
-                                                globalVoucher = orderLevel.getPromoCode();
-                                            } else if (orderLevel.getType().equalsIgnoreCase(TYPE_PAYMENT_VOUCHER)) {
-                                                paymentVoucher = orderLevel.getPromoCode();
-                                            }
-                                        }
-                                    }
-                                }
+        String allCoupons, globalVoucher = "", merchantVoucher = "", logisticVoucher = "", paymentVoucher = "";
 
-                                if (benefitByOrder.getListOrderLevel() != null) {
-                                    for (OrderLevel orderLevel : benefitByOrder.getListOrderLevel()) {
-                                        if (orderLevel.getType() != null) {
-                                            if (orderLevel.getType().equalsIgnoreCase(TYPE_MERCHANT_VOUCHER)) {
-                                                merchantVoucher = orderLevel.getPromoCode();
-                                            } else if (orderLevel.getType().equalsIgnoreCase(TYPE_LOGISTIC_VOUCHER)) {
-                                                logisticVoucher = orderLevel.getPromoCode();
-                                            }
-                                        }
-                                    }
+        if (paymentData != null && paymentData.getStackedPromos() != null && paymentData.getStackedPromos().getListBenefitByOrders() != null) {
+            for (BenefitByOrder benefitByOrder : paymentData.getStackedPromos().getListBenefitByOrders()) {
+                if (benefitByOrder != null && benefitByOrder.getOrderId() == orderId) {
+                    if (benefitByOrder.getListGlobalLevel() != null) {
+                        for (OrderLevel orderLevel : benefitByOrder.getListGlobalLevel()) {
+                            if (orderLevel.getType() != null) {
+                                if (orderLevel.getType().equalsIgnoreCase(TYPE_GLOBAL_VOUCHER)) {
+                                    globalVoucher = orderLevel.getPromoCode();
+                                } else if (orderLevel.getType().equalsIgnoreCase(TYPE_PAYMENT_VOUCHER)) {
+                                    paymentVoucher = orderLevel.getPromoCode();
                                 }
                             }
                         }
-                        break;
                     }
 
-                    if (globalVoucher.isEmpty()) {
-                        globalVoucher = NOT_SET;
-                    } else if (paymentVoucher.isEmpty()) {
-                        paymentVoucher = NOT_SET;
-                    } else if (merchantVoucher.isEmpty()) {
-                        merchantVoucher = NOT_SET;
-                    } else if (logisticVoucher.isEmpty()) {
-                        logisticVoucher = NOT_SET;
+                    if (benefitByOrder.getListOrderLevel() != null) {
+                        for (OrderLevel orderLevel : benefitByOrder.getListOrderLevel()) {
+                            if (orderLevel.getType() != null) {
+                                if (orderLevel.getType().equalsIgnoreCase(TYPE_MERCHANT_VOUCHER)) {
+                                    merchantVoucher = orderLevel.getPromoCode();
+                                } else if (orderLevel.getType().equalsIgnoreCase(TYPE_LOGISTIC_VOUCHER)) {
+                                    logisticVoucher = orderLevel.getPromoCode();
+                                }
+                            }
+                        }
                     }
-
-                    allCoupons = globalVoucher + " , " + merchantVoucher + " , " + logisticVoucher + " , " + paymentVoucher;
                 }
+                break;
             }
         }
+
+        if (globalVoucher.isEmpty()) {
+            globalVoucher = NOT_SET;
+        } else if (paymentVoucher.isEmpty()) {
+            paymentVoucher = NOT_SET;
+        } else if (merchantVoucher.isEmpty()) {
+            merchantVoucher = NOT_SET;
+        } else if (logisticVoucher.isEmpty()) {
+            logisticVoucher = NOT_SET;
+        }
+
+        allCoupons = globalVoucher + " , " + merchantVoucher + " , " + logisticVoucher + " , " + paymentVoucher;
         return allCoupons;
     }
 

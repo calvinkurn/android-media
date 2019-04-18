@@ -286,10 +286,8 @@ public class CartMapper implements ICartMapper {
         cartListData.setCartPromoSuggestion(cartPromoSuggestion);
 
         GlobalCouponAttr globalCouponAttr = new GlobalCouponAttr();
-        if (cartDataListResponse.getGlobalCouponAttr() != null) {
-            if (cartDataListResponse.getGlobalCouponAttr().getDescription() != null) {
-                globalCouponAttr.setDescription(cartDataListResponse.getGlobalCouponAttr().getDescription());
-            }
+        if (cartDataListResponse.getGlobalCouponAttr() != null && cartDataListResponse.getGlobalCouponAttr().getDescription() != null) {
+            globalCouponAttr.setDescription(cartDataListResponse.getGlobalCouponAttr().getDescription());
             globalCouponAttr.setQuantityLabel(cartDataListResponse.getGlobalCouponAttr().getQuantityLabel());
         }
         cartListData.setGlobalCouponAttr(globalCouponAttr);
