@@ -9,10 +9,10 @@ import com.google.gson.annotations.SerializedName
  */
 data class CurrentApplyCode (
         @SerializedName("codes")
-        var codes: String? = null,
+        var codes: String? = "",
 
         @SerializedName("type")
-        var type: String? = null
+        var type: String? = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),
