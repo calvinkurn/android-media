@@ -219,6 +219,7 @@ public interface ApplinkConst {
     String INBOX = "tokopedia://inbox";
 
     String PLAY_WEBVIEW = "tokopedia://play/webview?url={url}&titlebar={has_titlebar}";
+    String SMC_REFERRAL = "tokopedia://smc-referral";
 
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
