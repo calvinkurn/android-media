@@ -28,27 +28,33 @@ import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostYoutubeViewHolder
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.*
+import com.tokopedia.profile.view.adapter.viewholder.EmptyAffiliateViewHolder
 import com.tokopedia.profile.view.adapter.viewholder.ProfileEmptyViewHolder
 import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
+import com.tokopedia.profile.view.viewmodel.EmptyAffiliateViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileEmptyViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
+import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * @author by milhamj on 9/20/18.
  */
 class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.View,
-                             private val kolPostViewListener : KolPostListener.View.ViewHolder?,
-                             private val dynamicPostListener: DynamicPostViewHolder.DynamicPostListener?,
-                             private val bannerListener: BannerAdapter.BannerItemListener?,
-                             private val topadsShopListener: TopadsShopViewHolder.TopadsShopListener?,
-                             private val recommendationCardListener: RecommendationCardAdapter.RecommendationCardListener?,
-                             private val cardTitleListener: CardTitleView.CardTitleListener?,
-                             private val imagePostListener: ImagePostViewHolder.ImagePostListener?,
-                             private val youtubePostListener: YoutubeViewHolder.YoutubePostListener?,
-                             private val pollOptionListener: PollAdapter.PollOptionListener?,
-                             private val gridItemListener: GridPostAdapter.GridItemListener?,
-                             private val videoViewListener: VideoViewHolder.VideoViewListener?)
+                             private val kolPostViewListener : KolPostListener.View.ViewHolder,
+                             private val dynamicPostListener: DynamicPostViewHolder.DynamicPostListener,
+                             private val bannerListener: BannerAdapter.BannerItemListener,
+                             private val topadsShopListener: TopadsShopViewHolder.TopadsShopListener,
+                             private val recommendationCardListener: RecommendationCardAdapter.RecommendationCardListener,
+                             private val cardTitleListener: CardTitleView.CardTitleListener,
+                             private val imagePostListener: ImagePostViewHolder.ImagePostListener,
+                             private val youtubePostListener: YoutubeViewHolder.YoutubePostListener,
+                             private val pollOptionListener: PollAdapter.PollOptionListener,
+                             private val gridItemListener: GridPostAdapter.GridItemListener,
+                             private val videoViewListener: VideoViewHolder.VideoViewListener,
+                             private val onEmptyItemClickedListener: EmptyAffiliateViewHolder.OnEmptyItemClickedListener,
+                             private val userSession : UserSessionInterface)
+
     : BaseAdapterTypeFactory(), ProfileTypeFactory, KolPostTypeFactory, DynamicFeedTypeFactory {
 
     override fun type(viewModel: ProfileHeaderViewModel): Int {
@@ -95,6 +101,10 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
         return TopadsShopViewHolder.LAYOUT
     }
 
+    override fun type(emptyAffiliateViewModel: EmptyAffiliateViewModel): Int {
+        return EmptyAffiliateViewHolder.LAYOUT
+    }
+
     override fun setType(type: KolPostViewHolder.Type?) {
     }
 
@@ -121,19 +131,22 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                 ExploreViewHolder(parent, kolPostViewListener) as AbstractViewHolder<Visitable<*>>
             DynamicPostViewHolder.LAYOUT ->
                 DynamicPostViewHolder(parent,
-                        dynamicPostListener!!,
-                        cardTitleListener!!,
-                        imagePostListener!!,
-                        youtubePostListener!!,
-                        pollOptionListener!!,
-                        gridItemListener!!,
-                        videoViewListener!!) as AbstractViewHolder< Visitable<*>>
+                        dynamicPostListener,
+                        cardTitleListener,
+                        imagePostListener,
+                        youtubePostListener,
+                        pollOptionListener,
+                        gridItemListener,
+                        videoViewListener,
+                        userSession) as AbstractViewHolder< Visitable<*>>
             FeedRecommendationViewHolder.LAYOUT ->
-                FeedRecommendationViewHolder(parent, recommendationCardListener!!, cardTitleListener!!) as AbstractViewHolder<Visitable<*>>
+                FeedRecommendationViewHolder(parent, recommendationCardListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             BannerViewHolder.LAYOUT ->
-                BannerViewHolder(parent, bannerListener!!, cardTitleListener!!) as AbstractViewHolder<Visitable<*>>
+                BannerViewHolder(parent, bannerListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             TopadsShopViewHolder.LAYOUT ->
-                TopadsShopViewHolder(parent, topadsShopListener!!, cardTitleListener!!) as AbstractViewHolder<Visitable<*>>
+                TopadsShopViewHolder(parent, topadsShopListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
+            EmptyAffiliateViewHolder.LAYOUT ->
+                EmptyAffiliateViewHolder(parent, onEmptyItemClickedListener) as AbstractViewHolder< Visitable<*>>
             else -> super.createViewHolder(parent, type)
         }
     }

@@ -419,7 +419,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                 progress += divideTo(halfProgressAmount, flightSearchMetaViewModel.maxRetry)
 
                 // already reach max retry limit, end retry
-                if (noRetry >= flightSearchMetaViewModel.maxRetry) {
+                if (noRetry > flightSearchMetaViewModel.maxRetry) {
                     flightAirportCombineModel.isNeedRefresh = false
                 } else {
                     // retry load data

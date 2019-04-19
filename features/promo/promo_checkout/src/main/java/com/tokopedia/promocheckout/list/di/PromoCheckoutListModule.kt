@@ -5,8 +5,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
-import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier
-import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplacePresenter
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListPresenter
 import dagger.Module
@@ -23,8 +23,14 @@ class PromoCheckoutListModule {
 
     @PromoCheckoutListScope
     @Provides
-    fun provideMarketplacePresenter(@PromoCheckoutQualifier checkPromoCodeUseCase: CheckPromoCodeUseCase) : PromoCheckoutListMarketplacePresenter {
-        return PromoCheckoutListMarketplacePresenter(checkPromoCodeUseCase)
+    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context): CheckPromoStackingCodeUseCase {
+        return CheckPromoStackingCodeUseCase(context.resources)
+    }
+
+    @PromoCheckoutListScope
+    @Provides
+    fun provideMarketplacePresenter(checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase, checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper) : PromoCheckoutListMarketplacePresenter {
+        return PromoCheckoutListMarketplacePresenter(checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper)
     }
 
     @PromoCheckoutListScope
