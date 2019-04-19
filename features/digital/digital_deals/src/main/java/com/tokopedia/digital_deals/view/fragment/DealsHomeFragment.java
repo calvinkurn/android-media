@@ -140,6 +140,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         setHasOptionsMenu(true);
         setUpVariables(view);
         checkLocationStatus();
+
         categoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.HOME_PAGE, this, IS_SHORT_LAYOUT);
         return view;
     }
