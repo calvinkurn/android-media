@@ -92,9 +92,24 @@ public class CartMapper implements ICartMapper {
         cartListData.setDefaultPromoDialogTab(cartDataListResponse.getDefaultPromoDialogTab());
 
         List<ShopGroupData> shopGroupDataList = new ArrayList<>();
+        boolean isDisableAllProducts = false;
         for (ShopGroup shopGroup : cartDataListResponse.getShopGroups()) {
             ShopGroupData shopGroupData = new ShopGroupData();
-            shopGroupData.setError(!mapperUtil.isEmpty(shopGroup.getErrors()));
+
+            int errorItemCountPerShop = 0;
+            for (CartDetail cartDetail : shopGroup.getCartDetails()) {
+                if (cartDetail.getErrors() != null && cartDetail.getErrors().size() > 0) {
+                    errorItemCountPerShop++;
+                }
+            }
+
+            boolean shopError = false;
+            if (shopGroup.getErrors().size() > 0 || errorItemCountPerShop == shopGroup.getCartDetails().size()) {
+                shopError = true;
+                isDisableAllProducts = true;
+            }
+            shopGroupData.setError(shopError);
+            // shopGroupData.setError(!mapperUtil.isEmpty(shopGroup.getErrors()));
             shopGroupData.setErrorTitle(mapperUtil.convertToString(shopGroup.getErrors()));
             shopGroupData.setShopId(String.valueOf(shopGroup.getShop().getShopId()));
             shopGroupData.setShopName(shopGroup.getShop().getShopName());
@@ -247,22 +262,24 @@ public class CartMapper implements ICartMapper {
                     }
                 }
 
-                if (cartItemData.isSingleChild()) {
-                    if (!shopGroupData.isError() && !shopGroupData.isWarning()) {
-                        cartItemData.setParentHasErrorOrWarning(false);
-                        if (cartItemData.isError()) {
-                            shopGroupData.setError(true);
-                            shopGroupData.setErrorTitle(cartItemData.getErrorMessageTitle());
-                            shopGroupData.setErrorDescription(cartItemData.getErrorMessageDescription());
-                        } else if (cartItemData.isWarning()) {
-                            shopGroupData.setWarning(true);
-                            shopGroupData.setWarningTitle(cartItemData.getWarningMessageTitle());
-                            shopGroupData.setWarningDescription(cartItemData.getWarningMessageDescription());
-                        }
-                    } else {
-                        cartItemData.setParentHasErrorOrWarning(true);
-                    }
+                // if (cartItemData.isSingleChild()) {
+                if (!shopGroupData.isError() && !shopGroupData.isWarning()) {
+                    cartItemData.setParentHasErrorOrWarning(false);
+                } else {
+                    cartItemData.setParentHasErrorOrWarning(true);
                 }
+                // if (cartItemData.isError()) {
+                if (isDisableAllProducts) {
+                    shopGroupData.setError(true);
+                    shopGroupData.setErrorTitle(cartItemData.getErrorMessageTitle());
+                    shopGroupData.setErrorDescription(cartItemData.getErrorMessageDescription());
+                } else if (cartItemData.isWarning()) {
+                    shopGroupData.setWarning(true);
+                    shopGroupData.setWarningTitle(cartItemData.getWarningMessageTitle());
+                    shopGroupData.setWarningDescription(cartItemData.getWarningMessageDescription());
+                }
+                cartItemData.setDisableAllProducts(isDisableAllProducts);
+                // }
 
                 if (!cartItemData.isError() && shopGroupData.isError()) {
                     cartItemData.setError(true);
