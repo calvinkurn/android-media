@@ -183,7 +183,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
     private String getListCouponCode(PaymentData paymentData, int orderId) {
         // coupon = [Global Voucher], [Merchant Voucher], [Logistic Voucher], [Payment Voucher]
-        String allCoupons, globalVoucher = "", merchantVoucher = "", logisticVoucher = "", paymentVoucher = "";
+        String allCoupons, globalVoucher = NOT_SET, merchantVoucher = NOT_SET, logisticVoucher = NOT_SET, paymentVoucher = NOT_SET;
 
         if (paymentData != null && paymentData.getStackedPromos() != null && paymentData.getStackedPromos().getListBenefitByOrders() != null) {
             for (BenefitByOrder benefitByOrder : paymentData.getStackedPromos().getListBenefitByOrders()) {
@@ -214,16 +214,6 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
                 }
                 break;
             }
-        }
-
-        if (globalVoucher.isEmpty()) {
-            globalVoucher = NOT_SET;
-        } else if (paymentVoucher.isEmpty()) {
-            paymentVoucher = NOT_SET;
-        } else if (merchantVoucher.isEmpty()) {
-            merchantVoucher = NOT_SET;
-        } else if (logisticVoucher.isEmpty()) {
-            logisticVoucher = NOT_SET;
         }
 
         allCoupons = globalVoucher + " , " + merchantVoucher + " , " + logisticVoucher + " , " + paymentVoucher;

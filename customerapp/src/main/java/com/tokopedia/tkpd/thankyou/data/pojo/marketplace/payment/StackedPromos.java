@@ -11,7 +11,7 @@ import java.util.List;
 public class StackedPromos {
     @SerializedName("promo_code_id")
     @Expose
-    private int promoCodeId;
+    private long promoCodeId;
 
     @SerializedName("final_benefit_amount")
     @Expose
@@ -21,15 +21,15 @@ public class StackedPromos {
     @Expose
     private int finalBenefitDiscountAmount;
 
-    @SerializedName("benefit_by_orders")
+    @SerializedName("benefits_by_orders")
     @Expose
     private List<BenefitByOrder> listBenefitByOrders;
 
-    public int getPromoCodeId() {
+    public long getPromoCodeId() {
         return promoCodeId;
     }
 
-    public void setPromoCodeId(int promoCodeId) {
+    public void setPromoCodeId(long promoCodeId) {
         this.promoCodeId = promoCodeId;
     }
 
