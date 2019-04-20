@@ -895,40 +895,46 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 if (getView() != null) {
                     getView().hideLoading();
                     checkPromoStackingCodeMapper.setFinal(false);
-                    boolean flagError = false;
                     ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
+                    String errMessage = "";
 
                     if (responseGetPromoStack.getStatus().equalsIgnoreCase(statusOK)) {
                         if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
                             getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings());
                         } else {
+                            boolean flagError = false;
+
+                            // Check if there is an error within voucher list // Might be simplify by checking global error
                             if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(
                                     responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
                                 flagError = true;
-                            } else {
-                                for (VoucherOrdersItemUiModel voucherOrdersItemUiModel : responseGetPromoStack.getData().getVoucherOrders()) {
-                                    if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(voucherOrdersItemUiModel.getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
-                                        flagError = true;
-                                    }
+                            }
+                            for (VoucherOrdersItemUiModel voucherOrdersItemUiModel : responseGetPromoStack.getData().getVoucherOrders()) {
+                                if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(voucherOrdersItemUiModel.getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
+                                    flagError = true;
+                                    break;
                                 }
                             }
+
+                            if (flagError) {
+                                if (!responseGetPromoStack.getData().getVoucherOrders().isEmpty()) {
+                                    errMessage = responseGetPromoStack.getData().getVoucherOrders().get(0).getMessage().getText();
+                                }
+                                mTrackerShipment.eventClickLanjutkanTerapkanPromoError(errMessage);
+                                getView().showToastError(errMessage);
+                                getView().resetCourier(cartPosition);
+                            } else {
+                                mTrackerShipment.eventClickLanjutkanTerapkanPromoSuccess(code);
+                                getView().onSuccessCheckPromoFirstStep(responseGetPromoStack);
+                            }
                         }
-
                     } else {
-                        flagError = true;
-                    }
-
-                    if (flagError) {
-                        String errMessage = "";
-                        if (!responseGetPromoStack.getData().getVoucherOrders().isEmpty()) {
-                            errMessage = responseGetPromoStack.getData().getVoucherOrders().get(0).getMessage().getText();
+                        if (!responseGetPromoStack.getMessage().isEmpty()) {
+                            errMessage = responseGetPromoStack.getMessage().get(0);
                         }
                         mTrackerShipment.eventClickLanjutkanTerapkanPromoError(errMessage);
                         getView().showToastError(errMessage);
                         getView().resetCourier(cartPosition);
-                    } else {
-                        mTrackerShipment.eventClickLanjutkanTerapkanPromoSuccess(code);
-                        getView().onSuccessCheckPromoFirstStep(responseGetPromoStack);
                     }
                 }
             }
