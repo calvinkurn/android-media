@@ -161,6 +161,7 @@ public class ShipmentDataConverter {
                                     VoucherLogisticItemUiModel voucherLogisticItemUiModel = new VoucherLogisticItemUiModel();
                                     voucherLogisticItemUiModel.setCode(voucherOrdersItemData.getCode());
                                     voucherLogisticItemUiModel.setCouponDesc(voucherOrdersItemData.getTitleDescription());
+                                    voucherLogisticItemUiModel.setMessage(convertFromMessage(voucherOrdersItemData.getMessageData()));
                                     shipmentCartItemModel.setVoucherLogisticItemUiModel(voucherLogisticItemUiModel);
                                 } else {
                                     shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
@@ -240,6 +241,7 @@ public class ShipmentDataConverter {
                 VoucherLogisticItemUiModel voucherLogisticItemUiModel = new VoucherLogisticItemUiModel();
                 voucherLogisticItemUiModel.setCode(groupShop.getShop().getVoucherOrdersItemData().getCode());
                 voucherLogisticItemUiModel.setCouponDesc(groupShop.getShop().getVoucherOrdersItemData().getTitleDescription());
+                voucherLogisticItemUiModel.setMessage(convertFromMessage(groupShop.getShop().getVoucherOrdersItemData().getMessageData()));
                 shipmentCartItemModel.setVoucherLogisticItemUiModel(voucherLogisticItemUiModel);
             } else {
                 shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
