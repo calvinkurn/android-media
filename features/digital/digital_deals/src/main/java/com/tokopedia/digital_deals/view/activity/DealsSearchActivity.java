@@ -8,22 +8,16 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -39,7 +33,6 @@ import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
-import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectLocationBottomSheet;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.Location;
@@ -56,8 +49,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.digital_deals.view.activity.DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY;
 
 public class DealsSearchActivity extends DealsBaseActivity implements
         DealsSearchContract.View, SearchInputView.Listener, android.view.View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsLocationAdapter.ActionListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet {
@@ -137,12 +128,10 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         appBarBrands.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                Log.d("Naveen","vertical Offset"+ verticalOffset);
                 if (verticalOffset != 0) {
                     divider.setVisibility(View.GONE);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         appBarToolbar.setElevation(getResources().getDimension(R.dimen.dp_4));
-                       // KeyboardHandler.hideSoftKeyboard(getActivity());
                     }
                 } else {
                     divider.setVisibility(View.VISIBLE);
@@ -265,7 +254,6 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             brandLayout.setVisibility(View.GONE);
             rvDeals.setVisibility(View.GONE);
             dealsHeading.setVisibility(View.GONE);
-//            showSuggestedDeals(TopDealsCacheHandler.init().getTopDeals(), true);
         }
         if (location != null)
             tvCityName.setText(location.getName());
@@ -320,7 +308,10 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     public void showSuggestedDeals(List<ProductItem> items, boolean showList) {
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (showList) {
-            dealsHeading.setText(String.format(getResources().getString(R.string.products_title_search), location.getName().toUpperCase()));
+            if (location != null) {
+                dealsHeading.setText(String.format(getResources().getString(R.string.products_title_search), location.getName().toUpperCase()));
+                tvCityName.setText(location.getName());
+            }
             rvDeals.clearOnScrollListeners();
             dealsCategoryAdapter.clearList();
             dealsCategoryAdapter.addAll(items, false);
@@ -332,8 +323,6 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             brandLayout.setVisibility(View.GONE);
             dealsHeading.setVisibility(View.VISIBLE);
         }
-        if (location != null)
-            tvCityName.setText(location.getName());
     }
 
     @Override

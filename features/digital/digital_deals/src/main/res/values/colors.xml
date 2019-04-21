@@ -17,4 +17,5 @@
     <color name="deal_product_text_color">#e131353b</color>
     <color name="deal_price_price__off_color">#ff5c84</color>
     <color name="deal_sale_price__color">#fa591d</color>
+    <color name="search_divider_color">#e5e7e9</color>
 </resources>
