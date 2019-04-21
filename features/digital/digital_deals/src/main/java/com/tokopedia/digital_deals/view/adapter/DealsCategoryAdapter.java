@@ -46,7 +46,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-;
+
 
 public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements DealCategoryAdapterContract.View {
 
