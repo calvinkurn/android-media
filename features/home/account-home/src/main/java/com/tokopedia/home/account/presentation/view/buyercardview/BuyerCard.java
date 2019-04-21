@@ -81,7 +81,7 @@ public class BuyerCard implements Parcelable {
         private String username;
         private int progress;
         private String tokopoint;
-        private int coupon;
+        private String coupon;
         private boolean isAffiliate;
 
         public Builder avatar(String avatar) {
