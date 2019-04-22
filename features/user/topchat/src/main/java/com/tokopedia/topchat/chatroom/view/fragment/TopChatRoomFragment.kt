@@ -566,7 +566,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 product.productUrl,
                 product.productImageThumbnail,
                 SendableViewModel.generateStartTime(),
-                false)
+                false,
+                shopId)
     }
 
     private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {
@@ -607,6 +608,16 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
         activity?.let {
             val router = (it.application as TopChatRouter)
+            val shopName = (arguments?.get(ApplinkConst.Chat.PARAM_HEADER) as ChatRoomHeaderViewModel).name
+            analytics.eventClickBuyProductAttachment(
+                    element.blastId.toString(),
+                    element.productName,
+                    element.productId.toString(),
+                    element.productPrice,
+                    1,
+                    element.shopId.toString(),
+                    shopName
+            )
             presenter.addProductToCart(router, element, onError(), onSuccessBuyFromProdAttachment(),
                     element.shopId)
         }
@@ -615,6 +626,16 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
         activity?.let {
             val router = (it.application as TopChatRouter)
+            val shopName = (arguments?.get(ApplinkConst.Chat.PARAM_HEADER) as ChatRoomHeaderViewModel).name
+            analytics.eventClickAddToCartProductAttachment(
+                    element.blastId.toString(),
+                    element.productName,
+                    element.productId.toString(),
+                    element.productPrice,
+                    1,
+                    element.shopId.toString(),
+                    shopName
+            )
             presenter.addProductToCart(router, element, onError(), onSuccessAddToCart(),
                     element.shopId)
         }
