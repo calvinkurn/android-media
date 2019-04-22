@@ -162,6 +162,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        registerAnalytics.trackSuccessClickEmailSignUpButton();
     }
 
 

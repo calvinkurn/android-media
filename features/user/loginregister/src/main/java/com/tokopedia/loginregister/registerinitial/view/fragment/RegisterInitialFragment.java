@@ -371,7 +371,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 RequestOtpUseCase.MODE_SMS
         );
         startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE);
-        registerAnalytics.trackSuccessClickYesButtonPhoneDialog();
     }
 
 
@@ -419,6 +418,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 goToAddName();
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
+                registerAnalytics.trackSuccessClickYesButtonPhoneDialog();
                 startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
                         REQUEST_WELCOME_PAGE);
             } else if (requestCode == REQUEST_WELCOME_PAGE) {
@@ -463,6 +463,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
      */
     private void handleGoogleSignInResult(Task<GoogleSignInAccount> completedTask) {
         if (getContext() != null) {
+            boolean onRegisterGoogleSuccess = true;
             try {
                 GoogleSignInAccount account = completedTask.getResult(ApiException.class);
                 String accessToken = account.getIdToken();
@@ -473,11 +474,17 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                         ErrorHandlerSession.getDefaultErrorCodeMessage(
                                 ErrorHandlerSession.ErrorCode.GOOGLE_FAILED_ACCESS_TOKEN,
                                 getContext()));
+                onRegisterGoogleSuccess = false;
             } catch (ApiException e) {
                 onErrorRegisterSosmed(LoginRegisterAnalytics.GOOGLE,
                         String.format(getString(R.string.loginregister_failed_login_google),
                                 String.valueOf(e.getStatusCode())));
+                onRegisterGoogleSuccess = false;
+            }finally {
+                if(onRegisterGoogleSuccess)
+                    registerAnalytics.trackSuccessClickRegisterGoogleButton();
             }
+
         }
     }
 
@@ -652,11 +659,11 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     public void onErrorRegisterSosmed(String methodName, String errorMessage) {
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
         switch (methodName){
-            case RegisterAnalytics.GOOGLE : {
+            case LoginRegisterAnalytics.GOOGLE : {
                 registerAnalytics.trackFailedClickRegisterGoogleButton(errorMessage);
                 break;
             }
-            case RegisterAnalytics.FACEBOOK : {
+            case LoginRegisterAnalytics.FACEBOOK : {
                 registerAnalytics.trackFailedClickRegisterFacebookButton(errorMessage);
                 break;
             }
@@ -668,16 +675,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         analytics.eventSuccessRegisterSosmed(methodName);
         startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
                 REQUEST_WELCOME_PAGE);
-        switch (methodName){
-            case RegisterAnalytics.GOOGLE :{
-                registerAnalytics.trackSuccessClickRegisterGoogleButton();
-                break;
-            }
-            case RegisterAnalytics.FACEBOOK : {
-                registerAnalytics.trackSuccessClickRegisterFacebookButton();
-                break;
-            }
-        }
     }
 
     @Override
@@ -755,12 +752,22 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 if (isAdded() && getActivity() != null) {
                     NetworkErrorHelper.showSnackbar(getActivity(), ErrorHandler.getErrorMessage
                             (getContext(), e));
+                    onErrorRegisterSosmed(LoginRegisterAnalytics.FACEBOOK, e.getMessage());
                 }
             }
 
             @Override
             public void onSuccessGetFacebookCredential(AccessToken accessToken, String email) {
-                presenter.registerFacebook(accessToken, email);
+                boolean onRegisterFacebookSuccess = true;
+                try {
+                    presenter.registerFacebook(accessToken, email);
+                }catch (Exception e){
+                    onRegisterFacebookSuccess = false;
+                    onErrorRegisterSosmed(LoginRegisterAnalytics.FACEBOOK, e.getMessage());
+                }finally {
+                    if(onRegisterFacebookSuccess)
+                        registerAnalytics.trackSuccessClickRegisterFacebookButton();
+                }
             }
         };
     }
@@ -782,7 +789,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 dialog.dismiss();
                 startActivity(LoginActivity.getIntentLoginFromRegister(getActivity(), email));
                 getActivity().finish();
-                registerAnalytics.trackSuccessClickYesButtonRegisteredEmailDialog();
             });
             dialog.setBtnCancel(getString(R.string.already_registered_no));
             dialog.setOnCancelClickListener(v -> {
