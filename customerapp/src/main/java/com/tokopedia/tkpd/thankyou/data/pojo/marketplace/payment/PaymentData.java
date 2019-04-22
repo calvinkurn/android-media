@@ -34,6 +34,9 @@ public class PaymentData {
     @SerializedName("payment_gateway")
     @Expose
     private PaymentGateway paymentGateway;
+    @SerializedName("stacked_promos")
+    @Expose
+    private StackedPromos stackedPromos;
 
     public int getPaymentId() {
         return paymentId;
@@ -97,5 +100,9 @@ public class PaymentData {
 
     public void setPaymentGateway(PaymentGateway paymentGateway) {
         this.paymentGateway = paymentGateway;
+    }
+
+    public StackedPromos getStackedPromos() {
+        return stackedPromos;
     }
 }
