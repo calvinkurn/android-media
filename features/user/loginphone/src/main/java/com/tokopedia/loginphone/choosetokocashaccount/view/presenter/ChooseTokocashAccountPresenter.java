@@ -60,15 +60,6 @@ public class ChooseTokocashAccountPresenter extends BaseDaggerPresenter<ChooseTo
     }
 
     @Override
-    public void checkAutoLogin(String key, int itemCount, List<UserDetail> list) {
-        //TODO
-        if (itemCount == ONLY_ONE) {
-            UserDetail accountTokocash = list.get(0);
-//            loginWithTokocash(key, accountTokocash, viewModel.getPhoneNumber());
-        }
-    }
-
-    @Override
     public void getAccountList(String validateToken, String phoneNumber) {
         getAccountsListUseCase.execute(GetAccountsListUseCase.Companion.getParam(validateToken,
             phoneNumber),

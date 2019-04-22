@@ -237,7 +237,9 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
             getActivity().setResult(Activity.RESULT_OK);
 
             if (accountList.getAccountListPojo().getUserDetails().size() == 1) {
-                getActivity().finish();
+                UserDetail userDetail = accountList.getAccountListPojo().getUserDetails().get(0);
+                presenter.loginWithTokocash(accountList.getAccountListPojo().getKey(), userDetail,
+                        accountList.getAccountListPojo().getMsisdn());
             } else {
                 adapter.setList(accountList.getAccountListPojo().getUserDetails());
                 message.setText(getPromptText());

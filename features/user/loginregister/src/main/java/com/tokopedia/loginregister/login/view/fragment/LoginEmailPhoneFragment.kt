@@ -40,7 +40,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
-import com.tokopedia.loginregister.LoginRegisterPhoneRouter
 import com.tokopedia.loginregister.LoginRegisterRouter
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity
@@ -814,16 +813,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         )
 
         onSuccessLogin()
-    }
-
-    private fun goToNoTokocashAccountPage(phoneNumber: String) {
-        if (activity != null && activity!!.applicationContext != null) {
-            val intent = (activity!!.applicationContext as LoginRegisterPhoneRouter)
-                    .getNoTokocashAccountIntent(
-                            activity!!,
-                            phoneNumber)
-            startActivityForResult(intent, REQUEST_NO_TOKOCASH_ACCOUNT)
-        }
     }
 
     private fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {

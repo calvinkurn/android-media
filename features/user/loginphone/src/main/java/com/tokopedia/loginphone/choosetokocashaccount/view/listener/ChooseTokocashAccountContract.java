@@ -40,8 +40,6 @@ public interface ChooseTokocashAccountContract {
 
         void loginWithTokocash(String key, UserDetail accountTokocash, String phoneNumber);
 
-        void checkAutoLogin(String key, int itemCount, List<UserDetail> list);
-
         void getAccountList(String validateToken, String phoneNumber);
     }
 }

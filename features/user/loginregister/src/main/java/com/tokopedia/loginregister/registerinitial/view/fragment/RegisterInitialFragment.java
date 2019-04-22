@@ -48,8 +48,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.text.TextDrawable;
-import com.tokopedia.loginregister.LoginRegisterPhoneRouter;
-import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
@@ -771,17 +769,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(getActivity(),
                     RequestOtpUseCase.OTP_TYPE_LOGIN_PHONE_NUMBER,  phoneNumber, "");
             startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH);
-        }
-    }
-
-
-    private void goToNoTokocashAccountPage(String phoneNumber) {
-        if (getActivity() != null && getActivity().getApplicationContext() != null) {
-            Intent intent = ((LoginRegisterPhoneRouter) getActivity().getApplicationContext())
-                    .getNoTokocashAccountIntent(
-                            getActivity(),
-                            phoneNumber);
-            startActivityForResult(intent, REQUEST_NO_TOKOCASH_ACCOUNT);
         }
     }
 
