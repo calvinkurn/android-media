@@ -341,18 +341,15 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     public void updateDataByChangingKeyword(String keyword) {
         if (remoteConfig.getBoolean(RemoteConfigKey.SHOP_ETALASE_TOGGLE)) {
-            if (!keyword.isEmpty()) {
+            if (!keyword.isEmpty() && !this.keyword.equalsIgnoreCase(keyword)) {
                 selectedEtalaseId = null;
-
                 etalaseChipAdapter.setSelectedEtalaseId(selectedEtalaseId);
                 etalaseChipAdapter.notifyDataSetChanged();
+                this.keyword = keyword;
+                loadInitialData();
             }
         }
 
-        if (!this.keyword.equalsIgnoreCase(keyword)) {
-            this.keyword = keyword;
-            loadInitialData();
-        }
     }
 
     @Override
