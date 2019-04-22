@@ -93,7 +93,7 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
                 if (isViewAttached) {
                     view.hideProgressLoading()
                     val responseGetPromoStack = checkPromoStackingCodeMapper.call(t)
-                    if (responseGetPromoStack.status.equals(statusOK, true)) {
+                    if (responseGetPromoStack.status.equals(statusOK, true) && responseGetPromoStack.data.success) {
                         if (!isFromLoadDetail) {
                             if (promo.skipApply == 0 && responseGetPromoStack.data.clashings.isClashedPromos) {
                                 view.onClashCheckPromo(responseGetPromoStack.data.clashings)
