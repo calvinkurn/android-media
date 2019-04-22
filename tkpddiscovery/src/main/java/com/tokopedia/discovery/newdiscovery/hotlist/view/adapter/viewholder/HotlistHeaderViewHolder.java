@@ -142,27 +142,17 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         renderQuickFilter(element.getOptionList());
     }
 
-    protected void renderQuickFilter(List<Option> filterList) {
+    protected void renderQuickFilter(List<QuickFilterItem> filterList) {
         if (filterList == null || filterList.isEmpty()) {
             return;
         }
-        if (filterItems.isEmpty()) {
-            for (int i = 0; i < filterList.size(); i++) {
-                CustomViewRoundedQuickFilterItem quickFilterItem = new CustomViewRoundedQuickFilterItem();
-                quickFilterItem.setName(filterList.get(i).getName());
-                quickFilterItem.setType(filterList.get(i).getKey() + "=" + filterList.get(i).getValue());
-                filterItems.add(quickFilterItem);
-            }
-        }
-        for (QuickFilterItem quickFilterItem: filterItems) {
+        for (QuickFilterItem quickFilterItem: filterList) {
             String[] str = quickFilterItem.getType().split("=");
             if (!quickFilterItem.isSelected() && selectedFilterList.containsKey(str[0])) {
                 selectedFilterList.remove(str[0]);
             }
         }
-
-        mHotlistListener.setQuickFilterList(filterItems);
-        customViewRounderCornerFilterView.renderFilter(filterItems);
+        customViewRounderCornerFilterView.renderFilter(filterList);
     }
 
     private void renderPromoView(final String hotlistTitle, HotlistPromo hotlistPromo) {
@@ -192,7 +182,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
             eventLabel = "true";
         }
         eventLabel = str[0] + "-" + str[1] + "-" + eventLabel;
-        mHotlistListener.onQuickFilterSelected(selectedFilterList, eventLabel, str[0]);
+        mHotlistListener.onQuickFilterSelected(str[0], eventLabel, str[1]);
 
     }
 

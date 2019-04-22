@@ -12,7 +12,6 @@ import com.tokopedia.core2.R;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -91,9 +90,7 @@ public class DefaultCategoryAdapter extends
 
         String getUserId();
 
-        void onQuickFilterSelected(HashMap<String, String> filter, String eventLabel, String duplicateKey);
-
-        void setQuickFilterList(List<QuickFilterItem> quickFilterItems);
+        void onQuickFilterSelected(String filterKey, String eventLabel, String filterValue);
     }
 
     public void addDataChild(List<ChildCategoryModel> children) {

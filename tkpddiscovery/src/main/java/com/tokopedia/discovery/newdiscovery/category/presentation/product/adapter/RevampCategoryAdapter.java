@@ -89,9 +89,8 @@ public class RevampCategoryAdapter extends
 
         String getUserId();
 
-        void onQuickFilterSelected(HashMap<String, String> filter, String eventLabel, String duplicateKey);
+        void onQuickFilterSelected(String filterKey, String eventLabel, String filterValue);
 
-        void setQuickFilterList(List<QuickFilterItem> quickFilterItems);
     }
 
     public void addDataChild(List<ChildCategoryModel> children) {

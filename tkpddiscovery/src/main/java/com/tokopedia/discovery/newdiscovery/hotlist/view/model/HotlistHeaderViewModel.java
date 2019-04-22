@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.discovery.model.Option;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.factory.HotlistAdapterTypeFactory;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class HotlistHeaderViewModel implements Visitable<HotlistAdapterTypeFacto
     private String hotlistTitle;
     private String productCounter;
     private double totalData;
-    private List<Option> optionList;
+    private List<QuickFilterItem> optionList;
 
     public HotlistHeaderViewModel() {
     }
@@ -40,7 +41,6 @@ public class HotlistHeaderViewModel implements Visitable<HotlistAdapterTypeFacto
         dest.writeParcelable(this.hotlistPromo, flags);
         dest.writeString(this.hotlistTitle);
         dest.writeDouble(this.totalData);
-        dest.writeTypedList(this.optionList);
     }
 
     protected HotlistHeaderViewModel(Parcel in) {
@@ -50,7 +50,6 @@ public class HotlistHeaderViewModel implements Visitable<HotlistAdapterTypeFacto
         this.hotlistPromo = in.readParcelable(HotlistPromo.class.getClassLoader());
         this.hotlistTitle = in.readString();
         this.totalData = in.readDouble();
-        this.optionList= in.createTypedArrayList(Option.CREATOR);
     }
 
     public static final Creator<HotlistHeaderViewModel> CREATOR = new Creator<HotlistHeaderViewModel>() {
@@ -128,11 +127,11 @@ public class HotlistHeaderViewModel implements Visitable<HotlistAdapterTypeFacto
         this.totalData = totalData;
     }
 
-    public void setQuickFilterList(List<Option> optionList) {
+    public void setQuickFilterList(List<QuickFilterItem> optionList) {
         this.optionList=optionList;
     }
 
-    public List<Option> getOptionList() {
+    public List<QuickFilterItem> getOptionList() {
         return optionList;
     }
 }

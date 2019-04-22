@@ -38,6 +38,7 @@ import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
+import com.tokopedia.design.quickfilter.custom.CustomViewRoundedQuickFilterItem;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
@@ -127,7 +128,7 @@ public class ProductFragment extends BrowseSectionFragment
 
     private LocalCacheHandler trackerProductCache;
 
-    private List<QuickFilterItem> quickFilterItems;
+    private List<QuickFilterItem> quickFilterItems = new ArrayList<>();
 
     public static ProductFragment newInstance(ProductViewModel productViewModel, String trackerAttribution) {
         Bundle args = new Bundle();
@@ -556,6 +557,9 @@ public class ProductFragment extends BrowseSectionFragment
     }
 
     private void showSelectedFilters(HashMap<String, String> selectedFilter) {
+        if (selectedFilter == null) {
+            return;
+        }
         //pass viewHolder
         for (QuickFilterItem quickFilterItem: this.quickFilterItems) {
             String[] str = quickFilterItem.getType().split("=");
@@ -565,7 +569,6 @@ public class ProductFragment extends BrowseSectionFragment
                 quickFilterItem.setSelected(false);
             }
         }
-        setSelectedFilter(selectedFilter);
         adapter.notifyDataSetChanged();
     }
 
@@ -688,7 +691,7 @@ public class ProductFragment extends BrowseSectionFragment
     }
 
     @Override
-    public void onQuickFilterSelected(HashMap<String, String> filter, String eventLabel, String duplicateKey) {
+    public void onQuickFilterSelected(String filterKey, String eventLabel, String filterValue) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE,
@@ -698,10 +701,11 @@ public class ProductFragment extends BrowseSectionFragment
         if (this.selectedFilter == null) {
             this.selectedFilter = new HashMap<>();
         }
-        if (this.selectedFilter.containsKey(duplicateKey)) {
-            this.selectedFilter.remove(duplicateKey);
+        if (this.selectedFilter.containsKey(filterKey)) {
+            this.selectedFilter.remove(filterKey);
+        } else {
+            this.selectedFilter.put(filterKey, filterValue);
         }
-        this.selectedFilter.putAll(filter);
         loadDataProduct(0);
     }
 
@@ -715,17 +719,11 @@ public class ProductFragment extends BrowseSectionFragment
         adapter.setWishlistButtonEnabled(productId, true);
     }
 
-    protected boolean isFilterAvailable() {
-        return (selectedFilter != null && !selectedFilter.isEmpty());
-    }
-
     @Override
     public void reloadData() {
         adapter.clearData();
         initTopAdsParams();
-        if (!isFilterAvailable()) {
-            topAdsRecyclerAdapter.reset();
-        }
+        topAdsRecyclerAdapter.reset();
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
         showBottomBarNavigation(false);
         loadDataProduct(0);
@@ -877,6 +875,7 @@ public class ProductFragment extends BrowseSectionFragment
 
     public void setProductList(List<Visitable> productList) {
         adapter.appendItems(productList);
+        showSelectedFilters(getSelectedFilter());
     }
 
     @Override
@@ -911,30 +910,34 @@ public class ProductFragment extends BrowseSectionFragment
             if (filter.getTitle().equalsIgnoreCase("toko")) {
                 for (Option option: filter.getOptions()) {
                     if (option.getName().equalsIgnoreCase("Power Badge")) {
-                        optionList.add(option);
+                        optionList.add(0, option);
                     } else if (option.getName().equalsIgnoreCase("Official Store")) {
-                        optionList.add(option);
+                        optionList.add(0, option);
                     }
                 }
             } else if (filter.getTitle().equalsIgnoreCase("Dukungan Pengiriman")) {
                 for (Option option: filter.getOptions()) {
                     if (option.getName().equalsIgnoreCase("Instant Courier")) {
-                        optionList.add(option);
+                        optionList.add(0, option);
                     }
                 }
             }
         }
 
+        if (this.quickFilterItems != null && this.quickFilterItems.isEmpty()) {
+            for (int i = 0; i < optionList.size(); i++) {
+                CustomViewRoundedQuickFilterItem quickFilterItem = new CustomViewRoundedQuickFilterItem();
+                quickFilterItem.setName(optionList.get(i).getName());
+                quickFilterItem.setType(optionList.get(i).getKey() + "=" + optionList.get(i).getValue());
+                this.quickFilterItems.add(quickFilterItem);
+            }
+        }
+
         if (!adapter.getItemList().isEmpty()) {
             CategoryHeaderModel categoryHeaderModel = (CategoryHeaderModel) adapter.getItemList().get(0);
-            categoryHeaderModel.setQuickFilterList(optionList);
+            categoryHeaderModel.setQuickFilterList(this.quickFilterItems);
             adapter.notifyDataSetChanged();
         }
-    }
-
-    @Override
-    public void setQuickFilterList(List<QuickFilterItem> quickFilterItems) {
-        this.quickFilterItems = quickFilterItems;
     }
 }
 

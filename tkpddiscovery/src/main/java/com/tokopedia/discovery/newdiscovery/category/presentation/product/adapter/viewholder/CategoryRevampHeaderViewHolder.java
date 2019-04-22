@@ -88,7 +88,6 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
     private boolean isUsedUnactiveChildren = false;
     private ArrayList<ChildCategoryModel> activeChildren = new ArrayList<>();
     HashMap<String, String> selectedFilterList = new HashMap<>();
-    List<QuickFilterItem> filterItems = new ArrayList<>();
 
     public CategoryRevampHeaderViewHolder(View itemView, RevampCategoryAdapter.CategoryListener categoryListener) {
         super(itemView);
@@ -227,27 +226,18 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
         renderQuickFilterView(categoryHeaderModel.getOptionList());
     }
 
-    protected void renderQuickFilterView(List<Option> quickFilterItems) {
+    protected void renderQuickFilterView(List<QuickFilterItem> quickFilterItems) {
 
         if(quickFilterItems==null || quickFilterItems.isEmpty()){
             return;
         }
-        if (filterItems.isEmpty()) {
-            for (int i = 0; i < quickFilterItems.size(); i++) {
-                CustomViewRoundedQuickFilterItem quickFilterItem = new CustomViewRoundedQuickFilterItem();
-                quickFilterItem.setName(quickFilterItems.get(i).getName());
-                quickFilterItem.setType(quickFilterItems.get(i).getKey() + "=" + quickFilterItems.get(i).getValue());
-                filterItems.add(quickFilterItem);
-            }
-        }
-        for (QuickFilterItem quickFilterItem: filterItems) {
+        for (QuickFilterItem quickFilterItem: quickFilterItems) {
             String[] str = quickFilterItem.getType().split("=");
             if (!quickFilterItem.isSelected() && selectedFilterList.containsKey(str[0])) {
                 selectedFilterList.remove(str[0]);
             }
         }
-        categoryListener.setQuickFilterList(filterItems);
-        quickMultipleFilterView.renderFilter(filterItems);
+        quickMultipleFilterView.renderFilter(quickFilterItems);
     }
 
     public void eventShowMoreCategory(String parentCat) {
@@ -330,7 +320,7 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
             eventLabel = "true";
         }
         eventLabel = str[0] + "-" + str[1] + "-" + eventLabel;
-        categoryListener.onQuickFilterSelected(selectedFilterList, eventLabel, str[0]);
+        categoryListener.onQuickFilterSelected(str[0], eventLabel, str[1]);
     }
 }
 

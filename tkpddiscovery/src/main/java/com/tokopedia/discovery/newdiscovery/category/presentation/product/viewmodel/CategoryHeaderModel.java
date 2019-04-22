@@ -8,6 +8,7 @@ import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 import com.tokopedia.core.network.entity.intermediary.Child;
 import com.tokopedia.core.network.entity.intermediary.Image;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.discovery.categorynav.domain.model.Category;
 import com.tokopedia.discovery.intermediary.domain.model.IntermediaryCategoryDomainModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.typefactory.CategoryProductListTypeFactory;
@@ -36,7 +37,7 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
     private String headerImage;
     private String headerImageHexColor;
     private boolean doneTrackImpression = false;
-    private List<Option> optionList;
+    private List<QuickFilterItem> optionList;
 
     public CategoryHeaderModel(){
 
@@ -64,7 +65,6 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
         headerImage = in.readString();
         headerImageHexColor = in.readString();
         doneTrackImpression = in.readInt() == 1 ? true : false;
-        this.optionList= in.createTypedArrayList(Option.CREATOR);
     }
 
     @Override
@@ -95,7 +95,6 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
         dest.writeString(headerImage);
         dest.writeString(headerImageHexColor);
         dest.writeInt(doneTrackImpression ? 1 : 0);
-        dest.writeTypedList(this.optionList);
     }
 
     @SuppressWarnings("unused")
@@ -243,11 +242,11 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
         this.doneTrackImpression = doneTrackImpression;
     }
 
-    public void setQuickFilterList(List<Option> optionList) {
+    public void setQuickFilterList(List<QuickFilterItem> optionList) {
         this.optionList=optionList;
     }
 
-    public List<Option> getOptionList() {
+    public List<QuickFilterItem> getOptionList() {
         return optionList;
     }
 

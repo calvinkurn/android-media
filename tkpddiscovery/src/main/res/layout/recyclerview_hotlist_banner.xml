@@ -23,32 +23,39 @@
         android:layout_height="wrap_content"
         android:nestedScrollingEnabled="false" />
 
-    <LinearLayout
+    <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
-        android:orientation="horizontal">
+        android:scrollbars="none">
 
-        <TextView
-            android:id="@+id/product_counter"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/dp_10"
-            android:paddingRight="@dimen/dp_10"
-            android:paddingBottom="@dimen/dp_10"
-            android:layout_gravity="center"
-            android:gravity="center"
-            tools:text="200+ Produk" />
+            android:layout_marginTop="@dimen/dp_8"
+            android:orientation="horizontal">
 
-        <com.tokopedia.design.quickfilter.custom.CustomMultipleFilterView
-            android:id="@+id/quickFilterView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:paddingBottom="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_8" />
+            <TextView
+                android:id="@+id/product_counter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:paddingLeft="@dimen/dp_10"
+                android:paddingRight="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_10"
+                tools:text="200+ Produk" />
 
-    </LinearLayout>
+            <com.tokopedia.design.quickfilter.custom.CustomMultipleFilterView
+                android:id="@+id/quickFilterView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_10" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <com.tokopedia.topads.sdk.widget.TopAdsBannerView
         android:id="@+id/topAdsBannerView"

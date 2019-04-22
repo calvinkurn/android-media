@@ -44,6 +44,7 @@ import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
+import com.tokopedia.design.quickfilter.custom.CustomViewRoundedQuickFilterItem;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.SortProductActivity;
@@ -149,7 +150,7 @@ public class HotlistFragment extends BrowseSectionFragment
     private String trackerAttribution;
     private PerformanceMonitoring performanceMonitoring;
     private boolean isTraceStopped;
-    private List<QuickFilterItem> quickFilterItems;
+    private List<QuickFilterItem> quickFilterItems = new ArrayList<>();
 
     public static Fragment createInstanceUsingAlias(String alias, String trackerAttribution) {
         HotlistFragment fragment = new HotlistFragment();
@@ -584,7 +585,10 @@ public class HotlistFragment extends BrowseSectionFragment
 
     private void showSelectedFilters(HashMap<String, String> selectedFilter) {
         //pass viewHolder
-        for (QuickFilterItem quickFilterItem: this.quickFilterItems) {
+        if (selectedFilter == null) {
+            return;
+        }
+         for (QuickFilterItem quickFilterItem: this.quickFilterItems) {
             String[] str = quickFilterItem.getType().split("=");
             if (selectedFilter.containsKey(str[0])) {
                 quickFilterItem.setSelected(true);
@@ -759,6 +763,7 @@ public class HotlistFragment extends BrowseSectionFragment
         topAdsRecyclerAdapter.shouldLoadAds(!isDisableTopads());
         hotlistAdapter.incrementStart();
         hotlistAdapter.addElements(visitables);
+        showSelectedFilters(getSelectedFilter());
     }
 
     @Override
@@ -955,24 +960,33 @@ public class HotlistFragment extends BrowseSectionFragment
         for (Filter filter : pojo.getData().getFilter()) {
             if (filter.getTitle().equalsIgnoreCase("toko")) {
                 for (Option option : filter.getOptions()) {
-                    if (option.getName().equalsIgnoreCase("Power Badge")) {
-                        optionList.add(option);
-                    } else if (option.getName().equalsIgnoreCase("Official Store")) {
-                        optionList.add(option);
+                    if (option.getName().equalsIgnoreCase("Official Store")) {
+                        optionList.add(0, option);
+                    } else if (option.getName().equalsIgnoreCase("Power Badge")) {
+                        optionList.add(0, option);
                     }
                 }
             } else if (filter.getTitle().equalsIgnoreCase("Dukungan Pengiriman")) {
                 for (Option option : filter.getOptions()) {
                     if (option.getName().equalsIgnoreCase("Instant Courier")) {
-                        optionList.add(option);
+                        optionList.add(0, option);
                     }
                 }
             }
         }
 
+        if (this.quickFilterItems != null && this.quickFilterItems.isEmpty()) {
+            for (int i = 0; i < optionList.size(); i++) {
+                CustomViewRoundedQuickFilterItem quickFilterItem = new CustomViewRoundedQuickFilterItem();
+                quickFilterItem.setName(optionList.get(i).getName());
+                quickFilterItem.setType(optionList.get(i).getKey() + "=" + optionList.get(i).getValue());
+                this.quickFilterItems.add(quickFilterItem);
+            }
+        }
+
         if (!hotlistAdapter.getItemList().isEmpty()) {
             HotlistHeaderViewModel headerViewModel = (HotlistHeaderViewModel) hotlistAdapter.getItemList().get(0);
-            headerViewModel.setQuickFilterList(optionList);
+            headerViewModel.setQuickFilterList(this.quickFilterItems);
             hotlistAdapter.notifyDataSetChanged();
         }
     }
@@ -980,10 +994,8 @@ public class HotlistFragment extends BrowseSectionFragment
     @Override
     public void resetData() {
         hotlistAdapter.resetStartFrom();
-        if (!isFilterAvailable()) {
-            hotlistAdapter.clearData();
-            topAdsRecyclerAdapter.reset();
-        }
+        hotlistAdapter.clearData();
+        topAdsRecyclerAdapter.reset();
     }
 
     @Override
@@ -1108,7 +1120,7 @@ public class HotlistFragment extends BrowseSectionFragment
     }
 
     @Override
-    public void onQuickFilterSelected(HashMap<String, String> filter, String eventLabel, String duplicateKey) {
+    public void onQuickFilterSelected(String filterKey, String eventLabel, String filterValue) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
                 AppEventTracking.Event.HOTLIST,
                 AppEventTracking.Event.HOTLIST_PAGE,
@@ -1118,15 +1130,11 @@ public class HotlistFragment extends BrowseSectionFragment
         if (this.selectedFilter == null) {
             this.selectedFilter = new HashMap<>();
         }
-        if (this.selectedFilter.containsKey(duplicateKey)) {
-            this.selectedFilter.remove(duplicateKey);
+        if (this.selectedFilter.containsKey(filterKey)) {
+            this.selectedFilter.remove(filterKey);
+        } else {
+            this.selectedFilter.put(filterKey, filterValue);
         }
-        this.selectedFilter.putAll(filter);
         reloadData();
-    }
-
-    @Override
-    public void setQuickFilterList(List<QuickFilterItem> quickFilterItems) {
-        this.quickFilterItems = quickFilterItems;
     }
 }
