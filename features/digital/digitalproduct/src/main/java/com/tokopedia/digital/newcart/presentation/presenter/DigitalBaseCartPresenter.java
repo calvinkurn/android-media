@@ -230,12 +230,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     protected void renderBaseCart(CartDigitalInfoData cartDigitalInfoData) {
         setHachikoPromoVisibility(cartDigitalInfoData);
 
-        digitalAnalytics.eventClickVoucher(
-                cartDigitalInfoData.getAttributes().getCategoryName(),
-                cartDigitalInfoData.getAttributes().getVoucherAutoCode(),
-                cartDigitalInfoData.getAttributes().getOperatorName()
-        );
-
         renderCartInfo(cartDigitalInfoData);
 
         renderDataInputPrice(

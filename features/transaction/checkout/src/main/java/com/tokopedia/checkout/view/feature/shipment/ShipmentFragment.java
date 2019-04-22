@@ -1998,20 +1998,24 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void showShippingDurationBottomsheet(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, List<ShopShipment> shopShipmentList, int cartPosition) {
-        ShipmentDetailData shipmentDetailData = getShipmentDetailData(shipmentCartItemModel,
-                recipientAddressModel);
-        int codHistory = -1;
-        if (shipmentPresenter.getCodData() != null && shipmentPresenter.getCodData().isCod()) {
-            codHistory = shipmentPresenter.getCodData().getCounterCod();
-        }
-        if (shipmentDetailData != null) {
-            shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
-                    shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,
-                    recipientAddressModel, cartPosition, codHistory);
-            shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
+        if (shopShipmentList == null || shopShipmentList.size() == 0) {
+            onNoCourierAvailable(getString(R.string.label_no_courier_bottomsheet_message));
+        } else {
+            ShipmentDetailData shipmentDetailData = getShipmentDetailData(shipmentCartItemModel,
+                    recipientAddressModel);
+            int codHistory = -1;
+            if (shipmentPresenter.getCodData() != null && shipmentPresenter.getCodData().isCod()) {
+                codHistory = shipmentPresenter.getCodData().getCounterCod();
+            }
+            if (shipmentDetailData != null) {
+                shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
+                        shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,
+                        recipientAddressModel, cartPosition, codHistory);
+                shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
 
-            if (getActivity() != null) {
-                shippingDurationBottomsheet.show(getActivity().getSupportFragmentManager(), null);
+                if (getActivity() != null) {
+                    shippingDurationBottomsheet.show(getActivity().getSupportFragmentManager(), null);
+                }
             }
         }
     }
@@ -2099,11 +2103,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                     ShipmentCartItemModel shipmentCartItemModel,
                                     List<ShopShipment> shopShipmentList,
                                     boolean useCourierRecommendation) {
-        shipmentDetailData.setTradein(isTradeIn());
-        if (useCourierRecommendation) {
-            shipmentPresenter.processGetCourierRecommendation(shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel, shopShipmentList, true);
-        } else {
-            shipmentPresenter.processGetRates(shipperId, spId, itemPosition, shipmentDetailData, shopShipmentList);
+        if (shopShipmentList != null && shopShipmentList.size() > 0) {
+            shipmentDetailData.setTradein(isTradeIn());
+            if (useCourierRecommendation) {
+                shipmentPresenter.processGetCourierRecommendation(shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel, shopShipmentList, true);
+            } else {
+                shipmentPresenter.processGetRates(shipperId, spId, itemPosition, shipmentDetailData, shopShipmentList);
+            }
         }
     }
 

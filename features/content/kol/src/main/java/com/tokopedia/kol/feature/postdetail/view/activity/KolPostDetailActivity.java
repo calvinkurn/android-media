@@ -18,6 +18,9 @@ public class KolPostDetailActivity extends BaseSimpleActivity {
     public static final String PARAM_POST_ID = "post_id";
     public static final String DEFAULT_POST_ID = "0";
 
+    public static final int RESULT_DELETED = 10;
+
+
     @DeepLink({ApplinkConst.CONTENT_DETAIL})
     public static Intent getInstance(Context context, Bundle bundle) {
         return getInstance(context, bundle.getString(PARAM_POST_ID, DEFAULT_POST_ID));

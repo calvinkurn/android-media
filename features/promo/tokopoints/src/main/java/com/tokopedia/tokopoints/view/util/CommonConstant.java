@@ -68,6 +68,7 @@ public interface CommonConstant {
         String GIFT_EMAIL = "gift_email";
         String NOTES = "notes";
         String PIN = "pin";
+        String STACK_ID = "stackID";
     }
 
     interface TickerMapKeys {

@@ -253,7 +253,11 @@ public class MoengageAnalytics extends ContextAnalytics {
     }
 
     public void setPushPreference(boolean status) {
-        MoEHelper.getInstance(getContext()).setUserAttribute("push_preference", status);
+        MoEHelper.getInstance(getContext()).setUserAttribute(AppEventTracking.EventMoEngage.PUSH_PREFERENCE, status);
+    }
+
+    public void setNewsletterEmailPref(boolean status) {
+        MoEHelper.getInstance(getContext()).setUserAttribute(AppEventTracking.EventMoEngage.EMAIL_PREFERENCE, status);
     }
 
     private void sendTrackEvent(JSONObject data, final String eventName) {

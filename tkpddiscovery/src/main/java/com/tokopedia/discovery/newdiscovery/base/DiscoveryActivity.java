@@ -1,7 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -22,14 +21,13 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
@@ -80,6 +78,8 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private UserSessionInterface userSession;
     private PerformanceMonitoring performanceMonitoring;
     private View root;
+
+    protected SearchParameter searchParameter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,12 +149,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             getSupportActionBar().setHomeButtonEnabled(true);
         }
 
-        toolbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchView.showSearch(false, true);
-            }
-        });
+        toolbar.setOnClickListener(v -> searchView.showSearch(false, true));
     }
 
     protected void setToolbarTitle(String query) {
@@ -188,40 +183,52 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query, boolean isOfficial) {
+    public boolean onQueryTextSubmit(SearchParameter searchParameter) {
+        SearchParameter copySearchParameter = new SearchParameter(searchParameter);
+
+        String query = copySearchParameter.getSearchQuery();
+
         AutoCompleteTracking.eventClickSubmit(this, query);
-        if (OfficialStoreQueryHelper.isOfficialStoreSearchQuery(query)) {
-            onHandleOfficialStorePage();
-            sendSearchProductGTM(query);
-            return true;
-        } else {
-            switch (searchView.getSuggestionFragment().getCurrentTab()) {
-                case SearchMainFragment.PAGER_POSITION_PRODUCT:
-                    onProductQuerySubmit(query, isOfficial);
-                    sendSearchProductGTM(query);
-                    return false;
-                case SearchMainFragment.PAGER_POSITION_SHOP:
-                    onShopQuerySubmit(query, isOfficial);
-                    sendSearchShopGTM(query);
-                    return false;
-                default:
-                    throw new RuntimeException("Please handle this function if you have new tab of suggestion search view.");
-            }
+
+        handleQueryTextSubmitBasedOnCurrentTab(copySearchParameter);
+
+        return false;
+    }
+
+    private void handleQueryTextSubmitBasedOnCurrentTab(SearchParameter searchParameter) throws RuntimeException {
+        this.searchParameter = searchParameter;
+
+        String query = searchParameter.getSearchQuery();
+
+        switch (searchView.getSuggestionFragment().getCurrentTab()) {
+            case SearchMainFragment.PAGER_POSITION_PRODUCT:
+                onProductQuerySubmit();
+                sendSearchProductGTM(query);
+                break;
+            case SearchMainFragment.PAGER_POSITION_SHOP:
+                onShopQuerySubmit();
+                sendSearchShopGTM(query);
+                break;
+            default:
+                throw new RuntimeException("Please handle this function if you have new tab of suggestion search view.");
         }
     }
 
-    protected void onProductQuerySubmit(String query, boolean isOfficial) {
+    @Override
+    protected void onProductQuerySubmit() {
         setForceSwipeToShop(false);
         setForceSearch(false);
         setRequestOfficialStoreBanner(true);
-        performRequestProduct(query, isOfficial);
+
+        performRequestProduct();
     }
 
-    private void onShopQuerySubmit(String query, boolean isOfficial) {
+    private void onShopQuerySubmit() {
         setForceSwipeToShop(true);
         setForceSearch(false);
         setRequestOfficialStoreBanner(true);
-        performRequestProduct(query, isOfficial);
+
+        performRequestProduct();
     }
 
     private void sendSearchProductGTM(String keyword) {
@@ -296,7 +303,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     @Override
-    public boolean onQueryTextChange(String newText) {
+    public boolean onQueryTextChange(String searchQuery) {
         return false;
     }
 
@@ -333,54 +340,63 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
     }
 
-    public void onSuggestionProductClick(String keyword, String categoryID, boolean isOfficial) {
-        SearchParameter parameter = new SearchParameter();
-        parameter.setQueryKey(keyword);
-        parameter.setUniqueID(
-                userSession.isLoggedIn() ?
-                        AuthUtil.md5(userSession.getUserId()) :
-                        AuthUtil.md5(gcmHandler.getRegistrationId())
-        );
-        parameter.setUserID(
-                userSession.isLoggedIn() ?
-                        userSession.getUserId() :
-                        null
-        );
-        parameter.setDepartmentId(categoryID);
-        parameter.setOfficial(isOfficial);
-        onSearchingStart(keyword);
-        setForceSearch(false);
-        getPresenter().requestProduct(parameter, isForceSearch(), isRequestOfficialStoreBanner());
+    public void onSuggestionProductClick(SearchParameter searchParameter) {
+        this.searchParameter = new SearchParameter(searchParameter);
+        onProductQuerySubmit();
     }
 
-    public void onSuggestionProductClick(String keyword, boolean isOfficial) {
-        setForceSwipeToShop(false);
-        setForceSearch(false);
-        setRequestOfficialStoreBanner(true);
-        performRequestProduct(keyword, isOfficial);
+    protected void performRequestProduct() {
+        performRequestProduct("");
     }
 
     protected void performRequestProduct(String keyword) {
-        performRequestProduct(keyword, false);
+        performRequestProduct(keyword, "");
     }
 
-    protected void performRequestProduct(String keyword, boolean isOfficial) {
-        SearchParameter parameter = new SearchParameter();
-        parameter.setQueryKey(keyword);
-        parameter.setUniqueID(
-                userSession.isLoggedIn() ?
-                        AuthUtil.md5(userSession.getUserId()) :
-                        AuthUtil.md5(gcmHandler.getRegistrationId())
-        );
-        parameter.setUserID(
-                userSession.isLoggedIn() ?
-                        userSession.getUserId() :
-                        null
-        );
-        parameter.setOfficial(isOfficial);
-        onSearchingStart(keyword);
+    protected void performRequestProduct(String searchQuery, String categoryId) {
+        updateSearchParameterBeforeSearchIfNotEmpty(searchQuery, categoryId);
+
+        searchQuery = this.searchParameter.getSearchQuery();
+
+        onSearchingStart(searchQuery);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
-        getPresenter().requestProduct(parameter, isForceSearch(), isRequestOfficialStoreBanner());
+
+        getPresenter().initiateSearch(searchParameter, isForceSearch());
+    }
+
+    private void updateSearchParameterBeforeSearchIfNotEmpty(String searchQuery, String categoryId) {
+        if(searchParameter == null) searchParameter = new SearchParameter();
+
+        setSearchParameterQueryIfNotEmpty(searchQuery);
+        setSearchParameterUniqueId();
+        setSearchParameterUserIdIfLoggedIn();
+        setSearchParameterCategoryIdIfNotEmpty(categoryId);
+    }
+
+    private void setSearchParameterQueryIfNotEmpty(String searchQuery) {
+        if(!TextUtils.isEmpty(searchQuery)) {
+            searchParameter.setSearchQuery(searchQuery);
+        }
+    }
+
+    private void setSearchParameterUniqueId() {
+        String uniqueId = userSession.isLoggedIn() ?
+                AuthUtil.md5(userSession.getUserId()) :
+                AuthUtil.md5(gcmHandler.getRegistrationId());
+
+        searchParameter.set(SearchApiConst.UNIQUE_ID, uniqueId);
+    }
+
+    private void setSearchParameterUserIdIfLoggedIn() {
+        if(userSession.isLoggedIn()) {
+            searchParameter.set(SearchApiConst.USER_ID, userSession.getUserId());
+        }
+    }
+
+    private void setSearchParameterCategoryIdIfNotEmpty(String categoryId) {
+        if(!TextUtils.isEmpty(categoryId)) {
+            searchParameter.set(SearchApiConst.SC, categoryId);
+        }
     }
 
     public void deleteAllRecentSearch() {
@@ -464,12 +480,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
         showLoadingView(false);
         showContainer(true);
-        NetworkErrorHelper.showEmptyState(this, container, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                performRequestProduct(searchView.getLastQuery(), searchView.getIsOfficial());
-            }
-        });
+        NetworkErrorHelper.showEmptyState(this, container, this::performRequestProduct);
     }
 
     @Override
@@ -650,6 +661,10 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
         super.onHandleResponseSearch(productViewModel);
+        stopPerformanceMonitoring();
+    }
+
+    protected void stopPerformanceMonitoring() {
         if (performanceMonitoring != null) {
             performanceMonitoring.stopTrace();
         }

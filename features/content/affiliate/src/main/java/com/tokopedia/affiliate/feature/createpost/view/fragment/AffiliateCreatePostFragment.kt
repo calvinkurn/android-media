@@ -57,9 +57,7 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
         isAddingProduct = true
 
         val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_EXPLORE)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
-        activity?.finish()
     }
 
     override fun initVar(savedInstanceState: Bundle?) {

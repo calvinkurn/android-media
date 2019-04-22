@@ -7,16 +7,16 @@ data class PPItemDetailPage(
         var isProtectionAvailable: Boolean = false,
 
         @SerializedName("title")
-        var title: String? = null,
+        var title: String? = "",
 
         @SerializedName("subTitle")
-        var subTitle: String? = null,
+        var subTitle: String? = "",
 
         @SerializedName("titlePDP")
-        var titlePDP: String? = null,
+        var titlePDP: String? = "",
 
         @SerializedName("subTitlePDP")
-        var subTitlePDP: String? = null
+        var subTitlePDP: String? = ""
 
 
 )

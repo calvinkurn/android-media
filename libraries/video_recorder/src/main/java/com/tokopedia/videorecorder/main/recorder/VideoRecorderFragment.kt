@@ -7,7 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.cameraview.*
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.permissionchecker.request
 import com.tokopedia.videorecorder.R
+import com.tokopedia.videorecorder.main.state.StateRecorder
 import com.tokopedia.videorecorder.main.VideoPickerCallback
 import com.tokopedia.videorecorder.utils.*
 import kotlinx.android.synthetic.main.fragment_recorder.*
@@ -28,7 +31,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
     //flash collection
     private var flashList = arrayListOf<Flash>()
 
-    //flash index
+    //cameraView lazy configuration
     private var flashIndex = 0
 
     //callback handler
@@ -36,6 +39,9 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
 
     //for progress loader
     private lateinit var timer: Timer
+
+    //runtime permission handle
+    private lateinit var permissionHelper: PermissionCheckerHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,10 +62,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        cameraView.mode = Mode.VIDEO
-        cameraView.addCameraListener(cameraListener())
-        cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER)
-
+        cameraPrepared()
         //set max progress value
         progress.max = DURATION_MAX
 
@@ -76,10 +79,19 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
                 setCameraFlash()
             }
         }
+
+    }
+
+    private fun cameraPrepared() {
+        cameraView.mode = Mode.VIDEO
+        cameraView.clearCameraListeners()
+        cameraView.addCameraListener(cameraListener())
+        cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER)
     }
 
     override fun onResume() {
         super.onResume()
+
         exceptionHandler {
             cameraView.open()
         }
@@ -96,6 +108,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
         super.onDestroy()
         exceptionHandler {
             cameraView.destroy()
+            timer.cancel()
         }
     }
 
@@ -114,6 +127,9 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
     }
 
     private fun recording() {
+        //init state
+        videoCallback.onVideoRecorder(StateRecorder.Start)
+
         //set default value
         progress.progress = 0
         var countDownMills = DURATION_MAX.toLong()
@@ -121,14 +137,16 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
 
         if (cameraView.isTakingVideo) {
             vwRecord.hide()
-            btnFlip.show()
             progress.hide()
+            btnFlash.show()
+            btnFlip.show()
             cameraView.stopVideo()
             timer.cancel()
         } else {
-            btnFlip.hide()
             vwRecord.show()
             progress.show()
+            btnFlip.hide()
+            btnFlash.hide()
             val file = FileUtils.videoPath(FileUtils.RESULT_DIR)
             cameraView.takeVideo(file, DURATION_MAX)
             //progress and duration countdown
