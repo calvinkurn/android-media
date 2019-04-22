@@ -11,13 +11,12 @@ import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetShopUseCase;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.ToggleFavoriteActionUseCase;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.listener.FavoriteActionListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.subscriber.ToggleFavoriteActionSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 
 import java.util.List;
