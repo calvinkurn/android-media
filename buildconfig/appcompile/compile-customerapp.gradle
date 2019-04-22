@@ -38,6 +38,7 @@ include "features:discovery:topadssdk"
 include "features:discovery:recentview"
 //include "features:discovery:recentview_no_op"
 include "features:discovery:wishlist_common"
+include "features:discovery:discovery_common"
 include "features:discovery:search"
 
 include "features:fintech:home_credit"
