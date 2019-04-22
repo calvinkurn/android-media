@@ -2,7 +2,6 @@ package com.tokopedia.discovery.newdiscovery.widget;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,11 +14,10 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.model.Category;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
@@ -35,6 +33,7 @@ import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRoute
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.discovery.newdynamicfilter.view.BottomSheetDynamicFilterView;
+import com.tokopedia.discovery.common.data.Filter;
 
 import java.util.List;
 import java.util.Map;

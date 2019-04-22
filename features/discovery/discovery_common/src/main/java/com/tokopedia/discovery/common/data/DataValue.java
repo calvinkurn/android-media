@@ -1,4 +1,4 @@
-package com.tokopedia.search.domain.entity;
+package com.tokopedia.discovery.common.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataValue implements Parcelable {
+public final class DataValue implements Parcelable {
 
     String selected;
     String selectedOb;
@@ -17,7 +17,6 @@ public class DataValue implements Parcelable {
     @SerializedName("filter")
     @Expose
     List<Filter> filter = new ArrayList<>();
-
     @SerializedName("sort")
     @Expose
     List<Sort> sort = new ArrayList<>();
@@ -53,6 +52,7 @@ public class DataValue implements Parcelable {
     public void setSelected(String selected) {
         this.selected = selected;
     }
+
 
     @Override
     public int describeContents() {

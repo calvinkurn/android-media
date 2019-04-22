@@ -1,4 +1,4 @@
-package com.tokopedia.search.domain.entity;
+package com.tokopedia.discovery.common.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class DynamicFilterModel implements Parcelable {
+public final class DynamicFilterModel implements Parcelable {
 
     @SerializedName("process_time")
     @Expose
@@ -19,7 +19,6 @@ public class DynamicFilterModel implements Parcelable {
     String status;
 
     public DynamicFilterModel() {
-
     }
 
     public String getProcessTime() {

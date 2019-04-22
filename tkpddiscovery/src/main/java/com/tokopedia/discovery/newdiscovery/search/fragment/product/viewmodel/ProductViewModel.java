@@ -3,8 +3,8 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.core.discovery.model.DataValue;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.discovery.common.data.DataValue;
+import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.discovery.newdiscovery.search.model.OfficialStoreBannerModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.search.model.SuggestionModel;

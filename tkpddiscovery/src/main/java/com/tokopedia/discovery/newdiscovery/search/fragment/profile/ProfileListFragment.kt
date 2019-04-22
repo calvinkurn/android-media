@@ -12,8 +12,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.core.discovery.model.Option
 import com.tokopedia.discovery.R
+import com.tokopedia.discovery.common.data.Option
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener
 import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener

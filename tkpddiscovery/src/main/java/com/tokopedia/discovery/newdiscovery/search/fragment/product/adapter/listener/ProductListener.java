@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener;
 
-import com.tokopedia.core.discovery.model.Option;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.base.EmptyStateListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 

@@ -30,6 +30,7 @@ project.ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation project(rootProject.ext.features.discoveryCommon)
     implementation project(rootProject.ext.features.discovery)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.productDetail)

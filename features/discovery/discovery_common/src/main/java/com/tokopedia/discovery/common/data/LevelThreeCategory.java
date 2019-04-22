@@ -1,4 +1,4 @@
-package com.tokopedia.search.domain.entity;
+package com.tokopedia.discovery.common.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -6,9 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-public class LevelTwoCategory implements Parcelable {
+public final class LevelThreeCategory implements Parcelable {
 
     @SerializedName("name")
     @Expose
@@ -25,9 +23,6 @@ public class LevelTwoCategory implements Parcelable {
     @SerializedName("total_data")
     @Expose
     String totalData;
-    @SerializedName("child")
-    @Expose
-    List<LevelThreeCategory> levelThreeCategoryList;
 
     public String getName() {
         return name;
@@ -69,14 +64,6 @@ public class LevelTwoCategory implements Parcelable {
         this.totalData = totalData;
     }
 
-    public List<LevelThreeCategory> getLevelThreeCategoryList() {
-        return levelThreeCategoryList;
-    }
-
-    public void setLevelThreeCategoryList(List<LevelThreeCategory> levelThreeCategoryList) {
-        this.levelThreeCategoryList = levelThreeCategoryList;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -89,30 +76,28 @@ public class LevelTwoCategory implements Parcelable {
         dest.writeString(this.value);
         dest.writeString(this.inputType);
         dest.writeString(this.totalData);
-        dest.writeTypedList(this.levelThreeCategoryList);
     }
 
-    public LevelTwoCategory() {
+    public LevelThreeCategory() {
     }
 
-    protected LevelTwoCategory(Parcel in) {
+    protected LevelThreeCategory(Parcel in) {
         this.name = in.readString();
         this.key = in.readString();
         this.value = in.readString();
         this.inputType = in.readString();
         this.totalData = in.readString();
-        this.levelThreeCategoryList = in.createTypedArrayList(LevelThreeCategory.CREATOR);
     }
 
-    public static final Creator<LevelTwoCategory> CREATOR = new Creator<LevelTwoCategory>() {
+    public static final Creator<LevelThreeCategory> CREATOR = new Creator<LevelThreeCategory>() {
         @Override
-        public LevelTwoCategory createFromParcel(Parcel source) {
-            return new LevelTwoCategory(source);
+        public LevelThreeCategory createFromParcel(Parcel source) {
+            return new LevelThreeCategory(source);
         }
 
         @Override
-        public LevelTwoCategory[] newArray(int size) {
-            return new LevelTwoCategory[size];
+        public LevelThreeCategory[] newArray(int size) {
+            return new LevelThreeCategory[size];
         }
     };
 }

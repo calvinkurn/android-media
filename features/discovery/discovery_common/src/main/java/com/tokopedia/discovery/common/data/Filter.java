@@ -1,4 +1,4 @@
-package com.tokopedia.search.domain.entity;
+package com.tokopedia.discovery.common.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,18 +10,17 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Filter implements Parcelable {
+public final class Filter implements Parcelable {
 
     public static final String TEMPLATE_NAME_LOCATION = "template_location";
     public static final String TEMPLATE_NAME_OTHER = "template_other";
-    
-    private static final String TEMPLATE_NAME_SEPARATOR = "template_separator";
-    private static final String TEMPLATE_NAME_RATING = "template_rating";
-    private static final String TEMPLATE_NAME_SIZE = "template_size";
-    private static final String TEMPLATE_NAME_CATEGORY = "template_category";
-    private static final String TEMPLATE_NAME_COLOR = "template_color";
-    private static final String TEMPLATE_NAME_PRICE = "template_price";
-    private static final String TEMPLATE_NAME_BRAND = "template_brand";
+    public static final String TEMPLATE_NAME_SEPARATOR = "template_separator";
+    public static final String TEMPLATE_NAME_RATING = "template_rating";
+    public static final String TEMPLATE_NAME_SIZE = "template_size";
+    public static final String TEMPLATE_NAME_CATEGORY = "template_category";
+    public static final String TEMPLATE_NAME_COLOR = "template_color";
+    public static final String TEMPLATE_NAME_PRICE = "template_price";
+    public static final String TEMPLATE_NAME_BRAND = "template_brand";
 
     @SerializedName("title")
     @Expose

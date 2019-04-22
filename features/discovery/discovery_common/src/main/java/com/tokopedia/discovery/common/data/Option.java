@@ -1,4 +1,4 @@
-package com.tokopedia.search.domain.entity;
+package com.tokopedia.discovery.common.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Option implements Parcelable {
+public final class Option implements Parcelable {
 
     public static final String KEY_PRICE_MIN = "pmin";
     public static final String KEY_PRICE_MAX = "pmax";

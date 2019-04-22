@@ -23,8 +23,8 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
@@ -42,7 +42,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragmen
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRouter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
