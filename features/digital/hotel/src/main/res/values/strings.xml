@@ -51,4 +51,8 @@
     <string name="hotel_destination_empty_view_holder_subtitle">Coba cari ulang pakai kata kunci lain.</string>
     <string name="hotel_destination_toolbar_title">Tujuan</string>
 
+    <string name="hotel_room_list_filter_pay_in_hotel">Bayar di Hotel</string>
+    <string name="hotel_room_list_filter_free_breakfast">Sarapan Gratis</string>
+    <string name="hotel_room_list_filter_free_cancelable">Pembatalan Gratis</string>
+
 </resources>

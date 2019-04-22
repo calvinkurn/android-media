@@ -9,7 +9,9 @@ import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
 
 data class RoomListModel(
         var roomName: String = "",
-        var roomOccupancyInfo: HotelRoom.RoomOccupancyInfo = HotelRoom.RoomOccupancyInfo(0,0,""),
+        var maxOccupancy: Int = 0,
+        var maxFreeChild: Int = 0,
+        var occupancyText: String = "",
         var bedInfo: String = "",
         var breakfastIncluded: Boolean = false,
         var isRefundable: Boolean = false,
@@ -21,5 +23,4 @@ data class RoomListModel(
         var images: List<String> = listOf()
 ) : Visitable<RoomListTypeFactory> {
     override fun type(typeFactory: RoomListTypeFactory) = typeFactory.type(this)
-
 }

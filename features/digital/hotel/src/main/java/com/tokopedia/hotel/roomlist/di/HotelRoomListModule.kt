@@ -1,6 +1,6 @@
 package com.tokopedia.hotel.roomlist.di
 
-import com.tokopedia.hotel.roomlist.data.model.mapper.RoomListModelMapper
+import com.tokopedia.hotel.roomlist.data.mapper.RoomListModelMapper
 import dagger.Module
 import dagger.Provides
 

@@ -26,7 +26,13 @@ class HotelRoomListActivity : HotelBaseActivity(), HasComponent<HotelRoomListCom
 
     override fun getScreenName(): String = ""
 
-    override fun getNewFragment(): Fragment = HotelRoomListFragment()
+    override fun getNewFragment(): Fragment = HotelRoomListFragment.createInstance(
+            intent.getIntExtra(HotelRoomListFragment.ARG_PROPERTY_ID, 2104),
+            "2019-09-10",
+            "2019-09-15",
+            intent.getIntExtra(HotelRoomListFragment.ARG_TOTAL_ADULT, 2),
+            intent.getIntExtra(HotelRoomListFragment.ARG_TOTAL_CHILDREN, 3),
+            intent.getIntExtra(HotelRoomListFragment.ARG_TOTAL_ROOM, 2))
 
     override fun shouldShowOptionMenu(): Boolean = true
 

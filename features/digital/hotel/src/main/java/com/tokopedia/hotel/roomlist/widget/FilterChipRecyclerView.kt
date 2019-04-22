@@ -31,9 +31,9 @@ class FilterChipRecyclerView: BaseCustomView {
         chip_recycler_view.layoutManager = layoutManager
     }
 
-    fun setItem(strings: ArrayList<String>) {
+    fun setItem(strings: ArrayList<String>, selectedTextColor: Int = 0) {
         if (listener != null) {
-            chip_recycler_view.adapter = ChipAdapter(strings, listener)
+            chip_recycler_view.adapter = ChipAdapter(strings, listener, selectedTextColor)
         }
     }
 }

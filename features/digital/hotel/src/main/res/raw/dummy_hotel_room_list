@@ -197,7 +197,7 @@
         {
           "ID": "8eb207cc32c52e59c97502beac87f1dc",
           "breakfastInfo": {
-            "isBreakFastIncluded": false,
+            "isBreakFastIncluded": true,
             "mealPlan": "Tidak tersedia paket makanan untuk harga ini di kamar ini.",
             "breakFast": "ExcludeBreakfast"
           },
@@ -556,7 +556,7 @@
         {
           "ID": "71d56e8100736735a3065d2c4f7bd709",
           "breakfastInfo": {
-            "isBreakFastIncluded": false,
+            "isBreakFastIncluded": true,
             "mealPlan": "Tidak tersedia paket makanan untuk harga ini di kamar ini.",
             "breakFast": "ExcludeBreakfast"
           },

@@ -1,4 +1,4 @@
-package com.tokopedia.hotel.roomlist.data.model.mapper
+package com.tokopedia.hotel.roomlist.data.mapper
 
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomData
@@ -14,7 +14,9 @@ class RoomListModelMapper{
         var roomListModel = RoomListModel()
         if (hotelRoom != null) {
             roomListModel.roomName = hotelRoom.roomInfo.name
-            roomListModel.roomOccupancyInfo = hotelRoom.occupancyInfo
+            roomListModel.maxOccupancy = hotelRoom.occupancyInfo.maxOccupancy
+            roomListModel.maxFreeChild = hotelRoom.occupancyInfo.maxFreeChild
+            roomListModel.occupancyText = hotelRoom.occupancyInfo.occupancyText
             roomListModel.bedInfo = hotelRoom.bedInfo
             roomListModel.roomFacility = hotelRoom.roomInfo.facility
 //            roomListModel.payInHotel = hotelRoom.roomInfo
@@ -25,7 +27,7 @@ class RoomListModelMapper{
             roomListModel.actualPrice = hotelRoom.roomPrice[0].totalPrice
             val images: MutableList<String> = arrayListOf()
             for (item in hotelRoom.roomInfo.roomImages) {
-                images.add(item.url300)
+                images.add(item.urlOriginal)
             }
             roomListModel.images = images
         }

@@ -10,7 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
+import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
+import com.tokopedia.hotel.roomlist.data.model.HotelRoomListPageModel
 import com.tokopedia.hotel.roomlist.data.model.RoomListModel
 import com.tokopedia.hotel.roomlist.di.HotelRoomListComponent
 import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
@@ -19,7 +23,10 @@ import com.tokopedia.hotel.roomlist.widget.ChipAdapter
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_hotel_room_list.*
 import kotlinx.android.synthetic.main.fragment_hotel_room_list.view.*
+import kotlinx.android.synthetic.main.layout_sticky_hotel_date_and_guest.*
+import kotlinx.android.synthetic.main.layout_sticky_hotel_date_and_guest.view.*
 import kotlinx.android.synthetic.main.widget_filter_chip_recycler_view.view.*
 import javax.inject.Inject
 
@@ -28,11 +35,14 @@ import javax.inject.Inject
  */
 
 class HotelRoomListFragment: BaseListFragment<RoomListModel, RoomListTypeFactory>(),
-        ImageViewPager.ImageViewPagerListener, ChipAdapter.OnClickListener{
+        ImageViewPager.ImageViewPagerListener, ChipAdapter.OnClickListener,
+        HotelRoomAndGuestBottomSheets.HotelGuestListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var roomListViewModel: HotelRoomListViewModel
+
+    var hotelRoomListPageModel = HotelRoomListPageModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +51,17 @@ class HotelRoomListFragment: BaseListFragment<RoomListModel, RoomListTypeFactory
             roomListViewModel = viewModelProvider.get(HotelRoomListViewModel::class.java)
         }
 
-        roomListViewModel.initRoomListParam(2103, "2019-04-14", "2019-04-16", 2, 2, 1 )
+        arguments?.let {
+            hotelRoomListPageModel.propertyId = it.getInt(ARG_PROPERTY_ID, 0)
+            hotelRoomListPageModel.checkIn = it.getString(ARG_CHECK_IN, "")
+            hotelRoomListPageModel.checkOut = it.getString(ARG_CHECK_OUT, "")
+            hotelRoomListPageModel.adult = it.getInt(ARG_TOTAL_ADULT, 0)
+            hotelRoomListPageModel.child = it.getInt(ARG_TOTAL_CHILDREN, 0)
+            hotelRoomListPageModel.room = it.getInt(ARG_TOTAL_ROOM, 0)
+
+            roomListViewModel.initRoomListParam(hotelRoomListPageModel)
+        }
+
         roomListViewModel.getRoomList(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
                 GraphqlHelper.loadRawString(resources, R.raw.dummy_hotel_room_list))
 
@@ -63,9 +83,19 @@ class HotelRoomListFragment: BaseListFragment<RoomListModel, RoomListTypeFactory
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.filter_recycler_view.listener = this
-        view.filter_recycler_view.setItem(arrayListOf("Text Panjangggg", "Text1 ini juga panjang kook", "Ini Text Panjang Banget"))
-        view.filter_recycler_view.chip_recycler_view.addItemDecoration(object: RecyclerView.ItemDecoration() {
+
+        initView()
+        renderRoomAndGuestView()
+        renderDate()
+    }
+
+    fun initView() {
+
+        filter_recycler_view.listener = this
+        filter_recycler_view.setItem(arrayListOf(getString(PAY_IN_HOTEL),
+                getString(FREE_BREAKFAST), getString(FREE_CANCELABLE)),
+                R.color.snackbar_border_normal)
+        filter_recycler_view.chip_recycler_view.addItemDecoration(object: RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                 super.getItemOffsets(outRect, view, parent, state)
 
@@ -76,13 +106,30 @@ class HotelRoomListFragment: BaseListFragment<RoomListModel, RoomListTypeFactory
                 outRect.right = if (itemCount > 0 && itemPosition == itemCount - 1) 8 else 0
             }
         })
+
+        hotel_room_and_guest_layout.setOnClickListener { onGuestInfoClicked() }
+        hotel_date_layout.setOnClickListener { onDateClicked() }
+    }
+
+    fun onGuestInfoClicked() {
+        val hotelRoomAndGuestBottomSheets = HotelRoomAndGuestBottomSheets()
+        hotelRoomAndGuestBottomSheets.listener = this
+        hotelRoomAndGuestBottomSheets.roomCount = hotelRoomListPageModel.room
+        hotelRoomAndGuestBottomSheets.adultCount = hotelRoomListPageModel.adult
+        hotelRoomAndGuestBottomSheets.childCount = hotelRoomListPageModel.child
+        hotelRoomAndGuestBottomSheets.show(activity!!.supportFragmentManager, TAG_GUEST_INFO)
+    }
+
+    fun onDateClicked() {
+
     }
 
     override fun getAdapterTypeFactory(): RoomListTypeFactory {
         return RoomListTypeFactory(this)
     }
 
-    override fun onItemClicked(t: RoomListModel?) {
+    override fun onItemClicked(t: RoomListModel) {
+
     }
 
     override fun getScreenName(): String = "Room List"
@@ -100,6 +147,60 @@ class HotelRoomListFragment: BaseListFragment<RoomListModel, RoomListTypeFactory
     }
 
     override fun onChipClickListener(string: String) {
+        when (string) {
+            getString(FREE_BREAKFAST) -> { roomListViewModel.filter(clickFreeBreakfast = true) }
+            getString(FREE_CANCELABLE) -> { roomListViewModel.filter(clickFreeCancelable = true) }
+            getString(PAY_IN_HOTEL) -> { roomListViewModel.filter(clickPayInHotel = true) }
+        }
+    }
 
+    override fun onSaveGuest(room: Int, adult: Int, child: Int) {
+        hotelRoomListPageModel.room = room
+        hotelRoomListPageModel.adult = adult
+        hotelRoomListPageModel.child = child
+
+        renderRoomAndGuestView()
+    }
+
+    fun renderRoomAndGuestView() {
+        total_room_text_view.text = hotelRoomListPageModel.room.toString()
+        total_guest_text_view.text = hotelRoomListPageModel.adult.toString()
+    }
+
+    fun renderDate() {
+        date_text_view.text = "${TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
+                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkIn))} " +
+                "- ${TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
+                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkOut))}"
+    }
+
+    companion object {
+        val FREE_BREAKFAST = R.string.hotel_room_list_filter_free_breakfast
+        val FREE_CANCELABLE = R.string.hotel_room_list_filter_free_cancelable
+        val PAY_IN_HOTEL = R.string.hotel_room_list_filter_pay_in_hotel
+
+        const val ARG_PROPERTY_ID = "arg_property_id"
+        const val ARG_CHECK_IN = "arg_check_in"
+        const val ARG_CHECK_OUT = "arg_check_out"
+        const val ARG_TOTAL_ROOM = "arg_total_room"
+        const val ARG_TOTAL_ADULT = "arg_total_adult"
+        const val ARG_TOTAL_CHILDREN = "arg_total_children"
+
+        fun createInstance(propertyId: Int = 0, checkIn: String = "", checkOut: String = "",
+                           totalAdult: Int = 0, totalChildren: Int = 0, totalRoom: Int = 0): HotelRoomListFragment {
+
+            return HotelRoomListFragment().also {
+                it.arguments = Bundle().apply {
+                    putInt(ARG_PROPERTY_ID, propertyId)
+                    putString(ARG_CHECK_IN, checkIn)
+                    putString(ARG_CHECK_OUT, checkOut)
+                    putInt(ARG_TOTAL_ROOM, totalRoom)
+                    putInt(ARG_TOTAL_ADULT, totalAdult)
+                    putInt(ARG_TOTAL_CHILDREN, totalChildren)
+                }
+            }
+        }
+
+        val TAG_GUEST_INFO = "guestHotelInfo"
     }
 }

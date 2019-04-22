@@ -73,7 +73,7 @@ data class HotelRoom(
 
         ) {
     data class RoomBreakfastInfo(
-            @SerializedName("isBreakfastIncluded")
+            @SerializedName("isBreakFastIncluded")
             @Expose
             val isBreakfastIncluded: Boolean,
 

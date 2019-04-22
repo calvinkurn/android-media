@@ -9,7 +9,8 @@ import com.tokopedia.hotel.common.getSuccessData
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomData
 import com.tokopedia.hotel.roomlist.data.model.RoomListModel
 import com.tokopedia.hotel.roomlist.data.model.RoomListParam
-import com.tokopedia.hotel.roomlist.data.model.mapper.RoomListModelMapper
+import com.tokopedia.hotel.roomlist.data.mapper.RoomListModelMapper
+import com.tokopedia.hotel.roomlist.data.model.HotelRoomListPageModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -28,19 +29,24 @@ class HotelRoomListViewModel @Inject constructor(
         val roomListModelMapper: RoomListModelMapper) : BaseViewModel(dispatcher){
 
     private val roomListParam: RoomListParam = RoomListParam()
+    private var roomList: List<RoomListModel> = listOf()
     val roomListResult = MutableLiveData<Result<MutableList<RoomListModel>>>()
 
-    fun initRoomListParam(propertyId: Int, checkIn: String, checkOut: String, adult: Int, child: Int, room: Int) {
-        roomListParam.propertyId = propertyId
-        roomListParam.checkIn = checkIn
-        roomListParam.checkOut = checkOut
-        roomListParam.guest.adult = adult
-//        var childAge = IntArray(child)
-//        for (i in 0..child - 1){
-//            childAge[i] = 10
-//        }
-//        roomListParam.guest.childAge = childAge.toList()
-        roomListParam.room = room
+    var filterFreeBreakfast = false
+    var filterFreeCancelable = false
+    var filterPayInHotel = false
+
+    fun initRoomListParam(hotelRoomListPageModel: HotelRoomListPageModel) {
+        roomListParam.propertyId = hotelRoomListPageModel.propertyId
+        roomListParam.checkIn = hotelRoomListPageModel.checkIn
+        roomListParam.checkOut = hotelRoomListPageModel.checkOut
+        roomListParam.guest.adult = hotelRoomListPageModel.adult
+        var childAge = IntArray(hotelRoomListPageModel.child)
+        for (i in 0..hotelRoomListPageModel.child - 1){
+            childAge[i] = 4
+        }
+        roomListParam.guest.childAge = childAge.toList()
+        roomListParam.room = hotelRoomListPageModel.room
     }
 
     fun getRoomList(rawQuery: String, dummy: String) {
@@ -50,16 +56,35 @@ class HotelRoomListViewModel @Inject constructor(
 
             val response = withContext(Dispatchers.IO){
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }
+            }.getSuccessData<HotelRoomData.Response>().response
 
-            roomListResult.value = Success(roomListModelMapper.transform(response.getSuccessData<HotelRoomData.Response>().response))
+            roomListResult.value = Success(roomListModelMapper.transform(response))
+            roomList = roomListModelMapper.transform(response)
         }){
             it.printStackTrace()
             val gson = Gson()
             roomListResult.value = Success(roomListModelMapper.transform(gson.fromJson(dummy, HotelRoomData.Response::class.java).response))
+            roomList = roomListModelMapper.transform(gson.fromJson(dummy, HotelRoomData.Response::class.java).response)
         }
     }
 
+    fun filter(clickFreeBreakfast: Boolean = false, clickFreeCancelable: Boolean = false, clickPayInHotel: Boolean = false) {
+        if (clickFreeBreakfast) filterFreeBreakfast = !filterFreeBreakfast
+        if (clickFreeCancelable) filterFreeCancelable = !filterFreeCancelable
+        if (clickPayInHotel) filterPayInHotel = !filterPayInHotel
+
+        if (filterFreeBreakfast || filterFreeCancelable || filterPayInHotel)  {
+            var list: MutableList<RoomListModel> = arrayListOf()
+            for (room in roomList) {
+                var valid = true
+                if (filterPayInHotel && !room.payInHotel) valid = false
+                if (filterFreeCancelable && !room.isRefundable) valid = false
+                if (filterFreeBreakfast && !room.breakfastIncluded) valid = false
+                if (valid) list.add(room)
+            }
+            roomListResult.value = Success(list)
+        } else roomListResult.value = Success(roomList.toMutableList())
+    }
 
     companion object {
         private const val PARAM_ROOM_LIST_PROPERTY = "data"

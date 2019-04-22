@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.roomlist.presentation.adapter.viewholder
 
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.LinearLayoutManager
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.TextUtils
@@ -34,19 +35,20 @@ class RoomListViewHolder(val view: View, val imageViewPagerListener: ImageViewPa
             room_image_view_pager.setPagerAdapter(ImageViewPagerAdapter(roomListModel.images,
                     room_image_view_pager.imageViewPagerListener))
             room_name_text_view.text = roomListModel.roomName
-            max_occupancy_text_view.text = roomListModel.roomOccupancyInfo.occupancyText
+            max_occupancy_text_view.text = roomListModel.occupancyText
             bed_info_text_view.text = roomListModel.bedInfo
             room_price_text_view.text = roomListModel.price
             pay_hotel_text_view.visibility = if (roomListModel.payInHotel) View.VISIBLE else View.GONE
             cc_not_required_text_view.visibility = if (roomListModel.isCcRequired) View.GONE else View.VISIBLE
 
             var adapter = RoomFacilityAdapter()
+            val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            room_facility_recycler_view.layoutManager = layoutManager
+            room_facility_recycler_view.adapter = adapter
             if (roomListModel.breakfastIncluded) adapter.addFacility("Termasuk Sarapan") else adapter.addFacility("Tidak Termasuk Sarapan")
             if (roomListModel.isRefundable) adapter.addFacility("Dapat direfund") else adapter.addFacility("Tidak dapat direfund")
             adapter.addFacility(roomListModel.roomFacility[0].name)
             adapter.addFacility(roomListModel.roomFacility[1].name)
-
-            room_facility_recycler_view.adapter = adapter
         }
     }
 
