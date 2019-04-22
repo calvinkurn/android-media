@@ -93,7 +93,7 @@ public class ProductViewModelHelper {
     private static List<GlobalNavViewModel.Item> convertToViewModel(List<SearchProductGqlResponse.GlobalNavItem> globalNavItems) {
         List<GlobalNavViewModel.Item> itemList = new ArrayList<>();
 
-        int position = 0;
+        int position = 1;
         for (SearchProductGqlResponse.GlobalNavItem item : globalNavItems) {
             itemList.add(new GlobalNavViewModel.Item(
                     item.getName(),

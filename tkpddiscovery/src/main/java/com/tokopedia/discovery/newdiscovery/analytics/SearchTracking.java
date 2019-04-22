@@ -49,6 +49,7 @@ public class SearchTracking {
     public static final String EVENT_ACTION_IMPRESSION_PROFILE = "impression - profile";
     public static final String EVENT_ACTION_CLICK_SEE_ALL_NAV_WIDGET = "click - lihat semua widget";
     public static final String EVENT_ACTION_CLICK_WIDGET_DIGITAL_PRODUCT = "click widget - digital product";
+    public static final String EVENT_ACTION_IMPRESSION_WIDGET_DIGITAL_PRODUCT = "impression widget - digital product";
     public static String imageClick = "/imagesearch - p%s";
 
     private UserSessionInterface userSessionInterface;
@@ -471,7 +472,7 @@ public class SearchTracking {
         trackingQueue.putEETracking(
                 (HashMap<String, Object>) DataLayer.mapOf(EVENT, PROMO_VIEW,
                         EVENT_CATEGORY, EVENT_CATEGORY_SEARCH_RESULT,
-                        EVENT_ACTION, EVENT_ACTION_CLICK_WIDGET_DIGITAL_PRODUCT,
+                        EVENT_ACTION, EVENT_ACTION_IMPRESSION_WIDGET_DIGITAL_PRODUCT,
                         EVENT_LABEL, keyword,
                         ECOMMERCE, DataLayer.mapOf(
                                 PROMO_VIEW, DataLayer.mapOf(
