@@ -251,10 +251,10 @@ public class TopChatAnalytics {
                 EVENT_NAME, Name.EVENT_NAME_ATC,
                 EVENT_CATEGORY, Category.CHAT_DETAIL,
                 EVENT_ACTION, Action.CLICK_ATC_PRODUCT_THUMBNAIL,
-                EVENT_LABEL, String.format("chat - %s", String.valueOf(blastId)),
+                EVENT_LABEL, String.format("%s - %s", getField(blastId), String.valueOf(blastId)),
                 ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR",
                         "click", DataLayer.mapOf(
-                                "actionField", DataLayer.mapOf("list", "/chat"),
+                                "actionField", DataLayer.mapOf("list", String.format("/%s", getField(blastId))),
                                 "products", DataLayer.listOf(
                                         DataLayer.mapOf(
                                                 "name", productName,
@@ -278,10 +278,10 @@ public class TopChatAnalytics {
                 EVENT_NAME, Name.EVENT_NAME_ATC,
                 EVENT_CATEGORY, Category.CHAT_DETAIL,
                 EVENT_ACTION, Action.CLICK_BUY_PRODUCT_THUMBNAIL,
-                EVENT_LABEL, String.format("chat - %s", String.valueOf(blastId)),
+                EVENT_LABEL, String.format("%s - %s", getField(blastId), String.valueOf(blastId)),
                 ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR",
                         "click", DataLayer.mapOf(
-                                "actionField", DataLayer.mapOf("list", "/chat"),
+                                "actionField", DataLayer.mapOf("list", String.format("/%s", getField(blastId))),
                                 "products", DataLayer.listOf(
                                         DataLayer.mapOf(
                                                 "name", productName,
@@ -298,5 +298,18 @@ public class TopChatAnalytics {
                         )
                 )
         ));
+    }
+
+    public String getField(String blastId) {
+        Long blastIdNum = Long.valueOf(blastId);
+        if(blastIdNum == 0) {
+            return "chat";
+        } else if (blastIdNum == -1) {
+            return "drop price alert";
+        } else if(blastIdNum > 0) {
+            return "broadcast";
+        } else {
+            return "chat";
+        }
     }
 }
