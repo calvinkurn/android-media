@@ -90,14 +90,6 @@ public class TopAdsNewProductListExistingGroupFragment extends TopAdsNewProductL
     }
 
     @Override
-    public void onSuggestionSuccess(GetSuggestionResponse s) { /* this class not do anything about this */ }
-
-    @Override
-    public void onSuggestionError(@Nullable Throwable t) {
-        /* just deal with abstraction */
-    }
-
-    @Override
     public void onBidInfoSuccess(MinimumBidDomain.TopadsBidInfo bidInfo) {
 
     }

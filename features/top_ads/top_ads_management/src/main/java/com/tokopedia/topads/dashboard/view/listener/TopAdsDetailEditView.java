@@ -19,10 +19,6 @@ public interface TopAdsDetailEditView extends TopAdsGetProductDetailView {
 
     void onSaveAdError(String errorMessage);
 
-    void onSuggestionSuccess(GetSuggestionResponse s);
-
-    void onSuggestionError(@Nullable Throwable t);
-
     void onBidInfoSuccess(MinimumBidDomain.TopadsBidInfo bidInfo);
 
     void onBidInfoError(@Nullable Throwable t);

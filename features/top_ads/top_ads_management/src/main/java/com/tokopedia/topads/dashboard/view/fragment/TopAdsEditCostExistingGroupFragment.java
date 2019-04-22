@@ -115,16 +115,6 @@ public class TopAdsEditCostExistingGroupFragment extends TopAdsEditCostFragment<
     }
 
     @Override
-    public void onSuggestionSuccess(GetSuggestionResponse s) {
-        // Do nothing
-    }
-
-    @Override
-    public void onSuggestionError(@Nullable Throwable t) {
-        /* this is empty just to deal with abstraction */
-    }
-
-    @Override
     public void onBidInfoSuccess(MinimumBidDomain.TopadsBidInfo bidInfo) {
         setSuggestionBidText(bidInfo.getData().get(0));
         detailAd.setSuggestionBidValue(suggestionBidValue);

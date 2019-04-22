@@ -128,41 +128,6 @@ public class TopAdsDetailEditProductPresenterImpl<T extends TopAdsDetailEditView
     }
 
     @Override
-    public void getSuggestionBid(List<String> ids, String source) {
-        GetSuggestionBody getSuggestionBody = new GetSuggestionBody();
-        getSuggestionBody.setRounding(true);
-        getSuggestionBody.setSource(source);
-        getSuggestionBody.setDataType(TopAdsNetworkConstant.SUGGESTION_DATA_TYPE_SUMMARY);
-        getSuggestionBody.setSuggestionType(TopAdsNetworkConstant.SUGGESTION_TYPE_DEPARTMENT_ID);
-        List<Long> ids_ = new ArrayList<>();
-        for (String id : ids) {
-            ids_.add(Long.valueOf(id));
-        }
-        getSuggestionBody.setIds(ids_);
-
-        topAdsGetSuggestionUseCase.execute(TopAdsGetSuggestionUseCase.createRequestParams(getSuggestionBody), new Subscriber<GetSuggestionResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if(isViewAttached()) {
-                    getView().onSuggestionError(e);
-                }
-            }
-
-            @Override
-            public void onNext(GetSuggestionResponse s) {
-                if(isViewAttached()) {
-                    getView().onSuggestionSuccess(s);
-                }
-            }
-        });
-    }
-
-    @Override
     public void getBidInfo(String requestType, List<DataSuggestions> dataSuggestions, String source) {
         MinimumBidRequest request = new MinimumBidRequest();
         request.setSource(source);

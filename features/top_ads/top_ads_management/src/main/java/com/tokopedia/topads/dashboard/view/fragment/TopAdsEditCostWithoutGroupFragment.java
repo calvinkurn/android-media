@@ -98,18 +98,6 @@ public class TopAdsEditCostWithoutGroupFragment extends TopAdsEditCostFragment<T
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
-    @Override
-    public void onSuggestionSuccess(GetSuggestionResponse s) {
-//        setSuggestionBidText(s);
-//        detailAd.setSuggestionBidValue(suggestionBidValue);
-//        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_NOT_IMPLEMENTED);
-//        defaultSuggestionBidButtonStatus = TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_NOT_IMPLEMENTED;
-    }
-
-    @Override
-    public void onSuggestionError(@Nullable Throwable t) {
-        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.NO_SUGGESTION);
-    }
 
     @Override
     public void onBidInfoSuccess(MinimumBidDomain.TopadsBidInfo bidInfo) {

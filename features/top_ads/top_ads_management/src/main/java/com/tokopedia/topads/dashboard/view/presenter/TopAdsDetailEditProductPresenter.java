@@ -15,7 +15,5 @@ public interface TopAdsDetailEditProductPresenter<T extends TopAdsDetailEditView
 
     void saveAd(TopAdsDetailProductViewModel topAdsDetailProductViewModel);
 
-    void getSuggestionBid(List<String> ids, String source);
-
     void getBidInfo(String requestType, List<DataSuggestions> dataSuggestions, String source);
 }
