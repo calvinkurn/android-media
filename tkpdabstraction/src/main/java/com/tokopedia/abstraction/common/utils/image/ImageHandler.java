@@ -924,6 +924,15 @@ public class ImageHandler {
         return Base64.encodeToString(b, Base64.DEFAULT);
     }
 
+    public static String encodeToBase64(String imagePath, Bitmap.CompressFormat compressFormat,
+                                        int quality) {
+        Bitmap bm = BitmapFactory.decodeFile(imagePath);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(compressFormat, quality, baos);
+        byte[] b = baos.toByteArray();
+        return Base64.encodeToString(b, Base64.DEFAULT);
+    }
+
     public static void loadImageBlurredWithListener(ImageView imageView, String url, int
             blurWidth, int blurHeight, RequestListener<String, GlideDrawable> listener) {
         if (url != null) {
