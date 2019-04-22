@@ -417,9 +417,7 @@ public class SearchTracking {
                         EVENT_LABEL, keyword,
                         ECOMMERCE, DataLayer.mapOf(
                                 PROMO_VIEW, DataLayer.mapOf(
-                                        PROMOTIONS, DataLayer.listOf(
-                                                profileListData
-                                        )
+                                        PROMOTIONS, profileListData
                                 )
                         )
                 )
