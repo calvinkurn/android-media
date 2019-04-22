@@ -41,12 +41,11 @@ import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_COUPON;
 
 public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<PaymentGraphql>>, Boolean> {
 
-    public static final String DEFAULT_SHOP_TYPE = "default";
-    public static final String PAYMENT_TYPE_COD = "COD";
+    private static final String DEFAULT_SHOP_TYPE = "default";
+    private static final String PAYMENT_TYPE_COD = "COD";
     private SessionHandler sessionHandler;
     private List<String> shopTypes;
     private PaymentData paymentData;
-    private RequestParams requestParams;
     private static final String TOKOPEDIA_MARKETPLACE = "tokopediamarketplace";
     private static final String TYPE_GLOBAL_VOUCHER = "global";
     private static final String TYPE_PAYMENT_VOUCHER = "payment";
@@ -57,7 +56,6 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     public MarketplaceTrackerMapper(SessionHandler sessionHandler, List<String> shopTypes, RequestParams requestParams) {
         this.sessionHandler = sessionHandler;
         this.shopTypes = shopTypes;
-        this.requestParams = requestParams;
     }
 
     @Override
@@ -69,7 +67,13 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
             if (paymentData.getOrders() != null) {
                 int indexOrdersData = 0;
                 for (OrderData orderData : paymentData.getOrders()) {
-                    PurchaseTracking.marketplace(MainApplication.getAppContext(), getTrackignData(orderData, indexOrdersData, getListCouponCode(paymentData, orderData.getOrderId()), getTax(paymentData), paymentType));
+                    PurchaseTracking.marketplace(
+                            MainApplication.getAppContext(),
+                            getTrackignData(
+                                    orderData, indexOrdersData, getListCouponCode(paymentData, orderData.getOrderId()
+                                    ), getTax(paymentData), paymentType
+                            )
+                    );
                     LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_COMMERCE_VAL,
                             getTrackignBranchIOData(orderData)));
                     indexOrdersData++;
