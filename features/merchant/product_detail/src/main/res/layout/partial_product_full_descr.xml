@@ -38,7 +38,7 @@
         android:visibility="gone"
         tools:visibility="visible"
         app:fontSize="small"
-        app:textViewTheme="lightDisabled"
+        app:textViewTheme="lightSecondary"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_product_info_label"/>
@@ -74,7 +74,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         app:fontSize="small"
-        app:textViewTheme="lightDisabled"
+        app:textViewTheme="lightSecondary"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/label_pre_order"/>
@@ -108,7 +108,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         app:fontSize="small"
-        app:textViewTheme="lightDisabled"
+        app:textViewTheme="lightSecondary"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/label_weight"/>
@@ -144,7 +144,7 @@
         android:visibility="gone"
         tools:visibility="visible"
         app:fontSize="small"
-        app:textViewTheme="lightDisabled"
+        app:textViewTheme="lightSecondary"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/label_product_condition"/>
@@ -180,7 +180,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         app:fontSize="small"
-        app:textViewTheme="lightDisabled"
+        app:textViewTheme="lightSecondary"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/label_asuransi"/>
@@ -214,7 +214,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         app:fontSize="small"
-        app:textViewTheme="lightDisabled"
+        app:textViewTheme="lightSecondary"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/label_min_order"/>
@@ -249,7 +249,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         app:fontSize="small"
-        app:textViewTheme="lightDisabled"
+        app:textViewTheme="lightSecondary"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/label_category"/>
@@ -319,7 +319,7 @@
         android:textIsSelectable="false"
         android:lineSpacingExtra="@dimen/sp_8"
         tools:text="Pilihan tepat untuk dekorasi rumah minimalis modern Anda, atau untuk mengimbangi interior unik pilihan Anda. Tersedia dalam 4 pilihan warna, hitam, putih, biru, dan jingga. .."
-        app:fontSize="micro"
+        app:fontSize="small"
         app:textViewTheme="lightSecondary"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
