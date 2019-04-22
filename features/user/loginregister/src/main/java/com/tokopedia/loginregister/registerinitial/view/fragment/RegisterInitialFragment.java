@@ -44,6 +44,8 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.loginregister.LoginRegisterPhoneRouter;
@@ -111,7 +113,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private TextView optionTitle;
     private PartialRegisterInputView partialRegisterInputView;
     private LinearLayout registerContainer;
-    private LoginTextView registerButton, registerPhoneNumberButton;
+    private LoginTextView registerButton;
     private TextView loginButton;
     private ScrollView container;
     private RelativeLayout progressBar;
@@ -200,7 +202,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 .register_input_view);
         registerContainer = view.findViewById(R.id.register_container);
         registerButton = view.findViewById(R.id.register);
-        registerPhoneNumberButton = view.findViewById(R.id.register_phone_number);
         loginButton = view.findViewById(R.id.login_button);
         container = view.findViewById(R.id.container);
         progressBar = view.findViewById(R.id.progress_bar);
@@ -259,7 +260,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     protected void prepareView() {
         if (getActivity() != null) {
             registerButton.setVisibility(View.GONE);
-            registerPhoneNumberButton.setVisibility(View.GONE);
             partialRegisterInputView.setVisibility(View.GONE);
 
             if (!GlobalConfig.isSellerApp()) {
@@ -284,20 +284,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             } else {
                 partialRegisterInputView.setVisibility(View.VISIBLE);
             }
-            registerPhoneNumberButton.setColor(Color.WHITE);
-            registerPhoneNumberButton.setBorderColor(MethodChecker.getColor(getActivity(), R.color
-                    .black_38));
-            registerPhoneNumberButton.setRoundCorner(10);
-            registerPhoneNumberButton.setImageResource(R.drawable.ic_phone);
-            registerPhoneNumberButton.setOnClickListener(v -> {
-                showProgressBar();
 
-                if (getActivity() != null && getActivity().getApplicationContext() != null) {
-                    Intent intent = ((LoginRegisterPhoneRouter) getActivity().getApplicationContext())
-                            .getCheckRegisterPhoneNumberIntent(getActivity());
-                    startActivityForResult(intent, REQUEST_REGISTER_PHONE_NUMBER);
-                }
-            });
             String sourceString = getActivity().getResources().getString(R.string
                     .span_already_have_tokopedia_account);
 
@@ -357,12 +344,11 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     private void goToVerificationPhoneRegister(String phone) {
-        Intent intent = VerificationActivity.getCallingIntent(
+        Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
                 getActivity(),
-                phone,
                 RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER,
-                true,
-                RequestOtpUseCase.MODE_SMS
+                phone,
+               ""
         );
         startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE);
     }
@@ -421,16 +407,16 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                     getActivity().setResult(Activity.RESULT_OK);
                     getActivity().finish();
                 }
-            } else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH && resultCode == Activity
-                    .RESULT_OK) {
-                ChooseTokoCashAccountViewModel chooseTokoCashAccountViewModel = getChooseAccountData
-                        (data);
-                if (chooseTokoCashAccountViewModel != null && !chooseTokoCashAccountViewModel
-                        .getListAccount().isEmpty()) {
-                    goToChooseAccountPage(chooseTokoCashAccountViewModel);
-                } else {
-                    goToNoTokocashAccountPage(phoneNumber);
-                }
+            } else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH
+                    && resultCode == Activity.RESULT_OK
+                    && data != null
+                    && data.getExtras() != null) {
+                String accessToken =
+                        data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_UUID, "");
+                String phoneNumber =
+                        data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "");
+                goToChooseAccountPage(accessToken, phoneNumber);
+
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT
                     && resultCode == Activity.RESULT_OK) {
                 getActivity().setResult(Activity.RESULT_OK);
@@ -782,13 +768,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     private void goToVerifyAccountPage(String phoneNumber) {
         if (getActivity() != null && getActivity().getApplicationContext() != null) {
-
-            Intent intent = ((LoginRegisterPhoneRouter) getActivity().getApplicationContext())
-                    .getTokoCashOtpIntent(getActivity(),
-                            phoneNumber,
-                            true,
-                            RequestOtpUseCase.MODE_SMS);
-
+            Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(getActivity(),
+                    RequestOtpUseCase.OTP_TYPE_LOGIN_PHONE_NUMBER,  phoneNumber, "");
             startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH);
         }
     }
@@ -804,11 +785,13 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         }
     }
 
-    private void goToChooseAccountPage(ChooseTokoCashAccountViewModel data) {
+    private void goToChooseAccountPage(String accessToken, String phoneNumber) {
         if (getActivity() != null && getActivity().getApplicationContext() != null) {
 
-            Intent intent = ((LoginRegisterPhoneRouter) getActivity().getApplicationContext())
-                    .getChooseTokocashAccountIntent(getActivity(), data);
+            Intent intent = RouteManager.getIntent(getActivity(),
+                    ApplinkConstInternalGlobal.CHOOSE_ACCOUNT);
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken);
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber);
 
             startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT);
         }

@@ -15,7 +15,7 @@ import rx.Observable;
 /**
  * @author by nisie on 12/4/17.
  */
-
+@Deprecated
 public class TokoCashOtpSource {
 
     private final LoginRegisterPhoneApi loginRegisterPhoneApi;

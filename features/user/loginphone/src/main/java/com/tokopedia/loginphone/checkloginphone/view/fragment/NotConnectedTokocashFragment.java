@@ -24,8 +24,6 @@ import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.loginphone.common.data.LoginRegisterPhoneUrl;
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent;
 import com.tokopedia.loginphone.common.di.LoginRegisterPhoneComponent;
-import com.tokopedia.loginphone.verifyotptokocash.view.activity.TokoCashOtpActivity;
-import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 
 import javax.inject.Inject;
 
@@ -166,13 +164,15 @@ public class NotConnectedTokocashFragment extends BaseDaggerFragment {
     }
 
     private void goToVerifyPhoneNumberPage() {
-        startActivity(TokoCashOtpActivity.getCallingIntent(
-                getActivity(),
-                phoneNumber,
-                RequestOtpUseCase.OTP_TYPE_TOKOCASH,
-                true,
-                RequestOtpUseCase.MODE_SMS
-        ));
+//        startActivity(TokoCashOtpActivity.getCallingIntent(
+//                getActivity(),
+//                phoneNumber,
+//                RequestOtpUseCase.OTP_TYPE_TOKOCASH,
+//                true,
+//                RequestOtpUseCase.MODE_SMS
+//        ));
+
+        //Flow no longer exist
     }
 
     @Override

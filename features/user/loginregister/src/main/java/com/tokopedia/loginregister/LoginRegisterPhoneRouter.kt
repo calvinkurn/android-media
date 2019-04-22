@@ -17,9 +17,4 @@ interface LoginRegisterPhoneRouter {
 
     fun getCheckRegisterPhoneNumberIntent(context: Context): Intent
 
-    fun getChooseTokocashAccountIntent(context: Context, data: ChooseTokoCashAccountViewModel): Intent
-
-    fun getTokoCashOtpIntent(context: Context, phoneNumber: String,
-                             canUseOtherMethod: Boolean,
-                             defaultRequestMode: String): Intent
 }

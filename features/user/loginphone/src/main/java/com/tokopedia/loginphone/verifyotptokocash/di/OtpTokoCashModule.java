@@ -7,6 +7,7 @@ import dagger.Provides;
 /**
  * @author by nisie on 10/22/18.
  */
+@Deprecated
 @Module
 public class OtpTokoCashModule {
 }

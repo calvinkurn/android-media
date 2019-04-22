@@ -12,7 +12,7 @@ import rx.Observable;
 /**
  * @author by nisie on 12/4/17.
  */
-
+@Deprecated
 public class RequestOtpTokoCashUseCase extends UseCase<RequestOtpTokoCashPojo> {
 
     private static final String PARAM_PHONE_NUMBER = "msisdn";

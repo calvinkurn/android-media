@@ -22,7 +22,7 @@ import rx.Subscriber;
 /**
  * @author by nisie on 11/30/17.
  */
-
+@Deprecated
 public class TokoCashVerificationPresenter extends BaseDaggerPresenter<TokoCashVerificationContract.View> implements
         TokoCashVerificationContract.Presenter {
 

@@ -706,12 +706,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun goToRegisterPhoneVerifyPage(phoneNumber: String) {
 
         activity?.let {
-            val intent = VerificationActivity.getCallingIntent(
+            val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
                     it,
-                    phoneNumber,
                     RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER,
-                    true,
-                    RequestOtpUseCase.MODE_SMS
+                    phoneNumber,
+                    ""
             )
             startActivityForResult(intent, REQUEST_REGISTER_PHONE)
         }

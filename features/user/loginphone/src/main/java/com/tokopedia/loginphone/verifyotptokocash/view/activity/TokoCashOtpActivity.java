@@ -19,7 +19,7 @@ import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 /**
  * @author by nisie on 11/29/17.
  */
-
+@Deprecated
 public class TokoCashOtpActivity extends VerificationActivity {
 
 
@@ -84,28 +84,28 @@ public class TokoCashOtpActivity extends VerificationActivity {
         }
     }
 
-    /**
-     * @param context            either activity context or fragment context
-     * @param phoneNumber        user phone number
-     * @param canUseOtherMethod  set true if user can use other method for otp.
-     * @param defaultRequestMode default mode (sms/etc).Use MODE from@see{@link RequestOtpUseCase}.
-     * @return Intent
-     */
-    public static Intent getCallingIntent(Context context, String phoneNumber,
-                                          boolean canUseOtherMethod,
-                                          String defaultRequestMode) {
-        VerificationPassModel passModel = new VerificationPassModel(phoneNumber,
-                RequestOtpUseCase.OTP_TYPE_TOKOCASH,
-                canUseOtherMethod);
-
-        Intent intent = new Intent(context, TokoCashOtpActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(PASS_MODEL, passModel);
-        bundle.putString(PARAM_REQUEST_OTP_MODE, defaultRequestMode);
-        bundle.putBoolean(IS_SHOW_CHOOSE_METHOD, false);
-        intent.putExtras(bundle);
-        return intent;
-    }
+//    /**
+//     * @param context            either activity context or fragment context
+//     * @param phoneNumber        user phone number
+//     * @param canUseOtherMethod  set true if user can use other method for otp.
+//     * @param defaultRequestMode default mode (sms/etc).Use MODE from@see{@link RequestOtpUseCase}.
+//     * @return Intent
+//     */
+//    public static Intent getCallingIntent(Context context, String phoneNumber,
+//                                          boolean canUseOtherMethod,
+//                                          String defaultRequestMode) {
+//        VerificationPassModel passModel = new VerificationPassModel(phoneNumber,
+//                RequestOtpUseCase.OTP_TYPE_TOKOCASH,
+//                canUseOtherMethod);
+//
+//        Intent intent = new Intent(context, TokoCashOtpActivity.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable(PASS_MODEL, passModel);
+//        bundle.putString(PARAM_REQUEST_OTP_MODE, defaultRequestMode);
+//        bundle.putBoolean(IS_SHOW_CHOOSE_METHOD, false);
+//        intent.putExtras(bundle);
+//        return intent;
+//    }
 
 
     /**

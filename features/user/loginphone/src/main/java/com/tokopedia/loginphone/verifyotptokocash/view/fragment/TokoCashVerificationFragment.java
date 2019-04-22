@@ -20,7 +20,6 @@ import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent;
 import com.tokopedia.loginphone.common.di.LoginRegisterPhoneComponent;
 import com.tokopedia.loginphone.verifyotptokocash.di.DaggerOtpTokoCashComponent;
 import com.tokopedia.loginphone.verifyotptokocash.domain.pojo.verifyotp.VerifyOtpTokoCashPojo;
-import com.tokopedia.loginphone.verifyotptokocash.view.activity.TokoCashOtpActivity;
 import com.tokopedia.loginphone.verifyotptokocash.view.presenter.TokoCashVerificationPresenter;
 import com.tokopedia.loginphone.verifyotptokocash.view.viewlistener.TokoCashVerificationContract;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
@@ -172,9 +171,7 @@ public class TokoCashVerificationFragment extends VerificationFragment implement
 
     @Override
     protected void goToOtherVerificationMethod() {
-        if (getActivity() instanceof TokoCashOtpActivity) {
-            ((TokoCashOtpActivity) getActivity()).goToSelectVerificationMethod();
-        }
+
     }
 
     @Override

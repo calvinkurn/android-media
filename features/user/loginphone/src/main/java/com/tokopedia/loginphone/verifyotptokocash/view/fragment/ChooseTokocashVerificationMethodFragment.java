@@ -12,7 +12,6 @@ import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent;
 import com.tokopedia.loginphone.common.di.LoginRegisterPhoneComponent;
 import com.tokopedia.loginphone.verifyotptokocash.di.DaggerOtpTokoCashComponent;
-import com.tokopedia.loginphone.verifyotptokocash.view.activity.TokoCashOtpActivity;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
@@ -26,7 +25,7 @@ import javax.inject.Inject;
 /**
  * @author by nisie on 11/29/17.
  */
-
+@Deprecated
 public class ChooseTokocashVerificationMethodFragment extends ChooseVerificationMethodFragment {
 
     @Inject
@@ -119,11 +118,11 @@ public class ChooseTokocashVerificationMethodFragment extends ChooseVerification
 
     @Override
     public void onMethodSelected(MethodItem methodItem) {
-        if (getActivity() instanceof TokoCashOtpActivity) {
-            loginPhoneNumberAnalytics.eventChooseVerificationMethodTracking(methodItem
-                    .getModeName());
-            ((TokoCashOtpActivity) getActivity()).goToVerificationPage(methodItem);
-        }
+//        if (getActivity() instanceof TokoCashOtpActivity) {
+//            loginPhoneNumberAnalytics.eventChooseVerificationMethodTracking(methodItem
+//                    .getModeName());
+//            ((TokoCashOtpActivity) getActivity()).goToVerificationPage(methodItem);
+//        }
     }
 
 

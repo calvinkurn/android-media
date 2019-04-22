@@ -17,6 +17,7 @@ import dagger.Component;
 /**
  * @author by nisie on 10/22/18.
  */
+@Deprecated
 @OtpTokoCashScope
 @CotpScope
 @OtpScope

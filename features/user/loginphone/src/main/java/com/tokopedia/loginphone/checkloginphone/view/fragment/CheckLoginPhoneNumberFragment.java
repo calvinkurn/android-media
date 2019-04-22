@@ -31,12 +31,12 @@ import com.tokopedia.loginphone.checkloginphone.view.activity.CheckLoginPhoneNum
 import com.tokopedia.loginphone.checkloginphone.view.activity.NotConnectedTokocashActivity;
 import com.tokopedia.loginphone.checkloginphone.view.listener.CheckLoginPhoneNumberContract;
 import com.tokopedia.loginphone.checkloginphone.view.presenter.CheckLoginPhoneNumberPresenter;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
 import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent;
 import com.tokopedia.loginphone.common.di.LoginRegisterPhoneComponent;
-import com.tokopedia.loginphone.verifyotptokocash.view.activity.TokoCashOtpActivity;
 import com.tokopedia.loginphone.verifyotptokocash.view.fragment.TokoCashVerificationFragment;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
@@ -180,11 +180,11 @@ public class CheckLoginPhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     public void goToVerifyAccountPage(String phoneNumber) {
-        startActivityForResult(TokoCashOtpActivity.getCallingIntent(
+        startActivityForResult(VerificationActivity.getShowChooseVerificationMethodIntent(
                 getActivity(),
+                RequestOtpUseCase.OTP_TYPE_LOGIN_PHONE_NUMBER,
                 phoneNumber,
-                true,
-                RequestOtpUseCase.MODE_SMS
+                ""
         ), REQUEST_VERIFY_PHONE);
     }
 

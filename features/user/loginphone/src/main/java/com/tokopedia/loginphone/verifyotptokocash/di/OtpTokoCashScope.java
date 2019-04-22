@@ -8,6 +8,7 @@ import javax.inject.Scope;
 /**
  * @author by nisie on 10/15/18.
  */
+@Deprecated
 @Scope
 @Retention(RetentionPolicy.CLASS)
 public @interface OtpTokoCashScope {

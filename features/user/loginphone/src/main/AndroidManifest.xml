@@ -39,12 +39,5 @@
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
-
-        <activity
-            android:name=".verifyotptokocash.view.activity.TokoCashOtpActivity"
-            android:label="@string/title_verify"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
     </application>
 </manifest>
