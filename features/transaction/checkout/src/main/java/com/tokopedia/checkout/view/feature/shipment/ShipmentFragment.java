@@ -2214,11 +2214,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ArrayList<String> merchantPromoCodes = new ArrayList<>();
             VoucherOrdersItemUiModel voucherOrdersItemUiModel = shipmentCartItemModel.getVoucherOrdersItemUiModel();
             if (voucherOrdersItemUiModel != null) {
-                merchantPromoCodes.add(voucherOrdersItemUiModel.getCode());
+                if (!merchantPromoCodes.contains(voucherOrdersItemUiModel.getCode())) {
+                    merchantPromoCodes.add(voucherOrdersItemUiModel.getCode());
+                }
             }
             VoucherLogisticItemUiModel voucherLogisticItemUiModel = shipmentCartItemModel.getVoucherLogisticItemUiModel();
             if (voucherLogisticItemUiModel != null) {
-                merchantPromoCodes.add(voucherLogisticItemUiModel.getCode());
+                if (!merchantPromoCodes.contains(voucherLogisticItemUiModel.getCode())) {
+                    merchantPromoCodes.add(voucherLogisticItemUiModel.getCode());
+                }
             }
             order.setCodes(merchantPromoCodes);
 
