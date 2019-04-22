@@ -115,7 +115,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             globalNavWidget.setData(element.getGlobalNavViewModel(), new GlobalNavWidget.ClickListener() {
                 @Override
                 public void onClickItem(GlobalNavViewModel.Item item) {
-                    productListener.onGlobalNavWidgetClicked(item);
+                    productListener.onGlobalNavWidgetClicked(item, element.getGlobalNavViewModel().getKeyword());
                 }
 
                 @Override

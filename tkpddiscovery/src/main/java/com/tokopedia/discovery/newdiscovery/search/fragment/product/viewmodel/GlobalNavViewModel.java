@@ -3,18 +3,23 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.annotations.SerializedName;
+import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 
 import java.util.List;
 
 public class GlobalNavViewModel implements Parcelable {
     private String title;
+    private String keyword;
     private String seeAllApplink;
     private String seeAllUrl;
     private List<Item> itemList;
 
-    public GlobalNavViewModel(String title, String seeAllApplink, String seeAllUrl, List<Item> itemList) {
+    public GlobalNavViewModel(String title, String keyword, String seeAllApplink, String seeAllUrl, List<Item> itemList) {
         this.title = title;
+        this.keyword = keyword;
         this.seeAllApplink = seeAllApplink;
         this.seeAllUrl = seeAllUrl;
         this.itemList = itemList;
@@ -22,6 +27,10 @@ public class GlobalNavViewModel implements Parcelable {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getKeyword() {
+        return keyword;
     }
 
     public String getSeeAllApplink() {
@@ -42,13 +51,15 @@ public class GlobalNavViewModel implements Parcelable {
         private String imageUrl;
         private String applink;
         private String url;
+        private int position;
 
-        public Item(String name, String info, String imageUrl, String applink, String url) {
+        public Item(String name, String info, String imageUrl, String applink, String url, int position) {
             this.name = name;
             this.info = info;
             this.imageUrl = imageUrl;
             this.applink = applink;
             this.url = url;
+            this.position = position;
         }
 
         public String getName() {
@@ -69,6 +80,15 @@ public class GlobalNavViewModel implements Parcelable {
 
         public String getUrl() {
             return url;
+        }
+
+        public Object getGlobalNavItemAsObjectDataLayer() {
+            return DataLayer.mapOf(
+                    "id", name,
+                    "name", "/search result - widget",
+                    "creative", name,
+                    "position", Integer.toString(position)
+            );
         }
 
         @Override
@@ -114,6 +134,7 @@ public class GlobalNavViewModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.title);
+        dest.writeString(this.keyword);
         dest.writeString(this.seeAllApplink);
         dest.writeString(this.seeAllUrl);
         dest.writeTypedList(this.itemList);
@@ -121,12 +142,13 @@ public class GlobalNavViewModel implements Parcelable {
 
     protected GlobalNavViewModel(Parcel in) {
         this.title = in.readString();
+        this.keyword = in.readString();
         this.seeAllApplink = in.readString();
         this.seeAllUrl = in.readString();
         this.itemList = in.createTypedArrayList(Item.CREATOR);
     }
 
-    public static final Parcelable.Creator<GlobalNavViewModel> CREATOR = new Parcelable.Creator<GlobalNavViewModel>() {
+    public static final Creator<GlobalNavViewModel> CREATOR = new Creator<GlobalNavViewModel>() {
         @Override
         public GlobalNavViewModel createFromParcel(Parcel source) {
             return new GlobalNavViewModel(source);

@@ -83,6 +83,7 @@ public class ProductViewModelHelper {
     private static GlobalNavViewModel convertToViewModel(SearchProductGqlResponse.GlobalNavModel globalNavModel) {
         return new GlobalNavViewModel(
                 globalNavModel.getData().getTitle(),
+                globalNavModel.getData().getKeyword(),
                 globalNavModel.getData().getSeeAllApplink(),
                 globalNavModel.getData().getSeeAllUrl(),
                 convertToViewModel(globalNavModel.getData().getGlobalNavItems())
@@ -92,14 +93,17 @@ public class ProductViewModelHelper {
     private static List<GlobalNavViewModel.Item> convertToViewModel(List<SearchProductGqlResponse.GlobalNavItem> globalNavItems) {
         List<GlobalNavViewModel.Item> itemList = new ArrayList<>();
 
+        int position = 0;
         for (SearchProductGqlResponse.GlobalNavItem item : globalNavItems) {
             itemList.add(new GlobalNavViewModel.Item(
                     item.getName(),
                     item.getInfo(),
                     item.getImageUrl(),
                     item.getApplink(),
-                    item.getUrl()
+                    item.getUrl(),
+                    position
             ));
+            position++;
         }
 
         return itemList;

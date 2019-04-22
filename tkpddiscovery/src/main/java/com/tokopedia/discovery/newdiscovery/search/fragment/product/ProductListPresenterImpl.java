@@ -383,6 +383,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         }
         if (productViewModel.getGlobalNavViewModel() != null) {
             headerViewModel.setGlobalNavViewModel(productViewModel.getGlobalNavViewModel());
+            getView().sendImpressionGlobalNav(productViewModel.getGlobalNavViewModel());
         }
         if (productViewModel.getCpmModel() != null) {
             headerViewModel.setCpmModel(productViewModel.getCpmModel());

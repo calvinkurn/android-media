@@ -452,12 +452,13 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item) {
+    public void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item, String keyword) {
         if (!TextUtils.isEmpty(item.getApplink())) {
             RouteManager.route(getActivity(), item.getApplink());
         } else {
             RouteManager.route(getActivity(), item.getUrl());
         }
+        SearchTracking.trackEventClickGlobalNavWidgetItem(item.getGlobalNavItemAsObjectDataLayer(), keyword);
     }
 
     @Override
@@ -467,6 +468,7 @@ public class ProductListFragment extends SearchSectionFragment
         } else {
             RouteManager.route(getActivity(), url);
         }
+        SearchTracking.eventUserClickSeeAllGlobalNavWidget();
     }
 
     @Override
@@ -848,6 +850,15 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     public void setFirstTimeLoad(boolean isFirstTimeLoad) {
         this.isFirstTimeLoad = isFirstTimeLoad;
+    }
+
+    @Override
+    public void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel) {
+        List<Object> dataLayerList = new ArrayList<>();
+        for (GlobalNavViewModel.Item item : globalNavViewModel.getItemList()) {
+            dataLayerList.add(item.getGlobalNavItemAsObjectDataLayer());
+        }
+        SearchTracking.trackEventImpressionGlobalNavWidgetItem(trackingQueue, dataLayerList, globalNavViewModel.getKeyword());
     }
 
     public void sendMoEngageSearchAttempt(Context context, String keyword, boolean isResultFound, HashMap<String, String> category) {

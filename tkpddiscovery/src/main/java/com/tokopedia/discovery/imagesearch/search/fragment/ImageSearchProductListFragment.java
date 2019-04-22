@@ -630,7 +630,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item) {
+    public void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item, String keyword) {
 
     }
 

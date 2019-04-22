@@ -29,7 +29,7 @@ public interface ProductListener extends EmptyStateListener {
 
     void onProductImpressed(ProductItem item, int adapterPosition);
 
-    void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item);
+    void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item, String keyword);
 
     void onGlobalNavWidgetClickSeeAll(String applink, String url);
 }
