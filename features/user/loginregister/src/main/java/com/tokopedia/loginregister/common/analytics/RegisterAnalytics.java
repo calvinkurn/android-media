@@ -143,6 +143,16 @@ public class RegisterAnalytics {
     }
 
     //#R5
+    public void trackSuccessClickEmailSignUpButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_EMAIL,
+                LABEL_SUCCESS
+        ));
+    }
+
+    //#R5
     public void trackFailedClickEmailSignUpButton(String failedMessage){
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_REGISTER,
