@@ -158,7 +158,6 @@ import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
-import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
@@ -322,6 +321,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.saldodetails.router.SaldoDetailsInternalRouter;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
+import com.tokopedia.search.presentation.view.activity.SearchActivity;
 import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -2808,11 +2808,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent gotoSearchPage(Context context) {
+    public Intent gotoSearchAutoCompletePage(Context context) {
         Intent intent = new Intent(context, SearchActivity.class);
         intent.putExtra(SearchActivity.EXTRA_IS_AUTOCOMPLETE, true);
 
         return intent;
+    }
+
+    @Override
+    public Intent gotoSearchPage(Context context) {
+        return new Intent(context, SearchActivity.class);
     }
 
     @Override

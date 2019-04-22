@@ -1,7 +1,9 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
@@ -16,7 +18,6 @@ import com.tokopedia.discovery.imagesearch.search.ImageSearchActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
-import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.track.TrackApp;
 
@@ -34,6 +35,9 @@ import java.util.Map;
 public class BaseDiscoveryActivity
         extends BaseActivity
         implements BaseDiscoveryContract.View, HasComponent {
+
+    private static final String EXTRA_PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
+    private static final String EXTRA_FORCE_SWIPE_TO_SHOP = "FORCE_SWIPE_TO_SHOP";
 
     private static final String KEY_FORCE_SWIPE_TO_SHOP = "KEY_FORCE_SWIPE_TO_SHOP";
     private static final String KEY_TAB_POSITION = "KEY_TAB_POSITION";
@@ -165,7 +169,26 @@ public class BaseDiscoveryActivity
         isStartingSearchActivityWithProductViewModel = false;
 
         finish();
-        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
+        moveToSearchActivity(productViewModel);
+    }
+
+    private void moveToSearchActivity(ProductViewModel productViewModel) {
+        if(getApplication() instanceof DiscoveryRouter) {
+            DiscoveryRouter router = (DiscoveryRouter)getApplication();
+
+            if(router != null) {
+                Intent searchActivityIntent = getSearchActivityIntent(router, productViewModel);
+                startActivity(searchActivityIntent);
+            }
+        }
+    }
+
+    private Intent getSearchActivityIntent(@NonNull DiscoveryRouter router, ProductViewModel productViewModel) {
+        Intent searchActivityIntent = router.gotoSearchPage(this);
+        searchActivityIntent.putExtra(EXTRA_PRODUCT_VIEW_MODEL, productViewModel);
+        searchActivityIntent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, forceSwipeToShop);
+
+        return searchActivityIntent;
     }
 
     private void prepareMoveToSearchActivityDuringOnResume(ProductViewModel productViewModel) {
