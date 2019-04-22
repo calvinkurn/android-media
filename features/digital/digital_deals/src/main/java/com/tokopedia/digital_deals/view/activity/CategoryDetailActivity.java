@@ -26,6 +26,7 @@ public class CategoryDetailActivity extends DealsBaseActivity implements Categor
     private final String BRAND_FRAGMENT = "BRAND_FRAGMENT";
     public static final String CATEGORY_NAME = "CATEGORY_NAME";
     public static final String CATEGORIES_DATA = "CATEGORIES_DATA";
+    public static final String FROM_HOME = "FROM_HOME";
     private String categoryName;
 
     @Override
@@ -84,7 +85,9 @@ public class CategoryDetailActivity extends DealsBaseActivity implements Categor
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if (getIntent() != null && getIntent().getBooleanExtra(CategoryDetailActivity.FROM_HOME, false)) {
+            overridePendingTransition(R.anim.slide_in_left_brands, R.anim.slide_out_right_brands);
+        }
     }
 
     @Override
