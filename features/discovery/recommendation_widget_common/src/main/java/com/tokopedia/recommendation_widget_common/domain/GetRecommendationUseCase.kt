@@ -48,8 +48,8 @@ constructor(private val context: Context,
         params.putInt(USER_ID, 3346028.toInt())
         params.putInt(PAGE_NUMBER, pageNumber)
         params.putString(X_SOURCE, if (TextUtils.isEmpty(xSource)) DEFAULT_VALUE_X_SOURCE else xSource)
-        params.putString(X_DEVICE, if (TextUtils.isEmpty(pageName)) DEFAULT_VALUE_X_DEVICE else pageName)
-        params.putString(PAGE_NAME, pageName)
+        params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
+        params.putString(PAGE_NAME, if (TextUtils.isEmpty(pageName)) DEFAULT_PAGE_NAME else pageName)
         return params
     }
 
