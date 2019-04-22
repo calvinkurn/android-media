@@ -241,8 +241,6 @@ import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.linker.model.LinkerShareResult;
 import com.tokopedia.linker.model.UserData;
-import com.tokopedia.loginphone.checkloginphone.view.activity.NotConnectedTokocashActivity;
-import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.loginphone.common.LoginPhoneNumberRouter;
 import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;

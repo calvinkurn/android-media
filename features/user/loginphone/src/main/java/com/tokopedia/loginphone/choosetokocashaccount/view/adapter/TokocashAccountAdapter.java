@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.loginphone.R;
-import com.tokopedia.loginphone.choosetokocashaccount.UserDetail;
+import com.tokopedia.loginphone.choosetokocashaccount.data.UserDetail;
 import com.tokopedia.loginphone.choosetokocashaccount.view.listener.ChooseTokocashAccountContract;
 
 import java.util.List;

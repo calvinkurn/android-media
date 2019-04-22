@@ -1,18 +1,10 @@
 package com.tokopedia.loginphone.choosetokocashaccount.data;
 
-import com.tokopedia.loginphone.choosetokocashaccount.AccountList;
-import com.tokopedia.loginphone.choosetokocashaccount.UserDetail;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author by nisie on 12/5/17.
  */
 
 public class ChooseTokoCashAccountViewModel {
-
-    public static final String ARGS_DATA = "data";
 
     private AccountList accountList;
     private String phoneNumber;

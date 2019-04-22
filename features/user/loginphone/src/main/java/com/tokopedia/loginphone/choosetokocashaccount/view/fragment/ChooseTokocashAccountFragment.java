@@ -31,9 +31,9 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.loginphone.R;
-import com.tokopedia.loginphone.choosetokocashaccount.AccountList;
-import com.tokopedia.loginphone.choosetokocashaccount.UserDetail;
+import com.tokopedia.loginphone.choosetokocashaccount.data.AccountList;
 import com.tokopedia.loginphone.choosetokocashaccount.data.ChooseTokoCashAccountViewModel;
+import com.tokopedia.loginphone.choosetokocashaccount.data.UserDetail;
 import com.tokopedia.loginphone.choosetokocashaccount.di.DaggerChooseAccountComponent;
 import com.tokopedia.loginphone.choosetokocashaccount.view.adapter.TokocashAccountAdapter;
 import com.tokopedia.loginphone.choosetokocashaccount.view.listener.ChooseTokocashAccountContract;
@@ -238,8 +238,9 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
 
             if (accountList.getAccountListPojo().getUserDetails().size() == 1) {
                 UserDetail userDetail = accountList.getAccountListPojo().getUserDetails().get(0);
-                presenter.loginWithTokocash(accountList.getAccountListPojo().getKey(), userDetail,
-                        accountList.getAccountListPojo().getMsisdn());
+                presenter.loginWithTokocash(viewModel.getAccountList().getAccountListPojo().getKey(),
+                        userDetail,
+                        viewModel.getPhoneNumber());
             } else {
                 adapter.setList(accountList.getAccountListPojo().getUserDetails());
                 message.setText(getPromptText());

@@ -1,16 +1,14 @@
 package com.tokopedia.loginphone.choosetokocashaccount.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.loginphone.choosetokocashaccount.AccountList;
-import com.tokopedia.loginphone.choosetokocashaccount.UserDetail;
+import com.tokopedia.loginphone.choosetokocashaccount.data.AccountList;
+import com.tokopedia.loginphone.choosetokocashaccount.data.UserDetail;
 import com.tokopedia.loginphone.choosetokocashaccount.domain.GetAccountsListUseCase;
 import com.tokopedia.loginphone.choosetokocashaccount.domain.LoginPhoneNumberUseCase;
 import com.tokopedia.loginphone.choosetokocashaccount.view.listener.ChooseTokocashAccountContract;
 import com.tokopedia.loginphone.choosetokocashaccount.view.subscriber.LoginPhoneNumberSubscriber;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.user.session.UserSessionInterface;
-
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -24,7 +22,6 @@ import rx.Subscriber;
 public class ChooseTokocashAccountPresenter extends BaseDaggerPresenter<ChooseTokocashAccountContract.View>
         implements ChooseTokocashAccountContract.Presenter {
 
-    private static final int ONLY_ONE = 1;
     private final GetAccountsListUseCase getAccountsListUseCase;
     private final LoginPhoneNumberUseCase loginTokoCashUseCase;
     private final UserSessionInterface userSessionInterface;

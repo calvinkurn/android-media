@@ -1,13 +1,11 @@
 package com.tokopedia.loginphone.choosetokocashaccount.domain
 
-import android.content.Context
 import android.content.res.Resources
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.loginphone.R
-import com.tokopedia.loginphone.choosetokocashaccount.AccountList
+import com.tokopedia.loginphone.choosetokocashaccount.data.AccountList
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
